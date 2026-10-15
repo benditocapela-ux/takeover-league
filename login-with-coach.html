@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Login · Takeover League</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,system-ui,Arial,sans-serif}*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(circle at 50% 0,#20354c,#0b1422 65%);color:#f4f5f8;padding:20px}.card{width:min(100%,430px);background:#152338;border:1px solid #314155;border-radius:20px;padding:30px;box-shadow:0 20px 70px #0006}.brand{letter-spacing:.2em;font-size:12px;color:#dcb86b;font-weight:800}.title{font-size:27px;margin:14px 0 6px}p{color:#b9c5d2;line-height:1.5}label{display:block;margin:20px 0 7px;font-size:13px}input{width:100%;background:#0c192b;border:1px solid #43516a;color:white;border-radius:10px;padding:14px;font-size:16px}button{cursor:pointer;border:0;border-radius:10px;padding:13px 15px;font-size:15px;font-weight:700}.primary{width:100%;background:#dbb86e;color:#142238;margin-top:24px}.secondary{background:transparent;color:#e4c98d;text-decoration:underline;padding:12px 0}button:disabled{opacity:.6;cursor:wait}.small{font-size:13px}.message{margin-top:14px;min-height:20px;color:#e4c98d}.error{color:#ffa7a7}.hide{display:none}.stats{background:#0c192b;padding:15px;border-radius:12px;margin:18px 0}.top{display:flex;justify-content:space-between;gap:12px;align-items:center}a{color:#e4c98d}
+</style>
+</head>
+<body><main class="card"><div class="brand">TAKEOVER LEAGUE</div>
+<section id="loginView"><h1 class="title">Sign In</h1><p>Melde dich mit deinem persönlichen Boxer- oder Trainer-Account an.</p><form id="loginForm"><label for="email">E-Mail</label><input id="email" type="email" autocomplete="username" required><label for="password">Passwort</label><input id="password" type="password" autocomplete="current-password" required><button class="primary" id="loginBtn" type="submit">Anmelden</button></form><button class="secondary small" id="forgotBtn" type="button">Passwort vergessen?</button><p class="small">Accounts werden ausschliesslich vom Trainer erstellt.</p></section>
+<section id="accountView" class="hide"><div class="top"><h1 class="title">Mein Account</h1><button class="secondary" id="logoutBtn" type="button">Abmelden</button></div><div class="stats"><strong id="displayName"></strong><p id="roleText"></p><p id="emailText" class="small"></p></div><p id="nextText"></p><p id="coachLink" class="hide"><a href="./coach.html">Coach Dashboard öffnen →</a></p><a href="./index.html">Zur öffentlichen Takeover League →</a></section>
+<div id="message" class="message" role="status" aria-live="polite"></div><p class="small"><a href="./index.html">← Zurück zur Liga</a></p></main>
+<script type="module">
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const supabase = createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
+const el=id=>document.getElementById(id);
+const message=(txt,error=false)=>{el('message').textContent=txt;el('message').className='message'+(error?' error':'');};
+async function render(){const {data:{user},error}=await supabase.auth.getUser();if(error||!user){el('loginView').classList.remove('hide');el('accountView').classList.add('hide');return;}
+const {data:profile,error:profileError}=await supabase.from('profiles').select('display_name,role,is_active').eq('auth_user_id',user.id).maybeSingle();
+el('loginView').classList.add('hide');el('accountView').classList.remove('hide');el('displayName').textContent=profile?.display_name||'Account';el('emailText').textContent=user.email||'';
+el('roleText').textContent=profile?.role==='admin'?'Trainer / Admin':profile?.role==='boxer'?'Boxer':'Noch kein Boxerprofil verknüpft';
+el('coachLink').classList.toggle('hide',!(profile?.role==='admin'&&profile?.is_active));el('nextText').textContent=profile?.is_active===false?'Dein Konto ist deaktiviert.':profile?.role==='admin'?'Dein Admin-Login funktioniert. Das Coach Dashboard bauen wir im nächsten Schritt.':profile?.role==='boxer'?'Dein Boxer-Login funktioniert. Dein persönliches Dashboard folgt.':'Bitte den Trainer kontaktieren, um dein Profil zu verknüpfen.';
+if(profileError)message('Profil konnte nicht geladen werden: '+profileError.message,true);
+}
+el('loginForm').addEventListener('submit',async e=>{e.preventDefault();message('');el('loginBtn').disabled=true;const {error}=await supabase.auth.signInWithPassword({email:el('email').value.trim(),password:el('password').value});el('loginBtn').disabled=false;if(error){message('Anmeldung fehlgeschlagen: '+error.message,true);return;}el('password').value='';await render();});
+el('logoutBtn').addEventListener('click',async()=>{const {error}=await supabase.auth.signOut();if(error)message(error.message,true);else{message('Du bist abgemeldet.');await render();}});
+el('forgotBtn').addEventListener('click',async()=>{const email=el('email').value.trim();if(!email){message('Bitte zuerst deine E-Mail-Adresse eingeben.',true);return;}const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:new URL('./login.html',location.href).href});message(error?'Anfrage fehlgeschlagen: '+error.message:'Falls ein Konto existiert, erhältst du eine E-Mail zum Zurücksetzen.',!!error);});
+supabase.auth.onAuthStateChange((event)=>{if(event==='SIGNED_OUT')render();});
+// Recovery: after the recovery link, let the user set a new password.
+const {data:{session}}=await supabase.auth.getSession();if(location.hash.includes('type=recovery')&&session){const pw=prompt('Neues Passwort eingeben (mindestens 8 Zeichen):');if(pw){const {error}=await supabase.auth.updateUser({password:pw});message(error?'Passwortänderung fehlgeschlagen: '+error.message:'Passwort aktualisiert.',!!error);}}
+await render();
+</script></body></html>
