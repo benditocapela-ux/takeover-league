@@ -7,7 +7,24 @@ const SHEET_ID='1PyefpY8Fg0bHyAgxQLH1U2pw_FEGbUYes-cLt8YHWog';
 const SHEET_GIDS={podium:'1893014436',ranking:'304161623',history:'81843180'};
 function fetchSheet(gid){return new Promise((resolve,reject)=>{const cb='takeoverCb'+Math.random().toString(36).slice(2);const script=document.createElement('script');const timeout=setTimeout(()=>finish(new Error('Zeitüberschreitung beim Laden')),15000);function finish(err,data){clearTimeout(timeout);delete window[cb];script.remove();err?reject(err):resolve(data)}window[cb]=response=>{if(response.status==='error'){finish(new Error(response.errors?.[0]?.detailed_message||'Google Sheets nicht öffentlich abrufbar'));return}const rows=(response.table?.rows||[]).map(row=>(row.c||[]).map(c=>c?.f??c?.v??''));finish(null,rows)};script.onerror=()=>finish(new Error('Google Sheets konnte nicht geladen werden. Bitte die Tabelle unter Datei → Freigeben → Im Web veröffentlichen freigeben.'));script.src='https://docs.google.com/spreadsheets/d/'+SHEET_ID+'/gviz/tq?gid='+gid+'&headers=0&tqx='+encodeURIComponent('out:json;responseHandler:'+cb)+'&t='+Date.now();document.head.appendChild(script)})}
 function at(rows,row,col){return String(rows[row]?.[col]??'').trim()}
-function parseSheets([p,r,h]){return {month:at(p,2,1),positions:[4,5,6].map((i,k)=>({rank:k+1,name:at(p,i,1)==='–'?'':at(p,i,1),points:at(p,i,2),sessions:at(p,i,3)})),awards:[12,13,14,15].map(i=>({title:at(p,i,0),winner:at(p,i,1),value:at(p,i,2),unit:at(p,i,3)})),entries:r.slice(3,13).filter(row=>row[1]).map(row=>({rank:row[0],name:row[1],trainingPoints:row[2],bonusPoints:row[3],points:row[4],sessions:row[5]})).sort((a,b)=>(Number(b.points)||0)-(Number(a.points)||0)||String(a.name).localeCompare(String(b.name))),activities:h.slice(3,203).filter(row=>row[0]&&row[1]).map(row=>({date:row[0],name:row[1],activity:row[2],category:row[3],points:row[4],note:row[5]})),refreshed:new Date().toISOString()}}
+function findRow(rows,pattern){return rows.findIndex(row=>row.some(cell=>pattern.test(String(cell||'').trim())))}
+function parseSheets([p,r,h]){
+ const podiumHeader=findRow(p,/^Platz$/i);
+ const awardHeader=findRow(p,/^Kategorie$/i);
+ const rankHeader=findRow(r,/^Boxer$/i);
+ const historyHeader=findRow(h,/^(Datum|Date)$/i);
+ const podiumStart=podiumHeader>=0?podiumHeader+1:4;
+ const awardStart=awardHeader>=0?awardHeader+1:12;
+ const rankStart=rankHeader>=0?rankHeader+1:3;
+ const historyStart=historyHeader>=0?historyHeader+1:3;
+ const defaults=['👑 Mr. Consistent','🏃 Road King','⚡ The Flash','🥊 The Technician'];
+ const awardRows=p.slice(awardStart,awardStart+4);
+ const awards=defaults.map((title,i)=>({title:awardRows[i]?.[0]||title,winner:awardRows[i]?.[1]||'Noch keine Daten',value:awardRows[i]?.[2]||'–',unit:awardRows[i]?.[3]||''}));
+ return {month:at(p,2,1),positions:p.slice(podiumStart,podiumStart+3).map((row,k)=>({rank:k+1,name:row?.[1]==='–'?'':row?.[1]||'',points:row?.[2]||'–',sessions:row?.[3]||'–'})),awards,
+ entries:r.slice(rankStart).filter(row=>String(row[1]||'').trim()).map(row=>({rank:row[0],name:row[1],trainingPoints:row[2],bonusPoints:row[3],points:row[4],sessions:row[5]})).sort((a,b)=>(Number(b.points)||0)-(Number(a.points)||0)||String(a.name).localeCompare(String(b.name))),
+ activities:h.slice(historyStart).filter(row=>String(row[0]||'').trim()&&String(row[1]||'').trim()).map(row=>({date:row[0],name:row[1],activity:row[2],category:row[3],points:row[4],note:row[5]})),refreshed:new Date().toISOString()};
+}
+
 async function load(){$('status').textContent='Lade aktuelle Ergebnisse …';try{const sheets=await Promise.all([fetchSheet(SHEET_GIDS.podium),fetchSheet(SHEET_GIDS.ranking),fetchSheet(SHEET_GIDS.history)]);render(parseSheets(sheets))}catch(e){$('status').innerHTML='Daten konnten nicht geladen werden. <button class="retry" onclick="load()">Erneut versuchen</button><div class="sub">'+safe(e.message)+'</div>'}}
 load();document.addEventListener('visibilitychange',()=>{if(!document.hidden)load()});
 </script></body></html>
