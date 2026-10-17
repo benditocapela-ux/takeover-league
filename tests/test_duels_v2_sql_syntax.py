@@ -12,6 +12,20 @@ SQL_FILES = [
     "supabase/migrations/010_duels_v2_read_rpc_review.sql",
     "supabase/tests/DUELS_V2_PREFLIGHT_READ_ONLY.sql",
     "supabase/tests/DUELS_V2_LEDGER_AUDIT_READ_ONLY.sql",
+    *[f"supabase/migrations/{i:03d}_{name}.sql" for i,name in [
+        (11,"coach_challenges_v2_schema_review"),
+        (12,"coach_challenges_v2_enrollment_rpc_review"),
+        (13,"coach_challenges_v2_management_rpc_review"),
+        (14,"coach_challenges_v2_withdraw_rpc_review"),
+        (15,"coach_challenges_v2_read_rpc_review"),
+        (16,"coach_challenges_v2_edit_draft_rpc_review"),
+    ]],
+    *[f"supabase/tests/COACH_CHALLENGES_V2_{name}.sql" for name in [
+        "SCHEMA_BEHAVIOR_SMOKE","ENROLLMENT_BEHAVIOR_SMOKE",
+        "MANAGEMENT_BEHAVIOR_SMOKE","WITHDRAW_BEHAVIOR_SMOKE",
+        "READ_BEHAVIOR_SMOKE","EDIT_DRAFT_BEHAVIOR_SMOKE",
+        "AUDIT_READ_ONLY","INTEGRITY_ASSERTIONS_SMOKE","API_PERMISSIONS_SMOKE",
+    ]],
 ]
 
 
