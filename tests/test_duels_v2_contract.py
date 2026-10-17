@@ -73,6 +73,11 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn("SET status='awaiting_reviews',updated_at=v_now", self.invites)
         self.assertIn("WHERE status='active' AND ends_at<=v_now", self.invites)
 
+    def test_acceptance_releases_elapsed_pair_before_activation(self):
+        marker = "-- An earlier duel can have elapsed while this invitation was pending."
+        self.assertIn(marker, self.invites)
+        self.assertLess(self.invites.index(marker), self.invites.index("SET status='active',accepted_at=v_now"))
+
     def test_batch_sql_dollar_quotes_balanced(self):
         self.assertEqual(self.settlement.count('AS $'), 2)
         self.assertEqual(self.settlement.count('END $;'), 2)
