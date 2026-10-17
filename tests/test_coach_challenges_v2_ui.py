@@ -173,8 +173,8 @@ def test_withdrawal_warns_about_no_rejoin_and_requires_confirmation():
 
 def test_mutations_invalidate_previously_started_list_requests():
     html = PAGE.read_text(encoding="utf-8")
-    assert "actionBusy=true;sequence++;el.disabled=true;" in html
-    assert "sequence++;formBusy=true;const control=" in html
+    assert "actionBusy=true;sequence++;$('challengeList').setAttribute('aria-busy','false');el.disabled=true;" in html
+    assert "sequence++;$('challengeList').setAttribute('aria-busy','false');formBusy=true;const control=" in html
     assert "if(current!==sequence)return false" in html
 
 
@@ -190,3 +190,10 @@ def test_manual_refresh_serializes_with_writes_and_other_refreshes():
 def test_initialization_failure_is_shown_instead_of_unhandled_rejection():
     html = PAGE.read_text(encoding='utf-8')
     assert "init().catch(e=>{status('Initialisierung fehlgeschlagen:" in html
+
+
+def test_challenge_refresh_announces_loading_and_clears_stale_busy_state():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "list.setAttribute('aria-busy','true')" in html
+    assert "finally{if(current===sequence)list.setAttribute('aria-busy','false')}" in html
+    assert html.count("$('challengeList').setAttribute('aria-busy','false')") >= 2
