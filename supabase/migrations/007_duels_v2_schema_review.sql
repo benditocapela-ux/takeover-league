@@ -4,8 +4,8 @@
 BEGIN;
 
 -- Feature is opt-in. The application must not expose unfinished RPCs.
-INSERT INTO public.league_feature_flags(feature_key,is_enabled)
-VALUES('duels',false)
+INSERT INTO public.league_feature_flags(feature_key,display_name,is_enabled)
+VALUES('duels','Boxer Duels V2',false)
 ON CONFLICT(feature_key) DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS public.league_duels (
