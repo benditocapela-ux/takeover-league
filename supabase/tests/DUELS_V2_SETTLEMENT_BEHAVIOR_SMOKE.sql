@@ -80,6 +80,21 @@ BEGIN
  IF (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>0 THEN
   RAISE EXCEPTION 'Duplicate scoring minted EXP despite rejection';
  END IF;
+ -- A legacy-import duplicate must be rejected by the same guard.
+ UPDATE public.point_transactions SET category='legacy_import'
+ WHERE id='30000000-0000-0000-0000-000000000008';
+ BEGIN
+  PERFORM public.duel_v2_reconcile(duel);
+  RAISE EXCEPTION 'Legacy duplicate training award was counted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Legacy duplicate training award was counted' THEN RAISE; END IF;
+  IF SQLERRM NOT LIKE 'Duplicate duel scoring transactions%' THEN
+   RAISE EXCEPTION 'Unexpected legacy duplicate error: %',SQLERRM;
+  END IF;
+ END;
+ IF (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>0 THEN
+  RAISE EXCEPTION 'Legacy duplicate scoring minted EXP';
+ END IF;
  DELETE FROM public.point_transactions WHERE id='30000000-0000-0000-0000-000000000008';
  result:=public.duel_v2_reconcile(duel);
  IF result<>'settled' THEN RAISE EXCEPTION 'Expected settled, got %',result; END IF;
