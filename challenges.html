@@ -108,6 +108,7 @@ function renderCards(rows,list){
    notice.textContent='Erneute Anmeldung nach Rückzug derzeit nicht möglich.';article.append(notice);
   }
   if(me.role!=='boxer'&&(c.is_creator||me.role==='admin')){
+   if(c.status==='awaiting_reviews')actions.append(button('Challenge abrechnen',false,async()=>{if(!confirm('Alle Teilnehmer bewertet? Die EXP werden jetzt einmalig vergeben.'))return false;await rpc('coach_challenge_v2_settle_manual',{p_challenge_id:c.id});status('Challenge abgerechnet. EXP-Auszahlungen wurden gespeichert.')}));
    if(c.status==='awaiting_reviews')actions.append(button('Manuell prüfen',true,async()=>{
     reviewChallengeId=c.id;$('reviewChallengeName').textContent=c.title;
     $('reviewForm').reset();$('reviewPanel').classList.remove('hidden');
