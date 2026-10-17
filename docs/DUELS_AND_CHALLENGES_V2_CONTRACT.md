@@ -61,3 +61,10 @@ unimplemented pending explicit goal definitions and release review.
 - Progress previews are read-only and cannot issue points or EXP.
 - Manual goals require an authorized trainer decision and audit trail; reward settlement must be idempotent.
 - Corrections to previously approved training require explicit recalculation rules before activation.
+
+## Manual review decision policy (review-only implementation)
+- A coach may record one approval or rejection per enrolled boxer only after the manual challenge window has ended and its state is `awaiting_reviews`.
+- An explicit reason (5–1000 characters) and reviewer identity are recorded. Repeated or conflicting decisions are rejected rather than overwritten.
+- The owning coach and admins may read the full decision; a boxer may read only their own decision, without the private review reason.
+- Review records are not payouts. The EXP ledger and training point transactions remain unchanged until an independently reviewed settlement path exists.
+- A later appeal or correction policy has not been agreed; do not add an implicit overwrite or EXP adjustment.
