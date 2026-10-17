@@ -53,7 +53,7 @@ def test_draft_edit_uses_prefilled_form_and_can_be_cancelled():
 def test_cancel_confirmation_does_not_trigger_unnecessary_reload():
     html = PAGE.read_text(encoding="utf-8")
     assert "if(!confirm('Diese Challenge wirklich absagen?'))return false;" in html
-    assert "if(changed!==false)await refresh()" in html
+    assert "if(changed!==false){try{await refresh()}" in html
 
 
 def test_challenge_actions_are_serialized():
