@@ -40,6 +40,8 @@ const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable
 const $=id=>document.getElementById(id);
 let me=null,sequence=0,editingId=null,actionBusy=false,formBusy=false,allChallenges=[];
 const labels={draft:'Entwurf',open:'Anmeldung offen',active:'Aktiv',awaiting_reviews:'Wartet auf Freigaben',settled:'Abgeschlossen',cancelled:'Abgesagt'};
+const kindLabels={individual:'Individuell',competition:'Wettbewerb',coach_goal:'Trainerziel'};
+const dateFormatter=new Intl.DateTimeFormat('de-CH',{day:'2-digit',month:'2-digit',year:'numeric',timeZone:'Europe/Zurich'});
 function status(message,error=false){$('status').textContent=message;$('status').className=error?'error':'muted'}
 function button(label,secondary,action){
  const el=document.createElement('button');el.type='button';el.textContent=label;
@@ -71,8 +73,13 @@ function renderCards(rows,list){
   const article=document.createElement('article');article.className='challenge';
   const title=document.createElement('strong');title.textContent=c.title;
   const details=document.createElement('p');
-  details.textContent=(labels[c.status]||c.status)+' · '+c.duration_days+' Tage · '+c.joined_count+' angemeldet';
+  details.textContent=(labels[c.status]||c.status)+' · '+(kindLabels[c.challenge_kind]||c.challenge_kind)+' · '+c.duration_days+' Tage · '+c.joined_count+' angemeldet';
   article.append(title,details);
+  if(c.starts_at&&c.ends_at){
+   const window=document.createElement('p');window.className='muted';
+   window.textContent='Zeitraum: '+dateFormatter.format(new Date(c.starts_at))+' – '+dateFormatter.format(new Date(c.ends_at));
+   article.append(window);
+  }
   if(c.description){const desc=document.createElement('p');desc.textContent=c.description;article.append(desc)}
   if(c.my_enrollment_status){const joined=document.createElement('p');joined.className='muted';joined.textContent='Dein Teilnahmestatus: '+(c.my_enrollment_status==='joined'?'Angemeldet':c.my_enrollment_status==='withdrawn'?'Zurückgezogen':c.my_enrollment_status);article.append(joined)}
   const actions=document.createElement('div');actions.className='actions';
