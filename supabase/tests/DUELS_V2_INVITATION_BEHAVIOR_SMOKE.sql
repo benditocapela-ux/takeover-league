@@ -89,7 +89,8 @@ BEGIN
   expired_duel uuid;
  BEGIN
   expired_duel:=public.duel_v2_invite(a,b,7);
-  UPDATE public.league_duels SET expires_at=now()-interval '1 minute' WHERE id=expired_duel;
+  UPDATE public.league_duels SET invited_at=now()-interval '3 days',
+    expires_at=now()-interval '1 minute' WHERE id=expired_duel;
   PERFORM set_config('test.auth_uid','10000000-0000-0000-0000-0000000000b2',true);
   IF public.duel_v2_respond(expired_duel,true)<>'expired' THEN
    RAISE EXCEPTION 'Expired invitation was accepted';
