@@ -1,4 +1,4 @@
--- REVIEW ONLY. Product policy decision required before production enablement.
+-- REVIEW ONLY. Product policy pending explicit coach approval before production enablement.
 -- Per-challenge manual reward configuration: 25, 50, 100, 150 or 200 EXP.
 -- Approved participant: configured reward_exp; rejected participant: 0 EXP.
 -- These amounts are currently engineering defaults, NOT user-approved policy.
