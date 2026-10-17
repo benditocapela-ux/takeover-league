@@ -235,3 +235,13 @@ def test_goal_progress_preview_is_read_only_and_validated():
     assert "point_transactions" not in source
     assert "awarded_exp" not in source.lower()
     assert "insert into" not in source.lower()
+
+
+def test_manual_review_form_calls_authorized_rpc_without_local_exp_payout():
+    html = (ROOT / "challenges.html").read_text(encoding="utf-8")
+    assert 'id="reviewPanel"' in html
+    assert 'id="reviewReason"' in html
+    assert "coach_challenge_v2_review_manual" in html
+    assert "p_approved:" in html and "p_reason:" in html
+    assert "reviewChallengeId=null" in html
+    assert "point_transactions" not in html
