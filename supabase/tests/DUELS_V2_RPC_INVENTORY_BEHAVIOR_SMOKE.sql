@@ -44,4 +44,18 @@ BEGIN
   RAISE EXCEPTION 'Public review_training must be counted exactly once';
  END IF;
 END $inventory$;
+-- Ensure the inventory detects a second public overload rather than treating
+-- its existence as a single reviewed function.
+CREATE FUNCTION public.review_training(integer) RETURNS void LANGUAGE sql AS 'SELECT NULL::void';
+DO $inventory$
+DECLARE overloads integer;
+BEGIN
+ SELECT count(*) INTO overloads
+ FROM pg_catalog.pg_proc p
+ WHERE p.proname='review_training'
+   AND p.pronamespace='public'::pg_catalog.regnamespace;
+ IF overloads<>2 THEN
+  RAISE EXCEPTION 'All public review_training overloads require inspection';
+ END IF;
+END $inventory$;
 ROLLBACK;
