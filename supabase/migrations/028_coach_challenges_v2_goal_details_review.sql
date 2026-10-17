@@ -12,7 +12,7 @@ BEGIN
  IF NOT EXISTS(SELECT 1 FROM public.league_feature_flags
  WHERE feature_key='coach_challenges' AND is_enabled=true) THEN
  RAISE EXCEPTION 'Coach challenges are disabled'; END IF;
- SELECT * INTO c FROM public.league_coach_challenges WHERE id=p_challenge_id;
+ SELECT * INTO c FROM public.league_coach_challenges WHERE id=p_challenge_id FOR UPDATE;
  IF NOT FOUND THEN RAISE EXCEPTION 'Challenge not found'; END IF;
  IF actor.role<>'admin' AND c.created_by<>actor.id THEN
  RAISE EXCEPTION 'Not challenge owner'; END IF;
