@@ -19,11 +19,13 @@ SQL_FILES = [
         (14,"coach_challenges_v2_withdraw_rpc_review"),
         (15,"coach_challenges_v2_read_rpc_review"),
         (16,"coach_challenges_v2_edit_draft_rpc_review"),
+        (17,"coach_challenges_v2_goal_definition_rpc_review"),
     ]],
     *[f"supabase/tests/COACH_CHALLENGES_V2_{name}.sql" for name in [
         "SCHEMA_BEHAVIOR_SMOKE","ENROLLMENT_BEHAVIOR_SMOKE",
         "MANAGEMENT_BEHAVIOR_SMOKE","WITHDRAW_BEHAVIOR_SMOKE",
         "READ_BEHAVIOR_SMOKE","EDIT_DRAFT_BEHAVIOR_SMOKE",
+        "GOAL_DEFINITION_BEHAVIOR_SMOKE",
         "AUDIT_READ_ONLY","INTEGRITY_ASSERTIONS_SMOKE","API_PERMISSIONS_SMOKE",
     ]],
 ]
