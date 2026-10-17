@@ -68,4 +68,6 @@ def test_goal_definition_requires_coach_and_keeps_payouts_disabled():
     assert "challenge.status<>'draft'" in sql
     assert "challenge.created_by<>actor.id" in sql
     assert "p_target_value<=0" in sql
+    assert "p_metric NOT IN" in sql
+    assert "jogging_km" in sql and "technique_minutes" in sql
     assert "jsonb_build_object" in sql
