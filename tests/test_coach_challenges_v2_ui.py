@@ -90,3 +90,15 @@ def test_stale_challenge_fetch_errors_cannot_override_current_state():
     html = PAGE.read_text(encoding="utf-8")
     assert "catch(error){if(current!==sequence)return false;throw error}" in html
     assert "try{if(await refresh())status('Challenge-Übersicht geladen.')}" in html
+
+
+def test_challenge_filters_are_local_and_preserve_visibility():
+    html = PAGE.read_text(encoding="utf-8")
+    assert 'id="statusFilter"' in html
+    assert 'id="kindFilter"' in html
+    assert "allChallenges.filter(c=>" in html
+    assert "renderCards(rows,list)" in html
+    assert "function renderCards(rows,list){\n for(const c of rows){" in html
+    assert "allChallenges=rows||[];renderChallenges();return true;" in html
+    assert "$('statusFilter').addEventListener('change',renderChallenges)" in html
+    assert "$('kindFilter').addEventListener('change',renderChallenges)" in html
