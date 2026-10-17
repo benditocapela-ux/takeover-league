@@ -44,6 +44,13 @@ ALTER TABLE public.point_transactions ADD CONSTRAINT point_transactions_category
  'training','trainer_bonus','adjustment','legacy_import','automatic_bonus',
  'achievement_exp','duel_exp']::text[]));
 
+-- A payout is uniquely identified by its boxer and canonical duel description.
+-- Enforce this even if a future writer bypasses the reconciliation RPC.
+-- Existing duplicates cause migration failure rather than silent cleanup.
+CREATE UNIQUE INDEX IF NOT EXISTS point_transactions_unique_duel_reward
+ ON public.point_transactions(boxer_id,description)
+ WHERE category='duel_exp';
+
 CREATE OR REPLACE FUNCTION public.duel_v2_reconcile(p_duel_id uuid)
 RETURNS text LANGUAGE plpgsql SECURITY DEFINER SET search_path TO ''
 AS $$
