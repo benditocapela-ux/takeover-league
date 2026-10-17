@@ -45,6 +45,36 @@ WHERE n.nspname='public' AND rel.relname='point_transactions'
  AND con.contype IN ('f','u','p')
 ORDER BY con.conname;
 
+-- Training review/edit RPC definitions are release-critical. Read metadata and
+-- function bodies for manual lock-order inspection; no function is executed.
+-- Compare row locks on profiles, training_submissions and point_transactions
+-- against duel_v2_reconcile (profiles -> duel -> submissions -> payouts).
+SELECT p.proname AS rpc_name,
+       pg_catalog.pg_get_function_identity_arguments(p.oid) AS arguments,
+       pg_catalog.pg_get_functiondef(p.oid) AS definition
+FROM pg_catalog.pg_proc p
+JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace
+WHERE n.nspname='public'
+  AND p.proname IN ('review_training','admin_edit_training',
+                    'admin_edit_training_details')
+ORDER BY p.proname,p.oid;
+
+-- The actual review functions must be found before rollout. Missing rows
+-- here mean the assumed integration cannot be certified.
+WITH required(name) AS (
+ VALUES ('review_training'),('admin_edit_training'),
+        ('admin_edit_training_details')
+)
+SELECT r.name AS required_rpc,
+       count(p.oid) AS deployed_overloads,
+       CASE WHEN count(p.oid)=0 THEN 'MISSING' ELSE 'REVIEW REQUIRED' END AS result
+FROM required r
+LEFT JOIN pg_catalog.pg_proc p ON p.proname=r.name
+LEFT JOIN pg_catalog.pg_namespace n
+ ON n.oid=p.pronamespace AND n.nspname='public'
+WHERE p.oid IS NULL OR n.oid IS NOT NULL
+GROUP BY r.name ORDER BY r.name;
+
 -- Existing role and transaction categories (counts only, no personal data).
 SELECT role,count(*) AS profiles FROM public.profiles GROUP BY role ORDER BY role;
 SELECT category,count(*) AS transactions
