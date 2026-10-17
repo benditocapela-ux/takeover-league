@@ -209,8 +209,16 @@ def test_goal_editor_supports_manual_and_automatic_goals_without_payout():
     assert "if(c.status==='draft')actions.append(button('Ziel festlegen'" in html
     assert "p_challenge_id:goalEditingId" in html
     assert "p_review_mode:$('goalMode').value" in html
-    assert "p_target_value:target" in html
+    assert "p_target_value:target,p_metric:automatic?" in html
     assert "if(formBusy||actionBusy||refreshBusy||!goalEditingId)return;" in html
     assert "if(!Number.isFinite(target)" not in html
     assert "Number.isFinite(target)" in html
     assert "Noch keine EXP-Vergabe." in html
+
+
+def test_automatic_goal_requires_explicit_supported_training_metric():
+    html = PAGE.read_text(encoding="utf-8")
+    assert 'id="goalMetric"' in html
+    assert 'value="jogging_km"' in html
+    assert 'value="technique_minutes"' in html
+    assert "p_metric:automatic?$('goalMetric').value:null" in html
