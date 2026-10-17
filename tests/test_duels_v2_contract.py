@@ -245,6 +245,9 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn("for(const control of actions.querySelectorAll('button'))control.disabled=true", self.ui)
         self.assertIn("finally{for(const control of actions.querySelectorAll('button'))control.disabled=false;}", self.ui)
 
+    def test_training_scores_require_same_boxer_on_submission_and_transaction(self):
+        self.assertIn('t.submission_id=s.id AND t.boxer_id=s.boxer_id', self.settlement)
+
 
 if __name__ == "__main__":
     unittest.main()
