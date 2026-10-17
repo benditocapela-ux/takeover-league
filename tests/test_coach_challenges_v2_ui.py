@@ -102,3 +102,19 @@ def test_challenge_filters_are_local_and_preserve_visibility():
     assert "allChallenges=rows||[];renderChallenges();return true;" in html
     assert "$('statusFilter').addEventListener('change',renderChallenges)" in html
     assert "$('kindFilter').addEventListener('change',renderChallenges)" in html
+
+
+def test_challenge_module_javascript_parses(tmp_path):
+    import shutil
+    import subprocess
+
+    node = shutil.which("node")
+    if not node:
+        import pytest
+        pytest.skip("Node.js unavailable")
+    html = PAGE.read_text(encoding="utf-8")
+    script = html.split('<script type="module">', 1)[1].split('</script>', 1)[0]
+    module = tmp_path / "challenges.mjs"
+    module.write_text(script, encoding="utf-8")
+    result = subprocess.run([node, "--check", str(module)], capture_output=True, text=True)
+    assert result.returncode == 0, result.stderr
