@@ -254,5 +254,15 @@ $('refresh').addEventListener('click',async()=>{
  try{if(await refresh())status('Challenge-Übersicht aktualisiert.')}catch(e){status('Aktualisierung fehlgeschlagen: '+e.message,true)}
  finally{control.disabled=false;refreshBusy=false}
 });
+const testLogout=document.createElement('button');
+testLogout.type='button';testLogout.textContent='Testkonto abmelden';
+testLogout.style.cssText='position:fixed;right:12px;bottom:12px;z-index:100;padding:10px;background:#dfbd77;color:#0b1422;border:0;border-radius:8px;cursor:pointer';
+testLogout.addEventListener('click',async()=>{
+ testLogout.disabled=true;
+ const {error}=await db.auth.signOut();
+ if(error){status('Abmelden fehlgeschlagen: '+error.message,true);testLogout.disabled=false;return}
+ location.replace('./login-test.html');
+});
+document.body.append(testLogout);
 init().catch(e=>{status('Initialisierung fehlgeschlagen: '+(e?.message||'Unbekannter Fehler'),true)});
 </script></body></html>
