@@ -1,9 +1,17 @@
-# Test schema bootstrap checklist
+# Test schema bootstrap — completed prerequisites and remaining gates
 
-Test project: cfgdvcccsqwfjajuizsr. Production: iqarjivcrddcixrvqbfb (do not modify).
+Test project: `cfgdvcccsqwfjajuizsr`. Production: `iqarjivcrddcixrvqbfb` (do not modify).
 
-Migration 001 is installed in test. Migration 002 requires public.achievement_definitions, which is absent. Migration 003/006 also require public.boxer_achievements and public.league_feature_flags, both absent. Migration 007 and 011 require league_feature_flags. The test point_transactions category check must be reviewed before EXP category changes in 002, 009, and 027.
+## Completed in the isolated test project
+- Installed migration 001 and the reviewed test-only missing-base-tables bootstrap (`supabase/preflight/TEST_ONLY_MISSING_BASE_TABLES.sql`), without copying production users.
+- Installed migration 002, integrated 006, 007–023 and 025–028. 003–005 are superseded by 006; 024 is documentation/comments only.
+- Confirmed 32 achievement definitions, 32 V2 rules, 17 challenge RPCs, RLS on created tables, no direct challenge-table API grants, anonymous EXECUTE denied, and feature flags disabled.
+- Confirmed the test and production `profiles.role` checks both permit `boxer` and `admin` only.
+- Existing `league_test_*` fixtures retained.
 
-Reconstruct the three missing base tables using reviewed schema-only DDL and RLS, without importing production user data. Preserve existing league_test_* fixtures. Keep achievements, duels and coach_challenges disabled. Apply 002 in test only after prerequisite review, then test each migration and stop on the first failure.
+## Not yet completed
+- Real Supabase Auth admin/boxer integration tests: the test project has zero linked profiles.
+- End-to-end manual challenge review, approved/rejected EXP payouts and idempotency using real signed-in test users.
+- Production schema-drift and backup/restore rehearsal, production migration plan and explicit owner authorization.
 
-No production SQL is authorized. Do not treat green GitHub CI as a substitute for real Supabase integration testing.
+**Do not replay the full historical migration chain into production.** Green CI and schema presence are not proof of production readiness. See `docs/CHALLENGES_TEST_RELEASE_GATE_2026-10-18.md`.
