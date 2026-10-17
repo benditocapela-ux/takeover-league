@@ -15,6 +15,8 @@ BEGIN
  ('training','trainer_bonus','adjustment','legacy_import','automatic_bonus',
  'achievement_exp','duel_exp','challenge_exp')) THEN
  RAISE EXCEPTION 'Unexpected existing transaction category'; END IF;
+ IF EXISTS(SELECT 1 FROM public.point_transactions WHERE category='challenge_exp') THEN
+ RAISE EXCEPTION 'Existing challenge payouts require pre-migration audit'; END IF;
 END $preflight$;
 ALTER TABLE public.point_transactions DROP CONSTRAINT point_transactions_category_check;
 ALTER TABLE public.point_transactions ADD CONSTRAINT point_transactions_category_check
