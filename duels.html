@@ -144,7 +144,7 @@ $('inviteForm').addEventListener('submit',async e=>{
 });
 $('refresh').addEventListener('click',async()=>{
  const button=$('refresh');button.disabled=true;
- try{await refresh();setStatus('Duellübersicht aktualisiert.')}catch(err){setStatus('Aktualisierung fehlgeschlagen: '+err.message,true)}
+ try{const updated=await refresh();if(updated!==false)setStatus('Duellübersicht aktualisiert.')}catch(err){setStatus('Aktualisierung fehlgeschlagen: '+err.message,true)}
  finally{button.disabled=false}
 });
 // Stable cursor prevents rechecking the same 100 duels on each batch.
