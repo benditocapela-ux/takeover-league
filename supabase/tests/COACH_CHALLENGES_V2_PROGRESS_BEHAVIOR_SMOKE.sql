@@ -1,5 +1,10 @@
 -- Disposable PostgreSQL only: execute automatic progress against real synthetic submissions.
 BEGIN;
+INSERT INTO public.profiles(id,auth_user_id,display_name,role,is_active) VALUES
+('f0000000-0000-0000-0000-000000000001','f1000000-0000-0000-0000-000000000001','Progress coach','coach',true),
+('f0000000-0000-0000-0000-000000000002','f1000000-0000-0000-0000-000000000002','Other coach','coach',true),
+('f0000000-0000-0000-0000-000000000003','f1000000-0000-0000-0000-000000000003','Progress boxer','boxer',true);
+UPDATE public.league_feature_flags SET is_enabled=true WHERE feature_key='coach_challenges';
 DO $test$
 DECLARE cid uuid; coach_id uuid := 'f0000000-0000-0000-0000-000000000001';
  boxer_id uuid := 'f0000000-0000-0000-0000-000000000003'; v numeric;
