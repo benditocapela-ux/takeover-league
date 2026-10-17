@@ -168,6 +168,12 @@ class DuelContractTests(unittest.TestCase):
             self.settlement.index("DROP CONSTRAINT point_transactions_category_check"),
         )
 
+    def test_duel_payout_ledger_never_accepts_league_points(self):
+        self.assertIn("AND t.points=0 AND t.exp=old_exp", self.settlement)
+        self.assertIn("VALUES(boxer,0,target_exp,'duel_exp'", self.settlement)
+        audit = (ROOT / "supabase/tests/DUELS_V2_LEDGER_AUDIT_READ_ONLY.sql").read_text(encoding="utf-8")
+        self.assertIn("t.points IS DISTINCT FROM 0", audit)
+
     def test_ledger_claim_without_transaction_cannot_issue_second_reward(self):
         self.assertIn("IF old_exp IS DISTINCT FROM 0 THEN", self.settlement)
         self.assertIn("ledger claims EXP without transaction", self.settlement)
