@@ -248,6 +248,14 @@ class DuelContractTests(unittest.TestCase):
     def test_training_scores_require_same_boxer_on_submission_and_transaction(self):
         self.assertIn('t.submission_id=s.id AND t.boxer_id=s.boxer_id', self.settlement)
 
+    def test_preflight_exposes_real_training_review_function_definitions(self):
+        self.assertIn("pg_catalog.pg_get_functiondef(p.oid)", self.preflight)
+        for function in ("review_training", "admin_edit_training", "admin_edit_training_details"):
+            with self.subTest(function=function):
+                self.assertIn(function, self.preflight)
+        self.assertIn("REVIEW REQUIRED", self.preflight)
+        self.assertIn("MISSING", self.preflight)
+
 
 if __name__ == "__main__":
     unittest.main()
