@@ -57,7 +57,7 @@ AS $$
 DECLARE
  d public.league_duels%ROWTYPE;
  actor public.profiles%ROWTYPE;
- current_time timestamptz := clock_timestamp();
+ v_clock timestamptz := clock_timestamp();
  actor_found boolean;
  p1 integer;
  p2 integer;
@@ -86,11 +86,11 @@ BEGIN
  SELECT * INTO d FROM public.league_duels WHERE id=p_duel_id FOR UPDATE;
  IF NOT FOUND THEN RAISE EXCEPTION 'Duel not found'; END IF;
  -- A lock wait may cross the duel end timestamp; decide using fresh time.
- current_time:=clock_timestamp();
+ v_clock:=clock_timestamp();
  IF d.status NOT IN ('active','awaiting_reviews','settled') THEN
   RAISE EXCEPTION 'Duel not active or completed';
  END IF;
- IF d.ends_at>current_time THEN RETURN 'in_progress'; END IF;
+ IF d.ends_at>v_clock THEN RETURN 'in_progress'; END IF;
 
  -- Lock the qualifying training submissions before counting and scoring.
  -- This serializes concurrent review/edit updates against settlement, so a
@@ -116,7 +116,7 @@ BEGIN
   -- pending submissions are reviewed and a coach reconciles again.
   IF d.status='settled' THEN RETURN 'pending_correction'; END IF;
   IF d.status<>'awaiting_reviews' THEN
-   UPDATE public.league_duels SET status='awaiting_reviews',updated_at=current_time
+   UPDATE public.league_duels SET status='awaiting_reviews',updated_at=v_clock
    WHERE id=d.id;
    INSERT INTO public.league_duel_events(duel_id,event_type,payload)
    VALUES(d.id,'awaiting_reviews',pg_catalog.jsonb_build_object('pending',pending_count));
@@ -142,10 +142,10 @@ BEGIN
 
  existing_status:=d.status;
  UPDATE public.league_duels
- SET status='settled',settled_at=COALESCE(settled_at,current_time),
+ SET status='settled',settled_at=COALESCE(settled_at,v_clock),
      challenger_score=p1,opponent_score=p2,
      winner_id=CASE WHEN p1=p2 THEN NULL WHEN p1>p2 THEN d.challenger_id ELSE d.opponent_id END,
-     updated_at=current_time
+     updated_at=v_clock
  WHERE id=d.id;
 
  FOREACH boxer IN ARRAY ARRAY[d.challenger_id,d.opponent_id] LOOP
@@ -189,7 +189,7 @@ BEGIN
           (d.ends_at AT TIME ZONE 'Europe/Zurich')::date,actor.id)
    RETURNING id INTO new_tx;
    UPDATE public.league_duel_exp_ledger
-   SET transaction_id=new_tx,awarded_exp=target_exp,updated_at=current_time
+   SET transaction_id=new_tx,awarded_exp=target_exp,updated_at=v_clock
    WHERE duel_id=d.id AND boxer_id=boxer;
   ELSIF old_exp IS NULL THEN
    RAISE EXCEPTION 'Duel reward ledger has NULL EXP for duel % boxer %',d.id,boxer;
@@ -208,7 +208,7 @@ BEGIN
     RAISE EXCEPTION 'Duel reward transaction missing or mismatched for duel % boxer %',d.id,boxer;
    END IF;
    UPDATE public.league_duel_exp_ledger
-   SET awarded_exp=target_exp,updated_at=current_time
+   SET awarded_exp=target_exp,updated_at=v_clock
    WHERE duel_id=d.id AND boxer_id=boxer;
   END IF;
  END LOOP;
