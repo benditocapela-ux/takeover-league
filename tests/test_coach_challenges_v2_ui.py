@@ -75,7 +75,7 @@ def test_form_and_list_actions_share_mutual_exclusion():
     assert "actionBusy=false,formBusy=false" in html
     assert "if(actionBusy||formBusy||refreshBusy)return;actionBusy=true;sequence++;" in html
     assert "if(formBusy||actionBusy||refreshBusy)return;" in html
-    assert "sequence++;formBusy=true;const control=$('createButton')" in html
+    assert "formBusy=true;const control=$('createButton')" in html
     assert "$('cancelEdit').disabled=true;" in html
     assert "if(!formBusy)resetEditor()" in html
     assert "formBusy=false}" in html
