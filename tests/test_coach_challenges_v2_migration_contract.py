@@ -271,3 +271,9 @@ def test_settled_challenge_retry_requires_nonempty_joined_roster():
     smoke = (MIGRATIONS.parent / "tests/COACH_CHALLENGES_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql").read_text(encoding="utf-8")
     assert "IF NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_entries" in sql
     assert "Settled empty participant roster accepted" in smoke
+
+
+def test_draft_goal_reader_locks_challenge_before_status_check():
+    sql = (MIGRATIONS / "028_coach_challenges_v2_goal_details_review.sql").read_text(encoding="utf-8")
+    assert "WHERE id=p_challenge_id FOR UPDATE" in sql
+    assert sql.index("WHERE id=p_challenge_id FOR UPDATE") < sql.index("IF c.status<>'draft'")
