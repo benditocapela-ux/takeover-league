@@ -39,3 +39,19 @@ This document is a checklist, not authorization to execute SQL, deploy, merge, o
 - Automatic challenge progress is read-only; automatic payout is not implemented or authorized.
 - Manual challenge payout is prepared in review-only migration 027 and depends on confirmed reward policy.
 - Reward and review outcomes must be validated by the owner before any real-world usage.
+
+## First production SQL gate — exact handoff
+
+Current release candidate: **not approved for production**. Before issuing an all-caps instruction to run SQL, collect and record the owner's decisions above and complete the following steps in order:
+
+1. Freeze the intended Git commit and verify that all four GitHub workflows are green for that exact SHA.
+2. Obtain a live Supabase schema inventory using **read-only** queries only after the owner authorizes that action; compare tables, check constraints, RLS policies, grants, extensions and migration history against the reviewed migration chain.
+3. Confirm backups, restore access, responsible operator and a rollback plan appropriate for additive schema changes and financial/EXP records.
+4. Reconcile any discrepancies found in the live inventory and rerun isolated PostgreSQL tests on the revised migrations.
+5. Obtain explicit owner confirmation of the manual EXP reward and rejection policy, withdrawal/rejoin behavior, and disabled automatic settlement.
+6. Present the first exact SQL script, its expected output, stop conditions and verification steps **before** requesting execution. Never combine unrelated migrations into an unreviewed bulk instruction.
+7. Only after these gates and explicit authorization, tell the owner in **ALL CAPS** that the first SQL is ready to execute. A green workflow alone does not authorize that message.
+
+### Stop conditions
+
+Stop without writing to production if the read-only inventory shows an unknown schema version, an unexpected point transaction category, existing challenge payout records, an incompatible category check constraint, or missing backup/restore arrangements. Never infer production readiness from synthetic fixtures.
