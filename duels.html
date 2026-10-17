@@ -24,7 +24,7 @@ button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#263850;colo
 <form id="inviteForm"><div id="challengerField" class="hidden"><label for="challenger">Herausforderer</label><select id="challenger"><option value="">Boxer wählen</option></select></div><label for="opponent">Gegner</label><select id="opponent" required><option value="">Boxer wählen</option></select>
 <label for="duration">Dauer</label><select id="duration"><option value="7">7 Tage</option><option value="14">14 Tage</option></select>
 <p><button id="inviteButton" type="submit">Duell anfragen</button></p></form></section>
-<section class="card"><div class="line"><h2>Meine Duelle</h2><button id="refresh" class="secondary" type="button">Aktualisieren</button></div>
+<section class="card"><div class="line"><h2>Meine Duelle</h2><div class="actions"><button id="reconcileDue" class="secondary hidden" type="button">Abgelaufene Duelle abrechnen</button><button id="refresh" class="secondary" type="button">Aktualisieren</button></div></div>
 <div id="duelList" aria-live="polite">Wird geladen …</div></section>
 </div></main>
 <script type="module">
@@ -95,7 +95,7 @@ async function init(){
  if(r.error){setStatus('Duell-Funktion ist noch nicht verfügbar: '+r.error.message,true);return}
  boxers=r.data||[];
  const select=$('opponent'),challengerSelect=$('challenger');
- if(me.role!=='boxer')$('challengerField').classList.remove('hidden');
+ if(me.role!=='boxer'){$('challengerField').classList.remove('hidden');$('reconcileDue').classList.remove('hidden')}
  for(const b of boxers.filter(b=>b.id!==me.id)){
   const option=document.createElement('option');option.value=b.id;option.textContent=b.display_name;select.append(option);
  }
@@ -118,5 +118,18 @@ $('inviteForm').addEventListener('submit',async e=>{
  finally{$('inviteButton').disabled=false}
 });
 $('refresh').addEventListener('click',refresh);
+$('reconcileDue').addEventListener('click',async()=>{
+ const button=$('reconcileDue');button.disabled=true;
+ try{
+  const result=await db.rpc('duel_v2_reconcile_due');
+  if(result.error)throw result.error;
+  const rows=result.data||[];
+  const completed=rows.filter(r=>r.outcome==='settled').length;
+  const waiting=rows.filter(r=>r.outcome==='awaiting_reviews').length;
+  setStatus(completed+' Duelle abgerechnet, '+waiting+' warten auf Freigaben.');
+  await refresh();
+ }catch(err){setStatus('Sammelauswertung fehlgeschlagen: '+err.message,true)}
+ finally{button.disabled=false}
+});
 init();
 </script></body></html>
