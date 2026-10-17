@@ -32,6 +32,11 @@ BEGIN
  IF NOT FOUND OR actor.role NOT IN ('admin','coach') THEN
   RAISE EXCEPTION 'Only a coach may reconcile duels';
  END IF;
+ -- Lock boxer profiles before the duel row, matching invite/respond.
+ SELECT * INTO d FROM public.league_duels WHERE id=p_duel_id;
+ IF NOT FOUND THEN RAISE EXCEPTION 'Duel not found'; END IF;
+ PERFORM 1 FROM public.profiles
+ WHERE id IN (d.challenger_id,d.opponent_id) ORDER BY id FOR UPDATE;
  SELECT * INTO d FROM public.league_duels WHERE id=p_duel_id FOR UPDATE;
  IF NOT FOUND THEN RAISE EXCEPTION 'Duel not found'; END IF;
  IF d.status NOT IN ('active','awaiting_reviews','settled') THEN
