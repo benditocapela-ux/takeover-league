@@ -338,3 +338,13 @@ def test_test_preview_matches_production_challenge_logic():
     assert "coach_challenge_v2_settle_manual" in preview
     assert "coach_challenge_v2_review_manual" in preview
     assert "flag.data?.is_enabled!==true" in preview
+
+
+def test_isolated_test_auth_requires_secure_origin():
+    root = PAGE.parent
+    for filename in ("login-test.html", "challenges-test.html"):
+        html = (root / filename).read_text(encoding="utf-8")
+        assert "location.protocol!=='https:'" in html
+        assert "location.hostname!=='localhost'" in html
+        assert "location.hostname!=='127.0.0.1'" in html
+        assert "throw Error('Insecure test" in html
