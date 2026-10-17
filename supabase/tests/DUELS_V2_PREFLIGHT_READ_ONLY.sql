@@ -114,6 +114,28 @@ FROM (
  GROUP BY submission_id HAVING count(*)>1
 ) duplicates;
 
+-- Approved training with no matching awarded transaction cannot score in duels.
+-- Grouped counters only; verify whether these are expected historical records.
+SELECT count(*) AS approved_submissions_without_scoring_transaction
+FROM public.training_submissions s
+WHERE s.status='approved'
+  AND NOT EXISTS (
+   SELECT 1 FROM public.point_transactions t
+   WHERE t.submission_id=s.id AND t.boxer_id=s.boxer_id
+     AND t.category IN ('training','legacy_import')
+  );
+
+-- Existing adjustment transactions may be used by deployed edit RPCs.
+-- Inspect the real edit functions before deciding whether/how corrections
+-- should affect duel scores. Do not include adjustment points blindly.
+SELECT t.category,count(*) AS linked_transactions
+FROM public.point_transactions t
+JOIN public.training_submissions s ON s.id=t.submission_id
+WHERE s.status='approved'
+  AND t.boxer_id=s.boxer_id
+  AND t.category NOT IN ('training','legacy_import','duel_exp')
+GROUP BY t.category ORDER BY t.category;
+
 -- Existing role and transaction categories (counts only, no personal data).
 SELECT role,count(*) AS profiles FROM public.profiles GROUP BY role ORDER BY role;
 SELECT category,count(*) AS transactions
