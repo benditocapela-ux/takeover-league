@@ -106,7 +106,8 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn("END $$;", self.settlement)
 
     def test_paid_duel_is_not_reopened_for_pending_review(self):
-        self.assertIn("IF d.status='settled' THEN RETURN 'awaiting_reviews'; END IF;", self.settlement)
+        self.assertIn("IF d.status='settled' THEN RETURN 'pending_correction'; END IF;", self.settlement)
+        self.assertIn("result.data==='pending_correction'", self.ui)
 
     def test_coach_can_explicitly_recheck_settled_duels(self):
         self.assertIn("p_include_settled boolean DEFAULT false", self.settlement)
