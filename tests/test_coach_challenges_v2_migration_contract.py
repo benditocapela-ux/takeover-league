@@ -306,3 +306,10 @@ def test_settled_challenge_validates_goal_metadata():
     assert "c.goal_spec->>'version' IS DISTINCT FROM '1'" in sql
     assert "pg_catalog.btrim(c.goal_spec->>'goal_text')" in sql
     assert "Empty settled challenge goal accepted" in smoke
+
+
+def test_first_challenge_settlement_validates_goal_metadata():
+    sql = (MIGRATIONS / "027_coach_challenges_v2_manual_settlement_review.sql").read_text(encoding="utf-8")
+    smoke = (MIGRATIONS.parent / "tests/COACH_CHALLENGES_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql").read_text(encoding="utf-8")
+    assert sql.count("c.goal_spec->>'version' IS DISTINCT FROM '1'") >= 2
+    assert "Invalid first-settlement goal accepted" in smoke
