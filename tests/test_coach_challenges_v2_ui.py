@@ -317,3 +317,10 @@ def test_isolated_preview_never_uses_production_auth_or_redirect():
     assert "signInWithPassword" in login
     assert "signUp(" not in login
     assert "sb_secret_" not in login + challenge
+
+    assert 'data-environment="test"' in challenge
+    assert 'TEST ONLY</span>' in challenge
+    assert '<a href="./index.html">' not in challenge
+    assert '<a href="./duels.html">' not in challenge
+    assert "db.auth.signOut()" in challenge
+    assert "location.replace('./login-test.html')" in challenge
