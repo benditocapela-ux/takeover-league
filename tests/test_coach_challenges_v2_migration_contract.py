@@ -16,6 +16,9 @@ FILES = {
         (18, "coach_challenges_v2_progress_rpc_review"),
         (19, "coach_challenges_v2_manual_review_rpc_review"),
         (20, "coach_challenges_v2_review_read_rpc_review"),
+        (21, "coach_challenges_v2_review_candidates_rpc_review"),
+        (22, "coach_challenges_v2_activation_rpc_review"),
+        (23, "coach_challenges_v2_begin_reviews_rpc_review"),
     )
 }
 
@@ -50,6 +53,9 @@ def test_all_challenge_rpcs_are_locked_down():
         18: ("coach_challenge_v2_progress",),
         19: ("coach_challenge_v2_review_manual",),
         20: ("coach_challenge_v2_review_status",),
+        21: ("coach_challenge_v2_review_candidates",),
+        22: ("coach_challenge_v2_activate",),
+        23: ("coach_challenge_v2_begin_reviews",),
     }
     for migration, names in functions.items():
         sql = FILES[migration]
@@ -65,7 +71,7 @@ def test_no_challenge_payout_or_activation_implemented_without_goals():
     assert "INSERT INTO public.point_transactions" not in combined
     assert "UPDATE public.point_transactions" not in combined
     assert "INSERT INTO public.league_coach_challenge_exp_ledger" not in combined
-    assert "status='active'" not in combined
+    assert "INSERT INTO public.point_transactions" not in combined
 
 
 def test_goal_definition_requires_coach_and_keeps_payouts_disabled():
@@ -105,3 +111,33 @@ def test_review_status_limits_boxers_to_own_decision_and_hides_reason():
     assert "THEN NULL::text ELSE v.reason" in sql
     assert "c.created_by<>actor.id" in sql
     assert "INSERT INTO" not in sql and "UPDATE public." not in sql
+
+
+def test_activation_requires_goal_enrollment_owner_and_row_lock():
+    sql = FILES[22]
+    assert "FOR UPDATE" in sql
+    assert "c.created_by<>actor.id" in sql
+    assert "c.status<>'open'" in sql
+    assert "c.goal_spec IS NULL" in sql
+    assert "status='joined'" in sql
+    assert "v_now+(duration_days * interval '1 day')" in sql
+    assert "Automatic goal settlement is not implemented" in sql
+    assert "INSERT INTO public.point_transactions" not in sql
+
+
+def test_review_transition_requires_expiry_and_owner():
+    sql = FILES[23]
+    assert "FOR UPDATE" in sql
+    assert "c.created_by<>actor.id" in sql
+    assert "c.status<>'active'" in sql
+    assert "c.ends_at>pg_catalog.clock_timestamp()" in sql
+    assert "status='awaiting_reviews'" in sql
+
+
+def test_candidate_roster_only_for_creator_and_unreviewed_joined_boxers():
+    sql = FILES[21]
+    assert "challenge.created_by<>actor.id" in sql
+    assert "challenge.status<>'awaiting_reviews'" in sql
+    assert "e.status='joined'" in sql
+    assert "NOT EXISTS" in sql
+    assert "league_coach_challenge_reviews" in sql
