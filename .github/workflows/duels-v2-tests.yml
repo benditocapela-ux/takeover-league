@@ -6,6 +6,7 @@ on:
       - develop/takeover-league-2-foundation
     paths:
       - 'duels.html'
+      - 'login.html'
       - 'supabase/migrations/007_duels_v2_schema_review.sql'
       - 'supabase/migrations/008_duels_v2_invitation_rpc_review.sql'
       - 'supabase/migrations/009_duels_v2_settlement_review.sql'
