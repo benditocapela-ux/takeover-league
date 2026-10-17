@@ -159,6 +159,17 @@ BEGIN
  UPDATE public.point_transactions SET category='challenge_exp'
  WHERE category='adjustment' AND description='Challenge reward: '||cid::text
  AND boxer_id='e0000000-0000-0000-0000-000000000042';
+ -- A settled challenge with an impossible start/end clock is corrupt.
+ UPDATE public.league_coach_challenges SET starts_at=ends_at WHERE id=cid;
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(cid);
+  RAISE EXCEPTION 'Invalid settled challenge clock accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Invalid settled challenge clock accepted' THEN RAISE; END IF;
+  IF SQLERRM<>'Settled challenge metadata integrity mismatch' THEN RAISE; END IF;
+ END;
+ UPDATE public.league_coach_challenges
+ SET starts_at=ends_at-interval '7 days' WHERE id=cid;
  -- Settlement cannot predate the challenge deadline.
  UPDATE public.league_coach_challenges SET settled_at=ends_at-interval '1 second'
  WHERE id=cid;
