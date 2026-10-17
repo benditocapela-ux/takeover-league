@@ -61,5 +61,29 @@ BEGIN
  IF (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>4 THEN
   RAISE EXCEPTION 'Cursor pagination minted duplicate rewards';
  END IF;
+ -- A due duel with a timely pending submission stays unpaid until review.
+ INSERT INTO public.league_duels(challenger_id,opponent_id,created_by,duration_days,status,accepted_at,ends_at)
+ VALUES ('00000000-0000-0000-0000-0000000000a1','00000000-0000-0000-0000-0000000000e5',
+         '00000000-0000-0000-0000-0000000000c3',7,'active',
+         now()-interval '8 days',now()-interval '1 day')
+ RETURNING id INTO ended1;
+ INSERT INTO public.training_submissions(id,boxer_id,training_date,status,created_at)
+ VALUES ('20000000-0000-0000-0000-000000000099',
+         '00000000-0000-0000-0000-0000000000a1',current_date-3,
+         'pending',now()-interval '3 days');
+ SELECT count(*) INTO batch_count FROM public.duel_v2_reconcile_due();
+ IF batch_count<>1 OR
+    (SELECT status FROM public.league_duels WHERE id=ended1)<>'awaiting_reviews'
+    OR (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>4 THEN
+  RAISE EXCEPTION 'Batch must defer pending-review duel without paying rewards';
+ END IF;
+ UPDATE public.training_submissions SET status='rejected'
+ WHERE id='20000000-0000-0000-0000-000000000099';
+ SELECT count(*) INTO batch_count FROM public.duel_v2_reconcile_due();
+ IF batch_count<>1 OR
+    (SELECT status FROM public.league_duels WHERE id=ended1)<>'settled'
+    OR (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>6 THEN
+  RAISE EXCEPTION 'Batch did not settle newly reviewed duel exactly once';
+ END IF;
 END $test$;
 ROLLBACK;
