@@ -15,6 +15,7 @@ FILES = {
         (17, "coach_challenges_v2_goal_definition_rpc_review"),
         (18, "coach_challenges_v2_progress_rpc_review"),
         (19, "coach_challenges_v2_manual_review_rpc_review"),
+        (20, "coach_challenges_v2_review_read_rpc_review"),
     )
 }
 
@@ -48,6 +49,7 @@ def test_all_challenge_rpcs_are_locked_down():
         17: ("coach_challenge_v2_set_goal",),
         18: ("coach_challenge_v2_progress",),
         19: ("coach_challenge_v2_review_manual",),
+        20: ("coach_challenge_v2_review_status",),
     }
     for migration, names in functions.items():
         sql = FILES[migration]
@@ -95,3 +97,11 @@ def test_manual_review_is_private_audited_and_never_pays_exp():
     assert "Review already recorded" in sql
     assert "c.status<>'awaiting_reviews'" in sql
     assert "INSERT INTO public.point_transactions" not in sql
+
+
+def test_review_status_limits_boxers_to_own_decision_and_hides_reason():
+    sql = FILES[20]
+    assert "v.boxer_id=actor.id" in sql
+    assert "THEN NULL::text ELSE v.reason" in sql
+    assert "c.created_by<>actor.id" in sql
+    assert "INSERT INTO" not in sql and "UPDATE public." not in sql
