@@ -47,7 +47,9 @@ function button(label,secondary,action){
 async function rpc(name,args){const r=await db.rpc(name,args);if(r.error)throw r.error;return r.data}
 async function refresh(){
  const current=++sequence;
- const rows=await rpc('coach_challenge_v2_list');
+ let rows;
+ try{rows=await rpc('coach_challenge_v2_list')}
+ catch(error){if(current!==sequence)return false;throw error}
  if(current!==sequence)return false;
  const list=$('challengeList');list.replaceChildren();
  if(!rows?.length){list.textContent='Noch keine sichtbaren Challenges.';return true}
@@ -97,7 +99,7 @@ async function init(){
  if(flag.error||flag.data?.is_enabled!==true){status('Coach Challenges sind noch nicht freigeschaltet.');return}
  if(me.role!=='boxer')$('coachPanel').classList.remove('hidden');
  $('app').classList.remove('hidden');
- try{await refresh();status('Challenge-Übersicht geladen.')}catch(e){status('Challenges konnten nicht geladen werden: '+e.message,true)}
+ try{if(await refresh())status('Challenge-Übersicht geladen.')}catch(e){status('Challenges konnten nicht geladen werden: '+e.message,true)}
 }
 function resetEditor(){
  editingId=null;$('createForm').reset();
