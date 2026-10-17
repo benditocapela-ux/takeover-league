@@ -146,6 +146,7 @@ $('refresh').addEventListener('click',async()=>{
 });
 // Stable cursor prevents rechecking the same 100 duels on each batch.
 const batchCursors={unfinished:null,all:null};
+let batchRunning=false;
 async function reconcileBatches(includeSettled){
  const mode=includeSettled?'all':'unfinished';
  let cursor=batchCursors[mode],checked=0,settled=0,waiting=0,corrections=0;
@@ -164,22 +165,26 @@ async function reconcileBatches(includeSettled){
  return {checked,settled,waiting,corrections,more:true};
 }
 $('reconcileDue').addEventListener('click',async()=>{
- const button=$('reconcileDue');button.disabled=true;
+ if(batchRunning)return;
+ batchRunning=true;
+ const button=$('reconcileDue');button.disabled=true;$('recheckSettled').disabled=true;
  try{
   const r=await reconcileBatches(false);
   setStatus(r.settled+' Duelle abgerechnet, '+(r.waiting+r.corrections)+' warten auf Freigaben.'+(r.more?' Weitere Duelle vorhanden; erneut ausführen.':''));
   await refresh();
  }catch(err){setStatus('Sammelauswertung fehlgeschlagen: '+err.message,true)}
- finally{button.disabled=false}
+ finally{button.disabled=false;$('recheckSettled').disabled=false;batchRunning=false}
 });
 $('recheckSettled').addEventListener('click',async()=>{
- const button=$('recheckSettled');button.disabled=true;
+ if(batchRunning)return;
+ batchRunning=true;
+ const button=$('recheckSettled');button.disabled=true;$('reconcileDue').disabled=true;
  try{
   const r=await reconcileBatches(true);
   setStatus(r.checked+' Duelle geprüft, '+r.corrections+' Nachkorrekturen warten auf Freigaben.'+(r.more?' Weitere Duelle vorhanden; erneut ausführen.':''));
   await refresh();
  }catch(err){setStatus('Nachprüfung fehlgeschlagen: '+err.message,true)}
- finally{button.disabled=false}
+ finally{button.disabled=false;$('reconcileDue').disabled=false;batchRunning=false}
 });
 init();
 </script></body></html>
