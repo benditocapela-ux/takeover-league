@@ -28,6 +28,7 @@ on:
       - 'supabase/tests/COACH_CHALLENGES_V2_READ_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_EDIT_DRAFT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_GOAL_DEFINITION_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_PROGRESS_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_AUDIT_READ_ONLY.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_INTEGRITY_ASSERTIONS_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_INVALID_LEDGER_FIXTURE.sql'
@@ -61,6 +62,7 @@ on:
       - 'supabase/tests/COACH_CHALLENGES_V2_READ_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_EDIT_DRAFT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_GOAL_DEFINITION_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_PROGRESS_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_AUDIT_READ_ONLY.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_INTEGRITY_ASSERTIONS_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_INVALID_LEDGER_FIXTURE.sql'
@@ -133,6 +135,8 @@ jobs:
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_GOAL_DEFINITION_BEHAVIOR_SMOKE.sql
       - name: Apply read-only automatic challenge progress RPC in disposable database
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/018_coach_challenges_v2_progress_rpc_review.sql
+      - name: Exercise automatic challenge progress against approved training
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_PROGRESS_BEHAVIOR_SMOKE.sql
       - name: Verify challenge RPC grants and API table isolation
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_API_PERMISSIONS_SMOKE.sql
       - name: Audit coach challenge integrity in disposable database
