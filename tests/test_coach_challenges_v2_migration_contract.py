@@ -284,3 +284,10 @@ def test_settled_challenge_rejects_null_payout_description():
     smoke = (MIGRATIONS.parent / "tests/COACH_CHALLENGES_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql").read_text(encoding="utf-8")
     assert "t.description IS DISTINCT FROM 'Challenge reward: '" in sql
     assert "Missing payout description accepted" in smoke
+
+
+def test_settled_challenge_rejects_changed_exp_category():
+    sql = (MIGRATIONS / "027_coach_challenges_v2_manual_settlement_review.sql").read_text(encoding="utf-8")
+    smoke = (MIGRATIONS.parent / "tests/COACH_CHALLENGES_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql").read_text(encoding="utf-8")
+    assert "t.category IS DISTINCT FROM 'challenge_exp'" in sql
+    assert "Changed payout category accepted" in smoke
