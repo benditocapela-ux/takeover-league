@@ -21,6 +21,7 @@ def test_challenge_actions_only_use_authorized_rpcs():
         "coach_challenge_v2_withdraw",
         "coach_challenge_v2_manage",
         "coach_challenge_v2_edit_draft",
+        "coach_challenge_v2_set_goal",
     ):
         assert rpc in html
     assert ".from('league_coach_challenges').insert" not in html
@@ -197,3 +198,19 @@ def test_challenge_refresh_announces_loading_and_clears_stale_busy_state():
     assert "list.setAttribute('aria-busy','true')" in html
     assert "finally{if(current===sequence)list.setAttribute('aria-busy','false')}" in html
     assert html.count("$('challengeList').setAttribute('aria-busy','false')") >= 2
+
+
+def test_goal_editor_supports_manual_and_automatic_goals_without_payout():
+    html = PAGE.read_text(encoding="utf-8")
+    assert 'id="goalPanel"' in html
+    assert 'id="goalForm"' in html
+    assert 'value="manual"' in html
+    assert 'value="automatic"' in html
+    assert "if(c.status==='draft')actions.append(button('Ziel festlegen'" in html
+    assert "p_challenge_id:goalEditingId" in html
+    assert "p_review_mode:$('goalMode').value" in html
+    assert "p_target_value:target" in html
+    assert "if(formBusy||actionBusy||refreshBusy||!goalEditingId)return;" in html
+    assert "if(!Number.isFinite(target)" not in html
+    assert "Number.isFinite(target)" in html
+    assert "Noch keine EXP-Vergabe." in html
