@@ -100,6 +100,12 @@ class DuelContractTests(unittest.TestCase):
     def test_paid_duel_is_not_reopened_for_pending_review(self):
         self.assertIn("IF d.status='settled' THEN RETURN 'awaiting_reviews'; END IF;", self.settlement)
 
+    def test_coach_can_explicitly_recheck_settled_duels(self):
+        self.assertIn("p_include_settled boolean DEFAULT false", self.settlement)
+        self.assertIn("(p_include_settled AND d.status='settled')", self.settlement)
+        self.assertIn("p_include_settled:true", self.ui)
+        self.assertIn("id=\"recheckSettled\"", self.ui)
+
     def test_read_rpc_authenticated(self):
         self.assertIn("GRANT EXECUTE ON FUNCTION public.duel_v2_list_mine() TO authenticated", self.reads)
 
