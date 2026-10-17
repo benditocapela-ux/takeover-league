@@ -75,6 +75,27 @@ LEFT JOIN pg_catalog.pg_namespace n
 WHERE p.oid IS NULL OR n.oid IS NOT NULL
 GROUP BY r.name ORDER BY r.name;
 
+-- Data-integrity counters for duel scoring. Aggregate-only output:
+-- mismatched owner links are excluded by settlement but require investigation.
+SELECT
+ count(*) FILTER (WHERE s.id IS NULL) AS missing_submission_links,
+ count(*) FILTER (WHERE s.id IS NOT NULL AND t.boxer_id IS DISTINCT FROM s.boxer_id)
+   AS mismatched_boxer_links,
+ count(*) FILTER (WHERE s.id IS NOT NULL AND s.status<>'approved')
+   AS nonapproved_training_transactions
+FROM public.point_transactions t
+LEFT JOIN public.training_submissions s ON s.id=t.submission_id
+WHERE t.category='training' AND t.submission_id IS NOT NULL;
+
+-- Multiple training transactions against one submission can inflate a duel
+-- score. Flag them for investigation; do not expose boxer identities.
+SELECT count(*) AS submissions_with_multiple_training_transactions
+FROM (
+ SELECT submission_id FROM public.point_transactions
+ WHERE submission_id IS NOT NULL AND category IN ('training','legacy_import')
+ GROUP BY submission_id HAVING count(*)>1
+) duplicates;
+
 -- Existing role and transaction categories (counts only, no personal data).
 SELECT role,count(*) AS profiles FROM public.profiles GROUP BY role ORDER BY role;
 SELECT category,count(*) AS transactions
