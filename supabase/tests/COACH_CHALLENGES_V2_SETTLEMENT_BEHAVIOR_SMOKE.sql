@@ -12,8 +12,8 @@ BEGIN
  cid:=public.coach_challenge_v2_create_draft('Settlement smoke','','coach_goal',7);
  PERFORM public.coach_challenge_v2_save_goal_reward(cid,'Practice controlled sparring','manual',150);
  UPDATE public.league_coach_challenges SET status='awaiting_reviews',
- starts_at=pg_catalog.clock_timestamp()-interval '8 days',
- ends_at=pg_catalog.clock_timestamp()-interval '1 day' WHERE id=cid;
+ starts_at=pg_catalog.date_trunc('second',pg_catalog.clock_timestamp())-interval '8 days',
+ ends_at=pg_catalog.date_trunc('second',pg_catalog.clock_timestamp())-interval '1 day' WHERE id=cid;
  INSERT INTO public.league_coach_challenge_entries(challenge_id,boxer_id)
  VALUES(cid,'e0000000-0000-0000-0000-000000000042'),
  (cid,'e0000000-0000-0000-0000-000000000043');
