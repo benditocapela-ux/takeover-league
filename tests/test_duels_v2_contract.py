@@ -168,6 +168,15 @@ class DuelContractTests(unittest.TestCase):
             self.settlement.index("DROP CONSTRAINT point_transactions_category_check"),
         )
 
+    def test_database_prevents_duplicate_duel_payouts(self):
+        self.assertIn("CREATE UNIQUE INDEX IF NOT EXISTS point_transactions_unique_duel_reward", self.settlement)
+        self.assertIn("ON public.point_transactions(boxer_id,description)", self.settlement)
+        self.assertIn("WHERE category='duel_exp'", self.settlement)
+        self.assertLess(
+            self.settlement.index("point_transactions_unique_duel_reward"),
+            self.settlement.index("CREATE OR REPLACE FUNCTION public.duel_v2_reconcile("),
+        )
+
     def test_orphaned_reward_transaction_blocks_new_payout(self):
         self.assertIn("Orphaned duel payout transaction", self.settlement)
         self.assertIn("t.description='Duel reward: '||d.id::text", self.settlement)
