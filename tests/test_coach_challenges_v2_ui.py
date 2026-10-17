@@ -324,3 +324,17 @@ def test_isolated_preview_never_uses_production_auth_or_redirect():
     assert '<a href="./duels.html">' not in challenge
     assert "db.auth.signOut()" in challenge
     assert "location.replace('./login-test.html')" in challenge
+
+
+def test_test_preview_matches_production_challenge_logic():
+    """Keep the test-only page from silently drifting away from the real UI."""
+    import re
+    root = PAGE.parent
+    production = PAGE.read_text(encoding="utf-8")
+    preview = (root / "challenges-test.html").read_text(encoding="utf-8")
+    rpc_pattern = r"rpc\('([^']+)'"
+    assert set(re.findall(rpc_pattern, preview)) == set(re.findall(rpc_pattern, production))
+    assert "c.my_enrollment_status==='withdrawn'" in preview
+    assert "coach_challenge_v2_settle_manual" in preview
+    assert "coach_challenge_v2_review_manual" in preview
+    assert "flag.data?.is_enabled!==true" in preview
