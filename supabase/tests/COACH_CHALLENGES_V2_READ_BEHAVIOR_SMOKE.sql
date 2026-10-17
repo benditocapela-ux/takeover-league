@@ -55,11 +55,11 @@ BEGIN
   RAISE EXCEPTION 'Coach lost own or published challenges, or saw private draft';
  END IF;
  PERFORM set_config('test.auth_uid','e1000000-0000-0000-0000-000000000005',true);
- IF (SELECT count(*) FROM public.coach_challenge_v2_list())<>3 THEN
-  RAISE EXCEPTION 'Other coach did not see own draft and published challenges';
+ IF (SELECT count(*) FROM public.coach_challenge_v2_list())<>2 THEN
+  RAISE EXCEPTION 'Other coach saw private cancelled challenge or lost public challenges';
  END IF;
- IF (SELECT count(*) FROM public.coach_challenge_v2_list() WHERE title='Private draft')<>0 THEN
-  RAISE EXCEPTION 'Other coach saw another coach private draft';
+ IF (SELECT count(*) FROM public.coach_challenge_v2_list() WHERE title IN ('Private draft','Cancelled enrolled'))<>0 THEN
+  RAISE EXCEPTION 'Other coach saw another coach private or cancelled challenge';
  END IF;
  PERFORM set_config('test.auth_uid','e1000000-0000-0000-0000-000000000004',true);
  BEGIN
