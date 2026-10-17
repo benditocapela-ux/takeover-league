@@ -38,6 +38,17 @@ BEGIN
   IF SQLERRM='Duplicate withdrawal accepted' THEN RAISE; END IF;
   IF SQLERRM NOT LIKE 'No active enrollment%' THEN RAISE; END IF;
  END;
+ BEGIN
+  PERFORM public.coach_challenge_v2_join(challenge);
+  RAISE EXCEPTION 'Withdrawn boxer rejoined without approved policy';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Withdrawn boxer rejoined without approved policy' THEN RAISE; END IF;
+  IF SQLERRM NOT LIKE 'Already enrolled%' THEN RAISE; END IF;
+ END;
+ IF (SELECT count(*) FROM public.league_coach_challenge_entries
+     WHERE challenge_id=challenge AND boxer_id='d0000000-0000-0000-0000-000000000002'
+       AND status='withdrawn')<>1
+ THEN RAISE EXCEPTION 'Rejoin attempt modified withdrawal history'; END IF;
  PERFORM set_config('test.auth_uid','d1000000-0000-0000-0000-000000000001',true);
  PERFORM public.coach_challenge_v2_manage(challenge,'cancel');
  PERFORM set_config('test.auth_uid','d1000000-0000-0000-0000-000000000002',true);
