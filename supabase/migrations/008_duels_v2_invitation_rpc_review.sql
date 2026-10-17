@@ -133,6 +133,13 @@ BEGIN
  AND (d.challenger_id=v_duel.opponent_id OR d.opponent_id=v_duel.opponent_id);
  IF v_count>=3 THEN RAISE EXCEPTION 'Opponent has three active duels'; END IF;
 
+ -- An earlier duel can have elapsed while this invitation was pending.
+ -- Release its active-pair index slot without discarding pending settlement.
+ UPDATE public.league_duels SET status='awaiting_reviews',updated_at=v_now
+ WHERE status='active' AND ends_at<=v_now
+ AND least(challenger_id,opponent_id)=least(v_duel.challenger_id,v_duel.opponent_id)
+ AND greatest(challenger_id,opponent_id)=greatest(v_duel.challenger_id,v_duel.opponent_id);
+
  UPDATE public.league_duels
  SET status='active',accepted_at=v_now,
      ends_at=v_now+(duration_days * interval '1 day'),updated_at=v_now
