@@ -217,3 +217,10 @@ def test_settlement_retry_audits_orphaned_transactions_and_metadata():
     assert "Settled challenge payout integrity mismatch" in sql
     assert "AND NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_exp_ledger l" in sql
     assert "t.category='challenge_exp'" in sql
+
+
+def test_manual_settlement_rejects_reviews_for_withdrawn_boxers():
+    sql = FILES[27]
+    assert "Review exists for ineligible participant" in sql
+    assert "public.league_coach_challenge_reviews r" in sql
+    assert "e.status='joined'" in sql
