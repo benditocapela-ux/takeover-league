@@ -50,7 +50,9 @@ BEGIN
  END IF;
  INSERT INTO public.league_coach_challenge_entries(challenge_id,boxer_id)
  VALUES(v_challenge.id,v_actor.id)
- ON CONFLICT(challenge_id,boxer_id) DO NOTHING;
+ ON CONFLICT(challenge_id,boxer_id) DO UPDATE
+ SET status='joined',joined_at=pg_catalog.clock_timestamp()
+ WHERE public.league_coach_challenge_entries.status='withdrawn';
  IF NOT FOUND THEN RAISE EXCEPTION 'Already enrolled in challenge'; END IF;
  RETURN 'joined';
 END $fn$;
