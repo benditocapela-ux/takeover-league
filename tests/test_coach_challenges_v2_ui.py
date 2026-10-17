@@ -270,5 +270,6 @@ def test_goal_editor_can_save_trainer_chosen_exp_reward():
     assert 'id="goalReward"' in html
     for reward in (25, 50, 100, 150, 200):
         assert f'<option value="{reward}">{reward} EXP</option>' in html
-    assert "coach_challenge_v2_set_reward" in html
+    assert "coach_challenge_v2_save_goal_reward" in html
     assert "p_reward_exp:Number($('goalReward').value)" in html
+    assert "await rpc('coach_challenge_v2_set_reward'" not in html
