@@ -61,3 +61,10 @@ def test_challenge_actions_are_serialized():
     assert "actionBusy=false" in html
     assert "if(actionBusy)return;actionBusy=true;" in html
     assert "finally{el.disabled=false;actionBusy=false}" in html
+
+
+def test_coach_ui_distinguishes_enrollment_from_activation():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "dadurch starten weder Challenge-Zeitmessung noch EXP-Vergabe" in html
+    assert "p_action:'open'" in html
+    assert "p_action:'activate'" not in html
