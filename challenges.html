@@ -75,6 +75,11 @@ function renderCards(rows,list){
   const details=document.createElement('p');
   details.textContent=(labels[c.status]||c.status)+' · '+(kindLabels[c.challenge_kind]||c.challenge_kind)+' · '+c.duration_days+' Tage · '+c.joined_count+' angemeldet';
   article.append(title,details);
+  if(c.status==='open'){
+   const note=document.createElement('p');note.className='muted';
+   note.textContent='Nur Anmeldung: Challenge-Zeitraum und EXP-Vergabe haben noch nicht begonnen.';
+   article.append(note);
+  }
   if(c.starts_at&&c.ends_at){
    const window=document.createElement('p');window.className='muted';
    window.textContent='Zeitraum: '+dateFormatter.format(new Date(c.starts_at))+' – '+dateFormatter.format(new Date(c.ends_at));
@@ -86,7 +91,11 @@ function renderCards(rows,list){
   if(me.role==='boxer'&&c.status==='open'&&!c.my_enrollment_status)
    actions.append(button('Teilnehmen',false,async()=>{await rpc('coach_challenge_v2_join',{p_challenge_id:c.id});status('Anmeldung gespeichert.')}));
   if(me.role==='boxer'&&c.status==='open'&&c.my_enrollment_status==='joined')
-   actions.append(button('Abmelden',true,async()=>{await rpc('coach_challenge_v2_withdraw',{p_challenge_id:c.id});status('Abmeldung gespeichert.')}));
+   actions.append(button('Abmelden',true,async()=>{if(!confirm('Von dieser Challenge abmelden? Eine erneute Anmeldung ist derzeit nicht möglich.'))return false;await rpc('coach_challenge_v2_withdraw',{p_challenge_id:c.id});status('Abmeldung gespeichert.')}));
+  if(me.role==='boxer'&&c.my_enrollment_status==='withdrawn'&&c.status==='open'){
+   const notice=document.createElement('p');notice.className='muted';
+   notice.textContent='Erneute Anmeldung nach Rückzug derzeit nicht möglich.';article.append(notice);
+  }
   if(me.role!=='boxer'&&(c.is_creator||me.role==='admin')){
    if(c.status==='draft')actions.append(button('Entwurf bearbeiten',true,async()=>{
     editingId=c.id;
