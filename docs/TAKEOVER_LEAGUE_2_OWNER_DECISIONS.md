@@ -6,12 +6,16 @@ No production SQL, deploy, merge or feature activation is authorized by this doc
 
 | ID | Question | Current implementation | Owner decision |
 |---|---|---|---|
-| C1 | Reward options for approved manual challenge reviews | Coach chooses 25, 50, 100, 150 or 200 EXP per challenge; every approved participant receives that amount | Pending |
-| C2 | Rejected manual challenge review | 0 EXP, but review and zero-value ledger entry are recorded | Pending |
-| C3 | Withdrawal then rejoin while challenge is open | Rejoin permitted; active duplicate join rejected | Pending |
-| C4 | Automatic challenge settlement | Disabled; manual goal reviews only can settle | Pending |
+| C1 | Reward options for approved manual challenge reviews | Coach chooses 25, 50, 100, 150 or 200 EXP per challenge; every approved participant receives that amount | **Approved by owner, 2026-10-18** |
+| C2 | Rejected manual challenge review | 0 EXP, but review and zero-value ledger entry are recorded | **Approved by owner, 2026-10-18** |
+| C3 | Withdrawal then rejoin while challenge is open | Rejoin permitted; active duplicate join rejected | **Approved by owner, 2026-10-18** |
+| C4 | Automatic challenge settlement | Disabled; manual goal reviews only can settle | **Approved by owner, 2026-10-18** |
 | C5 | Production SQL operator | No operator named or authorized | Pending |
 | C6 | Backup and restore plan | Not verified against live Supabase | Pending |
+
+## Approval scope
+
+The owner explicitly approved C1–C4 in conversation on 2026-10-18. This is **policy approval only**, not authorization for production SQL, migration, deployment, merge, or feature-flag activation. C5 and C6 remain pending.
 
 ## Already specified by owner
 
