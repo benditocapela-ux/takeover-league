@@ -14,9 +14,6 @@ BEGIN
  UPDATE public.league_coach_challenges SET status='awaiting_reviews',
  starts_at=pg_catalog.date_trunc('second',pg_catalog.clock_timestamp())-interval '8 days',
  ends_at=pg_catalog.date_trunc('second',pg_catalog.clock_timestamp())-interval '1 day' WHERE id=cid;
- INSERT INTO public.league_coach_challenge_entries(challenge_id,boxer_id)
- VALUES(cid,'e0000000-0000-0000-0000-000000000042'),
- (cid,'e0000000-0000-0000-0000-000000000043');
  -- An awaiting-review challenge without participants cannot be settled.
  BEGIN
   PERFORM public.coach_challenge_v2_settle_manual(cid);
@@ -25,6 +22,9 @@ BEGIN
   IF SQLERRM='Empty challenge settlement accepted' THEN RAISE; END IF;
   IF SQLERRM<>'Cannot settle challenge without joined participants' THEN RAISE; END IF;
  END;
+ INSERT INTO public.league_coach_challenge_entries(challenge_id,boxer_id)
+ VALUES(cid,'e0000000-0000-0000-0000-000000000042'),
+ (cid,'e0000000-0000-0000-0000-000000000043');
  PERFORM public.coach_challenge_v2_review_manual(
  cid,'e0000000-0000-0000-0000-000000000042',true,'Achieved training target');
  BEGIN
