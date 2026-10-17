@@ -14,6 +14,7 @@ class DuelContractTests(unittest.TestCase):
     def setUpClass(cls):
         cls.ui = (ROOT / "duels.html").read_text(encoding="utf-8")
         cls.login = (ROOT / "login.html").read_text(encoding="utf-8")
+        cls.preflight = (ROOT / "supabase/tests/DUELS_V2_PREFLIGHT_READ_ONLY.sql").read_text(encoding="utf-8")
         cls.schema = (ROOT / "supabase/migrations/007_duels_v2_schema_review.sql").read_text(encoding="utf-8")
         cls.invites = (ROOT / "supabase/migrations/008_duels_v2_invitation_rpc_review.sql").read_text(encoding="utf-8")
         cls.settlement = (ROOT / "supabase/migrations/009_duels_v2_settlement_review.sql").read_text(encoding="utf-8")
@@ -22,6 +23,13 @@ class DuelContractTests(unittest.TestCase):
     def test_login_returns_to_duels(self):
         self.assertIn("next==='duels.html'", self.login)
         self.assertIn("location.replace('./duels.html')", self.login)
+
+    def test_preflight_is_read_only_and_checks_critical_schema(self):
+        self.assertIn("BEGIN READ ONLY;", self.preflight)
+        self.assertIn("ROLLBACK;", self.preflight)
+        self.assertIn("pg_get_constraintdef", self.preflight)
+        self.assertIn("('point_transactions','created_by')", self.preflight)
+        self.assertIn("('league_feature_flags','is_enabled')", self.preflight)
 
     def test_ui_requires_feature_flag(self):
         self.assertIn("feature_key','duels'", self.ui)
