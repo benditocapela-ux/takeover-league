@@ -29,6 +29,9 @@ DECLARE
 BEGIN
  SELECT * INTO actor FROM public.profiles
  WHERE auth_user_id=(SELECT auth.uid()) AND is_active=true;
+ IF NOT EXISTS(SELECT 1 FROM public.league_feature_flags WHERE feature_key='duels' AND is_enabled=true) THEN
+  RAISE EXCEPTION 'Duels are not enabled';
+ END IF;
  IF NOT FOUND OR actor.role NOT IN ('admin','coach') THEN
   RAISE EXCEPTION 'Only a coach may reconcile duels';
  END IF;
