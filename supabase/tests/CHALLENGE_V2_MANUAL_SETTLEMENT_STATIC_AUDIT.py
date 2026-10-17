@@ -5,7 +5,7 @@ root = Path(__file__).resolve().parents[1] / 'migrations'
 files = {n: next(root.glob(f'{n}_*.sql')).read_text() for n in ('025', '026', '027', '028')}
 required = {
  '025': ['p_reward_exp NOT IN (25,50,100,150,200)', "c.status<>'draft'", 'FOR UPDATE', 'SECURITY DEFINER', 'REVOKE ALL', 'GRANT EXECUTE'],
- '026': ['SECURITY DEFINER', 'FOR UPDATE', 'REVOKE ALL', 'GRANT EXECUTE'],
+ '026': ['SECURITY DEFINER', 'FOR UPDATE', 'REVOKE ALL', 'GRANT EXECUTE', "p_review_mode IS DISTINCT FROM 'manual'", 'p_target_value IS NOT NULL OR p_metric IS NOT NULL'],
  '027': ["category='challenge_exp'", 'FOR UPDATE', 'IF reward>0 THEN', 'ELSE 0 END', 'Existing challenge ledger prevents first settlement', 'All joined participants require a review', 'REVOKE ALL', 'GRANT EXECUTE', "c.status='settled'"],
  '028': ['SECURITY DEFINER', 'REVOKE ALL', 'GRANT EXECUTE'],
 }
