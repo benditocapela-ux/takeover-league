@@ -86,7 +86,8 @@ BEGIN
  IF c.status<>'awaiting_reviews' OR c.goal_spec->>'review_mode' IS DISTINCT FROM 'manual'
  OR c.goal_spec->>'version' IS DISTINCT FROM '1'
  OR COALESCE(pg_catalog.char_length(pg_catalog.btrim(c.goal_spec->>'goal_text')) BETWEEN 5 AND 1000,false)=false
- OR c.ends_at IS NULL OR c.ends_at>pg_catalog.clock_timestamp()
+ OR c.starts_at IS NULL OR c.ends_at IS NULL
+ OR c.ends_at<=c.starts_at OR c.ends_at>pg_catalog.clock_timestamp()
  OR c.goal_spec->>'reward_exp' IS NULL
  OR c.goal_spec->>'reward_exp' NOT IN ('25','50','100','150','200')
  OR pg_catalog.jsonb_typeof(c.goal_spec->'reward_exp') IS DISTINCT FROM 'number' THEN
