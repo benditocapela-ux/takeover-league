@@ -160,7 +160,7 @@ async function init(){
  if(p.error||!p.data?.is_active||!['boxer','coach','admin'].includes(p.data.role)){status('Aktives Liga-Konto erforderlich.',true);return}
  me=p.data;
  const flag=await db.from('league_feature_flags').select('is_enabled').eq('feature_key','coach_challenges').maybeSingle();
- if(flag.error||flag.data?.is_enabled!==true){status('Coach Challenges sind noch nicht freigeschaltet.');return}
+ if(flag.error||flag.data?.is_enabled!==true){status('TESTDATENBANK: Coach Challenges sind noch deaktiviert. Vor dem Integrationstest muss der Test-Feature-Flag kontrolliert aktiviert werden.');return}
  if(me.role!=='boxer')$('coachPanel').classList.remove('hidden');
  $('app').classList.remove('hidden');
  try{if(await refresh())status('Challenge-Übersicht geladen.')}catch(e){status('Challenges konnten nicht geladen werden: '+e.message,true)}
