@@ -229,3 +229,9 @@ def test_manual_settlement_rejects_reviews_for_withdrawn_boxers():
 def test_manual_settlement_requires_joined_participants():
     sql = FILES[27]
     assert "Cannot settle challenge without joined participants" in sql
+
+
+def test_settlement_migration_preflight_rejects_preexisting_challenge_payouts():
+    sql = FILES[27]
+    assert "Existing challenge payouts require pre-migration audit" in sql
+    assert "WHERE category='challenge_exp'" in sql
