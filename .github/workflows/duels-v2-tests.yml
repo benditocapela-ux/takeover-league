@@ -12,6 +12,7 @@ on:
       - 'supabase/migrations/009_duels_v2_settlement_review.sql'
       - 'supabase/migrations/010_duels_v2_read_rpc_review.sql'
       - 'tests/test_duels_v2_contract.py'
+      - 'supabase/tests/DUELS_V2_PREFLIGHT_READ_ONLY.sql'
       - '.github/workflows/duels-v2-tests.yml'
   pull_request:
     paths:
