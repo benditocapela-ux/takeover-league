@@ -44,13 +44,8 @@ BEGIN
  WHERE challenge_id=cid AND boxer_id='e0000000-0000-0000-0000-000000000043'
  AND awarded_exp=0 AND transaction_id IS NULL) THEN
  RAISE EXCEPTION 'Rejected boxer ledger mismatch'; END IF;
- BEGIN
-  PERFORM public.coach_challenge_v2_settle_manual(cid);
-  RAISE EXCEPTION 'Second settlement accepted';
- EXCEPTION WHEN raise_exception THEN
-  IF SQLERRM='Second settlement accepted' THEN RAISE; END IF;
-  IF SQLERRM<>'Challenge already settled; payout integrity must be audited' THEN RAISE; END IF;
- END;
+ IF public.coach_challenge_v2_settle_manual(cid)<>'settled' THEN
+ RAISE EXCEPTION 'Idempotent settlement retry failed'; END IF;
  IF (SELECT count(*) FROM public.point_transactions
  WHERE category='challenge_exp' AND description='Challenge reward: '||cid::text)<>1
  THEN RAISE EXCEPTION 'Duplicate payout after retry'; END IF;
