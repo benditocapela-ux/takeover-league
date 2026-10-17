@@ -168,6 +168,14 @@ class DuelContractTests(unittest.TestCase):
             self.settlement.index("DROP CONSTRAINT point_transactions_category_check"),
         )
 
+    def test_settled_duel_missing_payout_is_never_recreated(self):
+        self.assertIn("IF existing_status='settled' THEN", self.settlement)
+        self.assertIn("Settled duel payout transaction missing", self.settlement)
+        self.assertLess(
+            self.settlement.index("IF existing_status='settled' THEN"),
+            self.settlement.index("INSERT INTO public.point_transactions", self.settlement.index("IF existing_status='settled' THEN")),
+        )
+
     def test_duel_payout_ledger_never_accepts_league_points(self):
         self.assertIn("AND t.points=0 AND t.exp=old_exp", self.settlement)
         self.assertIn("VALUES(boxer,0,target_exp,'duel_exp'", self.settlement)
