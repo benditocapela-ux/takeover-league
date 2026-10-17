@@ -48,6 +48,9 @@ async function refresh(){
   info.textContent=d.status==='pending'?'Annehmen bis: '+date(d.expires_at):
    'Beginn: '+date(d.accepted_at)+' · Ende: '+date(d.ends_at);
   item.append(heading,state,info);
+  if(d.status==='pending'&&new Date(d.expires_at)<=new Date()){
+   const expired=document.createElement('p');expired.className='muted';expired.textContent='Einladung abgelaufen – keine Annahme mehr möglich.';item.append(expired);
+  }
   if(d.status==='settled'){
    const score=document.createElement('p');score.textContent='Trainingspunkte: '+d.challenger_score+' : '+d.opponent_score;
    item.append(score);
@@ -64,17 +67,19 @@ async function refresh(){
     await refresh();
    });actions.append(reconcile);item.append(actions);
   }
-  if(d.status==='pending'&&d.opponent_id===me.id){
+  if(d.status==='pending'&&d.opponent_id===me.id&&new Date(d.expires_at)>new Date()){
    const actions=document.createElement('div');actions.className='actions';
    for(const [accept,label] of [[true,'Annehmen'],[false,'Ablehnen']]){
     const button=document.createElement('button');button.type='button';button.textContent=label;
     if(!accept)button.className='secondary';
     button.addEventListener('click',async()=>{
-     button.disabled=true;
-     const response=await db.rpc('duel_v2_respond',{p_duel_id:d.id,p_accept:accept});
-     if(response.error)setStatus(response.error.message,true);
-     else setStatus(accept?'Duell angenommen.':'Anfrage abgelehnt.');
-     await refresh();
+     for(const control of actions.querySelectorAll('button'))control.disabled=true;
+     try{
+      const response=await db.rpc('duel_v2_respond',{p_duel_id:d.id,p_accept:accept});
+      if(response.error)setStatus(response.error.message,true);
+      else setStatus(response.data==='expired'?'Einladung ist inzwischen abgelaufen.':accept?'Duell angenommen.':'Anfrage abgelehnt.');
+      await refresh();
+     }finally{for(const control of actions.querySelectorAll('button'))control.disabled=false;}
     });actions.append(button);
    }item.append(actions);
   }
