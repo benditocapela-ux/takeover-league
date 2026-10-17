@@ -206,8 +206,7 @@ $('goalForm').addEventListener('submit',async e=>{
   const automatic=$('goalMode').value==='automatic';
   const target=automatic?Number($('goalTarget').value):null;
   if(automatic&&(!Number.isFinite(target)||target<=0||target>1000000))throw Error('Ungültiger Zielwert');
-  await rpc('coach_challenge_v2_set_goal',{p_challenge_id:goalEditingId,p_goal_text:$('goalText').value,p_review_mode:$('goalMode').value,p_target_value:target,p_metric:automatic?$('goalMetric').value:null});
-  await rpc('coach_challenge_v2_set_reward',{p_challenge_id:goalEditingId,p_reward_exp:Number($('goalReward').value)});
+  await rpc('coach_challenge_v2_save_goal_reward',{p_challenge_id:goalEditingId,p_goal_text:$('goalText').value,p_review_mode:$('goalMode').value,p_reward_exp:Number($('goalReward').value),p_target_value:target,p_metric:automatic?$('goalMetric').value:null});
   saved=true;closeGoalEditor();status('Challenge-Ziel gespeichert. Noch keine EXP-Vergabe.');
   try{await refresh()}catch(err){status('Ziel gespeichert, aber Aktualisierung fehlgeschlagen: '+err.message,true)}
  }catch(err){if(!saved)status('Ziel speichern fehlgeschlagen: '+err.message,true)}
