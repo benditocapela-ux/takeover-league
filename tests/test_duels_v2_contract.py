@@ -104,6 +104,13 @@ class DuelContractTests(unittest.TestCase):
         second = self.settlement.index('WHERE id=p_duel_id FOR UPDATE')
         self.assertLess(first, second)
 
+    def test_acceptance_rejects_existing_active_pair(self):
+        respond = self.invites.split("CREATE OR REPLACE FUNCTION public.duel_v2_respond(", 1)[1]
+        self.assertIn("d.id<>p_duel_id", respond)
+        self.assertIn("d.status='active' AND d.ends_at>v_now", respond)
+        self.assertIn("This boxer pair already has an active duel", respond)
+        self.assertIn("league_duels_one_active_per_pair", self.schema)
+
     def test_respond_locks_profiles_once_before_duel(self):
         respond = self.invites.split("CREATE OR REPLACE FUNCTION public.duel_v2_respond(", 1)[1]
         self.assertEqual(respond.count("ORDER BY id FOR UPDATE"), 1)
