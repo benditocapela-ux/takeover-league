@@ -48,8 +48,8 @@ BEGIN
    OR c.goal_spec->>'reward_exp' IS NULL
    OR c.goal_spec->>'reward_exp' NOT IN ('25','50','100','150','200')
    OR pg_catalog.jsonb_typeof(c.goal_spec->'reward_exp') IS DISTINCT FROM 'number'
-   OR c.ends_at IS NULL OR c.settled_at IS NULL
-   OR c.settled_at<c.ends_at THEN
+   OR c.starts_at IS NULL OR c.ends_at IS NULL OR c.settled_at IS NULL
+   OR c.ends_at<=c.starts_at OR c.settled_at<c.ends_at THEN
    RAISE EXCEPTION 'Settled challenge metadata integrity mismatch'; END IF;
   IF NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_entries
    WHERE challenge_id=c.id AND status='joined') THEN
