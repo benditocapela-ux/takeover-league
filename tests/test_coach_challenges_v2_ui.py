@@ -286,3 +286,8 @@ def test_coach_settlement_requires_confirmation_and_rpc():
 def test_begin_reviews_button_hidden_until_challenge_expiry():
     html = PAGE.read_text(encoding="utf-8")
     assert "c.status==='active'&&c.ends_at&&new Date(c.ends_at).getTime()<=Date.now()" in html
+
+
+def test_automatic_review_option_is_disabled_until_backend_supports_it():
+    html = PAGE.read_text(encoding="utf-8")
+    assert '<option value="automatic" disabled>' in html
