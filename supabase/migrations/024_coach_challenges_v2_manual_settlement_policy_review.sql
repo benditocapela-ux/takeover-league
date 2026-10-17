@@ -1,0 +1,10 @@
+-- REVIEW ONLY. No live execution and no payout authorization.
+-- Proposed manual settlement policy, pending explicit coach approval:
+-- Approved participant: 50 EXP; rejected participant: 0 EXP.
+-- Every joined participant must have exactly one immutable manual review.
+-- Settlement must lock challenge row, check expiry and ownership,
+-- reject preexisting orphan payouts, and use a unique payout identifier.
+-- All inserts into point_transactions and the challenge ledger must occur
+-- in the same PostgreSQL transaction as status='settled'.
+-- A retry must never create a second reward.
+-- This document intentionally contains no executable payout function.
