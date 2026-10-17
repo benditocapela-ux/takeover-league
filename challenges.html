@@ -31,7 +31,7 @@ button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#263850;colo
 <section class="card"><div class="line"><h2>Challenges</h2><button id="refresh" class="secondary" type="button">Aktualisieren</button></div>
 <label for="challengeSearch">Challenge suchen</label><input id="challengeSearch" type="search" placeholder="Titel oder Beschreibung" autocomplete="off">
 <div class="line"><label for="statusFilter">Status <select id="statusFilter"><option value="all">Alle</option><option value="draft">Entwurf</option><option value="open">Anmeldung offen</option><option value="active">Aktiv</option><option value="awaiting_reviews">Wartet auf Freigaben</option><option value="settled">Abgeschlossen</option><option value="cancelled">Abgesagt</option></select></label><label for="kindFilter">Art <select id="kindFilter"><option value="all">Alle</option><option value="individual">Individuell</option><option value="competition">Wettbewerb</option><option value="coach_goal">Trainerziel</option></select></label></div>
-<p id="resultCount" class="muted" aria-live="polite"></p>
+<div class="line"><p id="resultCount" class="muted" aria-live="polite"></p><button id="clearFilters" class="secondary" type="button">Filter zurücksetzen</button></div>
 <div id="challengeList" aria-live="polite">Wird geladen …</div></section>
 </div></main>
 <script type="module">
@@ -121,6 +121,7 @@ function resetEditor(){
  $('cancelEdit').classList.add('hidden');
 }
 $('challengeSearch').addEventListener('input',renderChallenges);
+$('clearFilters').addEventListener('click',()=>{$('challengeSearch').value='';$('statusFilter').value='all';$('kindFilter').value='all';renderChallenges();$('challengeSearch').focus()});
 $('statusFilter').addEventListener('change',renderChallenges);
 $('kindFilter').addEventListener('change',renderChallenges);
 $('cancelEdit').addEventListener('click',()=>{if(!formBusy)resetEditor()});
