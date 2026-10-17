@@ -3,6 +3,11 @@
 -- Acceptance, settlement and correction RPCs are NOT implemented by this schema.
 BEGIN;
 
+-- Feature is opt-in. The application must not expose unfinished RPCs.
+INSERT INTO public.league_feature_flags(feature_key,is_enabled)
+VALUES('duels',false)
+ON CONFLICT(feature_key) DO NOTHING;
+
 CREATE TABLE IF NOT EXISTS public.league_duels (
  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
  challenger_id uuid NOT NULL REFERENCES public.profiles(id),
