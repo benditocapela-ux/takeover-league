@@ -61,6 +61,23 @@ BEGIN
  IF result<>'settled' OR (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>2 THEN
   RAISE EXCEPTION 'Repeated reconciliation created duplicate payouts';
  END IF;
+ -- A newly discovered timely pending submission after payout must preserve the ledger.
+ INSERT INTO public.training_submissions(id,boxer_id,training_date,status,created_at)
+ VALUES ('20000000-0000-0000-0000-000000000004',b,current_date-interval '3 days','pending',now()-interval '3 days');
+ result:=public.duel_v2_reconcile(duel);
+ IF result<>'pending_correction' OR
+    (SELECT status FROM public.league_duels WHERE id=duel)<>'settled' OR
+    (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>2 OR
+    (SELECT sum(awarded_exp) FROM public.league_duel_exp_ledger WHERE duel_id=duel)<>125 THEN
+  RAISE EXCEPTION 'Pending post-settlement review must preserve prior payout';
+ END IF;
+ UPDATE public.training_submissions SET status='rejected'
+ WHERE id='20000000-0000-0000-0000-000000000004';
+ result:=public.duel_v2_reconcile(duel);
+ IF result<>'settled' OR
+    (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>2 THEN
+  RAISE EXCEPTION 'Post-settlement review resolution must remain idempotent';
+ END IF;
  -- A reviewed training correction reverses the winner without minting new rewards.
  INSERT INTO public.training_submissions(id,boxer_id,training_date,status,created_at)
  VALUES ('20000000-0000-0000-0000-000000000002',b,current_date-interval '3 days','approved',now()-interval '3 days');
