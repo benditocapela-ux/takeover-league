@@ -111,7 +111,8 @@ class DuelContractTests(unittest.TestCase):
     def test_coach_can_explicitly_recheck_settled_duels(self):
         self.assertIn("p_include_settled boolean DEFAULT false", self.settlement)
         self.assertIn("(p_include_settled AND d.status='settled')", self.settlement)
-        self.assertIn("p_include_settled:true", self.ui)
+        self.assertIn("reconcileBatches(true)", self.ui)
+        self.assertIn("p_include_settled:includeSettled", self.ui)
         self.assertIn("id=\"recheckSettled\"", self.ui)
 
     def test_batch_uses_stable_cursor_instead_of_repeating_first_page(self):
