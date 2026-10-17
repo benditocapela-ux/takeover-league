@@ -30,6 +30,7 @@ button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#263850;colo
 <p class="actions"><button id="createButton" type="submit">Entwurf speichern</button><button id="cancelEdit" class="secondary hidden" type="button">Bearbeitung abbrechen</button></p></form></section>
 <section class="card"><div class="line"><h2>Challenges</h2><button id="refresh" class="secondary" type="button">Aktualisieren</button></div>
 <div class="line"><label for="statusFilter">Status <select id="statusFilter"><option value="all">Alle</option><option value="draft">Entwurf</option><option value="open">Anmeldung offen</option><option value="active">Aktiv</option><option value="awaiting_reviews">Wartet auf Freigaben</option><option value="settled">Abgeschlossen</option><option value="cancelled">Abgesagt</option></select></label><label for="kindFilter">Art <select id="kindFilter"><option value="all">Alle</option><option value="individual">Individuell</option><option value="competition">Wettbewerb</option><option value="coach_goal">Trainerziel</option></select></label></div>
+<p id="resultCount" class="muted" aria-live="polite"></p>
 <div id="challengeList" aria-live="polite">Wird geladen …</div></section>
 </div></main>
 <script type="module">
@@ -50,6 +51,7 @@ function renderChallenges(){
  const statusFilter=$('statusFilter').value,kindFilter=$('kindFilter').value;
  const rows=allChallenges.filter(c=>(statusFilter==='all'||c.status===statusFilter)&&(kindFilter==='all'||c.challenge_kind===kindFilter));
  const list=$('challengeList');list.replaceChildren();
+ $('resultCount').textContent=rows.length+' von '+allChallenges.length+' geladenen Challenges angezeigt.';
  if(!rows.length){list.textContent=allChallenges.length?'Keine Challenges für diesen Filter.':'Noch keine sichtbaren Challenges.';return}
  renderCards(rows,list);
 }
