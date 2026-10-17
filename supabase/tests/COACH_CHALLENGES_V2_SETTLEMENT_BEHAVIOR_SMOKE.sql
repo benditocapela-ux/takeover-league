@@ -92,6 +92,20 @@ BEGIN
  DELETE FROM public.point_transactions
  WHERE category='challenge_exp' AND boxer_id='e0000000-0000-0000-0000-000000000043'
  AND description='Challenge reward: '||cid::text;
+ -- Null EXP is corruption even if the transaction remains linked to the ledger.
+ UPDATE public.point_transactions SET exp=NULL
+ WHERE category='challenge_exp' AND description='Challenge reward: '||cid::text
+ AND boxer_id='e0000000-0000-0000-0000-000000000042';
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(cid);
+  RAISE EXCEPTION 'Null EXP payout accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Null EXP payout accepted' THEN RAISE; END IF;
+  IF SQLERRM<>'Settled challenge payout integrity mismatch' THEN RAISE; END IF;
+ END;
+ UPDATE public.point_transactions SET exp=150
+ WHERE category='challenge_exp' AND description='Challenge reward: '||cid::text
+ AND boxer_id='e0000000-0000-0000-0000-000000000042';
  -- Simulate a damaged ledger; retry must reject it rather than claim success.
  UPDATE public.league_coach_challenge_exp_ledger SET awarded_exp=25
  WHERE challenge_id=cid AND boxer_id='e0000000-0000-0000-0000-000000000042';
