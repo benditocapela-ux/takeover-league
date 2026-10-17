@@ -14,7 +14,10 @@ BEGIN
  'public.coach_challenge_v2_set_goal(uuid,text,text,numeric,text)',
  'public.coach_challenge_v2_progress(uuid)',
  'public.coach_challenge_v2_review_manual(uuid,uuid,boolean,text)',
- 'public.coach_challenge_v2_review_status(uuid)'
+ 'public.coach_challenge_v2_review_status(uuid)',
+ 'public.coach_challenge_v2_review_candidates(uuid)',
+ 'public.coach_challenge_v2_activate(uuid)',
+ 'public.coach_challenge_v2_begin_reviews(uuid)'
  ] LOOP
   IF NOT pg_catalog.has_function_privilege('authenticated',signature,'EXECUTE') THEN
    RAISE EXCEPTION 'Authenticated API role lacks EXECUTE: %',signature;
