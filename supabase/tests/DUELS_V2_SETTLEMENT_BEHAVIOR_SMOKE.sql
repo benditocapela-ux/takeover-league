@@ -150,6 +150,21 @@ BEGIN
     (SELECT status FROM public.league_duels WHERE id=duel)<>'settled' THEN
   RAISE EXCEPTION 'Late-created pending submission reopened completed duel';
  END IF;
+ -- A disabled feature flag must block coach settlement without altering rewards.
+ UPDATE public.league_feature_flags SET is_enabled=false WHERE feature_key='duels';
+ BEGIN
+  PERFORM public.duel_v2_reconcile(duel);
+  RAISE EXCEPTION 'Disabled duels feature allowed reconciliation';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Disabled duels feature allowed reconciliation' THEN RAISE; END IF;
+  IF SQLERRM NOT LIKE 'Duels are not enabled%' THEN
+   RAISE EXCEPTION 'Unexpected disabled-feature failure: %',SQLERRM;
+  END IF;
+ END;
+ UPDATE public.league_feature_flags SET is_enabled=true WHERE feature_key='duels';
+ IF (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>2 THEN
+  RAISE EXCEPTION 'Feature toggle altered reward transactions';
+ END IF;
  -- Corrupt a paid transaction and ensure reconciliation fails closed.
  UPDATE public.point_transactions SET exp=999
  WHERE id=(SELECT transaction_id FROM public.league_duel_exp_ledger
