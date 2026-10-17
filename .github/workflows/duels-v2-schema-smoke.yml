@@ -124,6 +124,24 @@ jobs:
           SQL
       - name: Execute production inventory against disposable database
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/preflight/TAKEOVER_LEAGUE_2_READ_ONLY_INVENTORY.sql
+      - name: Verify inventory cannot write inside READ ONLY transaction
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql -X -v ON_ERROR_STOP=1 <<'SQL'
+          BEGIN TRANSACTION READ ONLY;
+          DO $readonly$
+          BEGIN
+            BEGIN
+              INSERT INTO supabase_migrations.schema_migrations(version) VALUES ('must_fail');
+              RAISE EXCEPTION 'READ ONLY transaction allowed a write';
+            EXCEPTION WHEN read_only_sql_transaction THEN
+              NULL;
+            END;
+          END $readonly$;
+          ROLLBACK;
+          SQL
+          test "$(psql -X -v ON_ERROR_STOP=1 -Atc "SELECT count(*) FROM supabase_migrations.schema_migrations WHERE version='must_fail'")" = "0"
       - name: Execute read-only schema and training RPC preflight on synthetic database
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_PREFLIGHT_READ_ONLY.sql
       - name: Verify public-only training RPC inventory on synthetic database
