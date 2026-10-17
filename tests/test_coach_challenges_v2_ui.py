@@ -281,3 +281,8 @@ def test_coach_settlement_requires_confirmation_and_rpc():
     assert "Alle Teilnehmer bewertet? Die EXP werden jetzt einmalig vergeben." in html
     assert "coach_challenge_v2_settle_manual" in html
     assert "p_challenge_id:c.id" in html
+
+
+def test_begin_reviews_button_hidden_until_challenge_expiry():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "c.status==='active'&&c.ends_at&&new Date(c.ends_at).getTime()<=Date.now()" in html
