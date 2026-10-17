@@ -4,6 +4,22 @@ INSERT INTO public.profiles(id,role,is_active) VALUES
  ('00000000-0000-0000-0000-0000000000a1','boxer',true),
  ('00000000-0000-0000-0000-0000000000b2','boxer',true);
 
+DO $feature_flags$
+BEGIN
+ IF NOT EXISTS (
+  SELECT 1 FROM public.league_feature_flags
+  WHERE feature_key='duels' AND display_name='Boxer Duels V2' AND is_enabled=false
+ ) THEN
+  RAISE EXCEPTION 'Duel feature flag must have a display name and remain disabled';
+ END IF;
+ IF NOT EXISTS (
+  SELECT 1 FROM public.league_feature_flags
+  WHERE feature_key='coach_challenges' AND display_name='Coach Challenges V2' AND is_enabled=false
+ ) THEN
+  RAISE EXCEPTION 'Challenge feature flag must have a display name and remain disabled';
+ END IF;
+END $feature_flags$;
+
 DO $duel_smoke$
 DECLARE
  a uuid := '00000000-0000-0000-0000-0000000000a1';
