@@ -104,6 +104,12 @@ class DuelContractTests(unittest.TestCase):
         second = self.settlement.index('WHERE id=p_duel_id FOR UPDATE')
         self.assertLess(first, second)
 
+    def test_respond_locks_profiles_once_before_duel(self):
+        respond = self.invites.split("CREATE OR REPLACE FUNCTION public.duel_v2_respond(", 1)[1]
+        self.assertEqual(respond.count("ORDER BY id FOR UPDATE"), 1)
+        self.assertLess(respond.index("ORDER BY id FOR UPDATE"), respond.index("WHERE id=p_duel_id FOR UPDATE"))
+        self.assertIn("Participant profile locks were already acquired", respond)
+
     def test_duel_response_requires_explicit_boolean(self):
         self.assertIn("IF p_accept IS NULL THEN RAISE EXCEPTION 'Explicit acceptance or decline required'; END IF;", self.invites)
         self.assertIn("IF p_accept=false THEN", self.invites)
