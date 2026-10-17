@@ -58,4 +58,35 @@ BEGIN
   RAISE EXCEPTION 'All public review_training overloads require inspection';
  END IF;
 END $inventory$;
+-- Exercise PUBLIC grant detection on a real PostgreSQL function.
+-- PUBLIC is a pseudo-role in ACLs, not a named role for has_function_privilege.
+DO $acl$
+DECLARE allowed boolean;
+BEGIN
+ SELECT EXISTS (
+  SELECT 1 FROM pg_catalog.aclexplode(
+   COALESCE(p.proacl,pg_catalog.acldefault('f',p.proowner))
+  ) acl WHERE acl.grantee=0 AND acl.privilege_type='EXECUTE'
+ ) INTO allowed
+ FROM pg_catalog.pg_proc p
+ WHERE p.oid='public.review_training()'::pg_catalog.regprocedure;
+ IF allowed IS DISTINCT FROM true THEN
+  RAISE EXCEPTION 'Default PUBLIC EXECUTE grant not detected';
+ END IF;
+END $acl$;
+REVOKE EXECUTE ON FUNCTION public.review_training() FROM PUBLIC;
+DO $acl$
+DECLARE allowed boolean;
+BEGIN
+ SELECT EXISTS (
+  SELECT 1 FROM pg_catalog.aclexplode(
+   COALESCE(p.proacl,pg_catalog.acldefault('f',p.proowner))
+  ) acl WHERE acl.grantee=0 AND acl.privilege_type='EXECUTE'
+ ) INTO allowed
+ FROM pg_catalog.pg_proc p
+ WHERE p.oid='public.review_training()'::pg_catalog.regprocedure;
+ IF allowed IS DISTINCT FROM false THEN
+  RAISE EXCEPTION 'Revoked PUBLIC EXECUTE still detected';
+ END IF;
+END $acl$;
 ROLLBACK;
