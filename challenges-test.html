@@ -155,7 +155,7 @@ function renderCards(rows,list){
 }
 async function init(){
  const {data:{user},error}=await db.auth.getUser();
- if(error||!user){location.replace('./login.html?next=challenges.html');return}
+ if(error||!user){location.replace('./login-test.html');return}
  const p=await db.from('profiles').select('id,role,is_active').eq('auth_user_id',user.id).maybeSingle();
  if(p.error||!p.data?.is_active||!['boxer','coach','admin'].includes(p.data.role)){status('Aktives Liga-Konto erforderlich.',true);return}
  me=p.data;
