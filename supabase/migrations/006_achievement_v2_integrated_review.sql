@@ -152,8 +152,15 @@ RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path TO ''
 AS $fn$
 BEGIN
  IF TG_OP='UPDATE' AND OLD.boxer_id IS DISTINCT FROM NEW.boxer_id THEN
-  -- TODO: boxer transfers can deadlock when two admins swap boxers concurrently.
+  -- Acquire both profile locks in deterministic UUID order before reconciliation.
+  -- This reduces profile-lock inversion; other application locks still need testing.
+  PERFORM 1 FROM public.profiles p
+   WHERE p.id IN (OLD.boxer_id,NEW.boxer_id)
+   ORDER BY p.id FOR UPDATE;
   PERFORM public.recalculate_boxer_achievements_v2(OLD.boxer_id);
+ ELSE
+  PERFORM 1 FROM public.profiles p
+   WHERE p.id=NEW.boxer_id FOR UPDATE;
  END IF;
  PERFORM public.recalculate_boxer_achievements_v2(NEW.boxer_id);
  RETURN NEW;
@@ -171,7 +178,7 @@ COMMIT;
 
 -- BLOCKERS BEFORE LIVE RELEASE:
 -- A. Function owner, trigger privileges, and SECURITY DEFINER execution must be tested.
--- B. Concurrent transfer deadlock avoidance and test fixtures are outstanding.
+-- B. Deterministic profile locks added, but concurrent transaction/row-lock tests are outstanding.
 -- C. Event audit records transitions, but the point_transactions EXP value remains mutable;
 --    decide if immutable compensating entries are required.
 -- D. The feature flag must stay FALSE; backfill requires separate explicit approval.
