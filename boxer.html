@@ -19,13 +19,19 @@ async function loadExpRank(){
  const a=Array.isArray(result.data)?result.data[0]:result.data;
  if(!a){status.textContent='Keine Level-Daten verfügbar.';return}
  const fmt=v=>Number(v??0).toLocaleString('de-CH',{maximumFractionDigits:0});
- const into=Number(a.exp_into_level)||0,needed=Math.max(1,Number(a.next_level_exp)-Number(a.level_start_exp));
+ // EXP v2: calculate presentation from lifetime EXP while preserving the
+ // existing authenticated RPC and its lifetime points / access checks.
+ const xp=Math.max(0,Number(a.lifetime_exp)||0);
+ const n=Math.floor((Math.sqrt(49+0.32*xp)-7)/2);
+ const level=n+1, start=100*n+25*n*(n-1)/2, needed=100+25*n;
+ const into=xp-start;
  const percent=Math.min(100,Math.max(0,100*into/needed));
- $('expRankLetter').textContent=a.rank_letter??'–';
- $('expRankLevel').textContent=fmt(a.level_number);
- $('expRankTotal').textContent=fmt(a.lifetime_exp);
+ const ranks=['F','E','D','C','B','A','S'];
+ $('expRankLetter').textContent=ranks[Math.min(level-1,ranks.length-1)];
+ $('expRankLevel').textContent=fmt(level);
+ $('expRankTotal').textContent=fmt(xp);
  $('expRankProgress').textContent=`${fmt(into)} / ${fmt(needed)} EXP im aktuellen Level`;
- $('expRankRemaining').textContent=`Noch ${fmt(a.exp_to_next_level)} EXP`;
+ $('expRankRemaining').textContent=`Noch ${fmt(needed-into)} EXP`;
  $('expRankFill').style.width=percent+'%';
  $('expRankBar').setAttribute('aria-valuenow',String(Math.round(percent)));
  $('expRankPoints').textContent=`Gesamtpunkte: ${fmt(a.lifetime_points)}`;
