@@ -166,6 +166,15 @@ BEGIN
    IF old_exp IS DISTINCT FROM 0 THEN
     RAISE EXCEPTION 'Duel reward ledger claims EXP without transaction for duel % boxer %',d.id,boxer;
    END IF;
+   -- Never create a second payout if a duel_exp transaction already exists
+   -- but the ledger reference was lost (including on a first settlement).
+   IF EXISTS (
+    SELECT 1 FROM public.point_transactions t
+    WHERE t.boxer_id=boxer AND t.category='duel_exp'
+      AND t.description='Duel reward: '||d.id::text
+   ) THEN
+    RAISE EXCEPTION 'Orphaned duel payout transaction for duel % boxer %',d.id,boxer;
+   END IF;
    INSERT INTO public.point_transactions
     (boxer_id,points,exp,category,description,effective_date,created_by)
    VALUES(boxer,0,target_exp,'duel_exp',
