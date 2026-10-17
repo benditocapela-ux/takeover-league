@@ -35,3 +35,16 @@ def test_challenge_status_restrictions_in_ui():
     assert "c.is_creator||me.role==='admin'" in html
     assert "['draft','open'].includes(c.status)" in html
     assert "if(current!==sequence)return false" in html
+
+
+def test_draft_edit_uses_prefilled_form_and_can_be_cancelled():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "editingId=c.id" in html
+    assert "$('title').value=c.title" in html
+    assert "$('description').value=c.description||''" in html
+    assert "$('kind').value=c.challenge_kind" in html
+    assert "$('duration').value=String(c.duration_days)" in html
+    assert "$('cancelEdit').addEventListener('click',resetEditor)" in html
+    assert "p_id:editing,...values,p_days:" in html
+    assert "p_duration_days:Number($('duration').value)" in html
+    assert "prompt(" not in html
