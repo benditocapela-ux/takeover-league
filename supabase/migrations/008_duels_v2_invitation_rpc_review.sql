@@ -117,9 +117,8 @@ BEGIN
   RETURN 'declined';
  END IF;
 
- -- Lock both participant profiles in deterministic order for active-duel cap.
- PERFORM 1 FROM public.profiles
- WHERE id IN (v_duel.challenger_id,v_duel.opponent_id) ORDER BY id FOR UPDATE;
+ -- Participant profile locks were already acquired before the duel row lock.
+ -- Do not reacquire them in a different lock order.
  IF (SELECT count(*) FROM public.profiles
      WHERE id IN (v_duel.challenger_id,v_duel.opponent_id)
        AND role='boxer' AND is_active=true)<>2 THEN
