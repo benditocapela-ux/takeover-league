@@ -36,6 +36,8 @@ CREATE TABLE public.training_submissions (
  id uuid PRIMARY KEY,
  boxer_id uuid NOT NULL REFERENCES public.profiles(id),
  training_date date NOT NULL,
+ jogging_km numeric,
+ technique_minutes integer,
  status text NOT NULL,
  created_at timestamptz NOT NULL DEFAULT now()
 );
