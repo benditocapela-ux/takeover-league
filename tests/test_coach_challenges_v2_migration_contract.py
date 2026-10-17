@@ -319,3 +319,9 @@ def test_manual_settlement_requires_valid_challenge_clock():
     sql = (MIGRATIONS / "027_coach_challenges_v2_manual_settlement_review.sql").read_text(encoding="utf-8")
     assert sql.count("c.starts_at IS NULL") >= 2
     assert sql.count("c.ends_at<=c.starts_at") >= 2
+
+
+def test_postgres_smoke_covers_invalid_challenge_clock_both_paths():
+    smoke = (MIGRATIONS.parent / "tests/COACH_CHALLENGES_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql").read_text(encoding="utf-8")
+    assert "Invalid first-settlement clock accepted" in smoke
+    assert "Invalid settled challenge clock accepted" in smoke
