@@ -156,8 +156,9 @@ def test_manual_settlement_remains_policy_gated():
     assert "REVIEW ONLY" in policy
     assert "pending explicit coach approval" in policy
     assert "exactly one immutable manual review" in policy
-    assert "unique payout identifier" in policy
-    assert "no executable payout function" in policy
+    assert "idempotent reward ledger" in policy
+    assert "documentation only" in policy
+    assert "executable settlement is in migration 027" in policy
     assert "CREATE OR REPLACE FUNCTION" not in policy
     assert "INSERT INTO public.point_transactions" not in policy
 
