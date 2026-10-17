@@ -21,6 +21,13 @@ class DuelContractTests(unittest.TestCase):
         cls.settlement = (ROOT / "supabase/migrations/009_duels_v2_settlement_review.sql").read_text(encoding="utf-8")
         cls.reads = (ROOT / "supabase/migrations/010_duels_v2_read_rpc_review.sql").read_text(encoding="utf-8")
 
+    def test_feature_flag_insert_supports_production_required_display_name(self):
+        self.assertIn(
+            "INSERT INTO public.league_feature_flags(feature_key,display_name,is_enabled)",
+            self.schema,
+        )
+        self.assertIn("VALUES('duels','Boxer Duels V2',false)", self.schema)
+
     def test_isolated_integration_matrix_covers_payout_safety(self):
         for scenario in ("D09", "D10", "D11", "D14", "D16", "D21", "D23", "D26"):
             with self.subTest(scenario=scenario):
