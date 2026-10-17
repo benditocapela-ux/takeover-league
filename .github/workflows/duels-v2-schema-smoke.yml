@@ -115,6 +115,15 @@ jobs:
       - uses: actions/checkout@v4
       - name: Create synthetic base schema
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_SCHEMA_SMOKE_FIXTURE.sql
+      - name: Prepare synthetic Supabase migration tracking for read-only inventory
+        run: |
+          psql -X -v ON_ERROR_STOP=1 <<'SQL'
+          CREATE SCHEMA supabase_migrations;
+          CREATE TABLE supabase_migrations.schema_migrations(version text PRIMARY KEY);
+          INSERT INTO supabase_migrations.schema_migrations(version) VALUES ('synthetic_only');
+          SQL
+      - name: Execute production inventory against disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/preflight/TAKEOVER_LEAGUE_2_READ_ONLY_INVENTORY.sql
       - name: Execute read-only schema and training RPC preflight on synthetic database
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_PREFLIGHT_READ_ONLY.sql
       - name: Verify public-only training RPC inventory on synthetic database
