@@ -230,6 +230,8 @@ jobs:
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/027_coach_challenges_v2_manual_settlement_review.sql
       - name: Apply owner-only challenge goal detail reader
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/028_coach_challenges_v2_goal_details_review.sql
+      - name: Verify saved challenge goal privacy and draft-only access
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_GOAL_DETAILS_BEHAVIOR_SMOKE.sql
       - name: Exercise challenge EXP payout once and reject duplicate settlement
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql
       - name: Verify challenge RPC grants and API table isolation
