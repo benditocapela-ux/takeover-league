@@ -52,6 +52,9 @@ BEGIN
   IF SQLERRM='Duplicate active rejoin accepted' THEN RAISE; END IF;
   IF SQLERRM NOT LIKE 'Already enrolled%' THEN RAISE; END IF;
  END;
+ IF public.coach_challenge_v2_withdraw(challenge)<>'withdrawn' THEN
+  RAISE EXCEPTION 'Second withdrawal after rejoin failed';
+ END IF;
  PERFORM set_config('test.auth_uid','d1000000-0000-0000-0000-000000000001',true);
  PERFORM public.coach_challenge_v2_manage(challenge,'cancel');
  PERFORM set_config('test.auth_uid','d1000000-0000-0000-0000-000000000002',true);
