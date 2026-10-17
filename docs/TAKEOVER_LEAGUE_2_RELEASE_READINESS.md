@@ -24,7 +24,7 @@ Owner decision register: [Takeover League 2.0 owner decisions](TAKEOVER_LEAGUE_2
 
 - [ ] Back up live Supabase database and document rollback strategy
 - [ ] Check schema compatibility and required roles/extensions
-- [ ] Run read-only inventory/preflight and inspect its results
+- [ ] After explicit owner authorization, run [read-only inventory](../supabase/preflight/TAKEOVER_LEAGUE_2_READ_ONLY_INVENTORY.sql) and inspect its results; the script itself is not permission to execute
 - [ ] Confirm no unexpected point transaction categories or existing challenge EXP payouts
 - [ ] Review every SQL migration and its order before execution
 - [ ] Confirm RLS, grants and feature flags after migrations
