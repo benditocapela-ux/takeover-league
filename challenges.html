@@ -41,7 +41,7 @@ function status(message,error=false){$('status').textContent=message;$('status')
 function button(label,secondary,action){
  const el=document.createElement('button');el.type='button';el.textContent=label;
  if(secondary)el.className='secondary';
- el.addEventListener('click',async()=>{el.disabled=true;try{await action();await refresh()}catch(e){status(e.message,true)}finally{el.disabled=false}});
+ el.addEventListener('click',async()=>{el.disabled=true;try{const changed=await action();if(changed!==false)await refresh()}catch(e){status(e.message,true)}finally{el.disabled=false}});
  return el;
 }
 async function rpc(name,args){const r=await db.rpc(name,args);if(r.error)throw r.error;return r.data}
@@ -77,7 +77,7 @@ async function refresh(){
    }));
    if(c.status==='draft')actions.append(button('Anmeldung öffnen',false,async()=>{await rpc('coach_challenge_v2_manage',{p_challenge_id:c.id,p_action:'open'});status('Anmeldung geöffnet.')}));
    if(['draft','open'].includes(c.status))actions.append(button('Absagen',true,async()=>{
-    if(!confirm('Diese Challenge wirklich absagen?'))return;
+    if(!confirm('Diese Challenge wirklich absagen?'))return false;
     await rpc('coach_challenge_v2_manage',{p_challenge_id:c.id,p_action:'cancel'});status('Challenge abgesagt.');
    }));
   }
