@@ -22,6 +22,7 @@ on:
       - 'supabase/migrations/017_coach_challenges_v2_goal_definition_rpc_review.sql'
       - 'supabase/migrations/018_coach_challenges_v2_progress_rpc_review.sql'
       - 'supabase/migrations/019_coach_challenges_v2_manual_review_rpc_review.sql'
+      - 'supabase/migrations/020_coach_challenges_v2_review_read_rpc_review.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_SCHEMA_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_ENROLLMENT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_MANAGEMENT_BEHAVIOR_SMOKE.sql'
@@ -58,6 +59,7 @@ on:
       - 'supabase/migrations/017_coach_challenges_v2_goal_definition_rpc_review.sql'
       - 'supabase/migrations/018_coach_challenges_v2_progress_rpc_review.sql'
       - 'supabase/migrations/019_coach_challenges_v2_manual_review_rpc_review.sql'
+      - 'supabase/migrations/020_coach_challenges_v2_review_read_rpc_review.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_SCHEMA_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_ENROLLMENT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_MANAGEMENT_BEHAVIOR_SMOKE.sql'
@@ -145,6 +147,8 @@ jobs:
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/019_coach_challenges_v2_manual_review_rpc_review.sql
       - name: Exercise manual coach review ownership and audit
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_MANUAL_REVIEW_BEHAVIOR_SMOKE.sql
+      - name: Apply private manual review status RPC
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/020_coach_challenges_v2_review_read_rpc_review.sql
       - name: Verify challenge RPC grants and API table isolation
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_API_PERMISSIONS_SMOKE.sql
       - name: Audit coach challenge integrity in disposable database
