@@ -73,6 +73,26 @@ LEFT JOIN pg_catalog.pg_proc p
  ON p.proname=r.name AND p.pronamespace='public'::pg_catalog.regnamespace
 GROUP BY r.name ORDER BY r.name;
 
+-- Review security of every deployed training RPC overload. A SECURITY DEFINER
+-- routine with a caller-writable search_path or PUBLIC execute privileges
+-- is a separate release blocker, even when its row-lock order is safe.
+SELECT p.proname AS rpc_name,
+       pg_catalog.pg_get_function_identity_arguments(p.oid) AS arguments,
+       CASE WHEN p.prosecdef THEN 'SECURITY DEFINER' ELSE 'SECURITY INVOKER' END AS security_mode,
+       COALESCE(
+        (SELECT option FROM pg_catalog.unnest(p.proconfig) option
+         WHERE option LIKE 'search_path=%' LIMIT 1),
+        'search_path inherited'
+       ) AS search_path_setting,
+       pg_catalog.has_function_privilege('PUBLIC',p.oid,'EXECUTE') AS public_can_execute,
+       pg_catalog.has_function_privilege('anon',p.oid,'EXECUTE') AS anon_can_execute
+FROM pg_catalog.pg_proc p
+JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace
+WHERE n.nspname='public'
+  AND p.proname IN ('review_training','admin_edit_training',
+                    'admin_edit_training_details')
+ORDER BY p.proname,p.oid;
+
 -- Data-integrity counters for duel scoring. Aggregate-only output:
 -- mismatched owner links are excluded by settlement but require investigation.
 SELECT
