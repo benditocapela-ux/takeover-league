@@ -61,10 +61,13 @@ async function refresh(){
    reconcile.textContent='Ergebnis prüfen / aktualisieren';
    reconcile.addEventListener('click',async()=>{
     reconcile.disabled=true;
-    const result=await db.rpc('duel_v2_reconcile',{p_duel_id:d.id});
-    if(result.error)setStatus('Auswertung fehlgeschlagen: '+result.error.message,true);
-    else setStatus(result.data==='awaiting_reviews'?'Wartet auf offene Trainingsfreigaben.':result.data==='pending_correction'?'Bereits ausbezahlt; offene Trainingsfreigaben verhindern die Nachkorrektur.':'Duellauswertung aktualisiert.');
-    await refresh();
+    try{
+     const result=await db.rpc('duel_v2_reconcile',{p_duel_id:d.id});
+     if(result.error)setStatus('Auswertung fehlgeschlagen: '+result.error.message,true);
+     else setStatus(result.data==='awaiting_reviews'?'Wartet auf offene Trainingsfreigaben.':result.data==='pending_correction'?'Bereits ausbezahlt; offene Trainingsfreigaben verhindern die Nachkorrektur.':'Duellauswertung aktualisiert.');
+     await refresh();
+    }catch(err){setStatus('Auswertung fehlgeschlagen: '+err.message,true)}
+    finally{reconcile.disabled=false;}
    });actions.append(reconcile);item.append(actions);
   }
   if(d.status==='pending'&&d.opponent_id===me.id&&new Date(d.expires_at)>new Date()){
