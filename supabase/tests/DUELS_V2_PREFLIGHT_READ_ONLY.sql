@@ -84,7 +84,13 @@ SELECT p.proname AS rpc_name,
          WHERE option LIKE 'search_path=%' LIMIT 1),
         'search_path inherited'
        ) AS search_path_setting,
-       pg_catalog.has_function_privilege('PUBLIC',p.oid,'EXECUTE') AS public_can_execute,
+       EXISTS (
+        SELECT 1
+        FROM pg_catalog.aclexplode(
+          COALESCE(p.proacl,pg_catalog.acldefault('f',p.proowner))
+        ) acl
+        WHERE acl.grantee=0 AND acl.privilege_type='EXECUTE'
+       ) AS public_can_execute,
        pg_catalog.has_function_privilege('anon',p.oid,'EXECUTE') AS anon_can_execute
 FROM pg_catalog.pg_proc p
 JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace
