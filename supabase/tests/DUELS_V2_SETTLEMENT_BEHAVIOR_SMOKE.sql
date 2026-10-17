@@ -43,5 +43,41 @@ BEGIN
  IF result<>'settled' OR (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>2 THEN
   RAISE EXCEPTION 'Repeated reconciliation created duplicate payouts';
  END IF;
+ -- A reviewed training correction reverses the winner without minting new rewards.
+ INSERT INTO public.training_submissions(id,boxer_id,training_date,status,created_at)
+ VALUES ('20000000-0000-0000-0000-000000000002',b,current_date-interval '3 days','approved',now()-interval '3 days');
+ INSERT INTO public.point_transactions(id,boxer_id,submission_id,points,exp,category,description,effective_date,created_by)
+ VALUES ('30000000-0000-0000-0000-000000000002',b,
+         '20000000-0000-0000-0000-000000000002',70,70,'training','Corrected training',current_date-3,coach);
+ result:=public.duel_v2_reconcile(duel);
+ IF result<>'settled' THEN RAISE EXCEPTION 'Correction reconciliation failed'; END IF;
+ IF (SELECT winner_id FROM public.league_duels WHERE id=duel)<>b THEN
+  RAISE EXCEPTION 'Correction did not reverse winner';
+ END IF;
+ IF (SELECT awarded_exp FROM public.league_duel_exp_ledger WHERE duel_id=duel AND boxer_id=a)<>25
+    OR (SELECT awarded_exp FROM public.league_duel_exp_ledger WHERE duel_id=duel AND boxer_id=b)<>100 THEN
+  RAISE EXCEPTION 'Corrected EXP distribution is wrong';
+ END IF;
+ IF (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>2 THEN
+  RAISE EXCEPTION 'Correction minted duplicate EXP transactions';
+ END IF;
+ IF (SELECT count(*) FROM public.league_duel_events WHERE duel_id=duel AND event_type='corrected')<>1 THEN
+  RAISE EXCEPTION 'Correction audit event missing';
+ END IF;
+ -- A subsequent score tie should update existing transactions to 50 EXP each.
+ UPDATE public.point_transactions SET points=50
+ WHERE id='30000000-0000-0000-0000-000000000002';
+ result:=public.duel_v2_reconcile(duel);
+ IF result<>'settled' OR
+    (SELECT winner_id FROM public.league_duels WHERE id=duel) IS NOT NULL THEN
+  RAISE EXCEPTION 'Corrected tie did not settle';
+ END IF;
+ IF (SELECT count(*) FROM public.league_duel_exp_ledger
+     WHERE duel_id=duel AND awarded_exp=50)<>2 THEN
+  RAISE EXCEPTION 'Tie EXP correction failed';
+ END IF;
+ IF (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>2 THEN
+  RAISE EXCEPTION 'Tie correction minted duplicate rewards';
+ END IF;
 END $test$;
 ROLLBACK;
