@@ -166,12 +166,6 @@ jobs:
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_ATOMIC_GOAL_REWARD_BEHAVIOR_SMOKE.sql
       - name: Exercise activation validation and one-way transition
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_ACTIVATION_BEHAVIOR_SMOKE.sql
-      - name: Apply review-only manual challenge settlement in disposable database
-        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/027_coach_challenges_v2_manual_settlement_review.sql
-      - name: Exercise challenge EXP payout once and reject duplicate settlement
-        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql
-      - name: Verify challenge RPC grants and API table isolation
-        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_API_PERMISSIONS_SMOKE.sql
       - name: Audit coach challenge integrity in disposable database
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_AUDIT_READ_ONLY.sql
       - name: Assert coach challenge integrity with failure-on-violation checks
@@ -230,6 +224,12 @@ jobs:
 
       - name: Apply duel settlement migration 009 in disposable database
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/009_duels_v2_settlement_review.sql
+      - name: Apply review-only manual challenge settlement in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/027_coach_challenges_v2_manual_settlement_review.sql
+      - name: Exercise challenge EXP payout once and reject duplicate settlement
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql
+      - name: Verify challenge RPC grants and API table isolation
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_API_PERMISSIONS_SMOKE.sql
       - name: Exercise settlement and payout idempotency in PostgreSQL
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql
 
