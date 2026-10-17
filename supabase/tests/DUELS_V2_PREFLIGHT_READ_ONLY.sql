@@ -93,6 +93,23 @@ WHERE n.nspname='public'
                     'admin_edit_training_details')
 ORDER BY p.proname,p.oid;
 
+-- Trigger functions may acquire hidden row locks or mutate training awards.
+-- Read trigger definitions and their underlying function bodies for review.
+-- Exclude internal constraint triggers; inspect all user-defined triggers.
+SELECT c.relname AS table_name,
+       t.tgname AS trigger_name,
+       pg_catalog.pg_get_triggerdef(t.oid) AS trigger_definition,
+       p.proname AS function_name,
+       pg_catalog.pg_get_functiondef(p.oid) AS function_definition
+FROM pg_catalog.pg_trigger t
+JOIN pg_catalog.pg_class c ON c.oid=t.tgrelid
+JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+JOIN pg_catalog.pg_proc p ON p.oid=t.tgfoid
+WHERE n.nspname='public'
+  AND c.relname IN ('profiles','training_submissions','point_transactions')
+  AND NOT t.tgisinternal
+ORDER BY c.relname,t.tgname;
+
 -- Data-integrity counters for duel scoring. Aggregate-only output:
 -- mismatched owner links are excluded by settlement but require investigation.
 SELECT
