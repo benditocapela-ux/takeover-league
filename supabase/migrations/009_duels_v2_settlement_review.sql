@@ -120,6 +120,11 @@ BEGIN
   WHERE duel_id=d.id AND boxer_id=boxer FOR UPDATE;
 
   IF old_tx IS NULL THEN
+   -- A missing transaction reference is valid only for a new, unpaid ledger.
+   -- Do not create another reward if the ledger already claims EXP was paid.
+   IF old_exp IS DISTINCT FROM 0 THEN
+    RAISE EXCEPTION 'Duel reward ledger claims EXP without transaction for duel % boxer %',d.id,boxer;
+   END IF;
    INSERT INTO public.point_transactions
     (boxer_id,points,exp,category,description,effective_date,created_by)
    VALUES(boxer,0,target_exp,'duel_exp',
