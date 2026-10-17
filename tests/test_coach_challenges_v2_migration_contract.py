@@ -277,3 +277,10 @@ def test_draft_goal_reader_locks_challenge_before_status_check():
     sql = (MIGRATIONS / "028_coach_challenges_v2_goal_details_review.sql").read_text(encoding="utf-8")
     assert "WHERE id=p_challenge_id FOR UPDATE" in sql
     assert sql.index("WHERE id=p_challenge_id FOR UPDATE") < sql.index("IF c.status<>'draft'")
+
+
+def test_settled_challenge_rejects_null_payout_description():
+    sql = (MIGRATIONS / "027_coach_challenges_v2_manual_settlement_review.sql").read_text(encoding="utf-8")
+    smoke = (MIGRATIONS.parent / "tests/COACH_CHALLENGES_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql").read_text(encoding="utf-8")
+    assert "t.description IS DISTINCT FROM 'Challenge reward: '" in sql
+    assert "Missing payout description accepted" in smoke
