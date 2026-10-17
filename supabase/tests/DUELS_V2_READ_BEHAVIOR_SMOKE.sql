@@ -20,5 +20,24 @@ BEGIN
  PERFORM set_config('test.auth_uid','10000000-0000-0000-0000-0000000000c3',true);
  SELECT count(*) INTO n FROM public.duel_v2_list_mine();
  IF n<>1 THEN RAISE EXCEPTION 'Coach read failed'; END IF;
+ SELECT count(*) INTO n FROM public.duel_v2_eligible_boxers();
+ IF n<>3 THEN RAISE EXCEPTION 'Eligible list must include only three active boxers'; END IF;
+ UPDATE public.profiles SET is_active=false
+ WHERE id='00000000-0000-0000-0000-0000000000d4';
+ SELECT count(*) INTO n FROM public.duel_v2_eligible_boxers();
+ IF n<>2 THEN RAISE EXCEPTION 'Inactive boxer still eligible'; END IF;
+ UPDATE public.league_feature_flags SET is_enabled=false WHERE feature_key='duels';
+ BEGIN
+  PERFORM public.duel_v2_list_mine();
+  RAISE EXCEPTION 'Read RPC bypassed disabled flag';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Read RPC bypassed disabled flag' THEN RAISE; END IF;
+ END;
+ BEGIN
+  PERFORM public.duel_v2_eligible_boxers();
+  RAISE EXCEPTION 'Eligibility RPC bypassed disabled flag';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Eligibility RPC bypassed disabled flag' THEN RAISE; END IF;
+ END;
 END $test$;
 ROLLBACK;
