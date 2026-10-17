@@ -313,3 +313,9 @@ def test_first_challenge_settlement_validates_goal_metadata():
     smoke = (MIGRATIONS.parent / "tests/COACH_CHALLENGES_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql").read_text(encoding="utf-8")
     assert sql.count("c.goal_spec->>'version' IS DISTINCT FROM '1'") >= 2
     assert "Invalid first-settlement goal accepted" in smoke
+
+
+def test_manual_settlement_requires_valid_challenge_clock():
+    sql = (MIGRATIONS / "027_coach_challenges_v2_manual_settlement_review.sql").read_text(encoding="utf-8")
+    assert sql.count("c.starts_at IS NULL") >= 2
+    assert sql.count("c.ends_at<=c.starts_at") >= 2
