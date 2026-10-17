@@ -15,6 +15,12 @@
 - C4: manual review and settlement only; no automatic settlement.
 - Disposable PostgreSQL smoke tests cover settlement and idempotency. Real Supabase Auth integration remains unverified.
 
+## Production compatibility preflight (read-only findings)
+- Production `league_feature_flags.display_name` is NOT NULL **without a default**. Test has the same NOT NULL column but defaults to an empty string. Migrations 007 (duels) and 011 (coach challenges) now explicitly insert nonempty display names, and the isolated PostgreSQL fixture enforces the production requirement.
+- Production currently has feature keys `boxer_duels` and `league_challenges`; V2 introduces distinct keys `duels` and `coach_challenges`. Do not reuse, rename, or activate legacy flags without a separate compatibility decision.
+- The production function inventory returned no `coach_challenge_v2_*` or `achievement_v2_*` functions. Existing production schema must be inventoried before creating or replacing functions.
+- Production data must be preserved. The test-only bootstrap must **never** be applied to production.
+
 ## Release blockers
 1. Create three **test-only** Supabase Auth accounts (admin, boxer A, boxer B), then link their actual auth IDs to test profiles. No production credentials or user data should be copied.
 2. Test with real sessions: admin challenge creation, goal setup, review and settlement; boxer join, withdrawal, rejoin, and forbidden admin actions; cross-boxer access; 150 EXP approved, 0 rejected, retry idempotency and zero training points. Temporarily enable only the **test** challenge flag during controlled tests and turn it off afterward.
