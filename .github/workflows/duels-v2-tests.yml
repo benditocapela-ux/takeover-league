@@ -6,6 +6,8 @@ on:
       - develop/takeover-league-2-foundation
     paths:
       - 'duels.html'
+      - 'challenges.html'
+      - 'tests/test_coach_challenges_v2_ui.py'
       - 'login.html'
       - 'supabase/migrations/007_duels_v2_schema_review.sql'
       - 'supabase/migrations/008_duels_v2_invitation_rpc_review.sql'
@@ -20,6 +22,8 @@ on:
   pull_request:
     paths:
       - 'duels.html'
+      - 'challenges.html'
+      - 'tests/test_coach_challenges_v2_ui.py'
       - 'supabase/migrations/007_duels_v2_schema_review.sql'
       - 'supabase/migrations/008_duels_v2_invitation_rpc_review.sql'
       - 'supabase/migrations/009_duels_v2_settlement_review.sql'
@@ -45,5 +49,7 @@ jobs:
         run: python -m pip install 'pglast>=7,<9'
       - name: Run duel contract checks
         run: python -m unittest discover -s tests -p 'test_duels_v2_contract.py' -v
+      - name: Run Coach Challenges UI security checks
+        run: python -m pip install pytest && python -m pytest tests/test_coach_challenges_v2_ui.py -q
       - name: Parse duel SQL with PostgreSQL grammar
         run: python -m unittest discover -s tests -p 'test_duels_v2_sql_syntax.py' -v
