@@ -4,6 +4,40 @@
 -- Do not execute on live Supabase until isolated integration tests pass.
 BEGIN;
 
+-- Fail closed if the deployed category constraint differs from the reviewed
+-- baseline. This migration must not silently narrow or replace unknown rules.
+DO $duel_category_preflight$
+DECLARE existing_definition text;
+BEGIN
+ SELECT pg_catalog.pg_get_constraintdef(c.oid) INTO existing_definition
+ FROM pg_catalog.pg_constraint c
+ JOIN pg_catalog.pg_class t ON t.oid=c.conrelid
+ JOIN pg_catalog.pg_namespace n ON n.oid=t.relnamespace
+ WHERE n.nspname='public' AND t.relname='point_transactions'
+   AND c.conname='point_transactions_category_check' AND c.contype='c';
+ IF existing_definition IS NULL THEN
+  RAISE EXCEPTION 'Missing point_transactions category CHECK: manual schema review required';
+ END IF;
+ -- The old constraint may contain categories beyond those documented below.
+ -- Require the operator to compare its full definition with the new constraint.
+ IF existing_definition !~ 'training'
+    OR existing_definition !~ 'trainer_bonus'
+    OR existing_definition !~ 'adjustment'
+    OR existing_definition !~ 'legacy_import'
+    OR existing_definition !~ 'automatic_bonus'
+    OR existing_definition !~ 'achievement_exp' THEN
+  RAISE EXCEPTION 'Unexpected point_transactions category CHECK: manual schema review required: %',existing_definition;
+ END IF;
+ IF EXISTS (
+  SELECT 1 FROM public.point_transactions
+  WHERE category IS NOT NULL AND category NOT IN
+   ('training','trainer_bonus','adjustment','legacy_import',
+    'automatic_bonus','achievement_exp','duel_exp')
+ ) THEN
+  RAISE EXCEPTION 'Existing point transaction category would be rejected by duel migration';
+ END IF;
+END $duel_category_preflight$;
+
 ALTER TABLE public.point_transactions DROP CONSTRAINT point_transactions_category_check;
 ALTER TABLE public.point_transactions ADD CONSTRAINT point_transactions_category_check
  CHECK(category=ANY(ARRAY[
