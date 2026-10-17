@@ -15,6 +15,20 @@ BEGIN
    AND grantee IN ('anon','authenticated')
    AND privilege_type IN ('SELECT','INSERT','UPDATE','DELETE')
  ) THEN RAISE EXCEPTION 'Direct challenge table API grant found'; END IF;
+ IF EXISTS (
+   SELECT 1 FROM pg_catalog.pg_proc p
+   JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace
+   WHERE n.nspname='public' AND p.proname LIKE 'coach_challenge_v2_%'
+     AND (NOT p.prosecdef OR NOT EXISTS (
+       SELECT 1 FROM unnest(p.proconfig) setting WHERE setting LIKE 'search_path=%'
+     ))
+ ) THEN RAISE EXCEPTION 'Challenge RPC lacks protected search_path or SECURITY DEFINER'; END IF;
+ IF EXISTS (
+   SELECT 1 FROM pg_catalog.pg_proc p
+   JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace
+   WHERE n.nspname='public' AND p.proname LIKE 'coach_challenge_v2_%'
+     AND has_function_privilege('anon',p.oid,'EXECUTE')
+ ) THEN RAISE EXCEPTION 'Anonymous access to challenge RPC'; END IF;
  IF has_function_privilege('anon','public.coach_challenge_v2_settle_manual(uuid)','EXECUTE')
  THEN RAISE EXCEPTION 'Anonymous settlement access'; END IF;
  IF has_function_privilege('anon','public.coach_challenge_v2_save_goal_reward(uuid,text,text,integer,numeric,text)','EXECUTE')
