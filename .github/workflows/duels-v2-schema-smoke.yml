@@ -25,6 +25,7 @@ on:
       - 'supabase/tests/COACH_CHALLENGES_V2_WITHDRAW_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_READ_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_EDIT_DRAFT_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_AUDIT_READ_ONLY.sql'
       - 'supabase/tests/DUELS_V2_READ_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/DUELS_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/DUELS_V2_BATCH_BEHAVIOR_SMOKE.sql'
@@ -51,6 +52,7 @@ on:
       - 'supabase/tests/COACH_CHALLENGES_V2_WITHDRAW_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_READ_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_EDIT_DRAFT_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_AUDIT_READ_ONLY.sql'
   workflow_dispatch:
 
 permissions:
@@ -113,6 +115,8 @@ jobs:
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/016_coach_challenges_v2_edit_draft_rpc_review.sql
       - name: Exercise challenge draft editing and ownership
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_EDIT_DRAFT_BEHAVIOR_SMOKE.sql
+      - name: Audit coach challenge integrity in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_AUDIT_READ_ONLY.sql
       - name: Apply duel schema migration 007 in disposable database
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/007_duels_v2_schema_review.sql
       - name: Verify schema constraints, permissions and disabled flag
