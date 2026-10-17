@@ -17,10 +17,12 @@ on:
       - 'supabase/migrations/012_coach_challenges_v2_enrollment_rpc_review.sql'
       - 'supabase/migrations/013_coach_challenges_v2_management_rpc_review.sql'
       - 'supabase/migrations/014_coach_challenges_v2_withdraw_rpc_review.sql'
+      - 'supabase/migrations/015_coach_challenges_v2_read_rpc_review.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_SCHEMA_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_ENROLLMENT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_MANAGEMENT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_WITHDRAW_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_READ_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/DUELS_V2_READ_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/DUELS_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/DUELS_V2_BATCH_BEHAVIOR_SMOKE.sql'
@@ -39,10 +41,12 @@ on:
       - 'supabase/migrations/012_coach_challenges_v2_enrollment_rpc_review.sql'
       - 'supabase/migrations/013_coach_challenges_v2_management_rpc_review.sql'
       - 'supabase/migrations/014_coach_challenges_v2_withdraw_rpc_review.sql'
+      - 'supabase/migrations/015_coach_challenges_v2_read_rpc_review.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_SCHEMA_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_ENROLLMENT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_MANAGEMENT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_WITHDRAW_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_READ_BEHAVIOR_SMOKE.sql'
   workflow_dispatch:
 
 permissions:
@@ -97,6 +101,10 @@ jobs:
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/014_coach_challenges_v2_withdraw_rpc_review.sql
       - name: Exercise boxer withdrawal security and state transitions
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_WITHDRAW_BEHAVIOR_SMOKE.sql
+      - name: Apply coach challenge read RPC in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/015_coach_challenges_v2_read_rpc_review.sql
+      - name: Exercise coach challenge read authorization
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_READ_BEHAVIOR_SMOKE.sql
       - name: Apply duel schema migration 007 in disposable database
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/007_duels_v2_schema_review.sql
       - name: Verify schema constraints, permissions and disabled flag
