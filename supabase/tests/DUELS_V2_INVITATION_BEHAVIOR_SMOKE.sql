@@ -51,6 +51,15 @@ BEGIN
  EXCEPTION WHEN raise_exception THEN
   IF SQLERRM='NULL acceptance was accepted' THEN RAISE; END IF;
  END;
+ -- An unauthenticated caller cannot respond, even with a known duel UUID.
+ PERFORM set_config('test.auth_uid','',true);
+ BEGIN
+  PERFORM public.duel_v2_respond(duel,true);
+  RAISE EXCEPTION 'Unauthenticated caller responded to invitation';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Unauthenticated caller responded to invitation' THEN RAISE; END IF;
+ END;
+ PERFORM set_config('test.auth_uid','10000000-0000-0000-0000-0000000000b2',true);
  result:=public.duel_v2_respond(duel,true);
  IF result<>'active' THEN RAISE EXCEPTION 'Expected active, got %',result; END IF;
  IF (SELECT count(*) FROM public.league_duel_events WHERE duel_id=duel)<>2 THEN
