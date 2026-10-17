@@ -290,6 +290,11 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn("search_path_setting", self.preflight)
         self.assertIn("security_mode", self.preflight)
 
+    def test_preflight_audits_missing_training_awards_and_adjustments(self):
+        self.assertIn("approved_submissions_without_scoring_transaction", self.preflight)
+        self.assertIn("t.category NOT IN ('training','legacy_import','duel_exp')", self.preflight)
+        self.assertIn("t.boxer_id=s.boxer_id", self.preflight)
+
 
 if __name__ == "__main__":
     unittest.main()
