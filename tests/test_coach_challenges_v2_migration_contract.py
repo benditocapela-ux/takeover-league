@@ -12,6 +12,7 @@ FILES = {
         (14, "coach_challenges_v2_withdraw_rpc_review"),
         (15, "coach_challenges_v2_read_rpc_review"),
         (16, "coach_challenges_v2_edit_draft_rpc_review"),
+        (17, "coach_challenges_v2_goal_definition_rpc_review"),
     )
 }
 
@@ -42,6 +43,7 @@ def test_all_challenge_rpcs_are_locked_down():
         14: ("coach_challenge_v2_withdraw",),
         15: ("coach_challenge_v2_list",),
         16: ("coach_challenge_v2_edit_draft",),
+        17: ("coach_challenge_v2_set_goal",),
     }
     for migration, names in functions.items():
         sql = FILES[migration]
@@ -58,3 +60,12 @@ def test_no_challenge_payout_or_activation_implemented_without_goals():
     assert "UPDATE public.point_transactions" not in combined
     assert "INSERT INTO public.league_coach_challenge_exp_ledger" not in combined
     assert "status='active'" not in combined
+
+
+def test_goal_definition_requires_coach_and_keeps_payouts_disabled():
+    sql = FILES[17]
+    assert "p_review_mode NOT IN ('manual','automatic')" in sql
+    assert "challenge.status<>'draft'" in sql
+    assert "challenge.created_by<>actor.id" in sql
+    assert "p_target_value<=0" in sql
+    assert "jsonb_build_object" in sql
