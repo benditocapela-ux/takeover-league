@@ -325,3 +325,11 @@ def test_schema_guards_challenge_clock_before_settlement():
     schema = (MIGRATIONS / "011_coach_challenges_v2_schema_review.sql").read_text(encoding="utf-8")
     assert "ends_at=starts_at+(duration_days * interval '1 day')" in schema
     assert "starts_at IS NOT NULL AND ends_at IS NOT NULL" in schema
+
+
+def test_read_only_inventory_keeps_category_aggregation_executable():
+    inventory = (MIGRATIONS.parent / "preflight/TAKEOVER_LEAGUE_2_READ_ONLY_INVENTORY.sql").read_text(encoding="utf-8")
+    assert "BEGIN TRANSACTION READ ONLY;" in inventory
+    assert "SELECT category,count(*) AS transaction_count" in inventory.splitlines()
+    assert "FROM public.point_transactions GROUP BY category ORDER BY category;" in inventory
+    assert "COMMIT;" in inventory
