@@ -61,25 +61,7 @@ ORDER BY p.proname;
 
 SELECT extname,extversion FROM pg_catalog.pg_extension ORDER BY extname;
 
--- Inventory must also work on a fresh database without the V2 category.
--- Dynamic execution avoids referencing missing objects in static SQL, while
--- transaction stays READ ONLY. Only aggregate counts are emitted.
-DO $inventory$
-DECLARE has_transactions boolean;
-BEGIN
- SELECT pg_catalog.to_regclass('public.point_transactions') IS NOT NULL
- INTO has_transactions;
- IF NOT has_transactions THEN
-  RAISE NOTICE 'point_transactions table missing; stop before migrations';
- ELSE
-  EXECUTE 'SELECT category,count(*) AS transaction_count FROM public.point_transactions GROUP BY category ORDER BY category';
- END IF;
-END $inventory$;
-
--- Do not expose boxer weights, emails, auth IDs or transaction descriptions.
--- On an existing deployment point_transactions is mandatory; the following
--- SELECT intentionally fails loudly if it is absent.
-SELECT category,count(*) AS transaction_count
+-- Aggregate-only checks; point_transactions is a required existing table.\nSELECT category,count(*) AS transaction_count
 FROM public.point_transactions GROUP BY category ORDER BY category;
 SELECT count(*) AS existing_challenge_exp_rows
 FROM public.point_transactions WHERE category='challenge_exp';
