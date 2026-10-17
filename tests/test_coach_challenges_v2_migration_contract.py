@@ -20,6 +20,7 @@ FILES = {
         (22, "coach_challenges_v2_activation_rpc_review"),
         (23, "coach_challenges_v2_begin_reviews_rpc_review"),
         (25, "coach_challenges_v2_reward_config_review"),
+        (26, "coach_challenges_v2_atomic_goal_reward_review"),
     )
 }
 
@@ -58,6 +59,7 @@ def test_all_challenge_rpcs_are_locked_down():
         22: ("coach_challenge_v2_activate",),
         23: ("coach_challenge_v2_begin_reviews",),
         25: ("coach_challenge_v2_set_reward",),
+        26: ("coach_challenge_v2_save_goal_reward",),
     }
     for migration, names in functions.items():
         sql = FILES[migration]
@@ -164,3 +166,13 @@ def test_reward_configuration_only_drafts_and_has_no_payout():
     assert "jsonb_set" in sql
     assert "INSERT INTO public.point_transactions" not in sql
     assert "challenge.goal_spec->'reward_exp'" in FILES[17]
+
+
+def test_goal_and_reward_are_saved_in_one_locked_transaction():
+    sql = FILES[26]
+    assert "FOR UPDATE" in sql
+    assert "c.created_by<>actor.id" in sql
+    assert "c.status<>'draft'" in sql
+    assert "p_reward_exp NOT IN (25,50,100,150,200)" in sql
+    assert "'reward_exp',p_reward_exp" in sql
+    assert "INSERT INTO public.point_transactions" not in sql
