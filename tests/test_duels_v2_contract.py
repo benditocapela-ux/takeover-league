@@ -68,6 +68,14 @@ class DuelContractTests(unittest.TestCase):
     def test_payout_ledger_unique(self):
         self.assertIn("UNIQUE(duel_id,boxer_id)", self.schema)
 
+    def test_settlement_locks_eligible_submissions_before_scoring(self):
+        lock = self.settlement.index("PERFORM 1 FROM public.training_submissions s")
+        pending = self.settlement.index("SELECT count(*) INTO pending_count")
+        score = self.settlement.index("SELECT COALESCE(sum(t.points)")
+        self.assertLess(lock, pending)
+        self.assertLess(pending, score)
+        self.assertIn("ORDER BY s.id FOR UPDATE", self.settlement)
+
     def test_pending_training_delays_settlement(self):
         self.assertIn("s.status='pending'", self.settlement)
         self.assertIn("RETURN 'awaiting_reviews'", self.settlement)
