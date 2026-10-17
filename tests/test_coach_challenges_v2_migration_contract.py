@@ -141,3 +141,14 @@ def test_candidate_roster_only_for_creator_and_unreviewed_joined_boxers():
     assert "e.status='joined'" in sql
     assert "NOT EXISTS" in sql
     assert "league_coach_challenge_reviews" in sql
+
+
+def test_manual_settlement_remains_policy_gated():
+    policy = (MIGRATIONS / "024_coach_challenges_v2_manual_settlement_policy_review.sql").read_text(encoding="utf-8")
+    assert "REVIEW ONLY" in policy
+    assert "pending explicit coach approval" in policy
+    assert "exactly one immutable manual review" in policy
+    assert "unique payout identifier" in policy
+    assert "no executable payout function" in policy
+    assert "CREATE OR REPLACE FUNCTION" not in policy
+    assert "INSERT INTO public.point_transactions" not in policy
