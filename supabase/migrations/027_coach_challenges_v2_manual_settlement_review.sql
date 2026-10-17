@@ -40,15 +40,11 @@ BEGIN
  IF actor.role<>'admin' AND c.created_by<>actor.id THEN
  RAISE EXCEPTION 'Not challenge owner'; END IF;
  IF c.status='settled' THEN
-  IF EXISTS(SELECT 1 FROM public.league_coach_challenge_entries e
-   LEFT JOIN public.league_coach_challenge_exp_ledger l
-    ON l.challenge_id=e.challenge_id AND l.boxer_id=e.boxer_id
-   WHERE e.challenge_id=c.id AND e.status='joined' AND l.id IS NULL) THEN
-   RAISE EXCEPTION 'Settled challenge has missing ledger rows'; END IF;
-  RETURN 'settled';
+  RAISE EXCEPTION 'Challenge already settled; payout integrity must be audited';
  END IF;
  IF c.status<>'awaiting_reviews' OR c.goal_spec->>'review_mode' IS DISTINCT FROM 'manual'
  OR c.ends_at IS NULL OR c.ends_at>pg_catalog.clock_timestamp()
+ OR c.goal_spec->>'reward_exp' IS NULL
  OR c.goal_spec->>'reward_exp' NOT IN ('25','50','100','150','200')
  OR pg_catalog.jsonb_typeof(c.goal_spec->'reward_exp') IS DISTINCT FROM 'number' THEN
  RAISE EXCEPTION 'Manual settlement unavailable'; END IF;
