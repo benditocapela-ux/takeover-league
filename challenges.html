@@ -117,9 +117,9 @@ function renderCards(rows,list){
    if(c.status==='active'&&c.ends_at&&new Date(c.ends_at).getTime()<=Date.now())actions.append(button('Prüfung nach Ablauf öffnen',true,async()=>{if(!confirm('Ist die Challenge abgelaufen? Die Datenbank prüft den Ablauf nochmals.'))return false;await rpc('coach_challenge_v2_begin_reviews',{p_challenge_id:c.id});status('Manuelle Prüfung geöffnet.')}));
    if(c.status==='open')actions.append(button('Challenge starten',false,async()=>{if(!confirm('Challenge jetzt starten? Die Laufzeit beginnt sofort und kann nicht zurückgesetzt werden.'))return false;await rpc('coach_challenge_v2_activate',{p_challenge_id:c.id});status('Challenge gestartet. Es wurden keine EXP ausgezahlt.')}));
    if(c.status==='draft')actions.append(button('Ziel festlegen',true,async()=>{
+    const savedGoal=await rpc('coach_challenge_v2_goal_details',{p_challenge_id:c.id});
     goalEditingId=c.id;$('goalChallengeName').textContent=c.title;
     $('goalForm').reset();updateGoalTarget();
-    const savedGoal=await rpc('coach_challenge_v2_goal_details',{p_challenge_id:c.id});
     if(goalEditingId!==c.id)return false;
     if(savedGoal&&savedGoal.goal_text){
      $('goalText').value=savedGoal.goal_text;
