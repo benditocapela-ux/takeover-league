@@ -12,6 +12,12 @@
 - Read-only live checks confirmed no direct challenge-table grants for anon/authenticated, no anonymous RPC EXECUTE and configured SECURITY DEFINER search paths.
 - Disposable PostgreSQL CI validates challenge settlement, including approved EXP, rejected zero EXP, idempotency and manual-only behavior. This is **not** a substitute for real Supabase Auth tests.
 
+## Additional live production drift confirmed (read-only)
+- No `public.coach_challenge_v2_*` or `public.achievement_v2_*` functions were returned by the production function inventory. Test contains 17 challenge RPCs.
+- Production feature keys include `league_challenges` and `boxer_duels`, while the isolated test has `coach_challenges` and `duels`. Do not conflate or toggle these keys; a production-specific feature-key compatibility plan is required.
+- All listed feature flags in **both** environments were false at the time of inspection. This is a snapshot, not a guarantee of future state.
+- These findings reinforce that test migrations must not be blindly replayed against production.
+
 ## Outstanding gaps before production
 1. Provision separate Auth users in **test only**: admin and two boxers. Link to test profiles and verify end-to-end role and privacy behavior.
 2. Exercise the test challenge feature flag and manual payout workflow; restore flag to disabled afterward.
