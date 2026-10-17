@@ -167,5 +167,5 @@ $('refresh').addEventListener('click',async()=>{
  try{if(await refresh())status('Challenge-Übersicht aktualisiert.')}catch(e){status('Aktualisierung fehlgeschlagen: '+e.message,true)}
  finally{control.disabled=false;refreshBusy=false}
 });
-init();
+init().catch(e=>{status('Initialisierung fehlgeschlagen: '+(e?.message||'Unbekannter Fehler'),true)});
 </script></body></html>
