@@ -56,6 +56,19 @@ class DuelContractTests(unittest.TestCase):
         for name in ("league_duels", "league_duel_exp_ledger", "league_duel_events"):
             self.assertIn(f"REVOKE ALL ON public.{name}", self.schema)
 
+    def test_settlement_actor_check_is_not_overwritten_by_flag_query(self):
+        self.assertIn('actor_found:=FOUND;', self.settlement)
+        self.assertIn("IF NOT actor_found OR actor.role NOT IN ('admin','coach')", self.settlement)
+
+    def test_write_rpcs_require_server_side_flag(self):
+        self.assertIn("feature_key='duels' AND is_enabled=true", self.invites)
+        self.assertIn("feature_key='duels' AND is_enabled=true", self.settlement)
+
+    def test_settlement_locks_profiles_before_duel(self):
+        first = self.settlement.index('PERFORM 1 FROM public.profiles')
+        second = self.settlement.index('WHERE id=p_duel_id FOR UPDATE')
+        self.assertLess(first, second)
+
     def test_read_rpc_authenticated(self):
         self.assertIn("GRANT EXECUTE ON FUNCTION public.duel_v2_list_mine() TO authenticated", self.reads)
 
