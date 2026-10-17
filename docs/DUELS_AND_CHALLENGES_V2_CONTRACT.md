@@ -21,6 +21,17 @@
 - Coach goals: **25 EXP**.
 - Need explicit challenge-specific goal definition and eligibility rules before implementing evaluation; do not assume goals, scoring metrics, or whether a particular coach challenge is competition versus goal.
 
+## Coach challenge opt-in implementation boundary
+
+The review-only RPCs support coach draft creation, draft publication,
+pre-activation cancellation, boxer opt-in and withdrawal while enrollment
+is open. Withdrawal preserves the entry with status `withdrawn` instead
+of deleting its audit record. **Rejoining after withdrawal is not yet
+supported**; its policy must be agreed before implementation. Opening
+enrollment is not the same as activating the timed challenge. Challenge
+targets, scoring, rank/tie payouts and activation remain deliberately
+unimplemented pending explicit goal definitions and release review.
+
 ## Release contract
 - Existing league points remain unchanged by duel/challenge rewards.
 - Achievement reward accounting is independent.
