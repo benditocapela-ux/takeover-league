@@ -19,12 +19,13 @@ BEGIN
  IF c.status<>'open' THEN RAISE EXCEPTION 'Only open challenges can activate'; END IF;
  IF c.starts_at IS NOT NULL OR c.ends_at IS NOT NULL OR c.settled_at IS NOT NULL THEN
  RAISE EXCEPTION 'Challenge clock already initialized'; END IF;
- IF c.goal_spec IS NULL OR c.goal_spec->>'version'<>'1'
- OR pg_catalog.char_length(pg_catalog.btrim(c.goal_spec->>'goal_text')) NOT BETWEEN 5 AND 1000
- OR c.goal_spec->>'review_mode' NOT IN ('manual','automatic') THEN
+ IF c.goal_spec IS NULL OR c.goal_spec->>'version' IS DISTINCT FROM '1'
+ OR COALESCE(pg_catalog.char_length(pg_catalog.btrim(c.goal_spec->>'goal_text')) BETWEEN 5 AND 1000,false)=false
+ OR c.goal_spec->>'review_mode' IS DISTINCT FROM 'manual'
+ OR c.goal_spec->>'reward_exp' IS NULL
+ OR c.goal_spec->>'reward_exp' NOT IN ('25','50','100','150','200') THEN
  RAISE EXCEPTION 'Valid goal required before activation'; END IF;
- IF c.goal_spec->>'review_mode'='automatic' THEN
- RAISE EXCEPTION 'Automatic goal settlement is not implemented'; END IF;
+
  IF NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_entries
  WHERE challenge_id=c.id AND status='joined') THEN
  RAISE EXCEPTION 'At least one participant required'; END IF;
