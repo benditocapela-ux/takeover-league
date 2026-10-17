@@ -22,6 +22,17 @@ BEGIN
   IF SQLERRM='Empty challenge settlement accepted' THEN RAISE; END IF;
   IF SQLERRM<>'Cannot settle challenge without joined participants' THEN RAISE; END IF;
  END;
+ -- An impossible challenge clock must prevent the first payout.
+ UPDATE public.league_coach_challenges SET starts_at=ends_at WHERE id=cid;
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(cid);
+  RAISE EXCEPTION 'Invalid first-settlement clock accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Invalid first-settlement clock accepted' THEN RAISE; END IF;
+  IF SQLERRM<>'Manual settlement unavailable' THEN RAISE; END IF;
+ END;
+ UPDATE public.league_coach_challenges
+ SET starts_at=ends_at-interval '7 days' WHERE id=cid;
  -- Corrupted goal metadata must prevent the first payout.
  UPDATE public.league_coach_challenges
  SET goal_spec=pg_catalog.jsonb_set(goal_spec,'{goal_text}','""'::jsonb)
