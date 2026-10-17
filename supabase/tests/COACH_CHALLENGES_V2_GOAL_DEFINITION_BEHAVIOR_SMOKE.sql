@@ -14,8 +14,10 @@ BEGIN
  THEN RAISE EXCEPTION 'Manual goal save failed'; END IF;
  IF (SELECT goal_spec->>'review_mode' FROM public.league_coach_challenges WHERE id=challenge)<>'manual'
  THEN RAISE EXCEPTION 'Manual goal not persisted'; END IF;
- IF public.coach_challenge_v2_set_goal(challenge,'Run an approved total distance','automatic',30)<>'goal_saved'
+ IF public.coach_challenge_v2_set_goal(challenge,'Run an approved total distance','automatic',30,'jogging_km')<>'goal_saved'
  THEN RAISE EXCEPTION 'Automatic goal save failed'; END IF;
+ IF (SELECT goal_spec->>'metric' FROM public.league_coach_challenges WHERE id=challenge)<>'jogging_km'
+ THEN RAISE EXCEPTION 'Automatic metric not persisted'; END IF;
  IF (SELECT (goal_spec->>'target_value')::numeric FROM public.league_coach_challenges WHERE id=challenge)<>30
  THEN RAISE EXCEPTION 'Automatic target not persisted'; END IF;
  BEGIN
@@ -23,6 +25,20 @@ BEGIN
   RAISE EXCEPTION 'Missing automatic target accepted';
  EXCEPTION WHEN raise_exception THEN
   IF SQLERRM='Missing automatic target accepted' THEN RAISE; END IF;
+  IF SQLERRM<>'Invalid challenge goal definition' THEN RAISE; END IF;
+ END;
+ BEGIN
+  PERFORM public.coach_challenge_v2_set_goal(challenge,'Missing automatic metric','automatic',30);
+  RAISE EXCEPTION 'Missing metric accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Missing metric accepted' THEN RAISE; END IF;
+  IF SQLERRM<>'Invalid challenge goal definition' THEN RAISE; END IF;
+ END;
+ BEGIN
+  PERFORM public.coach_challenge_v2_set_goal(challenge,'Unknown metric','automatic',30,'unverified_points');
+  RAISE EXCEPTION 'Unknown metric accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Unknown metric accepted' THEN RAISE; END IF;
   IF SQLERRM<>'Invalid challenge goal definition' THEN RAISE; END IF;
  END;
  PERFORM set_config('test.auth_uid','f1000000-0000-0000-0000-000000000002',true);
