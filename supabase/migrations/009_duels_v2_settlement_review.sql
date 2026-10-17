@@ -49,6 +49,17 @@ BEGIN
  END IF;
  IF d.ends_at>current_time THEN RETURN 'in_progress'; END IF;
 
+ -- Lock the qualifying training submissions before counting and scoring.
+ -- This serializes concurrent review/edit updates against settlement, so a
+ -- submission cannot switch status between pending check and point summation.
+ -- Existing review functions must be checked for consistent lock order.
+ PERFORM 1 FROM public.training_submissions s
+ WHERE s.boxer_id IN (d.challenger_id,d.opponent_id)
+   AND s.training_date >= (d.accepted_at AT TIME ZONE 'Europe/Zurich')::date
+   AND s.training_date <= (d.ends_at AT TIME ZONE 'Europe/Zurich')::date
+   AND s.created_at<=d.ends_at
+ ORDER BY s.id FOR UPDATE;
+
  -- Only timely submitted, not-yet-reviewed entries delay settlement.
  SELECT count(*) INTO pending_count
  FROM public.training_submissions s
