@@ -139,7 +139,9 @@ REVOKE ALL ON FUNCTION public.duel_v2_reconcile(uuid) FROM PUBLIC,anon;
 GRANT EXECUTE ON FUNCTION public.duel_v2_reconcile(uuid) TO authenticated;
 -- Explicit coach operation to reconcile all ended duels after training review.
 -- The API caller is authorized independently in duel_v2_reconcile.
-CREATE OR REPLACE FUNCTION public.duel_v2_reconcile_due()
+-- Coaches can explicitly recheck settled duels after training corrections.
+-- Default only processes due unfinished duels; opt-in scans settled duels as well.
+CREATE OR REPLACE FUNCTION public.duel_v2_reconcile_due(p_include_settled boolean DEFAULT false)
 RETURNS TABLE(duel_id uuid, outcome text)
 LANGUAGE plpgsql SECURITY DEFINER SET search_path TO ''
 AS $duel_batch$
@@ -158,9 +160,10 @@ BEGIN
  END IF;
  FOR item IN
   SELECT d.id FROM public.league_duels d
-  WHERE d.status IN ('active','awaiting_reviews')
+  WHERE (d.status IN ('active','awaiting_reviews')
+         OR (p_include_settled AND d.status='settled'))
     AND d.ends_at<=clock_timestamp()
-  ORDER BY d.ends_at,d.id LIMIT 100
+  ORDER BY d.ends_at DESC,d.id LIMIT 100
  LOOP
   duel_id:=item.id;
   outcome:=public.duel_v2_reconcile(item.id);
@@ -168,8 +171,8 @@ BEGIN
  END LOOP;
 END $duel_batch$;
 
-REVOKE ALL ON FUNCTION public.duel_v2_reconcile_due() FROM PUBLIC,anon;
-GRANT EXECUTE ON FUNCTION public.duel_v2_reconcile_due() TO authenticated;
+REVOKE ALL ON FUNCTION public.duel_v2_reconcile_due(boolean) FROM PUBLIC,anon;
+GRANT EXECUTE ON FUNCTION public.duel_v2_reconcile_due(boolean) TO authenticated;
 COMMIT;
 
 -- REVIEW BLOCKERS:
