@@ -66,6 +66,18 @@ BEGIN
  END;
  UPDATE public.league_coach_challenge_entries SET status='joined'
  WHERE challenge_id=cid AND boxer_id='e0000000-0000-0000-0000-000000000043';
+ -- A settled challenge with no remaining joined participants is invalid.
+ UPDATE public.league_coach_challenge_entries SET status='withdrawn'
+ WHERE challenge_id=cid;
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(cid);
+  RAISE EXCEPTION 'Settled empty participant roster accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Settled empty participant roster accepted' THEN RAISE; END IF;
+  IF SQLERRM<>'Settled challenge payout integrity mismatch' THEN RAISE; END IF;
+ END;
+ UPDATE public.league_coach_challenge_entries SET status='joined'
+ WHERE challenge_id=cid;
  -- An orphan challenge EXP transaction must never be silently accepted.
  INSERT INTO public.point_transactions(boxer_id,points,exp,category,description,effective_date,created_by)
  VALUES('e0000000-0000-0000-0000-000000000043',0,150,'challenge_exp',
