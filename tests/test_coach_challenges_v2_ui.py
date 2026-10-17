@@ -245,3 +245,21 @@ def test_manual_review_form_calls_authorized_rpc_without_local_exp_payout():
     assert "p_approved:" in html and "p_reason:" in html
     assert "reviewChallengeId=null" in html
     assert "point_transactions" not in html
+
+
+def test_trainer_activation_and_review_transition_have_confirmation():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "coach_challenge_v2_activate" in html
+    assert "coach_challenge_v2_begin_reviews" in html
+    assert "Challenge jetzt starten?" in html
+    assert "Die Datenbank prüft den Ablauf nochmals." in html
+    assert "Es wurden keine EXP ausgezahlt." in html
+
+
+def test_review_picker_only_shows_unreviewed_participants():
+    html = PAGE.read_text(encoding="utf-8")
+    assert 'id="reviewBoxer"' in html
+    assert "coach_challenge_v2_review_candidates" in html
+    assert "coach_challenge_v2_review_status" in html
+    assert "new Set((reviews||[]).map(r=>r.boxer_id))" in html
+    assert "select.disabled=!eligible.length" in html
