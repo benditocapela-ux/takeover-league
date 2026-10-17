@@ -21,6 +21,7 @@ FILES = {
         (23, "coach_challenges_v2_begin_reviews_rpc_review"),
         (25, "coach_challenges_v2_reward_config_review"),
         (26, "coach_challenges_v2_atomic_goal_reward_review"),
+        (27, "coach_challenges_v2_manual_settlement_review"),
     )
 }
 
@@ -60,6 +61,7 @@ def test_all_challenge_rpcs_are_locked_down():
         23: ("coach_challenge_v2_begin_reviews",),
         25: ("coach_challenge_v2_set_reward",),
         26: ("coach_challenge_v2_save_goal_reward",),
+        27: ("coach_challenge_v2_settle_manual",),
     }
     for migration, names in functions.items():
         sql = FILES[migration]
@@ -72,10 +74,10 @@ def test_all_challenge_rpcs_are_locked_down():
 
 def test_no_challenge_payout_or_activation_implemented_without_goals():
     combined = "\n".join(FILES.values())
-    assert "INSERT INTO public.point_transactions" not in combined
-    assert "UPDATE public.point_transactions" not in combined
-    assert "INSERT INTO public.league_coach_challenge_exp_ledger" not in combined
-    assert "INSERT INTO public.point_transactions" not in combined
+    pre_settlement = "\\n".join(sql for n, sql in FILES.items() if n != 27)
+    assert "INSERT INTO public.point_transactions" not in pre_settlement
+    assert "UPDATE public.point_transactions" not in pre_settlement
+    assert "INSERT INTO public.league_coach_challenge_exp_ledger" not in pre_settlement
 
 
 def test_goal_definition_requires_coach_and_keeps_payouts_disabled():
@@ -186,3 +188,16 @@ def test_activation_rejects_incomplete_json_goal_fields():
     assert "false)=false" in sql
     assert "c.goal_spec->>'reward_exp' NOT IN" in sql
     assert "c.goal_spec->>'review_mode' IS DISTINCT FROM 'manual'" in sql
+
+
+def test_manual_settlement_pays_only_after_reviews_and_locks_challenge():
+    sql = FILES[27]
+    assert "FOR UPDATE" in sql
+    assert "c.created_by<>actor.id" in sql
+    assert "All joined participants require a review" in sql
+    assert "point_transactions_unique_challenge_reward" in sql
+    assert "Orphaned challenge payout exists" in sql
+    assert "INSERT INTO public.point_transactions" in sql
+    assert "INSERT INTO public.league_coach_challenge_exp_ledger" in sql
+    assert "status='settled'" in sql
+    assert "Challenge already settled; payout integrity must be audited" in sql
