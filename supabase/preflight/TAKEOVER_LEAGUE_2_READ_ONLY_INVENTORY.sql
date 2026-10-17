@@ -61,7 +61,8 @@ ORDER BY p.proname;
 
 SELECT extname,extversion FROM pg_catalog.pg_extension ORDER BY extname;
 
--- Aggregate-only checks; point_transactions is a required existing table.\nSELECT category,count(*) AS transaction_count
+-- Aggregate-only checks; point_transactions is a required existing table.
+SELECT category,count(*) AS transaction_count
 FROM public.point_transactions GROUP BY category ORDER BY category;
 SELECT count(*) AS existing_challenge_exp_rows
 FROM public.point_transactions WHERE category='challenge_exp';
