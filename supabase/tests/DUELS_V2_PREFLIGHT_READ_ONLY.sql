@@ -153,6 +153,25 @@ WHERE s.status='approved'
   AND t.category NOT IN ('training','legacy_import','duel_exp')
 GROUP BY t.category ORDER BY t.category;
 
+-- Submission-linked adjustments and training awards can coexist.
+-- Count approved submissions with any adjustment for coach review of edit RPCs.
+SELECT count(*) AS approved_submissions_with_linked_adjustments
+FROM public.training_submissions s
+WHERE s.status='approved'
+  AND EXISTS (
+   SELECT 1 FROM public.point_transactions t
+   WHERE t.submission_id=s.id AND t.boxer_id=s.boxer_id
+     AND t.category='adjustment'
+  );
+
+-- Transactions in the scoring categories without submission links are not
+-- counted by duel settlement. Report aggregate counts for legacy assessment.
+SELECT category,count(*) AS unlinked_scoring_transactions
+FROM public.point_transactions
+WHERE category IN ('training','legacy_import')
+  AND submission_id IS NULL
+GROUP BY category ORDER BY category;
+
 -- Existing role and transaction categories (counts only, no personal data).
 SELECT role,count(*) AS profiles FROM public.profiles GROUP BY role ORDER BY role;
 SELECT category,count(*) AS transactions
