@@ -48,3 +48,9 @@ def test_draft_edit_uses_prefilled_form_and_can_be_cancelled():
     assert "p_id:editing,...values,p_days:" in html
     assert "p_duration_days:Number($('duration').value)" in html
     assert "prompt(" not in html
+
+
+def test_cancel_confirmation_does_not_trigger_unnecessary_reload():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "if(!confirm('Diese Challenge wirklich absagen?'))return false;" in html
+    assert "if(changed!==false)await refresh()" in html
