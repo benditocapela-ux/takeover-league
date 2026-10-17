@@ -255,3 +255,12 @@ def test_goal_details_is_owner_restricted_and_ui_prefills_saved_draft():
     assert "coach_challenge_v2_goal_details" in ui
     assert "savedGoal.goal_text" in ui
     assert "savedGoal.reward_exp" in ui
+
+
+def test_goal_details_privacy_smoke_is_wired_to_postgresql_ci():
+    workflow = (MIGRATIONS.parent.parent / ".github/workflows/duels-v2-schema-smoke.yml").read_text(encoding="utf-8")
+    smoke = (MIGRATIONS.parent / "tests/COACH_CHALLENGES_V2_GOAL_DETAILS_BEHAVIOR_SMOKE.sql").read_text(encoding="utf-8")
+    assert "COACH_CHALLENGES_V2_GOAL_DETAILS_BEHAVIOR_SMOKE.sql" in workflow
+    assert "Other coach read private draft goal" in smoke
+    assert "Boxer read private draft goal" in smoke
+    assert "Saved draft goal not returned" in smoke
