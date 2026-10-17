@@ -53,7 +53,7 @@ function renderChallenges(){
  const term=$('challengeSearch').value.trim().toLocaleLowerCase('de-CH');
  const rows=allChallenges.filter(c=>(statusFilter==='all'||c.status===statusFilter)&&(kindFilter==='all'||c.challenge_kind===kindFilter)&&(!term||(c.title+' '+(c.description||'')).toLocaleLowerCase('de-CH').includes(term)));
  const list=$('challengeList');list.replaceChildren();
- $('resultCount').textContent=rows.length+' von '+allChallenges.length+' geladenen Challenges angezeigt.';
+ $('resultCount').textContent=rows.length+' von '+allChallenges.length+' geladenen Challenges angezeigt.'+(allChallenges.length===100?' Hinweis: Höchstens 100 Einträge geladen.':'');
  if(!rows.length){list.textContent=allChallenges.length?'Keine Challenges für diesen Filter.':'Noch keine sichtbaren Challenges.';return}
  renderCards(rows,list);
 }
@@ -64,7 +64,6 @@ async function refresh(){
  catch(error){if(current!==sequence)return false;throw error}
  if(current!==sequence)return false;
  allChallenges=rows||[];renderChallenges();
- if(allChallenges.length===100)status('Es wurden höchstens 100 Challenges geladen. Ältere Einträge sind möglicherweise nicht sichtbar.');
  return true;
 }
 function renderCards(rows,list){
