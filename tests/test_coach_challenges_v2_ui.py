@@ -59,7 +59,7 @@ def test_cancel_confirmation_does_not_trigger_unnecessary_reload():
 def test_challenge_actions_are_serialized():
     html = PAGE.read_text(encoding="utf-8")
     assert "actionBusy=false" in html
-    assert "if(actionBusy||formBusy)return;actionBusy=true;sequence++;" in html
+    assert "if(actionBusy||formBusy||refreshBusy)return;actionBusy=true;sequence++;" in html
     assert "finally{el.disabled=false;actionBusy=false}" in html
 
 
@@ -73,8 +73,8 @@ def test_coach_ui_distinguishes_enrollment_from_activation():
 def test_form_and_list_actions_share_mutual_exclusion():
     html = PAGE.read_text(encoding="utf-8")
     assert "actionBusy=false,formBusy=false" in html
-    assert "if(actionBusy||formBusy)return;actionBusy=true;sequence++;" in html
-    assert "if(formBusy||actionBusy)return;" in html
+    assert "if(actionBusy||formBusy||refreshBusy)return;actionBusy=true;sequence++;" in html
+    assert "if(formBusy||actionBusy||refreshBusy)return;" in html
     assert "sequence++;formBusy=true;const control=$('createButton')" in html
     assert "$('cancelEdit').disabled=true;" in html
     assert "if(!formBusy)resetEditor()" in html
@@ -176,3 +176,12 @@ def test_mutations_invalidate_previously_started_list_requests():
     assert "actionBusy=true;sequence++;el.disabled=true;" in html
     assert "sequence++;formBusy=true;const control=" in html
     assert "if(current!==sequence)return false" in html
+
+
+def test_manual_refresh_serializes_with_writes_and_other_refreshes():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "refreshBusy=false" in html
+    assert "if(actionBusy||formBusy||refreshBusy)return;actionBusy=true;" in html
+    assert "if(formBusy||actionBusy||refreshBusy)return;" in html
+    assert "refreshBusy=true;const control=$('refresh');control.disabled=true;" in html
+    assert "finally{control.disabled=false;refreshBusy=false}" in html
