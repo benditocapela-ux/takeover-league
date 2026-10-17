@@ -125,7 +125,9 @@ def test_activation_requires_goal_enrollment_owner_and_row_lock():
     assert "c.goal_spec IS NULL" in sql
     assert "status='joined'" in sql
     assert "v_now+(duration_days * interval '1 day')" in sql
-    assert "Automatic goal settlement is not implemented" in sql
+    assert "c.goal_spec->>'review_mode' IS DISTINCT FROM 'manual'" in sql
+    assert "c.goal_spec->>'reward_exp' IS NULL" in sql
+    assert "c.goal_spec->>'version' IS DISTINCT FROM '1'" in sql
     assert "INSERT INTO public.point_transactions" not in sql
 
 
@@ -176,3 +178,11 @@ def test_goal_and_reward_are_saved_in_one_locked_transaction():
     assert "p_reward_exp NOT IN (25,50,100,150,200)" in sql
     assert "'reward_exp',p_reward_exp" in sql
     assert "INSERT INTO public.point_transactions" not in sql
+
+
+def test_activation_rejects_incomplete_json_goal_fields():
+    sql = FILES[22]
+    assert "COALESCE(pg_catalog.char_length" in sql
+    assert "false)=false" in sql
+    assert "c.goal_spec->>'reward_exp' NOT IN" in sql
+    assert "c.goal_spec->>'review_mode' IS DISTINCT FROM 'manual'" in sql
