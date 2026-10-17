@@ -59,6 +59,23 @@ WHERE n.nspname='public' AND
  OR p.proname LIKE 'achievement_v2_%')
 ORDER BY p.proname;
 
+SELECT table_schema,table_name,grantee,privilege_type
+FROM information_schema.role_table_grants
+WHERE table_schema='public' AND table_name IN
+ ('profiles','point_transactions','league_feature_flags',
+ 'league_coach_challenges','league_coach_challenge_entries',
+ 'league_coach_challenge_reviews','league_coach_challenge_exp_ledger')
+ORDER BY table_name,grantee,privilege_type;
+
+SELECT n.nspname AS schema_name,c.relname AS relation_name,
+ pg_catalog.pg_get_userbyid(c.relowner) AS owner,
+ c.relrowsecurity AS rls_enabled
+FROM pg_catalog.pg_class c
+JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
+WHERE n.nspname IN ('public','supabase_migrations')
+AND (c.relname='schema_migrations' OR c.relname='point_transactions')
+ORDER BY n.nspname,c.relname;
+
 SELECT extname,extversion FROM pg_catalog.pg_extension ORDER BY extname;
 
 -- Aggregate-only checks; point_transactions is a required existing table.
