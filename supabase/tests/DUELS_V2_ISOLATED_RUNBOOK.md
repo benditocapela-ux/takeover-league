@@ -59,6 +59,17 @@ multiple transactions may inflate a duel score even if ownership matches.
 These checks are diagnostic, not automatic repair. No production data
 changes are authorized by this runbook.
 
+## Training correction and missing-award gate
+
+The read-only preflight reports approved submissions with no same-boxer
+`training` / `legacy_import` transaction, plus other categories linked to
+approved submissions. These counts are **diagnostic**, not automatic failures:
+some historical imports may intentionally lack awarded points. Review actual
+`admin_edit_training` and `admin_edit_training_details` behavior before
+deciding whether `adjustment` transactions should change duel scores. Never
+sum arbitrary adjustments into duel scoring without identifying their source
+and correction semantics. This work remains blocked on deployed RPC review.
+
 ## Explicitly unresolved
 
 - Existing `review_training`, `admin_edit_training`, and
