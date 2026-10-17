@@ -14,6 +14,7 @@ FILES = {
         (16, "coach_challenges_v2_edit_draft_rpc_review"),
         (17, "coach_challenges_v2_goal_definition_rpc_review"),
         (18, "coach_challenges_v2_progress_rpc_review"),
+        (19, "coach_challenges_v2_manual_review_rpc_review"),
     )
 }
 
@@ -46,6 +47,7 @@ def test_all_challenge_rpcs_are_locked_down():
         16: ("coach_challenge_v2_edit_draft",),
         17: ("coach_challenge_v2_set_goal",),
         18: ("coach_challenge_v2_progress",),
+        19: ("coach_challenge_v2_review_manual",),
     }
     for migration, names in functions.items():
         sql = FILES[migration]
@@ -83,3 +85,13 @@ def test_progress_is_read_only_and_uses_approved_training():
     assert "actor.role<>'boxer' OR e.boxer_id=actor.id" in sql
     assert "INSERT INTO" not in sql
     assert "UPDATE public.point_transactions" not in sql
+
+
+def test_manual_review_is_private_audited_and_never_pays_exp():
+    sql = FILES[19]
+    assert "league_coach_challenge_reviews ENABLE ROW LEVEL SECURITY" in sql
+    assert "reviewed_by" in sql and "reason text NOT NULL" in sql
+    assert "UNIQUE(challenge_id,boxer_id)" in sql
+    assert "Review already recorded" in sql
+    assert "c.status<>'awaiting_reviews'" in sql
+    assert "INSERT INTO public.point_transactions" not in sql
