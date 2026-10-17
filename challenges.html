@@ -36,7 +36,7 @@ button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#263850;colo
 <p class="muted">Die Zielkonfiguration löst noch keine Prüfung oder EXP-Auszahlung aus.</p>
 <p class="actions"><button id="saveGoal" type="submit">Ziel speichern</button><button id="cancelGoal" type="button" class="secondary">Abbrechen</button></p>
 </form></section>
-<section id="reviewPanel" class="card hidden"><h2>Manuelle Zielprüfung</h2><p id="reviewChallengeName" class="muted"></p><form id="reviewForm"><label for="reviewBoxer">Boxer-ID (UUID)</label><input id="reviewBoxer" required pattern="[0-9a-fA-F-]{36}" placeholder="UUID des angemeldeten Boxers"><label for="reviewDecision">Entscheidung</label><select id="reviewDecision"><option value="true">Ziel erreicht</option><option value="false">Ziel nicht erreicht</option></select><label for="reviewReason">Interne Begründung (mindestens 5 Zeichen)</label><textarea id="reviewReason" minlength="5" maxlength="1000" required></textarea><p class="muted">Nur nach Ablauf einer manuellen Challenge im Status „Wartet auf Freigaben“. Die Entscheidung ist einmalig und zahlt keine EXP aus.</p><div class="actions"><button id="saveReview" type="submit">Entscheidung speichern</button><button id="cancelReview" type="button" class="secondary">Abbrechen</button></div></form></section>
+<section id="reviewPanel" class="card hidden"><h2>Manuelle Zielprüfung</h2><p id="reviewChallengeName" class="muted"></p><form id="reviewForm"><label for="reviewBoxer">Angemeldeten Boxer auswählen</label><select id="reviewBoxer" required><option value="">Bitte Boxer auswählen</option></select><p id="reviewParticipantsStatus" class="muted" role="status"></p><label for="reviewDecision">Entscheidung</label><select id="reviewDecision"><option value="true">Ziel erreicht</option><option value="false">Ziel nicht erreicht</option></select><label for="reviewReason">Interne Begründung (mindestens 5 Zeichen)</label><textarea id="reviewReason" minlength="5" maxlength="1000" required></textarea><p class="muted">Nur nach Ablauf einer manuellen Challenge im Status „Wartet auf Freigaben“. Die Entscheidung ist einmalig und zahlt keine EXP aus.</p><div class="actions"><button id="saveReview" type="submit">Entscheidung speichern</button><button id="cancelReview" type="button" class="secondary">Abbrechen</button></div></form></section>
 <section class="card"><div class="line"><h2>Challenges</h2><button id="refresh" class="secondary" type="button">Aktualisieren</button></div>
 <label for="challengeSearch">Challenge suchen</label><input id="challengeSearch" type="search" placeholder="Titel oder Beschreibung" autocomplete="off">
 <div class="line"><label for="statusFilter">Status <select id="statusFilter"><option value="all">Alle</option><option value="draft">Entwurf</option><option value="open">Anmeldung offen</option><option value="active">Aktiv</option><option value="awaiting_reviews">Wartet auf Freigaben</option><option value="settled">Abgeschlossen</option><option value="cancelled">Abgesagt</option></select></label><label for="kindFilter">Art <select id="kindFilter"><option value="all">Alle</option><option value="individual">Individuell</option><option value="competition">Wettbewerb</option><option value="coach_goal">Trainerziel</option></select></label></div>
@@ -111,7 +111,7 @@ function renderCards(rows,list){
    if(c.status==='awaiting_reviews')actions.append(button('Manuell prüfen',true,async()=>{
     reviewChallengeId=c.id;$('reviewChallengeName').textContent=c.title;
     $('reviewForm').reset();$('reviewPanel').classList.remove('hidden');
-    $('reviewPanel').scrollIntoView({behavior:'smooth',block:'start'});$('reviewBoxer').focus();return false;
+    $('reviewPanel').scrollIntoView({behavior:'smooth',block:'start'});await loadReviewParticipants(c.id);$('reviewBoxer').focus();return false;
    }));
    if(c.status==='draft')actions.append(button('Ziel festlegen',true,async()=>{
     goalEditingId=c.id;$('goalChallengeName').textContent=c.title;
@@ -166,6 +166,21 @@ function updateGoalTarget(){
 }
 function closeGoalEditor(){
  goalEditingId=null;$('goalForm').reset();updateGoalTarget();$('goalPanel').classList.add('hidden');
+}
+async function loadReviewParticipants(challengeId){
+ const select=$('reviewBoxer'),notice=$('reviewParticipantsStatus'),save=$('saveReview');
+ select.replaceChildren(new Option('Wird geladen …',''));select.disabled=true;save.disabled=true;
+ notice.textContent='Teilnehmer und vorhandene Entscheidungen werden geladen …';
+ try{
+  const [participants,reviews]=await Promise.all([rpc('coach_challenge_v2_review_candidates',{p_challenge_id:challengeId}),rpc('coach_challenge_v2_review_status',{p_challenge_id:challengeId})]);
+  if(reviewChallengeId!==challengeId)return;
+  const reviewed=new Set((reviews||[]).map(r=>r.boxer_id));
+  const eligible=(participants||[]).filter(p=>!reviewed.has(p.boxer_id));
+  select.replaceChildren(new Option('Bitte Boxer auswählen',''));
+  for(const p of eligible)select.add(new Option(p.display_name||p.boxer_id,p.boxer_id));
+  notice.textContent=eligible.length+' Boxer zur Prüfung verfügbar; '+reviewed.size+' bereits entschieden.';
+  select.disabled=!eligible.length;save.disabled=!eligible.length;
+ }catch(e){if(reviewChallengeId!==challengeId)return;select.replaceChildren(new Option('Teilnehmer nicht verfügbar',''));notice.textContent='Boxerauswahl nicht verfügbar: '+e.message;status(notice.textContent,true)}
 }
 function closeReviewEditor(){reviewChallengeId=null;$('reviewForm').reset();$('reviewPanel').classList.add('hidden')}
 $('cancelReview').addEventListener('click',()=>{if(!formBusy&&!actionBusy)closeReviewEditor()});
