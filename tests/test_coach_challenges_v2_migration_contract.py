@@ -244,3 +244,14 @@ def test_boxer_can_rejoin_open_challenge_after_withdrawing():
     assert "SET status='joined'" in sql
     assert "public.league_coach_challenge_entries.status='withdrawn'" in sql
     assert "v_challenge.status<>'open'" in sql
+
+
+def test_goal_details_is_owner_restricted_and_ui_prefills_saved_draft():
+    sql = (MIGRATIONS / "028_coach_challenges_v2_goal_details_review.sql").read_text(encoding="utf-8")
+    ui = (MIGRATIONS.parent.parent / "challenges.html").read_text(encoding="utf-8")
+    assert "c.created_by<>actor.id" in sql
+    assert "c.status<>'draft'" in sql
+    assert "REVOKE ALL ON FUNCTION public.coach_challenge_v2_goal_details" in sql
+    assert "coach_challenge_v2_goal_details" in ui
+    assert "savedGoal.goal_text" in ui
+    assert "savedGoal.reward_exp" in ui
