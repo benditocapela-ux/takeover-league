@@ -19,6 +19,9 @@ BEGIN
  IF NOT FOUND OR v_actor.role NOT IN ('boxer','admin','coach') THEN
   RAISE EXCEPTION 'Not authorized to create a duel';
  END IF;
+ IF NOT EXISTS(SELECT 1 FROM public.league_feature_flags WHERE feature_key='duels' AND is_enabled=true) THEN
+  RAISE EXCEPTION 'Duels are not enabled';
+ END IF;
  IF p_challenger IS NULL OR p_opponent IS NULL OR p_challenger=p_opponent THEN
   RAISE EXCEPTION 'Two different boxers required';
  END IF;
@@ -88,6 +91,9 @@ BEGIN
  ORDER BY id FOR UPDATE;
  SELECT * INTO v_duel FROM public.league_duels WHERE id=p_duel_id FOR UPDATE;
  IF NOT FOUND THEN RAISE EXCEPTION 'Duel not found'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM public.league_feature_flags WHERE feature_key='duels' AND is_enabled=true) THEN
+  RAISE EXCEPTION 'Duels are not enabled';
+ END IF;
  IF v_actor.id<>v_duel.opponent_id THEN
   RAISE EXCEPTION 'Only the invited boxer may respond';
  END IF;
