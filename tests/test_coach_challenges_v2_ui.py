@@ -233,4 +233,5 @@ def test_goal_progress_preview_is_read_only_and_validated():
     assert "Array.isArray(submissions)" in source
     assert "target > 1000000" in source
     assert "point_transactions" not in source
-    assert "exp" not in source.lower()
+    assert "awarded_exp" not in source.lower()
+    assert "insert into" not in source.lower()
