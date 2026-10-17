@@ -76,6 +76,13 @@ WHERE n.nspname IN ('public','supabase_migrations')
 AND (c.relname='schema_migrations' OR c.relname='point_transactions')
 ORDER BY n.nspname,c.relname;
 
+-- Only migration version metadata; no statements or secrets are returned.
+-- Supabase-managed projects normally provide this relation. If missing,
+-- stop and inspect the migration tracking setup rather than guessing.
+SELECT version,name
+FROM supabase_migrations.schema_migrations
+ORDER BY version;
+
 SELECT extname,extversion FROM pg_catalog.pg_extension ORDER BY extname;
 
 -- Aggregate-only checks; point_transactions is a required existing table.
