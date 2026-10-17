@@ -1,0 +1,68 @@
+name: Duel V2 isolated PostgreSQL schema smoke
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  schema-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: duel_test
+          POSTGRES_PASSWORD: synthetic_only
+          POSTGRES_DB: duel_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U duel_test -d duel_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: duel_test
+      PGPASSWORD: synthetic_only
+      PGDATABASE: duel_test
+      PGOPTIONS: -csearch_path=public
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create synthetic base schema
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_SCHEMA_SMOKE_FIXTURE.sql
+      - name: Apply duel schema migration 007 in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/007_duels_v2_schema_review.sql
+      - name: Verify schema constraints, permissions and disabled flag
+        run: |
+          psql -X -v ON_ERROR_STOP=1 <<'SQL'
+          DO $smoke$
+          BEGIN
+            IF NOT EXISTS (SELECT 1 FROM public.league_feature_flags
+                           WHERE feature_key='duels' AND is_enabled=false) THEN
+              RAISE EXCEPTION 'Duel feature flag is not disabled by default';
+            END IF;
+            IF to_regclass('public.league_duels') IS NULL
+               OR to_regclass('public.league_duel_exp_ledger') IS NULL
+               OR to_regclass('public.league_duel_events') IS NULL THEN
+              RAISE EXCEPTION 'Required duel tables missing';
+            END IF;
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+              WHERE n.nspname='public' AND c.relname='league_duels'
+                AND c.relrowsecurity
+            ) THEN
+              RAISE EXCEPTION 'Duel RLS is not enabled';
+            END IF;
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_indexes
+              WHERE schemaname='public' AND indexname='league_duels_one_active_per_pair'
+            ) THEN
+              RAISE EXCEPTION 'Missing active-pair unique index';
+            END IF;
+          END $smoke$;
+          SQL
