@@ -256,6 +256,10 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn("REVIEW REQUIRED", self.preflight)
         self.assertIn("MISSING", self.preflight)
 
+    def test_preflight_audits_transaction_ownership(self):
+        self.assertIn('mismatched_boxer_links', self.preflight)
+        self.assertIn('submissions_with_multiple_training_transactions', self.preflight)
+
 
 if __name__ == "__main__":
     unittest.main()
