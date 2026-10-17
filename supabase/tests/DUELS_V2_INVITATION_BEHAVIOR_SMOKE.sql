@@ -72,6 +72,17 @@ BEGIN
  IF (SELECT status FROM public.league_duels WHERE id=duel)<>'awaiting_reviews' THEN
   RAISE EXCEPTION 'Completed duel not retained for settlement';
  END IF;
+ -- A pending rematch may be declined without changing the old duel.
+ PERFORM set_config('test.auth_uid','10000000-0000-0000-0000-0000000000b2',true);
+ IF public.duel_v2_respond(
+  (SELECT id FROM public.league_duels WHERE status='pending' AND challenger_id=a AND opponent_id=b LIMIT 1),
+  false
+ )<>'declined' THEN
+  RAISE EXCEPTION 'Rematch decline failed';
+ END IF;
+ IF (SELECT status FROM public.league_duels WHERE id=duel)<>'awaiting_reviews' THEN
+  RAISE EXCEPTION 'Declining rematch changed original duel';
+ END IF;
  IF (SELECT count(*) FROM public.league_duel_events WHERE duel_id=duel)<>2 THEN
   RAISE EXCEPTION 'Expected invitation and acceptance events';
  END IF;
