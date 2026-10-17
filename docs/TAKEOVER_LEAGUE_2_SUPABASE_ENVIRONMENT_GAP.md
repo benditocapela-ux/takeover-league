@@ -1,26 +1,21 @@
-# Takeover League 2.0 — Supabase environment gap assessment (2026-10-18)
+# Takeover League 2.0 — Supabase environment assessment (updated 2026-10-18)
 
-**Read-only discovery only. No production or test SQL migration was applied.**
+## Verified environments
+- **Production**: Takeover Project (`iqarjivcrddcixrvqbfb`, eu-west-1), 14 profiles, 54 training submissions, 60 point transactions in initial inventory. **No production SQL migration or feature activation authorized or performed.**
+- **Isolated test**: Takeover league test (`cfgdvcccsqwfjajuizsr`, eu-central-1), zero profiles, training submissions or point transactions. Existing `league_test_*` fixtures preserved.
+- Both profiles tables restrict roles to `boxer` and `admin`; there is no `coach` role in the actual schema.
+- Production migration history returned empty through the API despite an existing schema. Do not interpret this as a blank database.
 
-## Identified environments
+## Test schema preparation completed
+- Reviewed test-only base-table bootstrap installed, followed by 001, 002, integrated 006, 007–023 and 025–028. 003–005 superseded by 006; 024 is comments only.
+- Test now has 32 achievement definitions and 32 rules, 17 challenge RPCs and disabled achievement/duel/challenge feature flags.
+- Read-only live checks confirmed no direct challenge-table grants for anon/authenticated, no anonymous RPC EXECUTE and configured SECURITY DEFINER search paths.
+- Disposable PostgreSQL CI validates challenge settlement, including approved EXP, rejected zero EXP, idempotency and manual-only behavior. This is **not** a substitute for real Supabase Auth tests.
 
-- Production candidate: **Takeover Project** (`iqarjivcrddcixrvqbfb`, eu-west-1). 14 profiles, 54 training submissions, 60 point transactions. Existing achievements, flags and league tables; migration history API returned an empty list.
-- Isolated test: **Takeover league test** (`cfgdvcccsqwfjajuizsr`, eu-central-1). Zero profiles, training submissions and point transactions. Contains three additional `league_test_*` tables with test rows, plus only the base app tables; migration history API returned an empty list.
+## Outstanding gaps before production
+1. Provision separate Auth users in **test only**: admin and two boxers. Link to test profiles and verify end-to-end role and privacy behavior.
+2. Exercise the test challenge feature flag and manual payout workflow; restore flag to disabled afterward.
+3. Inventory production constraints, grants, existing functions and drift; prepare reviewed, production-specific SQL rather than replaying test bootstrap.
+4. Verify backups/restore and obtain explicit owner authorization before any production SQL, feature flag activation, merge or deployment.
 
-## Confirmed schema incompatibilities in test
-
-1. Migration `002_achievement_v2_schema_draft.sql` immediately updates `public.achievement_definitions`, which does not exist in the test project's public table inventory. Applying the numbered migration sequence as-is will fail at 002.
-2. Test `public.profiles.role` currently permits `boxer` and `admin` only. Coach challenge RPCs use coach authorization and test fixtures create `coach` profiles; role semantics must be reconciled with the real base schema.
-3. Test `public.point_transactions.category` permits only training, trainer_bonus, adjustment, legacy_import and automatic_bonus; later migrations alter this check for EXP categories. Validate exact constraint names before applying them.
-4. Test has no `public.league_feature_flags` or `public.achievement_exp_ledger`. Migration 007 and 011 insert flags, so the base app schema and earlier migrations must first be established.
-5. Both projects report no migration history through the Supabase API; do not assume an empty history means an empty schema or that replaying historical DDL is safe.
-
-## Safe next actions
-
-- Confirm which project is production and which is disposable; avoid treating the test project as an exact clone.
-- Inventory base-schema creation scripts in GitHub, identify the earliest compatible baseline and dependency order, and prepare a test-only bootstrap plan.
-- Check existing SQL function signatures, constraints, grants and RLS on both environments before any DDL.
-- Get explicit authorization for test-environment writes separately from production writes. Do not clone personal user data into test without approval and a privacy plan.
-- Verify backups and restore procedures before production migrations. Feature flags remain off until separately approved.
-
-**Stop condition:** Never execute `001`–`028` directly against the current test schema without establishing missing base tables and reconciling role constraints.
+See `docs/TEST_AUTH_INTEGRATION_GATE.md` and `docs/CHALLENGES_TEST_RELEASE_GATE_2026-10-18.md`.
