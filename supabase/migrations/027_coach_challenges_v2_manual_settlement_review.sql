@@ -48,6 +48,9 @@ BEGIN
    OR pg_catalog.jsonb_typeof(c.goal_spec->'reward_exp') IS DISTINCT FROM 'number'
    OR c.ends_at IS NULL OR c.settled_at IS NULL THEN
    RAISE EXCEPTION 'Settled challenge metadata integrity mismatch'; END IF;
+  IF NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_entries
+   WHERE challenge_id=c.id AND status='joined') THEN
+   RAISE EXCEPTION 'Settled challenge payout integrity mismatch'; END IF;
   IF EXISTS(SELECT 1 FROM public.league_coach_challenge_entries e
    LEFT JOIN public.league_coach_challenge_reviews r
    ON r.challenge_id=e.challenge_id AND r.boxer_id=e.boxer_id
