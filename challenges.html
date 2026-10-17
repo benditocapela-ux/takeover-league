@@ -99,13 +99,13 @@ function renderCards(rows,list){
   if(c.description){const desc=document.createElement('p');desc.textContent=c.description;article.append(desc)}
   if(c.my_enrollment_status){const joined=document.createElement('p');joined.className='muted';joined.textContent='Dein Teilnahmestatus: '+(c.my_enrollment_status==='joined'?'Angemeldet':c.my_enrollment_status==='withdrawn'?'Zurückgezogen':c.my_enrollment_status);article.append(joined)}
   const actions=document.createElement('div');actions.className='actions';
-  if(me.role==='boxer'&&c.status==='open'&&!c.my_enrollment_status)
+  if(me.role==='boxer'&&c.status==='open'&&(!c.my_enrollment_status||c.my_enrollment_status==='withdrawn'))
    actions.append(button('Teilnehmen',false,async()=>{await rpc('coach_challenge_v2_join',{p_challenge_id:c.id});status('Anmeldung gespeichert.')}));
   if(me.role==='boxer'&&c.status==='open'&&c.my_enrollment_status==='joined')
-   actions.append(button('Abmelden',true,async()=>{if(!confirm('Von dieser Challenge abmelden? Eine erneute Anmeldung ist derzeit nicht möglich.'))return false;await rpc('coach_challenge_v2_withdraw',{p_challenge_id:c.id});status('Abmeldung gespeichert.')}));
+   actions.append(button('Abmelden',true,async()=>{if(!confirm('Von dieser Challenge abmelden? Solange die Anmeldung offen ist, kannst du erneut teilnehmen.'))return false;await rpc('coach_challenge_v2_withdraw',{p_challenge_id:c.id});status('Abmeldung gespeichert.')}));
   if(me.role==='boxer'&&c.my_enrollment_status==='withdrawn'&&c.status==='open'){
    const notice=document.createElement('p');notice.className='muted';
-   notice.textContent='Erneute Anmeldung nach Rückzug derzeit nicht möglich.';article.append(notice);
+   notice.textContent='Du hast dich abgemeldet. Solange die Anmeldung offen ist, kannst du erneut teilnehmen.';article.append(notice);
   }
   if(me.role!=='boxer'&&(c.is_creator||me.role==='admin')){
    if(c.status==='awaiting_reviews')actions.append(button('Challenge abrechnen',false,async()=>{if(!confirm('Alle Teilnehmer bewertet? Die EXP werden jetzt einmalig vergeben.'))return false;await rpc('coach_challenge_v2_settle_manual',{p_challenge_id:c.id});status('Challenge abgerechnet. EXP-Auszahlungen wurden gespeichert.')}));
