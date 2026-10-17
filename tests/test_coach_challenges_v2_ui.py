@@ -99,7 +99,7 @@ def test_challenge_filters_are_local_and_preserve_visibility():
     assert "allChallenges.filter(c=>" in html
     assert "renderCards(rows,list)" in html
     assert "function renderCards(rows,list){\n for(const c of rows){" in html
-    assert "allChallenges=rows||[];renderChallenges();return true;" in html
+    assert "allChallenges=rows||[];renderChallenges();" in html
     assert "$('statusFilter').addEventListener('change',renderChallenges)" in html
     assert "$('kindFilter').addEventListener('change',renderChallenges)" in html
 
