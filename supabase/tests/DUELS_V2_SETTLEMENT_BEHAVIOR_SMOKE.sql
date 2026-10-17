@@ -204,6 +204,35 @@ BEGIN
  IF (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>2 THEN
   RAISE EXCEPTION 'Feature toggle altered reward transactions';
  END IF;
+ -- Tampering with payout identity or accounting date must fail closed.
+ UPDATE public.point_transactions SET description='Incorrect duel reward'
+ WHERE id=(SELECT transaction_id FROM public.league_duel_exp_ledger
+           WHERE duel_id=duel AND boxer_id=a);
+ BEGIN
+  PERFORM public.duel_v2_reconcile(duel);
+  RAISE EXCEPTION 'Tampered reward description was accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Tampered reward description was accepted' THEN RAISE; END IF;
+  IF SQLERRM NOT LIKE 'Duel reward ledger mismatch%' THEN RAISE; END IF;
+ END;
+ UPDATE public.point_transactions SET description='Duel reward: '||duel::text
+ WHERE id=(SELECT transaction_id FROM public.league_duel_exp_ledger
+           WHERE duel_id=duel AND boxer_id=a);
+ UPDATE public.point_transactions SET effective_date=current_date+10
+ WHERE id=(SELECT transaction_id FROM public.league_duel_exp_ledger
+           WHERE duel_id=duel AND boxer_id=a);
+ BEGIN
+  PERFORM public.duel_v2_reconcile(duel);
+  RAISE EXCEPTION 'Tampered reward date was accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Tampered reward date was accepted' THEN RAISE; END IF;
+  IF SQLERRM NOT LIKE 'Duel reward ledger mismatch%' THEN RAISE; END IF;
+ END;
+ UPDATE public.point_transactions
+ SET effective_date=(SELECT (ends_at AT TIME ZONE 'Europe/Zurich')::date
+                     FROM public.league_duels WHERE id=duel)
+ WHERE id=(SELECT transaction_id FROM public.league_duel_exp_ledger
+           WHERE duel_id=duel AND boxer_id=a);
  -- Corrupt a paid transaction and ensure reconciliation fails closed.
  UPDATE public.point_transactions SET exp=999
  WHERE id=(SELECT transaction_id FROM public.league_duel_exp_ledger
