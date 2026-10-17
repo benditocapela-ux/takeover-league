@@ -16,7 +16,7 @@ BEGIN
  IF NOT FOUND THEN RAISE EXCEPTION 'Challenge not found'; END IF;
  IF actor.role<>'admin' AND c.created_by<>actor.id THEN
  RAISE EXCEPTION 'Not challenge owner'; END IF;
- IF c.status<>'active' OR c.goal_spec->>'review_mode'<>'manual'
+ IF c.status<>'active' OR c.goal_spec->>'review_mode' IS DISTINCT FROM 'manual'
  OR c.ends_at IS NULL OR c.ends_at>pg_catalog.clock_timestamp() THEN
  RAISE EXCEPTION 'Challenge not ready for review'; END IF;
  UPDATE public.league_coach_challenges SET status='awaiting_reviews',
