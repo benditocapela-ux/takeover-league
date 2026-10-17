@@ -25,7 +25,7 @@ This branch is isolated from main. No production database changes or deployment 
 - Cost from level L to L+1 = 100 + 25*(L-1).
 - Start EXP for level L = 100*(L-1)+25*(L-1)*(L-2)/2.
 - No level cap.
-- Level 2: 100; level 3: 225; level 10: 1800; level 11: 2125; level 20: 6650.
+- Level 2: 100; level 3: 225; level 10: 1800; level 11: 2125; level 20: 6175.
 
 ## Release gates
 - Compare all boxer EXP and old/new levels before any migration.
