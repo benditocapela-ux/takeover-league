@@ -104,12 +104,13 @@ BEGIN
   RAISE EXCEPTION 'Only the invited boxer may respond';
  END IF;
  IF v_duel.status<>'pending' THEN RAISE EXCEPTION 'Invitation is no longer pending'; END IF;
+ IF p_accept IS NULL THEN RAISE EXCEPTION 'Explicit acceptance or decline required'; END IF;
  IF v_duel.expires_at<=v_now THEN
   UPDATE public.league_duels SET status='expired',updated_at=v_now WHERE id=p_duel_id;
   INSERT INTO public.league_duel_events(duel_id,event_type) VALUES(p_duel_id,'expired');
   RETURN 'expired';
  END IF;
- IF p_accept IS DISTINCT FROM true THEN
+ IF p_accept=false THEN
   UPDATE public.league_duels SET status='declined',updated_at=v_now WHERE id=p_duel_id;
   INSERT INTO public.league_duel_events(duel_id,boxer_id,event_type)
   VALUES(p_duel_id,v_actor.id,'declined');
