@@ -46,7 +46,7 @@ function status(message,error=false){$('status').textContent=message;$('status')
 function button(label,secondary,action){
  const el=document.createElement('button');el.type='button';el.textContent=label;
  if(secondary)el.className='secondary';
- el.addEventListener('click',async()=>{if(actionBusy||formBusy)return;actionBusy=true;el.disabled=true;try{const changed=await action();if(changed!==false){try{await refresh()}catch(e){status('Aktion gespeichert, aber Aktualisierung fehlgeschlagen: '+e.message,true)}}}catch(e){status('Aktion fehlgeschlagen: '+e.message,true)}finally{el.disabled=false;actionBusy=false}});
+ el.addEventListener('click',async()=>{if(actionBusy||formBusy)return;actionBusy=true;sequence++;el.disabled=true;try{const changed=await action();if(changed!==false){try{await refresh()}catch(e){status('Aktion gespeichert, aber Aktualisierung fehlgeschlagen: '+e.message,true)}}}catch(e){status('Aktion fehlgeschlagen: '+e.message,true)}finally{el.disabled=false;actionBusy=false}});
  return el;
 }
 async function rpc(name,args){const r=await db.rpc(name,args);if(r.error)throw r.error;return r.data}
@@ -143,7 +143,7 @@ $('kindFilter').addEventListener('change',renderChallenges);
 $('cancelEdit').addEventListener('click',()=>{if(!formBusy)resetEditor()});
 $('createForm').addEventListener('submit',async e=>{
  e.preventDefault();if(formBusy||actionBusy)return;
- formBusy=true;const control=$('createButton');control.disabled=true;
+ sequence++;formBusy=true;const control=$('createButton');control.disabled=true;
  $('cancelEdit').disabled=true;
  const editing=editingId;
  let saved=false;
