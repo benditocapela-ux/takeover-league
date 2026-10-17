@@ -120,6 +120,20 @@ BEGIN
  UPDATE public.point_transactions SET description='Challenge reward: '||cid::text
  WHERE category='challenge_exp' AND description IS NULL
  AND boxer_id='e0000000-0000-0000-0000-000000000042';
+ -- A category changed after payout must invalidate settlement integrity.
+ UPDATE public.point_transactions SET category='adjustment'
+ WHERE category='challenge_exp' AND description='Challenge reward: '||cid::text
+ AND boxer_id='e0000000-0000-0000-0000-000000000042';
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(cid);
+  RAISE EXCEPTION 'Changed payout category accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Changed payout category accepted' THEN RAISE; END IF;
+  IF SQLERRM<>'Settled challenge payout integrity mismatch' THEN RAISE; END IF;
+ END;
+ UPDATE public.point_transactions SET category='challenge_exp'
+ WHERE category='adjustment' AND description='Challenge reward: '||cid::text
+ AND boxer_id='e0000000-0000-0000-0000-000000000042';
  -- Simulate a damaged ledger; retry must reject it rather than claim success.
  UPDATE public.league_coach_challenge_exp_ledger SET awarded_exp=25
  WHERE challenge_id=cid AND boxer_id='e0000000-0000-0000-0000-000000000042';
