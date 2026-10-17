@@ -107,6 +107,12 @@ function renderCards(rows,list){
    notice.textContent='Erneute Anmeldung nach Rückzug derzeit nicht möglich.';article.append(notice);
   }
   if(me.role!=='boxer'&&(c.is_creator||me.role==='admin')){
+   if(c.status==='draft')actions.append(button('Ziel festlegen',true,async()=>{
+    goalEditingId=c.id;$('goalChallengeName').textContent=c.title;
+    $('goalForm').reset();updateGoalTarget();$('goalPanel').classList.remove('hidden');
+    $('goalPanel').scrollIntoView({behavior:'smooth',block:'start'});$('goalText').focus();
+    return false;
+   }));
    if(c.status==='draft')actions.append(button('Entwurf bearbeiten',true,async()=>{
     editingId=c.id;
     $('title').value=c.title;$('description').value=c.description||'';
