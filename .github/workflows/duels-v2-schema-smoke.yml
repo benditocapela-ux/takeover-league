@@ -14,6 +14,8 @@ on:
       - 'supabase/migrations/010_duels_v2_read_rpc_review.sql'
       - 'supabase/tests/DUELS_V2_READ_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/DUELS_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/DUELS_V2_BATCH_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/DUELS_V2_CONCURRENT_SETTLEMENT_SETUP.sql'
       - 'supabase/tests/DUELS_V2_INVITATION_BEHAVIOR_SMOKE.sql'
       - '.github/workflows/duels-v2-schema-smoke.yml'
   pull_request:
