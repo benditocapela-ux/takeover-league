@@ -264,6 +264,15 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn('Duplicate duel scoring transactions: manual review required', self.settlement)
         self.assertIn('GROUP BY s.id HAVING count(*)>1', self.settlement)
 
+    def test_duel_ui_surfaces_refresh_failures(self):
+        self.assertIn("throw r.error", self.ui)
+        self.assertIn("Aktualisierung fehlgeschlagen:", self.ui)
+        self.assertIn("Duellübersicht konnte nicht geladen werden:", self.ui)
+
+    def test_invitation_response_has_error_boundary(self):
+        self.assertIn("Antwort fehlgeschlagen:", self.ui)
+        self.assertIn("finally{for(const control of actions.querySelectorAll('button'))control.disabled=false;}", self.ui)
+
 
 if __name__ == "__main__":
     unittest.main()
