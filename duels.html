@@ -21,7 +21,7 @@ button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#263850;colo
 <div id="app" class="hidden">
 <section class="card"><h2>Boxer herausfordern</h2>
 <p class="muted">Der andere Boxer muss innerhalb von 48 Stunden annehmen. Ein Duell dauert 7 oder 14 Tage.</p>
-<form id="inviteForm"><label for="opponent">Gegner</label><select id="opponent" required><option value="">Boxer wählen</option></select>
+<form id="inviteForm"><div id="challengerField" class="hidden"><label for="challenger">Herausforderer</label><select id="challenger"><option value="">Boxer wählen</option></select></div><label for="opponent">Gegner</label><select id="opponent" required><option value="">Boxer wählen</option></select>
 <label for="duration">Dauer</label><select id="duration"><option value="7">7 Tage</option><option value="14">14 Tage</option></select>
 <p><button id="inviteButton" type="submit">Duell anfragen</button></p></form></section>
 <section class="card"><div class="line"><h2>Meine Duelle</h2><button id="refresh" class="secondary" type="button">Aktualisieren</button></div>
@@ -77,20 +77,26 @@ async function init(){
   setStatus('Du benötigst ein aktives Liga-Konto.',true);return
  }
  me=p.data;
+ const flag=await db.from('league_feature_flags').select('is_enabled').eq('feature_key','duels').maybeSingle();
+ if(flag.error||flag.data?.is_enabled!==true){setStatus('Duelle sind noch nicht freigeschaltet.');return}
  const r=await db.rpc('duel_v2_eligible_boxers');
  if(r.error){setStatus('Duell-Funktion ist noch nicht verfügbar: '+r.error.message,true);return}
  boxers=r.data||[];
- const select=$('opponent');
+ const select=$('opponent'),challengerSelect=$('challenger');
+ if(me.role!=='boxer')$('challengerField').classList.remove('hidden');
  for(const b of boxers.filter(b=>b.id!==me.id)){
   const option=document.createElement('option');option.value=b.id;option.textContent=b.display_name;select.append(option);
+ }
+ if(me.role!=='boxer')for(const b of boxers){const option=document.createElement('option');option.value=b.id;option.textContent=b.display_name;challengerSelect.append(option);
+ 
  }
  $('app').classList.remove('hidden');setStatus('Duelle werden geladen …');await refresh();setStatus('Duellübersicht');
 }
 $('inviteForm').addEventListener('submit',async e=>{
  e.preventDefault();
  const opponent=$('opponent').value;if(!opponent)return;
- const challenger=me.role==='boxer'?me.id:boxers.find(b=>b.id!==opponent)?.id;
- if(!challenger){setStatus('Kein gültiger Herausforderer verfügbar.',true);return}
+ const challenger=me.role==='boxer'?me.id:$('challenger').value;
+ if(!challenger||challenger===opponent){setStatus('Wähle zwei unterschiedliche Boxer.',true);return}
  $('inviteButton').disabled=true;
  try{
   const r=await db.rpc('duel_v2_invite',{p_challenger:challenger,p_opponent:opponent,p_duration_days:Number($('duration').value)});
