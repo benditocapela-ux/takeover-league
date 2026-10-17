@@ -132,8 +132,10 @@ $('inviteForm').addEventListener('submit',async e=>{
 });
 $('refresh').addEventListener('click',refresh);
 // Stable cursor prevents rechecking the same 100 duels on each batch.
+const batchCursors={unfinished:null,all:null};
 async function reconcileBatches(includeSettled){
- let cursor=null,checked=0,settled=0,waiting=0;
+ const mode=includeSettled?'all':'unfinished';
+ let cursor=batchCursors[mode],checked=0,settled=0,waiting=0;
  for(let page=0;page<50;page++){
   const result=await db.rpc('duel_v2_reconcile_due',{p_include_settled:includeSettled,p_after:cursor});
   if(result.error)throw result.error;
@@ -141,8 +143,9 @@ async function reconcileBatches(includeSettled){
   checked+=rows.length;
   settled+=rows.filter(r=>r.outcome==='settled').length;
   waiting+=rows.filter(r=>r.outcome==='awaiting_reviews').length;
-  if(rows.length<100)return {checked,settled,waiting,more:false};
+  if(rows.length<100){batchCursors[mode]=null;return {checked,settled,waiting,more:false}}
   cursor=rows[rows.length-1].duel_id;
+  batchCursors[mode]=cursor;
  }
  return {checked,settled,waiting,more:true};
 }
