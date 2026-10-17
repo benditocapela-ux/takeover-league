@@ -117,6 +117,15 @@ class DuelContractTests(unittest.TestCase):
         self.assertLess(respond.index("ORDER BY id FOR UPDATE"), respond.index("WHERE id=p_duel_id FOR UPDATE"))
         self.assertIn("Participant profile locks were already acquired", respond)
 
+    def test_reconciliation_refreshes_clock_after_duel_lock(self):
+        lock = "SELECT * INTO d FROM public.league_duels WHERE id=p_duel_id FOR UPDATE;"
+        refresh = "current_time:=clock_timestamp();"
+        finished = "IF d.ends_at>current_time THEN RETURN 'in_progress'; END IF;"
+        self.assertIn(lock, self.settlement)
+        self.assertIn(refresh, self.settlement)
+        self.assertLess(self.settlement.index(lock), self.settlement.index(refresh))
+        self.assertLess(self.settlement.index(refresh), self.settlement.index(finished))
+
     def test_invitation_clocks_refresh_after_lock_wait(self):
         invite, respond = self.invites.split("CREATE OR REPLACE FUNCTION public.duel_v2_respond(", 1)
         self.assertIn("v_now:=clock_timestamp();", invite)
