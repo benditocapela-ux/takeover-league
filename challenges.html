@@ -62,12 +62,7 @@ async function refresh(){
  allChallenges=rows||[];renderChallenges();return true;
 }
 function renderCards(rows,list){
- let rows;
- try{rows=await rpc('coach_challenge_v2_list')}
- catch(error){if(current!==sequence)return false;throw error}
- if(current!==sequence)return false;
- allChallenges=rows||[];renderChallenges();return true;
-}
+ for(const c of rows){
   const article=document.createElement('article');article.className='challenge';
   const title=document.createElement('strong');title.textContent=c.title;
   const details=document.createElement('p');
