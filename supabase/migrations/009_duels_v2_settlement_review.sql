@@ -216,6 +216,8 @@ BEGIN
    SELECT 1 FROM public.point_transactions t
    WHERE t.id=old_tx AND t.boxer_id=boxer AND t.category='duel_exp'
      AND t.points=0 AND t.exp=old_exp
+     AND t.description='Duel reward: '||d.id::text
+     AND t.effective_date=(d.ends_at AT TIME ZONE 'Europe/Zurich')::date
   ) THEN
    RAISE EXCEPTION 'Duel reward ledger mismatch for duel % boxer %',d.id,boxer;
   ELSIF old_exp<>target_exp THEN
