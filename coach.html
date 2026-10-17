@@ -1,0 +1,163 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coach Dashboard · Takeover League</title><style>
+:root{font-family:Inter,system-ui,Arial,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#0b1422;color:#f5f5f6;padding:22px}main{max-width:1040px;margin:auto}header,.bar,.line{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap}.brand{color:#dfbd77;letter-spacing:.17em;font-size:12px;font-weight:800}h1{font-size:clamp(26px,4vw,38px);margin:14px 0 6px}p{color:#b8c4d1}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:26px 0}.card{background:#16263a;border:1px solid #324359;border-radius:17px;padding:22px}.value{font-size:32px;font-weight:800;color:#dfbd77}.muted{color:#b8c4d1;font-size:13px}.entry{padding:15px 0;border-top:1px solid #324359}.pill{background:#594621;color:#f4d693;border-radius:20px;padding:5px 10px;font-size:12px}a,button{color:#dfbd77}.actions{display:flex;gap:9px;margin-top:12px}.approve{background:#1b4735;border-color:#67c99d;color:#d6ffea}.reject{border-color:#e2a0a0;color:#ffd5d5}.status{margin:12px 0;color:#b8c4d1}button{border:1px solid #dfbd77;background:transparent;border-radius:9px;padding:10px 14px;cursor:pointer}button:disabled{opacity:.5;cursor:default}.hidden{display:none}.editbox{margin-top:12px;padding:15px;border:1px solid #52647c;border-radius:12px;display:grid;gap:10px}.editbox label{display:grid;gap:4px;font-size:13px;color:#b8c4d1}.editbox input,.editbox select,.editbox textarea{background:#0b1422;color:#fff;border:1px solid #52647c;border-radius:8px;padding:10px;width:100%}.editbox .buttons{display:flex;gap:10px;flex-wrap:wrap}.notice{border-left:3px solid #dfbd77;padding:12px 16px;background:#17283d;margin:20px 0}.error{color:#ffb2b2}.name{font-weight:750}small{color:#aebdd0}
+.account-row{border-top:1px solid #324359;padding:15px 0;display:grid;gap:10px}.account-row select{background:#0b1422;color:white;border:1px solid #52647c;border-radius:8px;padding:11px;max-width:100%;width:100%}.account-row .bar{justify-content:flex-start}.account-row button{white-space:nowrap}.account-email{overflow-wrap:anywhere}.account-help{color:#b8c4d1;font-size:13px}.filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:10px;margin:16px 0}.filter-grid label{display:grid;gap:6px;font-size:12px;color:#b8c4d1}.filter-grid input,.filter-grid select{width:100%;min-width:0;background:#0b1422;color:#fff;border:1px solid #52647c;border-radius:9px;padding:11px;font:inherit}.list-footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px}.list-footer button{min-width:120px}@media(max-width:520px){body{padding:12px}.card{padding:15px}} 
+/* Takeover 2.0 · Coach feedback */
+.feedback-form{display:grid;gap:12px}.feedback-form label{display:grid;gap:5px;color:#b8c4d1;font-size:13px}.feedback-form input,.feedback-form select,.feedback-form textarea{width:100%;background:#0b1422;color:white;border:1px solid #52647c;border-radius:9px;padding:11px;font:inherit}.feedback-note{padding:13px;border:1px solid #52647c;border-radius:10px;background:#101d30;margin-top:10px;white-space:pre-wrap;overflow-wrap:anywhere}.feedback-note strong{color:#dfbd77}.feedback-note small{display:block;margin-top:5px}.feedback-form button{justify-self:start}
+</style></head><body><main><header><div class="brand">TAKEOVER LEAGUE / COACH</div><div class="bar"><a href="./index.html">Liga</a><a href="./login.html">Account</a><button id="logout">Abmelden</button></div></header><h1>Coach Dashboard</h1><p id="welcome">Anmeldung wird überprüft …</p><div id="error" class="error" role="alert"></div><section id="content" class="hidden"><div class="grid"><div class="card"><div class="muted">Offene Eingaben</div><div id="pendingCount" class="value">–</div></div><div class="card"><div class="muted">Aktive Boxer</div><div id="boxerCount" class="value">–</div></div><div class="card"><div class="muted">Bestätigte Eingaben</div><div id="approvedCount" class="value">–</div></div></div><div class="notice">Freigaben erfolgen über eine geschützte Supabase-Datenbankfunktion. Bestätigte und abgelehnte Trainings können später korrigiert werden. Änderungen an Trainings und Punkten werden protokolliert; Kilometer- und Minutenänderungen sind noch nicht im Audit erfasst.</div><section class="card"><div class="line"><h2>Offene Trainings</h2><button id="refresh">Aktualisieren</button></div><div id="status" class="status" role="status"></div><div id="entries" aria-live="polite">Lade …</div></section><section class="card" style="margin-top:18px"><div class="line"><h2>Alle Trainings bearbeiten</h2><button id="refreshAll">Aktualisieren</button></div><p class="muted">Die neuesten Einträge zuerst. Suche und filtere nach Boxer, Trainingsart oder Datum.</p><div class="filter-grid"><label>Suche<input id="trainingSearch" type="search" placeholder="Boxer, Training, Notiz …" autocomplete="off"></label><label>Boxer<select id="filterBoxer"><option value="">Alle Boxer</option></select></label><label>Trainingsart<select id="filterType"><option value="">Alle Trainingsarten</option></select></label><label>Von Datum<input id="filterFrom" type="date"></label><label>Bis Datum<input id="filterTo" type="date"></label><label>Status<select id="filterStatus"><option value="">Alle Status</option><option value="pending">Offen</option><option value="approved">Bestätigt</option><option value="rejected">Abgelehnt</option></select></label></div><button type="button" id="clearFilters">Filter zurücksetzen</button><div id="allEntries"></div><div class="list-footer"><span id="resultCount" class="muted"></span><button id="showMore" type="button" class="hidden">Mehr anzeigen ↓</button></div></section><section class="card" style="margin-top:18px"><div class="line"><h2>Boxer-Accounts freigeben</h2><button id="refreshAccounts" type="button">Aktualisieren</button></div><p class="muted">Registrierte Accounts ohne Boxerprofil. Ordne sie nur nach Prüfung der Identität einem bestehenden Boxer zu. Bereits gesammelte Punkte bleiben erhalten.</p><div id="accountStatus" class="status" role="status"></div><div id="accountEntries">Lade …</div></section><section class="card" id="coachFeedbackSection" style="margin-top:18px"><h2>Coach-Feedback <span class="pill">2.0</span></h2><p id="coachFeedbackStatus" class="muted" role="status">Coming Soon – persönliche Rückmeldungen an Boxer.</p><div id="coachFeedbackLive" class="hidden"><form id="coachFeedbackForm" class="feedback-form"><label>Boxer auswählen<select id="coachFeedbackBoxer" required><option value="">Bitte auswählen</option></select></label><label>Titel<input id="coachFeedbackTitle" maxlength="120" required placeholder="z. B. Fokus für die nächste Woche"></label><label>Rückmeldung<textarea id="coachFeedbackMessage" maxlength="4000" rows="5" required placeholder="Deine persönliche Rückmeldung …"></textarea></label><button id="coachFeedbackSend" type="submit">Feedback senden</button></form><h3>Letzte Rückmeldungen</h3><div id="coachFeedbackHistory"></div></div></section></section></main><script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
+const $=id=>document.getElementById(id);const fail=m=>{$('error').textContent=m;$('content').classList.add('hidden')};
+function row(s,people,types){const div=document.createElement('div');div.className='entry';const top=document.createElement('div');top.className='line';const name=document.createElement('span');name.className='name';name.textContent=people.get(s.boxer_id)||'Unbekannter Boxer';const pill=document.createElement('span');pill.className='pill';pill.textContent='Pending';top.append(name,pill);const details=document.createElement('p');details.textContent=`${types.get(s.training_type_id)||'Training'} · ${s.training_date||'Kein Datum'}`;div.append(top,details);const metrics=document.createElement('small');metrics.textContent=`Jogging: ${s.jogging_km ?? '–'} km · Technik: ${s.technique_minutes ?? '–'} Min.`;div.append(metrics);if(s.notes){const note=document.createElement('small');note.textContent=s.notes;div.append(note)}
+const actions=document.createElement('div');actions.className='actions';
+for(const [decision,label,cls] of [['approved','Bestätigen','approve'],['rejected','Ablehnen','reject']]){
+ const btn=document.createElement('button');btn.className=cls;btn.textContent=label;
+ btn.addEventListener('click',async()=>{
+  if(!confirm(`${label}: ${name.textContent} – ${details.textContent}?`))return;
+  actions.querySelectorAll('button').forEach(b=>b.disabled=true);
+  $('status').textContent='Wird gespeichert …';
+  const {data,error}=await db.rpc('review_training',{p_submission_id:s.id,p_decision:decision});
+  if(error){$('status').textContent='Fehler: '+error.message;actions.querySelectorAll('button').forEach(b=>b.disabled=false);return}
+  $('status').textContent=decision==='approved'?`Bestätigt: +${data.points_awarded} Punkte und EXP.`:'Training abgelehnt (0 Punkte).';
+  await load(false);
+ });
+ actions.append(btn);
+}
+div.append(actions);return div}
+
+let currentPeople=[],currentTypes=[],allTrainings=[],visibleTrainings=8;
+const normalize=v=>String(v??'').toLocaleLowerCase('de-CH');
+function fillFilter(id,rows,label){const select=$(id),previous=select.value;select.replaceChildren(new Option(label,''));rows.forEach(x=>select.add(new Option(x.display_name??x.name,String(x.id))));select.value=previous;}
+function renderFilteredTrainings(){
+ const people=new Map(currentPeople.map(p=>[String(p.id),p.display_name]));
+ const types=new Map(currentTypes.map(t=>[String(t.id),t.name]));
+ const q=normalize($('trainingSearch').value.trim()),boxer=$('filterBoxer').value,type=$('filterType').value,from=$('filterFrom').value,to=$('filterTo').value,status=$('filterStatus').value;
+ const filtered=allTrainings.filter(s=>(!boxer||String(s.boxer_id)===boxer)&&(!type||String(s.training_type_id)===type)&&(!from||s.training_date>=from)&&(!to||s.training_date<=to)&&(!status||s.status===status)&&(!q||normalize([people.get(String(s.boxer_id)),types.get(String(s.training_type_id)),s.notes,s.training_date,s.status].join(' ')).includes(q)));
+ $('allEntries').replaceChildren();
+ if(!filtered.length){const p=document.createElement('p');p.className='muted';p.textContent='Keine passenden Trainings gefunden.';$('allEntries').append(p)}
+ else filtered.slice(0,visibleTrainings).forEach(s=>$('allEntries').append(editorRow(s,people,types)));
+ $('resultCount').textContent=`${Math.min(visibleTrainings,filtered.length)} von ${filtered.length} Einträgen`+(allTrainings.length>=1000?' (Suche innerhalb der neuesten 1000)':'');
+ $('showMore').classList.toggle('hidden',visibleTrainings>=filtered.length);
+}
+
+function editorRow(s,people,types){
+ const div=document.createElement('div');div.className='entry';
+ const line=document.createElement('div');line.className='line';
+ const name=document.createElement('strong');name.textContent=people.get(s.boxer_id)||'Unbekannt';
+ const detail=document.createElement('span');detail.className='muted';detail.textContent=`${types.get(s.training_type_id)||'?'} · ${s.training_date} · ${s.status}`;
+ const edit=document.createElement('button');edit.textContent='Bearbeiten';
+ line.append(name,detail,edit);div.append(line);
+ edit.onclick=()=>{
+  if(div.querySelector('.editbox')){div.querySelector('.editbox').remove();return}
+  const form=document.createElement('form');form.className='editbox';
+  const field=(title,control)=>{const label=document.createElement('label');label.textContent=title;label.append(control);form.append(label);return control};
+  const select=(options,value)=>{const el=document.createElement('select');for(const [v,t] of options){const op=document.createElement('option');op.value=v;op.textContent=t;el.append(op)}el.value=String(value);return el};
+  const boxer=field('Boxer',select(currentPeople.filter(x=>x.role==='boxer').map(x=>[x.id,x.display_name]),s.boxer_id));
+  const type=field('Trainingsart',select(currentTypes.map(x=>[x.id,`${x.name} (${x.points} Punkte)`]),s.training_type_id));
+  const date=document.createElement('input');date.type='date';date.value=s.training_date;field('Datum',date);
+  const notes=document.createElement('textarea');notes.rows=2;notes.value=s.notes||'';field('Bemerkung',notes);
+  const km=document.createElement('input');km.type='number';km.min='0';km.max='1000';km.step='0.01';km.placeholder='z. B. 8.50';km.value=s.jogging_km??'';field('Joggingdistanz (km)',km);
+   const minutes=document.createElement('input');minutes.type='number';minutes.min='0';minutes.max='1440';minutes.step='1';minutes.placeholder='z. B. 75';minutes.value=s.technique_minutes??'';field('Techniktraining (Minuten)',minutes);
+   const status=field('Status',select([['pending','Pending'],['approved','Approved'],['rejected','Rejected']],s.status));
+  const buttons=document.createElement('div');buttons.className='buttons';
+  const save=document.createElement('button');save.type='submit';save.textContent='Änderungen speichern';
+  const cancel=document.createElement('button');cancel.type='button';cancel.textContent='Abbrechen';cancel.onclick=()=>form.remove();
+  buttons.append(save,cancel);form.append(buttons);
+  form.onsubmit=async e=>{
+   e.preventDefault();
+   if(km.value!==''&&(!km.validity.valid||!Number.isFinite(Number(km.value)))){alert('Bitte gültige Joggingkilometer eingeben.');return}
+    if(minutes.value!==''&&(!minutes.validity.valid||!Number.isInteger(Number(minutes.value)))){alert('Bitte gültige Technikminuten eingeben.');return}
+    if(!confirm('Änderungen speichern? Punkte und EXP werden neu berechnet.'))return;
+   save.disabled=true;$('status').textContent='Korrektur wird gespeichert …';
+   const {data,error}=await db.rpc('admin_edit_training_details',{
+    p_submission_id:s.id,p_boxer_id:boxer.value,p_training_type_id:Number(type.value),
+    p_training_date:date.value,p_notes:notes.value,p_status:status.value,
+     p_jogging_km:km.value===''?null:Number(km.value),
+     p_technique_minutes:minutes.value===''?null:Number(minutes.value)
+   });
+   if(error){$('status').textContent='Korrektur fehlgeschlagen: '+error.message;save.disabled=false;return}
+   $('status').textContent=`Gespeichert: ${data.status}, ${data.points} Punkte/EXP.`;
+   await load(false);
+  };
+  div.append(form);
+ };
+ return div;
+}
+
+
+async function loadAccounts(){
+ const area=$('accountEntries');const status=$('accountStatus');
+ area.textContent='Lade Registrierungen …';
+ const {data:accounts,error}=await db.rpc('coach_list_unlinked_accounts');
+ if(error){area.textContent='Registrierungen konnten nicht geladen werden: '+error.message+' (SQL-Erweiterung bereits ausgeführt?)';return;}
+ area.replaceChildren();
+ if(!accounts?.length){area.textContent='Keine offenen Registrierungen.';return;}
+ const available=currentPeople.filter(p=>p.role==='boxer' && !p.auth_user_id);
+ for(const a of accounts){
+  const wrapper=document.createElement('div');wrapper.className='account-row';
+  const info=document.createElement('div');info.className='account-email';
+  const strong=document.createElement('strong');strong.textContent=a.email||'Ohne E-Mail';
+  const hint=document.createElement('div');hint.className='account-help';hint.textContent=a.email_confirmed?'E-Mail bestätigt':'E-Mail noch nicht bestätigt';
+  info.append(strong,hint);
+  const bar=document.createElement('div');bar.className='bar';
+  const select=document.createElement('select');select.setAttribute('aria-label','Bestehendes Boxerprofil auswählen');
+  const placeholder=document.createElement('option');placeholder.value='';placeholder.textContent='Bestehenden Boxer auswählen';select.append(placeholder);
+  for(const p of available){const opt=document.createElement('option');opt.value=p.id;opt.textContent=p.display_name;select.append(opt)}
+  const btn=document.createElement('button');btn.type='button';btn.textContent='Profil verknüpfen';btn.disabled=!a.email_confirmed;
+  btn.addEventListener('click',async()=>{
+   const selected=available.find(p=>p.id===select.value);
+   if(!selected){status.textContent='Bitte zuerst ein Boxerprofil auswählen.';return}
+   if(!confirm(`Account ${a.email} mit Boxer ${selected.display_name} verbinden? Bitte Identität vorher prüfen.`))return;
+   btn.disabled=true;status.textContent='Account wird verknüpft …';
+   const {error}=await db.rpc('coach_link_boxer_account',{p_auth_user_id:a.user_id,p_profile_id:selected.id});
+   if(error){status.textContent='Fehler: '+error.message;btn.disabled=false;return}
+   status.textContent=`Erfolgreich verknüpft: ${selected.display_name}.`;
+   await load(false);
+  });
+  bar.append(select,btn);wrapper.append(info,bar);area.append(wrapper);
+ }
+}
+
+
+// Update 2B: Fail-closed. Keine Feedback-Abfragen/Schreibaktionen bei deaktiviertem Flag.
+let coachFeedbackEnabled=false;
+async function setupCoachFeedback(){
+ const status=$('coachFeedbackStatus'),panel=$('coachFeedbackLive');
+ const flag=await db.from('league_feature_flags').select('is_enabled').eq('feature_key','coach_feedback').maybeSingle();
+ coachFeedbackEnabled=!flag.error&&flag.data?.is_enabled===true;
+ if(!coachFeedbackEnabled){panel.classList.add('hidden');status.textContent='Coming Soon – Coach-Feedback ist noch nicht freigeschaltet.';return}
+ panel.classList.remove('hidden');status.textContent='Persönliche Rückmeldungen für Boxer.';
+ const select=$('coachFeedbackBoxer'),old=select.value;select.replaceChildren(new Option('Bitte auswählen',''));
+ currentPeople.filter(p=>p.role==='boxer'&&p.is_active).sort((a,b)=>a.display_name.localeCompare(b.display_name,'de')).forEach(p=>select.add(new Option(p.display_name,p.id)));select.value=old;
+ await loadCoachFeedbackHistory();
+}
+async function loadCoachFeedbackHistory(){
+ if(!coachFeedbackEnabled)return;
+ const root=$('coachFeedbackHistory');root.textContent='Wird geladen …';
+ const result=await db.from('boxer_coach_feedback').select('id,boxer_id,title,message,created_at').order('created_at',{ascending:false}).limit(20);
+ if(result.error){root.textContent='Feedback konnte nicht geladen werden: '+result.error.message;return}
+ root.replaceChildren();if(!result.data?.length){root.textContent='Noch keine Rückmeldungen.';return}
+ const names=new Map(currentPeople.map(p=>[p.id,p.display_name]));
+ for(const item of result.data){const card=document.createElement('div');card.className='feedback-note';const title=document.createElement('strong');title.textContent=item.title;const meta=document.createElement('small');meta.textContent=(names.get(item.boxer_id)||'Boxer')+' · '+new Date(item.created_at).toLocaleDateString('de-CH');const msg=document.createElement('p');msg.textContent=item.message;card.append(title,meta,msg);root.append(card)}
+}
+$('coachFeedbackForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(!coachFeedbackEnabled)return;const button=$('coachFeedbackSend'),status=$('coachFeedbackStatus');
+ const boxer_id=$('coachFeedbackBoxer').value,title=$('coachFeedbackTitle').value.trim(),message=$('coachFeedbackMessage').value.trim();
+ if(!boxer_id||!title||!message)return;
+ const {data:{user},error:authError}=await db.auth.getUser();if(authError||!user){status.textContent='Bitte erneut anmelden.';return}
+ const {data:me,error:profileError}=await db.from('profiles').select('id,role,is_active').eq('auth_user_id',user.id).maybeSingle();
+ if(profileError||!me||me.role!=='admin'||!me.is_active){status.textContent='Keine Coach-Berechtigung.';return}
+ button.disabled=true;status.textContent='Feedback wird gesendet …';
+ const result=await db.from('boxer_coach_feedback').insert({boxer_id,coach_id:me.id,title,message});
+ button.disabled=false;if(result.error){status.textContent='Senden fehlgeschlagen: '+result.error.message;return}
+ status.textContent='Feedback gesendet.';$('coachFeedbackForm').reset();await loadCoachFeedbackHistory();
+});
+
+async function load(clearStatus=true){ if(clearStatus)$('status').textContent='';$('error').textContent='';const {data:{user},error:authError}=await db.auth.getUser();if(authError||!user){fail('Bitte zuerst unter login.html anmelden.');return}const {data:p,error:pe}=await db.from('profiles').select('id,display_name,role,is_active,auth_user_id').eq('auth_user_id',user.id).maybeSingle();if(pe||!p||p.role!=='admin'||!p.is_active){fail('Zugriff verweigert: Nur aktive Trainer-Accounts dürfen dieses Dashboard öffnen.');return}$('welcome').textContent=`Willkommen, ${p.display_name}.`;const [pr,tr,sr,ar]=await Promise.all([db.from('profiles').select('id,display_name,role,is_active,auth_user_id'),db.from('training_types').select('id,name,points'),db.from('training_submissions').select('id,boxer_id,training_type_id,training_date,notes,status,jogging_km,technique_minutes,created_at').eq('status','pending').order('created_at',{ascending:false}).limit(100),db.from('training_submissions').select('id',{count:'exact',head:true}).eq('status','approved')]);for(const r of [pr,tr,sr,ar])if(r.error){fail('Daten konnten nicht geladen werden: '+r.error.message);return}currentPeople=pr.data;currentTypes=tr.data;const people=new Map(pr.data.map(x=>[x.id,x.display_name]));const types=new Map(tr.data.map(x=>[x.id,x.name]));$('pendingCount').textContent=sr.data.length===100?'100+':String(sr.data.length);$('boxerCount').textContent=pr.data.filter(x=>x.role==='boxer'&&x.is_active).length;$('approvedCount').textContent=ar.count??'–';$('entries').replaceChildren();if(!sr.data.length){const p=document.createElement('p');p.textContent='Aktuell keine offenen Trainingseingaben.';$('entries').append(p)}else sr.data.forEach(s=>$('entries').append(row(s,people,types)));const {data:all,error:allError}=await db.from('training_submissions').select('id,boxer_id,training_type_id,training_date,notes,status,jogging_km,technique_minutes,created_at').order('created_at',{ascending:false}).limit(1000);
+if(allError){$('allEntries').textContent='Fehler beim Laden: '+allError.message}
+else{allTrainings=all;fillFilter('filterBoxer',pr.data.filter(x=>x.role==='boxer'),'Alle Boxer');fillFilter('filterType',tr.data,'Alle Trainingsarten');renderFilteredTrainings()}
+$('content').classList.remove('hidden');await loadAccounts();await setupCoachFeedback()}
+for(const id of ['trainingSearch','filterBoxer','filterType','filterFrom','filterTo','filterStatus'])$(id).addEventListener('input',()=>{visibleTrainings=8;renderFilteredTrainings()});
+$('showMore').addEventListener('click',()=>{visibleTrainings+=10;renderFilteredTrainings()});
+$('clearFilters').addEventListener('click',()=>{for(const id of ['trainingSearch','filterBoxer','filterType','filterFrom','filterTo','filterStatus'])$(id).value='';visibleTrainings=8;renderFilteredTrainings()});
+$('refreshAccounts').addEventListener('click',()=>loadAccounts());$('refresh').addEventListener('click',()=>load());$('refreshAll').addEventListener('click',()=>load());$('logout').addEventListener('click',async()=>{await db.auth.signOut();location.href='./login.html'});await load();
+</script></body></html>
