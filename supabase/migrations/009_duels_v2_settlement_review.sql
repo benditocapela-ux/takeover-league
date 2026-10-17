@@ -17,6 +17,7 @@ DECLARE
  d public.league_duels%ROWTYPE;
  actor public.profiles%ROWTYPE;
  current_time timestamptz := clock_timestamp();
+ actor_found boolean;
  p1 integer;
  p2 integer;
  pending_count integer;
@@ -29,10 +30,11 @@ DECLARE
 BEGIN
  SELECT * INTO actor FROM public.profiles
  WHERE auth_user_id=(SELECT auth.uid()) AND is_active=true;
+ actor_found:=FOUND;
  IF NOT EXISTS(SELECT 1 FROM public.league_feature_flags WHERE feature_key='duels' AND is_enabled=true) THEN
   RAISE EXCEPTION 'Duels are not enabled';
  END IF;
- IF NOT FOUND OR actor.role NOT IN ('admin','coach') THEN
+ IF NOT actor_found OR actor.role NOT IN ('admin','coach') THEN
   RAISE EXCEPTION 'Only a coach may reconcile duels';
  END IF;
  -- Lock boxer profiles before the duel row, matching invite/respond.
