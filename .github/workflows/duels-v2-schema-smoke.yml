@@ -1,6 +1,13 @@
 name: Duel V2 isolated PostgreSQL schema smoke
 
 on:
+  push:
+    branches:
+      - develop/takeover-league-2-foundation
+    paths:
+      - 'supabase/tests/DUELS_V2_SCHEMA_SMOKE_FIXTURE.sql'
+      - 'supabase/migrations/007_duels_v2_schema_review.sql'
+      - '.github/workflows/duels-v2-schema-smoke.yml'
   workflow_dispatch:
 
 permissions:
