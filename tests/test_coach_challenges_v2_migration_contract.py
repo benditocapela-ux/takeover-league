@@ -201,3 +201,10 @@ def test_manual_settlement_pays_only_after_reviews_and_locks_challenge():
     assert "INSERT INTO public.league_coach_challenge_exp_ledger" in sql
     assert "status='settled'" in sql
     assert "Challenge already settled; payout integrity must be audited" in sql
+
+
+def test_manual_review_mode_checks_fail_closed_on_missing_json_key():
+    for number in (19, 20, 21, 23):
+        sql = FILES[number]
+        assert "goal_spec->>'review_mode' IS DISTINCT FROM 'manual'" in sql
+        assert "goal_spec->>'review_mode'<>'manual'" not in sql
