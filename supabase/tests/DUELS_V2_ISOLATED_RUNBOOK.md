@@ -20,6 +20,27 @@
 7. After completed payouts, run `supabase/tests/DUELS_V2_LEDGER_AUDIT_READ_ONLY.sql`. Each of its four SELECTs must return **zero rows**. Any mismatch blocks release.
 8. Reset the disposable environment and rerun the suite to prove reproducibility. Destroy the test environment after capturing sanitized results.
 
+## Automated disposable PostgreSQL coverage
+
+The GitHub Actions workflow `.github/workflows/duels-v2-schema-smoke.yml`
+uses a synthetic PostgreSQL 16 base schema, **not a copy of the deployed
+Supabase schema**. It applies review migrations 007–010 and exercises:
+
+- Database constraints and invitation/acceptance permissions.
+- Duel settlement, pending reviews, score corrections, payout tampering,
+  feature flag enforcement and backdated entries.
+- Batch reconciliation and duplicate-EXP protection.
+- Authenticated duel list visibility and disabled accounts.
+- Two simultaneous settlement sessions against the same duel, with an
+  artificial payout delay, checking for duplicate ledger rows/events.
+
+Passing CI establishes these tested behaviors **only against the synthetic
+schema**. It does not establish compatibility with the deployed
+`review_training`, `admin_edit_training`, or `admin_edit_training_details`
+functions. Their SQL definitions and lock order must be reviewed against
+the actual deployment before any live rollout. Do not treat the green
+workflow as approval to run SQL in production.
+
 ## Explicitly unresolved
 
 - Existing `review_training` and `admin_edit_training` RPCs may lock rows in a different order; inspect them before concurrency tests.
