@@ -79,7 +79,7 @@ ORDER BY n.nspname,c.relname;
 -- Only migration version metadata; no statements or secrets are returned.
 -- Supabase-managed projects normally provide this relation. If missing,
 -- stop and inspect the migration tracking setup rather than guessing.
-SELECT version,name
+SELECT version
 FROM supabase_migrations.schema_migrations
 ORDER BY version;
 
