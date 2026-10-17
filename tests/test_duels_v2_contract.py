@@ -119,8 +119,8 @@ class DuelContractTests(unittest.TestCase):
 
     def test_reconciliation_refreshes_clock_after_duel_lock(self):
         lock = "SELECT * INTO d FROM public.league_duels WHERE id=p_duel_id FOR UPDATE;"
-        refresh = "current_time:=clock_timestamp();"
-        finished = "IF d.ends_at>current_time THEN RETURN 'in_progress'; END IF;"
+        refresh = "v_clock:=clock_timestamp();"
+        finished = "IF d.ends_at>v_clock THEN RETURN 'in_progress'; END IF;"
         self.assertIn(lock, self.settlement)
         self.assertIn(refresh, self.settlement)
         self.assertLess(self.settlement.index(lock), self.settlement.index(refresh))
