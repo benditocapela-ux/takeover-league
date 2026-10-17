@@ -209,3 +209,11 @@ def test_manual_review_mode_checks_fail_closed_on_missing_json_key():
         sql = FILES[number]
         assert "goal_spec->>'review_mode' IS DISTINCT FROM 'manual'" in sql
         assert "goal_spec->>'review_mode'<>'manual'" not in sql
+
+
+def test_settlement_retry_audits_orphaned_transactions_and_metadata():
+    sql = FILES[27]
+    assert "Settled challenge metadata integrity mismatch" in sql
+    assert "Settled challenge payout integrity mismatch" in sql
+    assert "AND NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_exp_ledger l" in sql
+    assert "t.category='challenge_exp'" in sql
