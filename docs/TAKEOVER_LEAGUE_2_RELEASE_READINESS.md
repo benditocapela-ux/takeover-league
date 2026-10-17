@@ -14,10 +14,10 @@ Owner decision register: [Takeover League 2.0 owner decisions](TAKEOVER_LEAGUE_2
 
 ## Mandatory owner decisions before production
 
-- [ ] Approve challenge EXP choices: 25 / 50 / 100 / 150 / 200
-- [ ] Approve zero EXP for rejected manual reviews
-- [ ] Confirm whether rejoining an open challenge after withdrawal is desired
-- [ ] Confirm automatic challenge settlement remains disabled; only manual review is eligible
+- [x] Approve challenge EXP choices: 25 / 50 / 100 / 150 / 200
+- [x] Approve zero EXP for rejected manual reviews
+- [x] Confirm whether rejoining an open challenge after withdrawal is desired
+- [x] Confirm automatic challenge settlement remains disabled; only manual review is eligible
 - [ ] Confirm rollout sequence and who is authorized to run SQL
 
 ## Production preflight — do not run without explicit approval
@@ -44,7 +44,7 @@ Owner decision register: [Takeover League 2.0 owner decisions](TAKEOVER_LEAGUE_2
 
 ## First production SQL gate — exact handoff
 
-Current release candidate: **not approved for production**. Before issuing an all-caps instruction to run SQL, collect and record the owner's decisions above and complete the following steps in order:
+Current release candidate: **not approved for production**. Owner approved challenge policy C1–C4 on 2026-10-18; production operator and backup/restore plan (C5–C6) are still pending. Before issuing an all-caps instruction to run SQL, collect and record the owner's decisions above and complete the following steps in order:
 
 1. Freeze the intended Git commit and verify that all four GitHub workflows are green for that exact SHA.
 2. Obtain a live Supabase schema inventory using **read-only** queries only after the owner authorizes that action; compare tables, check constraints, RLS policies, grants, extensions and migration history against the reviewed migration chain.
