@@ -1,6 +1,6 @@
 -- Coach Challenges V2: restricted list RPC (REVIEW ONLY; NOT FOR LIVE EXECUTION).
 -- Boxer visibility: open challenges and own enrollment; no participant roster.
--- Coach visibility: own drafts plus published challenges; admin sees all.
+-- Coach visibility: own records plus open/active/settled; other coaches' cancelled records stay private.
 BEGIN;
 CREATE OR REPLACE FUNCTION public.coach_challenge_v2_list()
 RETURNS TABLE(
@@ -30,7 +30,7 @@ BEGIN
         (c.created_by=v_actor.id) AS is_creator
  FROM public.league_coach_challenges c
  WHERE v_actor.role='admin'
-    OR (v_actor.role='coach' AND (c.created_by=v_actor.id OR c.status<>'draft'))
+    OR (v_actor.role='coach' AND (c.created_by=v_actor.id OR c.status IN ('open','active','awaiting_reviews','settled')))
     OR c.status='open'
     OR EXISTS(SELECT 1 FROM public.league_coach_challenge_entries e
               WHERE e.challenge_id=c.id AND e.boxer_id=v_actor.id)
