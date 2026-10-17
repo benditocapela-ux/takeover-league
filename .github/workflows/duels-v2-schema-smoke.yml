@@ -5,6 +5,7 @@ on:
     branches:
       - develop/takeover-league-2-foundation
     paths:
+      - 'supabase/preflight/TAKEOVER_LEAGUE_2_READ_ONLY_INVENTORY.sql'
       - 'supabase/tests/DUELS_V2_SCHEMA_SMOKE_FIXTURE.sql'
       - 'supabase/tests/DUELS_V2_PREFLIGHT_READ_ONLY.sql'
       - 'supabase/tests/DUELS_V2_RPC_INVENTORY_BEHAVIOR_SMOKE.sql'
