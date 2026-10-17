@@ -22,6 +22,20 @@ BEGIN
   IF SQLERRM='Empty challenge settlement accepted' THEN RAISE; END IF;
   IF SQLERRM<>'Cannot settle challenge without joined participants' THEN RAISE; END IF;
  END;
+ -- Corrupted goal metadata must prevent the first payout.
+ UPDATE public.league_coach_challenges
+ SET goal_spec=pg_catalog.jsonb_set(goal_spec,'{goal_text}','""'::jsonb)
+ WHERE id=cid;
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(cid);
+  RAISE EXCEPTION 'Invalid first-settlement goal accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Invalid first-settlement goal accepted' THEN RAISE; END IF;
+  IF SQLERRM<>'Manual settlement unavailable' THEN RAISE; END IF;
+ END;
+ UPDATE public.league_coach_challenges
+ SET goal_spec=pg_catalog.jsonb_set(goal_spec,'{goal_text}','"Practice controlled sparring"'::jsonb)
+ WHERE id=cid;
  INSERT INTO public.league_coach_challenge_entries(challenge_id,boxer_id)
  VALUES(cid,'e0000000-0000-0000-0000-000000000042'),
  (cid,'e0000000-0000-0000-0000-000000000043');
