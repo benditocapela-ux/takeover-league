@@ -47,5 +47,19 @@ BEGIN
  IF batch_count<>2 OR (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>4 THEN
   RAISE EXCEPTION 'Explicit settled recheck must not duplicate rewards';
  END IF;
+ -- UUID pagination must exclude rows at/before the cursor without extra payouts.
+ SELECT count(*) INTO batch_count
+ FROM public.duel_v2_reconcile_due(true,LEAST(ended1,ended2));
+ IF batch_count<>1 THEN
+  RAISE EXCEPTION 'Batch cursor should return one later settled duel, got %',batch_count;
+ END IF;
+ SELECT count(*) INTO batch_count
+ FROM public.duel_v2_reconcile_due(true,GREATEST(ended1,ended2));
+ IF batch_count<>0 THEN
+  RAISE EXCEPTION 'Batch cursor beyond final settled duel returned rows';
+ END IF;
+ IF (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>4 THEN
+  RAISE EXCEPTION 'Cursor pagination minted duplicate rewards';
+ END IF;
 END $test$;
 ROLLBACK;
