@@ -2,6 +2,8 @@
 
 **Status:** test plan only. No live Supabase execution. Requires an isolated PostgreSQL/Supabase environment with representative copies of the existing schema and auth roles. Do not run review migrations 007–010 against production before passing these tests and owner approval.
 
+Follow the reproducible setup and release gates in [DUELS_V2_ISOLATED_RUNBOOK.md](DUELS_V2_ISOLATED_RUNBOOK.md).
+
 ## Setup
 
 1. Start an isolated test database. Apply the existing base schema and prerequisite migrations; do **not** copy real athlete records or credentials.
