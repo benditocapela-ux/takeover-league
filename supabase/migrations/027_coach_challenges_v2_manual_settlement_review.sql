@@ -88,6 +88,9 @@ BEGIN
  WHERE r.challenge_id=c.id AND NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_entries e
  WHERE e.challenge_id=r.challenge_id AND e.boxer_id=r.boxer_id AND e.status='joined')) THEN
  RAISE EXCEPTION 'Review exists for ineligible participant'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_entries
+ WHERE challenge_id=c.id AND status='joined') THEN
+ RAISE EXCEPTION 'Cannot settle challenge without joined participants'; END IF;
  IF EXISTS(SELECT 1 FROM public.league_coach_challenge_exp_ledger WHERE challenge_id=c.id)
  THEN RAISE EXCEPTION 'Existing challenge ledger prevents first settlement'; END IF;
  IF EXISTS(SELECT 1 FROM public.point_transactions
