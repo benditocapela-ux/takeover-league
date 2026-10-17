@@ -7,6 +7,8 @@ on:
     paths:
       - 'duels.html'
       - 'challenges.html'
+      - 'coach-challenge-progress.js'
+      - 'tests/coach-challenge-progress.test.mjs'
       - 'tests/test_coach_challenges_v2_ui.py'
       - 'tests/test_coach_challenges_v2_migration_contract.py'
       - 'tests/test_v2_release_guardrails.py'
@@ -27,6 +29,8 @@ on:
     paths:
       - 'duels.html'
       - 'challenges.html'
+      - 'coach-challenge-progress.js'
+      - 'tests/coach-challenge-progress.test.mjs'
       - 'tests/test_coach_challenges_v2_ui.py'
       - 'tests/test_coach_challenges_v2_migration_contract.py'
       - 'tests/test_v2_release_guardrails.py'
@@ -55,6 +59,11 @@ jobs:
           python-version: '3.12'
       - name: Install PostgreSQL SQL parser
         run: python -m pip install 'pglast>=7,<9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test approved-training goal progress preview
+        run: node --test tests/coach-challenge-progress.test.mjs
       - name: Run duel contract checks
         run: python -m unittest discover -s tests -p 'test_duels_v2_contract.py' -v
       - name: Run Coach Challenges UI security checks
