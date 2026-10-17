@@ -26,7 +26,18 @@ CREATE TABLE public.point_transactions (
  category text NOT NULL,
  description text,
  effective_date date,
- created_by uuid REFERENCES public.profiles(id)
+ created_by uuid REFERENCES public.profiles(id),
+ submission_id uuid,
+ created_at timestamptz DEFAULT now(),
+ CONSTRAINT point_transactions_category_check CHECK(category IN
+ ('training','trainer_bonus','adjustment','legacy_import','automatic_bonus','achievement_exp'))
+);
+CREATE TABLE public.training_submissions (
+ id uuid PRIMARY KEY,
+ boxer_id uuid NOT NULL REFERENCES public.profiles(id),
+ training_date date NOT NULL,
+ status text NOT NULL,
+ created_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE TABLE public.league_feature_flags (
  feature_key text PRIMARY KEY,
