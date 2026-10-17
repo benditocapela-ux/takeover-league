@@ -102,6 +102,9 @@ jobs:
       - name: Exercise settlement and payout idempotency in PostgreSQL
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql
 
+      - name: Exercise due duel batch settlement in PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_BATCH_BEHAVIOR_SMOKE.sql
+
       - name: Apply duel read RPC migration 010 in disposable database
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/010_duels_v2_read_rpc_review.sql
 
