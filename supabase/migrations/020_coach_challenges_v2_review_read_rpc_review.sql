@@ -16,7 +16,7 @@ BEGIN
  SELECT * INTO c FROM public.league_coach_challenges WHERE id=p_challenge_id;
  IF NOT FOUND THEN RAISE EXCEPTION 'Challenge not found'; END IF;
  IF actor.role='coach' AND c.created_by<>actor.id THEN RAISE EXCEPTION 'Not challenge owner'; END IF;
- IF c.goal_spec->>'review_mode'<>'manual' OR c.status NOT IN ('awaiting_reviews','settled') THEN
+ IF c.goal_spec->>'review_mode' IS DISTINCT FROM 'manual' OR c.status NOT IN ('awaiting_reviews','settled') THEN
   RAISE EXCEPTION 'Manual review unavailable';
  END IF;
  RETURN QUERY
