@@ -156,6 +156,11 @@ BEGIN
   WHERE duel_id=d.id AND boxer_id=boxer FOR UPDATE;
 
   IF old_tx IS NULL THEN
+   -- A settled duel must already have a payout transaction for each boxer.
+   -- Never silently reconstruct a missing payout during a correction.
+   IF existing_status='settled' THEN
+    RAISE EXCEPTION 'Settled duel payout transaction missing for duel % boxer %',d.id,boxer;
+   END IF;
    -- A missing transaction reference is valid only for a new, unpaid ledger.
    -- Do not create another reward if the ledger already claims EXP was paid.
    IF old_exp IS DISTINCT FROM 0 THEN
