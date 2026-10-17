@@ -134,6 +134,39 @@ END $$;
 
 REVOKE ALL ON FUNCTION public.duel_v2_reconcile(uuid) FROM PUBLIC,anon;
 GRANT EXECUTE ON FUNCTION public.duel_v2_reconcile(uuid) TO authenticated;
+-- Explicit coach operation to reconcile all ended duels after training review.
+-- The API caller is authorized independently in duel_v2_reconcile.
+CREATE OR REPLACE FUNCTION public.duel_v2_reconcile_due()
+RETURNS TABLE(duel_id uuid, outcome text)
+LANGUAGE plpgsql SECURITY DEFINER SET search_path TO ''
+AS $
+DECLARE
+ actor_role text;
+ item record;
+BEGIN
+ SELECT p.role INTO actor_role FROM public.profiles p
+ WHERE p.auth_user_id=(SELECT auth.uid()) AND p.is_active=true;
+ IF actor_role IS NULL OR actor_role NOT IN ('admin','coach') THEN
+  RAISE EXCEPTION 'Only a coach may reconcile duels';
+ END IF;
+ IF NOT EXISTS(SELECT 1 FROM public.league_feature_flags
+               WHERE feature_key='duels' AND is_enabled=true) THEN
+  RAISE EXCEPTION 'Duels are not enabled';
+ END IF;
+ FOR item IN
+  SELECT d.id FROM public.league_duels d
+  WHERE d.status IN ('active','awaiting_reviews')
+    AND d.ends_at<=clock_timestamp()
+  ORDER BY d.ends_at,d.id LIMIT 100
+ LOOP
+  duel_id:=item.id;
+  outcome:=public.duel_v2_reconcile(item.id);
+  RETURN NEXT;
+ END LOOP;
+END $;
+
+REVOKE ALL ON FUNCTION public.duel_v2_reconcile_due() FROM PUBLIC,anon;
+GRANT EXECUTE ON FUNCTION public.duel_v2_reconcile_due() TO authenticated;
 COMMIT;
 
 -- REVIEW BLOCKERS:
