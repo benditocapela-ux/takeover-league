@@ -10,6 +10,8 @@ This document is a checklist, not authorization to execute SQL, deploy, merge, o
 - Feature flags default to disabled in migrations
 - Coach-only challenge reward configuration and manual approval
 
+Owner decision register: [Takeover League 2.0 owner decisions](TAKEOVER_LEAGUE_2_OWNER_DECISIONS.md).
+
 ## Mandatory owner decisions before production
 
 - [ ] Approve challenge EXP choices: 25 / 50 / 100 / 150 / 200
