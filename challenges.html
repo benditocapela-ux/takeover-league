@@ -33,7 +33,7 @@ button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#263850;colo
 <label for="goalText">Zielbeschreibung</label><textarea id="goalText" minlength="5" maxlength="1000" required></textarea>
 <label for="goalMode">Kontrolle</label><select id="goalMode"><option value="manual">Manuell durch Trainer</option><option value="automatic">Automatisch (noch nicht aktiv)</option></select>
 <div id="goalTargetGroup" class="hidden"><label for="goalMetric">Messgrösse</label><select id="goalMetric"><option value="jogging_km">Bestätigte Jogging-Kilometer</option><option value="technique_minutes">Bestätigte Technik-Minuten</option></select><label for="goalTarget">Zielwert</label><input id="goalTarget" type="number" min="0.01" max="1000000" step="any"></div>
-<p class="muted">Die Zielkonfiguration löst noch keine Prüfung oder EXP-Auszahlung aus.</p>
+<label for="goalReward">EXP bei erfolgreichem Abschluss</label><select id="goalReward"><option value="25">25 EXP</option><option value="50">50 EXP</option><option value="100">100 EXP</option><option value="150">150 EXP</option><option value="200">200 EXP</option></select><p class="muted">Die Belohnung wird im Entwurf gespeichert. Es werden noch keine EXP ausgezahlt.</p>
 <p class="actions"><button id="saveGoal" type="submit">Ziel speichern</button><button id="cancelGoal" type="button" class="secondary">Abbrechen</button></p>
 </form></section>
 <section id="reviewPanel" class="card hidden"><h2>Manuelle Zielprüfung</h2><p id="reviewChallengeName" class="muted"></p><form id="reviewForm"><label for="reviewBoxer">Angemeldeten Boxer auswählen</label><select id="reviewBoxer" required><option value="">Bitte Boxer auswählen</option></select><p id="reviewParticipantsStatus" class="muted" role="status"></p><label for="reviewDecision">Entscheidung</label><select id="reviewDecision"><option value="true">Ziel erreicht</option><option value="false">Ziel nicht erreicht</option></select><label for="reviewReason">Interne Begründung (mindestens 5 Zeichen)</label><textarea id="reviewReason" minlength="5" maxlength="1000" required></textarea><p class="muted">Nur nach Ablauf einer manuellen Challenge im Status „Wartet auf Freigaben“. Die Entscheidung ist einmalig und zahlt keine EXP aus.</p><div class="actions"><button id="saveReview" type="submit">Entscheidung speichern</button><button id="cancelReview" type="button" class="secondary">Abbrechen</button></div></form></section>
@@ -207,6 +207,7 @@ $('goalForm').addEventListener('submit',async e=>{
   const target=automatic?Number($('goalTarget').value):null;
   if(automatic&&(!Number.isFinite(target)||target<=0||target>1000000))throw Error('Ungültiger Zielwert');
   await rpc('coach_challenge_v2_set_goal',{p_challenge_id:goalEditingId,p_goal_text:$('goalText').value,p_review_mode:$('goalMode').value,p_target_value:target,p_metric:automatic?$('goalMetric').value:null});
+  await rpc('coach_challenge_v2_set_reward',{p_challenge_id:goalEditingId,p_reward_exp:Number($('goalReward').value)});
   saved=true;closeGoalEditor();status('Challenge-Ziel gespeichert. Noch keine EXP-Vergabe.');
   try{await refresh()}catch(err){status('Ziel gespeichert, aber Aktualisierung fehlgeschlagen: '+err.message,true)}
  }catch(err){if(!saved)status('Ziel speichern fehlgeschlagen: '+err.message,true)}
