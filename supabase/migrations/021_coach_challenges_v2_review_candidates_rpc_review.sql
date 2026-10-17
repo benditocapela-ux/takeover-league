@@ -20,8 +20,9 @@ BEGIN
  OR challenge.ends_at IS NULL OR challenge.ends_at>pg_catalog.clock_timestamp() THEN
  RAISE EXCEPTION 'Manual review unavailable'; END IF;
  RETURN QUERY
- SELECT e.boxer_id,e.boxer_id::text AS display_name
+ SELECT e.boxer_id,p.display_name AS display_name
  FROM public.league_coach_challenge_entries e
+ JOIN public.profiles p ON p.id=e.boxer_id AND p.role='boxer' AND p.is_active=true
  WHERE e.challenge_id=p_challenge_id AND e.status='joined'
  AND NOT EXISTS (SELECT 1 FROM public.league_coach_challenge_reviews r
  WHERE r.challenge_id=e.challenge_id AND r.boxer_id=e.boxer_id)
