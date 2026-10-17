@@ -165,11 +165,11 @@ def test_challenge_cards_show_kind_and_only_actual_dates():
     assert "dateFormatter.format(new Date(c.starts_at))" in html
 
 
-def test_withdrawal_warns_about_no_rejoin_and_requires_confirmation():
+def test_withdrawal_allows_rejoin_only_while_open_and_requires_confirmation():
     html = PAGE.read_text(encoding="utf-8")
-    assert "Eine erneute Anmeldung ist derzeit nicht möglich." in html
+    assert "Solange die Anmeldung offen ist, kannst du erneut teilnehmen." in html
     assert "if(!confirm('Von dieser Challenge abmelden?" in html
-    assert "Erneute Anmeldung nach Rückzug derzeit nicht möglich." in html
+    assert "c.status==='open'&&(!c.my_enrollment_status||c.my_enrollment_status==='withdrawn')" in html
     assert "Nur Anmeldung: Challenge-Zeitraum und EXP-Vergabe haben noch nicht begonnen." in html
 
 
