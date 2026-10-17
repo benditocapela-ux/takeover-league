@@ -298,3 +298,11 @@ def test_settlement_timestamp_cannot_predate_deadline():
     smoke = (MIGRATIONS.parent / "tests/COACH_CHALLENGES_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql").read_text(encoding="utf-8")
     assert "c.settled_at<c.ends_at" in sql
     assert "Settlement timestamp before deadline accepted" in smoke
+
+
+def test_settled_challenge_validates_goal_metadata():
+    sql = (MIGRATIONS / "027_coach_challenges_v2_manual_settlement_review.sql").read_text(encoding="utf-8")
+    smoke = (MIGRATIONS.parent / "tests/COACH_CHALLENGES_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql").read_text(encoding="utf-8")
+    assert "c.goal_spec->>'version' IS DISTINCT FROM '1'" in sql
+    assert "pg_catalog.btrim(c.goal_spec->>'goal_text')" in sql
+    assert "Empty settled challenge goal accepted" in smoke
