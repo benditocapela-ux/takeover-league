@@ -120,6 +120,15 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn("AS $$", self.settlement)
         self.assertIn("END $$;", self.settlement)
 
+    def test_ledger_claim_without_transaction_cannot_issue_second_reward(self):
+        self.assertIn("IF old_exp IS DISTINCT FROM 0 THEN", self.settlement)
+        self.assertIn("ledger claims EXP without transaction", self.settlement)
+        self.assertIn("ELSIF old_exp IS NULL THEN", self.settlement)
+        self.assertLess(
+            self.settlement.index("IF old_exp IS DISTINCT FROM 0 THEN"),
+            self.settlement.index("INSERT INTO public.point_transactions", self.settlement.index("IF old_exp IS DISTINCT FROM 0 THEN")),
+        )
+
     def test_reward_correction_rejects_mismatched_ledger(self):
         self.assertIn("t.id=old_tx AND t.boxer_id=boxer AND t.category='duel_exp'", self.settlement)
         self.assertIn("t.exp=old_exp", self.settlement)
