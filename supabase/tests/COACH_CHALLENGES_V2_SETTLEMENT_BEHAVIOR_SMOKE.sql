@@ -22,8 +22,8 @@ BEGIN
   IF SQLERRM='Empty challenge settlement accepted' THEN RAISE; END IF;
   IF SQLERRM<>'Cannot settle challenge without joined participants' THEN RAISE; END IF;
  END;
- -- An impossible challenge clock must prevent the first payout.
- UPDATE public.league_coach_challenges SET starts_at=ends_at WHERE id=cid;
+ -- A missing start time must prevent the first payout.
+ UPDATE public.league_coach_challenges SET starts_at=NULL WHERE id=cid;
  BEGIN
   PERFORM public.coach_challenge_v2_settle_manual(cid);
   RAISE EXCEPTION 'Invalid first-settlement clock accepted';
@@ -159,8 +159,8 @@ BEGIN
  UPDATE public.point_transactions SET category='challenge_exp'
  WHERE category='adjustment' AND description='Challenge reward: '||cid::text
  AND boxer_id='e0000000-0000-0000-0000-000000000042';
- -- A settled challenge with an impossible start/end clock is corrupt.
- UPDATE public.league_coach_challenges SET starts_at=ends_at WHERE id=cid;
+ -- A settled challenge with a missing start time is corrupt.
+ UPDATE public.league_coach_challenges SET starts_at=NULL WHERE id=cid;
  BEGIN
   PERFORM public.coach_challenge_v2_settle_manual(cid);
   RAISE EXCEPTION 'Invalid settled challenge clock accepted';
