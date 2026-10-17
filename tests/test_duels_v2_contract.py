@@ -85,6 +85,9 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn("AS $$", self.settlement)
         self.assertIn("END $$;", self.settlement)
 
+    def test_paid_duel_is_not_reopened_for_pending_review(self):
+        self.assertIn("IF d.status='settled' THEN RETURN 'awaiting_reviews'; END IF;", self.settlement)
+
     def test_read_rpc_authenticated(self):
         self.assertIn("GRANT EXECUTE ON FUNCTION public.duel_v2_list_mine() TO authenticated", self.reads)
 
