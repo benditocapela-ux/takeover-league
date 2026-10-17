@@ -273,6 +273,11 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn("Antwort fehlgeschlagen:", self.ui)
         self.assertIn("finally{for(const control of actions.querySelectorAll('button'))control.disabled=false;}", self.ui)
 
+    def test_coach_batch_actions_cannot_overlap(self):
+        self.assertIn('let batchRunning=false', self.ui)
+        self.assertEqual(self.ui.count('if(batchRunning)return;'), 2)
+        self.assertEqual(self.ui.count('batchRunning=false}'), 2)
+
 
 if __name__ == "__main__":
     unittest.main()
