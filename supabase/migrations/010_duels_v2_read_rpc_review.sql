@@ -19,6 +19,10 @@ BEGIN
  WHERE p.auth_user_id=(SELECT auth.uid()) AND p.is_active=true
  AND p.role IN ('boxer','admin','coach');
  IF v_profile IS NULL THEN RAISE EXCEPTION 'Not authorized'; END IF;
+ IF NOT EXISTS (
+  SELECT 1 FROM public.league_feature_flags
+  WHERE feature_key='duels' AND is_enabled=true
+ ) THEN RAISE EXCEPTION 'Duels are not enabled'; END IF;
  RETURN QUERY
  SELECT d.id,d.challenger_id,c.display_name::text,
         d.opponent_id,o.display_name::text,d.status,d.duration_days,
@@ -43,6 +47,10 @@ BEGIN
  WHERE p.auth_user_id=(SELECT auth.uid()) AND p.is_active=true
  AND p.role IN ('boxer','admin','coach');
  IF v_profile IS NULL THEN RAISE EXCEPTION 'Not authorized'; END IF;
+ IF NOT EXISTS (
+  SELECT 1 FROM public.league_feature_flags
+  WHERE feature_key='duels' AND is_enabled=true
+ ) THEN RAISE EXCEPTION 'Duels are not enabled'; END IF;
  RETURN QUERY
  SELECT p.id,p.display_name::text FROM public.profiles p
  WHERE p.role='boxer' AND p.is_active=true
