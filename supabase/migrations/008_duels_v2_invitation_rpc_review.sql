@@ -41,6 +41,8 @@ BEGIN
      WHERE id IN (v_first,v_second) AND role='boxer' AND is_active=true)<>2 THEN
   RAISE EXCEPTION 'Both participants must be active boxers';
  END IF;
+ -- Invitation timestamps and expired-pair cleanup use time after lock wait.
+ v_now:=clock_timestamp();
 
  -- Ended active duels must release the pair uniqueness constraint for rematches.
  UPDATE public.league_duels SET status='awaiting_reviews',updated_at=v_now
