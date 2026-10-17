@@ -66,7 +66,8 @@ def test_challenge_actions_are_serialized():
 
 def test_coach_ui_distinguishes_enrollment_from_activation():
     html = PAGE.read_text(encoding="utf-8")
-    assert "dadurch starten weder Challenge-Zeitmessung noch EXP-Vergabe" in html
+    assert "Danach die Anmeldung öffnen und die Challenge starten." in html
+    assert "Automatische Abrechnung bleibt deaktiviert." in html
     assert "p_action:'open'" in html
     assert "p_action:'activate'" not in html
 
