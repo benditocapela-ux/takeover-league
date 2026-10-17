@@ -152,6 +152,31 @@ function resetEditor(){
  $('createButton').textContent='Entwurf speichern';
  $('cancelEdit').classList.add('hidden');
 }
+function updateGoalTarget(){
+ const automatic=$('goalMode').value==='automatic';
+ $('goalTargetGroup').classList.toggle('hidden',!automatic);
+ $('goalTarget').required=automatic;
+ if(!automatic)$('goalTarget').value='';
+}
+function closeGoalEditor(){
+ goalEditingId=null;$('goalForm').reset();updateGoalTarget();$('goalPanel').classList.add('hidden');
+}
+$('goalMode').addEventListener('change',updateGoalTarget);
+$('cancelGoal').addEventListener('click',()=>{if(!formBusy&&!actionBusy)closeGoalEditor()});
+$('goalForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(formBusy||actionBusy||refreshBusy||!goalEditingId)return;
+ sequence++;formBusy=true;const control=$('saveGoal');control.disabled=true;$('cancelGoal').disabled=true;
+ let saved=false;
+ try{
+  const automatic=$('goalMode').value==='automatic';
+  const target=automatic?Number($('goalTarget').value):null;
+  if(automatic&&(!Number.isFinite(target)||target<=0||target>1000000))throw Error('Ungültiger Zielwert');
+  await rpc('coach_challenge_v2_set_goal',{p_challenge_id:goalEditingId,p_goal_text:$('goalText').value,p_review_mode:$('goalMode').value,p_target_value:target});
+  saved=true;closeGoalEditor();status('Challenge-Ziel gespeichert. Noch keine EXP-Vergabe.');
+  try{await refresh()}catch(err){status('Ziel gespeichert, aber Aktualisierung fehlgeschlagen: '+err.message,true)}
+ }catch(err){if(!saved)status('Ziel speichern fehlgeschlagen: '+err.message,true)}
+ finally{control.disabled=false;$('cancelGoal').disabled=false;formBusy=false}
+});
 $('challengeSearch').addEventListener('input',renderChallenges);
 $('clearFilters').addEventListener('click',()=>{$('challengeSearch').value='';$('statusFilter').value='all';$('kindFilter').value='all';renderChallenges();$('challengeSearch').focus()});
 $('statusFilter').addEventListener('change',renderChallenges);
