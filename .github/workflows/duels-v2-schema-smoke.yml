@@ -6,6 +6,7 @@ on:
       - develop/takeover-league-2-foundation
     paths:
       - 'supabase/tests/DUELS_V2_SCHEMA_SMOKE_FIXTURE.sql'
+      - 'supabase/tests/DUELS_V2_PREFLIGHT_READ_ONLY.sql'
       - 'supabase/tests/DUELS_V2_SCHEMA_BEHAVIOR_SMOKE.sql'
       - 'supabase/migrations/007_duels_v2_schema_review.sql'
       - 'supabase/migrations/008_duels_v2_invitation_rpc_review.sql'
@@ -57,6 +58,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Create synthetic base schema
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_SCHEMA_SMOKE_FIXTURE.sql
+      - name: Execute read-only schema and training RPC preflight on synthetic database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_PREFLIGHT_READ_ONLY.sql
       - name: Apply duel schema migration 007 in disposable database
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/007_duels_v2_schema_review.sql
       - name: Verify schema constraints, permissions and disabled flag
