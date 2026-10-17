@@ -25,7 +25,7 @@ BEGIN
  IF p_challenger IS NULL OR p_opponent IS NULL OR p_challenger=p_opponent THEN
   RAISE EXCEPTION 'Two different boxers required';
  END IF;
- IF p_duration_days NOT IN (7,14) THEN
+ IF p_duration_days IS NULL OR p_duration_days NOT IN (7,14) THEN
   RAISE EXCEPTION 'Duel duration must be 7 or 14 days';
  END IF;
  IF v_actor.role='boxer' AND v_actor.id<>p_challenger THEN
