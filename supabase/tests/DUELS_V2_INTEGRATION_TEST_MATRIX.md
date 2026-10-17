@@ -8,7 +8,7 @@
 2. Create test-only profiles: coach/admin, boxer A, boxer B, boxer C and boxer D. Provide authenticated JWT contexts with auth.uid() resolving to their profile auth_user_id.
 3. Apply reviewed duel migrations 007, 008, 009, 010 **only to the isolated database**. Confirm the duels feature flag starts disabled. Activate it only in the test database.
 4. Create test training submissions and matching approved point_transactions using the same category, constraints and update semantics as production's training review RPC. Use transactions for test setup only.
-5. After each case, query league_duels, league_duel_exp_ledger, point_transactions and league_duel_events. Compare total EXP and ledger consistency.
+5. After each case, query league_duels, league_duel_exp_ledger, point_transactions and league_duel_events. Compare total EXP and ledger consistency. Run `supabase/tests/DUELS_V2_LEDGER_AUDIT_READ_ONLY.sql` in the isolated database: all four audit queries must return zero rows after completed settlements.
 
 ## Mandatory scenarios
 
