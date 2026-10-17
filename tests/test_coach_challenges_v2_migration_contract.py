@@ -264,3 +264,10 @@ def test_goal_details_privacy_smoke_is_wired_to_postgresql_ci():
     assert "Other coach read private draft goal" in smoke
     assert "Boxer read private draft goal" in smoke
     assert "Saved draft goal not returned" in smoke
+
+
+def test_settled_challenge_retry_requires_nonempty_joined_roster():
+    sql = (MIGRATIONS / "027_coach_challenges_v2_manual_settlement_review.sql").read_text(encoding="utf-8")
+    smoke = (MIGRATIONS.parent / "tests/COACH_CHALLENGES_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql").read_text(encoding="utf-8")
+    assert "IF NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_entries" in sql
+    assert "Settled empty participant roster accepted" in smoke
