@@ -118,3 +118,12 @@ def test_challenge_module_javascript_parses(tmp_path):
     module.write_text(script, encoding="utf-8")
     result = subprocess.run([node, "--check", str(module)], capture_output=True, text=True)
     assert result.returncode == 0, result.stderr
+
+
+def test_successful_writes_are_not_reported_as_failed_on_refresh_error():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "Aktion gespeichert, aber Aktualisierung fehlgeschlagen:" in html
+    assert "Aktion fehlgeschlagen:" in html
+    assert "Entwurf gespeichert, aber Aktualisierung fehlgeschlagen:" in html
+    assert "saved=true;" in html
+    assert "if(!saved)status(" in html
