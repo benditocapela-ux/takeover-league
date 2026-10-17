@@ -6,6 +6,7 @@ on:
       - develop/takeover-league-2-foundation
     paths:
       - 'supabase/tests/DUELS_V2_SCHEMA_SMOKE_FIXTURE.sql'
+      - 'supabase/tests/DUELS_V2_SCHEMA_BEHAVIOR_SMOKE.sql'
       - 'supabase/migrations/007_duels_v2_schema_review.sql'
       - '.github/workflows/duels-v2-schema-smoke.yml'
   workflow_dispatch:
@@ -73,3 +74,6 @@ jobs:
             END IF;
           END $smoke$;
           SQL
+
+      - name: Exercise actual PostgreSQL duel constraints
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_SCHEMA_BEHAVIOR_SMOKE.sql
