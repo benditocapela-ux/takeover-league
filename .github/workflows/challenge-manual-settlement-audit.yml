@@ -1,0 +1,25 @@
+name: Challenge V2 manual settlement static audit
+on:
+  push:
+    paths:
+      - 'supabase/migrations/02[5-8]_*.sql'
+      - 'supabase/tests/CHALLENGE_V2_MANUAL_SETTLEMENT_STATIC_AUDIT.py'
+      - '.github/workflows/challenge-manual-settlement-audit.yml'
+  pull_request:
+    paths:
+      - 'supabase/migrations/02[5-8]_*.sql'
+      - 'supabase/tests/CHALLENGE_V2_MANUAL_SETTLEMENT_STATIC_AUDIT.py'
+      - '.github/workflows/challenge-manual-settlement-audit.yml'
+  workflow_dispatch:
+jobs:
+  static-audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check manual settlement safeguards
+        run: python3 supabase/tests/CHALLENGE_V2_MANUAL_SETTLEMENT_STATIC_AUDIT.py
