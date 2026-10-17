@@ -130,6 +130,8 @@ BEGIN
         COALESCE(sum(t.points) FILTER(WHERE s.boxer_id=d.opponent_id),0)::integer
  INTO p1,p2
  FROM public.training_submissions s
+ -- Legacy data can contain a transaction linked to another boxer's submission.
+ -- Never attribute such a transaction to either duel participant.
  JOIN public.point_transactions t ON t.submission_id=s.id AND t.boxer_id=s.boxer_id
  WHERE s.boxer_id IN(d.challenger_id,d.opponent_id)
    AND s.status='approved'
