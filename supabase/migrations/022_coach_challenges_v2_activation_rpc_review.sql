@@ -23,7 +23,8 @@ BEGIN
  OR COALESCE(pg_catalog.char_length(pg_catalog.btrim(c.goal_spec->>'goal_text')) BETWEEN 5 AND 1000,false)=false
  OR c.goal_spec->>'review_mode' IS DISTINCT FROM 'manual'
  OR c.goal_spec->>'reward_exp' IS NULL
- OR c.goal_spec->>'reward_exp' NOT IN ('25','50','100','150','200') THEN
+ OR c.goal_spec->>'reward_exp' NOT IN ('25','50','100','150','200')
+ OR pg_catalog.jsonb_typeof(c.goal_spec->'reward_exp') IS DISTINCT FROM 'number' THEN
  RAISE EXCEPTION 'Valid goal required before activation'; END IF;
 
  IF NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_entries
