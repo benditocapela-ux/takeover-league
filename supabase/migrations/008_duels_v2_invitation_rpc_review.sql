@@ -79,7 +79,7 @@ BEGIN
  SELECT * INTO v_actor FROM public.profiles
  WHERE auth_user_id=(SELECT auth.uid()) AND role='boxer' AND is_active=true;
  IF NOT FOUND THEN RAISE EXCEPTION 'Only an active boxer may respond'; END IF;
- SELECT * INTO v_duel FROM public.league_duels WHERE id=p_duel_id FOR UPDATE;
+ -- Resolve participants without taking a duel row lock; all duel mutations\n -- acquire participant profile locks first, then the duel row lock.\n SELECT * INTO v_duel FROM public.league_duels WHERE id=p_duel_id;\n IF NOT FOUND THEN RAISE EXCEPTION 'Duel not found'; END IF;\n PERFORM 1 FROM public.profiles\n WHERE id IN (v_duel.challenger_id,v_duel.opponent_id)\n ORDER BY id FOR UPDATE;\n SELECT * INTO v_duel FROM public.league_duels WHERE id=p_duel_id FOR UPDATE;
  IF NOT FOUND THEN RAISE EXCEPTION 'Duel not found'; END IF;
  IF v_actor.id<>v_duel.opponent_id THEN
   RAISE EXCEPTION 'Only the invited boxer may respond';
