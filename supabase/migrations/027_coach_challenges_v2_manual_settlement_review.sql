@@ -43,6 +43,8 @@ BEGIN
  RAISE EXCEPTION 'Not challenge owner'; END IF;
  IF c.status='settled' THEN
   IF c.goal_spec->>'review_mode' IS DISTINCT FROM 'manual'
+   OR c.goal_spec->>'version' IS DISTINCT FROM '1'
+   OR COALESCE(pg_catalog.char_length(pg_catalog.btrim(c.goal_spec->>'goal_text')) BETWEEN 5 AND 1000,false)=false
    OR c.goal_spec->>'reward_exp' IS NULL
    OR c.goal_spec->>'reward_exp' NOT IN ('25','50','100','150','200')
    OR pg_catalog.jsonb_typeof(c.goal_spec->'reward_exp') IS DISTINCT FROM 'number'
