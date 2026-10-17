@@ -68,3 +68,19 @@ def test_coach_ui_distinguishes_enrollment_from_activation():
     assert "dadurch starten weder Challenge-Zeitmessung noch EXP-Vergabe" in html
     assert "p_action:'open'" in html
     assert "p_action:'activate'" not in html
+
+
+def test_form_and_list_actions_share_mutual_exclusion():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "actionBusy=false,formBusy=false" in html
+    assert "if(actionBusy||formBusy)return;actionBusy=true;" in html
+    assert "if(formBusy||actionBusy)return;" in html
+    assert "formBusy=true;const control=$('createButton')" in html
+    assert "$('cancelEdit').disabled=true;" in html
+    assert "if(!formBusy)resetEditor()" in html
+    assert "formBusy=false}" in html
+
+
+def test_edit_selection_does_not_trigger_redundant_refresh():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "$('title').focus();\n    return false;" in html
