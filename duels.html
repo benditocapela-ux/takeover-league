@@ -131,15 +131,26 @@ $('inviteForm').addEventListener('submit',async e=>{
  finally{$('inviteButton').disabled=false}
 });
 $('refresh').addEventListener('click',refresh);
+// Stable cursor prevents rechecking the same 100 duels on each batch.
+async function reconcileBatches(includeSettled){
+ let cursor=null,checked=0,settled=0,waiting=0;
+ for(let page=0;page<50;page++){
+  const result=await db.rpc('duel_v2_reconcile_due',{p_include_settled:includeSettled,p_after:cursor});
+  if(result.error)throw result.error;
+  const rows=result.data||[];
+  checked+=rows.length;
+  settled+=rows.filter(r=>r.outcome==='settled').length;
+  waiting+=rows.filter(r=>r.outcome==='awaiting_reviews').length;
+  if(rows.length<100)return {checked,settled,waiting,more:false};
+  cursor=rows[rows.length-1].duel_id;
+ }
+ return {checked,settled,waiting,more:true};
+}
 $('reconcileDue').addEventListener('click',async()=>{
  const button=$('reconcileDue');button.disabled=true;
  try{
-  const result=await db.rpc('duel_v2_reconcile_due',{p_include_settled:false});
-  if(result.error)throw result.error;
-  const rows=result.data||[];
-  const completed=rows.filter(r=>r.outcome==='settled').length;
-  const waiting=rows.filter(r=>r.outcome==='awaiting_reviews').length;
-  setStatus(completed+' Duelle abgerechnet, '+waiting+' warten auf Freigaben.');
+  const r=await reconcileBatches(false);
+  setStatus(r.settled+' Duelle abgerechnet, '+r.waiting+' warten auf Freigaben.'+(r.more?' Weitere Duelle vorhanden; erneut ausführen.':''));
   await refresh();
  }catch(err){setStatus('Sammelauswertung fehlgeschlagen: '+err.message,true)}
  finally{button.disabled=false}
@@ -147,10 +158,8 @@ $('reconcileDue').addEventListener('click',async()=>{
 $('recheckSettled').addEventListener('click',async()=>{
  const button=$('recheckSettled');button.disabled=true;
  try{
-  const result=await db.rpc('duel_v2_reconcile_due',{p_include_settled:true});
-  if(result.error)throw result.error;
-  const rows=result.data||[];
-  setStatus(rows.length+' Duelle geprüft (maximal 100 pro Durchgang).');
+  const r=await reconcileBatches(true);
+  setStatus(r.checked+' Duelle geprüft.'+(r.more?' Weitere Duelle vorhanden; erneut ausführen.':''));
   await refresh();
  }catch(err){setStatus('Nachprüfung fehlgeschlagen: '+err.message,true)}
  finally{button.disabled=false}
