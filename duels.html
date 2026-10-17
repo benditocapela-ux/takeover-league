@@ -127,7 +127,7 @@ async function init(){
  };
  challengerSelect.addEventListener('change',syncOpponentOptions);
  syncOpponentOptions();
- $('app').classList.remove('hidden');setStatus('Duelle werden geladen …');try{await refresh();setStatus('Duellübersicht')}catch(err){setStatus('Duellübersicht konnte nicht geladen werden: '+err.message,true)}
+ $('app').classList.remove('hidden');setStatus('Duelle werden geladen …');try{const updated=await refresh();if(updated!==false)setStatus('Duellübersicht')}catch(err){setStatus('Duellübersicht konnte nicht geladen werden: '+err.message,true)}
 }
 $('inviteForm').addEventListener('submit',async e=>{
  e.preventDefault();
