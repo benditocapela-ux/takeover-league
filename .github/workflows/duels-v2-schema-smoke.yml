@@ -19,12 +19,14 @@ on:
       - 'supabase/migrations/014_coach_challenges_v2_withdraw_rpc_review.sql'
       - 'supabase/migrations/015_coach_challenges_v2_read_rpc_review.sql'
       - 'supabase/migrations/016_coach_challenges_v2_edit_draft_rpc_review.sql'
+      - 'supabase/migrations/017_coach_challenges_v2_goal_definition_rpc_review.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_SCHEMA_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_ENROLLMENT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_MANAGEMENT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_WITHDRAW_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_READ_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_EDIT_DRAFT_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_GOAL_DEFINITION_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_AUDIT_READ_ONLY.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_INTEGRITY_ASSERTIONS_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_INVALID_LEDGER_FIXTURE.sql'
@@ -49,12 +51,14 @@ on:
       - 'supabase/migrations/014_coach_challenges_v2_withdraw_rpc_review.sql'
       - 'supabase/migrations/015_coach_challenges_v2_read_rpc_review.sql'
       - 'supabase/migrations/016_coach_challenges_v2_edit_draft_rpc_review.sql'
+      - 'supabase/migrations/017_coach_challenges_v2_goal_definition_rpc_review.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_SCHEMA_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_ENROLLMENT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_MANAGEMENT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_WITHDRAW_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_READ_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_EDIT_DRAFT_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_GOAL_DEFINITION_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_AUDIT_READ_ONLY.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_INTEGRITY_ASSERTIONS_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_INVALID_LEDGER_FIXTURE.sql'
@@ -121,6 +125,10 @@ jobs:
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/016_coach_challenges_v2_edit_draft_rpc_review.sql
       - name: Exercise challenge draft editing and ownership
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_EDIT_DRAFT_BEHAVIOR_SMOKE.sql
+      - name: Apply coach challenge goal definition RPC in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/017_coach_challenges_v2_goal_definition_rpc_review.sql
+      - name: Exercise manual and automatic goal authoring security
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_GOAL_DEFINITION_BEHAVIOR_SMOKE.sql
       - name: Verify challenge RPC grants and API table isolation
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_API_PERMISSIONS_SMOKE.sql
       - name: Audit coach challenge integrity in disposable database
