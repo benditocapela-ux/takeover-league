@@ -61,7 +61,8 @@ BEGIN
    (r.id IS NULL OR l.id IS NULL OR l.awarded_exp IS DISTINCT FROM
     CASE WHEN r.approved THEN (c.goal_spec->>'reward_exp')::integer ELSE 0 END
     OR (r.approved AND (t.id IS NULL OR t.category<>'challenge_exp'
-     OR t.exp<>l.awarded_exp OR t.points<>0 OR t.boxer_id<>e.boxer_id
+     OR t.exp IS DISTINCT FROM l.awarded_exp
+     OR t.points IS DISTINCT FROM 0 OR t.boxer_id IS DISTINCT FROM e.boxer_id
      OR t.description<>'Challenge reward: '||c.id::text
      OR t.effective_date IS DISTINCT FROM (c.ends_at AT TIME ZONE 'Europe/Zurich')::date))
     OR (NOT r.approved AND l.transaction_id IS NOT NULL)))
