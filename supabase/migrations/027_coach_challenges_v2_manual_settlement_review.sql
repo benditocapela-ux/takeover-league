@@ -40,7 +40,24 @@ BEGIN
  IF actor.role<>'admin' AND c.created_by<>actor.id THEN
  RAISE EXCEPTION 'Not challenge owner'; END IF;
  IF c.status='settled' THEN
-  RAISE EXCEPTION 'Challenge already settled; payout integrity must be audited';
+  IF EXISTS(SELECT 1 FROM public.league_coach_challenge_entries e
+   LEFT JOIN public.league_coach_challenge_reviews r
+   ON r.challenge_id=e.challenge_id AND r.boxer_id=e.boxer_id
+   LEFT JOIN public.league_coach_challenge_exp_ledger l
+   ON l.challenge_id=e.challenge_id AND l.boxer_id=e.boxer_id
+   LEFT JOIN public.point_transactions t ON t.id=l.transaction_id
+   WHERE e.challenge_id=c.id AND e.status='joined' AND
+   (r.id IS NULL OR l.id IS NULL OR l.awarded_exp IS DISTINCT FROM
+    CASE WHEN r.approved THEN (c.goal_spec->>'reward_exp')::integer ELSE 0 END
+    OR (r.approved AND (t.id IS NULL OR t.category<>'challenge_exp'
+     OR t.exp<>l.awarded_exp OR t.points<>0 OR t.boxer_id<>e.boxer_id
+     OR t.description<>'Challenge reward: '||c.id::text))
+    OR (NOT r.approved AND l.transaction_id IS NOT NULL)))
+   OR EXISTS(SELECT 1 FROM public.league_coach_challenge_exp_ledger l
+   WHERE l.challenge_id=c.id AND NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_entries e
+   WHERE e.challenge_id=l.challenge_id AND e.boxer_id=l.boxer_id AND e.status='joined'))
+  THEN RAISE EXCEPTION 'Settled challenge payout integrity mismatch'; END IF;
+  RETURN 'settled';
  END IF;
  IF c.status<>'awaiting_reviews' OR c.goal_spec->>'review_mode' IS DISTINCT FROM 'manual'
  OR c.ends_at IS NULL OR c.ends_at>pg_catalog.clock_timestamp()
