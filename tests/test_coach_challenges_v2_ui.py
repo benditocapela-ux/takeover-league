@@ -291,3 +291,11 @@ def test_begin_reviews_button_hidden_until_challenge_expiry():
 def test_automatic_review_option_is_disabled_until_backend_supports_it():
     html = PAGE.read_text(encoding="utf-8")
     assert '<option value="automatic" disabled>' in html
+
+
+def test_goal_editor_only_switches_after_private_draft_read_succeeds():
+    from pathlib import Path
+    html = (Path(__file__).resolve().parents[1] / "challenges.html").read_text(encoding="utf-8")
+    read = "const savedGoal=await rpc('coach_challenge_v2_goal_details'"
+    select = "goalEditingId=c.id;$('goalChallengeName').textContent=c.title;"
+    assert html.index(read) < html.index(select)
