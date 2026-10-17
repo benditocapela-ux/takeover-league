@@ -185,3 +185,8 @@ def test_manual_refresh_serializes_with_writes_and_other_refreshes():
     assert "if(formBusy||actionBusy||refreshBusy)return;" in html
     assert "refreshBusy=true;const control=$('refresh');control.disabled=true;" in html
     assert "finally{control.disabled=false;refreshBusy=false}" in html
+
+
+def test_initialization_failure_is_shown_instead_of_unhandled_rejection():
+    html = PAGE.read_text(encoding='utf-8')
+    assert "init().catch(e=>{status('Initialisierung fehlgeschlagen:" in html
