@@ -8,6 +8,8 @@ on:
       - 'supabase/tests/DUELS_V2_SCHEMA_SMOKE_FIXTURE.sql'
       - 'supabase/tests/DUELS_V2_SCHEMA_BEHAVIOR_SMOKE.sql'
       - 'supabase/migrations/007_duels_v2_schema_review.sql'
+      - 'supabase/migrations/008_duels_v2_invitation_rpc_review.sql'
+      - 'supabase/tests/DUELS_V2_INVITATION_BEHAVIOR_SMOKE.sql'
       - '.github/workflows/duels-v2-schema-smoke.yml'
   workflow_dispatch:
 
@@ -77,3 +79,8 @@ jobs:
 
       - name: Exercise actual PostgreSQL duel constraints
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_SCHEMA_BEHAVIOR_SMOKE.sql
+
+      - name: Apply duel invitation RPC migration 008 in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/008_duels_v2_invitation_rpc_review.sql
+      - name: Exercise invitation and acceptance RPCs in PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_INVITATION_BEHAVIOR_SMOKE.sql
