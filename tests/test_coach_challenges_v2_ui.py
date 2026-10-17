@@ -300,3 +300,20 @@ def test_goal_editor_only_switches_after_private_draft_read_succeeds():
     read = "const savedGoal=await rpc('coach_challenge_v2_goal_details'"
     select = "goalEditingId=c.id;$('goalChallengeName').textContent=c.title;"
     assert html.index(read) < html.index(select)
+
+
+def test_isolated_preview_never_uses_production_auth_or_redirect():
+    root = PAGE.parent
+    challenge = (root / "challenges-test.html").read_text(encoding="utf-8")
+    login = (root / "login-test.html").read_text(encoding="utf-8")
+    test_url = "https://cfgdvcccsqwfjajuizsr.supabase.co"
+    prod_url = "https://iqarjivcrddcixrvqbfb.supabase.co"
+    for html in (challenge, login):
+        assert test_url in html
+        assert prod_url not in html
+        assert "TEST ONLY" in html
+    assert "location.replace('./login-test.html')" in challenge
+    assert "location.replace('./challenges-test.html')" in login
+    assert "signInWithPassword" in login
+    assert "signUp(" not in login
+    assert "sb_secret_" not in login + challenge
