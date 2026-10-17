@@ -69,6 +69,14 @@ class DuelContractTests(unittest.TestCase):
         second = self.settlement.index('WHERE id=p_duel_id FOR UPDATE')
         self.assertLess(first, second)
 
+    def test_rematch_releases_expired_active_pair(self):
+        self.assertIn("SET status='awaiting_reviews',updated_at=v_now", self.invites)
+        self.assertIn("WHERE status='active' AND ends_at<=v_now", self.invites)
+
+    def test_batch_sql_dollar_quotes_balanced(self):
+        self.assertEqual(self.settlement.count('AS $'), 2)
+        self.assertEqual(self.settlement.count('END $;'), 2)
+
     def test_read_rpc_authenticated(self):
         self.assertIn("GRANT EXECUTE ON FUNCTION public.duel_v2_list_mine() TO authenticated", self.reads)
 
