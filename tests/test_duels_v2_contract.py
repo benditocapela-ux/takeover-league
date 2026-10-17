@@ -117,6 +117,14 @@ class DuelContractTests(unittest.TestCase):
         self.assertLess(respond.index("ORDER BY id FOR UPDATE"), respond.index("WHERE id=p_duel_id FOR UPDATE"))
         self.assertIn("Participant profile locks were already acquired", respond)
 
+    def test_invitation_clocks_refresh_after_lock_wait(self):
+        invite, respond = self.invites.split("CREATE OR REPLACE FUNCTION public.duel_v2_respond(", 1)
+        self.assertIn("v_now:=clock_timestamp();", invite)
+        self.assertIn("v_now:=clock_timestamp();", respond)
+        self.assertLess(invite.index("ORDER BY id FOR UPDATE"), invite.index("v_now:=clock_timestamp();"))
+        self.assertLess(respond.index("WHERE id=p_duel_id FOR UPDATE"), respond.index("v_now:=clock_timestamp();"))
+        self.assertLess(respond.index("v_now:=clock_timestamp();"), respond.index("IF v_duel.expires_at<=v_now THEN"))
+
     def test_duel_invitation_rejects_null_duration(self):
         self.assertIn("IF p_duration_days IS NULL OR p_duration_days NOT IN (7,14) THEN", self.invites)
         self.assertIn("Duel duration must be 7 or 14 days", self.invites)
