@@ -60,7 +60,7 @@ BEGIN
  IF pending_count>0 THEN
   -- Never reopen an already-paid duel: preserve existing EXP until
   -- pending submissions are reviewed and a coach reconciles again.
-  IF d.status='settled' THEN RETURN 'awaiting_reviews'; END IF;
+  IF d.status='settled' THEN RETURN 'pending_correction'; END IF;
   IF d.status<>'awaiting_reviews' THEN
    UPDATE public.league_duels SET status='awaiting_reviews',updated_at=current_time
    WHERE id=d.id;
