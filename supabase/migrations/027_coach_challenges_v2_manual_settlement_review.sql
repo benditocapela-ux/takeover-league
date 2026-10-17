@@ -63,6 +63,9 @@ BEGIN
    OR EXISTS(SELECT 1 FROM public.league_coach_challenge_exp_ledger l
    WHERE l.challenge_id=c.id AND NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_entries e
    WHERE e.challenge_id=l.challenge_id AND e.boxer_id=l.boxer_id AND e.status='joined'))
+   OR EXISTS(SELECT 1 FROM public.league_coach_challenge_reviews r
+   WHERE r.challenge_id=c.id AND NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_entries e
+   WHERE e.challenge_id=r.challenge_id AND e.boxer_id=r.boxer_id AND e.status='joined'))
    OR EXISTS(SELECT 1 FROM public.point_transactions t
    WHERE t.category='challenge_exp' AND t.description='Challenge reward: '||c.id::text
    AND NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_exp_ledger l
@@ -81,6 +84,10 @@ BEGIN
  ON r.challenge_id=e.challenge_id AND r.boxer_id=e.boxer_id
  WHERE e.challenge_id=c.id AND e.status='joined' AND r.id IS NULL) THEN
  RAISE EXCEPTION 'All joined participants require a review'; END IF;
+ IF EXISTS(SELECT 1 FROM public.league_coach_challenge_reviews r
+ WHERE r.challenge_id=c.id AND NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_entries e
+ WHERE e.challenge_id=r.challenge_id AND e.boxer_id=r.boxer_id AND e.status='joined')) THEN
+ RAISE EXCEPTION 'Review exists for ineligible participant'; END IF;
  IF EXISTS(SELECT 1 FROM public.league_coach_challenge_exp_ledger WHERE challenge_id=c.id)
  THEN RAISE EXCEPTION 'Existing challenge ledger prevents first settlement'; END IF;
  IF EXISTS(SELECT 1 FROM public.point_transactions
