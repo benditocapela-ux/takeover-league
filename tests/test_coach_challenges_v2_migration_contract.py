@@ -333,3 +333,14 @@ def test_read_only_inventory_keeps_category_aggregation_executable():
     assert "SELECT category,count(*) AS transaction_count" in inventory.splitlines()
     assert "FROM public.point_transactions GROUP BY category ORDER BY category;" in inventory
     assert "COMMIT;" in inventory
+
+
+def test_read_only_inventory_contains_no_write_statements():
+    import re
+    inventory = (MIGRATIONS.parent / "preflight/TAKEOVER_LEAGUE_2_READ_ONLY_INVENTORY.sql").read_text(encoding="utf-8")
+    sql = re.sub(r"--[^\\n]*", "", inventory)
+    assert re.search(r"\\bBEGIN\\s+TRANSACTION\\s+READ\\s+ONLY\\s*;", sql, re.I)
+    forbidden = r"\\b(?:INSERT|UPDATE|DELETE|TRUNCATE|ALTER|DROP|CREATE|GRANT|REVOKE|COPY|DO|CALL|EXECUTE|SET\\s+ROLE)\\b"
+    assert not re.search(forbidden, sql, re.I)
+    assert not re.search(r"\\bSELECT\\b[^;]*\\bINTO\\b", sql, re.I | re.S)
+    assert not re.search(r"\\b(?:email|weight_kg|phone_number|auth\\.users)\\b", sql, re.I)
