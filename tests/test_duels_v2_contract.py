@@ -117,6 +117,10 @@ class DuelContractTests(unittest.TestCase):
         self.assertLess(respond.index("ORDER BY id FOR UPDATE"), respond.index("WHERE id=p_duel_id FOR UPDATE"))
         self.assertIn("Participant profile locks were already acquired", respond)
 
+    def test_duel_invitation_rejects_null_duration(self):
+        self.assertIn("IF p_duration_days IS NULL OR p_duration_days NOT IN (7,14) THEN", self.invites)
+        self.assertIn("Duel duration must be 7 or 14 days", self.invites)
+
     def test_duel_response_requires_explicit_boolean(self):
         self.assertIn("IF p_accept IS NULL THEN RAISE EXCEPTION 'Explicit acceptance or decline required'; END IF;", self.invites)
         self.assertIn("IF p_accept=false THEN", self.invites)
