@@ -19,6 +19,7 @@ FILES = {
         (21, "coach_challenges_v2_review_candidates_rpc_review"),
         (22, "coach_challenges_v2_activation_rpc_review"),
         (23, "coach_challenges_v2_begin_reviews_rpc_review"),
+        (25, "coach_challenges_v2_reward_config_review"),
     )
 }
 
@@ -56,6 +57,7 @@ def test_all_challenge_rpcs_are_locked_down():
         21: ("coach_challenge_v2_review_candidates",),
         22: ("coach_challenge_v2_activate",),
         23: ("coach_challenge_v2_begin_reviews",),
+        25: ("coach_challenge_v2_set_reward",),
     }
     for migration, names in functions.items():
         sql = FILES[migration]
@@ -152,3 +154,13 @@ def test_manual_settlement_remains_policy_gated():
     assert "no executable payout function" in policy
     assert "CREATE OR REPLACE FUNCTION" not in policy
     assert "INSERT INTO public.point_transactions" not in policy
+
+
+def test_reward_configuration_only_drafts_and_has_no_payout():
+    sql = FILES[25]
+    assert "c.status<>'draft'" in sql
+    assert "c.created_by<>actor.id" in sql
+    assert "p_reward_exp NOT IN (25,50,100,150,200)" in sql
+    assert "jsonb_set" in sql
+    assert "INSERT INTO public.point_transactions" not in sql
+    assert "challenge.goal_spec->'reward_exp'" in FILES[17]
