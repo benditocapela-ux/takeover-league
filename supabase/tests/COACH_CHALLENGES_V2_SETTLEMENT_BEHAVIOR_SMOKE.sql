@@ -17,6 +17,14 @@ BEGIN
  INSERT INTO public.league_coach_challenge_entries(challenge_id,boxer_id)
  VALUES(cid,'e0000000-0000-0000-0000-000000000042'),
  (cid,'e0000000-0000-0000-0000-000000000043');
+ -- An awaiting-review challenge without participants cannot be settled.
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(cid);
+  RAISE EXCEPTION 'Empty challenge settlement accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Empty challenge settlement accepted' THEN RAISE; END IF;
+  IF SQLERRM<>'Cannot settle challenge without joined participants' THEN RAISE; END IF;
+ END;
  PERFORM public.coach_challenge_v2_review_manual(
  cid,'e0000000-0000-0000-0000-000000000042',true,'Achieved training target');
  BEGIN
