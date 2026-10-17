@@ -112,11 +112,11 @@ jobs:
           psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_CONCURRENT_SETTLEMENT_SETUP.sql
           psql -X -v ON_ERROR_STOP=1 <<'SQL'
           CREATE FUNCTION public.test_slow_duel_reward() RETURNS trigger
-          LANGUAGE plpgsql AS $
+          LANGUAGE plpgsql AS $slow$
           BEGIN
             IF NEW.category='duel_exp' THEN PERFORM pg_sleep(1); END IF;
             RETURN NEW;
-          END $;
+          END $slow$;
           CREATE TRIGGER test_slow_duel_reward BEFORE INSERT ON public.point_transactions
           FOR EACH ROW EXECUTE FUNCTION public.test_slow_duel_reward();
           SQL
