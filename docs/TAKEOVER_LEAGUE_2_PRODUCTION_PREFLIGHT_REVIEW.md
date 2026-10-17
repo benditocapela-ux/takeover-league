@@ -41,4 +41,4 @@ Stop before any production write if: a required table/column is missing; any mig
 
 ## Unverified limitations
 
-The current inventory does **not** enumerate every table or grant used by all 28 migrations, nor does it read Supabase's migration tracking table. Treat it as an initial inventory, not an automated production compatibility verdict. Synthetic CI does not validate the live Supabase schema.
+The current inventory does **not** enumerate every table or grant used by all 28 migrations, and only checks whether Supabase's migration tracking relation exists; it does not read applied migration versions. Treat it as an initial inventory, not an automated production compatibility verdict. Synthetic CI does not validate the live Supabase schema.
