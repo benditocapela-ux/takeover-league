@@ -5,6 +5,12 @@ CREATE SCHEMA IF NOT EXISTS public;
 -- Supabase API roles referenced by the migrations, not real credentials.
 CREATE ROLE anon NOLOGIN;
 CREATE ROLE authenticated NOLOGIN;
+-- Minimal test-only auth.uid() shim, never a production authentication model.
+CREATE SCHEMA auth;
+CREATE FUNCTION auth.uid() RETURNS uuid
+LANGUAGE sql STABLE AS $auth_test$
+ SELECT nullif(current_setting('test.auth_uid',true),'')::uuid
+$auth_test$;
 CREATE TABLE public.profiles (
  id uuid PRIMARY KEY,
  auth_user_id uuid,
