@@ -44,6 +44,9 @@ CREATE UNIQUE INDEX IF NOT EXISTS league_duels_one_active_per_pair
 ON public.league_duels(least(challenger_id,opponent_id),greatest(challenger_id,opponent_id))
 WHERE status='active';
 
+-- Active rematches after an earlier period ends require closing the prior
+-- active status first; settlement may remain awaiting review separately.
+
 CREATE INDEX IF NOT EXISTS league_duels_challenger_status_idx
 ON public.league_duels(challenger_id,status,ends_at);
 CREATE INDEX IF NOT EXISTS league_duels_opponent_status_idx
