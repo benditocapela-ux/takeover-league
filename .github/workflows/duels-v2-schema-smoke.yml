@@ -11,6 +11,7 @@ on:
       - 'supabase/migrations/008_duels_v2_invitation_rpc_review.sql'
       - 'supabase/migrations/009_duels_v2_settlement_review.sql'
       - 'supabase/migrations/010_duels_v2_read_rpc_review.sql'
+      - 'supabase/tests/DUELS_V2_READ_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/DUELS_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/DUELS_V2_INVITATION_BEHAVIOR_SMOKE.sql'
       - '.github/workflows/duels-v2-schema-smoke.yml'
@@ -95,3 +96,6 @@ jobs:
 
       - name: Apply duel read RPC migration 010 in disposable database
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/010_duels_v2_read_rpc_review.sql
+
+      - name: Exercise duel read visibility in PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_READ_BEHAVIOR_SMOKE.sql
