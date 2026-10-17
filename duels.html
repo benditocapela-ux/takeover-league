@@ -32,11 +32,14 @@ import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2
 const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
 const $=id=>document.getElementById(id);
 let me=null,boxers=[];
+let refreshSequence=0;
 const setStatus=(message,isError=false)=>{$('status').textContent=message;$('status').className=isError?'error':'muted'};
 const date=v=>v?new Date(v).toLocaleString('de-CH'):'–';
 const statuses={pending:'Anfrage offen',active:'Aktiv',awaiting_reviews:'Wartet auf Trainingsfreigaben',settled:'Abgeschlossen',declined:'Abgelehnt',expired:'Abgelaufen',cancelled:'Abgebrochen'};
 async function refresh(){
+ const sequence=++refreshSequence;
  const r=await db.rpc('duel_v2_list_mine');
+ if(sequence!==refreshSequence)return false;
  if(r.error){$('duelList').textContent='Duelle konnten nicht geladen werden: '+r.error.message;throw r.error}
  $('duelList').replaceChildren();
  if(!r.data?.length){$('duelList').textContent='Noch keine Duelle vorhanden.';return}
