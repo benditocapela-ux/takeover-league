@@ -3,8 +3,8 @@
 -- No challenge evaluation, payout or boxer enrollment RPCs are provided here.
 BEGIN;
 
-INSERT INTO public.league_feature_flags(feature_key,is_enabled)
-VALUES('coach_challenges',false)
+INSERT INTO public.league_feature_flags(feature_key,display_name,is_enabled)
+VALUES('coach_challenges','Coach Challenges V2',false)
 ON CONFLICT(feature_key) DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS public.league_coach_challenges (
