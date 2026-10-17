@@ -13,6 +13,7 @@ FILES = {
         (15, "coach_challenges_v2_read_rpc_review"),
         (16, "coach_challenges_v2_edit_draft_rpc_review"),
         (17, "coach_challenges_v2_goal_definition_rpc_review"),
+        (18, "coach_challenges_v2_progress_rpc_review"),
     )
 }
 
@@ -44,6 +45,7 @@ def test_all_challenge_rpcs_are_locked_down():
         15: ("coach_challenge_v2_list",),
         16: ("coach_challenge_v2_edit_draft",),
         17: ("coach_challenge_v2_set_goal",),
+        18: ("coach_challenge_v2_progress",),
     }
     for migration, names in functions.items():
         sql = FILES[migration]
@@ -71,3 +73,13 @@ def test_goal_definition_requires_coach_and_keeps_payouts_disabled():
     assert "p_metric NOT IN" in sql
     assert "jogging_km" in sql and "technique_minutes" in sql
     assert "jsonb_build_object" in sql
+
+
+def test_progress_is_read_only_and_uses_approved_training():
+    sql = FILES[18]
+    assert "s.status='approved'" in sql
+    assert "s.training_date" in sql
+    assert "e.status='joined'" in sql
+    assert "actor.role<>'boxer' OR e.boxer_id=actor.id" in sql
+    assert "INSERT INTO" not in sql
+    assert "UPDATE public.point_transactions" not in sql
