@@ -1,6 +1,6 @@
 -- Coach Challenges V2: isolated-only read-only release audit.
 -- REVIEW ONLY. Do not execute on live Supabase without owner approval.
--- First five queries must return zero rows; final query is diagnostic.
+-- First six queries must return zero rows; final query is diagnostic.
 BEGIN READ ONLY;
 
 -- No challenge should be active/settled without a complete time window.
@@ -37,6 +37,11 @@ LEFT JOIN public.point_transactions t ON t.id=l.transaction_id
 WHERE l.transaction_id IS NOT NULL
  AND (t.id IS NULL OR t.boxer_id IS DISTINCT FROM l.boxer_id
       OR t.exp IS DISTINCT FROM l.awarded_exp OR t.points IS DISTINCT FROM 0);
+
+-- Active or settled challenges require an explicitly defined goal.
+SELECT id,status,challenge_kind
+FROM public.league_coach_challenges
+WHERE status IN ('active','awaiting_reviews','settled') AND goal_spec IS NULL;
 
 -- Informational: goal definitions and opt-in counts before activation.
 SELECT c.id,c.status,c.challenge_kind,c.duration_days,
