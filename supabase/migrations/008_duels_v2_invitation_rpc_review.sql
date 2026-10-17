@@ -156,10 +156,10 @@ GRANT EXECUTE ON FUNCTION public.duel_v2_invite(uuid,uuid,integer) TO authentica
 GRANT EXECUTE ON FUNCTION public.duel_v2_respond(uuid,boolean) TO authenticated;
 COMMIT;
 
--- RELEASE BLOCKERS:
--- 1. Potential deadlock: respond locks duel before profile, invite locks profile
---    then may UPDATE duels. Must unify lock ordering before production.
--- 2. Coach-created duel semantics: recipient must accept, as specified.
--- 3. No settlement or reward logic yet; do not expose UI.
--- 4. Verify live role values ('admin','coach') and auth_user_id mapping.
--- 5. Test concurrency, authorization, expiry, rematches and caps in isolation.
+-- RELEASE BLOCKERS (current):
+-- 1. Verify profile-first locking against the existing training review/edit RPCs
+--    and test concurrent invitation, acceptance and reconciliation.
+-- 2. Confirm coach-created duel semantics and opponent acceptance in isolation.
+-- 3. Verify live role values ('admin','coach') and auth_user_id mapping.
+-- 4. Test authorization, 48-hour expiry, rematches and active-duel caps.
+-- 5. No production rollout until settlement and UI integration tests pass.
