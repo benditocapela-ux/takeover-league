@@ -54,3 +54,10 @@ def test_cancel_confirmation_does_not_trigger_unnecessary_reload():
     html = PAGE.read_text(encoding="utf-8")
     assert "if(!confirm('Diese Challenge wirklich absagen?'))return false;" in html
     assert "if(changed!==false)await refresh()" in html
+
+
+def test_challenge_actions_are_serialized():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "actionBusy=false" in html
+    assert "if(actionBusy)return;actionBusy=true;" in html
+    assert "finally{el.disabled=false;actionBusy=false}" in html
