@@ -236,6 +236,15 @@ class DuelContractTests(unittest.TestCase):
     def test_read_rpc_authenticated(self):
         self.assertIn("GRANT EXECUTE ON FUNCTION public.duel_v2_list_mine() TO authenticated", self.reads)
 
+    def test_expired_invitations_have_no_acceptance_controls(self):
+        self.assertIn("d.opponent_id===me.id&&new Date(d.expires_at)>new Date()", self.ui)
+        self.assertIn("Einladung abgelaufen – keine Annahme mehr möglich.", self.ui)
+        self.assertIn("response.data==='expired'", self.ui)
+
+    def test_invitation_response_prevents_double_clicks(self):
+        self.assertIn("for(const control of actions.querySelectorAll('button'))control.disabled=true", self.ui)
+        self.assertIn("finally{for(const control of actions.querySelectorAll('button'))control.disabled=false;}", self.ui)
+
 
 if __name__ == "__main__":
     unittest.main()
