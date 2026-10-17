@@ -26,6 +26,19 @@ BEGIN
  WHERE id='00000000-0000-0000-0000-0000000000d4';
  SELECT count(*) INTO n FROM public.duel_v2_eligible_boxers();
  IF n<>2 THEN RAISE EXCEPTION 'Inactive boxer still eligible'; END IF;
+ -- Deactivated users must not retain access to participant views.
+ UPDATE public.profiles SET is_active=false
+ WHERE id='00000000-0000-0000-0000-0000000000a1';
+ PERFORM set_config('test.auth_uid','10000000-0000-0000-0000-0000000000a1',true);
+ BEGIN
+  PERFORM public.duel_v2_list_mine();
+  RAISE EXCEPTION 'Inactive boxer retained duel read access';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Inactive boxer retained duel read access' THEN RAISE; END IF;
+ END;
+ UPDATE public.profiles SET is_active=true
+ WHERE id='00000000-0000-0000-0000-0000000000a1';
+ PERFORM set_config('test.auth_uid','10000000-0000-0000-0000-0000000000c3',true);
  UPDATE public.league_feature_flags SET is_enabled=false WHERE feature_key='duels';
  BEGIN
   PERFORM public.duel_v2_list_mine();
