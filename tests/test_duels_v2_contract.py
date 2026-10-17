@@ -113,6 +113,13 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn("AS $$", self.settlement)
         self.assertIn("END $$;", self.settlement)
 
+    def test_reward_correction_rejects_mismatched_ledger(self):
+        self.assertIn("t.id=old_tx AND t.boxer_id=boxer AND t.category='duel_exp'", self.settlement)
+        self.assertIn("t.exp=old_exp", self.settlement)
+        self.assertIn("Duel reward ledger mismatch", self.settlement)
+        self.assertIn("WHERE id=old_tx AND boxer_id=boxer AND category='duel_exp'", self.settlement)
+        self.assertIn("IF NOT FOUND THEN", self.settlement)
+
     def test_paid_duel_is_not_reopened_for_pending_review(self):
         self.assertIn("IF d.status='settled' THEN RETURN 'pending_correction'; END IF;", self.settlement)
         self.assertIn("result.data==='pending_correction'", self.ui)
