@@ -104,6 +104,11 @@ class DuelContractTests(unittest.TestCase):
         second = self.settlement.index('WHERE id=p_duel_id FOR UPDATE')
         self.assertLess(first, second)
 
+    def test_duel_response_requires_explicit_boolean(self):
+        self.assertIn("IF p_accept IS NULL THEN RAISE EXCEPTION 'Explicit acceptance or decline required'; END IF;", self.invites)
+        self.assertIn("IF p_accept=false THEN", self.invites)
+        self.assertNotIn("IF p_accept IS DISTINCT FROM true THEN", self.invites)
+
     def test_rematch_releases_expired_active_pair(self):
         self.assertIn("SET status='awaiting_reviews',updated_at=v_now", self.invites)
         self.assertIn("WHERE status='active' AND ends_at<=v_now", self.invites)
