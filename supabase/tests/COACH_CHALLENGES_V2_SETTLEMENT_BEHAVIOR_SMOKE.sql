@@ -134,6 +134,18 @@ BEGIN
  UPDATE public.point_transactions SET category='challenge_exp'
  WHERE category='adjustment' AND description='Challenge reward: '||cid::text
  AND boxer_id='e0000000-0000-0000-0000-000000000042';
+ -- Settlement cannot predate the challenge deadline.
+ UPDATE public.league_coach_challenges SET settled_at=ends_at-interval '1 second'
+ WHERE id=cid;
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(cid);
+  RAISE EXCEPTION 'Settlement timestamp before deadline accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Settlement timestamp before deadline accepted' THEN RAISE; END IF;
+  IF SQLERRM<>'Settled challenge metadata integrity mismatch' THEN RAISE; END IF;
+ END;
+ UPDATE public.league_coach_challenges SET settled_at=pg_catalog.clock_timestamp()
+ WHERE id=cid;
  -- Simulate a damaged ledger; retry must reject it rather than claim success.
  UPDATE public.league_coach_challenge_exp_ledger SET awarded_exp=25
  WHERE challenge_id=cid AND boxer_id='e0000000-0000-0000-0000-000000000042';
