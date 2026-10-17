@@ -78,6 +78,8 @@ BEGIN
  WHERE id IN (d.challenger_id,d.opponent_id) ORDER BY id FOR UPDATE;
  SELECT * INTO d FROM public.league_duels WHERE id=p_duel_id FOR UPDATE;
  IF NOT FOUND THEN RAISE EXCEPTION 'Duel not found'; END IF;
+ -- A lock wait may cross the duel end timestamp; decide using fresh time.
+ current_time:=clock_timestamp();
  IF d.status NOT IN ('active','awaiting_reviews','settled') THEN
   RAISE EXCEPTION 'Duel not active or completed';
  END IF;
