@@ -26,6 +26,24 @@ BEGIN
  VALUES ('30000000-0000-0000-0000-000000000001',a,
          '20000000-0000-0000-0000-000000000001',50,50,'training','Training',current_date-3,coach);
  PERFORM set_config('test.auth_uid','10000000-0000-0000-0000-0000000000c3',true);
+ -- Timely pending training blocks first payout, without minting EXP.
+ INSERT INTO public.training_submissions(id,boxer_id,training_date,status,created_at)
+ VALUES ('20000000-0000-0000-0000-000000000003',b,current_date-interval '3 days','pending',now()-interval '3 days');
+ result:=public.duel_v2_reconcile(duel);
+ IF result<>'awaiting_reviews' OR
+    (SELECT status FROM public.league_duels WHERE id=duel)<>'awaiting_reviews' OR
+    (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>0 THEN
+  RAISE EXCEPTION 'Pending review must block settlement and EXP payout';
+ END IF;
+ -- Repeated attempts must remain blocked and not duplicate awaiting events.
+ result:=public.duel_v2_reconcile(duel);
+ IF result<>'awaiting_reviews' OR
+    (SELECT count(*) FROM public.league_duel_events
+     WHERE duel_id=duel AND event_type='awaiting_reviews')<>1 THEN
+  RAISE EXCEPTION 'Pending review retries must be idempotent';
+ END IF;
+ UPDATE public.training_submissions SET status='rejected'
+ WHERE id='20000000-0000-0000-0000-000000000003';
  result:=public.duel_v2_reconcile(duel);
  IF result<>'settled' THEN RAISE EXCEPTION 'Expected settled, got %',result; END IF;
  IF (SELECT count(*) FROM public.league_duel_exp_ledger WHERE duel_id=duel AND transaction_id IS NOT NULL)<>2 THEN
