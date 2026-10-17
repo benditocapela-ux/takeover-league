@@ -50,6 +50,7 @@ on:
     branches:
       - main
     paths:
+      - 'supabase/preflight/TAKEOVER_LEAGUE_2_READ_ONLY_INVENTORY.sql'
       - 'supabase/tests/DUELS_V2_*'
       - 'supabase/migrations/00[7-9]_duels_v2_*'
       - 'supabase/migrations/010_duels_v2_read_rpc_review.sql'
