@@ -127,6 +127,29 @@ BEGIN
  IF (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>2 THEN
   RAISE EXCEPTION 'Tie correction minted duplicate rewards';
  END IF;
+ -- A late-created backdated submission must not change a finished duel.
+ INSERT INTO public.training_submissions(id,boxer_id,training_date,status,created_at)
+ VALUES ('20000000-0000-0000-0000-000000000005',b,
+         current_date-interval '3 days','approved',now());
+ INSERT INTO public.point_transactions(id,boxer_id,submission_id,points,exp,category,description,effective_date,created_by)
+ VALUES ('30000000-0000-0000-0000-000000000005',b,
+         '20000000-0000-0000-0000-000000000005',500,500,'training','Late entry',current_date-3,coach);
+ result:=public.duel_v2_reconcile(duel);
+ IF result<>'settled' OR
+    (SELECT winner_id FROM public.league_duels WHERE id=duel) IS NOT NULL
+    OR (SELECT count(*) FROM public.league_duel_exp_ledger
+        WHERE duel_id=duel AND awarded_exp=50)<>2 THEN
+  RAISE EXCEPTION 'Late-created backdated submission changed completed duel';
+ END IF;
+ -- A late-created pending submission must not hold or reopen settlement.
+ INSERT INTO public.training_submissions(id,boxer_id,training_date,status,created_at)
+ VALUES ('20000000-0000-0000-0000-000000000006',a,
+         current_date-interval '3 days','pending',now());
+ result:=public.duel_v2_reconcile(duel);
+ IF result<>'settled' OR
+    (SELECT status FROM public.league_duels WHERE id=duel)<>'settled' THEN
+  RAISE EXCEPTION 'Late-created pending submission reopened completed duel';
+ END IF;
  -- Corrupt a paid transaction and ensure reconciliation fails closed.
  UPDATE public.point_transactions SET exp=999
  WHERE id=(SELECT transaction_id FROM public.league_duel_exp_ledger
