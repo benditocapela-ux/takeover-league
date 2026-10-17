@@ -295,6 +295,16 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn("t.category NOT IN ('training','legacy_import','duel_exp')", self.preflight)
         self.assertIn("t.boxer_id=s.boxer_id", self.preflight)
 
+    def test_preflight_inspects_hidden_trigger_mutations(self):
+        self.assertIn("pg_catalog.pg_get_triggerdef(t.oid)", self.preflight)
+        self.assertIn("pg_catalog.pg_get_functiondef(p.oid)", self.preflight)
+        self.assertIn("AND NOT t.tgisinternal", self.preflight)
+        self.assertIn("'profiles','training_submissions','point_transactions'", self.preflight)
+
+    def test_preflight_flags_unlinked_awards_and_adjustments(self):
+        self.assertIn("approved_submissions_with_linked_adjustments", self.preflight)
+        self.assertIn("unlinked_scoring_transactions", self.preflight)
+
 
 if __name__ == "__main__":
     unittest.main()
