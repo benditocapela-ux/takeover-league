@@ -105,6 +105,42 @@ jobs:
       - name: Exercise due duel batch settlement in PostgreSQL
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_BATCH_BEHAVIOR_SMOKE.sql
 
+      - name: Exercise simultaneous duel settlement on isolated PostgreSQL
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_CONCURRENT_SETTLEMENT_SETUP.sql
+          psql -X -v ON_ERROR_STOP=1 <<'SQL'
+          CREATE FUNCTION public.test_slow_duel_reward() RETURNS trigger
+          LANGUAGE plpgsql AS $
+          BEGIN
+            IF NEW.category='duel_exp' THEN PERFORM pg_sleep(1); END IF;
+            RETURN NEW;
+          END $;
+          CREATE TRIGGER test_slow_duel_reward BEFORE INSERT ON public.point_transactions
+          FOR EACH ROW EXECUTE FUNCTION public.test_slow_duel_reward();
+          SQL
+          sql="SELECT set_config('test.auth_uid','10000000-0000-0000-0000-0000000000c3',false); SELECT public.duel_v2_reconcile('40000000-0000-0000-0000-000000000001');"
+          psql -X -v ON_ERROR_STOP=1 -Atc "$sql" > /tmp/duel-race-1.log 2>&1 &
+          first=$!
+          psql -X -v ON_ERROR_STOP=1 -Atc "$sql" > /tmp/duel-race-2.log 2>&1 &
+          second=$!
+          wait "$first"
+          wait "$second"
+          grep -qx 'settled' /tmp/duel-race-1.log
+          grep -qx 'settled' /tmp/duel-race-2.log
+          psql -X -v ON_ERROR_STOP=1 <<'SQL'
+          DO $race$
+          BEGIN
+            IF (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>2
+               OR (SELECT count(*) FROM public.league_duel_exp_ledger
+                   WHERE duel_id='40000000-0000-0000-0000-000000000001')<>2
+               OR (SELECT count(*) FROM public.league_duel_events
+                   WHERE duel_id='40000000-0000-0000-0000-000000000001' AND event_type='settled')<>1
+            THEN RAISE EXCEPTION 'Concurrent reconciliation created duplicate payout or event'; END IF;
+          END $race$;
+          SQL
+
       - name: Apply duel read RPC migration 010 in disposable database
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/010_duels_v2_read_rpc_review.sql
 
