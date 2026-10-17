@@ -273,3 +273,11 @@ def test_goal_editor_can_save_trainer_chosen_exp_reward():
     assert "coach_challenge_v2_save_goal_reward" in html
     assert "p_reward_exp:Number($('goalReward').value)" in html
     assert "await rpc('coach_challenge_v2_set_reward'" not in html
+
+
+def test_coach_settlement_requires_confirmation_and_rpc():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "if(c.status==='awaiting_reviews')actions.append(button('Challenge abrechnen'" in html
+    assert "Alle Teilnehmer bewertet? Die EXP werden jetzt einmalig vergeben." in html
+    assert "coach_challenge_v2_settle_manual" in html
+    assert "p_challenge_id:c.id" in html
