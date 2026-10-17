@@ -46,6 +46,7 @@ button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#263850;colo
 <script type="module">
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const db=createClient('https://cfgdvcccsqwfjajuizsr.supabase.co','sb_publishable_6xm0QLD1q8JEeVvJqGOCvQ_p-uwKG8N');
+if(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'){document.body.textContent='TEST ONLY: Diese Vorschau benötigt HTTPS oder localhost.';throw Error('Insecure test preview origin')}
 const $=id=>document.getElementById(id);
 let me=null,sequence=0,editingId=null,actionBusy=false,formBusy=false,refreshBusy=false,goalEditingId=null,reviewChallengeId=null,allChallenges=[];
 const labels={draft:'Entwurf',open:'Anmeldung offen',active:'Aktiv',awaiting_reviews:'Wartet auf Freigaben',settled:'Abgeschlossen',cancelled:'Abgesagt'};
