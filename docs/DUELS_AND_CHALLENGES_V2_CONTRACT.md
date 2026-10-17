@@ -53,3 +53,11 @@ unimplemented pending explicit goal definitions and release review.
 - No public write permissions to settlement ledger.
 - Boxer writes go through authorization-checked RPCs, not direct unrestricted table writes.
 - All data migrations first reviewed/tested in an isolated database; live Supabase is production only.
+
+## Progress evaluation safety checklist
+- Only approved training submissions count toward automatic targets; pending or rejected records never count.
+- Jogging distance and technique minutes are distinct metrics and cannot be interchanged.
+- Challenge start/end dates must be enforced server-side, with Swiss local date boundaries documented.
+- Progress previews are read-only and cannot issue points or EXP.
+- Manual goals require an authorized trainer decision and audit trail; reward settlement must be idempotent.
+- Corrections to previously approved training require explicit recalculation rules before activation.
