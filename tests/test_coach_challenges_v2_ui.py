@@ -263,3 +263,12 @@ def test_review_picker_only_shows_unreviewed_participants():
     assert "coach_challenge_v2_review_status" in html
     assert "new Set((reviews||[]).map(r=>r.boxer_id))" in html
     assert "select.disabled=!eligible.length" in html
+
+
+def test_goal_editor_can_save_trainer_chosen_exp_reward():
+    html = PAGE.read_text(encoding="utf-8")
+    assert 'id="goalReward"' in html
+    for reward in (25, 50, 100, 150, 200):
+        assert f'<option value="{reward}">{reward} EXP</option>' in html
+    assert "coach_challenge_v2_set_reward" in html
+    assert "p_reward_exp:Number($('goalReward').value)" in html
