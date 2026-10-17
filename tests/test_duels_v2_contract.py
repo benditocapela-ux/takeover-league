@@ -168,6 +168,14 @@ class DuelContractTests(unittest.TestCase):
             self.settlement.index("DROP CONSTRAINT point_transactions_category_check"),
         )
 
+    def test_orphaned_reward_transaction_blocks_new_payout(self):
+        self.assertIn("Orphaned duel payout transaction", self.settlement)
+        self.assertIn("t.description='Duel reward: '||d.id::text", self.settlement)
+        self.assertLess(
+            self.settlement.index("Orphaned duel payout transaction"),
+            self.settlement.index("INSERT INTO public.point_transactions", self.settlement.index("Orphaned duel payout transaction")),
+        )
+
     def test_settled_duel_missing_payout_is_never_recreated(self):
         self.assertIn("IF existing_status='settled' THEN", self.settlement)
         self.assertIn("Settled duel payout transaction missing", self.settlement)
