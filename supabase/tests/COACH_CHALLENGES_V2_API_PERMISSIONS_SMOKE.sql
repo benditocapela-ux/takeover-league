@@ -22,7 +22,8 @@ BEGIN
    SELECT 1 FROM pg_catalog.pg_proc p
    WHERE p.oid=signature::regprocedure
     AND (NOT p.prosecdef OR p.proconfig IS NULL
-     OR NOT ('search_path='=ANY(p.proconfig)))
+     OR NOT EXISTS(SELECT 1 FROM unnest(p.proconfig) setting
+      WHERE setting LIKE 'search_path=%'))
   ) THEN
    RAISE EXCEPTION 'Missing SECURITY DEFINER or locked search_path: %',signature;
   END IF;
