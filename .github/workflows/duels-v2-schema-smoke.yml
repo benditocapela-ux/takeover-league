@@ -23,7 +23,7 @@ on:
       - 'supabase/migrations/018_coach_challenges_v2_progress_rpc_review.sql'
       - 'supabase/migrations/019_coach_challenges_v2_manual_review_rpc_review.sql'
       - 'supabase/migrations/020_coach_challenges_v2_review_read_rpc_review.sql'
-      - 'supabase/migrations/02[1-6]_coach_challenges_v2_*.sql'
+      - 'supabase/migrations/02[1-7]_coach_challenges_v2_*.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_*'
       - 'supabase/tests/COACH_CHALLENGES_V2_SCHEMA_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_ENROLLMENT_BEHAVIOR_SMOKE.sql'
@@ -166,6 +166,10 @@ jobs:
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_ATOMIC_GOAL_REWARD_BEHAVIOR_SMOKE.sql
       - name: Exercise activation validation and one-way transition
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_ACTIVATION_BEHAVIOR_SMOKE.sql
+      - name: Apply review-only manual challenge settlement in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/027_coach_challenges_v2_manual_settlement_review.sql
+      - name: Exercise challenge EXP payout once and reject duplicate settlement
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql
       - name: Verify challenge RPC grants and API table isolation
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_API_PERMISSIONS_SMOKE.sql
       - name: Audit coach challenge integrity in disposable database
