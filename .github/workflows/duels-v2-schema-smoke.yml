@@ -23,6 +23,8 @@ on:
       - 'supabase/migrations/018_coach_challenges_v2_progress_rpc_review.sql'
       - 'supabase/migrations/019_coach_challenges_v2_manual_review_rpc_review.sql'
       - 'supabase/migrations/020_coach_challenges_v2_review_read_rpc_review.sql'
+      - 'supabase/migrations/02[1-6]_coach_challenges_v2_*.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_*'
       - 'supabase/tests/COACH_CHALLENGES_V2_SCHEMA_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_ENROLLMENT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/COACH_CHALLENGES_V2_MANAGEMENT_BEHAVIOR_SMOKE.sql'
@@ -153,6 +155,17 @@ jobs:
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/020_coach_challenges_v2_review_read_rpc_review.sql
       - name: Exercise private manual review status visibility
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_REVIEW_STATUS_BEHAVIOR_SMOKE.sql
+      - name: Apply challenge picker, activation, review transition and reward RPCs
+        run: |
+          for n in 021 022 023 025 026; do
+            for file in supabase/migrations/${n}_coach_challenges_v2_*.sql; do
+              psql -X -v ON_ERROR_STOP=1 -f "$file"
+            done
+          done
+      - name: Exercise atomic goal and reward save
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_ATOMIC_GOAL_REWARD_BEHAVIOR_SMOKE.sql
+      - name: Exercise activation validation and one-way transition
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_ACTIVATION_BEHAVIOR_SMOKE.sql
       - name: Verify challenge RPC grants and API table isolation
         run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_API_PERMISSIONS_SMOKE.sql
       - name: Audit coach challenge integrity in disposable database
