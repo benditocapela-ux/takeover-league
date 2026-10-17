@@ -1,0 +1,39 @@
+name: Duel V2 static contract tests
+
+on:
+  push:
+    branches:
+      - develop/takeover-league-2-foundation
+    paths:
+      - 'duels.html'
+      - 'supabase/migrations/007_duels_v2_schema_review.sql'
+      - 'supabase/migrations/008_duels_v2_invitation_rpc_review.sql'
+      - 'supabase/migrations/009_duels_v2_settlement_review.sql'
+      - 'supabase/migrations/010_duels_v2_read_rpc_review.sql'
+      - 'tests/test_duels_v2_contract.py'
+      - '.github/workflows/duels-v2-tests.yml'
+  pull_request:
+    paths:
+      - 'duels.html'
+      - 'supabase/migrations/007_duels_v2_schema_review.sql'
+      - 'supabase/migrations/008_duels_v2_invitation_rpc_review.sql'
+      - 'supabase/migrations/009_duels_v2_settlement_review.sql'
+      - 'supabase/migrations/010_duels_v2_read_rpc_review.sql'
+      - 'tests/test_duels_v2_contract.py'
+      - '.github/workflows/duels-v2-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run duel contract checks
+        run: python -m unittest discover -s tests -p 'test_duels_v2_contract.py' -v
