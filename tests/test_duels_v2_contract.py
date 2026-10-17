@@ -278,6 +278,11 @@ class DuelContractTests(unittest.TestCase):
         self.assertEqual(self.ui.count('if(batchRunning)return;'), 2)
         self.assertEqual(self.ui.count('batchRunning=false}'), 2)
 
+    def test_stale_duel_list_response_is_ignored(self):
+        self.assertIn('let refreshSequence=0;', self.ui)
+        self.assertIn('const sequence=++refreshSequence;', self.ui)
+        self.assertIn('if(sequence!==refreshSequence)return false;', self.ui)
+
 
 if __name__ == "__main__":
     unittest.main()
