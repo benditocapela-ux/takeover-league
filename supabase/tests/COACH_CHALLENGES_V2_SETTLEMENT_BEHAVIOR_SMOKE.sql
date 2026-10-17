@@ -146,6 +146,20 @@ BEGIN
  END;
  UPDATE public.league_coach_challenges SET settled_at=pg_catalog.clock_timestamp()
  WHERE id=cid;
+ -- A payout must retain the responsible coach/admin actor.
+ UPDATE public.point_transactions SET created_by=NULL
+ WHERE category='challenge_exp' AND description='Challenge reward: '||cid::text
+ AND boxer_id='e0000000-0000-0000-0000-000000000042';
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(cid);
+  RAISE EXCEPTION 'Missing payout author accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Missing payout author accepted' THEN RAISE; END IF;
+  IF SQLERRM<>'Settled challenge payout integrity mismatch' THEN RAISE; END IF;
+ END;
+ UPDATE public.point_transactions SET created_by=(SELECT created_by FROM public.league_coach_challenges WHERE id=cid)
+ WHERE category='challenge_exp' AND description='Challenge reward: '||cid::text
+ AND boxer_id='e0000000-0000-0000-0000-000000000042';
  -- Simulate a damaged ledger; retry must reject it rather than claim success.
  UPDATE public.league_coach_challenge_exp_ledger SET awarded_exp=25
  WHERE challenge_id=cid AND boxer_id='e0000000-0000-0000-0000-000000000042';
