@@ -62,6 +62,16 @@ BEGIN
  PERFORM set_config('test.auth_uid','10000000-0000-0000-0000-0000000000b2',true);
  result:=public.duel_v2_respond(duel,true);
  IF result<>'active' THEN RAISE EXCEPTION 'Expected active, got %',result; END IF;
+ -- A completed period must not block a fresh invitation for the same pair.
+ UPDATE public.league_duels SET accepted_at=now()-interval '8 days',
+   ends_at=now()-interval '1 day' WHERE id=duel;
+ PERFORM set_config('test.auth_uid','10000000-0000-0000-0000-0000000000a1',true);
+ IF public.duel_v2_invite(a,b,7) IS NULL THEN
+  RAISE EXCEPTION 'Rematch invitation missing';
+ END IF;
+ IF (SELECT status FROM public.league_duels WHERE id=duel)<>'awaiting_reviews' THEN
+  RAISE EXCEPTION 'Completed duel not retained for settlement';
+ END IF;
  IF (SELECT count(*) FROM public.league_duel_events WHERE duel_id=duel)<>2 THEN
   RAISE EXCEPTION 'Expected invitation and acceptance events';
  END IF;
