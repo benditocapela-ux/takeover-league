@@ -84,3 +84,9 @@ def test_form_and_list_actions_share_mutual_exclusion():
 def test_edit_selection_does_not_trigger_redundant_refresh():
     html = PAGE.read_text(encoding="utf-8")
     assert "$('title').focus();\n    return false;" in html
+
+
+def test_stale_challenge_fetch_errors_cannot_override_current_state():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "catch(error){if(current!==sequence)return false;throw error}" in html
+    assert "try{if(await refresh())status('Challenge-Übersicht geladen.')}" in html
