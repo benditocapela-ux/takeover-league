@@ -127,5 +127,21 @@ BEGIN
  IF (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>2 THEN
   RAISE EXCEPTION 'Tie correction minted duplicate rewards';
  END IF;
+ -- Corrupt a paid transaction and ensure reconciliation fails closed.
+ UPDATE public.point_transactions SET exp=999
+ WHERE id=(SELECT transaction_id FROM public.league_duel_exp_ledger
+           WHERE duel_id=duel AND boxer_id=a);
+ BEGIN
+  PERFORM public.duel_v2_reconcile(duel);
+  RAISE EXCEPTION 'Tampered payout was silently accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Tampered payout was silently accepted' THEN RAISE; END IF;
+  IF SQLERRM NOT LIKE 'Duel reward ledger mismatch%' THEN
+   RAISE EXCEPTION 'Unexpected tampered payout failure: %',SQLERRM;
+  END IF;
+ END;
+ IF (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>2 THEN
+  RAISE EXCEPTION 'Tampered payout triggered duplicate reward';
+ END IF;
 END $test$;
 ROLLBACK;
