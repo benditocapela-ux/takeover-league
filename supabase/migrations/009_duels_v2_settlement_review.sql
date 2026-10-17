@@ -139,7 +139,7 @@ GRANT EXECUTE ON FUNCTION public.duel_v2_reconcile(uuid) TO authenticated;
 CREATE OR REPLACE FUNCTION public.duel_v2_reconcile_due()
 RETURNS TABLE(duel_id uuid, outcome text)
 LANGUAGE plpgsql SECURITY DEFINER SET search_path TO ''
-AS $
+AS $duel_batch$
 DECLARE
  actor_role text;
  item record;
@@ -163,7 +163,7 @@ BEGIN
   outcome:=public.duel_v2_reconcile(item.id);
   RETURN NEXT;
  END LOOP;
-END $;
+END $duel_batch$;
 
 REVOKE ALL ON FUNCTION public.duel_v2_reconcile_due() FROM PUBLIC,anon;
 GRANT EXECUTE ON FUNCTION public.duel_v2_reconcile_due() TO authenticated;
