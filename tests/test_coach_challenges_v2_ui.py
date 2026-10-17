@@ -44,7 +44,7 @@ def test_draft_edit_uses_prefilled_form_and_can_be_cancelled():
     assert "$('description').value=c.description||''" in html
     assert "$('kind').value=c.challenge_kind" in html
     assert "$('duration').value=String(c.duration_days)" in html
-    assert "$('cancelEdit').addEventListener('click',resetEditor)" in html
+    assert "$('cancelEdit').addEventListener('click',()=>{if(!formBusy)resetEditor()})" in html
     assert "p_id:editing,...values,p_days:" in html
     assert "p_duration_days:Number($('duration').value)" in html
     assert "prompt(" not in html
@@ -59,7 +59,7 @@ def test_cancel_confirmation_does_not_trigger_unnecessary_reload():
 def test_challenge_actions_are_serialized():
     html = PAGE.read_text(encoding="utf-8")
     assert "actionBusy=false" in html
-    assert "if(actionBusy)return;actionBusy=true;" in html
+    assert "if(actionBusy||formBusy)return;actionBusy=true;" in html
     assert "finally{el.disabled=false;actionBusy=false}" in html
 
 
