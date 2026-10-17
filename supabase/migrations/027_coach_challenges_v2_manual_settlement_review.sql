@@ -60,7 +60,7 @@ BEGIN
    WHERE e.challenge_id=c.id AND e.status='joined' AND
    (r.id IS NULL OR l.id IS NULL OR l.awarded_exp IS DISTINCT FROM
     CASE WHEN r.approved THEN (c.goal_spec->>'reward_exp')::integer ELSE 0 END
-    OR (r.approved AND (t.id IS NULL OR t.category<>'challenge_exp'
+    OR (r.approved AND (t.id IS NULL OR t.category IS DISTINCT FROM 'challenge_exp'
      OR t.exp IS DISTINCT FROM l.awarded_exp
      OR t.points IS DISTINCT FROM 0 OR t.boxer_id IS DISTINCT FROM e.boxer_id
      OR t.description IS DISTINCT FROM 'Challenge reward: '||c.id::text
