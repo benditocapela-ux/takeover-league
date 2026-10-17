@@ -2,10 +2,10 @@
 
 Checked against isolated test project `cfgdvcccsqwfjajuizsr`.
 
-- `public.profiles` has zero rows. Its role constraint allows `boxer` and `admin`, not `coach`.
+- `public.profiles` has zero rows in test (14 in production). **Both** projects have the same role constraint: `boxer` and `admin`, not `coach`. Use admin for the initial trainer integration tests; adding a dedicated coach role would require a separately reviewed migration.
 - `profiles.auth_user_id` references `auth.users(id)`. A profile insert alone does **not** create a usable sign-in.
-- Challenge RPCs grant EXECUTE to `authenticated` but deny `anon`. Their SECURITY DEFINER authorization must be verified with real sessions.
-- The security advisor reports 23 RLS-without-policy findings (informational) and 23 authenticated SECURITY DEFINER functions (warnings). RPC-only tables may intentionally have no policies; inspect API grants.
+- All 17 challenge RPCs grant EXECUTE to `authenticated` but deny `anon`; all 17 use SECURITY DEFINER with configured search_path. Their internal authorization must still be verified with real sessions.
+- The security advisor reports 23 RLS-without-policy findings (informational) and 23 authenticated SECURITY DEFINER functions (warnings). No direct challenge-table grants were found for `anon` or `authenticated` in the test project; RPC-only tables may intentionally have no policies.
 - Existing disposable PostgreSQL behavior tests are valuable but do not replace real Supabase Auth tests.
 
 ## Next safe integration test
