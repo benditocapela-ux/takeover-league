@@ -142,6 +142,15 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn("AS $$", self.settlement)
         self.assertIn("END $$;", self.settlement)
 
+    def test_category_migration_checks_live_values_before_constraint_replacement(self):
+        self.assertIn("DO $duel_category_preflight$", self.settlement)
+        self.assertIn("Existing point transaction category would be rejected", self.settlement)
+        self.assertIn("Missing point_transactions category CHECK", self.settlement)
+        self.assertLess(
+            self.settlement.index("DO $duel_category_preflight$"),
+            self.settlement.index("DROP CONSTRAINT point_transactions_category_check"),
+        )
+
     def test_ledger_claim_without_transaction_cannot_issue_second_reward(self):
         self.assertIn("IF old_exp IS DISTINCT FROM 0 THEN", self.settlement)
         self.assertIn("ledger claims EXP without transaction", self.settlement)
