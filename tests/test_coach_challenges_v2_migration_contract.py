@@ -350,3 +350,8 @@ def test_postgres_workflow_triggers_for_goal_details_migration():
     workflow = (MIGRATIONS.parent.parent / ".github/workflows/duels-v2-schema-smoke.yml").read_text(encoding="utf-8")
     assert workflow.count("'supabase/migrations/02[1-9]_coach_challenges_v2_*.sql'") >= 2
     assert "028_coach_challenges_v2_goal_details_review.sql" in workflow
+
+
+def test_preflight_changes_trigger_postgres_ci():
+    workflow = (MIGRATIONS.parent.parent / ".github/workflows/duels-v2-schema-smoke.yml").read_text(encoding="utf-8")
+    assert workflow.count("'supabase/preflight/TAKEOVER_LEAGUE_2_READ_ONLY_INVENTORY.sql'") >= 2
