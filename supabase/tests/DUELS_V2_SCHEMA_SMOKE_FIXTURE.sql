@@ -2,6 +2,9 @@
 -- NEVER execute on production or an existing Supabase project.
 BEGIN;
 CREATE SCHEMA IF NOT EXISTS public;
+-- Supabase API roles referenced by the migrations, not real credentials.
+CREATE ROLE anon NOLOGIN;
+CREATE ROLE authenticated NOLOGIN;
 CREATE TABLE public.profiles (
  id uuid PRIMARY KEY,
  auth_user_id uuid,
