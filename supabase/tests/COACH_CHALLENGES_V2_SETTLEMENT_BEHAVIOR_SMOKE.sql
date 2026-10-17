@@ -66,6 +66,20 @@ BEGIN
  END;
  UPDATE public.league_coach_challenge_entries SET status='joined'
  WHERE challenge_id=cid AND boxer_id='e0000000-0000-0000-0000-000000000043';
+ -- An orphan challenge EXP transaction must never be silently accepted.
+ INSERT INTO public.point_transactions(boxer_id,points,exp,category,description,effective_date,created_by)
+ VALUES('e0000000-0000-0000-0000-000000000043',0,150,'challenge_exp',
+ 'Challenge reward: '||cid::text,current_date,'e0000000-0000-0000-0000-000000000041');
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(cid);
+  RAISE EXCEPTION 'Orphan challenge transaction accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Orphan challenge transaction accepted' THEN RAISE; END IF;
+  IF SQLERRM<>'Settled challenge payout integrity mismatch' THEN RAISE; END IF;
+ END;
+ DELETE FROM public.point_transactions
+ WHERE category='challenge_exp' AND boxer_id='e0000000-0000-0000-0000-000000000043'
+ AND description='Challenge reward: '||cid::text;
  -- Simulate a damaged ledger; retry must reject it rather than claim success.
  UPDATE public.league_coach_challenge_exp_ledger SET awarded_exp=25
  WHERE challenge_id=cid AND boxer_id='e0000000-0000-0000-0000-000000000042';
