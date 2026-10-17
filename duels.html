@@ -60,7 +60,7 @@ async function refresh(){
     reconcile.disabled=true;
     const result=await db.rpc('duel_v2_reconcile',{p_duel_id:d.id});
     if(result.error)setStatus('Auswertung fehlgeschlagen: '+result.error.message,true);
-    else setStatus(result.data==='awaiting_reviews'?'Wartet auf offene Trainingsfreigaben.':'Duellauswertung aktualisiert.');
+    else setStatus(result.data==='awaiting_reviews'?'Wartet auf offene Trainingsfreigaben.':result.data==='pending_correction'?'Bereits ausbezahlt; offene Trainingsfreigaben verhindern die Nachkorrektur.':'Duellauswertung aktualisiert.');
     await refresh();
    });actions.append(reconcile);item.append(actions);
   }
@@ -135,7 +135,7 @@ $('refresh').addEventListener('click',refresh);
 const batchCursors={unfinished:null,all:null};
 async function reconcileBatches(includeSettled){
  const mode=includeSettled?'all':'unfinished';
- let cursor=batchCursors[mode],checked=0,settled=0,waiting=0;
+ let cursor=batchCursors[mode],checked=0,settled=0,waiting=0,corrections=0;
  for(let page=0;page<50;page++){
   const result=await db.rpc('duel_v2_reconcile_due',{p_include_settled:includeSettled,p_after:cursor});
   if(result.error)throw result.error;
@@ -143,17 +143,18 @@ async function reconcileBatches(includeSettled){
   checked+=rows.length;
   settled+=rows.filter(r=>r.outcome==='settled').length;
   waiting+=rows.filter(r=>r.outcome==='awaiting_reviews').length;
-  if(rows.length<100){batchCursors[mode]=null;return {checked,settled,waiting,more:false}}
+  corrections+=rows.filter(r=>r.outcome==='pending_correction').length;
+  if(rows.length<100){batchCursors[mode]=null;return {checked,settled,waiting,corrections,more:false}}
   cursor=rows[rows.length-1].duel_id;
   batchCursors[mode]=cursor;
  }
- return {checked,settled,waiting,more:true};
+ return {checked,settled,waiting,corrections,more:true};
 }
 $('reconcileDue').addEventListener('click',async()=>{
  const button=$('reconcileDue');button.disabled=true;
  try{
   const r=await reconcileBatches(false);
-  setStatus(r.settled+' Duelle abgerechnet, '+r.waiting+' warten auf Freigaben.'+(r.more?' Weitere Duelle vorhanden; erneut ausführen.':''));
+  setStatus(r.settled+' Duelle abgerechnet, '+(r.waiting+r.corrections)+' warten auf Freigaben.'+(r.more?' Weitere Duelle vorhanden; erneut ausführen.':''));
   await refresh();
  }catch(err){setStatus('Sammelauswertung fehlgeschlagen: '+err.message,true)}
  finally{button.disabled=false}
@@ -162,7 +163,7 @@ $('recheckSettled').addEventListener('click',async()=>{
  const button=$('recheckSettled');button.disabled=true;
  try{
   const r=await reconcileBatches(true);
-  setStatus(r.checked+' Duelle geprüft.'+(r.more?' Weitere Duelle vorhanden; erneut ausführen.':''));
+  setStatus(r.checked+' Duelle geprüft, '+r.corrections+' Nachkorrekturen warten auf Freigaben.'+(r.more?' Weitere Duelle vorhanden; erneut ausführen.':''));
   await refresh();
  }catch(err){setStatus('Nachprüfung fehlgeschlagen: '+err.message,true)}
  finally{button.disabled=false}
