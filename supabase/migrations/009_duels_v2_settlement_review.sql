@@ -129,6 +129,12 @@ BEGIN
    UPDATE public.league_duel_exp_ledger
    SET transaction_id=new_tx,awarded_exp=target_exp,updated_at=current_time
    WHERE duel_id=d.id AND boxer_id=boxer;
+  ELSIF NOT EXISTS(
+   SELECT 1 FROM public.point_transactions t
+   WHERE t.id=old_tx AND t.boxer_id=boxer AND t.category='duel_exp'
+     AND t.exp=old_exp
+  ) THEN
+   RAISE EXCEPTION 'Duel reward ledger mismatch for duel % boxer %',d.id,boxer;
   ELSIF old_exp<>target_exp THEN
    -- A payout ledger must never update an unrelated or missing transaction.
    -- A broken reference is a release-blocking integrity error, not a silent success.
