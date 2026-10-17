@@ -19,7 +19,7 @@ CREATE TABLE public.profiles (
  is_active boolean DEFAULT true
 );
 CREATE TABLE public.point_transactions (
- id uuid PRIMARY KEY,
+ id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
  boxer_id uuid REFERENCES public.profiles(id),
  points integer NOT NULL DEFAULT 0,
  exp integer NOT NULL DEFAULT 0,
