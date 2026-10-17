@@ -6,7 +6,8 @@ VALUES
  ('e0000000-0000-0000-0000-000000000002','e1000000-0000-0000-0000-000000000002','Boxer A','boxer',true),
  ('e0000000-0000-0000-0000-000000000003','e1000000-0000-0000-0000-000000000003','Boxer B','boxer',true),
  ('e0000000-0000-0000-0000-000000000004','e1000000-0000-0000-0000-000000000004','Inactive','boxer',false),
- ('e0000000-0000-0000-0000-000000000005','e1000000-0000-0000-0000-000000000005','Other coach','coach',true);
+ ('e0000000-0000-0000-0000-000000000005','e1000000-0000-0000-0000-000000000005','Other coach','coach',true),
+ ('e0000000-0000-0000-0000-000000000006','e1000000-0000-0000-0000-000000000006','Administrator','admin',true);
 INSERT INTO public.league_coach_challenges(id,created_by,title,challenge_kind,duration_days,status)
 VALUES
  ('e2000000-0000-0000-0000-000000000001','e0000000-0000-0000-0000-000000000001','Private draft','individual',7,'draft'),
@@ -60,6 +61,14 @@ BEGIN
  END IF;
  IF (SELECT count(*) FROM public.coach_challenge_v2_list() WHERE title IN ('Private draft','Cancelled enrolled'))<>0 THEN
   RAISE EXCEPTION 'Other coach saw another coach private or cancelled challenge';
+ END IF;
+ PERFORM set_config('test.auth_uid','e1000000-0000-0000-0000-000000000006',true);
+ IF (SELECT count(*) FROM public.coach_challenge_v2_list())<>4 THEN
+  RAISE EXCEPTION 'Admin did not see all challenge statuses and owners';
+ END IF;
+ IF (SELECT count(*) FROM public.coach_challenge_v2_list()
+     WHERE title IN ('Private draft','Other coach private','Cancelled enrolled'))<>3 THEN
+  RAISE EXCEPTION 'Admin could not audit private and cancelled challenges';
  END IF;
  PERFORM set_config('test.auth_uid','e1000000-0000-0000-0000-000000000004',true);
  BEGIN
