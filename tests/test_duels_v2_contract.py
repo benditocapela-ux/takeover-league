@@ -26,6 +26,13 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn('id="challenger"', self.ui)
         self.assertIn("me.role==='boxer'?me.id:$('challenger').value", self.ui)
 
+    def test_coach_opponent_selector_excludes_selected_challenger(self):
+        self.assertIn("challengerSelect.addEventListener('change',syncOpponentOptions)", self.ui)
+        self.assertIn("if(b.id===selectedChallenger)continue", self.ui)
+
+    def test_read_rpcs_are_feature_gated_server_side(self):
+        self.assertEqual(self.reads.count("feature_key='duels' AND is_enabled=true"), 2)
+
     def test_invite_48_hours(self):
         self.assertIn("interval '48 hours'", self.invites)
 
