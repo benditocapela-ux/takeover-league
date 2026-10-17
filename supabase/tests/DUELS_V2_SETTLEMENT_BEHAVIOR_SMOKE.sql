@@ -25,6 +25,12 @@ BEGIN
  INSERT INTO public.point_transactions(id,boxer_id,submission_id,points,exp,category,description,effective_date,created_by)
  VALUES ('30000000-0000-0000-0000-000000000001',a,
          '20000000-0000-0000-0000-000000000001',50,50,'training','Training',current_date-3,coach);
+ -- Cross-profile references in legacy transaction data must not affect scores.
+ INSERT INTO public.training_submissions(id,boxer_id,training_date,status,created_at)
+ VALUES ('20000000-0000-0000-0000-000000000007',a,current_date-3,'approved',now()-interval '3 days');
+ INSERT INTO public.point_transactions(id,boxer_id,submission_id,points,exp,category,description,effective_date,created_by)
+ VALUES ('30000000-0000-0000-0000-000000000007',b,
+         '20000000-0000-0000-0000-000000000007',90,90,'training','Legacy mismatch',current_date-3,coach);
  -- Boxers must never invoke coach-only settlement or batch reconciliation.
  BEGIN
   PERFORM public.duel_v2_reconcile(duel);
