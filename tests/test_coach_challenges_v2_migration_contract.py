@@ -355,3 +355,10 @@ def test_postgres_workflow_triggers_for_goal_details_migration():
 def test_preflight_changes_trigger_postgres_ci():
     workflow = (MIGRATIONS.parent.parent / ".github/workflows/duels-v2-schema-smoke.yml").read_text(encoding="utf-8")
     assert workflow.count("'supabase/preflight/TAKEOVER_LEAGUE_2_READ_ONLY_INVENTORY.sql'") >= 2
+
+
+def test_production_inventory_is_executed_on_disposable_postgres_in_ci():
+    workflow = (MIGRATIONS.parent.parent / ".github/workflows/duels-v2-schema-smoke.yml").read_text(encoding="utf-8")
+    assert "CREATE SCHEMA supabase_migrations;" in workflow
+    assert "CREATE TABLE supabase_migrations.schema_migrations(version text PRIMARY KEY);" in workflow
+    assert "run: psql -X -v ON_ERROR_STOP=1 -f supabase/preflight/TAKEOVER_LEAGUE_2_READ_ONLY_INVENTORY.sql" in workflow
