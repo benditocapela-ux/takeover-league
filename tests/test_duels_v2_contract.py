@@ -260,6 +260,10 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn('mismatched_boxer_links', self.preflight)
         self.assertIn('submissions_with_multiple_training_transactions', self.preflight)
 
+    def test_duplicate_scoring_transactions_fail_closed(self):
+        self.assertIn('Duplicate duel scoring transactions: manual review required', self.settlement)
+        self.assertIn('GROUP BY s.id HAVING count(*)>1', self.settlement)
+
 
 if __name__ == "__main__":
     unittest.main()
