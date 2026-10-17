@@ -37,7 +37,7 @@ const date=v=>v?new Date(v).toLocaleString('de-CH'):'–';
 const statuses={pending:'Anfrage offen',active:'Aktiv',awaiting_reviews:'Wartet auf Trainingsfreigaben',settled:'Abgeschlossen',declined:'Abgelehnt',expired:'Abgelaufen',cancelled:'Abgebrochen'};
 async function refresh(){
  const r=await db.rpc('duel_v2_list_mine');
- if(r.error){$('duelList').textContent='Duelle konnten nicht geladen werden: '+r.error.message;return}
+ if(r.error){$('duelList').textContent='Duelle konnten nicht geladen werden: '+r.error.message;throw r.error}
  $('duelList').replaceChildren();
  if(!r.data?.length){$('duelList').textContent='Noch keine Duelle vorhanden.';return}
  for(const d of r.data){
@@ -82,7 +82,8 @@ async function refresh(){
       if(response.error)setStatus(response.error.message,true);
       else setStatus(response.data==='expired'?'Einladung ist inzwischen abgelaufen.':accept?'Duell angenommen.':'Anfrage abgelehnt.');
       await refresh();
-     }finally{for(const control of actions.querySelectorAll('button'))control.disabled=false;}
+     }catch(err){setStatus('Antwort fehlgeschlagen: '+err.message,true)}
+     finally{for(const control of actions.querySelectorAll('button'))control.disabled=false;}
     });actions.append(button);
    }item.append(actions);
   }
@@ -123,7 +124,7 @@ async function init(){
  };
  challengerSelect.addEventListener('change',syncOpponentOptions);
  syncOpponentOptions();
- $('app').classList.remove('hidden');setStatus('Duelle werden geladen …');await refresh();setStatus('Duellübersicht');
+ $('app').classList.remove('hidden');setStatus('Duelle werden geladen …');try{await refresh();setStatus('Duellübersicht')}catch(err){setStatus('Duellübersicht konnte nicht geladen werden: '+err.message,true)}
 }
 $('inviteForm').addEventListener('submit',async e=>{
  e.preventDefault();
@@ -138,7 +139,11 @@ $('inviteForm').addEventListener('submit',async e=>{
  }catch(err){setStatus('Duellanfrage fehlgeschlagen: '+err.message,true)}
  finally{$('inviteButton').disabled=false}
 });
-$('refresh').addEventListener('click',refresh);
+$('refresh').addEventListener('click',async()=>{
+ const button=$('refresh');button.disabled=true;
+ try{await refresh();setStatus('Duellübersicht aktualisiert.')}catch(err){setStatus('Aktualisierung fehlgeschlagen: '+err.message,true)}
+ finally{button.disabled=false}
+});
 // Stable cursor prevents rechecking the same 100 duels on each batch.
 const batchCursors={unfinished:null,all:null};
 async function reconcileBatches(includeSettled){
