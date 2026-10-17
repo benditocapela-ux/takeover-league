@@ -16,7 +16,7 @@ BEGIN
  IF NOT FOUND THEN RAISE EXCEPTION 'Challenge not found'; END IF;
  IF actor.role<>'admin' AND challenge.created_by<>actor.id THEN
  RAISE EXCEPTION 'Not challenge owner'; END IF;
- IF challenge.status<>'awaiting_reviews' OR challenge.goal_spec->>'review_mode'<>'manual'
+ IF challenge.status<>'awaiting_reviews' OR challenge.goal_spec->>'review_mode' IS DISTINCT FROM 'manual'
  OR challenge.ends_at IS NULL OR challenge.ends_at>pg_catalog.clock_timestamp() THEN
  RAISE EXCEPTION 'Manual review unavailable'; END IF;
  RETURN QUERY
