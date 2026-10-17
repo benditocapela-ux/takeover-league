@@ -97,6 +97,8 @@ BEGIN
  ORDER BY id FOR UPDATE;
  SELECT * INTO v_duel FROM public.league_duels WHERE id=p_duel_id FOR UPDATE;
  IF NOT FOUND THEN RAISE EXCEPTION 'Duel not found'; END IF;
+ -- Refresh the clock after any lock wait; expiry must use decision time.
+ v_now:=clock_timestamp();
  IF NOT EXISTS(SELECT 1 FROM public.league_feature_flags WHERE feature_key='duels' AND is_enabled=true) THEN
   RAISE EXCEPTION 'Duels are not enabled';
  END IF;
