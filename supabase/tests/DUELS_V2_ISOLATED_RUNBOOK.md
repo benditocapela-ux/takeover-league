@@ -70,6 +70,18 @@ deciding whether `adjustment` transactions should change duel scores. Never
 sum arbitrary adjustments into duel scoring without identifying their source
 and correction semantics. This work remains blocked on deployed RPC review.
 
+## Trigger and historical ledger release gate
+
+Review user-defined triggers and trigger function bodies on `profiles`,
+`training_submissions` and `point_transactions`, not only the three
+training RPCs. Trigger side effects may lock rows in a different order or
+change awards after approval. The preflight additionally counts approved
+submissions with linked adjustments and unlinked training/legacy-import
+transactions. These are aggregate diagnostics, not automatic repair
+instructions or evidence of corruption. A disposable clone must reproduce
+the actual trigger and RPC definitions before concurrent review/settlement
+behavior can be certified.
+
 ## Explicitly unresolved
 
 - Existing `review_training`, `admin_edit_training`, and
