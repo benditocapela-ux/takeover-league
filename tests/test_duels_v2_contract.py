@@ -305,6 +305,10 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn("approved_submissions_with_linked_adjustments", self.preflight)
         self.assertIn("unlinked_scoring_transactions", self.preflight)
 
+    def test_duel_payout_identity_and_date_are_integrity_checked(self):
+        self.assertIn("t.description='Duel reward: '||d.id::text", self.settlement)
+        self.assertIn("t.effective_date=(d.ends_at AT TIME ZONE 'Europe/Zurich')::date", self.settlement)
+
 
 if __name__ == "__main__":
     unittest.main()
