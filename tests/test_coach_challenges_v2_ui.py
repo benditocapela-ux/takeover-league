@@ -222,3 +222,15 @@ def test_automatic_goal_requires_explicit_supported_training_metric():
     assert 'value="jogging_km"' in html
     assert 'value="technique_minutes"' in html
     assert "p_metric:automatic?$('goalMetric').value:null" in html
+
+
+def test_goal_progress_preview_is_read_only_and_validated():
+    source = (PAGE.parent / "coach-challenge-progress.js").read_text(encoding="utf-8")
+    assert "entry.status !== 'approved'" in source
+    assert "entry.training_date < startDate" in source
+    assert "entry.training_date > endDate" in source
+    assert "Number.isFinite(achieved)" in source
+    assert "Array.isArray(submissions)" in source
+    assert "target > 1000000" in source
+    assert "point_transactions" not in source
+    assert "exp" not in source.lower()
