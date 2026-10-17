@@ -36,7 +36,9 @@ BEGIN
  SET goal_spec=pg_catalog.jsonb_build_object(
   'version',1,'goal_text',pg_catalog.btrim(p_goal_text),
   'review_mode',p_review_mode,'target_value',p_target_value,
-  'metric',p_metric),
+  'metric',p_metric) || CASE WHEN challenge.goal_spec ? 'reward_exp' THEN
+ pg_catalog.jsonb_build_object('reward_exp',challenge.goal_spec->'reward_exp')
+ ELSE '{}'::jsonb END,
   updated_at=clock_timestamp()
  WHERE id=p_challenge_id;
  RETURN 'goal_saved';
