@@ -236,3 +236,11 @@ def test_settlement_migration_preflight_rejects_preexisting_challenge_payouts():
     sql = FILES[27]
     assert "Existing challenge payouts require pre-migration audit" in sql
     assert "WHERE category='challenge_exp'" in sql
+
+
+def test_boxer_can_rejoin_open_challenge_after_withdrawing():
+    sql = FILES[12]
+    assert "ON CONFLICT(challenge_id,boxer_id) DO UPDATE" in sql
+    assert "SET status='joined'" in sql
+    assert "public.league_coach_challenge_entries.status='withdrawn'" in sql
+    assert "v_challenge.status<>'open'" in sql
