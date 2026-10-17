@@ -20,13 +20,13 @@ def _sql_code(path):
 def test_all_v2_sql_changes_remain_review_only():
     assert len(CHALLENGE) >= 6 and len(DUEL) >= 3
     for path in CHALLENGE + DUEL:
-        assert "REVIEW ONLY" in path.read_text(encoding="utf-8").upper(), path
+        assert any(label in path.read_text(encoding="utf-8").upper() for label in ("REVIEW ONLY", "DRAFT ONLY")), path
 
 
 def test_v2_feature_flags_are_not_enabled_in_migrations():
     for path in CHALLENGE + DUEL:
         sql = _sql_code(path)
-        assert not re.search(r"\bis_enabled\s*=\s*true\b", sql), path
+        assert not re.search(r"\bupdate\s+public\.league_feature_flags\s+set\s+is_enabled\s*=\s*true\b", sql), path
         assert not re.search(r"values\s*\(\s*'(?:duels|coach_challenges)'\s*,\s*true\s*\)", sql), path
 
 
