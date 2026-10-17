@@ -15,6 +15,14 @@ on:
       - 'supabase/tests/DUELS_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql'
       - 'supabase/tests/DUELS_V2_INVITATION_BEHAVIOR_SMOKE.sql'
       - '.github/workflows/duels-v2-schema-smoke.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'supabase/tests/DUELS_V2_*'
+      - 'supabase/migrations/00[7-9]_duels_v2_*'
+      - 'supabase/migrations/010_duels_v2_read_rpc_review.sql'
+      - '.github/workflows/duels-v2-schema-smoke.yml'
   workflow_dispatch:
 
 permissions:
