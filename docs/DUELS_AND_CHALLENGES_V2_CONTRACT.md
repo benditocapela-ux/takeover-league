@@ -32,6 +32,13 @@ enrollment is not the same as activating the timed challenge. Challenge
 targets, scoring, rank/tie payouts and activation remain deliberately
 unimplemented pending explicit goal definitions and release review.
 
+## Individual challenge goals (owner decision 2026-10-17)
+- The coach defines each challenge-specific target; a universal fixed goal is not assumed.
+- Support both **manual coach verification** and **automatic verification based on approved training entries**.
+- Manual completion decisions must be authorized, auditable and rewarded at most once; boxers cannot self-approve.
+- Draft goal authoring stores the explicit goal text, review mode and optional positive numeric target. **This is configuration only**; the automatic metric (e.g. approved jogging kilometres versus training sessions), event window, manual review workflow and payout are not implemented by migration 017.
+- No challenge timer, automatic evaluation or EXP award may be activated from an incomplete goal definition.
+
 ## Release contract
 - Existing league points remain unchanged by duel/challenge rewards.
 - Achievement reward accounting is independent.
