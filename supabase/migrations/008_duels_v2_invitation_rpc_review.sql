@@ -42,6 +42,12 @@ BEGIN
   RAISE EXCEPTION 'Both participants must be active boxers';
  END IF;
 
+ -- Ended active duels must release the pair uniqueness constraint for rematches.
+ UPDATE public.league_duels SET status='awaiting_reviews',updated_at=v_now
+ WHERE status='active' AND ends_at<=v_now
+ AND least(challenger_id,opponent_id)=v_first
+ AND greatest(challenger_id,opponent_id)=v_second;
+
  -- Expired pending invites should not block future invites.
  UPDATE public.league_duels SET status='expired',updated_at=v_now
  WHERE status='pending' AND expires_at<=v_now
