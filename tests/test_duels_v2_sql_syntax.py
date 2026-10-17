@@ -11,6 +11,7 @@ SQL_FILES = [
     "supabase/migrations/009_duels_v2_settlement_review.sql",
     "supabase/migrations/010_duels_v2_read_rpc_review.sql",
     "supabase/tests/DUELS_V2_PREFLIGHT_READ_ONLY.sql",
+    "supabase/tests/DUELS_V2_LEDGER_AUDIT_READ_ONLY.sql",
 ]
 
 
