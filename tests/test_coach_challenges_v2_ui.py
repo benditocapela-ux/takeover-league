@@ -238,7 +238,7 @@ def test_goal_progress_preview_is_read_only_and_validated():
 
 
 def test_manual_review_form_calls_authorized_rpc_without_local_exp_payout():
-    html = (ROOT / "challenges.html").read_text(encoding="utf-8")
+    html = (Path(__file__).resolve().parents[1] / "challenges.html").read_text(encoding="utf-8")
     assert 'id="reviewPanel"' in html
     assert 'id="reviewReason"' in html
     assert "coach_challenge_v2_review_manual" in html
