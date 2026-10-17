@@ -127,3 +127,9 @@ def test_successful_writes_are_not_reported_as_failed_on_refresh_error():
     assert "Entwurf gespeichert, aber Aktualisierung fehlgeschlagen:" in html
     assert "saved=true;" in html
     assert "if(!saved)status(" in html
+
+
+def test_filter_count_display():
+    html = PAGE.read_text(encoding='utf-8')
+    assert 'id="resultCount"' in html
+    assert "allChallenges.length" in html
