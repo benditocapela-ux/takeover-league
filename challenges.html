@@ -65,6 +65,17 @@ async function refresh(){
   if(me.role==='boxer'&&c.status==='open'&&c.my_enrollment_status==='joined')
    actions.append(button('Abmelden',true,async()=>{await rpc('coach_challenge_v2_withdraw',{p_challenge_id:c.id});status('Abmeldung gespeichert.')}));
   if(me.role!=='boxer'&&(c.is_creator||me.role==='admin')){
+   if(c.status==='draft')actions.append(button('Entwurf bearbeiten',true,async()=>{
+    const title=prompt('Neuer Titel (3–120 Zeichen)',c.title);if(title===null)return;
+    const description=prompt('Beschreibung',c.description||'');if(description===null)return;
+    const kind=prompt('Art: individual, competition oder coach_goal',c.challenge_kind);if(kind===null)return;
+    const days=prompt('Dauer: 7, 14 oder 30 Tage',String(c.duration_days));if(days===null)return;
+    if(!['individual','competition','coach_goal'].includes(kind)||!['7','14','30'].includes(days)||title.trim().length<3||title.trim().length>120){
+     status('Ungültige Entwurfsdaten.',true);return;
+    }
+    await rpc('coach_challenge_v2_edit_draft',{p_id:c.id,p_title:title,p_description:description,p_kind:kind,p_days:Number(days)});
+    status('Challenge-Entwurf aktualisiert.');
+   }));
    if(c.status==='draft')actions.append(button('Anmeldung öffnen',false,async()=>{await rpc('coach_challenge_v2_manage',{p_challenge_id:c.id,p_action:'open'});status('Anmeldung geöffnet.')}));
    if(['draft','open'].includes(c.status))actions.append(button('Absagen',true,async()=>{
     if(!confirm('Diese Challenge wirklich absagen?'))return;
