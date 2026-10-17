@@ -133,6 +133,19 @@ BEGIN
  AND (d.challenger_id=v_duel.opponent_id OR d.opponent_id=v_duel.opponent_id);
  IF v_count>=3 THEN RAISE EXCEPTION 'Opponent has three active duels'; END IF;
 
+ -- An opposite-direction pending invite cannot be activated alongside this
+ -- invitation; pair uniqueness is guaranteed for active duels by index.
+ -- The index also protects simultaneous acceptances across sessions.
+ IF EXISTS (
+  SELECT 1 FROM public.league_duels d
+  WHERE d.id<>p_duel_id
+    AND d.status='active' AND d.ends_at>v_now
+    AND least(d.challenger_id,d.opponent_id)=least(v_duel.challenger_id,v_duel.opponent_id)
+    AND greatest(d.challenger_id,d.opponent_id)=greatest(v_duel.challenger_id,v_duel.opponent_id)
+ ) THEN
+  RAISE EXCEPTION 'This boxer pair already has an active duel';
+ END IF;
+
  -- An earlier duel can have elapsed while this invitation was pending.
  -- Release its active-pair index slot without discarding pending settlement.
  UPDATE public.league_duels SET status='awaiting_reviews',updated_at=v_now
