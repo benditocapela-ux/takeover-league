@@ -130,7 +130,13 @@ BEGIN
    SET transaction_id=new_tx,awarded_exp=target_exp,updated_at=current_time
    WHERE duel_id=d.id AND boxer_id=boxer;
   ELSIF old_exp<>target_exp THEN
-   UPDATE public.point_transactions SET exp=target_exp WHERE id=old_tx;
+   -- A payout ledger must never update an unrelated or missing transaction.
+   -- A broken reference is a release-blocking integrity error, not a silent success.
+   UPDATE public.point_transactions SET exp=target_exp
+   WHERE id=old_tx AND boxer_id=boxer AND category='duel_exp';
+   IF NOT FOUND THEN
+    RAISE EXCEPTION 'Duel reward transaction missing or mismatched for duel % boxer %',d.id,boxer;
+   END IF;
    UPDATE public.league_duel_exp_ledger
    SET awarded_exp=target_exp,updated_at=current_time
    WHERE duel_id=d.id AND boxer_id=boxer;
