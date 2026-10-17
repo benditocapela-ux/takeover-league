@@ -79,8 +79,27 @@ class DuelContractTests(unittest.TestCase):
         self.assertLess(self.invites.index(marker), self.invites.index("SET status='active',accepted_at=v_now"))
 
     def test_batch_sql_dollar_quotes_balanced(self):
-        self.assertEqual(self.settlement.count('AS $'), 2)
-        self.assertEqual(self.settlement.count('END $;'), 2)
+        self.assertIn('AS $duel_batch
+
+    def test_read_rpc_authenticated(self):
+        self.assertIn("GRANT EXECUTE ON FUNCTION public.duel_v2_list_mine() TO authenticated", self.reads)
+
+
+if __name__ == "__main__":
+    unittest.main()
+, self.settlement)
+        self.assertIn('END $duel_batch$;', self.settlement)
+        self.assertEqual(self.settlement.count('$duel_batch
+
+    def test_read_rpc_authenticated(self):
+        self.assertIn("GRANT EXECUTE ON FUNCTION public.duel_v2_list_mine() TO authenticated", self.reads)
+
+
+if __name__ == "__main__":
+    unittest.main()
+), 2)
+        self.assertIn('AS $', self.settlement)
+        self.assertIn('END $;', self.settlement)
 
     def test_read_rpc_authenticated(self):
         self.assertIn("GRANT EXECUTE ON FUNCTION public.duel_v2_list_mine() TO authenticated", self.reads)
