@@ -134,6 +134,8 @@ BEGIN
    UPDATE public.league_duel_exp_ledger
    SET transaction_id=new_tx,awarded_exp=target_exp,updated_at=current_time
    WHERE duel_id=d.id AND boxer_id=boxer;
+  ELSIF old_exp IS NULL THEN
+   RAISE EXCEPTION 'Duel reward ledger has NULL EXP for duel % boxer %',d.id,boxer;
   ELSIF NOT EXISTS(
    SELECT 1 FROM public.point_transactions t
    WHERE t.id=old_tx AND t.boxer_id=boxer AND t.category='duel_exp'
