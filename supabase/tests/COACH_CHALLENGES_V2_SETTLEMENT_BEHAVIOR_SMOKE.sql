@@ -46,6 +46,20 @@ BEGIN
  RAISE EXCEPTION 'Rejected boxer ledger mismatch'; END IF;
  IF public.coach_challenge_v2_settle_manual(cid)<>'settled' THEN
  RAISE EXCEPTION 'Idempotent settlement retry failed'; END IF;
+ -- Simulate a damaged ledger; retry must reject it rather than claim success.
+ UPDATE public.league_coach_challenge_exp_ledger SET awarded_exp=25
+ WHERE challenge_id=cid AND boxer_id='e0000000-0000-0000-0000-000000000042';
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(cid);
+  RAISE EXCEPTION 'Corrupt settlement ledger accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Corrupt settlement ledger accepted' THEN RAISE; END IF;
+  IF SQLERRM<>'Settled challenge payout integrity mismatch' THEN RAISE; END IF;
+ END;
+ UPDATE public.league_coach_challenge_exp_ledger SET awarded_exp=150
+ WHERE challenge_id=cid AND boxer_id='e0000000-0000-0000-0000-000000000042';
+ IF public.coach_challenge_v2_settle_manual(cid)<>'settled'
+ THEN RAISE EXCEPTION 'Repaired settlement could not be reverified'; END IF;
  IF (SELECT count(*) FROM public.point_transactions
  WHERE category='challenge_exp' AND description='Challenge reward: '||cid::text)<>1
  THEN RAISE EXCEPTION 'Duplicate payout after retry'; END IF;
