@@ -35,7 +35,8 @@ def test_all_challenge_migrations_explicitly_review_only():
 
 def test_challenge_feature_defaults_off_and_tables_private():
     sql = FILES[11]
-    assert "VALUES('coach_challenges',false)" in sql
+    assert "INSERT INTO public.league_feature_flags(feature_key,display_name,is_enabled)" in sql
+    assert "VALUES('coach_challenges','Coach Challenges V2',false)" in sql
     for table in (
         "league_coach_challenges",
         "league_coach_challenge_entries",
