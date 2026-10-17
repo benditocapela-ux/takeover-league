@@ -21,11 +21,8 @@ BEGIN
  IF c.status<>'draft' THEN RAISE EXCEPTION 'Only drafts can be edited'; END IF;
  IF p_reward_exp IS NULL OR p_reward_exp NOT IN (25,50,100,150,200)
  OR p_goal_text IS NULL OR pg_catalog.char_length(pg_catalog.btrim(p_goal_text)) NOT BETWEEN 5 AND 1000
- OR p_review_mode IS NULL OR p_review_mode NOT IN ('manual','automatic')
- OR (p_review_mode='manual' AND (p_target_value IS NOT NULL OR p_metric IS NOT NULL))
- OR (p_review_mode='automatic' AND
- (p_target_value IS NULL OR p_target_value<=0 OR p_target_value>1000000
- OR p_metric IS NULL OR p_metric NOT IN ('jogging_km','technique_minutes'))) THEN
+ OR p_review_mode IS DISTINCT FROM 'manual'
+ OR p_target_value IS NOT NULL OR p_metric IS NOT NULL THEN
  RAISE EXCEPTION 'Invalid challenge goal or reward'; END IF;
  UPDATE public.league_coach_challenges
  SET goal_spec=pg_catalog.jsonb_build_object(
