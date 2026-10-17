@@ -142,3 +142,13 @@ def test_search_is_local_and_warns_when_rpc_result_may_be_truncated():
     assert "toLocaleLowerCase('de-CH').includes(term)" in html
     assert "allChallenges.length===100" in html
     assert 'Höchstens 100 Einträge geladen.' in html
+
+
+def test_reset_filters_restores_unfiltered_challenge_view():
+    html = PAGE.read_text(encoding='utf-8')
+    assert 'id="clearFilters"' in html
+    assert "$('clearFilters').addEventListener('click'" in html
+    assert "$('challengeSearch').value=''" in html
+    assert "$('statusFilter').value='all'" in html
+    assert "$('kindFilter').value='all'" in html
+    assert "renderChallenges();$('challengeSearch').focus()" in html
