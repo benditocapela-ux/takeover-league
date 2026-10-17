@@ -39,6 +39,14 @@ unimplemented pending explicit goal definitions and release review.
 - Draft goal authoring stores the explicit goal text, review mode and optional positive numeric target. **This is configuration only**; the automatic metric (e.g. approved jogging kilometres versus training sessions), event window, manual review workflow and payout are not implemented by migration 017.
 - No challenge timer, automatic evaluation or EXP award may be activated from an incomplete goal definition.
 
+## Approved-training progress contract
+- Automatic goals use an explicitly selected metric: approved jogging kilometres or approved technique minutes.
+- Count only approved submissions in the eventual challenge window; pending and rejected entries never contribute.
+- Date-only training entries require a consistent Switzerland-local boundary policy.
+- Browser data must never authorize a reward; settlement must recheck server-side records.
+- Manual goals require coach approval with an audit trail.
+- No EXP payout is authorized by goal configuration or a progress preview.
+
 ## Release contract
 - Existing league points remain unchanged by duel/challenge rewards.
 - Achievement reward accounting is independent.
