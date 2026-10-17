@@ -83,6 +83,25 @@ BEGIN
  IF (SELECT status FROM public.league_duels WHERE id=duel)<>'awaiting_reviews' THEN
   RAISE EXCEPTION 'Declining rematch changed original duel';
  END IF;
+ -- Expired invitation must be rejected, and an expired pair may be invited again.
+ PERFORM set_config('test.auth_uid','10000000-0000-0000-0000-0000000000a1',true);
+ DECLARE
+  expired_duel uuid;
+ BEGIN
+  expired_duel:=public.duel_v2_invite(a,b,7);
+  UPDATE public.league_duels SET expires_at=now()-interval '1 minute' WHERE id=expired_duel;
+  PERFORM set_config('test.auth_uid','10000000-0000-0000-0000-0000000000b2',true);
+  IF public.duel_v2_respond(expired_duel,true)<>'expired' THEN
+   RAISE EXCEPTION 'Expired invitation was accepted';
+  END IF;
+  IF (SELECT status FROM public.league_duels WHERE id=expired_duel)<>'expired' THEN
+   RAISE EXCEPTION 'Expired invitation status not persisted';
+  END IF;
+  PERFORM set_config('test.auth_uid','10000000-0000-0000-0000-0000000000a1',true);
+  IF public.duel_v2_invite(a,b,7) IS NULL THEN
+   RAISE EXCEPTION 'Expired invitation blocked fresh invitation';
+  END IF;
+ END;
  IF (SELECT count(*) FROM public.league_duel_events WHERE duel_id=duel)<>2 THEN
   RAISE EXCEPTION 'Expected invitation and acceptance events';
  END IF;
