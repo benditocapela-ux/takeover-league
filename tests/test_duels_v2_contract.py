@@ -106,6 +106,13 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn("p_include_settled:true", self.ui)
         self.assertIn("id=\"recheckSettled\"", self.ui)
 
+    def test_batch_uses_stable_cursor_instead_of_repeating_first_page(self):
+        self.assertIn("p_after uuid DEFAULT NULL", self.settlement)
+        self.assertIn("d.id>p_after", self.settlement)
+        self.assertIn("ORDER BY d.id LIMIT 100", self.settlement)
+        self.assertIn("p_after:cursor", self.ui)
+        self.assertIn("batchCursors[mode]=cursor", self.ui)
+
     def test_read_rpc_authenticated(self):
         self.assertIn("GRANT EXECUTE ON FUNCTION public.duel_v2_list_mine() TO authenticated", self.reads)
 
