@@ -102,6 +102,19 @@ async function init(){
  if(me.role!=='boxer')for(const b of boxers){const option=document.createElement('option');option.value=b.id;option.textContent=b.display_name;challengerSelect.append(option);
  
  }
+ // Coach-selected challenger must not appear as their own opponent.
+ const syncOpponentOptions=()=>{
+  const selectedChallenger=me.role==='boxer'?me.id:challengerSelect.value;
+  const previous=select.value;
+  select.replaceChildren(new Option('Boxer wählen',''));
+  for(const b of boxers){
+   if(b.id===selectedChallenger)continue;
+   select.add(new Option(b.display_name,b.id));
+  }
+  if(previous!==selectedChallenger&&boxers.some(b=>b.id===previous))select.value=previous;
+ };
+ challengerSelect.addEventListener('change',syncOpponentOptions);
+ syncOpponentOptions();
  $('app').classList.remove('hidden');setStatus('Duelle werden geladen …');await refresh();setStatus('Duellübersicht');
 }
 $('inviteForm').addEventListener('submit',async e=>{
