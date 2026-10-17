@@ -124,6 +124,23 @@ BEGIN
   RETURN 'awaiting_reviews';
  END IF;
 
+ -- Fail closed on duplicate scoring transactions for the same submission.
+ -- Such rows otherwise inflate the score and could award the wrong winner.
+ IF EXISTS (
+  SELECT 1
+  FROM public.training_submissions s
+  JOIN public.point_transactions t ON t.submission_id=s.id
+   AND t.boxer_id=s.boxer_id
+  WHERE s.boxer_id IN(d.challenger_id,d.opponent_id)
+    AND s.status='approved' AND s.created_at<=d.ends_at
+    AND s.training_date >= (d.accepted_at AT TIME ZONE 'Europe/Zurich')::date
+    AND s.training_date <= (d.ends_at AT TIME ZONE 'Europe/Zurich')::date
+    AND t.category IN('training','legacy_import')
+  GROUP BY s.id HAVING count(*)>1
+ ) THEN
+  RAISE EXCEPTION 'Duplicate duel scoring transactions: manual review required';
+ END IF;
+
  -- Training date is date-only. Both boundary dates are included. This is
  -- a deliberate calendar-day approximation to acceptance's exact timestamp.
  SELECT COALESCE(sum(t.points) FILTER(WHERE s.boxer_id=d.challenger_id),0)::integer,
