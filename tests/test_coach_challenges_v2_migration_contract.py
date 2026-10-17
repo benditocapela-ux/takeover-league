@@ -224,3 +224,8 @@ def test_manual_settlement_rejects_reviews_for_withdrawn_boxers():
     assert "Review exists for ineligible participant" in sql
     assert "public.league_coach_challenge_reviews r" in sql
     assert "e.status='joined'" in sql
+
+
+def test_manual_settlement_requires_joined_participants():
+    sql = FILES[27]
+    assert "Cannot settle challenge without joined participants" in sql
