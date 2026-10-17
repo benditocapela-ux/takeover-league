@@ -273,10 +273,12 @@ def test_settled_challenge_retry_requires_nonempty_joined_roster():
     assert "Settled empty participant roster accepted" in smoke
 
 
-def test_draft_goal_reader_locks_challenge_before_status_check():
+def test_draft_goal_reader_checks_status_without_mutating_challenge():
     sql = (MIGRATIONS / "028_coach_challenges_v2_goal_details_review.sql").read_text(encoding="utf-8")
-    assert "WHERE id=p_challenge_id FOR UPDATE" in sql
-    assert sql.index("WHERE id=p_challenge_id FOR UPDATE") < sql.index("IF c.status<>'draft'")
+    assert "WHERE id=p_challenge_id;" in sql
+    assert "FOR UPDATE" not in sql
+    assert sql.index("WHERE id=p_challenge_id;") < sql.index("IF c.status<>'draft'")
+    assert "RETURN COALESCE(c.goal_spec" in sql
 
 
 def test_settled_challenge_rejects_null_payout_description():
