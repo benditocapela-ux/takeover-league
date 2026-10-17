@@ -20,7 +20,24 @@ BEGIN
  EXCEPTION WHEN raise_exception THEN
   IF SQLERRM='NULL duration was accepted' THEN RAISE; END IF;
  END;
+ -- A boxer must not impersonate another challenger.
+ BEGIN
+  PERFORM public.duel_v2_invite(b,a,7);
+  RAISE EXCEPTION 'Boxer impersonated another challenger';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Boxer impersonated another challenger' THEN RAISE; END IF;
+  IF SQLERRM NOT LIKE 'Boxer may only challenge on own behalf%' THEN
+   RAISE EXCEPTION 'Unexpected impersonation error: %',SQLERRM;
+  END IF;
+ END;
  duel:=public.duel_v2_invite(a,b,7);
+ -- A challenger cannot accept their own invitation.
+ BEGIN
+  PERFORM public.duel_v2_respond(duel,true);
+  RAISE EXCEPTION 'Challenger accepted own invitation';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Challenger accepted own invitation' THEN RAISE; END IF;
+ END;
  BEGIN
   PERFORM public.duel_v2_invite(b,a,7);
   RAISE EXCEPTION 'Duplicate invitation was accepted';
