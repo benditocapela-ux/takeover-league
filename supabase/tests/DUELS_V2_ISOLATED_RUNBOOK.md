@@ -43,7 +43,17 @@ workflow as approval to run SQL in production.
 
 ## Explicitly unresolved
 
-- Existing `review_training` and `admin_edit_training` RPCs may lock rows in a different order; inspect them before concurrency tests.
+- Existing `review_training`, `admin_edit_training`, and
+  `admin_edit_training_details` RPCs may lock rows in a different order.
+  The read-only preflight now prints their deployed definitions and reports
+  missing functions. Review every overload for explicit/implicit locks
+  (`SELECT ... FOR UPDATE`, `UPDATE`, `DELETE`, FK-related locks, and
+  point-transaction triggers). In particular, a training review that locks
+  `training_submissions` before `profiles` can deadlock with duel settlement
+  (`profiles` -> duel -> `training_submissions`). A green synthetic CI
+  run **does not** certify this ordering. Do not change deployed review RPCs
+  or enable duels until the actual definitions have been checked and
+  concurrent review-versus-settlement tests pass in a disposable clone.
 - Training-date boundaries are calendar-day based, not timestamp exact.
 - Late/backdated training submissions are currently excluded when created after duel end.
 - The `point_transactions` category constraint is replaced in 009 and must be checked against the **actual** deployed base schema.
