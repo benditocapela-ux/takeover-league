@@ -59,7 +59,7 @@ def test_cancel_confirmation_does_not_trigger_unnecessary_reload():
 def test_challenge_actions_are_serialized():
     html = PAGE.read_text(encoding="utf-8")
     assert "actionBusy=false" in html
-    assert "if(actionBusy||formBusy)return;actionBusy=true;" in html
+    assert "if(actionBusy||formBusy)return;actionBusy=true;sequence++;" in html
     assert "finally{el.disabled=false;actionBusy=false}" in html
 
 
@@ -73,9 +73,9 @@ def test_coach_ui_distinguishes_enrollment_from_activation():
 def test_form_and_list_actions_share_mutual_exclusion():
     html = PAGE.read_text(encoding="utf-8")
     assert "actionBusy=false,formBusy=false" in html
-    assert "if(actionBusy||formBusy)return;actionBusy=true;" in html
+    assert "if(actionBusy||formBusy)return;actionBusy=true;sequence++;" in html
     assert "if(formBusy||actionBusy)return;" in html
-    assert "formBusy=true;const control=$('createButton')" in html
+    assert "sequence++;formBusy=true;const control=$('createButton')" in html
     assert "$('cancelEdit').disabled=true;" in html
     assert "if(!formBusy)resetEditor()" in html
     assert "formBusy=false}" in html
@@ -169,3 +169,10 @@ def test_withdrawal_warns_about_no_rejoin_and_requires_confirmation():
     assert "if(!confirm('Von dieser Challenge abmelden?" in html
     assert "Erneute Anmeldung nach Rückzug derzeit nicht möglich." in html
     assert "Nur Anmeldung: Challenge-Zeitraum und EXP-Vergabe haben noch nicht begonnen." in html
+
+
+def test_mutations_invalidate_previously_started_list_requests():
+    html = PAGE.read_text(encoding="utf-8")
+    assert "actionBusy=true;sequence++;el.disabled=true;" in html
+    assert "sequence++;formBusy=true;const control=" in html
+    assert "if(current!==sequence)return false" in html
