@@ -43,6 +43,7 @@ CREATE TABLE public.training_submissions (
 );
 CREATE TABLE public.league_feature_flags (
  feature_key text PRIMARY KEY,
+ display_name text NOT NULL,
  is_enabled boolean NOT NULL DEFAULT false
 );
 COMMIT;
