@@ -42,7 +42,7 @@ function status(message,error=false){$('status').textContent=message;$('status')
 function button(label,secondary,action){
  const el=document.createElement('button');el.type='button';el.textContent=label;
  if(secondary)el.className='secondary';
- el.addEventListener('click',async()=>{if(actionBusy||formBusy)return;actionBusy=true;el.disabled=true;try{const changed=await action();if(changed!==false)await refresh()}catch(e){status(e.message,true)}finally{el.disabled=false;actionBusy=false}});
+ el.addEventListener('click',async()=>{if(actionBusy||formBusy)return;actionBusy=true;el.disabled=true;try{const changed=await action();if(changed!==false){try{await refresh()}catch(e){status('Aktion gespeichert, aber Aktualisierung fehlgeschlagen: '+e.message,true)}}}catch(e){status('Aktion fehlgeschlagen: '+e.message,true)}finally{el.disabled=false;actionBusy=false}});
  return el;
 }
 async function rpc(name,args){const r=await db.rpc(name,args);if(r.error)throw r.error;return r.data}
@@ -123,6 +123,7 @@ $('createForm').addEventListener('submit',async e=>{
  formBusy=true;const control=$('createButton');control.disabled=true;
  $('cancelEdit').disabled=true;
  const editing=editingId;
+ let saved=false;
  try{
   const values={p_title:$('title').value,p_description:$('description').value,p_kind:$('kind').value};
   if(editing){
@@ -130,10 +131,11 @@ $('createForm').addEventListener('submit',async e=>{
   }else{
    await rpc('coach_challenge_v2_create_draft',{...values,p_duration_days:Number($('duration').value)});
   }
+  saved=true;
   resetEditor();
   status(editing?'Challenge-Entwurf aktualisiert.':'Challenge-Entwurf erstellt.');
-  await refresh();
- }catch(err){status((editing?'Bearbeiten':'Erstellen')+' fehlgeschlagen: '+err.message,true)}
+  try{await refresh()}catch(err){status('Entwurf gespeichert, aber Aktualisierung fehlgeschlagen: '+err.message,true)}
+ }catch(err){if(!saved)status((editing?'Bearbeiten':'Erstellen')+' fehlgeschlagen: '+err.message,true)}
  finally{control.disabled=false;$('cancelEdit').disabled=false;formBusy=false}
 });
 $('refresh').addEventListener('click',async()=>{
