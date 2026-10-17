@@ -41,6 +41,14 @@ functions. Their SQL definitions and lock order must be reviewed against
 the actual deployment before any live rollout. Do not treat the green
 workflow as approval to run SQL in production.
 
+## Duplicate-award regression
+
+The isolated settlement smoke test checks duplicate awards in both the
+`training` and `legacy_import` categories. In either case reconciliation
+must fail before creating EXP rewards; after the synthetic duplicate is
+removed, normal settlement can proceed. This is not a repair routine for
+real data.
+
 ## Training data integrity release gate
 
 The read-only preflight also reports aggregate counts for training
