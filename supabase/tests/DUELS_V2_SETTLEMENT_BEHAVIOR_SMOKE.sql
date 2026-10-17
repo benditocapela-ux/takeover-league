@@ -25,6 +25,19 @@ BEGIN
  INSERT INTO public.point_transactions(id,boxer_id,submission_id,points,exp,category,description,effective_date,created_by)
  VALUES ('30000000-0000-0000-0000-000000000001',a,
          '20000000-0000-0000-0000-000000000001',50,50,'training','Training',current_date-3,coach);
+ -- Boxers must never invoke coach-only settlement or batch reconciliation.
+ BEGIN
+  PERFORM public.duel_v2_reconcile(duel);
+  RAISE EXCEPTION 'Boxer bypassed coach-only settlement';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Boxer bypassed coach-only settlement' THEN RAISE; END IF;
+ END;
+ BEGIN
+  PERFORM public.duel_v2_reconcile_due();
+  RAISE EXCEPTION 'Boxer bypassed coach-only batch settlement';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Boxer bypassed coach-only batch settlement' THEN RAISE; END IF;
+ END;
  PERFORM set_config('test.auth_uid','10000000-0000-0000-0000-0000000000c3',true);
  -- Timely pending training blocks first payout, without minting EXP.
  INSERT INTO public.training_submissions(id,boxer_id,training_date,status,created_at)
