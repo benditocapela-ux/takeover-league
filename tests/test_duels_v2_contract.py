@@ -283,6 +283,13 @@ class DuelContractTests(unittest.TestCase):
         self.assertIn('const sequence=++refreshSequence;', self.ui)
         self.assertIn('if(sequence!==refreshSequence)return false;', self.ui)
 
+    def test_preflight_checks_review_rpc_permissions(self):
+        self.assertIn("p.pronamespace='public'::pg_catalog.regnamespace", self.preflight)
+        self.assertIn("public_can_execute", self.preflight)
+        self.assertIn("anon_can_execute", self.preflight)
+        self.assertIn("search_path_setting", self.preflight)
+        self.assertIn("security_mode", self.preflight)
+
 
 if __name__ == "__main__":
     unittest.main()
