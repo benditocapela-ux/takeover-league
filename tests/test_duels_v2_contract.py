@@ -13,10 +13,15 @@ class DuelContractTests(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.ui = (ROOT / "duels.html").read_text(encoding="utf-8")
+        cls.login = (ROOT / "login.html").read_text(encoding="utf-8")
         cls.schema = (ROOT / "supabase/migrations/007_duels_v2_schema_review.sql").read_text(encoding="utf-8")
         cls.invites = (ROOT / "supabase/migrations/008_duels_v2_invitation_rpc_review.sql").read_text(encoding="utf-8")
         cls.settlement = (ROOT / "supabase/migrations/009_duels_v2_settlement_review.sql").read_text(encoding="utf-8")
         cls.reads = (ROOT / "supabase/migrations/010_duels_v2_read_rpc_review.sql").read_text(encoding="utf-8")
+
+    def test_login_returns_to_duels(self):
+        self.assertIn("next==='duels.html'", self.login)
+        self.assertIn("location.replace('./duels.html')", self.login)
 
     def test_ui_requires_feature_flag(self):
         self.assertIn("feature_key','duels'", self.ui)
