@@ -69,10 +69,8 @@ SELECT r.name AS required_rpc,
        count(p.oid) AS deployed_overloads,
        CASE WHEN count(p.oid)=0 THEN 'MISSING' ELSE 'REVIEW REQUIRED' END AS result
 FROM required r
-LEFT JOIN pg_catalog.pg_proc p ON p.proname=r.name
-LEFT JOIN pg_catalog.pg_namespace n
- ON n.oid=p.pronamespace AND n.nspname='public'
-WHERE p.oid IS NULL OR n.oid IS NOT NULL
+LEFT JOIN pg_catalog.pg_proc p
+ ON p.proname=r.name AND p.pronamespace='public'::pg_catalog.regnamespace
 GROUP BY r.name ORDER BY r.name;
 
 -- Data-integrity counters for duel scoring. Aggregate-only output:
