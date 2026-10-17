@@ -21,7 +21,7 @@ def test_challenge_actions_only_use_authorized_rpcs():
         "coach_challenge_v2_withdraw",
         "coach_challenge_v2_manage",
         "coach_challenge_v2_edit_draft",
-        "coach_challenge_v2_set_goal",
+        "coach_challenge_v2_save_goal_reward",
     ):
         assert rpc in html
     assert ".from('league_coach_challenges').insert" not in html
