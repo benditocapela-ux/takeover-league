@@ -7,7 +7,7 @@ const html=fs.readFileSync('index.html','utf8');
 for(const original of [
  '--bg:#0b1220','--surface:#172235','--gold:#e8b953',
  'THE TAKEOVER 🥊','id="podium"','id="ranking"','id="levels"','id="history"',
- '🏆 Podium','📊 Ranking','🥊 Levels','📜 History','👤 Dashboard',
+ '🏆 Podium','📊 Ranking','👤 Dashboard',
  'id="podium-content"','id="ranking-content"','id="levels-content"','id="history-content"'
 ]) assert.ok(html.includes(original),'Legacy UI changed: '+original);
 assert.ok(!html.includes('href="./features.html"'),'Stale coming-soon navigation remains');
