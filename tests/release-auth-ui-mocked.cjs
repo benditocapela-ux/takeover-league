@@ -24,7 +24,7 @@ function injected(role){
  ];
  const stats={submitted:[],reviewed:[],undo:0,drafts:[],readNotifications:[]};
  window.__mockStats=stats;
- const all={profiles:[boxer,admin],training_types:trainer,training_submissions:submissions,boxer_notifications:[{id:'b1111111-1111-4111-8111-111111111111',recipient_id:boxerId,notification_type:'test',title:'Training bewertet',message:'Dein Training wurde überprüft.',target_path:'boxer.html',created_at:'2026-10-17T10:00:00Z',read_at:null}],league_feature_flags:[
+ const all={profiles:[boxer,admin],training_types:trainer,training_submissions:submissions,boxer_notifications:[{id:'b1111111-1111-4111-8111-111111111111',recipient_id:boxerId,notification_type:'test',title:'Training bewertet',message:'Dein Training wurde überprüft.',target_path:'/boxer.html',created_at:'2026-10-17T10:00:00Z',read_at:null}],league_feature_flags:[
   {feature_key:'notifications',is_enabled:true},{feature_key:'coach_feedback',is_enabled:false},
   {feature_key:'performance_dashboard',is_enabled:false}]};
  function query(table,opts={}){
@@ -106,6 +106,7 @@ async function main(){
    assert.equal(submitted.length,1,'Double submit should create just one training');
    assert.equal(submitted[0].status,'pending');
    console.log('PASS boxer form submission; cloud autosave; task center; duplicate click suppressed, mobile Chromium');
+   assert.equal(new URL(await page.locator('#boxerNotificationList a').first().getAttribute('href')).pathname,'/boxer.html');
    await page.getByRole('button',{name:'Mitteilung als gelesen markieren: Training bewertet'}).click();
    await page.waitForFunction(()=>window.__mockStats.readNotifications.length===1);
    assert.match(await page.locator('#boxerNotificationStatus').innerText(),/0 ungelesene/);
