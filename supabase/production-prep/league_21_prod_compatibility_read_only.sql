@@ -25,9 +25,9 @@ WITH b AS (
     (SELECT count(*)=0 FROM public.training_submissions s WHERE s.status='approved' AND
       NOT EXISTS (SELECT 1 FROM public.point_transactions t WHERE t.submission_id=s.id
                   AND t.boxer_id=s.boxer_id AND t.category IN ('training','legacy_import'))) AS approved_training_has_points,
-    (SELECT count(*)=0 FROM public.point_transactions
+    (NOT EXISTS (SELECT 1 FROM public.point_transactions
       WHERE submission_id IS NOT NULL AND category IN ('training','legacy_import')
-      GROUP BY submission_id HAVING count(*)<>1 LIMIT 1) AS no_duplicate_training_transactions,
+      GROUP BY submission_id HAVING count(*)>1)) AS no_duplicate_training_transactions,
     (SELECT count(*)=0 FROM public.league_duel_exp_ledger l
       LEFT JOIN public.point_transactions t ON t.id=l.transaction_id
       WHERE l.transaction_id IS NOT NULL
@@ -39,8 +39,8 @@ WITH b AS (
       WHERE n.nspname='public' AND c.relkind='v') AS no_unprotected_public_views
 ), verdict AS (
  SELECT to_jsonb(b) AS details,
- (SELECT bool_and(v) FROM jsonb_each_text(to_jsonb(b)) AS p(k,vtxt)
-  CROSS JOIN LATERAL (SELECT vtxt::boolean AS v) x) AS passed FROM b
+ NOT EXISTS(SELECT 1 FROM jsonb_each(to_jsonb(b)) AS x(k,v)
+            WHERE v IS DISTINCT FROM 'true'::jsonb) AS passed FROM b
 )
 SELECT jsonb_build_object('league_21_prod_compatibility_passed',passed,'checks',details,
  'limits','Read-only structural gate; not equivalent to a fully restored production clone or authenticated test.') AS compatibility_report
