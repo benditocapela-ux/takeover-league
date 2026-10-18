@@ -28,3 +28,9 @@ Stand: 18.10.2026. **Noch keine Freigabe.** `challenges.html` ist standardmässi
 - Eine read-only Prüfung bestätigte, dass `recalculate_boxer_achievements_v2(uuid)` für `anon` und `authenticated` ausführbar ist.
 - Der Funktionskörper enthält keine eigene Prüfung des aufrufenden Benutzers. Der Funktionscode verändert Achievement- und Transaktionsdaten. **Freigabeblocker.**
 - Die einfache Katalogprüfung über `pg_depend` ergab keine direkten Funktionsabhängigkeiten. Das schliesst dynamische Aufrufe nicht aus.
+
+## Abhängigkeit geprüft (18.10.2026)
+
+Die produktive Trigger-Funktion `public._award_achievements_on_approval()` ruft `public.recalculate_boxer_achievements_v2(uuid)` für neue und gegebenenfalls alte Boxer-IDs auf. Beide Funktionen gehören `postgres` und sind `SECURITY DEFINER`. Die Achievement-Funktion hat aktuell explizite `EXECUTE`-Rechte für `PUBLIC`, `anon`, `authenticated`, `service_role` und `postgres`. Die Trigger-Funktion hat nur `postgres` und `service_role` in der expliziten ACL. Das spricht dafür, dass eine gezielte Sperre der direkten Aufrufe für `PUBLIC`, `anon` und `authenticated` den internen Aufruf erhalten sollte; vor Umsetzung trotzdem prüfen.
+
+**Geplante Änderung, nicht ausgeführt:** `REVOKE EXECUTE ON FUNCTION public.recalculate_boxer_achievements_v2(uuid) FROM PUBLIC, anon, authenticated;` Die Rechte für `postgres` und `service_role` bleiben unverändert. Danach Berechtigungen und einen legitimen Trainingsfreigabe-Workflow verifizieren. Die öffentliche Leaderboard-RPCs nicht pauschal sperren.
