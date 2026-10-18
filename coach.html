@@ -28,12 +28,23 @@ div.append(actions);return div}
 async function refreshCoachAudit(){
  const root=$('coachAuditEntries'),label=$('coachAuditStatus');if(!currentPeople.length)return;
  label.textContent='Änderungen werden geladen …';
- const r=await db.rpc('league_training_audit_recent',{p_boxer_id:null});
+ const result=await db.rpc('coach_training_audit_recent',{p_limit:50});
  root.replaceChildren();
- if(r.error){label.textContent='Protokollansicht erst nach sicherer Datenbankmigration verfügbar.';return}
- const data=Array.isArray(r.data)?r.data:[],names=new Map(currentPeople.map(p=>[p.id,p.display_name]));
- label.textContent=data.length?data.length+' Änderungen aus dem serverseitigen Audit':'Noch keine Trainingsänderungen protokolliert.';
- for(const a of data){const p=document.createElement('p');p.className='entry';p.textContent=(names.get(a.boxer_id)||'Boxer')+' · '+new Date(a.changed_at).toLocaleString('de-CH')+' · '+(a.old_status||'Neu')+' → '+(a.new_status||'Gelöscht');root.append(p)}
+ if(result.error){
+  label.textContent=['PGRST202','42883'].includes(result.error.code)
+   ? 'Protokollansicht nach Freigabe der separaten Datenbankmigration verfügbar.'
+   : 'Änderungshistorie konnte nicht geladen werden: '+result.error.message;
+  return;
+ }
+ const rows=Array.isArray(result.data)?result.data:[];
+ label.textContent=rows.length?rows.length+' serverseitige Änderungen':'Noch keine Trainingsänderungen protokolliert.';
+ for(const a of rows){
+  const item=document.createElement('p');item.className='entry';
+  const time=Number.isNaN(Date.parse(a.happened_at))?'Unbekanntes Datum':new Date(a.happened_at).toLocaleString('de-CH');
+  item.textContent=(a.boxer_name||'Boxer')+' · '+time+' · '+(a.old_status||'Neu')+' → '+(a.new_status||'Unbekannt')+
+   ' · Punkte '+(a.old_points??'–')+' → '+(a.new_points??'–')+' · Bearbeitet von: '+(a.changed_by_name||'Trainer');
+  root.append(item);
+ }
 }
 $('refreshCoachAudit').addEventListener('click',refreshCoachAudit);
 
