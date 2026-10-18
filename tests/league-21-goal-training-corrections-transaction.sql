@@ -68,6 +68,15 @@ do $a$ begin
  or (select exp from public.point_transactions where id=current_setting('gc.reward_tx')::uuid)<>0
  then raise exception 'Date correction did not revoke goal EXP';end if;
 end$a$;
+-- Reopened goal API must report actual 0 EXP, not the configured +50.
+SET LOCAL ROLE authenticated;
+do $response$ declare actual jsonb; begin
+ actual:=public.league_v21_complete_goal(current_setting('gc.goal_two')::uuid);
+ if actual->>'status'<>'active' or (actual->>'exp_awarded')::integer<>0 then
+  raise exception 'Revoked reward falsely reported as paid: %',actual;
+ end if;
+end$response$;
+RESET ROLE;
 update public.training_submissions set training_date=current_date
  where id=current_setting('gc.training')::uuid;
 do $a$ begin
