@@ -78,13 +78,24 @@ async function main(){
       route.fulfill({status:200,contentType:'text/javascript',body:'export const createClient=()=>window.__testDb;'}));
     await context.route('https://iqarjivcrddcixrvqbfb.supabase.co/rest/v1/**',route=>{
      const url=route.request().url();
-     const response=url.includes('/rpc/get_public_levels')?[{boxer_name:'Boxer Alpha',lifetime_exp:1200}]
-      :url.includes('/rpc/get_public_leaderboard')?[{boxer_name:'Boxer Alpha',monthly_points:120,rank_position:1,approved_sessions:10,points_training:300,points_bonus:20}]
+     const response=url.includes('/rpc/get_public_levels')?[
+       {boxer_name:'Boxer Alpha',lifetime_exp:1200},{boxer_name:'Boxer Beta',lifetime_exp:800}]
+      :url.includes('/rpc/get_public_leaderboard')?[
+       {boxer_name:'Boxer Alpha',monthly_points:120,rank_position:1,approved_sessions:10,points_training:300,points_bonus:20},
+       {boxer_name:'Boxer Beta',monthly_points:80,rank_position:2,approved_sessions:6,points_training:190,points_bonus:0}]
+      :url.includes('/league_public_duel_history_v21')?[{
+        challenger_id:'11111111-1111-4111-8111-111111111111',
+        opponent_id:'22222222-2222-4222-8222-222222222222',
+        challenger_name:'Boxer Alpha',opponent_name:'Boxer Beta',
+        challenger_score:100,opponent_score:80,
+        winner_id:'11111111-1111-4111-8111-111111111111',
+        settled_at:'2026-10-15T18:00:00Z'
+       }]
       :url.includes('/rpc/get_public_boxer_avatars')?[{boxer_name:'Boxer Alpha',avatar_key:null,avatar_url:null}]:[];
      route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(response)});
     });
     for(const [route,role] of [['goals.html','boxer'],['arena.html','admin'],['league-manager.html','admin'],
-       ['league-challenges.html','boxer'],['league-history.html','boxer'],['boxer-profile.html?name=Boxer%20Alpha','boxer']]){
+       ['league-challenges.html','boxer'],['league-history.html','boxer'],['boxer-profile.html?name=Boxer%20Alpha','boxer'],['boxer-compare.html?left=Boxer%20Alpha&right=Boxer%20Beta','boxer']]){
      const page=await context.newPage();const errors=[];
      page.on('pageerror',e=>errors.push(e.message));
      await page.addInitScript({content:'window.__testRole='+JSON.stringify(role)});
@@ -117,6 +128,11 @@ async function main(){
      }else if(route.startsWith('boxer-profile')){
       await page.locator('#profileCard').waitFor({state:'visible'});
       assert.ok(await page.locator('#sportRadar svg polygon').count()>0,'Radar not rendered');
+     }else if(route.startsWith('boxer-compare')){
+      await page.waitForFunction(()=>document.querySelector('#directDuelsStatus')?.textContent.includes('Direkte Duelle: 1'));
+      assert.match(await page.locator('#directDuelsStatus').innerText(),/Boxer Alpha 1 Siege/);
+      assert.match(await page.locator('#directDuelsStatus').innerText(),/Boxer Beta 0 Siege/);
+      assert.equal(await page.locator('#directDuelsRows .h2h-row').count(),1);
      }else if(route.startsWith('league-challenges')){
       await page.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('Neue Wettbewerbe'));
      }
