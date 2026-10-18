@@ -1,3 +1,5 @@
+> **FINALER STATUS: WEBSITE LIVE – 18.10.2026.** Die frühere HOLD-/Migrationsblockade ist in der überarbeiteten, sicherer getrennten SQL-Version über den regulären Supabase-Migrationsweg aufgelöst. Der nachfolgende ursprüngliche GO-LIVE-Plan bleibt als historisches Protokoll erhalten. **Nicht durchgeführt:** echtes Produktionsbackup/Restore und signierte Benutzer-Login-Abnahme (vom Eigentümer bewusst zurückgestellt). Neuere Produktiv-Freigaben dürfen diese Waiver nicht als bestandene Tests behandeln.
+
 # TAKEOVER LEAGUE 2.0 — GO-LIVE GATE & OPERATOR RUNBOOK
 Stand: 18.10.2026 · Staging branch: `release/takeover-league-2-ready` · Draft-PR #8
 
