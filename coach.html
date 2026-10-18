@@ -48,7 +48,7 @@ async function refreshCoachAudit(){
 }
 $('refreshCoachAudit').addEventListener('click',refreshCoachAudit);
 
-let currentPeople=[],currentTypes=[],allTrainings=[],visibleTrainings=8;
+let currentPeople=[],currentTypes=[],allTrainings=[],visibleTrainings=8,currentAdminId=null;
 function openBoxerQuick(id){
  const boxer=currentPeople.find(x=>x.id===id&&x.role==='boxer');if(!boxer)return;
  rememberRecentlyViewedBoxer(id);
@@ -141,6 +141,22 @@ function editorRow(s,people,types){
  const detail=document.createElement('span');detail.className='muted';detail.textContent=`${types.get(s.training_type_id)||'?'} · ${s.training_date} · ${s.status}`;
  const edit=document.createElement('button');edit.textContent='Bearbeiten';
  const quick=document.createElement('button');quick.type='button';quick.textContent='Schnellansicht';quick.onclick=()=>openBoxerQuick(s.boxer_id);line.append(name,detail,quick,edit);div.append(line);
+ const reviewedAt=s.reviewed_at?new Date(s.reviewed_at).getTime():0;
+ if(s.status==='rejected'&&s.reviewed_by===currentAdminId&&reviewedAt>0&&Date.now()-reviewedAt<15*60*1000&&reviewedAt<Date.now()+60000){
+  const undo=document.createElement('button');undo.type='button';undo.textContent='Ablehnung rückgängig';
+  undo.setAttribute('aria-label','Ablehnung für '+name.textContent+' rückgängig machen');
+  undo.onclick=async()=>{
+   if(!confirm('Ablehnung von '+name.textContent+' zurücknehmen? Das Training wird wieder als AUSSTEHEND angezeigt. Bestätigte Trainings und Punkte werden nicht zurückgesetzt.'))return;
+   undo.disabled=true;$('status').textContent='Rücknahme wird geprüft …';
+   try{
+    const r=await db.rpc('admin_undo_recent_rejection',{p_submission_id:s.id});
+    if(r.error)throw r.error;
+    $('status').textContent='Ablehnung rückgängig gemacht. Training wartet wieder auf Prüfung.';
+    await load(false);
+   }catch(e){$('status').textContent='Rücknahme nicht möglich: '+String(e.message||e);undo.disabled=false}
+  };
+  div.append(undo);
+ }
  edit.onclick=()=>{
   if(div.querySelector('.editbox')){div.querySelector('.editbox').remove();return}
   const form=document.createElement('form');form.className='editbox';
@@ -247,7 +263,7 @@ $('coachFeedbackForm').addEventListener('submit',async e=>{
  status.textContent='Feedback gesendet.';$('coachFeedbackForm').reset();await loadCoachFeedbackHistory();
 });
 
-async function load(clearStatus=true){ if(clearStatus)$('status').textContent='';$('error').textContent='';const {data:{user},error:authError}=await db.auth.getUser();if(authError||!user){fail('Bitte zuerst unter login.html anmelden.');return}const {data:p,error:pe}=await db.from('profiles').select('id,display_name,role,is_active,auth_user_id').eq('auth_user_id',user.id).maybeSingle();if(pe||!p||p.role!=='admin'||!p.is_active){fail('Zugriff verweigert: Nur aktive Trainer-Accounts dürfen dieses Dashboard öffnen.');return}$('welcome').textContent=`Willkommen, ${p.display_name}.`;const [pr,tr,sr,ar]=await Promise.all([db.from('profiles').select('id,display_name,role,is_active,auth_user_id'),db.from('training_types').select('id,name,points'),db.from('training_submissions').select('id,boxer_id,training_type_id,training_date,notes,status,jogging_km,technique_minutes,created_at').eq('status','pending').order('created_at',{ascending:false}).limit(100),db.from('training_submissions').select('id',{count:'exact',head:true}).eq('status','approved')]);for(const r of [pr,tr,sr,ar])if(r.error){fail('Daten konnten nicht geladen werden: '+r.error.message);return}currentPeople=pr.data;currentTypes=tr.data;renderRecentBoxers();const people=new Map(pr.data.map(x=>[x.id,x.display_name]));const types=new Map(tr.data.map(x=>[x.id,x.name]));$('pendingCount').textContent=sr.data.length===100?'100+':String(sr.data.length);$('boxerCount').textContent=pr.data.filter(x=>x.role==='boxer'&&x.is_active).length;$('approvedCount').textContent=ar.count??'–';pendingBatchRows=sr.data;renderPending();const {data:all,error:allError}=await db.from('training_submissions').select('id,boxer_id,training_type_id,training_date,notes,status,jogging_km,technique_minutes,created_at').order('created_at',{ascending:false}).limit(1000);
+async function load(clearStatus=true){ if(clearStatus)$('status').textContent='';$('error').textContent='';const {data:{user},error:authError}=await db.auth.getUser();if(authError||!user){fail('Bitte zuerst unter login.html anmelden.');return}const {data:p,error:pe}=await db.from('profiles').select('id,display_name,role,is_active,auth_user_id').eq('auth_user_id',user.id).maybeSingle();if(pe||!p||p.role!=='admin'||!p.is_active){fail('Zugriff verweigert: Nur aktive Trainer-Accounts dürfen dieses Dashboard öffnen.');return}currentAdminId=p.id;$('welcome').textContent=`Willkommen, ${p.display_name}.`;const [pr,tr,sr,ar]=await Promise.all([db.from('profiles').select('id,display_name,role,is_active,auth_user_id'),db.from('training_types').select('id,name,points'),db.from('training_submissions').select('id,boxer_id,training_type_id,training_date,notes,status,jogging_km,technique_minutes,created_at').eq('status','pending').order('created_at',{ascending:false}).limit(100),db.from('training_submissions').select('id',{count:'exact',head:true}).eq('status','approved')]);for(const r of [pr,tr,sr,ar])if(r.error){fail('Daten konnten nicht geladen werden: '+r.error.message);return}currentPeople=pr.data;currentTypes=tr.data;renderRecentBoxers();const people=new Map(pr.data.map(x=>[x.id,x.display_name]));const types=new Map(tr.data.map(x=>[x.id,x.name]));$('pendingCount').textContent=sr.data.length===100?'100+':String(sr.data.length);$('boxerCount').textContent=pr.data.filter(x=>x.role==='boxer'&&x.is_active).length;$('approvedCount').textContent=ar.count??'–';pendingBatchRows=sr.data;renderPending();const {data:all,error:allError}=await db.from('training_submissions').select('id,boxer_id,training_type_id,training_date,notes,status,jogging_km,technique_minutes,created_at,reviewed_at,reviewed_by').order('created_at',{ascending:false}).limit(1000);
 if(allError){$('allEntries').textContent='Fehler beim Laden: '+allError.message}
 else{allTrainings=all;fillFilter('filterBoxer',pr.data.filter(x=>x.role==='boxer'),'Alle Boxer');fillFilter('filterType',tr.data,'Alle Trainingsarten');renderFilteredTrainings()}
 $('content').classList.remove('hidden');await loadAccounts();await setupCoachFeedback();await refreshCoachAudit()}
