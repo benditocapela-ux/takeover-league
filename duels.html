@@ -198,5 +198,5 @@ byId('signin').onsubmit=async e=>{e.preventDefault();if(!db)return;const f=new F
 init();
 setInterval(()=>{if(!document.hidden&&profile&&!busy)load().catch(e=>say(message(e),true))},90000);
 </script>
-<script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-navigation.js" defer></script></body>
+<script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-quick-actions.js" defer></script><script src="./takeover-navigation.js" defer></script></body>
 </html>
