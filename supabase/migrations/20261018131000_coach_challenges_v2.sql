@@ -412,7 +412,9 @@ BEGIN
  'joined_count',(SELECT count(*) FROM public.league_coach_challenge_entries e
  WHERE e.challenge_id=c.id AND e.status IN ('joined','completed')),
  'my_enrollment_status',(SELECT e.status FROM public.league_coach_challenge_entries e
- WHERE e.challenge_id=c.id AND e.boxer_id=(a->>'id')::uuid)
+ WHERE e.challenge_id=c.id AND e.boxer_id=(a->>'id')::uuid),
+ 'my_review_approved',(SELECT r.approved FROM public.league_coach_challenge_reviews r
+ WHERE r.challenge_id=c.id AND r.boxer_id=(a->>'id')::uuid)
  ) ORDER BY c.created_at DESC,c.id), '[]'::jsonb) INTO result
  FROM public.league_coach_challenges c
  WHERE a->>'role'='admin'
