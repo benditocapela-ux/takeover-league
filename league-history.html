@@ -25,8 +25,8 @@ function show(id,rows,build,empty){
 async function init(){
  const jobs=[
   ['seasons','league_seasons_v21','id,title,starts_on,ends_on,status','starts_on.desc',r=>[r.title,r.starts_on+' bis '+r.ends_on], 'Noch keine veröffentlichte Saison.'],
-  ['honors','league_hall_of_fame_v21','id,title,description,awarded_at','awarded_at.desc',r=>[r.title,r.description||'Offizielle Auszeichnung'], 'Noch keine historischen Titel veröffentlicht.'],
-  ['results','league_season_results_v21','id,season_id,rank_position,points,exp','rank_position.asc',r=>['Platz '+r.rank_position,r.points+' Punkte · '+r.exp+' EXP'], 'Noch keine abgeschlossene Saison mit Rangliste.']
+  ['honors','league_hall_of_fame_v21','id,title,boxer_name,description,awarded_at','awarded_at.desc',r=>[r.boxer_name+' · '+r.title,r.description||'Offizielle Auszeichnung'], 'Noch keine historischen Titel veröffentlicht.'],
+  ['results','league_season_results_v21','id,season_id,boxer_name,rank_position,points,exp','rank_position.asc',r=>['#'+r.rank_position+' · '+r.boxer_name,r.points+' Punkte · '+r.exp+' EXP'], 'Noch keine abgeschlossene Saison mit Rangliste.']
  ];
  await Promise.all(jobs.map(async([id,table,cols,order,text,empty])=>{
   try{const rows=await list(table,cols,order);show(id,rows,(row,item)=>{
