@@ -63,6 +63,23 @@ BEGIN
 END
 $func$;
 
+-- Purpose-limited roster: only active coaches/admins can resolve the public
+-- boxer name to a canonical database ID. Never return auth IDs or weight.
+CREATE OR REPLACE FUNCTION public.league_personal_challenge_roster()
+RETURNS TABLE(boxer_id uuid, display_name text)
+LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path = ''
+AS $func$
+DECLARE a jsonb:=league_private.coach_v2_actor();
+BEGIN
+ IF a->>'role' NOT IN ('coach','admin')
+ THEN RAISE EXCEPTION 'Coach role required' USING ERRCODE='42501'; END IF;
+ RETURN QUERY
+ SELECT p.id,p.display_name::text FROM public.profiles p
+ WHERE p.role='boxer' AND p.is_active IS TRUE
+ ORDER BY p.display_name,p.id;
+END
+$func$;
+
 -- A trainer may correct a mistaken assignment before any review / payout.
 -- The cancellation cannot debit, delete or forge a point transaction.
 CREATE OR REPLACE FUNCTION public.league_cancel_personal_challenge(p_challenge_id uuid)
@@ -91,6 +108,8 @@ BEGIN
 END
 $func$;
 
+REVOKE ALL ON FUNCTION public.league_personal_challenge_roster() FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.league_personal_challenge_roster() TO authenticated;
 REVOKE ALL ON FUNCTION public.league_assign_personal_challenge(uuid,text,text,text,integer,integer)
  FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.league_assign_personal_challenge(uuid,text,text,text,integer,integer)
@@ -213,10 +232,10 @@ BEGIN
  IF (SELECT count(*) FROM pg_catalog.pg_proc p
    JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace
    WHERE n.nspname='public' AND p.proname IN
-   ('league_assign_personal_challenge','league_cancel_personal_challenge')
+   ('league_assign_personal_challenge','league_cancel_personal_challenge','league_personal_challenge_roster')
    AND p.prosecdef
    AND pg_catalog.has_function_privilege('authenticated',p.oid,'EXECUTE')
-   AND NOT pg_catalog.has_function_privilege('anon',p.oid,'EXECUTE'))<>2
+   AND NOT pg_catalog.has_function_privilege('anon',p.oid,'EXECUTE'))<>3
  THEN RAISE EXCEPTION 'Personal challenge RPC permissions invalid'; END IF;
  IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_class c
    WHERE c.oid='public.league_coach_challenge_targets'::regclass
