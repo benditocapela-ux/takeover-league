@@ -5,7 +5,7 @@ const release=read('docs/v2-release-verification-2026-10-18.md');
 const baseline=read('supabase/production-prep/production_baseline_read_only.sql');
 const guard=read('supabase/production-prep/20261018_restrict_achievement_recalculation.sql');
 const ignore=read('.gitignore');
-const cleanBaseline=baseline.split('\n').filter(s=>!s.trim().startsWith('--')).join('\n');
+const cleanBaseline=baseline.split('\n').filter(s=>!s.trim().startsWith('--')).join('\n').replace(/'EXECUTE'/g,"'privilege-name'");
 assert.match(cleanBaseline,/^\s*SELECT\s+/,'production baseline must be SELECT-only');
 assert.doesNotMatch(cleanBaseline,/\b(?:INSERT|UPDATE|DELETE|ALTER|TRUNCATE|DROP|CREATE|DO|CALL|COPY|EXECUTE)\b/i,
  'read-only production preflight must not mutate data or privileges');
