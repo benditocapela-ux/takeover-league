@@ -1,7 +1,7 @@
 const fs=require('node:fs');
 const assert=require('node:assert/strict');
 const {JSDOM}=require('jsdom');
-const pages=['index.html','login.html','boxer.html','coach.html','challenges.html','duels.html','awards.html','features.html','coming-soon.html'];
+const pages=['index.html','login.html','boxer.html','coach.html','challenges.html','duels.html','awards.html','features.html','coming-soon.html','boxer-profile.html'];
 const navScript=fs.readFileSync('takeover-navigation.js','utf8');
 const navCss=fs.readFileSync('takeover-navigation.css','utf8');
 const deploy=fs.readFileSync('.github/workflows/takeover-pages-deploy.yml','utf8');
