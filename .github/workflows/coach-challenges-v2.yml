@@ -61,6 +61,7 @@ jobs:
       - run: node tests/production-v2-migration-bundle.cjs
       - run: node tests/production-v2-release-safety.cjs
       - run: node tests/hosted-v2-anon-http.cjs
+      - run: node tests/hosted-v2-pages-readonly.cjs
 
   schema-integration:
     runs-on: ubuntu-latest
