@@ -173,6 +173,29 @@ BEGIN
  IF a->>'role'<>'admin' AND c.created_by<>(a->>'id')::uuid
  THEN RAISE EXCEPTION 'Not challenge owner' USING ERRCODE='42501'; END IF;
  IF c.status='settled' THEN
+ -- Repeated settlement is idempotent, but corruption must never look successful.
+ -- Check payout references and catch stray transactions for this immutable challenge id.
+ IF EXISTS (
+  SELECT 1 FROM public.league_coach_challenge_exp_ledger l
+  LEFT JOIN public.point_transactions t ON t.id=l.transaction_id
+  WHERE l.challenge_id=c.id
+  AND (t.id IS NULL OR t.boxer_id<>l.boxer_id OR t.category<>'challenge_exp'
+   OR t.exp<>l.awarded_exp OR t.points<>0
+   OR t.description IS DISTINCT FROM 'Coach Challenge: '||c.id::text||' | '||c.title)
+ ) OR EXISTS (
+  SELECT 1 FROM public.point_transactions t
+  WHERE t.category='challenge_exp'
+  AND t.description LIKE 'Coach Challenge: '||c.id::text||' | %'
+  AND NOT EXISTS (SELECT 1 FROM public.league_coach_challenge_exp_ledger l
+   WHERE l.challenge_id=c.id AND l.boxer_id=t.boxer_id AND l.transaction_id=t.id)
+ ) OR EXISTS (
+  SELECT 1 FROM public.league_coach_challenge_entries j
+  JOIN public.league_coach_challenge_reviews r
+   ON r.challenge_id=j.challenge_id AND r.boxer_id=j.boxer_id
+  WHERE j.challenge_id=c.id AND j.status='completed' AND r.approved
+  AND NOT EXISTS (SELECT 1 FROM public.league_coach_challenge_exp_ledger l
+   WHERE l.challenge_id=j.challenge_id AND l.boxer_id=j.boxer_id)
+ ) THEN RAISE EXCEPTION 'Settled challenge payout ledger is inconsistent: %',c.id USING ERRCODE='23514'; END IF;
  RETURN pg_catalog.jsonb_build_object('id',c.id,'status','settled','already_settled',true,'awards',0);
  END IF;
  IF c.status<>'awaiting_reviews' OR c.ends_at IS NULL OR c.ends_at>now()
@@ -206,6 +229,10 @@ BEGIN
    CONTINUE;
   END IF;
   IF v_found THEN
+   IF (SELECT count(*) FROM public.point_transactions t
+       WHERE t.boxer_id=e.boxer_id AND t.category='challenge_exp'
+       AND t.description LIKE 'Coach Challenge: '||c.id::text||' | %')<>1
+   THEN RAISE EXCEPTION 'Duplicate or missing challenge payout for %',c.id USING ERRCODE='23514'; END IF;
    -- Fail closed: never treat an orphaned/malformed ledger as a paid reward.
    IF v_existing_id IS NULL OR v_existing_reward IS DISTINCT FROM v_reward OR
     NOT EXISTS(
