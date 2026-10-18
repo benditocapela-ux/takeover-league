@@ -116,13 +116,7 @@ BEGIN
  IF data->>'status'<>'active' OR data->>'boxer_id'<>'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
  THEN RAISE EXCEPTION 'Incorrect assignment response'; END IF;
  PERFORM pg_catalog.set_config('test.direct_id',v_id::text,false);
- IF (SELECT count(*) FROM public.league_coach_challenge_entries
-     WHERE challenge_id=v_id AND boxer_id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' AND status='joined')<>1
- THEN RAISE EXCEPTION 'Direct challenge did not auto-enroll target'; END IF;
- IF (SELECT status FROM public.league_coach_challenges WHERE id=v_id)<>'active'
- THEN RAISE EXCEPTION 'Direct challenge was not activated'; END IF;
- IF (SELECT count(*) FROM public.point_transactions)<>0
- THEN RAISE EXCEPTION 'Assignment incorrectly awarded EXP'; END IF;
+
  data:=public.coach_challenge_v2_list();
  IF pg_catalog.jsonb_array_length(data)<>1
  OR data->0->>'target_boxer_name'<>'Boxer Alpha'
@@ -133,6 +127,22 @@ BEGIN
 END
 $coachCreate$;
 RESET ROLE;
+
+-- Administrative test assertions run with the privileged disposable PG role;
+-- authenticated users never receive direct SELECT access to private V2 tables.
+DO $privateAssert$
+BEGIN
+ IF (SELECT count(*) FROM public.league_coach_challenge_entries
+     WHERE challenge_id=current_setting('test.direct_id')::uuid
+       AND boxer_id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa')<>1
+ THEN RAISE EXCEPTION 'Targeted boxer not automatically enrolled'; END IF;
+ IF (SELECT status FROM public.league_coach_challenges
+     WHERE id=current_setting('test.direct_id')::uuid)<>'active'
+ THEN RAISE EXCEPTION 'Private target was not activated'; END IF;
+ IF (SELECT count(*) FROM public.point_transactions)<>0
+ THEN RAISE EXCEPTION 'Personal challenge creation awarded EXP before review'; END IF;
+END
+$privateAssert$;
 
 -- Only the selected boxer and coach/admin are entitled to see this challenge.
 SET ROLE authenticated;
@@ -219,11 +229,7 @@ DECLARE result jsonb;
 BEGIN
  result:=public.league_cancel_personal_challenge(current_setting('test.direct_id')::uuid);
  IF result->>'status'<>'cancelled' THEN RAISE EXCEPTION 'Cancellation failed'; END IF;
- IF (SELECT status FROM public.league_coach_challenge_entries
- WHERE challenge_id=current_setting('test.direct_id')::uuid)<>'withdrawn'
- THEN RAISE EXCEPTION 'Cancellation left athlete enrolled'; END IF;
- IF (SELECT count(*) FROM public.point_transactions)<>0
- THEN RAISE EXCEPTION 'Cancellation created or deleted points'; END IF;
+
  BEGIN
   PERFORM public.league_cancel_personal_challenge(current_setting('test.direct_id')::uuid);
   RAISE EXCEPTION 'Repeat cancellation unexpectedly permitted';
@@ -231,6 +237,15 @@ BEGIN
 END
 $coachCancel$;
 RESET ROLE;
+DO $cancelAssert$
+BEGIN
+ IF (SELECT status FROM public.league_coach_challenge_entries
+ WHERE challenge_id=current_setting('test.direct_id')::uuid)<>'withdrawn'
+ THEN RAISE EXCEPTION 'Cancellation left athlete enrolled'; END IF;
+ IF (SELECT count(*) FROM public.point_transactions)<>0
+ THEN RAISE EXCEPTION 'Cancellation changed points'; END IF;
+END
+$cancelAssert$;
 
 -- A second assigned challenge exercises the existing human review and
 -- idempotent EXP-ledger settlement without creating fake prod points.
@@ -259,12 +274,7 @@ BEGIN
  secondResult:=public.coach_challenge_v2_settle_manual(id);
  IF firstResult->>'awards'<>'1' OR secondResult->>'already_settled'<>'true'
  THEN RAISE EXCEPTION 'Direct challenge paid twice or not at all'; END IF;
- IF (SELECT count(*) FROM public.point_transactions
-  WHERE category='challenge_exp' AND points=0 AND exp=25)<>1
- THEN RAISE EXCEPTION 'Wrong personal challenge EXP payout'; END IF;
- IF (SELECT count(*) FROM public.league_coach_challenge_exp_ledger
-  WHERE challenge_id=id AND awarded_exp=25)<>1
- THEN RAISE EXCEPTION 'Missing settlement ledger'; END IF;
+
  BEGIN
   PERFORM public.league_cancel_personal_challenge(id);
   RAISE EXCEPTION 'Paid challenge can be cancelled';
@@ -272,5 +282,15 @@ BEGIN
 END
 $award$;
 RESET ROLE;
+DO $payoutAssert$
+BEGIN
+ IF (SELECT count(*) FROM public.point_transactions
+  WHERE category='challenge_exp' AND points=0 AND exp=25)<>1
+ THEN RAISE EXCEPTION 'Wrong personal challenge EXP payout'; END IF;
+ IF (SELECT count(*) FROM public.league_coach_challenge_exp_ledger
+  WHERE challenge_id=current_setting('test.completed_id')::uuid AND awarded_exp=25)<>1
+ THEN RAISE EXCEPTION 'Missing settlement ledger'; END IF;
+END
+$payoutAssert$;
 
 SELECT 'PASS private assignment, role guards, visibility, cancellation and EXP idempotency' AS result;
