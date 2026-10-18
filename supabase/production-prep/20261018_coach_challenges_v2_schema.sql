@@ -43,6 +43,11 @@ CREATE TABLE public.league_coach_challenge_exp_ledger (
  updated_at timestamptz NOT NULL DEFAULT now(),
  UNIQUE(challenge_id,boxer_id)
 );
+CREATE INDEX league_coach_challenges_creator_status_idx ON public.league_coach_challenges(created_by,status);
+CREATE INDEX league_coach_challenges_status_dates_idx ON public.league_coach_challenges(status,ends_at);
+CREATE INDEX league_coach_challenge_entries_boxer_idx ON public.league_coach_challenge_entries(boxer_id,status);
+CREATE INDEX league_coach_challenge_reviews_reviewer_idx ON public.league_coach_challenge_reviews(reviewed_by);
+CREATE INDEX league_coach_challenge_exp_ledger_boxer_idx ON public.league_coach_challenge_exp_ledger(boxer_id);
 ALTER TABLE public.league_coach_challenges ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.league_coach_challenge_entries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.league_coach_challenge_reviews ENABLE ROW LEVEL SECURITY;
