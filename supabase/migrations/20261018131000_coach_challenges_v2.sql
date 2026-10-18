@@ -593,6 +593,20 @@ BEGIN
   WHERE j.challenge_id=c.id AND j.status='completed' AND r.approved
   AND NOT EXISTS (SELECT 1 FROM public.league_coach_challenge_exp_ledger l
    WHERE l.challenge_id=j.challenge_id AND l.boxer_id=j.boxer_id)
+ ) OR EXISTS (
+  SELECT 1 FROM public.league_coach_challenge_exp_ledger l
+  LEFT JOIN public.league_coach_challenge_entries j
+   ON j.challenge_id=l.challenge_id AND j.boxer_id=l.boxer_id
+  LEFT JOIN public.league_coach_challenge_reviews r
+   ON r.challenge_id=l.challenge_id AND r.boxer_id=l.boxer_id
+  WHERE l.challenge_id=c.id
+  AND (j.status IS DISTINCT FROM 'completed' OR r.approved IS DISTINCT FROM TRUE)
+ ) OR EXISTS (
+  SELECT 1 FROM public.league_coach_challenge_entries j
+  LEFT JOIN public.league_coach_challenge_reviews r
+   ON r.challenge_id=j.challenge_id AND r.boxer_id=j.boxer_id
+  WHERE j.challenge_id=c.id
+  AND (j.status='joined' OR (j.status='completed' AND r.approved IS NULL))
  ) THEN RAISE EXCEPTION 'Settled challenge payout ledger is inconsistent: %',c.id USING ERRCODE='23514'; END IF;
  RETURN pg_catalog.jsonb_build_object('id',c.id,'status','settled','already_settled',true,'awards',0);
  END IF;
