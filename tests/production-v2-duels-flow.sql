@@ -138,12 +138,57 @@ BEGIN
  THEN RAISE EXCEPTION 'Duplicate or missing EXP payout transactions'; END IF;
 END $verify$;
 
+-- A previously rejected, timely submission can later be approved.
+-- Correct the scores and existing EXP transactions without paying twice.
+CREATE TEMP TABLE duel_original_transactions AS
+SELECT boxer_id,transaction_id FROM public.league_duel_exp_ledger
+WHERE duel_id=current_setting('test.duel_id')::uuid;
+UPDATE public.training_submissions SET status='approved'
+WHERE id='33333333-cccc-4333-8333-333333333333';
+INSERT INTO public.point_transactions(submission_id,boxer_id,points,exp,category,description,effective_date)
+VALUES('33333333-cccc-4333-8333-333333333333',
+ 'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee',
+ 90,90,'training','Duel late correction',(now()-INTERVAL '2 days')::date);
+SET ROLE authenticated;
+SET request.jwt.claim.sub='22222222-2222-4222-8222-222222222222';
+DO $correction$
+BEGIN
+ IF public.duel_v2_reconcile(current_setting('test.duel_id')::uuid)<>'settled'
+ THEN RAISE EXCEPTION 'Score correction did not settle'; END IF;
+END $correction$;
+RESET ROLE;
+DO $correctedResults$
+DECLARE duel uuid:=current_setting('test.duel_id')::uuid;
+BEGIN
+ IF (SELECT challenger_score FROM public.league_duels WHERE id=duel)<>70
+ OR (SELECT opponent_score FROM public.league_duels WHERE id=duel)<>130
+ OR (SELECT winner_id FROM public.league_duels WHERE id=duel)
+ <>'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee'::uuid
+ THEN RAISE EXCEPTION 'Score correction failed to update winner'; END IF;
+ IF (SELECT awarded_exp FROM public.league_duel_exp_ledger
+ WHERE duel_id=duel AND boxer_id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa')<>25
+ OR (SELECT awarded_exp FROM public.league_duel_exp_ledger
+ WHERE duel_id=duel AND boxer_id='eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee')<>100
+ THEN RAISE EXCEPTION 'Corrected EXP amounts are wrong'; END IF;
+ IF EXISTS(
+ SELECT 1 FROM public.league_duel_exp_ledger l
+ FULL JOIN duel_original_transactions b USING (boxer_id,transaction_id)
+ WHERE l.duel_id=duel AND b.boxer_id IS NULL)
+ THEN RAISE EXCEPTION 'Correction replaced an EXP transaction'; END IF;
+ IF (SELECT count(*) FROM public.point_transactions
+ WHERE category='duel_exp' AND description='Duel reward: '||duel::text)<>2
+ THEN RAISE EXCEPTION 'Correction duplicated an EXP transaction'; END IF;
+ IF (SELECT count(*) FROM public.league_duel_events
+ WHERE duel_id=duel AND event_type='corrected')<>1
+ THEN RAISE EXCEPTION 'Missing correction audit event'; END IF;
+END $correctedResults$;
+
 -- Clear all duel test records, including their training and payout fixtures.
 DELETE FROM public.league_duel_exp_ledger;
 DELETE FROM public.league_duel_events;
 DELETE FROM public.league_duels;
 DELETE FROM public.point_transactions
- WHERE description LIKE 'Duel reward:%' OR description IN ('Duel test A','Duel test E');
+ WHERE description LIKE 'Duel reward:%' OR description IN ('Duel test A','Duel test E','Duel late correction');
 DELETE FROM public.training_submissions;
 UPDATE public.league_feature_flags SET is_enabled=false WHERE feature_key='duels';
 SELECT 'Duel V2 role, settlement and EXP tests passed' AS result;
