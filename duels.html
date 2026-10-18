@@ -2,31 +2,31 @@
 <html lang="de">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Boxer-Duelle · Takeover League</title>
 <style>
 :root{color-scheme:dark}
-body{font:16px/1.45 system-ui,sans-serif;background:#0b1422;color:#f5f5f6;margin:0;padding:20px}
-main{max-width:960px;margin:auto}h1,h2{color:#dfbd77}a{color:#e9c789}
-article,section.panel{background:#16263a;border:1px solid #324359;border-radius:14px;padding:18px;margin:14px 0}
-button{background:#dfbd77;color:#131313;border:0;border-radius:8px;padding:10px 14px;margin:5px 6px 5px 0;cursor:pointer;font-weight:600}
+body{font:16px/1.45 system-ui,sans-serif;background:var(--bg);color:var(--text);margin:0;padding:var(--sp-5)}
+main{max-width:960px;margin:auto}h1,h2{color:var(--gold)}a{color:var(--gold)}
+article,section.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:var(--sp-5);margin:var(--sp-4) 0}
+button{background:var(--gold);color:var(--bg);border:0;border-radius:var(--r-sm);padding:var(--sp-3) var(--sp-4);margin:5px 6px 5px 0;cursor:pointer;font-weight:600}
 button:disabled{opacity:.5;cursor:not-allowed}
-input,select{background:#0b1422;color:white;border:1px solid #52647c;border-radius:8px;padding:10px;max-width:100%;box-sizing:border-box}
+input,select{background:var(--bg);color:white;border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:var(--sp-3);max-width:100%;box-sizing:border-box}
 form{display:grid;gap:9px;max-width:600px}
-label{display:grid;gap:5px}small{color:#bdc8d4}.error{color:#ffaaaa}
-[hidden]{display:none!important}.meta{color:#bdc8d4;margin:6px 0}.actions{display:flex;flex-wrap:wrap;gap:6px}
-.live-overview{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:12px}
-.live-card{border:1px solid #516278;background:#0d1b2e;border-radius:14px;padding:15px;min-width:0}
+label{display:grid;gap:5px}small{color:var(--muted)}.error{color:var(--bad)}
+[hidden]{display:none!important}.meta{color:var(--muted);margin:6px 0}.actions{display:flex;flex-wrap:wrap;gap:6px}
+.live-overview{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:var(--sp-3)}
+.live-card{border:1px solid var(--line-strong);background:var(--surface-2);border-radius:var(--r-md);padding:var(--sp-4);min-width:0}
 .live-names{font-weight:700;overflow-wrap:anywhere}
-.live-points{font-size:24px;font-weight:800;color:#dfbd77;margin:8px 0 4px;font-variant-numeric:tabular-nums}
-.live-track{height:10px;border-radius:999px;background:#4b5d72;overflow:hidden;margin:10px 0}
-.live-fill{height:100%;background:#dfbd77;transition:width .25s}
-.live-hint{display:block;color:#c4d0df;font-size:13px;margin:5px 0;overflow-wrap:anywhere}
-.live-hint.warning{color:#ffcf88}
-.live-reload-note{font-size:13px;color:#b9c5d5}
-button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #dfbd77;outline-offset:3px}
+.live-points{font-size:var(--fs-xl);font-weight:800;color:var(--gold);margin:var(--sp-2) 0 4px;font-variant-numeric:tabular-nums}
+.live-track{height:10px;border-radius:999px;background:var(--line-strong);overflow:hidden;margin:var(--sp-3) 0}
+.live-fill{height:100%;background:var(--gold);transition:width .25s}
+.live-hint{display:block;color:var(--text);font-size:var(--fs-sm);margin:5px 0;overflow-wrap:anywhere}
+.live-hint.warning{color:var(--gold)}
+.live-reload-note{font-size:var(--fs-sm);color:var(--muted)}
+button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 </style>
-<link rel="stylesheet" href="./takeover-navigation.css"></head>
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"></head>
 <body>
 <main>
 <p><a href="./index.html">Liga</a> · <a href="./boxer.html">Boxer-Dashboard</a> · <a href="./coach.html">Trainer-Dashboard</a></p>
