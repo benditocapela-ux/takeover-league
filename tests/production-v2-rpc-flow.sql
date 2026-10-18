@@ -147,6 +147,34 @@ BEGIN
 END $boxer$;
 RESET ROLE;
 
+-- Inactive accounts and unknown authenticated users must not access any V2 RPC.
+UPDATE public.profiles SET is_active=false
+WHERE id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+SET ROLE authenticated;
+SET request.jwt.claim.sub='11111111-1111-4111-8111-111111111111';
+DO $inactive$
+BEGIN
+ BEGIN
+  PERFORM public.coach_challenge_v2_list();
+  RAISE EXCEPTION 'Inactive boxer retained challenge access';
+ EXCEPTION WHEN insufficient_privilege THEN NULL;
+ END;
+END $inactive$;
+RESET ROLE;
+UPDATE public.profiles SET is_active=true
+WHERE id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+SET ROLE authenticated;
+SET request.jwt.claim.sub='99999999-9999-4999-8999-999999999999';
+DO $unknown$
+BEGIN
+ BEGIN
+  PERFORM public.coach_challenge_v2_list();
+  RAISE EXCEPTION 'Unknown authenticated user gained league access';
+ EXCEPTION WHEN insufficient_privilege THEN NULL;
+ END;
+END $unknown$;
+RESET ROLE;
+
 -- A second boxer joins, then fails the manual review: no EXP should be paid.
 SET ROLE authenticated;
 SET request.jwt.claim.sub='55555555-5555-4555-8555-555555555555';
