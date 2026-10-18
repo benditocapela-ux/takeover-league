@@ -100,7 +100,7 @@ RESET ROLE;
 SET ROLE authenticated;
 SET request.jwt.claim.sub='22222222-2222-4222-8222-222222222222';
 DO $coachCreate$
-DECLARE id uuid; data jsonb;
+DECLARE v_id uuid; data jsonb;
 BEGIN
  BEGIN
   PERFORM public.league_assign_personal_challenge('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb','Bad target','','Trainer is not boxer',7,50);
@@ -112,14 +112,14 @@ BEGIN
  EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
  data:=public.league_assign_personal_challenge('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
   'Sparring focus','Improve movement','Three defensive sparring rounds',7,50);
- id:=(data->>'challenge_id')::uuid;
+ v_id:=(data->>'challenge_id')::uuid;
  IF data->>'status'<>'active' OR data->>'boxer_id'<>'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa'
  THEN RAISE EXCEPTION 'Incorrect assignment response'; END IF;
- PERFORM pg_catalog.set_config('test.direct_id',id::text,false);
+ PERFORM pg_catalog.set_config('test.direct_id',v_id::text,false);
  IF (SELECT count(*) FROM public.league_coach_challenge_entries
-     WHERE challenge_id=id AND boxer_id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' AND status='joined')<>1
+     WHERE challenge_id=v_id AND boxer_id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa' AND status='joined')<>1
  THEN RAISE EXCEPTION 'Direct challenge did not auto-enroll target'; END IF;
- IF (SELECT status FROM public.league_coach_challenges WHERE id=id)<>'active'
+ IF (SELECT status FROM public.league_coach_challenges WHERE id=v_id)<>'active'
  THEN RAISE EXCEPTION 'Direct challenge was not activated'; END IF;
  IF (SELECT count(*) FROM public.point_transactions)<>0
  THEN RAISE EXCEPTION 'Assignment incorrectly awarded EXP'; END IF;
