@@ -238,7 +238,12 @@ async function load(){
  if(epoch!==sessionEpoch||requestId!==loadRequestId||!profile)return;
  duels=Array.isArray(all)?all:[];eligible=Array.isArray(boxers)?boxers:[];
  const active=duels.filter(isDuelLive);
- liveScoreMap=new Map();liveScoreErrors=new Map();liveLoading=active.length>0;lastLiveUpdate=null;
+ // Keep the last valid score visible while the background refresh runs.
+ // Never reuse a score if the duel changed status or disappeared.
+ liveScoreMap=new Map(active.filter(d=>liveScoreMap.get(d.id)?.status===d.status)
+  .map(d=>[d.id,liveScoreMap.get(d.id)]));
+ liveScoreErrors=new Map();liveLoading=active.length>0;
+ if(!active.length)lastLiveUpdate=null;
  populate();render();
  if(active.length){
   const result=await Promise.all(active.map(async d=>{
