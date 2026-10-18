@@ -12,7 +12,7 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null}={}){
  const db={
   auth:{getUser:async()=>({data:{user},error:null}),signInWithPassword:async()=>({error:null}),signOut:async()=>({error:null})},
   from:(name)=>{assert.equal(name,'profiles');return {select:()=>({eq:()=>({maybeSingle:async()=>({data:profile,error:null})})})}},
-  rpc:async(name,args)=>{calls.push({name,args});return rpcError?{data:null,error:{message:rpcError}}:{data:name==='coach_challenge_v2_list'?challenges:[],error:null}}
+  rpc:async(name,args)=>{calls.push({name,args});return rpcError?{data:null,error:{message:rpcError}}:{data:name==='coach_challenge_v2_list'?challenges:name==='coach_challenge_v2_review_candidates'?candidates:[],error:null}}
  };
  dom.window.createClient=()=>db;
  dom.window.confirm=()=>true;
@@ -53,6 +53,14 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null}={}){
  settle.click();await tick();await tick();
  assert.equal(reviewCoach.calls.some(c=>c.name==='coach_challenge_v2_settle_manual'),true);
  reviewCoach.dom.window.close();
+ const pending=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[{id:'pending-id',title:'Pending',description:'Test',status:'awaiting_reviews',joined_count:1,duration_days:7,is_creator:true}],candidates:[{boxer_id:'boxer-id',display_name:'Test Boxer'}]});
+ const pendingReview=[...pending.document.querySelectorAll('#list button')].find(b=>b.textContent==='Offene Bewertungen laden');
+ pendingReview.click();await tick();await tick();
+ assert.equal([...pending.document.querySelectorAll('#list button')].find(b=>b.textContent==='EXP abschliessen').disabled,true,'pending reviews must block settlement');
+ const reason=pending.document.querySelector('#list input');reason.value='Saubere Technik und drei Einheiten';
+ [...pending.document.querySelectorAll('#list button')].find(b=>b.textContent==='Bestanden').click();await tick();await tick();
+ assert.equal(pending.calls.some(c=>c.name==='coach_challenge_v2_review_manual'&&c.args.p_boxer_id==='boxer-id'&&c.args.p_approved===true),true);
+ pending.dom.window.close();
  const malicious=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[{id:'unsafe',title:'<img src=x onerror=alert(1)>',description:'<script>alert(1)</script>',status:'open',joined_count:0,duration_days:7,my_enrollment_status:null,is_creator:false}]});
  assert.equal(malicious.document.querySelector('#list img'),null,'untrusted title must not render HTML');
  assert.equal(malicious.document.querySelector('#list script'),null,'untrusted description must not render scripts');
