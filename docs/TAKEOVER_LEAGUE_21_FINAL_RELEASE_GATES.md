@@ -1,5 +1,5 @@
-# Takeover League 2.1 – Release-Abnahme / 10-Minuten-Durchlauf
-Stand: 18. Oktober 2026 (Schweizer Zeit), Entwicklung ausschließlich auf `develop/takeover-league-2.1-all-features`, Draft-PR #11.
+# Takeover League 2.1 – Release-Abnahme und technische Sicherheitsgates
+Stand: 19. Oktober 2026 (Schweizer Zeit), Entwicklung ausschließlich auf `develop/takeover-league-2.1-all-features`, Draft-PR #11.
 
 ## VERÖFFENTLICHUNG GESPERRT – NO GO LIVE
 Keine GitHub-Merge-Freigabe und **keine** produktiven Schema-, Flag- oder Datenmutationen vorgenommen.
@@ -23,14 +23,22 @@ Die fehlenden echten Boxer/Admin/Coach-Login-Tests und ein getestetes Produktion
 - Grundberechtigungen in PROD sind historisch sehr weit gefasst. RLS verhindert derzeit anonyme Ledger-Abfragen und authentifizierte Ledger-Inserts. Diese Konfiguration muss beim Freigabe-Audit ausdrücklich mitgeprüft werden; reine GRANT-Checks reichen nicht aus.
 - Korrigierte automatische Ziel-EXP nach nachträglichem Wechsel des Boxers, Änderung des Trainingsdatums sowie von Jogging-/Technikmengen. SQL-Rollback-Test erfolgreich: 75 → 0 EXP beim vorherigen Boxer, 50 → 0 → 50 beim neuen Boxer und 40 → 0 → 40 bei Jogging-km-Korrekturen; bestehende Transaktions-IDs bleiben erhalten.
 - Abgelehnte oder wieder geöffnete Ziele melden korrekt `exp_awarded: 0` in der API; zuvor wurde irreführend der konfigurierte Reward gemeldet.
-- **Nicht durchgeführt:** echter produktiver Backup-/Restore-Test, echte Nutzerkonten-Abnahme, Replay sämtlicher Migrationen in neu erstellter produktionsgleicher Umgebung. Deshalb bleibt der Merge gesperrt.
+- **Nicht durchgeführt:** echter produktiver Backup-/Restore-Test und echte Nutzerkonten-Abnahme. Der vollständige Replay in einer produktionsähnlichen Wegwerf-Umgebung wurde inzwischen automatisiert erfolgreich getestet; ein vollständiger PROD-Klon bleibt offen. Deshalb bleibt der Merge gesperrt.
 
 ## Automatisierte Migrationsabnahme und Wiederherstellung (19.10.2026)
 - Neuer GitHub-Workflow `.github/workflows/league-21-migration-replay.yml`, Ergebnis **erfolgreich** für PostgreSQL **16 und 17**.
-- Führt **alle 24** chronologisch sortierten V2.1-Migrationen auf separaten Wegwerf-Datenbanken aus; bestätigt 17 RLS-geschützte V2.1-Tabellen und zulässige RPC-Grants. Der erste Durchlauf erfolgt in einer einzigen Transaktion mit **ROLLBACK** und geprüftem unveränderten Altbestand.
+- Führt **alle 25** chronologisch sortierten V2.1-Migrationen auf separaten Wegwerf-Datenbanken aus; bestätigt 17 RLS-geschützte V2.1-Tabellen und zulässige RPC-Grants. Der erste Durchlauf erfolgt in einer einzigen Transaktion mit **ROLLBACK** und geprüftem unveränderten Altbestand.
 - Zweiter Durchlauf installiert 2.1 vollständig auf demselben Wegwerf-V2-Schema; anschliessend `pg_dump` → `pg_restore` in eine frische Datenbank. Schema-/Datenzähler sowie der vollständige 2.1-Postflight sind vor und nach Restore konsistent. **Beide PostgreSQL-Versionen grün.**
 - Das lokale Basisschema `tests/league-21-productionlike-baseline.sql` deckt die verwendeten V2-Schnittstellen und produktiven `NOT NULL`-Felder ab, ist jedoch **kein vollständiger Supabase-Produktionsklon**.
 - **Immer noch offen und Freigabeblocker:** Backup und verifizierte Wiederherstellung der **echten** Produktionsdaten und Auth-/Storage-Abhängigkeiten; echter Boxer-/Admin-/Trainer-Login-Test; vollständiger Definer-Funktions-Audit. Deshalb GO-LIVE weiterhin gesperrt.
+
+## Zusätzliche Integritätstests (19.10.2026)
+- **Falsche Sieger bei fehlendem Training-Ledger verhindert:** Saison-/Duell-/Arena-Endpunkte hatten bereits Duplikatsschutz; der 2.1-Duell- und Arena-Abschluss sperrt jetzt auch Abschlüsse, wenn ein genehmigtes Training **keine gültige Punktebuchung** besitzt. Es gibt keine stillschweigende Wertung mit 0 Punkten.
+- Zwei neue SQL-ROLLBACK-Fixtures prüfen: Fehlende Transaktion führt zu Abbruch ohne Sieger/EXP, nach Ledger-Reparatur korrekter Abschluss und idempotenter zweiter Aufruf.
+- Alle **sechs** relevanten Staging-SQL-Fixtures werden nach dem vollständigen 2.1-Migration-Replay automatisch auf **PostgreSQL 16 und 17** ausgeführt. GitHub-Workflow `league-21-migration-replay.yml` war auf Commit `fd276a5836f7c6593a56b54cc86245b9d1501518` erfolgreich (beide Versionen).
+- **Trainerhinweis korrigiert:** Die bisher falsche Zusicherung «keine EXP» beim Abschluss einer Liga-Challenge wurde durch eine explizite Anzeige der sofortigen realen EXP-Belohnungen und eine vorsichtige Bestätigung ersetzt.
+- **Challenge-Fortschritt korrigiert:** Teilnahme- und Fristgrenzen werden mit `Date.parse` nach tatsächlichen Zeitpunkten statt durch lexikografischen Vergleich verschieden formatierter ISO-Zeitstempel geprüft.
+- Kein produktives GO LIVE ohne echten Produktionsbackup- und Login-Test.
 
 ## Sicherheitsadvisor – offene Warnungen
 **Keine Warnungen dieser Art pauschal ignorieren.**
@@ -42,10 +50,11 @@ Die fehlenden echten Boxer/Admin/Coach-Login-Tests und ein getestetes Produktion
 ## Voraussetzungen / Freigabe-Gates vor 2.1 GO LIVE
 - [ ] Neue Branch-Commits mit **grünen beiden GitHub-Workflows** und Chromium-/Mobile-Tests, einschließlich neuer H2H- und Datumslogik.
 - [ ] Echte Supabase-Testkonten: Boxer, Trainer/Coach, Admin; Fremdzugriff, Einladungen, Duellabschluss, EXP-Rücknahme, individuelle Ziele, Liga-Challenge-EXP, öffentliche Profile.
-- [ ] Vollständiger Test **aller** SQL-Migrationen in chronologischer Reihenfolge auf einer leeren produktionsgleichen Umgebung. Im bisherigen TEST-Projekt wurden SQL-Blöcke interaktiv, nicht als rekonstruierte `supabase_migrations.schema_migrations`-Historie installiert; dieses Gate ist NOCH OFFEN.
+- [x] Alle **25** SQL-Migrationen in chronologischer Reihenfolge in separaten produktionsähnlichen Wegwerf-Datenbanken auf PostgreSQL 16 und 17 mit Rollback und Backup-/Restore-Rehearsal erfolgreich ausgeführt.
+- [ ] Ein echtes **vollständiges produktionsgleiches** Testabbild inklusive aller Auth-/Storage-Abhängigkeiten und Original-Funktionsdefinitionen ist noch nicht validiert. Im bisherigen Supabase-TEST-Projekt wurden ältere Migrationen teilweise direkt angewendet; die Migration-History ist nicht vollständig der SQL-Dateiliste gleichgestellt.
 - [ ] Autorisierte Prüfung der vorbestehenden PUBLIC SECURITY DEFINER RPCs sowie Supabase-Auth-Schutzeinstellungen.
 - [ ] Vor Migration: aktuelles Produktionsbackup inkl. vollständiger Ledger-, Auth- und Storage-Sicherung; Wiederherstellbarkeit verifizieren. **Bisher weder Backup noch Restore durchgeführt.**
-- [ ] Dry-run der vollständigen Produktionsmigration mit kontrolliertem Rollback für die ersetzte Funktion `public.duel_v2_reconcile`; keine Änderung auf Live vor explizitem GO LIVE.
+- [x] Technischer Replay mit kontrolliertem ROLLBACK für alle 2.1-Migrationen inklusive ersetzter `public.duel_v2_reconcile`-Funktion auf Wegwerf-PG16/17 bestanden. Ein erneuter Dry-run mit allen echten Produktions-Definitionen bleibt vor produktiver Freigabe erforderlich.
 - [ ] PROD Vor-/Nachher-Invarianten: keine fehlenden/doppelten Trainingsledger; Duellledger korrekte Referenzen; Achievement-Ledger idempotent; öffentliche Badge-Projektion; private Goal-Ledger ohne Fremdgrants.
 - [ ] Einwilligung für bewusst öffentliche Boxer-/Achievement-/H2H-Daten klären und Datenschutzhinweis anpassen.
 - [ ] 2.1-Merge nur nach **erneuter ausdrücklicher Freigabe** des Nutzers; Flags und produktive Migrationen zuletzt, smoke tests direkt danach.
