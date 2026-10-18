@@ -30,16 +30,24 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null,candida
  prodDom.window.eval(prodSource.replace('init();','window.__ready=init();'));
  await prodDom.window.__ready;
  assert.equal(productionClientCalls,0,'disabled production page must never contact Supabase');
+ assert.equal(prodDom.window.document.querySelector('#refresh').hidden,true);
  assert.match(prodDom.window.document.querySelector('#status').textContent,/vorbereitet/);
  assert.equal(prodDom.window.document.querySelector('#signin').hidden,true);
  prodDom.window.close();
  const guest=await mount();
  assert.equal(guest.document.querySelector('#login').hidden,false);
  assert.equal(guest.document.querySelector('#coach').hidden,true);
+ assert.equal(guest.document.querySelector('#refresh').hidden,true,'guest cannot refresh');
  assert.equal(guest.document.querySelector('#list').children.length,0);
  guest.dom.window.close();
  const coach=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[]});
  assert.equal(coach.document.querySelector('#coach').hidden,false);
+ const refresh=coach.document.querySelector('#refresh');
+ assert.equal(refresh.hidden,false,'refresh is available to authenticated coach');
+ const priorLists=coach.calls.filter(c=>c.name==='coach_challenge_v2_list').length;
+ refresh.click();await tick();await tick();
+ assert.ok(coach.calls.filter(c=>c.name==='coach_challenge_v2_list').length>priorLists,'refresh reloads challenge list');
+
  assert.match(coach.document.querySelector('#list').textContent,/Noch keine Challenges/);
  coach.document.querySelector('#create [name=title]').value='Neuer Test';
  coach.document.querySelector('#create').dispatchEvent(new coach.dom.window.Event('submit',{bubbles:true,cancelable:true}));
@@ -48,6 +56,7 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null,candida
  coach.document.querySelector('#logout').click();await tick();await tick();
  assert.equal(coach.document.querySelector('#coach').hidden,true);
  assert.equal(coach.document.querySelector('#login').hidden,false);
+ assert.equal(coach.document.querySelector('#refresh').hidden,true,'refresh hidden after logout');
  coach.dom.window.close();
  const draft=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[{id:'draft-id',title:'Alter Titel',description:'Alte Beschreibung',status:'draft',joined_count:0,duration_days:14,challenge_kind:'competition',is_creator:true}]});
  const editToggle=[...draft.document.querySelectorAll('#list button')].find(b=>b.textContent==='Entwurf bearbeiten');
