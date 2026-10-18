@@ -28,6 +28,15 @@ const cases=[
  assert.match(u,/interval '15 minutes'/);assert.match(u,/if exists\(select 1 from public.point_transactions t\s+where t.submission_id=training.id\)/);
  assert.match(u,/insert into public.training_audit/);assert.match(coach,/admin_undo_recent_rejection/);
 }],
+['Inbox read RPC enforces active boxer ownership, flag and anonymous revocation',()=>{
+ const inbox=read('supabase/migrations/20261018230000_notification_mark_read.sql');
+ assert.match(inbox,/p.role='boxer'/);
+ assert.match(inbox,/n.recipient_id=v_actor/);
+ assert.match(inbox,/feature_key='notifications'/);
+ assert.match(inbox,/revoke all on function public.mark_my_notification_read\(uuid\) from PUBLIC, anon, authenticated/i);
+ assert.match(boxer,/db.rpc\('mark_my_notification_read'/);
+ assert.match(boxer,/const base=new URL\('\.\/',location.href\)/);
+}],
 ['Private avatar update cannot be called anonymously after staged migration',()=>{
  const sql=read('supabase/migrations/20261018214000_avatar_rpc_permissions.sql');
  assert.match(sql,/REVOKE ALL ON FUNCTION public.update_my_boxer_avatar\(text,text\) FROM PUBLIC,anon/);
