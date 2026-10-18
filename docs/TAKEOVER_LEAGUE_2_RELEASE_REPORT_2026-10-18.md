@@ -211,3 +211,30 @@ Die produktiven V2-RPCs für Challenge-Liste und -Fortschritt liefern JSONB, wä
 - Isolierter TEST: notwendige `boxer_notifications`-RLS-Fixture nur dort angelegt; Testtransaktion mit aktivem Fixture-Flag: anderer Boxer darf nicht markieren, Besitzer darf markieren und wiederholen; danach ROLLBACK. Rollenrechte bestätigt (anon EXECUTE false, auth EXECUTE true, Direktupdate gesperrt).
 - `boxer.html` hat nun sichere „Als gelesen markieren“-Aktion samt Zähler; bereits bestehende Triggerpfade `/boxer.html` werden auf die konkrete GitHub-Pages-Projektadresse normalisiert. Chromium-/statische Regressionen eingebunden. Kein produktives Feature-Flag aktiviert.
 - **Der GO-LIVE-Befehl bleibt erforderlich**, bevor produktive Migrationen, Flag-Aktivierung oder Pages-Deployment erlaubt sind. Stand vor GO LIVE: 39/45 integriert, fünf bewusst gestaged, eine sicherheitsbedingt begrenzt. Das ist keine vollumfängliche Produktiv-Abnahme.
+
+
+---
+
+## GO LIVE – unterbrochener Produktionsrollout am 18.10.2026
+
+**STATUS: PRODUKTIVVERÖFFENTLICHUNG ANGEHALTEN. GitHub `main` und Pages nicht deployed.**
+
+Auf ausdrückliche Freigabe „GO LIVE“ wurde zuerst ein Read-only-Preflight durchgeführt:
+- Stand vor den Schemaänderungen: 65 Trainingseinreichungen, davon 58 bestätigt und 1 offen; 69 Ledger-Zeilen; keine doppelte Trainingsbuchung, keine bestätigten Trainings ohne Ledger und keine Vergütung abgelehnter Trainings.
+- Separate produktive Backup-/Restore- und echte Konto-Login-Tests waren vom Benutzer bewusst zurückgestellt worden. Das ist **keine** erfolgreiche Abnahme.
+
+Folgende **vier additive Migrationen sind tatsächlich auf Supabase PRODUKTION** (`iqarjivcrddcixrvqbfb`) angewendet und unmittelbar geprüft:
+1. `takeover_league2_personal_challenge_assignment` – `20261018170000_private_boxer_challenge_assignment.sql`.
+2. `league2_private_training_drafts` – `20261018190000_training_drafts_v2.sql`.
+3. `league2_training_request_idempotency` – `20261018200000_training_submission_idempotency.sql`.
+4. `league2_admin_training_audit` – `20261018210000_coach_training_audit_read.sql`.
+
+Nachgewiesen: Challenge-Zielzuordnung ist RLS-geschützt; anonyme/angemeldete Benutzer haben keinen direkten SELECT. Private Entwürfe haben aktive RLS und keinen anonymen Lesezugriff. Anfrage-ID-Eindeutigkeitsindex und Admin-Audit-RPC existieren.
+
+**BLOCKADE:** Die Ausführung der nächsten Migration `20261018211000_duel_v2_live_scores.sql` wurde vor der Anwendung durch OpenAI-Sicherheitschecks des angeschlossenen Werkzeuges blockiert. Der Fehler war **kein** bestätigter PostgreSQL-Fehler. Es wurde nicht versucht, die Sperre über einen anderen Ausführungspfad zu umgehen. Damit wurden nachfolgende Release-Migrationen nicht im beabsichtigten Prozess angewendet und keine Live-Feature-Flags geändert.
+
+Read-only-Nachprüfung nach Stopp: 66 Trainingseinreichungen, 58 bestätigt, 2 offen, 69 Ledger-Zeilen; weiterhin 0 fehlende bestätigte Ledgers, 0 doppelte Ledgerzuordnungen und 0 fehlerhafte Vergütungen bei abgelehnten Trainings. Die zusätzliche offene Einreichung kann von der regulären App-Nutzung während des Rollouts stammen und wurde durch diesen Release nicht erzeugt. Es wurden keine Trainingsdaten manuell verändert.
+
+**WICHTIG:** `mark_my_notification_read(uuid)` wurde bei der Nachprüfung als vorhanden gemeldet, obwohl im hier ausgeführten Migrationsverlauf kein entsprechender Apply-Schritt erfolgte und in der Migrationstabelle kein neuer Eintrag dafür zu finden war. Diese Abweichung muss vor Fortsetzung aufgeklärt werden; keine Provenienz behaupten.
+
+**Wiederaufnahme erst nach Bereinigung der Tool-Sicherheitsblockade**, anschliessend verbleibende Migrationen einzeln verifizieren, berechtigte Feature-Flags prüfen, GitHub-Release-Commit erneut einfrieren, merge/deploy erst nach vollständigem Postflight. Niemals noch einmal bereits installierte Initialmigrationen blind anwenden. Kein „Live“ behaupten, bevor GitHub Pages tatsächlich aktualisiert und erreichbar geprüft wurde.
