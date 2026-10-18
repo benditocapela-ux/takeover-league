@@ -419,6 +419,25 @@ BEGIN
 END $settledRestored$;
 RESET ROLE;
 
+-- A post-settlement review correction cannot silently retain a rejected
+-- boxer's previously paid EXP.
+UPDATE public.league_coach_challenge_reviews SET approved=false
+WHERE challenge_id=current_setting('test.corrupt_challenge_id')::uuid;
+SET ROLE authenticated;
+SET request.jwt.claim.sub='22222222-2222-4222-8222-222222222222';
+DO $reviewTampering$
+DECLARE blocked boolean:=false;
+BEGIN
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(current_setting('test.corrupt_challenge_id')::uuid);
+ EXCEPTION WHEN check_violation THEN blocked:=true;
+ END;
+ IF NOT blocked THEN RAISE EXCEPTION 'Settled challenge concealed rejected payout ledger'; END IF;
+END $reviewTampering$;
+RESET ROLE;
+UPDATE public.league_coach_challenge_reviews SET approved=true
+WHERE challenge_id=current_setting('test.corrupt_challenge_id')::uuid;
+
 -- Empty all newly created V2 records to exercise the prepared rollback.
 DELETE FROM public.league_coach_challenge_exp_ledger;
 DELETE FROM public.league_coach_challenge_reviews;
