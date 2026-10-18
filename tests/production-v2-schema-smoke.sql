@@ -122,13 +122,15 @@ BEGIN
  DELETE FROM public.league_coach_challenge_entries WHERE challenge_id=cid;
  DELETE FROM public.league_coach_challenges WHERE id=cid;
 END $safety$;
+\i tests/production-v2-rpc-flow.sql
+\i supabase/production-prep/rollback_coach_challenges_v2_rpc_only.sql
 \i supabase/production-prep/rollback_coach_challenges_v2_empty_only.sql
 DO $$
 BEGIN
  IF to_regclass('public.league_coach_challenges') IS NOT NULL THEN
   RAISE EXCEPTION 'Rollback did not remove empty challenge tables';
  END IF;
- IF (SELECT count(*) FROM public.profiles) <> 2 OR
+ IF (SELECT count(*) FROM public.profiles) <> 4 OR
  (SELECT count(*) FROM public.point_transactions) <> 3 THEN
   RAISE EXCEPTION 'Rollback affected existing records';
  END IF;
