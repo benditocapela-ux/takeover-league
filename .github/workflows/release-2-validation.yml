@@ -23,3 +23,15 @@ jobs:
       - run: node tests/menu-navigation-compat.cjs
       - run: node tests/boxer-dashboard-polish.cjs
       - run: node tests/ux-roadmap-phase0.cjs
+
+  chromium-public-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false playwright@1.56.1
+      - run: npx playwright install --with-deps chromium
+      - run: node tests/release-browser-smoke.cjs
