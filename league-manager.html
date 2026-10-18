@@ -74,11 +74,31 @@ $('saveGoalReward').addEventListener('click',async()=>{
 });
 async function listGlobals(){
  const r=await db.from('league_global_challenges_v21')
-  .select('id,title,status,ends_at').order('ends_at',{ascending:false}).limit(60);
+  .select('id,title,status,ends_at,completion_exp,winner_exp').order('ends_at',{ascending:false}).limit(60);
  const root=$('globalList');root.replaceChildren();
  if(r.error){root.textContent='Challenges derzeit nicht verfügbar.';return}
  for(const c of r.data||[]){
   const card=row(c.title,'Status: '+c.status+' · Ende: '+new Date(c.ends_at).toLocaleDateString('de-CH'));
+  if(c.status==='active'&&new Date(c.ends_at).getTime()>Date.now()){
+   const label=document.createElement('p');label.className='muted';
+   label.textContent='EXP: '+c.completion_exp+' bei Zielabschluss, +'+c.winner_exp+' für den geteilten ersten Platz.';
+   card.append(label);
+   const completion=document.createElement('input');completion.type='number';completion.min='0';completion.max='250';completion.step='1';
+   completion.value=String(c.completion_exp||0);completion.setAttribute('aria-label','Zielabschluss EXP für '+c.title);
+   const winner=document.createElement('input');winner.type='number';winner.min='0';winner.max='250';winner.step='1';
+   winner.value=String(c.winner_exp||0);winner.setAttribute('aria-label','Sieger EXP für '+c.title);
+   const btn=document.createElement('button');btn.type='button';btn.textContent='EXP-Regeln speichern';
+   btn.onclick=async()=>{
+    const a=Number(completion.value),b=Number(winner.value);
+    if(!Number.isSafeInteger(a)||!Number.isSafeInteger(b)||a<0||b<0||a>250||b>250){say('EXP-Regeln müssen 0–250 sein.');return}
+    if(!confirm('EXP bei Abschluss festlegen: '+a+' pro Zielerfüllung und +'+b+' für Sieger?'))return;
+    btn.disabled=true;
+    const result=await db.rpc('league_v21_admin_set_global_rewards',{p_challenge:c.id,p_completion:a,p_winner:b});
+    if(result.error){say('EXP-Regeln nicht gespeichert: '+result.error.message);btn.disabled=false;return}
+    say('EXP-Regeln gespeichert.');await listGlobals();
+   };
+   const row=document.createElement('div');row.className='actions';row.append(completion,winner,btn);card.append(row);
+  }
   if(c.status==='active'&&new Date(c.ends_at).getTime()<=Date.now()){
    const button=document.createElement('button');button.textContent='Ergebnis endgültig berechnen';
    button.type='button';button.onclick=async()=>{
