@@ -365,6 +365,60 @@ BEGIN
  THEN RAISE EXCEPTION 'Recovery ledger invalid'; END IF;
 END $recoveryVerify$;
 
+-- Settled state must still detect a stray duplicate payout instead of falsely
+-- reporting successful idempotency.
+DO $doublePayout$
+DECLARE cid uuid:=current_setting('test.corrupt_challenge_id')::uuid; duplicate_id uuid;
+BEGIN
+ INSERT INTO public.point_transactions
+ (boxer_id,points,exp,category,description,effective_date,created_by)
+ VALUES('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',0,150,'challenge_exp',
+ 'Coach Challenge: '||cid::text||' | Orphan payout test',CURRENT_DATE,
+ '33333333-3333-4333-8333-333333333333') RETURNING id INTO duplicate_id;
+ PERFORM pg_catalog.set_config('test.duplicate_payout_id',duplicate_id::text,false);
+END $doublePayout$;
+SET ROLE authenticated;
+SET request.jwt.claim.sub='22222222-2222-4222-8222-222222222222';
+DO $settledDuplicate$
+DECLARE blocked boolean:=false;
+BEGIN
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(current_setting('test.corrupt_challenge_id')::uuid);
+ EXCEPTION WHEN check_violation THEN blocked:=true;
+ END;
+ IF NOT blocked THEN RAISE EXCEPTION 'Settled challenge concealed a duplicate payout'; END IF;
+END $settledDuplicate$;
+RESET ROLE;
+DELETE FROM public.point_transactions WHERE id=current_setting('test.duplicate_payout_id')::uuid;
+UPDATE public.league_coach_challenge_exp_ledger SET transaction_id=NULL
+WHERE challenge_id=current_setting('test.corrupt_challenge_id')::uuid;
+SET ROLE authenticated;
+SET request.jwt.claim.sub='22222222-2222-4222-8222-222222222222';
+DO $settledBrokenLedger$
+DECLARE blocked boolean:=false;
+BEGIN
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(current_setting('test.corrupt_challenge_id')::uuid);
+ EXCEPTION WHEN check_violation THEN blocked:=true;
+ END;
+ IF NOT blocked THEN RAISE EXCEPTION 'Settled challenge concealed missing ledger transaction'; END IF;
+END $settledBrokenLedger$;
+RESET ROLE;
+UPDATE public.league_coach_challenge_exp_ledger SET
+ transaction_id=(SELECT t.id FROM public.point_transactions t
+ WHERE t.category='challenge_exp'
+ AND t.description='Coach Challenge: '||current_setting('test.corrupt_challenge_id')||' | Orphan payout test')
+WHERE challenge_id=current_setting('test.corrupt_challenge_id')::uuid;
+SET ROLE authenticated;
+SET request.jwt.claim.sub='22222222-2222-4222-8222-222222222222';
+DO $settledRestored$
+DECLARE outcome jsonb;
+BEGIN
+ outcome:=public.coach_challenge_v2_settle_manual(current_setting('test.corrupt_challenge_id')::uuid);
+ IF outcome->>'already_settled'<>'true' THEN RAISE EXCEPTION 'Restored settlement not idempotent'; END IF;
+END $settledRestored$;
+RESET ROLE;
+
 -- Empty all newly created V2 records to exercise the prepared rollback.
 DELETE FROM public.league_coach_challenge_exp_ledger;
 DELETE FROM public.league_coach_challenge_reviews;
