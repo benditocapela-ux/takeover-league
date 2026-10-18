@@ -20,8 +20,8 @@ begin
     or training.reviewed_at > now()+interval '1 minute'
  then raise exception 'Only own recent rejections can be undone' using errcode='42501';end if;
  if exists(select 1 from public.point_transactions t
-  where t.submission_id=training.id and (t.points<>0 or t.exp<>0))
- then raise exception 'Training has existing rewards, use audited admin correction' using errcode='42501';end if;
+  where t.submission_id=training.id)
+ then raise exception 'Training has an existing ledger, use audited admin correction' using errcode='42501';end if;
  update public.training_submissions s
  set status='pending',reviewed_by=null,reviewed_at=null
  where s.id=training.id and s.status='rejected'
