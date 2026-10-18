@@ -99,3 +99,9 @@ Stop without writing to production if the read-only inventory shows an unknown s
 - TEST Supabase rollback-only: duplicate pending invite for same pair blocked; decline changes status; fresh 14-day invite after decline succeeds. PASS.
 - TEST Supabase rollback-only: after shifting both `invited_at` and `expires_at` consistently to preserve CHECK constraints, a 49-hour-old invitation cannot be accepted, status becomes `expired`, zero duel EXP ledger entries. PASS.
 - TEST and production not modified by these rolled-back cases. The first expiry fixture attempt violated an expected timestamp CHECK and was corrected before the successful test.
+
+## Additional invitation security checks (2026-10-18)
+
+- TEST rollback-only SQL: self-invitation rejected, unsupported 3-day duration rejected, valid 14-day duration accepted. PASS.
+- TEST rollback-only SQL with simulated JWT subject: neither trainer nor inviting boxer can accept an invitation reserved for the opponent; pending status unchanged. PASS. Not an authenticated HTTP test.
+- All six CI workflows succeeded for commit `91749c93`. Production untouched.
