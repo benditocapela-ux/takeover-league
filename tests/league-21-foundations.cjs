@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),assert=require('node:assert/strict'),{JSDOM}=require('jsdom');
 const read=f=>fs.readFileSync(f,'utf8');
-for(const f of ['goals.html','league-history.html','league-challenges.html','league-manager.html','boxer-profile.html']){
+for(const f of ['goals.html','league-history.html','league-challenges.html','league-manager.html','boxer-profile.html','arena.html']){
  const d=new JSDOM(read(f),{url:'https://example.test/takeover-league/'+f});
  assert.ok(d.window.document.querySelector('meta[name=viewport]'),'responsive viewport '+f);
  assert.ok(d.window.document.querySelector('script[src="./takeover-navigation.js"]'),'site navigation '+f);
@@ -112,4 +112,17 @@ assert.match(goalClose,/progress>=g\.target_value/);
 assert.match(goalClose,/actor\.id<>g\.boxer_id/);
 assert.match(goalClose,/exp_awarded',0/);
 assert.match(read('goals.html'),/league_v21_complete_goal/);
+const h2h=read('supabase/migrations/20261019030000_league_21_public_duel_history.sql');
+assert.match(h2h,/league_public_duel_history_v21/);
+assert.match(h2h,/after insert on public\.league_duels/);
+assert.match(h2h,/after update on public\.league_duels/);
+assert.match(h2h,/grant select on public\.league_public_duel_history_v21 to anon,authenticated/);
+assert.doesNotMatch(h2h,/grant (update|insert|delete|all) on public\.league_public_duel_history_v21 to anon/i);
+assert.match(read('boxer-compare.html'),/function renderDirectDuels\(/);
+const seasonFair=read('supabase/migrations/20261019031000_league_21_season_fair_close.sql');
+assert.match(seasonFair,/Pending season trainings require coach review/);
+assert.match(seasonFair,/rank\(\) over\(order by/);
+assert.doesNotMatch(seasonFair,/insert into public\.point_transactions/i);
+assert.match(read('league-challenges.html'),/t\.created_at>=enrollment\.joined_at/);
+assert.match(read('league-challenges.html'),/t\.created_at<=c\.ends_at/);
 console.log('PASS V2.1 complete foundation contracts: goals, global challenges, backfill, season closure, Hall of Fame, public profile, H2H and reward isolation');
