@@ -3,16 +3,17 @@
 (function(){
  'use strict';
  const sections=new Set(['podium','ranking','levels','history']);
+ const iconSvg=id=>'<svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-'+id+'"></use></svg>';
  function start(){
    if(document.getElementById('tl-menu-panel'))return;
    const pathname=window.location.pathname;
    const page=pathname.substring(pathname.lastIndexOf('/')+1)||'index.html';
    const atHome=page==='index.html';
    const footerMarkup='<nav class="tl-global-bottom" aria-label="Takeover League Navigation"><div class="tl-global-nav-items">'+
-     '<a class="tl-nav-item" data-tl-tab="podium" href="./index.html#podium">🏆 Podium</a>'+
-     '<a class="tl-nav-item" data-tl-tab="ranking" href="./index.html#ranking">📊 Ranking</a>'+
-     '<button type="button" class="tl-nav-item" id="takeover-menu-open" aria-controls="tl-menu-panel" aria-haspopup="dialog" aria-expanded="false">☰ Menü</button>'+
-     '<a class="tl-nav-item tl-dashboard-nav" href="./login.html">👤 Dashboard</a>'+
+     '<a class="tl-nav-item" data-tl-tab="podium" href="./index.html#podium"><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-trophy"></use></svg> Podium</a>'+
+     '<a class="tl-nav-item" data-tl-tab="ranking" href="./index.html#ranking"><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-chart"></use></svg> Ranking</a>'+
+     '<button type="button" class="tl-nav-item" id="takeover-menu-open" aria-controls="tl-menu-panel" aria-haspopup="dialog" aria-expanded="false"><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-menu"></use></svg> Menü</button>'+
+     '<a class="tl-nav-item tl-dashboard-nav" href="./login.html"><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-user"></use></svg> Dashboard</a>'+
      '</div></nav>';
    if(!atHome){
      document.body.classList.add('tl-global-nav-page');
@@ -23,40 +24,40 @@
    // Single shared drawer. The home page supplies its existing four-item footer.
    const entries=[
      ['Die Liga',[
-       ['🏆','Podium','index.html#podium','podium'],
-       ['📊','Monatsranking','index.html#ranking','ranking'],
-       ['🥊','Levels & EXP','index.html#levels','levels'],
-       ['📜','Punkteverlauf','index.html#history','history'],
-       ['🏅','Monatsauszeichnungen','awards.html',''],
-       ['⚖️','Boxer-Vergleich','boxer-compare.html',''],
-       ['🏆','Saisons & Hall of Fame','league-history.html','']
+       ['trophy','Podium','index.html#podium','podium'],
+       ['chart','Monatsranking','index.html#ranking','ranking'],
+       ['boxing-glove','Levels & EXP','index.html#levels','levels'],
+       ['scroll','Punkteverlauf','index.html#history','history'],
+       ['medal','Monatsauszeichnungen','awards.html',''],
+       ['scale','Boxer-Vergleich','boxer-compare.html',''],
+       ['trophy','Saisons & Hall of Fame','league-history.html','']
      ]],
      ['Neue Funktionen',[
-       ['🎯','Challenges','challenges.html','',true],
-       ['⚡','Liga-Challenges','league-challenges.html','',true],
-       ['🥊','Boxer-Duelle','duels.html','',true],
-       ['🏟️','Mehrgegner-Arena','arena.html','',true]
+       ['target','Challenges','challenges.html','',true],
+       ['bolt','Liga-Challenges','league-challenges.html','',true],
+       ['boxing-glove','Boxer-Duelle','duels.html','',true],
+       ['arena','Mehrgegner-Arena','arena.html','',true]
      ]],
      ['Mein Bereich',[
-       ['👤','Anmelden / Mein Account','login.html',''],
-       ['💪','Mein Training','boxer.html',''],
-       ['🎯','Meine Ziele','goals.html',''],
-       ['🥇','Trainer-Dashboard','coach.html',''],
-       ['🛠️','League Manager 2.1','league-manager.html','']
+       ['user','Anmelden / Mein Account','login.html',''],
+       ['dumbbell','Mein Training','boxer.html',''],
+       ['target','Meine Ziele','goals.html',''],
+       ['medal','Trainer-Dashboard','coach.html',''],
+       ['goal','League Manager 2.1','league-manager.html','']
      ]]
    ];
    const contents=entries.map(group=>
      '<div class="tl-menu-group"><div class="tl-menu-group-title">'+group[0]+'</div>'+
      group[1].map(item=>
        '<a class="tl-menu-link" href="./'+item[2]+'"'+(item[3]?' data-tl-section="'+item[3]+'"':'')+'>'+
-         '<span class="tl-menu-icon" aria-hidden="true">'+item[0]+'</span>'+
+         '<span class="tl-menu-icon" aria-hidden="true">'+iconSvg(item[0])+'</span>'+
          '<span class="tl-menu-label">'+item[1]+(item[4]?' <span class="tl-menu-pill">2.0</span>':'')+'</span>'+
          '<span class="tl-menu-arrow" aria-hidden="true">↗</span>'+
        '</a>').join('')+'</div>').join('');
    document.body.insertAdjacentHTML('beforeend',
       '<div id="tl-menu-backdrop" class="tl-menu-backdrop" hidden aria-hidden="true"></div>'+
       '<aside id="tl-menu-panel" class="tl-menu-panel" role="dialog" aria-modal="true" aria-label="Alle Takeover League Bereiche" aria-hidden="true" inert>'+
-      '<div class="tl-menu-head"><div><div class="tl-menu-overline">TAKEOVER LEAGUE 2.0</div><div class="tl-menu-title">☰ Alle Bereiche</div></div>'+
+      '<div class="tl-menu-head"><div><div class="tl-menu-overline">TAKEOVER LEAGUE 2.0</div><div class="tl-menu-title"><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-menu"></use></svg> Alle Bereiche</div></div>'+
       '<button type="button" class="tl-menu-close" id="tl-menu-close" aria-label="Menü schliessen">×</button></div>'+
       '<p class="tl-menu-intro">Gleiche Liga. Alle Funktionen an einem Ort.</p>'+
       contents+
