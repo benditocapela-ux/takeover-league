@@ -125,7 +125,7 @@ BEGIN
  IF to_regclass('public.league_coach_challenges') IS NOT NULL THEN
   RAISE EXCEPTION 'Rollback did not remove empty challenge tables';
  END IF;
- IF (SELECT count(*) FROM public.profiles) <> 4 OR
+ IF (SELECT count(*) FROM public.profiles) <> 5 OR
  (SELECT count(*) FROM public.point_transactions) <> 3 THEN
   RAISE EXCEPTION 'Rollback affected existing records';
  END IF;
