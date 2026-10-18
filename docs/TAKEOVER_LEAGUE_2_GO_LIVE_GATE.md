@@ -71,3 +71,7 @@ Die im Release-Branch zuvor als teilweise bezeichneten UX-Punkte #12, #20, #24, 
 
 ### Inbox-Abnahme nach expliziter Produktionsmigration
 Bei GO LIVE erst Migration `20261018230000_notification_mark_read.sql` anwenden und die RLS-/Funktionsrechte überprüfen, **danach** bei Freigabe das Feature-Flag `notifications` aktivieren. Bestehende Produktions-Trigger erzeugen Benachrichtigungen nur für neue Freigaben/Ablehnungen und bei aktivierten Flags; alte Trainings erhalten nicht rückwirkend Mitteilungen. Der Browser übersetzt den bestehenden Triggerpfad `/boxer.html` in eine sichere Projekt-URL. Der Button `Als gelesen markieren` ruft ausschliesslich `mark_my_notification_read` auf. Aktivierung nie ohne gesicherte Rechte- und UI-Prüfung.
+
+
+### Live-Duell-Abnahme (Staging)
+Siehe `docs/TAKEOVER_LEAGUE_2_LIVE_DUELS_STATUS_2026-10-18.md`. Die fertige Duell-Benutzeroberfläche und ihre Testdatenbank-Abnahme sind **kein** Nachweis für produktive Funktionalität: `public.duel_v2_live_scores(uuid)` ist in Produktion nach der früheren Tool-Sicherheitsblockade weiterhin nicht installiert. Den fehlenden RPC nicht durch ungeschützte Clienttabellenabfragen oder alternative privilegierte SQL-Ausführung ersetzen. GO-LIVE-Flag bleibt HOLD.
