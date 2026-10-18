@@ -31,6 +31,7 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null,candida
  await prodDom.window.__ready;
  assert.equal(productionClientCalls,0,'disabled production page must never contact Supabase');
  assert.equal(prodDom.window.document.querySelector('#refresh').hidden,true);
+ assert.equal(prodDom.window.document.querySelector('#filters').hidden,true);
  assert.match(prodDom.window.document.querySelector('#status').textContent,/vorbereitet/);
  assert.equal(prodDom.window.document.querySelector('#signin').hidden,true);
  prodDom.window.close();
@@ -38,6 +39,7 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null,candida
  assert.equal(guest.document.querySelector('#login').hidden,false);
  assert.equal(guest.document.querySelector('#coach').hidden,true);
  assert.equal(guest.document.querySelector('#refresh').hidden,true,'guest cannot refresh');
+ assert.equal(guest.document.querySelector('#filters').hidden,true,'guest cannot see filters');
  assert.equal(guest.document.querySelector('#list').children.length,0);
  guest.dom.window.close();
  const coach=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[]});
@@ -58,6 +60,26 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null,candida
  assert.equal(coach.document.querySelector('#login').hidden,false);
  assert.equal(coach.document.querySelector('#refresh').hidden,true,'refresh hidden after logout');
  coach.dom.window.close();
+ const filtering=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[
+ {id:'one',title:'Sprint Challenge',description:'Laufen',status:'open',joined_count:0,duration_days:7,is_creator:false},
+ {id:'two',title:'Technik Challenge',description:'Sandsack',status:'active',joined_count:2,duration_days:14,is_creator:false},
+ {id:'three',title:'Sparring Challenge',description:'Partner',status:'settled',joined_count:3,duration_days:30,is_creator:false}
+ ]});
+ const search=filtering.document.querySelector('#challengeSearch'),statusFilter=filtering.document.querySelector('#challengeStatus');
+ assert.equal(filtering.document.querySelector('#filters').hidden,false,'filters visible after authentication');
+ assert.equal(filtering.document.querySelectorAll('#list article').length,3);
+ search.value='sandsack';
+ search.dispatchEvent(new filtering.dom.window.Event('input',{bubbles:true}));
+ assert.equal(filtering.document.querySelectorAll('#list article').length,1,'description search');
+ assert.match(filtering.document.querySelector('#list').textContent,/Technik Challenge/);
+ statusFilter.value='open';
+ statusFilter.dispatchEvent(new filtering.dom.window.Event('change',{bubbles:true}));
+ assert.match(filtering.document.querySelector('#list').textContent,/Keine Challenges entsprechen der Suche/,'empty search state');
+ search.value='';
+ search.dispatchEvent(new filtering.dom.window.Event('input',{bubbles:true}));
+ assert.match(filtering.document.querySelector('#list').textContent,/Sprint Challenge/,'search reset');
+ assert.equal(filtering.document.querySelectorAll('#list article').length,1,'status filter');
+ filtering.dom.window.close();
  const draft=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[{id:'draft-id',title:'Alter Titel',description:'Alte Beschreibung',status:'draft',joined_count:0,duration_days:14,challenge_kind:'competition',is_creator:true}]});
  const editToggle=[...draft.document.querySelectorAll('#list button')].find(b=>b.textContent==='Entwurf bearbeiten');
  assert.ok(editToggle,'coach must be able to edit own draft');
