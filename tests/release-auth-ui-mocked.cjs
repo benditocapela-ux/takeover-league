@@ -108,7 +108,7 @@ async function main(){
    await page.goto(url+'/challenges.html');
    await page.waitForFunction(()=>document.querySelector('#list article')!==null);
    await page.getByRole('button',{name:'Fortschritt aktualisieren'}).first().click();
-   await page.waitForFunction(()=>document.querySelector('.tl-challenge-progress p[role=status]')?.textContent.includes('Bestätigte Leistung:'));
+   await page.waitForFunction(()=>[...document.querySelectorAll('.tl-challenge-progress p[role=status]')].some(x=>x.textContent.includes('Bestätigte Leistung:')));
    assert.match(await page.locator('.tl-challenge-progress').first().innerText(),/4[.,]5 \/ 10 km/);
    console.log('PASS authenticated boxer automatic challenge progress from own approved training');
 
@@ -135,4 +135,4 @@ async function main(){
  }
  await browser.close();
 }
-main().then(()=>server.close()).catch(e=>{console.error(e);server.close();process.exitCode=1});
+main().then(()=>server.close()).catch(e=>{console.error('BROWSER TEST FAILED',e);server.close();process.exit(1)});
