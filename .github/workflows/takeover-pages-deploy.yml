@@ -4,6 +4,8 @@ on:
     branches: [main]
     paths:
       - '*.html'
+      - '*.js'
+      - '*.css'
       - '*.png'
       - 'manifest.webmanifest'
       - 'avatars/**'
@@ -33,10 +35,17 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _site
-          find . -maxdepth 1 -type f \( -name '*.html' -o -name '*.png' -o -name '*.webmanifest' \) -exec cp '{}' _site/ \;
+          find . -maxdepth 1 -type f \( -name '*.html' -o -name '*.js' -o -name '*.css' -o -name '*.png' -o -name '*.webmanifest' \) -exec cp '{}' _site/ \;
           cp -R avatars _site/avatars
           rm -f _site/challenges-v2-preview.html _site/duels-v2-preview.html
           touch _site/.nojekyll
+          test -s _site/takeover-navigation.js
+          test -s _site/takeover-navigation.css
+          # All production HTML entrypoints must ship the shared, re-openable menu.
+          for page in index login boxer coach challenges duels awards features coming-soon; do
+            grep -Fq 'takeover-navigation.js' "_site/${page}.html"
+            grep -Fq 'takeover-navigation.css' "_site/${page}.html"
+          done
           grep -Fq 'TAKEOVER_CHALLENGES_V2_ENABLED=true' _site/challenges.html
           grep -Fq 'TAKEOVER_DUELS_V2_ENABLED=true' _site/duels.html
           grep -Fq 'iqarjivcrddcixrvqbfb' _site/challenges.html

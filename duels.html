@@ -16,7 +16,7 @@ form{display:grid;gap:9px;max-width:600px}
 label{display:grid;gap:5px}small{color:#bdc8d4}.error{color:#ffaaaa}
 [hidden]{display:none!important}.meta{color:#bdc8d4;margin:6px 0}.actions{display:flex;flex-wrap:wrap;gap:6px}
 </style>
-</head>
+<link rel="stylesheet" href="./takeover-navigation.css"></head>
 <body>
 <main>
 <p><a href="./index.html">Liga</a> · <a href="./boxer.html">Boxer-Dashboard</a> · <a href="./coach.html">Trainer-Dashboard</a></p>
@@ -160,5 +160,5 @@ byId('signin').onsubmit=async e=>{e.preventDefault();if(!db)return;const f=new F
 };
 init();
 </script>
-</body>
+<script src="./takeover-navigation.js" defer></script></body>
 </html>

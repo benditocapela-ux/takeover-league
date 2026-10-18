@@ -1,0 +1,30 @@
+/* Takeover League 2.0 shared navigation. Uses the existing league navy/gold palette. */
+:root{--tl-nav-bg:#0b1220;--tl-nav-surface:#172235;--tl-nav-text:#f4f7fc;--tl-nav-muted:#a9b5c8;--tl-nav-gold:#e8b953}
+body.tl-global-nav-page{padding-bottom:calc(92px + env(safe-area-inset-bottom))!important}
+.tl-global-bottom{position:fixed;bottom:0;left:0;right:0;z-index:55;background:#111c2df5;border-top:1px solid #ffffff1c;padding:10px max(12px,env(safe-area-inset-right)) calc(10px + env(safe-area-inset-bottom));box-sizing:border-box;font:700 13px system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.tl-global-nav-items{display:flex;gap:4px;max-width:740px;margin:0 auto}
+.tl-global-nav-items .tl-nav-item{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;border:0;border-radius:12px;background:transparent;color:var(--tl-nav-muted);min-height:42px;padding:10px 4px;font:700 clamp(11px,2.5vw,13px) system-ui,-apple-system,sans-serif;text-align:center;text-decoration:none;white-space:nowrap;cursor:pointer}
+.tl-global-nav-items .tl-nav-item:hover,.tl-global-nav-items .tl-nav-item:focus-visible{background:#26364e;color:#f6c65f;outline:2px solid var(--tl-nav-gold);outline-offset:1px}
+.tl-global-nav-items .tl-nav-item.tl-active{background:#26364e;color:#f6c65f}
+.tl-menu-backdrop{position:fixed;inset:0;background:rgba(1,7,18,.67);z-index:200;opacity:0;transition:opacity .22s ease;cursor:pointer}
+.tl-menu-backdrop[hidden]{display:none!important}
+.tl-menu-panel{position:fixed;top:0;left:0;bottom:0;width:min(355px,90vw);max-width:100%;box-sizing:border-box;background:#101a2b;color:var(--tl-nav-text);border-right:1px solid #e8b95342;box-shadow:18px 0 60px #0009;transform:translateX(-102%);transition:transform .22s ease;z-index:201;overflow-y:auto;overscroll-behavior:contain;padding:22px 18px calc(25px + env(safe-area-inset-bottom));visibility:hidden;font:14px/1.4 system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+body.tl-menu-visible .tl-menu-panel{transform:translateX(0);visibility:visible}
+body.tl-menu-visible .tl-menu-backdrop{opacity:1}
+body.tl-menu-visible{overflow:hidden}
+.tl-menu-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:3px 3px 18px;border-bottom:1px solid #ffffff1a}
+.tl-menu-overline{font-size:10px;letter-spacing:2px;color:var(--tl-nav-gold);font-weight:850}
+.tl-menu-title{font-size:22px;line-height:1.2;font-weight:900;margin-top:6px}
+.tl-menu-intro{color:var(--tl-nav-muted);font-size:12px;margin:8px 4px 18px}
+.tl-menu-close{border:1px solid #ffffff25;border-radius:11px;width:38px;height:38px;background:#1c2a40;color:var(--tl-nav-text);font:24px system-ui,sans-serif;line-height:1;flex-shrink:0;cursor:pointer}
+.tl-menu-group{margin-top:22px}
+.tl-menu-group-title{margin:0 0 8px 10px;text-transform:uppercase;font-size:10px;letter-spacing:1.6px;font-weight:850;color:#c6a25d}
+.tl-menu-link{width:100%;box-sizing:border-box;display:flex;align-items:center;gap:12px;min-height:49px;border:1px solid transparent;border-radius:12px;padding:11px 12px;background:transparent;color:var(--tl-nav-text);font:700 14px/1.3 system-ui,-apple-system,sans-serif;text-decoration:none;text-align:left;cursor:pointer}
+.tl-menu-link:hover,.tl-menu-link:focus-visible{background:#22324c;border-color:#ffffff24;outline:2px solid #e8b95377;outline-offset:0}
+.tl-menu-link.tl-current{background:#24354d;border-color:#d4ac5570;color:#f7cf73}
+.tl-menu-icon{width:25px;flex:0 0 25px;font-size:19px;text-align:center}
+.tl-menu-label{flex:1;min-width:0}
+.tl-menu-arrow{font-size:15px;font-weight:500;color:#b0bed3}
+.tl-menu-pill{display:inline-block;padding:3px 6px;border-radius:5px;background:#3b321b;color:#e8c56c;font-weight:800;font-size:9px;letter-spacing:.4px;margin-left:4px}
+.tl-menu-foot{border-top:1px solid #ffffff1c;margin-top:24px;padding:16px 10px;color:var(--tl-nav-muted);font-size:11px}
+@media(prefers-reduced-motion:reduce){.tl-menu-backdrop,.tl-menu-panel{transition:none}}
