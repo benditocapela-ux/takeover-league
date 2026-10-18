@@ -29,3 +29,12 @@ Previous production snapshot: 14 profiles, 61 training submissions, 63 point tra
 ## Independent security fix (NOT APPLIED)
 
 `20261018_restrict_achievement_recalculation.sql` revokes direct client EXECUTE of unrestricted `recalculate_boxer_achievements_v2(uuid)`. Review its effect on the postgres-owned training-approval trigger before deploying it separately. It is **not bundled** with the coach challenges migration.
+
+## Duels V2 release module (NOT APPLIED)
+
+**Second atomic migration:** supabase/migrations/20261018133000_duels_v2.sql. Apply only **after** the Coach Challenges V2 migration: the Duels module depends on its disabled duels feature flag, expanded duel_exp transaction category, and coach role support. The migration adds three separate RLS-protected tables and six authenticated RPCs without modifying legacy boxer_duels. It refuses to overwrite preexisting V2 objects and verifies that anonymous callers cannot access the new tables or RPCs.
+
+Its six backend definitions originate from the isolated Supabase test project. GitHub Actions installs the release SQL in disposable PostgreSQL and exercises boxer invitations, responses, duplicate-pair prevention, training scoring, pending reviews, coach settlement, winner/loser EXP and corrected EXP payouts without duplicate transactions. A guarded empty-data rollback is in rollback_duels_v2_empty_only.sql.
+
+Frontend: duels-v2-preview.html connects only to the test project; duels.html targets production but has TAKEOVER_DUELS_V2_ENABLED=false. Both real database feature flags are disabled by default. **Do not enable production until hosted Supabase Auth and data-integrity checks pass.** The test project may also have its duels feature flag disabled, even though the preview page can initialize.
+
