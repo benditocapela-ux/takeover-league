@@ -66,3 +66,10 @@ Stop without writing to production if the read-only inventory shows an unknown s
 - Production read-only duel scoring data integrity: zero approved submissions lacking scoring transaction, zero duplicate scoring transactions, zero mismatched training owners, zero unlinked scoring transactions, zero linked adjustments.
 - Production security advisor reports anonymous EXECUTE on SECURITY DEFINER `public.recalculate_boxer_achievements_v2(uuid)`. Reviewed migration 006 revokes this; production implementation and permissions require explicit review/correction before enabling achievements. Do not alter production grants without owner approval.
 - Still blocked: real authenticated duel/achievement API negative tests, concurrency/lock-order, production backup/restore, migration-history reconciliation, production security fix, and owner-approved rollout.
+
+## Additional duel SQL integration verification (2026-10-18)
+
+- Latest release-readiness commit `b5701b04`: all six GitHub workflows completed successfully at that exact SHA.
+- TEST Supabase rollback-only SQL: a later valid reviewed training changed the duel winner from Boxer 1 to Boxer 2, corrected existing EXP ledger entries to 25/100, kept exactly two reward transactions, and recorded one `corrected` event. PASS.
+- TEST Supabase rollback-only SQL with simulated JWT subject: boxer attempt to invoke `duel_v2_reconcile` failed with coach-only authorization error, did not create reward ledger; simulated trainer then settled. PASS. This is NOT a signed HTTP JWT test.
+- After rollback, all three TEST feature flags remained disabled. Production remains unchanged.
