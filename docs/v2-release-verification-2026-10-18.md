@@ -1,6 +1,12 @@
 # Takeover League 2.0 – Releaseprüfung (18. Oktober 2026)
 
-**Status: NO-GO für Produktion.** Das produktive Supabase-Projekt wurde ausschließlich mit SELECT/Katalogabfragen geprüft. Keine Live-Migration, keine Änderung an Boxer-Konten, Einträgen oder EXP. Beide neuen Frontend-Funktionen bleiben standardmäßig deaktiviert. Der GitHub-PR bleibt Draft.
+**Status: NO-GO für Produktion bis ausdrücklichem «FREIGEBEN» und bestandenen technischen Gates.** Das produktive Supabase-Projekt wurde ausschließlich mit SELECT/Katalogabfragen geprüft. Keine Live-Migration, keine Änderung an Boxer-Konten, Einträgen oder EXP. Beide neuen Frontend-Funktionen bleiben standardmäßig deaktiviert. Der GitHub-PR bleibt Draft.
+
+## Release-Entscheidung des Nutzers (18.10.2026): ohne Backup veröffentlichen
+
+Der Nutzer hat ausdrücklich entschieden, den V2-Rollout **ohne vorheriges Backup** durchführen zu wollen. Die Datensicherung bleibt daher **eine dringende Empfehlung, aber kein automatischer Freigabe-Blocker**. Der Nutzer akzeptiert damit bewusst das Risiko, dass bei einer fehlgeschlagenen Produktionsmigration bestehende Trainingshistorien, EXP und Profile möglicherweise nicht wiederhergestellt werden können. Das Risiko wird durch Tests und atomare SQL-Migrationen **reduziert, nicht beseitigt**. Die Free-Plan-Einschränkungen gelten unverändert.
+
+**Weiterhin verbindliche Freigabegates:** reale JWT-/PostgREST-Tests für Coach/Boxer/Admin, erfolgreiche CI/SQL-Preflight-Prüfungen, Nachweis eines funktionierenden GitHub-Pages-Deployments und **die explizite spätere Nachricht „FREIGEBEN“**. Bis dahin bleiben Live-Datenbank, Punkte, Produktions-Feature-Flags und Main-Branch unverändert. Auch nach Freigabe führt ein konkret entdecktes kritisches Sicherheits- oder Datenverlustproblem zu NO-GO.
 
 ## 1. Auth-/Rollen- und Integrationstests
 
@@ -57,7 +63,7 @@ Kategorie-Summen: `legacy_import` 35 Transaktionen (1410 Punkte/EXP), `training`
 
 Die Supabase-Organisation ist laut `get_organization` auf **Free**. Supabase dokumentiert tägliche automatische Backups für Pro/Team/Enterprise, nicht für Free. `archive_mode=on` und `pg_stat_archiver.failed_count=0` belegen **keine wiederherstellbare Datensicherung**.
 
-Damit ist vor dem produktiven SQL ein gesicherter, überprüfter Datenbank-Dump erforderlich. Der Dump **muss außerhalb von GitHub/ChatGPT** gespeichert werden; niemals Verbindungszeichenfolgen oder Passwörter in Repository, Tickets oder Chat veröffentlichen.
+Ein gesicherter, überprüfter Datenbank-Dump bleibt dringend empfohlen; der Nutzer hat die Veröffentlichung ohne diesen Schutz ausdrücklich gewünscht. Der Dump **muss außerhalb von GitHub/ChatGPT** gespeichert werden; niemals Verbindungszeichenfolgen oder Passwörter in Repository, Tickets oder Chat veröffentlichen.
 
 ### Durchzuführende Backup-Aktion (noch NICHT durchgeführt)
 
@@ -79,11 +85,11 @@ Dokumentation: https://supabase.com/docs/guides/platform/backups und https://sup
 
 ## 5. Kontrollierte Migrationsreihenfolge (gesperrt)
 
-1. Backup-/Restore-Nachweis erbringen, echte HTTP/Auth-Tests abschließen und aktuellen Read-only-Baseline-Report aufbewahren.
+1. Backup-Verzicht gemäss bewusster Nutzerentscheidung protokollieren, echte HTTP/Auth-Tests abschließen und aktuellen Read-only-Baseline-Report aufbewahren.
 2. Sicherheitsfix `supabase/production-prep/20261018_restrict_achievement_recalculation.sql` als eigenen sicher geprüften Schritt ausführen und Achievement-Freigabetrigger überprüfen – **nur nach ausdrücklicher Produktionsfreigabe**.
 3. Coach Challenges: `supabase/migrations/20261018131000_coach_challenges_v2.sql`.
 4. Duels: `supabase/migrations/20261018133000_duels_v2.sql`.
 5. RLS, RPC-Rechte, Besitzer, Punkte-/EXP-Summen und bestehende Datensätze mit neuer Read-only-Baseline prüfen; neue DB-Flags bleiben aus.
 6. Frontend getrennt bereitstellen, mit realen Testkonten prüfen, Feature-Flags geplant aktivieren, Fehler und EXP-Differenzen überwachen.
 
-**Keine Ausführung auf Produktion freigeben, bis die oben genannten Bedingungen erfüllt und vom Nutzer separat ausdrücklich genehmigt sind.** Rollback-SQL, das Tabellen entfernt, ist ausdrücklich nur für *leere* V2-Tabellen vorgesehen; bei echten V2-Daten ist stattdessen ein datenbewahrender Reparaturweg nötig.
+**Keine Ausführung auf Produktion vor bestandenem JWT-/Deployment-Gate und ausdrücklichem «FREIGEBEN». Ein fehlendes Backup allein blockiert entsprechend der dokumentierten bewussten Entscheidung des Nutzers nicht.** Rollback-SQL, das Tabellen entfernt, ist ausdrücklich nur für *leere* V2-Tabellen vorgesehen; bei echten V2-Daten ist stattdessen ein datenbewahrender Reparaturweg nötig.
