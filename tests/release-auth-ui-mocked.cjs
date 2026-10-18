@@ -22,10 +22,10 @@ function injected(role){
   {id:'a1111111-1111-4111-8111-111111111111',boxer_id:boxerId,training_type_id:1,training_date:'2026-10-17',notes:'',status:'pending',created_at:'2026-10-17T10:00:00Z',reviewed_at:null,reviewed_by:null},
   {id:'a2222222-2222-4222-8222-222222222222',boxer_id:boxerId,training_type_id:2,training_date:'2026-10-17',notes:'',status:'rejected',created_at:'2026-10-17T11:00:00Z',reviewed_at:new Date().toISOString(),reviewed_by:adminId}
  ];
- const stats={submitted:[],reviewed:[],undo:0,drafts:[]};
+ const stats={submitted:[],reviewed:[],undo:0,drafts:[],readNotifications:[]};
  window.__mockStats=stats;
- const all={profiles:[boxer,admin],training_types:trainer,training_submissions:submissions,league_feature_flags:[
-  {feature_key:'notifications',is_enabled:false},{feature_key:'coach_feedback',is_enabled:false},
+ const all={profiles:[boxer,admin],training_types:trainer,training_submissions:submissions,boxer_notifications:[{id:'b1111111-1111-4111-8111-111111111111',recipient_id:boxerId,notification_type:'test',title:'Training bewertet',message:'Dein Training wurde überprüft.',target_path:'boxer.html',created_at:'2026-10-17T10:00:00Z',read_at:null}],league_feature_flags:[
+  {feature_key:'notifications',is_enabled:true},{feature_key:'coach_feedback',is_enabled:false},
   {feature_key:'performance_dashboard',is_enabled:false}]};
  function query(table,opts={}){
   const filter=[],bounds=[],ordering=[],self={
@@ -64,6 +64,7 @@ function injected(role){
    if(name==='admin_undo_recent_rejection'){stats.undo++;submissions=submissions.map(x=>x.id===args.p_submission_id?{...x,status:'pending',reviewed_at:null,reviewed_by:null}:x);all.training_submissions=submissions;return {data:{status:'pending'},error:null}}
    if(name==='coach_list_unlinked_accounts'||name==='coach_training_audit_recent')return {data:[],error:null};
    if(name==='get_boxer_training_audit')return {data:[],error:null};
+   if(name==='mark_my_notification_read'){stats.readNotifications.push(args.p_notification_id);const row=all.boxer_notifications.find(x=>x.id===args.p_notification_id);if(row)row.read_at=new Date().toISOString();return {data:!!row,error:null}}
    if(name==='coach_challenge_v2_list')return {data:[{
     id:'abcd0000-abcd-4000-abcd-000000000001',title:'Joggingziel',description:'Laufen',
     duration_days:7,status:'active',joined_count:1,my_enrollment_status:role==='boxer'?'joined':null,
@@ -105,6 +106,10 @@ async function main(){
    assert.equal(submitted.length,1,'Double submit should create just one training');
    assert.equal(submitted[0].status,'pending');
    console.log('PASS boxer form submission; cloud autosave; task center; duplicate click suppressed, mobile Chromium');
+   await page.getByRole('button',{name:'Mitteilung als gelesen markieren: Training bewertet'}).click();
+   await page.waitForFunction(()=>window.__mockStats.readNotifications.length===1);
+   assert.match(await page.locator('#boxerNotificationStatus').innerText(),/0 ungelesene/);
+   console.log('PASS owner notification read acknowledgement and unread count');
    await page.goto(url+'/challenges.html');
    await page.waitForFunction(()=>document.querySelector('#list article')!==null);
    await page.getByRole('button',{name:'Fortschritt aktualisieren'}).first().click();
