@@ -1,4 +1,4 @@
-name: Coach Challenges V2 Preview Checks
+name: Takeover League V2 Integration Checks
 on:
   pull_request:
     paths:
@@ -6,6 +6,9 @@ on:
       - 'tests/coach-challenges-v2.cjs'
       - 'tests/coach-challenges-v2-browser.cjs'
       - 'challenges.html'
+      - 'duels.html'
+      - 'duels-v2-preview.html'
+      - 'tests/duels-v2-browser.cjs'
       - 'login.html'
       - 'index.html'
       - 'coach.html'
@@ -22,6 +25,9 @@ on:
       - 'tests/coach-challenges-v2.cjs'
       - 'tests/coach-challenges-v2-browser.cjs'
       - 'challenges.html'
+      - 'duels.html'
+      - 'duels-v2-preview.html'
+      - 'tests/duels-v2-browser.cjs'
       - 'login.html'
       - 'index.html'
       - 'coach.html'
@@ -43,6 +49,7 @@ jobs:
       - run: npm install --no-save --no-package-lock jsdom@26
       - run: node tests/coach-challenges-v2.cjs
       - run: node tests/coach-challenges-v2-browser.cjs
+      - run: node tests/duels-v2-browser.cjs
       - run: node tests/production-v2-migration-bundle.cjs
 
   schema-integration:
