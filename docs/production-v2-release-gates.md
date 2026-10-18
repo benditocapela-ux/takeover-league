@@ -66,3 +66,7 @@ Der GitHub-Actions-Lauf zu Commit `ff49e8a` ist erfolgreich.
 ## Kritischer Produktionsschema-Unterschied: Transaktionskategorien
 
 Das Produktivprojekt akzeptiert bei `point_transactions.category` derzeit ausschliesslich `training`, `trainer_bonus`, `adjustment`, `legacy_import`, `automatic_bonus`, `achievement_exp`. Das Testprojekt erlaubt zusätzlich `duel_exp` und `challenge_exp`. Ohne Erweiterung scheitern V2-EXP-Auszahlungen in Produktion. Eine **noch nicht ausgeführte**, transaktionale und mit Vorprüfungen abgesicherte Migrationsdatei liegt unter `supabase/production-prep/20261018_extend_transaction_categories.sql`. Vor Ausführung bestehende Constraints, Trigger und Funktionsabhängigkeiten prüfen. **Nicht mit Testmigration `test_only_missing_base_tables` verwechseln.**
+
+## Feature-Flag-Differenz zwischen Test und Produktion
+
+Im Testprojekt existieren die V2-Schlüssel `coach_challenges` und `duels`, beide deaktiviert. In Produktion fehlen beide; dort existieren ältere, ebenfalls deaktivierte Schlüssel `league_challenges` und `boxer_duels`. Die V2-RPCs prüfen die **neuen** Schlüssel, daher ist die Unterscheidung wichtig. Die vorbereitete Datei `supabase/production-prep/20261018_v2_feature_flags_disabled.sql` legt die beiden neuen Flags ausschliesslich als **deaktiviert** an, ohne bestehende Legacy-Flags anzutasten. Nicht ausgeführt.
