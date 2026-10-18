@@ -31,4 +31,19 @@ assert.match(release,/Free/);
 assert.match(release,/ROLLBACK/);
 assert.match(release,/\$HOME\/takeover-private-backup/,'backup path must be outside the Git repo');
 assert.match(read('supabase/production-prep/README.md'),/NOT APPLIED/);
+const releaseRunbook=read('docs/RELEASE_NACH_FREIGEBEN.md');
+assert.match(releaseRunbook,/«FREIGEBEN»/,'Release must require explicit final approval');
+assert.match(releaseRunbook,/ohne Backup/i,'Conscious no-backup risk decision must be documented');
+assert.match(releaseRunbook,/release_coach_challenges_v2/);
+assert.match(releaseRunbook,/release_duels_v2/);
+assert.match(releaseRunbook,/hosted-v2-live-release-check/);
+const postDeploy=read('tests/hosted-v2-live-release-check.cjs');
+for(const page of ['challenges.html','duels.html']){
+ assert.ok(postDeploy.includes(page),'Post-release HTTP check misses '+page);
+}
+for(const file of ['boxer.html','coach.html']){
+ const html=read(file);
+ assert.ok(html.includes('Challenges &amp; Boxer-Duelle'),file+' missing neutral V2 navigation');
+ assert.ok(!html.includes('Coach Challenges V2 – in Vorbereitung'),file+' contains stale launch text');
+}
 console.log('Release safety guards passed: read-only baseline, protected Achievement revoke, disabled V2 frontends and private backups');
