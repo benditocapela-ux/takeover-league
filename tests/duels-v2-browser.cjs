@@ -23,12 +23,13 @@ const eligible=[
 const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
 async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_active:true},boxers=eligible,duels=[],rpcError=null}={}){
  const dom=new JSDOM(preview,{url:'https://example.test/duels-v2-preview.html',runScripts:'outside-only'});
- const calls=[];
+ const calls=[];let onAuthEvent=null;
  const db={
   auth:{
    getUser:async()=>({data:{user},error:null}),
    signInWithPassword:async()=>({error:null}),
-   signOut:async()=>({error:null})
+   signOut:async()=>({error:null}),
+   onAuthStateChange:cb=>{onAuthEvent=cb;return {data:{subscription:{unsubscribe(){}}}}}
   },
   from:name=>{assert.equal(name,'profiles');return{
    select:()=>({eq:()=>({maybeSingle:async()=>({data:profile,error:null})})})
@@ -42,7 +43,7 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  dom.window.eval('window.TAKEOVER_DUELS_V2_ENABLED=true;');
  dom.window.eval(source.replace('init();','window.__ready=init();'));
  await dom.window.__ready;
- return {dom,document:dom.window.document,calls,db};
+ return {dom,document:dom.window.document,calls,db,emitAuth:event=>onAuthEvent?.(event,null)};
 }
 (async()=>{
  const prod=new JSDOM(production,{url:'https://example.test/duels.html',runScripts:'outside-only'});
@@ -95,6 +96,17 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  assert.equal(raced.document.querySelector('#duelList').children.length,0,'late requests must not restore private duels');
  assert.doesNotMatch(raced.document.body.textContent,/Nur für Mitglieder/);
  raced.dom.window.close();
+ const otherTab=await mount({duels:[{
+ id:'private-duel',challenger_id:'boxer-1',challenger_name:'Boxer Eins',
+ opponent_id:'boxer-2',opponent_name:'Boxer Zwei',
+ status:'pending',duration_days:7
+ }]});
+ assert.match(otherTab.document.querySelector('#duelList').textContent,/Boxer Eins/);
+ otherTab.emitAuth('SIGNED_OUT');
+ assert.equal(otherTab.document.querySelector('#app').hidden,true);
+ assert.equal(otherTab.document.querySelector('#duelList').children.length,0,'cross-tab signout must wipe duels');
+ assert.equal(otherTab.document.querySelector('#auth').hidden,false);
+ otherTab.dom.window.close();
  const coach=await mount({profile:{id:'coach-1',role:'coach',is_active:true}});
  const form=coach.document.querySelector('#invite');
  assert.equal(form.elements.challenger.disabled,false);
