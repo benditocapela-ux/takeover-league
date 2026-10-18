@@ -7,6 +7,7 @@ on:
       - 'tests/coach-challenges-v2-browser.cjs'
       - 'challenges.html'
       - 'supabase/production-prep/**'
+      - 'tests/production-v2-*.sql'
       - 'tests/production-v2-schema-smoke.sql'
       - '.github/workflows/coach-challenges-v2.yml'
   push:
@@ -17,6 +18,7 @@ on:
       - 'tests/coach-challenges-v2-browser.cjs'
       - 'challenges.html'
       - 'supabase/production-prep/**'
+      - 'tests/production-v2-*.sql'
       - '.github/workflows/coach-challenges-v2.yml'
 jobs:
   static-checks:
