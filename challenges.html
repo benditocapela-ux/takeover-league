@@ -31,7 +31,7 @@ const statusLabel={draft:'Entwurf',open:'Offen',active:'Aktiv',awaiting_reviews:
 const dateLabel=value=>{if(!value)return '';const d=new Date(value);return Number.isNaN(d.getTime())?'':d.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'})};
 const mayManage=c=>['coach','admin'].includes(role)&&(c.is_creator||role==='admin');
 
-let db,role='',busy=false,sessionEpoch=0;
+let db,role='',profileId=null,busy=false,sessionEpoch=0;
 const requestedTarget=(new URLSearchParams(location.search).get('target')||'').trim().slice(0,120);
 let targetBoxerId=null,targetBoxerName='';
 const targetedSection=document.querySelector('#targetedAssignment');
@@ -41,6 +41,29 @@ async function act(name,args){if(busy)return;busy=true;const epoch=sessionEpoch;
 function action(parent,label,name,id){const b=el('button',label);b.type='button';b.onclick=()=>act(name,{p_challenge_id:id});parent.append(b)}
 
 function safePercent(n){return Math.max(0,Math.min(100,Math.round(n)))}
+async function myAutomaticGoalProgress(c,spec){
+ if(!profileId||!c.starts_at||!c.ends_at)return null;
+ if(spec.review_mode!=='automatic'||!['jogging_km','technique_minutes'].includes(spec.metric))return null;
+ const target=Number(spec.target_value);
+ if(!Number.isFinite(target)||target<=0||target>1000000)return null;
+ const day=value=>new Date(value).toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'});
+ const start=day(c.starts_at),end=day(c.ends_at);
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(start)||!/^\d{4}-\d{2}-\d{2}$/.test(end))return null;
+ let amount=0;
+ for(let offset=0;offset<10000;offset+=500){
+  const r=await db.from('training_submissions')
+   .select('jogging_km,technique_minutes').eq('boxer_id',profileId).eq('status','approved')
+   .gte('training_date',start).lte('training_date',end).range(offset,offset+499);
+  if(r.error)throw r.error;
+  for(const item of r.data||[]){
+   const n=Number(item[spec.metric]||0);if(!Number.isFinite(n)||n<0)throw Error('Ungültige bestätigte Trainingsdaten');
+   amount+=n;
+  }
+  if((r.data||[]).length<500)break;
+  if(offset===9500)throw Error('Zu viele Einträge; Berechnung serverseitig nötig');
+ }
+ return {amount,target,unit:spec.metric==='jogging_km'?'km':'Min.',percent:safePercent(100*amount/target)};
+}
 function challengeProgressCard(c){
  const root=document.createElement('section');root.className='tl-challenge-progress';root.setAttribute('aria-label','Fortschritt: '+String(c.title||'Challenge'));
  const info=el('p','');info.className='meta';info.setAttribute('role','status');
@@ -69,6 +92,15 @@ function challengeProgressCard(c){
     if(d.my_review_approved===true)detail.textContent+=' Bewertung: Bestanden.';
     if(d.my_review_approved===false)detail.textContent+=' Bewertung: Nicht bestanden.';
     if(d.my_review_approved==null&&d.status==='awaiting_reviews')detail.textContent+=' Coach-Bewertung ausstehend.';
+    const spec=d.goal_spec||c.goal_spec;
+    if(spec&&['joined','completed'].includes(state)){
+      const result=await myAutomaticGoalProgress(c,spec);
+      if(result){
+       const number=n=>n.toLocaleString('de-CH',{maximumFractionDigits:2});
+       detail.textContent+=' Bestätigte Leistung: '+number(result.amount)+' / '+number(result.target)+' '+result.unit+' ('+result.percent+'%).';
+       detail.textContent+=' EXP werden ausschliesslich nach serverseitiger Prüfung vergeben.';
+      }
+    }
    }else{
     detail.textContent='Teilnehmende: '+Number(d.joined_count||0)+' · Bewertet: '+Number(d.reviewed_count||0)+' · Noch offen: '+Number(d.pending_count||0)+'.';
    }
@@ -153,7 +185,7 @@ if(c.status!=='draft'){
 }
 list.append(a)}say(data.length+' von '+allChallenges.length+' Challenges angezeigt.')}
 function clearChallengeSession(){
- sessionEpoch++;role='';coach.hidden=true;refresh.hidden=true;targetBoxerId=null;targetBoxerName='';targetedSection.hidden=true;
+ sessionEpoch++;role='';profileId=null;coach.hidden=true;refresh.hidden=true;targetBoxerId=null;targetBoxerName='';targetedSection.hidden=true;
  document.querySelector('#filters').hidden=true;allChallenges=[];list.replaceChildren();
  login.hidden=false;logout.hidden=true;
  document.querySelector('#challengeSearch').value='';
@@ -180,7 +212,7 @@ async function prepareTargetedAssignment(){
    document.querySelector('#assignPersonalButton').disabled=false;
  }catch(err){targetedHint.textContent='Zielboxer konnte nicht überprüft werden: '+friendlyError(err)}
 }
-async function init(){const epoch=++sessionEpoch;role='';try{if(!window.TAKEOVER_CHALLENGES_V2_ENABLED){document.querySelector('#signin').hidden=true;coach.hidden=true;login.hidden=true;logout.hidden=true;refresh.hidden=true;document.querySelector('#filters').hidden=true;allChallenges=[];list.replaceChildren();say('Coach Challenges werden vorbereitet. Trainingspunkte bleiben unverändert.');return}if(!db){db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');db.auth.onAuthStateChange?.(event=>{if(event==='SIGNED_OUT')clearChallengeSession()});}const {data:{user},error:authError}=await db.auth.getUser();if(epoch!==sessionEpoch)return;if(authError){role='';coach.hidden=true;list.replaceChildren();throw authError}if(!user){role='';login.hidden=false;logout.hidden=true;coach.hidden=true;list.replaceChildren();throw Error('Bitte mit deinem Takeover-League-Konto anmelden.')}login.hidden=true;logout.hidden=false;const p=await db.from('profiles').select('role,is_active').eq('auth_user_id',user.id).maybeSingle();if(epoch!==sessionEpoch)return;if(p.error){role='';coach.hidden=true;list.replaceChildren();logout.hidden=false;throw p.error}if(!p.data?.is_active){role='';coach.hidden=true;list.replaceChildren();logout.hidden=false;throw Error('Kein aktives Profil')}if(!['boxer','coach','admin'].includes(p.data.role)){role='';coach.hidden=true;list.replaceChildren();logout.hidden=false;throw Error('Unbekannte Profil-Rolle')}role=p.data.role;coach.hidden=!['admin','coach'].includes(role);refresh.hidden=false;document.querySelector('#filters').hidden=false;await load();await prepareTargetedAssignment()}catch(e){if(epoch!==sessionEpoch)return;if(!role){refresh.hidden=true;document.querySelector('#filters').hidden=true;allChallenges=[];list.replaceChildren()}say(friendlyError(e),true)}}
+async function init(){const epoch=++sessionEpoch;role='';try{if(!window.TAKEOVER_CHALLENGES_V2_ENABLED){document.querySelector('#signin').hidden=true;coach.hidden=true;login.hidden=true;logout.hidden=true;refresh.hidden=true;document.querySelector('#filters').hidden=true;allChallenges=[];list.replaceChildren();say('Coach Challenges werden vorbereitet. Trainingspunkte bleiben unverändert.');return}if(!db){db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');db.auth.onAuthStateChange?.(event=>{if(event==='SIGNED_OUT')clearChallengeSession()});}const {data:{user},error:authError}=await db.auth.getUser();if(epoch!==sessionEpoch)return;if(authError){role='';coach.hidden=true;list.replaceChildren();throw authError}if(!user){role='';login.hidden=false;logout.hidden=true;coach.hidden=true;list.replaceChildren();throw Error('Bitte mit deinem Takeover-League-Konto anmelden.')}login.hidden=true;logout.hidden=false;const p=await db.from('profiles').select('id,role,is_active').eq('auth_user_id',user.id).maybeSingle();if(epoch!==sessionEpoch)return;if(p.error){role='';coach.hidden=true;list.replaceChildren();logout.hidden=false;throw p.error}if(!p.data?.is_active){role='';coach.hidden=true;list.replaceChildren();logout.hidden=false;throw Error('Kein aktives Profil')}if(!['boxer','coach','admin'].includes(p.data.role)){role='';coach.hidden=true;list.replaceChildren();logout.hidden=false;throw Error('Unbekannte Profil-Rolle')}role=p.data.role;profileId=p.data.id;coach.hidden=!['admin','coach'].includes(role);refresh.hidden=false;document.querySelector('#filters').hidden=false;await load();await prepareTargetedAssignment()}catch(e){if(epoch!==sessionEpoch)return;if(!role){refresh.hidden=true;document.querySelector('#filters').hidden=true;allChallenges=[];list.replaceChildren()}say(friendlyError(e),true)}}
 login.onsubmit=async e=>{e.preventDefault();const f=new FormData(login);say('Anmeldung läuft …');try{const {error}=await db.auth.signInWithPassword({email:String(f.get('email')),password:String(f.get('password'))});if(error)throw error;login.reset();await init()}catch(err){say(friendlyError(err),true)}};logout.onclick=async()=>{clearChallengeSession();try{const {error}=await db.auth.signOut();if(error)throw error;say('Abgemeldet.')}catch(e){say('Abmeldung fehlgeschlagen: '+e.message,true)}};
 document.querySelector('#challengeSearch').addEventListener('input',renderChallenges);
 document.querySelector('#challengeStatus').addEventListener('change',renderChallenges);
