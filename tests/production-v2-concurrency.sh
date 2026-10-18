@@ -80,17 +80,17 @@ if ! wait "$a"; then cat "$tmpdir/reconcile_a.err"; exit 1; fi
 if ! wait "$b"; then cat "$tmpdir/reconcile_b.err"; exit 1; fi
 psql_run <<'SQL' >"$tmpdir/reconcile_verify.out"
 DO $verify$
-DECLARE id uuid;
+DECLARE v_duel_id uuid;
 BEGIN
- SELECT d.id INTO id FROM public.league_duels d WHERE d.status='settled' LIMIT 1;
- IF id IS NULL OR
+ SELECT d.id INTO v_duel_id FROM public.league_duels d WHERE d.status='settled' LIMIT 1;
+ IF v_duel_id IS NULL OR
   (SELECT count(*) FROM public.league_duel_exp_ledger l
-   WHERE l.duel_id=id AND l.awarded_exp=50 AND l.transaction_id IS NOT NULL)<>2 OR
+   WHERE l.duel_id=v_duel_id AND l.awarded_exp=50 AND l.transaction_id IS NOT NULL)<>2 OR
   (SELECT count(*) FROM public.point_transactions t
-   WHERE t.category='duel_exp' AND t.description='Duel reward: '||id::text
+   WHERE t.category='duel_exp' AND t.description='Duel reward: '||v_duel_id::text
    AND t.exp=50 AND t.points=0)<>2 OR
   (SELECT count(*) FROM public.league_duel_events e
-   WHERE e.duel_id=id AND e.event_type='settled')<>1
+   WHERE e.duel_id=v_duel_id AND e.event_type='settled')<>1
  THEN RAISE EXCEPTION 'Concurrent duel reconciliation produced duplicate/missing EXP'; END IF;
 END $verify$;
 SQL
