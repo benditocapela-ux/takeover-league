@@ -5,6 +5,8 @@
 BEGIN;
 DO $preflight$
 BEGIN
+ IF pg_catalog.to_regnamespace('league_private') IS NOT NULL
+ THEN RAISE EXCEPTION 'Private league schema already exists; review migration collision'; END IF;
  IF EXISTS (SELECT 1 FROM pg_catalog.pg_proc p
  JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace
  WHERE n.nspname='public' AND p.proname LIKE 'coach_challenge_v2_%')
@@ -158,7 +160,7 @@ REVOKE ALL ON public.league_coach_challenges,public.league_coach_challenge_entri
 -- All public functions use SECURITY DEFINER with explicit actor/owner checks.
 -- Do not deploy to production until integration and role tests pass.
 
-CREATE SCHEMA IF NOT EXISTS league_private;
+CREATE SCHEMA league_private;
 REVOKE ALL ON SCHEMA league_private FROM PUBLIC, anon, authenticated;
 
 CREATE OR REPLACE FUNCTION league_private.coach_v2_actor()
