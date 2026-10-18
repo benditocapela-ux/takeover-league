@@ -54,6 +54,32 @@ function renderPublicRadar(boxer,leader,levels,leaders){
   const label=document.createElement('strong');label.textContent=title;line.append(label,document.createTextNode(fmt(value)+' · '+Math.round(100*value/max)+'% vom Liga-Maximum'));metrics.append(line)}
 }
 
+
+async function renderPublicRecords(name){
+ const status=$('recordStatus'),root=$('recordGrid');if(!status||!root)return;
+ root.replaceChildren();
+ try{
+  const query=new URL(PUBLIC_URL+'/rest/v1/league_public_records_v21');
+  query.searchParams.set('select','approved_sessions,active_days,max_jogging_km,max_technique_minutes,refreshed_at');
+  query.searchParams.set('boxer_name','eq.'+name);
+  query.searchParams.set('limit','2');
+  const response=await fetch(query.href,{headers:{apikey:PUBLIC_KEY},cache:'no-store'});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  const rows=await response.json();if(!Array.isArray(rows)||rows.length>1)throw Error('Ambiguous boxer');
+  if(!rows.length){status.textContent='Für diesen Boxer wurden noch keine öffentlichen Rekorde berechnet.';return}
+  const r=rows[0];
+  const values=[
+   ['Bestätigte Trainings',fmt(r.approved_sessions)],
+   ['Trainingstage',fmt(r.active_days)],
+   ['Längster Jogging-Eintrag',Number(r.max_jogging_km||0).toLocaleString('de-CH')+' km'],
+   ['Längste Technik-Einheit',fmt(r.max_technique_minutes)+' Min.']
+  ];
+  for(const [title,value] of values){const card=document.createElement('div');card.className='badge-tile';
+   const h=document.createElement('strong');h.textContent=title;
+   const p=document.createElement('small');p.textContent=value;card.append(h,p);root.append(card)}
+  status.textContent='Nur bestätigte Trainings · zuletzt berechnet '+new Date(r.refreshed_at).toLocaleDateString('de-CH');
+ }catch(e){status.textContent='Öffentliche Rekorde derzeit nicht verfügbar.'}
+}
 async function renderPublicBadges(name){
  const status=$('publicBadgeStatus'),grid=$('publicBadgeGrid');if(!status||!grid)return;
  grid.replaceChildren();
@@ -119,6 +145,7 @@ async function init(){
   $('levelFill').style.width=level.pct+'%';
   renderPublicRadar(boxer,leader[0]||{},levels,leaders);
   renderPublicBadges(name);
+  renderPublicRecords(name);
   $('levelStatus').textContent='Rang '+level.rank+' · Level '+level.level;
   $('nextLevel').textContent='Noch '+fmt(level.remaining)+' EXP bis zum nächsten Level';
   const img=photoUrl(avatar[0]);
