@@ -31,5 +31,23 @@ async function html(path){
     page+' contains server-side credentials');
   console.log('LIVE OK:',origin+page,'(production enabled)');
  }
- console.log('PASS: Public website serves both enabled V2 pages and existing dashboards. Database writes: none.');
+ for(const page of ['arena.html','goals.html','league-manager.html','league-challenges.html',
+                     'boxer-compare.html','league-history.html']){
+  const src=await html(page);
+  assert.match(src,/Takeover League/i,page+' missing Takeover League branding');
+  assert.ok(src.includes('iqarjivcrddcixrvqbfb'),
+    page+' has no production Supabase endpoint');
+  assert.ok(!src.includes('cfgdvcccsqwfjajuizsr'),
+    page+' points to test Supabase');
+  assert.ok(src.includes('takeover-navigation.js'),
+    page+' does not load the shared menu');
+  assert.ok(!/sb_secret_|service_role/i.test(src),
+    page+' accidentally exposes a server-side credential');
+  console.log('LIVE 2.1 OK:',origin+page);
+ }
+ const profile=await html('boxer-profile.html');
+ assert.ok(profile.includes('boxer-profile.js'),'Public 2.1 boxer profile script missing');
+ assert.ok(profile.includes('takeover-navigation.js'),'Public boxer profile menu missing');
+ console.log('LIVE 2.1 OK:',origin+'boxer-profile.html');
+ console.log('PASS: Public website serves V2 and V2.1 pages, no production writes.');
 })().catch(e=>{console.error('LIVE CHECK FAILED:',e.message);process.exitCode=1});
