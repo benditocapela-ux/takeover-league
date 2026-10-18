@@ -3,7 +3,7 @@
 -- All public functions use SECURITY DEFINER with explicit actor/owner checks.
 -- Do not deploy to production until integration and role tests pass.
 BEGIN;
-CREATE SCHEMA IF NOT EXISTS league_private;
+CREATE SCHEMA league_private;
 REVOKE ALL ON SCHEMA league_private FROM PUBLIC, anon, authenticated;
 
 CREATE OR REPLACE FUNCTION league_private.coach_v2_actor()
