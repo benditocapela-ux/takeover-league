@@ -44,6 +44,31 @@ WITH expected(name,expose_anon) AS (
  'league_v21_public_duel_history',
  'league_v21_public_duel_history_insert'
  )
+
+), security_checks AS (
+ select
+ (select count(*)>=27 from pg_catalog.pg_proc p
+  join pg_catalog.pg_namespace n on n.oid=p.pronamespace
+  where n.nspname='league_v21_private' and p.prosecdef) as v21_private_definers_exist,
+ (select count(*)=0 from pg_catalog.pg_proc p
+  join pg_catalog.pg_namespace n on n.oid=p.pronamespace
+  where n.nspname='league_v21_private' and p.prosecdef
+    and (pg_catalog.has_function_privilege('anon',p.oid,'EXECUTE')
+      or not (p.proconfig @> ARRAY['search_path=""']::text[])))
+ as v21_private_definers_locked_to_safe_path,
+ (not pg_catalog.has_schema_privilege('anon','league_v21_private','USAGE')) as v21_private_schema_hidden_from_anon,
+ (select count(*)=0 from pg_catalog.pg_class c
+   join pg_catalog.pg_namespace n on n.oid=c.relnamespace
+   join pg_catalog.pg_attribute a on a.attrelid=c.oid and a.attnum>0 and not a.attisdropped
+   where n.nspname='public' and c.relkind='r'
+    and c.relname in (
+     'league_global_challenges_v21','league_global_results_v21',
+     'league_hall_of_fame_v21','league_public_badges_v21',
+     'league_public_duel_history_v21','league_public_records_v21',
+     'league_season_results_v21','league_seasons_v21')
+    and lower(a.attname) in
+      ('auth_user_id','email','password','phone','weight','notes',
+       'raw_user_meta_data','raw_app_meta_data')) as public_projections_hide_sensitive_columns
 ), ledger_checks AS (
  select
   not exists(
@@ -64,14 +89,16 @@ WITH expected(name,expose_anon) AS (
  as original_v2_flags_still_present
 ), audit AS (
  select pg_catalog.to_jsonb(table_checks)||pg_catalog.to_jsonb(auth_checks)
-   ||pg_catalog.to_jsonb(trigger_checks)||pg_catalog.to_jsonb(ledger_checks)
+   ||pg_catalog.to_jsonb(trigger_checks)||pg_catalog.to_jsonb(security_checks)||pg_catalog.to_jsonb(ledger_checks)
    ||pg_catalog.to_jsonb(flags) as checks,
  (all_v21_tables_exist and every_v21_table_has_rls and no_direct_client_v21_writes
  and anon_projection_grants_are_exact and all_authenticated_selects_are_rls_protected
  and all_public_v21_rpcs_present and public_v21_rpc_restricted_to_signed_in
- and essential_triggers_present and goal_exp_ledger_integrity and global_exp_ledger_integrity
+ and essential_triggers_present and v21_private_definers_exist
+ and v21_private_definers_locked_to_safe_path and v21_private_schema_hidden_from_anon
+ and public_projections_hide_sensitive_columns and goal_exp_ledger_integrity and global_exp_ledger_integrity
  and original_v2_flags_still_present) as passed
- from table_checks,auth_checks,trigger_checks,ledger_checks,flags
+ from table_checks,auth_checks,trigger_checks,security_checks,ledger_checks,flags
 )
 select pg_catalog.jsonb_build_object('release_21_postflight_passed',passed,'checks',checks,
  'warning','This does not replace authenticated end-to-end testing or database restore rehearsal.') as v21_postflight
