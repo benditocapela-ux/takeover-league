@@ -48,9 +48,28 @@ const achievements=read('supabase/migrations/20261019012000_league_21_admin_achi
 assert.match(achievements,/p\.role='admin'/);
 assert.match(achievements,/p_limit not between 1 and 25/);
 assert.match(achievements,/public\.recalculate_boxer_achievements_v2/);
-const duel=read('supabase/migrations/20261019013000_league_21_duel_reward_policy_quote.sql');
-assert.match(duel,/preview_only_no_payout/);
-assert.doesNotMatch(duel,/insert into public\.point_transactions|update public\.point_transactions/i);
+const duel=read('supabase/migrations/20261019028000_league_21_ranked_duel_exp.sql');
+assert.match(duel,/capture_duel_ranks/);
+assert.match(duel,/league_duel_rank_snapshots_v21/);
+assert.match(duel,/winner_rank<loser_rank THEN 150/);
+assert.match(duel,/loser_rank>winner_rank THEN -50/);
+assert.match(duel,/snapshots=0/);
+assert.match(duel,/security invoker/);
+const arena=read('supabase/migrations/20261019025000_league_21_multiboxer_arena.sql');
+assert.match(arena,/pg_catalog\.array_length\(p_boxers,1\) not between 3 and 8/);
+assert.match(arena,/rank\(\) over\(order by score desc\)/);
+assert.match(arena,/Only admin may finalize arena/);
+const arenaLive=read('supabase/migrations/20261019026000_league_21_multiboxer_live_scores.sql');
+assert.match(arenaLive,/Not an accepted arena participant/);
+assert.match(read('arena.html'),/league_v21_arena_live_scores/);
+const globalExp=read('supabase/migrations/20261019027000_league_21_global_exp_rewards.sql');
+assert.match(globalExp,/league_global_exp_ledger_v21/);
+assert.match(globalExp,/Global challenge reward:/);
+const goalExp=read('supabase/migrations/20261019022000_league_21_goal_exp_ledger.sql');
+assert.match(goalExp,/league_goal_exp_ledger_v21/);
+assert.match(goalExp,/goal_immutable_reward_fields/);
+const review=read('supabase/migrations/20261019029000_league_21_goal_review_reconciliation.sql');
+assert.match(review,/league_v21_goal_after_training_review/);
 const manager=read('league-manager.html');
 for(const rpc of ['league_v21_admin_create_season','league_v21_admin_season_action',
  'league_v21_admin_create_global_challenge','league_v21_reconcile_achievements',
