@@ -563,6 +563,7 @@ RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path = ''
 AS $func$
 DECLARE a jsonb:=league_private.coach_v2_actor(); c public.league_coach_challenges%ROWTYPE;
 DECLARE e record; v_reward integer; v_transaction uuid; v_awards integer:=0; v_pending integer;
+DECLARE v_existing_id uuid; v_existing_reward integer; v_description text; v_found boolean;
 BEGIN
  IF a->>'role' NOT IN ('coach','admin') THEN RAISE EXCEPTION 'Coach role required' USING ERRCODE='42501'; END IF;
  SELECT * INTO c FROM public.league_coach_challenges WHERE id=p_challenge_id FOR UPDATE;
@@ -584,14 +585,40 @@ BEGIN
  AND NOT EXISTS (SELECT 1 FROM public.league_coach_challenge_reviews r
  WHERE r.challenge_id=j.challenge_id AND r.boxer_id=j.boxer_id);
  IF v_pending>0 THEN RAISE EXCEPTION 'Unreviewed enrollments: %',v_pending USING ERRCODE='22023'; END IF;
+ -- Include immutable challenge UUID in EXP descriptions for safe orphan detection.
+ -- Different challenges may legitimately share the same title.
+ v_description:='Coach Challenge: '||c.id::text||' | '||c.title;
  FOR e IN SELECT j.boxer_id,r.approved FROM public.league_coach_challenge_entries j
  JOIN public.league_coach_challenge_reviews r ON r.challenge_id=j.challenge_id AND r.boxer_id=j.boxer_id
  WHERE j.challenge_id=c.id AND j.status='joined' ORDER BY j.boxer_id LOOP
-  IF e.approved AND NOT EXISTS(SELECT 1 FROM public.league_coach_challenge_exp_ledger l
-  WHERE l.challenge_id=c.id AND l.boxer_id=e.boxer_id) THEN
+  SELECT l.transaction_id,l.awarded_exp INTO v_existing_id,v_existing_reward
+  FROM public.league_coach_challenge_exp_ledger l
+  WHERE l.challenge_id=c.id AND l.boxer_id=e.boxer_id FOR UPDATE;
+  v_found:=FOUND;
+  IF NOT e.approved THEN
+   IF v_found OR EXISTS(
+     SELECT 1 FROM public.point_transactions t
+     WHERE t.boxer_id=e.boxer_id AND t.category='challenge_exp'
+     AND t.description LIKE 'Coach Challenge: '||c.id::text||' | %'
+   ) THEN RAISE EXCEPTION 'Rejected boxer has challenge EXP for %',c.id USING ERRCODE='23514'; END IF;
+   CONTINUE;
+  END IF;
+  IF v_found THEN
+   -- Fail closed: never treat an orphaned/malformed ledger as a paid reward.
+   IF v_existing_id IS NULL OR v_existing_reward IS DISTINCT FROM v_reward OR
+    NOT EXISTS(
+     SELECT 1 FROM public.point_transactions t WHERE t.id=v_existing_id
+     AND t.boxer_id=e.boxer_id AND t.category='challenge_exp'
+     AND t.points=0 AND t.exp=v_reward AND t.description=v_description
+    ) THEN RAISE EXCEPTION 'Challenge EXP ledger/transaction mismatch for %',c.id USING ERRCODE='23514'; END IF;
+  ELSE
+   -- An orphaned payout would otherwise be paid twice if its ledger row is missing.
+   IF EXISTS(SELECT 1 FROM public.point_transactions t
+     WHERE t.boxer_id=e.boxer_id AND t.category='challenge_exp'
+     AND t.description LIKE 'Coach Challenge: '||c.id::text||' | %'
+   ) THEN RAISE EXCEPTION 'Orphaned challenge payout for % boxer %',c.id,e.boxer_id USING ERRCODE='23514'; END IF;
    INSERT INTO public.point_transactions(boxer_id,points,exp,category,description,effective_date,created_by)
-   VALUES(e.boxer_id,0,v_reward,'challenge_exp',
-   'Coach Challenge: '||c.title,
+   VALUES(e.boxer_id,0,v_reward,'challenge_exp',v_description,
    (now() AT TIME ZONE 'Europe/Zurich')::date,(a->>'id')::uuid)
    RETURNING id INTO v_transaction;
    INSERT INTO public.league_coach_challenge_exp_ledger(challenge_id,boxer_id,transaction_id,awarded_exp)
