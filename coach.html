@@ -160,4 +160,4 @@ for(const id of ['trainingSearch','filterBoxer','filterType','filterFrom','filte
 $('showMore').addEventListener('click',()=>{visibleTrainings+=10;renderFilteredTrainings()});
 $('clearFilters').addEventListener('click',()=>{for(const id of ['trainingSearch','filterBoxer','filterType','filterFrom','filterTo','filterStatus'])$(id).value='';visibleTrainings=8;renderFilteredTrainings()});
 $('refreshAccounts').addEventListener('click',()=>loadAccounts());$('refresh').addEventListener('click',()=>load());$('refreshAll').addEventListener('click',()=>load());$('logout').addEventListener('click',async()=>{await db.auth.signOut();location.href='./login.html'});await load();
-</script></body></html>
+</script><aside style="max-width:1040px;margin:16px auto;padding:14px;border:1px solid #52647c;border-radius:12px"><strong>Coach Challenges V2 – Vorschau</strong><p>Nur Testkonten und Testdaten. Die produktiven Boxer-Punkte werden nicht verändert.</p><a style="color:#dfbd77" href="./challenges-v2-preview.html">Testoberfläche öffnen →</a></aside></body></html>
