@@ -1,0 +1,177 @@
+name: Takeover League V2 Integration Checks
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'challenges-v2-preview.html'
+      - 'tests/coach-challenges-v2.cjs'
+      - 'tests/coach-challenges-v2-browser.cjs'
+      - 'challenges.html'
+      - 'duels.html'
+      - 'duels-v2-preview.html'
+      - 'tests/duels-v2-browser.cjs'
+      - 'login.html'
+      - 'index.html'
+      - 'coach.html'
+      - 'boxer.html'
+      - 'supabase/production-prep/**'
+      - 'supabase/migrations/**'
+      - 'tests/production-v2-*.sql'
+      - 'tests/production-v2-*.cjs'
+      - 'tests/hosted-v2-*.cjs'
+      - 'tests/production-v2-*.sh'
+      - 'tests/production-v2-schema-smoke.sql'
+      - '.github/workflows/coach-challenges-v2.yml'
+  push:
+    branches: [main, feature/coach-challenges-v2-ui]
+    paths:
+      - 'challenges-v2-preview.html'
+      - 'tests/coach-challenges-v2.cjs'
+      - 'tests/coach-challenges-v2-browser.cjs'
+      - 'challenges.html'
+      - 'duels.html'
+      - 'duels-v2-preview.html'
+      - 'tests/duels-v2-browser.cjs'
+      - 'login.html'
+      - 'index.html'
+      - 'coach.html'
+      - 'boxer.html'
+      - 'supabase/production-prep/**'
+      - 'supabase/migrations/**'
+      - 'tests/production-v2-*.sql'
+      - 'tests/production-v2-*.cjs'
+      - 'tests/hosted-v2-*.cjs'
+      - 'tests/production-v2-*.sh'
+      - '.github/workflows/coach-challenges-v2.yml'
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --no-package-lock jsdom@26.1.0
+      - run: node tests/coach-challenges-v2.cjs
+      - run: node tests/coach-challenges-v2-browser.cjs
+      - run: node tests/duels-v2-browser.cjs
+      - run: node tests/production-v2-migration-bundle.cjs
+      - run: node tests/production-v2-release-safety.cjs
+      - run: node tests/production-v2-manual-release-guide.cjs
+      - run: node tests/hosted-v2-anon-http.cjs
+      - run: node tests/hosted-v2-pages-readonly.cjs
+
+  schema-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply prepared V2 migrations to disposable PostgreSQL
+        env:
+          PGPASSWORD: postgres
+        run: psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f tests/production-v2-schema-smoke.sql
+      - name: Verify duplicate releases fail atomically without changing fixtures
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261018131000_coach_challenges_v2.sql >/dev/null
+          psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261018133000_duels_v2.sql >/dev/null
+          if psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261018131000_coach_challenges_v2.sql >/dev/null 2>&1; then
+            echo 'ERROR: Reapplying Coach Challenges V2 did not fail safely'
+            exit 1
+          fi
+          if psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261018133000_duels_v2.sql >/dev/null 2>&1; then
+            echo 'ERROR: Reapplying Duels V2 did not fail safely'
+            exit 1
+          fi
+          psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -Atc "SELECT CASE WHEN (SELECT count(*) FROM public.point_transactions)=3 AND (SELECT count(*) FROM public.profiles)=5 AND NOT EXISTS(SELECT 1 FROM public.league_feature_flags WHERE feature_key IN ('coach_challenges','duels') AND is_enabled) AND (SELECT count(*) FROM public.league_coach_challenges)=0 AND (SELECT count(*) FROM public.league_duels)=0 THEN 'safe' ELSE 'FAILED' END" | grep -qx safe
+
+
+      - name: Run concurrent V2 settlement, join and duel invitation checks
+        env:
+          PGPASSWORD: postgres
+        run: bash tests/production-v2-concurrency.sh
+      - name: Verify Achievement RPC hardening without breaking approval trigger
+        env:
+          PGPASSWORD: postgres
+        run: psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f tests/production-v2-achievements-hardening.sql
+      - name: Require release integrity postflight (all 23 RPCs and seven RLS tables)
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -At \
+            -f supabase/production-prep/release_postflight_read_only.sql \
+            | tee /tmp/takeover-v2-postflight-result.txt
+          grep -Eq '"release_integrity_passed"[[:space:]]*:[[:space:]]*true' /tmp/takeover-v2-postflight-result.txt
+      - name: Rehearse guarded V2 activation and non-destructive emergency disable
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          # Activation must refuse a public Achievement EXP RPC even after all
+          # other migration checks pass. The grant exists only in disposable CI.
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 \
+            -c "GRANT EXECUTE ON FUNCTION public.recalculate_boxer_achievements_v2(uuid) TO anon" >/dev/null
+          if psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 \
+            -f supabase/production-prep/activate_v2_only_after_freigeben.sql >/dev/null 2>&1; then
+            echo 'ERROR: V2 activated before Achievement EXP RPC was secured'
+            exit 1
+          fi
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -Atc \
+            "SELECT count(*) FROM public.league_feature_flags WHERE feature_key IN ('coach_challenges','duels') AND is_enabled" \
+            | grep -qx 0
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 \
+            -c "REVOKE EXECUTE ON FUNCTION public.recalculate_boxer_achievements_v2(uuid) FROM anon" >/dev/null
+          # Likewise, direct client table SELECT must prevent activation.
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 \
+            -c "GRANT SELECT ON public.league_duels TO authenticated" >/dev/null
+          if psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 \
+            -f supabase/production-prep/activate_v2_only_after_freigeben.sql >/dev/null 2>&1; then
+            echo 'ERROR: V2 activated while a duel table was readable by clients'
+            exit 1
+          fi
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -Atc \
+            "SELECT count(*) FROM public.league_feature_flags WHERE feature_key IN ('coach_challenges','duels') AND is_enabled" \
+            | grep -qx 0
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 \
+            -c "REVOKE SELECT ON public.league_duels FROM authenticated" >/dev/null
+          # Successful activation after the two deliberate safety violations
+          # were restored must preserve all preexisting records.
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 \
+            -f supabase/production-prep/activate_v2_only_after_freigeben.sql >/dev/null
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -Atc \
+            "SELECT count(*) FROM public.league_feature_flags WHERE feature_key IN ('coach_challenges','duels') AND is_enabled" \
+            | grep -qx 2
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -At \
+            -f supabase/production-prep/release_postflight_read_only.sql \
+            | grep -Eq '"release_integrity_passed"[[:space:]]*:[[:space:]]*true'
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 \
+            -f supabase/production-prep/emergency_disable_v2_flags_only.sql >/dev/null
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -Atc \
+            "SELECT CASE WHEN (SELECT count(*) FROM public.league_feature_flags WHERE feature_key IN ('coach_challenges','duels') AND is_enabled)=0 AND (SELECT count(*) FROM public.point_transactions)=4 AND (SELECT count(*) FROM public.profiles)=5 AND (SELECT count(*) FROM public.league_coach_challenges)=0 AND (SELECT count(*) FROM public.league_duels)=0 THEN 'safe' ELSE 'unexpected-data-change' END" \
+            | grep -qx safe

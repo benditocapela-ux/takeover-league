@@ -1,0 +1,222 @@
+// Browser-like smoke tests. All Supabase calls are mocked; no live data is accessed.
+const fs=require('node:fs');
+const vm=require('node:vm');
+const assert=require('node:assert/strict');
+const {JSDOM}=require('jsdom');
+const html=fs.readFileSync('challenges-v2-preview.html','utf8');
+const source=html.match(/<script type="module">([\s\S]*?)<\/script>/)[1].replace(/^import .*;\s*$/gm,'');
+const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
+async function mount({user=null,profile=null,challenges=[],rpcError=null,candidates=[]}={}){
+ const dom=new JSDOM(html,{url:'https://example.test/challenges-v2-preview.html',runScripts:'outside-only'});
+ const calls=[];let onAuthEvent=null;
+ const db={
+  auth:{getUser:async()=>({data:{user},error:null}),signInWithPassword:async()=>({error:null}),signOut:async()=>({error:null}),onAuthStateChange:cb=>{onAuthEvent=cb;return {data:{subscription:{unsubscribe(){}}}}}}, 
+  from:(name)=>{assert.equal(name,'profiles');return {select:()=>({eq:()=>({maybeSingle:async()=>({data:profile,error:null})})})}},
+  rpc:async(name,args)=>{calls.push({name,args});return rpcError?{data:null,error:{message:rpcError}}:{data:name==='coach_challenge_v2_list'?challenges:name==='coach_challenge_v2_review_candidates'?candidates:[],error:null}}
+ };
+ dom.window.createClient=()=>db;
+ dom.window.confirm=()=>true;
+ dom.window.eval(source.replace('init();','window.__ready=init();'));
+ await dom.window.__ready;
+ return {dom,document:dom.window.document,calls,db,emitAuth:event=>onAuthEvent?.(event,null)};
+}
+(async()=>{
+ const prodHtml=fs.readFileSync('challenges.html','utf8');
+ const prodSource=prodHtml.match(/<script type="module">([\s\S]*?)<\/script>/)[1].replace(/^import .*;\s*$/gm,'');
+ const prodDom=new JSDOM(prodHtml,{url:'https://example.test/challenges.html',runScripts:'outside-only'});
+ let productionClientCalls=0;
+ prodDom.window.createClient=()=>{productionClientCalls++;throw Error('Disabled rollout must not connect to production')};
+ prodDom.window.eval('window.TAKEOVER_CHALLENGES_V2_ENABLED=false;');
+ prodDom.window.eval(prodSource.replace('init();','window.__ready=init();'));
+ await prodDom.window.__ready;
+ assert.equal(productionClientCalls,0,'disabled production page must never contact Supabase');
+ assert.equal(prodDom.window.document.querySelector('#filters').hidden,true,'production filters stay hidden during rollout');
+ assert.equal(prodDom.window.document.querySelector('#refresh').hidden,true);
+ assert.equal(prodDom.window.document.querySelector('#filters').hidden,true);
+ assert.match(prodDom.window.document.querySelector('#status').textContent,/vorbereitet/);
+ assert.equal(prodDom.window.document.querySelector('#signin').hidden,true);
+ prodDom.window.close();
+ const enabled=new JSDOM(prodHtml,{url:'https://example.test/challenges.html',runScripts:'outside-only'});
+ const enabledCalls=[];
+ enabled.window.createClient=()=>({
+ auth:{getUser:async()=>({data:{user:{id:'coach'}},error:null}),signOut:async()=>({error:null})},
+ from:()=>({select:()=>({eq:()=>({maybeSingle:async()=>({data:{role:'admin',is_active:true},error:null})})})}),
+ rpc:async(name,args)=>{enabledCalls.push({name,args});return {data:name==='coach_challenge_v2_list'?[]:null,error:null}}
+ });
+ enabled.window.eval('window.TAKEOVER_CHALLENGES_V2_ENABLED=true;');
+ enabled.window.eval(prodSource.replace('init();','window.__ready=init();'));
+ await enabled.window.__ready;
+ assert.equal(enabled.window.document.querySelector('#coach').hidden,false);
+ assert.equal(enabledCalls.some(c=>c.name==='coach_challenge_v2_list'),true);
+ enabled.window.close();
+
+ const guest=await mount();
+ assert.equal(guest.document.querySelector('#login').hidden,false);
+ assert.equal(guest.document.querySelector('#coach').hidden,true);
+ assert.equal(guest.document.querySelector('#refresh').hidden,true,'guest cannot refresh');
+ assert.equal(guest.document.querySelector('#filters').hidden,true,'guest cannot see filters');
+ assert.equal(guest.document.querySelector('#list').children.length,0);
+ guest.dom.window.close();
+ const coach=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[]});
+ assert.equal(coach.document.querySelector('#coach').hidden,false);
+ const refresh=coach.document.querySelector('#refresh');
+ assert.equal(refresh.hidden,false,'refresh is available to authenticated coach');
+ const priorLists=coach.calls.filter(c=>c.name==='coach_challenge_v2_list').length;
+ refresh.click();await tick();await tick();
+ assert.ok(coach.calls.filter(c=>c.name==='coach_challenge_v2_list').length>priorLists,'refresh reloads challenge list');
+
+ assert.match(coach.document.querySelector('#list').textContent,/Noch keine Challenges/);
+ coach.document.querySelector('#create [name=title]').value='Neuer Test';
+ coach.document.querySelector('#create').dispatchEvent(new coach.dom.window.Event('submit',{bubbles:true,cancelable:true}));
+ await tick();await tick();
+ assert.equal(coach.calls.some(c=>c.name==='coach_challenge_v2_create_draft'&&c.args.p_title==='Neuer Test'),true);
+ coach.document.querySelector('#logout').click();await tick();await tick();
+ assert.equal(coach.document.querySelector('#coach').hidden,true);
+ assert.equal(coach.document.querySelector('#login').hidden,false);
+ assert.equal(coach.document.querySelector('#refresh').hidden,true,'refresh hidden after logout');
+ coach.dom.window.close();
+ const raced=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[]});
+ let resolveLate;
+ const originalRaceRpc=raced.db.rpc;
+ raced.db.rpc=(name,args)=>name==='coach_challenge_v2_list'
+   ?new Promise(resolve=>{resolveLate=resolve})
+   :originalRaceRpc(name,args);
+ raced.document.querySelector('#refresh').click();await tick();
+ assert.equal(typeof resolveLate,'function','refresh should have started pending RPC');
+ raced.document.querySelector('#logout').click();await tick();
+ resolveLate({data:[{id:'secret',title:'Geheime Challenge',description:'privat',status:'draft',is_creator:true,joined_count:1,duration_days:7}],error:null});
+ await tick();await tick();
+ assert.equal(raced.document.querySelector('#list').children.length,0,'late refresh must not restore private challenges after logout');
+ assert.equal(raced.document.querySelector('#filters').hidden,true,'private filters remain hidden after logout');
+ assert.equal(raced.document.querySelector('#coach').hidden,true);
+ assert.doesNotMatch(raced.document.body.textContent,/Geheime Challenge/);
+ raced.dom.window.close();
+ const fromAnotherTab=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[{
+ id:'private-from-tab',title:'Privater Trainingsplan',description:'Nur Boxer',
+ status:'open',joined_count:1,duration_days:7,is_creator:false
+ }]});
+ assert.match(fromAnotherTab.document.querySelector('#list').textContent,/Privater Trainingsplan/);
+ fromAnotherTab.emitAuth('SIGNED_OUT');
+ assert.equal(fromAnotherTab.document.querySelector('#login').hidden,false,'other-tab logout should show login');
+ assert.equal(fromAnotherTab.document.querySelector('#filters').hidden,true);
+ assert.equal(fromAnotherTab.document.querySelector('#list').children.length,0,'other-tab logout must wipe private challenges');
+ fromAnotherTab.dom.window.close();
+ const filtering=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[
+ {id:'one',title:'Sprint Challenge',description:'Laufen',status:'open',joined_count:0,duration_days:7,is_creator:false},
+ {id:'two',title:'Technik Challenge',description:'Sandsack',status:'active',joined_count:2,duration_days:14,is_creator:false},
+ {id:'three',title:'Sparring Challenge',description:'Partner',status:'settled',joined_count:3,duration_days:30,is_creator:false}
+ ]});
+ const search=filtering.document.querySelector('#challengeSearch'),statusFilter=filtering.document.querySelector('#challengeStatus');
+ assert.equal(filtering.document.querySelector('#filters').hidden,false,'filters visible after authentication');
+ assert.equal(filtering.document.querySelectorAll('#list article').length,3);
+ search.value='sandsack';
+ search.dispatchEvent(new filtering.dom.window.Event('input',{bubbles:true}));
+ assert.equal(filtering.document.querySelectorAll('#list article').length,1,'description search');
+ assert.match(filtering.document.querySelector('#list').textContent,/Technik Challenge/);
+ statusFilter.value='open';
+ statusFilter.dispatchEvent(new filtering.dom.window.Event('change',{bubbles:true}));
+ assert.match(filtering.document.querySelector('#list').textContent,/Keine Challenges entsprechen der Suche/,'empty search state');
+ search.value='';
+ search.dispatchEvent(new filtering.dom.window.Event('input',{bubbles:true}));
+ assert.match(filtering.document.querySelector('#list').textContent,/Sprint Challenge/,'search reset');
+ assert.equal(filtering.document.querySelectorAll('#list article').length,1,'status filter');
+ filtering.dom.window.close();
+ const draft=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[{id:'draft-id',title:'Alter Titel',description:'Alte Beschreibung',status:'draft',joined_count:0,duration_days:14,challenge_kind:'competition',is_creator:true}]});
+ const editToggle=[...draft.document.querySelectorAll('#list button')].find(b=>b.textContent==='Entwurf bearbeiten');
+ assert.ok(editToggle,'coach must be able to edit own draft');
+ const edit=draft.document.querySelector('form[aria-label^="Entwurf bearbeiten"]');
+ assert.equal(edit.hidden,true,'draft editor must start closed');
+ editToggle.click();
+ assert.equal(edit.hidden,false);
+ assert.equal(edit.querySelector('[name=kind]').value,'competition');
+ assert.equal(edit.querySelector('[name=days]').value,'14');
+ edit.querySelector('[name=title]').value='Neuer Titel';
+ edit.querySelector('[name=description]').value='Besseres Training';
+ edit.querySelector('[name=days]').value='30';
+ edit.dispatchEvent(new draft.dom.window.Event('submit',{bubbles:true,cancelable:true}));
+ await tick();await tick();
+ assert.equal(draft.calls.some(c=>c.name==='coach_challenge_v2_edit_draft'&&c.args.p_id==='draft-id'&&c.args.p_title==='Neuer Titel'&&c.args.p_kind==='competition'&&c.args.p_days===30),true,'draft edit must call supported RPC signature');
+ draft.dom.window.close();
+ const admin=await mount({user:{id:'admin-id'},profile:{role:'admin',is_active:true},challenges:[{id:'other-draft',title:'Fremder Entwurf',description:'Freigabe',status:'draft',joined_count:0,duration_days:7,challenge_kind:'individual',is_creator:false}]});
+ assert.equal([...admin.document.querySelectorAll('#list button')].some(b=>b.textContent==='Entwurf bearbeiten'),true,'admin can manage drafts from other coaches');
+ assert.equal([...admin.document.querySelectorAll('#list button')].some(b=>b.textContent==='Öffnen'),true,'admin can open drafts from other coaches');
+ admin.dom.window.close();
+ const foreignCoach=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[{id:'other-draft',title:'Fremder Entwurf',description:'Nicht meiner',status:'draft',joined_count:0,duration_days:7,is_creator:false}]});
+ assert.equal(foreignCoach.document.querySelectorAll('#list form').length,0,'coach may not edit other coach drafts');
+ foreignCoach.dom.window.close();
+ const dates=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[{id:'dated',title:'Datiert',description:'Datumstest',status:'active',joined_count:1,duration_days:7,starts_at:'2026-10-19T00:00:00Z',ends_at:'2026-10-26T00:00:00Z',is_creator:false}]});
+ assert.match(dates.document.querySelector('#list').textContent,/Aktiv/);
+ assert.match(dates.document.querySelector('#list').textContent,/Start:/);
+ assert.match(dates.document.querySelector('#list').textContent,/Ende:/);
+ dates.dom.window.close();
+ const goalDisplay=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[{
+ id:'completed-id',title:'Auswertung',description:'Training',status:'settled',joined_count:2,
+ duration_days:14,goal_spec:{goal_text:'Drei Sparrings absolvieren',reward_exp:150},
+ my_enrollment_status:'completed',my_review_approved:true,is_creator:false
+ }]});
+ assert.match(goalDisplay.document.querySelector('#list').textContent,/Ziel: Drei Sparrings absolvieren/,'boxer sees the goal');
+ assert.match(goalDisplay.document.querySelector('#list').textContent,/Belohnung bei Bestehen: 150 EXP/,'boxer sees reward');
+ assert.match(goalDisplay.document.querySelector('#list').textContent,/Meine Bewertung: Bestanden/,'boxer sees own review');
+ assert.equal(goalDisplay.document.querySelector('#list button'),null,'settled challenge has no actions for boxer');
+ goalDisplay.dom.window.close();
+ const deniedReward=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[{
+ id:'rejected-id',title:'Abgelehnt',description:'Review',status:'settled',joined_count:1,
+ duration_days:7,goal_spec:{goal_text:'Sauber boxen',reward_exp:100},
+ my_enrollment_status:'completed',my_review_approved:false,is_creator:false
+ }]});
+ assert.match(deniedReward.document.querySelector('#list').textContent,/Meine Bewertung: Nicht bestanden/);
+ deniedReward.dom.window.close();
+ const cancelCoach=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[{
+ id:'cancel-id',title:'Absagbar',description:'Plan',status:'open',joined_count:0,
+ duration_days:7,is_creator:true
+ }]});
+ const cancelButton=[...cancelCoach.document.querySelectorAll('#list button')].find(x=>x.textContent==='Challenge abbrechen');
+ assert.ok(cancelButton,'coach can cancel an open challenge');
+ cancelButton.click();await tick();await tick();
+ assert.ok(cancelCoach.calls.some(x=>x.name==='coach_challenge_v2_manage'&&x.args.p_action==='cancel'&&x.args.p_challenge_id==='cancel-id'));
+ cancelCoach.dom.window.close();
+ const boxer=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[{id:'challenge-id',title:'Box-Test',description:'Training',status:'open',joined_count:0,duration_days:7,my_enrollment_status:null,is_creator:false}]});
+ assert.equal(boxer.document.querySelector('#coach').hidden,true);
+ assert.match(boxer.document.querySelector('#list').textContent,/Box-Test/);
+ assert.equal([...boxer.document.querySelectorAll('#list button')].some(b=>b.textContent==='Teilnehmen'),true);
+ boxer.document.querySelector('#list button').click();await tick();await tick();
+ assert.equal(boxer.calls.some(c=>c.name==='coach_challenge_v2_join'&&c.args.p_challenge_id==='challenge-id'),true);
+ boxer.dom.window.close();
+ const reviewCoach=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[{id:'review-id',title:'Review',description:'Test',status:'awaiting_reviews',joined_count:1,duration_days:7,is_creator:true}]});
+ const settle=Array.from(reviewCoach.document.querySelectorAll('#list button')).find(b=>b.textContent==='EXP abschliessen');
+ assert.equal(settle.disabled,true,'EXP cannot settle before review candidate check');
+ const reviewButton=Array.from(reviewCoach.document.querySelectorAll('#list button')).find(b=>b.textContent==='Offene Bewertungen laden');
+ reviewButton.click();await tick();await tick();
+ assert.equal(settle.disabled,false,'EXP can settle after zero open candidates');
+ settle.click();await tick();await tick();
+ assert.equal(reviewCoach.calls.some(c=>c.name==='coach_challenge_v2_settle_manual'),true);
+ reviewCoach.dom.window.close();
+ const pending=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[{id:'pending-id',title:'Pending',description:'Test',status:'awaiting_reviews',joined_count:1,duration_days:7,is_creator:true}],candidates:[{boxer_id:'boxer-id',display_name:'Test Boxer'}]});
+ const pendingReview=[...pending.document.querySelectorAll('#list button')].find(b=>b.textContent==='Offene Bewertungen laden');
+ pendingReview.click();await tick();await tick();
+ assert.equal([...pending.document.querySelectorAll('#list button')].find(b=>b.textContent==='EXP abschliessen').disabled,true,'pending reviews must block settlement');
+ const reason=pending.document.querySelector('#list input');reason.value='Saubere Technik und drei Einheiten';
+ [...pending.document.querySelectorAll('#list button')].find(b=>b.textContent==='Bestanden').click();await tick();await tick();
+ assert.equal(pending.calls.some(c=>c.name==='coach_challenge_v2_review_manual'&&c.args.p_boxer_id==='boxer-id'&&c.args.p_approved===true),true);
+ pending.dom.window.close();
+ const malicious=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[{id:'unsafe',title:'<img src=x onerror=alert(1)>',description:'<script>alert(1)</script>',status:'open',joined_count:0,duration_days:7,my_enrollment_status:null,is_creator:false}]});
+ assert.equal(malicious.document.querySelector('#list img'),null,'untrusted title must not render HTML');
+ assert.equal(malicious.document.querySelector('#list script'),null,'untrusted description must not render scripts');
+ assert.match(malicious.document.querySelector('#list').textContent,/<img src=x/);
+ malicious.dom.window.close();
+ const inactive=await mount({user:{id:'inactive'},profile:{role:'coach',is_active:false}});
+ assert.equal(inactive.document.querySelector('#coach').hidden,true);
+ assert.equal(inactive.document.querySelector('#list').children.length,0);
+ assert.equal(inactive.document.querySelector('#logout').hidden,false,'invalid signed-in account must be able to sign out');
+ inactive.dom.window.close();
+ const invalid=await mount({user:{id:'invalid'},profile:{role:'superuser',is_active:true}});
+ assert.equal(invalid.document.querySelector('#coach').hidden,true);
+ assert.match(invalid.document.querySelector('#status').textContent,/Unbekannte/);
+ assert.equal(invalid.document.querySelector('#logout').hidden,false);
+ invalid.dom.window.close();
+ const denied=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},rpcError:'permission denied'});
+ assert.match(denied.document.querySelector('#status').textContent,/permission denied/);
+ assert.equal(denied.document.querySelector('#list').children.length,0);
+ denied.dom.window.close();
+ console.log('Mocked browser smoke tests passed: guest, coach draft and logout, boxer join, inactive and invalid roles');
+})().catch(e=>{console.error(e);process.exitCode=1});

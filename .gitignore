@@ -1,0 +1,13 @@
+# Never commit credentials, local database exports or sensitive backup artifacts.
+.env
+.env.*
+!.env.example
+!.env.sample
+takeover-private-backup/
+**/takeover-private-backup/
+*.backup
+*.pgdump
+*.dump
+*.sql.gz
+*.sql.age
+*.sql.gpg
