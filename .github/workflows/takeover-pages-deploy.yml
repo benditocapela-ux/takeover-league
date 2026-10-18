@@ -1,0 +1,58 @@
+name: Publish Takeover League to GitHub Pages
+on:
+  push:
+    branches: [main]
+    paths:
+      - '*.html'
+      - '*.png'
+      - 'manifest.webmanifest'
+      - 'avatars/**'
+      - '.github/workflows/takeover-pages-deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: takeover-pages
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Assemble release-only static site
+        run: |
+          set -euo pipefail
+          mkdir -p _site
+          find . -maxdepth 1 -type f \( -name '*.html' -o -name '*.png' -o -name '*.webmanifest' \) -exec cp '{}' _site/ \;
+          cp -R avatars _site/avatars
+          rm -f _site/challenges-v2-preview.html _site/duels-v2-preview.html
+          touch _site/.nojekyll
+          grep -Fq 'TAKEOVER_CHALLENGES_V2_ENABLED=true' _site/challenges.html
+          grep -Fq 'TAKEOVER_DUELS_V2_ENABLED=true' _site/duels.html
+          grep -Fq 'iqarjivcrddcixrvqbfb' _site/challenges.html
+          grep -Fq 'iqarjivcrddcixrvqbfb' _site/duels.html
+      - uses: actions/upload-pages-artifact@v4
+        with:
+          path: _site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+      - name: Verify publicly served release
+        run: |
+          set -euo pipefail
+          for n in 1 2 3 4 5 6; do
+            if node tests/hosted-v2-live-release-check.cjs; then exit 0; fi
+            echo "Still awaiting Pages publish (attempt $n/6)"
+            sleep 15
+          done
+          exit 1
