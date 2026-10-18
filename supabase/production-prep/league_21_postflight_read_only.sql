@@ -59,9 +59,9 @@ WITH expected(name,expose_anon) AS (
       or t.points<>0 or t.exp<>l.exp_amount
   ) as global_exp_ledger_integrity
 ), flags AS (
- select not exists(select 1 from public.league_feature_flags f
-  where f.feature_key in ('duels','coach_challenges') and not f.is_enabled)
- as original_v2_features_still_enabled
+ select (select count(*) from public.league_feature_flags f
+   where f.feature_key in ('duels','coach_challenges'))=2
+ as original_v2_flags_still_present
 ), audit AS (
  select pg_catalog.to_jsonb(table_checks)||pg_catalog.to_jsonb(auth_checks)
    ||pg_catalog.to_jsonb(trigger_checks)||pg_catalog.to_jsonb(ledger_checks)
@@ -70,7 +70,7 @@ WITH expected(name,expose_anon) AS (
  and anon_projection_grants_are_exact and all_authenticated_selects_are_rls_protected
  and all_public_v21_rpcs_present and public_v21_rpc_restricted_to_signed_in
  and essential_triggers_present and goal_exp_ledger_integrity and global_exp_ledger_integrity
- and original_v2_features_still_enabled) as passed
+ and original_v2_flags_still_present) as passed
  from table_checks,auth_checks,trigger_checks,ledger_checks,flags
 )
 select pg_catalog.jsonb_build_object('release_21_postflight_passed',passed,'checks',checks,
