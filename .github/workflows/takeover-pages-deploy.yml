@@ -37,7 +37,7 @@ jobs:
           mkdir -p _site
           find . -maxdepth 1 -type f \( -name '*.html' -o -name '*.js' -o -name '*.css' -o -name '*.png' -o -name '*.webmanifest' \) -exec cp '{}' _site/ \;
           cp -R avatars _site/avatars
-          rm -f _site/challenges-v2-preview.html _site/duels-v2-preview.html
+          rm -f _site/challenges-v2-preview.html _site/duels-v2-preview.html _site/league2-preview.html
           touch _site/.nojekyll
           test -s _site/takeover-navigation.js
           test -s _site/takeover-navigation.css
