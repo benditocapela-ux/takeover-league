@@ -218,9 +218,9 @@ jobs:
           PGPASSWORD: postgres
         run: |
           set -euo pipefail
-          pg_dump -h localhost -U postgres -d profile_actions -Fc --no-owner --no-acl -f /tmp/takeover_staging.dump
+          docker run --rm --network host -e PGPASSWORD=postgres -v "$RUNNER_TEMP:/backups" postgres:${{ matrix.postgres }} pg_dump -h 127.0.0.1 -U postgres -d profile_actions -Fc --no-owner --no-acl -f /backups/takeover_staging.dump
           createdb -h localhost -U postgres takeover_restore_probe
-          pg_restore -h localhost -U postgres -d takeover_restore_probe --no-owner --no-acl --exit-on-error /tmp/takeover_staging.dump
+          docker run --rm --network host -e PGPASSWORD=postgres -v "$RUNNER_TEMP:/backups" postgres:${{ matrix.postgres }} pg_restore -h 127.0.0.1 -U postgres -d takeover_restore_probe --no-owner --no-acl --exit-on-error /backups/takeover_staging.dump
           CHECK="SELECT jsonb_build_object('boxers',(SELECT count(*) FROM public.profiles),'challenges',(SELECT count(*) FROM public.league_coach_challenges),'targets',(SELECT count(*) FROM public.league_coach_challenge_targets),'transactions',(SELECT count(*) FROM public.point_transactions),'flags',(SELECT count(*) FROM public.league_feature_flags))::text"
           BEFORE="$(psql -X -h localhost -U postgres -d profile_actions -Atc "$CHECK")"
           AFTER="$(psql -X -h localhost -U postgres -d takeover_restore_probe -Atc "$CHECK")"
