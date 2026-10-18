@@ -8,12 +8,12 @@ on:
       - 'tests/test_achievement_v2_rules.py'
       - 'tests/test_achievement_v2_trigger_contract.py'
       - 'supabase/migrations/006_achievement_v2_integrated_review.sql'
-      - 'tests/test_achievement_v2_trigger_contract.py'
-      - 'supabase/migrations/006_achievement_v2_integrated_review.sql'
       - '.github/workflows/achievement-v2-tests.yml'
   pull_request:
     paths:
       - 'tests/test_achievement_v2_rules.py'
+      - 'tests/test_achievement_v2_trigger_contract.py'
+      - 'supabase/migrations/006_achievement_v2_integrated_review.sql'
       - '.github/workflows/achievement-v2-tests.yml'
   workflow_dispatch:
 
