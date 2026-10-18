@@ -34,7 +34,8 @@
      ['Neue Funktionen',[
        ['🎯','Challenges','challenges.html','',true],
        ['⚡','Liga-Challenges','league-challenges.html','',true],
-       ['🥊','Boxer-Duelle','duels.html','',true]
+       ['🥊','Boxer-Duelle','duels.html','',true],
+       ['🏟️','Mehrgegner-Arena','arena.html','',true]
      ]],
      ['Mein Bereich',[
        ['👤','Anmelden / Mein Account','login.html',''],
