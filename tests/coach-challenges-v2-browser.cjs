@@ -21,6 +21,18 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null,candida
  return {dom,document:dom.window.document,calls,db};
 }
 (async()=>{
+ const prodHtml=fs.readFileSync('challenges.html','utf8');
+ const prodSource=prodHtml.match(/<script type="module">([\\s\\S]*?)<\\/script>/)[1].replace(/^import .*;\\s*$/gm,'');
+ const prodDom=new JSDOM(prodHtml,{url:'https://example.test/challenges.html',runScripts:'outside-only'});
+ let productionClientCalls=0;
+ prodDom.window.createClient=()=>{productionClientCalls++;throw Error('Disabled rollout must not connect to production')};
+ prodDom.window.eval('window.TAKEOVER_CHALLENGES_V2_ENABLED=false;');
+ prodDom.window.eval(prodSource.replace('init();','window.__ready=init();'));
+ await prodDom.window.__ready;
+ assert.equal(productionClientCalls,0,'disabled production page must never contact Supabase');
+ assert.match(prodDom.window.document.querySelector('#status').textContent,/vorbereitet/);
+ assert.equal(prodDom.window.document.querySelector('#signin').hidden,true);
+ prodDom.window.close();
  const guest=await mount();
  assert.equal(guest.document.querySelector('#login').hidden,false);
  assert.equal(guest.document.querySelector('#coach').hidden,true);
