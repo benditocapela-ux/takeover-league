@@ -1,3 +1,5 @@
+> **STATUS-UPDATE: überarbeitete Migration am 18.10.2026 regulär auf Produktion angewendet.** Nach der Trennung in einen privaten privilegierten Kern und einen öffentlichen Security-Invoker-Wrapper akzeptierte `Supabase.apply_migration` die neue Fassung. Produktionsrechte und Datenintegrität wurden danach geprüft. Die ältere Sperr-/Reviewbeschreibung darunter ist ein historisches Dokument und nicht der aktuelle Live-Status.
+
 # Privilegierte Live-Duell-Funktion – Sicherheitsreview / Freigabevorlage
 
 **Status:** Isolierte TEST-Abnahme abgeschlossen. Produktive Ausführung weiterhin gesperrt; **kein Umgehen der Werkzeugsperre**.
