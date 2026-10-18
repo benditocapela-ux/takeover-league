@@ -1,3 +1,5 @@
+> **ARCHIVIERTER ZWISCHENSTAND.** Die Zahlen 34/45 und die einzelnen Freigabehinweise unten stammen aus einer früheren UX-Runde und sind nicht mehr aktuell. Massgeblich ist ausschliesslich [die aktualisierte 45-Punkte-Matrix](TAKEOVER_LEAGUE_2_UX_45_MATRIX_2026-10-18.md) mit **39 Code-integrierten, 5 Staging-/Flag-Funktionen und 1 eingeschränkten Rücknahmefunktion**. Kein Live-Release und keine vollständige produktive Abnahme.
+
 # Takeover League 2.0 – UX-Nachverfolgung 1–45
 
 Stand: 18.10.2026 · Branch: `release/takeover-league-2-ready` · **Kein Live-Release**
