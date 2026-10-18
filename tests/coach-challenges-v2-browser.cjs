@@ -22,7 +22,7 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null,candida
 }
 (async()=>{
  const prodHtml=fs.readFileSync('challenges.html','utf8');
- const prodSource=prodHtml.match(/<script type="module">([\\s\\S]*?)<\\/script>/)[1].replace(/^import .*;\\s*$/gm,'');
+ const prodSource=prodHtml.match(/<script type="module">([\s\S]*?)<\/script>/)[1].replace(/^import .*;\s*$/gm,'');
  const prodDom=new JSDOM(prodHtml,{url:'https://example.test/challenges.html',runScripts:'outside-only'});
  let productionClientCalls=0;
  prodDom.window.createClient=()=>{productionClientCalls++;throw Error('Disabled rollout must not connect to production')};
