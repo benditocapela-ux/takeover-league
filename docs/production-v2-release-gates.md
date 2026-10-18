@@ -46,3 +46,9 @@ Aus dem Testprojekt wurden die SQL-Definitionen von `coach_challenge_v2_create_d
 Am 18.10.2026 wurden alle 17 `coach_challenge_v2_*`-Funktionen direkt im Testprojekt abgefragt. **Jede** ist `SECURITY DEFINER`, verweigert `anon` das `EXECUTE`-Recht und enthält im SQL-Funktionskörper eine `auth.uid()`-Prüfung, eine `is_active`-Prüfung und eine Abfrage des `league_feature_flags`-Gates. Das ist eine **statische Vollständigkeitsprüfung**, keine Laufzeitprüfung mit verschiedenen JWT-Rollen; Rollen-, Eigentümer- und Race-Condition-Tests bleiben vor Produktion notwendig.
 
 Der GitHub-CI-Lauf für Commit `1c2635c` ist erfolgreich abgeschlossen (statische und Mock-Browser-Tests).
+
+## Datenbankschema Coach Challenges (Testprojekt)
+
+Vier V2-Tabellen vollständig nach Spalten und Constraints inventarisiert: `league_coach_challenges`, `league_coach_challenge_entries`, `league_coach_challenge_reviews`, `league_coach_challenge_exp_ledger`. Die Challenge-Tabelle begrenzt Typen auf `individual/competition/coach_goal`, Dauer auf `7/14/30`, Status auf `draft/open/active/awaiting_reviews/settled/cancelled` und Titel auf 3–120 Zeichen. Einträge und Reviews haben eindeutige Paare aus Challenge und Boxer; das EXP-Ledger hat zusätzlich einen eindeutigen Transaktionsbezug und erlaubt nur 0/25/50/100/150/200 EXP. Alle vier Tabellen haben referenzielle Fremdschlüssel zu `profiles` und/oder Challenges; Ledger-Transaktionen referenzieren `point_transactions`.
+
+**Migrationsvorbereitung:** Vor Übernahme ins Produktivprojekt auch Indizes, Policies, Grants, Trigger und Funktionsdefinitionen versioniert exportieren; die 25 Testmigrationen dürfen wegen der test-spezifischen Basistabellen-Migration nicht blind übernommen werden. Produktionsseitige Alt-Tabellen `league_challenges` und `boxer_duels` sind eigenständig und müssen erhalten bleiben.
