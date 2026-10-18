@@ -21,6 +21,17 @@ class DuelContractTests(unittest.TestCase):
         cls.settlement = (ROOT / "supabase/migrations/009_duels_v2_settlement_review.sql").read_text(encoding="utf-8")
         cls.reads = (ROOT / "supabase/migrations/010_duels_v2_read_rpc_review.sql").read_text(encoding="utf-8")
 
+    def test_negative_scoring_transaction_is_rejected_before_aggregate(self):
+        self.assertIn("AND t.points<0", self.settlement)
+        self.assertIn(
+            "Negative duel scoring transaction: manual review required",
+            self.settlement,
+        )
+        self.assertLess(
+            self.settlement.index("AND t.points<0"),
+            self.settlement.index("SELECT COALESCE(sum(t.points)"),
+        )
+
     def test_feature_flag_insert_supports_production_required_display_name(self):
         self.assertIn(
             "INSERT INTO public.league_feature_flags(feature_key,display_name,is_enabled)",
