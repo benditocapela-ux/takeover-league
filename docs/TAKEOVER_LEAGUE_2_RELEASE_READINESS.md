@@ -118,3 +118,10 @@ Stop without writing to production if the read-only inventory shows an unknown s
 - TEST rollback-only: after valid 50/50 settlement, disabling `duels` prevented subsequent reconciliation and left two existing reward ledger entries unchanged. PASS.
 - TEST rollback-only with simulated boxer JWT subject: replaying `duel_v2_reconcile` after settlement was denied; two payout transactions remained unchanged. PASS. Not a real signed HTTP JWT test.
 - Five CI code workflows passed for prior commit `3abac8b4`; Pages was still in progress when checked.
+
+## Achievement status and tier integration (2026-10-18)
+
+- TEST rollback-only: ten pending sessions earned no achievement; changing all to rejected produced no EXP transition events. PASS.
+- TEST rollback-only: 25 approved sessions earned exactly two session achievement tiers, totaling 85 EXP; explicit recalculation added no events (idempotent). PASS.
+- TEST read-only post-check: zero training submissions, achievement events/ledger, duel rows/ledger; achievements, duels, coach_challenges flags all false. No test residue.
+- All six CI workflows completed successfully for commit `2ecdbdfa`.
