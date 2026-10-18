@@ -19,7 +19,7 @@ function injected(role){
   {id:'a1111111-1111-4111-8111-111111111111',boxer_id:boxerId,training_type_id:1,training_date:'2026-10-17',notes:'',status:'pending',created_at:'2026-10-17T10:00:00Z',reviewed_at:null,reviewed_by:null},
   {id:'a2222222-2222-4222-8222-222222222222',boxer_id:boxerId,training_type_id:2,training_date:'2026-10-17',notes:'',status:'rejected',created_at:'2026-10-17T11:00:00Z',reviewed_at:new Date().toISOString(),reviewed_by:adminId}
  ];
- const stats={submitted:[],reviewed:[],undo:0};
+ const stats={submitted:[],reviewed:[],undo:0,drafts:[]};
  window.__mockStats=stats;
  const all={profiles:[boxer,admin],training_types:trainer,training_submissions:submissions,league_feature_flags:[
   {feature_key:'notifications',is_enabled:false},{feature_key:'coach_feedback',is_enabled:false},
@@ -36,7 +36,7 @@ function injected(role){
     const item={id:'a'+String(submissions.length+3).padStart(7,'0')+'-2222-4222-8222-222222222222',...payload,created_at:new Date().toISOString()};
     submissions.push(item);stats.submitted.push(payload);return {data:item,error:null}},
    delete:()=>({eq:async()=>({data:null,error:null})}),
-   upsert:async()=>({data:null,error:null}),
+   upsert:async payload=>{stats.drafts.push(payload);return {data:null,error:null}},
    then:(resolve,reject)=>Promise.resolve(compute()).then(resolve,reject)
   };
   function compute(){
@@ -80,13 +80,15 @@ async function main(){
    await page.waitForFunction(()=>!document.querySelector('#content').classList.contains('hidden'));
    await page.selectOption('#kind','1');
    await page.fill('#notes','Smoke-Test-Notiz');
+   await page.waitForFunction(()=>window.__mockStats.drafts.some(x=>x.notes==='Smoke-Test-Notiz'),{timeout:6000});
+   assert.equal(await page.locator('#boxerTaskCenter').count(),1);
    await page.evaluate(()=>{const form=document.querySelector('#form');form.requestSubmit();form.requestSubmit()});
    await page.waitForFunction(()=>window.__mockStats.submitted.length>=1);
    await page.waitForTimeout(180);
    const submitted=await page.evaluate(()=>window.__mockStats.submitted);
    assert.equal(submitted.length,1,'Double submit should create just one training');
    assert.equal(submitted[0].status,'pending');
-   console.log('PASS boxer form submission; duplicate click suppressed, mobile Chromium');
+   console.log('PASS boxer form submission; cloud autosave; task center; duplicate click suppressed, mobile Chromium');
   } else {
    await page.goto(url+'/coach.html');
    await page.waitForFunction(()=>!document.querySelector('#content').classList.contains('hidden'));
@@ -99,6 +101,11 @@ async function main(){
    await page.waitForFunction(()=>window.__mockStats.undo===1);
    console.log('PASS admin bulk review, guarded undo, mobile Chromium');
   }
+  const action=page.locator('.tl-quick-open');await action.waitFor({state:'visible'});
+  await action.click();assert.equal(await page.locator('.tl-quick-dialog').evaluate(el=>el.open),true);
+  const expected=role==='boxer'?'Training eintragen':'Offene Trainings';
+  assert.match(await page.locator('.tl-quick-links').innerText(),new RegExp(expected));
+  await page.locator('.tl-quick-close').click();assert.equal(await page.locator('.tl-quick-dialog').evaluate(el=>el.open),false);
   const x=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
   assert.ok(x<=5,'Unexpected '+role+' horizontal overflow '+x);
   await context.close();
