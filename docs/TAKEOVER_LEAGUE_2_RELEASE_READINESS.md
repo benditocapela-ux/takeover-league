@@ -144,3 +144,9 @@ Stop without writing to production if the read-only inventory shows an unknown s
 - TEST read-only equivalent: both EXECUTE=false. Reviewed migration 006 already contains REVOKE statements, but production privileges differ from reviewed/test state.
 - An attempted additional TEST duel transaction was blocked by tool safety; no outcome claimed.
 - Remediation requires explicit production authorization and independent validation; never treat TEST privilege state as production evidence.
+
+## Exact production ACL root cause (2026-10-18)
+
+- Production read-only `pg_proc.proacl`: `recalculate_boxer_achievements_v2` explicitly grants EXECUTE to PUBLIC (`=X/postgres`), `anon` (`anon=X/postgres`), `authenticated` (`authenticated=X/postgres`), plus postgres and service_role. Thus the finding is an actual grant, not just an advisor heuristic.
+- Production `_award_achievements_on_approval` trigger function grants only postgres and service_role; its EXECUTE is correctly denied to anon/authenticated.
+- TEST both functions grant only postgres and service_role. Proposed production remediation (NOT EXECUTED): `REVOKE ALL ON FUNCTION public.recalculate_boxer_achievements_v2(uuid) FROM PUBLIC, anon, authenticated;` followed by read-only privilege checks and security advisor. Requires explicit owner authorization before production execution.
