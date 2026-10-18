@@ -56,10 +56,16 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null}={}){
  const inactive=await mount({user:{id:'inactive'},profile:{role:'coach',is_active:false}});
  assert.equal(inactive.document.querySelector('#coach').hidden,true);
  assert.equal(inactive.document.querySelector('#list').children.length,0);
+ assert.equal(inactive.document.querySelector('#logout').hidden,false,'invalid signed-in account must be able to sign out');
  inactive.dom.window.close();
  const invalid=await mount({user:{id:'invalid'},profile:{role:'superuser',is_active:true}});
  assert.equal(invalid.document.querySelector('#coach').hidden,true);
  assert.match(invalid.document.querySelector('#status').textContent,/Unbekannte/);
+ assert.equal(invalid.document.querySelector('#logout').hidden,false);
  invalid.dom.window.close();
+ const denied=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},rpcError:'permission denied'});
+ assert.match(denied.document.querySelector('#status').textContent,/permission denied/);
+ assert.equal(denied.document.querySelector('#list').children.length,0);
+ denied.dom.window.close();
  console.log('Mocked browser smoke tests passed: guest, coach draft and logout, boxer join, inactive and invalid roles');
 })().catch(e=>{console.error(e);process.exitCode=1});
