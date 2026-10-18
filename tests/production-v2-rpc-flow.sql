@@ -238,6 +238,32 @@ BEGIN
 END $settlement$;
 RESET ROLE;
 
+-- Personal outcome field must be scoped to the authenticated boxer.
+SET ROLE authenticated;
+SET request.jwt.claim.sub='11111111-1111-4111-8111-111111111111';
+DO $approvedResult$
+DECLARE outcome jsonb; cid text:=current_setting('test.challenge_id');
+BEGIN
+ SELECT item->'my_review_approved' INTO outcome
+ FROM pg_catalog.jsonb_array_elements(public.coach_challenge_v2_list()) item
+ WHERE item->>'id'=cid;
+ IF outcome IS DISTINCT FROM 'true'::jsonb THEN
+ RAISE EXCEPTION 'Approved boxer cannot see own approved result: %',outcome; END IF;
+END $approvedResult$;
+RESET ROLE;
+SET ROLE authenticated;
+SET request.jwt.claim.sub='55555555-5555-4555-8555-555555555555';
+DO $rejectedResult$
+DECLARE outcome jsonb; cid text:=current_setting('test.challenge_id');
+BEGIN
+ SELECT item->'my_review_approved' INTO outcome
+ FROM pg_catalog.jsonb_array_elements(public.coach_challenge_v2_list()) item
+ WHERE item->>'id'=cid;
+ IF outcome IS DISTINCT FROM 'false'::jsonb THEN
+ RAISE EXCEPTION 'Rejected boxer cannot see own rejected result: %',outcome; END IF;
+END $rejectedResult$;
+RESET ROLE;
+
 DO $verify$
 DECLARE cid uuid:=current_setting('test.challenge_id')::uuid;
 BEGIN
