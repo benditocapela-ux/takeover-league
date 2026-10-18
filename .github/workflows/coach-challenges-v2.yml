@@ -15,6 +15,8 @@ on:
       - 'tests/menu-navigation-compat.cjs'
       - 'coach.html'
       - 'boxer.html'
+      - 'boxer-dashboard-polish.css'
+      - 'tests/boxer-dashboard-polish.cjs'
       - 'supabase/production-prep/**'
       - 'supabase/migrations/**'
       - 'tests/production-v2-*.sql'
@@ -38,6 +40,8 @@ on:
       - 'tests/menu-navigation-compat.cjs'
       - 'coach.html'
       - 'boxer.html'
+      - 'boxer-dashboard-polish.css'
+      - 'tests/boxer-dashboard-polish.cjs'
       - 'supabase/production-prep/**'
       - 'supabase/migrations/**'
       - 'tests/production-v2-*.sql'
@@ -59,6 +63,7 @@ jobs:
       - run: npm install --no-save --no-package-lock jsdom@26.1.0
       - run: node tests/coach-challenges-v2.cjs
       - run: node tests/menu-navigation-compat.cjs
+      - run: node tests/boxer-dashboard-polish.cjs
       - run: node tests/coach-challenges-v2-browser.cjs
       - run: node tests/duels-v2-browser.cjs
       - run: node tests/production-v2-migration-bundle.cjs
