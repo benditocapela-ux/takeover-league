@@ -132,7 +132,7 @@ async function init(){
  const epoch=++sessionEpoch;
  if(!window.TAKEOVER_DUELS_V2_ENABLED){reset();auth.hidden=true;say('Boxer-Duelle werden vorbereitet. Es werden keine Punkte verändert.');return}
  try{
-  if(!db)db=createClient('https://cfgdvcccsqwfjajuizsr.supabase.co','sb_publishable_6xm0QLD1q8JEeVvJqGOCvQ_p-uwKG8N');
+  if(!db){db=createClient('https://cfgdvcccsqwfjajuizsr.supabase.co','sb_publishable_6xm0QLD1q8JEeVvJqGOCvQ_p-uwKG8N');db.auth.onAuthStateChange?.(event=>{if(event==='SIGNED_OUT'){reset();say('Sitzung beendet. Bitte anmelden.')}});}
   const {data:{user},error}=await db.auth.getUser();
   if(epoch!==sessionEpoch)return;
   if(error)throw error;
