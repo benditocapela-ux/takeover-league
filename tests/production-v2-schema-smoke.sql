@@ -46,7 +46,7 @@ END $$;
 INSERT INTO public.profiles(id,role) VALUES('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb','coach');
 INSERT INTO public.point_transactions(category) VALUES ('duel_exp'),('challenge_exp');
 -- Verify all four tables reject direct application-role access.
-DO $
+DO $safety$
 DECLARE item text; role_name text; privilege text;
 BEGIN
  FOREACH item IN ARRAY ARRAY['league_coach_challenges','league_coach_challenge_entries',
@@ -59,9 +59,9 @@ BEGIN
      END LOOP;
    END LOOP;
  END LOOP;
-END $;
+END $safety$;
 -- Database rejects illegal challenge settings and duplicate enrollment/reward rows.
-DO $
+DO $safety$
 DECLARE cid uuid; boxer uuid := 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 trainer uuid := 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 BEGIN
@@ -104,7 +104,7 @@ BEGIN
  DELETE FROM public.league_coach_challenge_exp_ledger WHERE challenge_id=cid;
  DELETE FROM public.league_coach_challenge_entries WHERE challenge_id=cid;
  DELETE FROM public.league_coach_challenges WHERE id=cid;
-END $;
+END $safety$;
 \i supabase/production-prep/rollback_coach_challenges_v2_empty_only.sql
 DO $$
 BEGIN
