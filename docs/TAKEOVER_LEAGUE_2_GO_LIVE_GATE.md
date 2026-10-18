@@ -24,6 +24,7 @@ Follow only verified additive migrations required by the live schema, in this or
 6. `supabase/migrations/20261018213000_admin_undo_recent_rejection.sql` (same admin / 15 min / no linked ledger / audited).
 7. `supabase/migrations/20261018214000_avatar_rpc_permissions.sql` (revoke anon for avatar setter; preserve authenticated boxer role).
 8. `supabase/migrations/20261018220000_training_audit_reader.sql` (limited own-training history).
+9. `supabase/migrations/20261018230000_notification_mark_read.sql` (idempotent inbox read acknowledgement for the owning authenticated boxer only; RLS and flag stay in force).
 
 There is only one migration per timestamp in the current release diff. Do not include `supabase/test-only/` fixtures in production. Inspect `supabase_migrations.schema_migrations` or the project's migration history before applying; if a schema object already exists, reconcile deliberately, never blind DROP/REPLACE or overwrite history.
 
@@ -67,3 +68,6 @@ Die im Release-Branch zuvor als teilweise bezeichneten UX-Punkte #12, #20, #24, 
 - Trainer-Berechtigung: die Produktions-RPC `review_training` bleibt absichtlich `admin`-only; `coach` erhält durch neue UI keine impliziten Sonderrechte.
 - Code-Seiten `boxer.html`, `coach.html`, `challenges.html`, `duels.html` veröffentlichen neu `takeover-quick-actions.js` per bestehender statischer `*.js`-Kopie im GitHub-Pages-Workflow.
 - **Nicht freigegeben:** `main`-Merge, produktives SQL, produktive Feature-Flags, Live-Pages. Dies bleibt einem getrennten GO LIVE vorbehalten.
+
+### Inbox-Abnahme nach expliziter Produktionsmigration
+Bei GO LIVE erst Migration `20261018230000_notification_mark_read.sql` anwenden und die RLS-/Funktionsrechte überprüfen, **danach** bei Freigabe das Feature-Flag `notifications` aktivieren. Bestehende Produktions-Trigger erzeugen Benachrichtigungen nur für neue Freigaben/Ablehnungen und bei aktivierten Flags; alte Trainings erhalten nicht rückwirkend Mitteilungen. Der Browser übersetzt den bestehenden Triggerpfad `/boxer.html` in eine sichere Projekt-URL. Der Button `Als gelesen markieren` ruft ausschliesslich `mark_my_notification_read` auf. Aktivierung nie ohne gesicherte Rechte- und UI-Prüfung.
