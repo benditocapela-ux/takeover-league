@@ -67,8 +67,39 @@ BEGIN
 END $verify$;
 SQL
 
+# Turn the one accepted invitation into an elapsed duel and reconcile it twice.
+duel_id="$(psql_run -c "SELECT id FROM public.league_duels WHERE status='pending' LIMIT 1;")"
+test -n "$duel_id"
+accept_sql="SET ROLE authenticated; SET request.jwt.claim.sub='55555555-5555-4555-8555-555555555555'; SELECT public.duel_v2_respond('$duel_id',true);"
+psql_run -c "$accept_sql" >"$tmpdir/accept.out"
+psql_run -c "UPDATE public.league_duels SET accepted_at=now()-INTERVAL '9 days', ends_at=now()-INTERVAL '2 days' WHERE id='$duel_id';" >"$tmpdir/advance.out"
+reconcile_sql="SET ROLE authenticated; SET request.jwt.claim.sub='22222222-2222-4222-8222-222222222222'; SELECT public.duel_v2_reconcile('$duel_id');"
+psql_run -c "$reconcile_sql" >"$tmpdir/reconcile_a.out" 2>"$tmpdir/reconcile_a.err" & a=$!
+psql_run -c "$reconcile_sql" >"$tmpdir/reconcile_b.out" 2>"$tmpdir/reconcile_b.err" & b=$!
+if ! wait "$a"; then cat "$tmpdir/reconcile_a.err"; exit 1; fi
+if ! wait "$b"; then cat "$tmpdir/reconcile_b.err"; exit 1; fi
+psql_run <<'SQL' >"$tmpdir/reconcile_verify.out"
+DO $verify$
+DECLARE id uuid;
+BEGIN
+ SELECT d.id INTO id FROM public.league_duels d WHERE d.status='settled' LIMIT 1;
+ IF id IS NULL OR
+  (SELECT count(*) FROM public.league_duel_exp_ledger l
+   WHERE l.duel_id=id AND l.awarded_exp=50 AND l.transaction_id IS NOT NULL)<>2 OR
+  (SELECT count(*) FROM public.point_transactions t
+   WHERE t.category='duel_exp' AND t.description='Duel reward: '||id::text
+   AND t.exp=50 AND t.points=0)<>2 OR
+  (SELECT count(*) FROM public.league_duel_events e
+   WHERE e.duel_id=id AND e.event_type='settled')<>1
+ THEN RAISE EXCEPTION 'Concurrent duel reconciliation produced duplicate/missing EXP'; END IF;
+END $verify$;
+SQL
+
 # Clean temporary fixtures and prove existing scores/users were preserved.
 psql_run <<'SQL' >"$tmpdir/cleanup.out"
+DELETE FROM public.point_transactions WHERE category='duel_exp'
+ AND description IN (SELECT 'Duel reward: '||id::text FROM public.league_duels);
+DELETE FROM public.league_duel_exp_ledger;
 DELETE FROM public.league_duel_events;
 DELETE FROM public.league_duels;
 DELETE FROM public.league_coach_challenge_exp_ledger;
