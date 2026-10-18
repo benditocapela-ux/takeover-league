@@ -62,7 +62,7 @@ async function loadBoxerFeedback(){
  for(const item of result.data){const card=document.createElement('div');card.className='feedback-note';const title=document.createElement('strong');title.textContent=item.title;const date=document.createElement('small');date.textContent=new Date(item.created_at).toLocaleDateString('de-CH');const msg=document.createElement('p');msg.textContent=item.message;card.append(title,date,msg);root.append(card)}
 }
 
-async function init(){const {data:{user},error}=await db.auth.getUser();if(error||!user){location.replace('./login.html?next=boxer.html');return}const p=await db.from('profiles').select('id,display_name,role,is_active,avatar_key,avatar_url').eq('auth_user_id',user.id).maybeSingle();if(p.error||!p.data||!p.data.is_active){show('Kein aktives Boxerprofil gefunden.','error');return}profile=p.data;if(profile.role!=='boxer'){show('Diese Eingabeseite ist für Boxer. Trainer nutzen coach.html.','error');return}$('welcome').textContent=`Willkommen, ${profile.display_name}.`;$('profileName').textContent=profile.display_name;await initProfile();const t=await db.from('training_types').select('id,name,points').eq('is_active',true).order('name');if(t.error){show('Trainingsarten konnten nicht geladen werden: '+t.error.message,'error');return}types=t.data;for(const type of types){const o=document.createElement('option');o.value=type.id;o.textContent=type.name;$('kind').append(o)}if(!types.length){show('Es sind noch keine Trainingsarten hinterlegt. Bitte den Trainer informieren.','error');$('submit').disabled=true}restoreTrainingDraft();await loadCloudDraft();$('content').classList.remove('hidden');await load();await loadBoxerFeedback();await loadPerformance30();await loadExpRank()}
+async function init(){const {data:{user},error}=await db.auth.getUser();if(error||!user){location.replace('./login.html?next=boxer.html');return}const p=await db.from('profiles').select('id,display_name,role,is_active,avatar_key,avatar_url').eq('auth_user_id',user.id).maybeSingle();if(p.error||!p.data||!p.data.is_active){show('Kein aktives Boxerprofil gefunden.','error');return}profile=p.data;if(profile.role!=='boxer'){show('Diese Eingabeseite ist für Boxer. Trainer nutzen coach.html.','error');return}$('welcome').textContent=`Willkommen, ${profile.display_name}.`;$('profileName').textContent=profile.display_name;await initProfile();const t=await db.from('training_types').select('id,name,points').eq('is_active',true).order('name');if(t.error){show('Trainingsarten konnten nicht geladen werden: '+t.error.message,'error');return}types=t.data;for(const type of types){const o=document.createElement('option');o.value=type.id;o.textContent=type.name;$('kind').append(o)}if(!types.length){show('Es sind noch keine Trainingsarten hinterlegt. Bitte den Trainer informieren.','error');$('submit').disabled=true}restoreTrainingDraft();await detectRequestId();await loadCloudDraft();$('content').classList.remove('hidden');await load();await loadBoxerFeedback();await loadPerformance30();await loadExpRank()}
 function updateFields(){const t=types.find(x=>String(x.id)===$('kind').value);$('points').textContent=t?`Vorgesehene Punkte nach Bestätigung: ${t.points}`:'';const isJogging=!!t&&/^joggen$/i.test(t.name.trim());const isTechnique=!!t&&/^techniktraining$/i.test(t.name.trim());$('joggingField').classList.toggle('hidden',!isJogging);$('techniqueField').classList.toggle('hidden',!isTechnique);$('joggingKm').required=isJogging;$('techniqueMinutes').required=isTechnique;if(!isJogging)$('joggingKm').value='';if(!isTechnique)$('techniqueMinutes').value=''}
 function drawAvatar(){const box=$('avatarPreview');box.replaceChildren();if(photoUrl){const img=document.createElement('img');img.src=photoUrl;img.alt='Profilbild';img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%';box.append(img)}else if(presets[selectedAvatar]){const img=document.createElement('img');img.src=presets[selectedAvatar];img.alt='';img.addEventListener('error',()=>{box.textContent='🥊'});img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:50%';box.append(img)}else box.textContent=legacyPresets[selectedAvatar]||'🥊';document.querySelectorAll('.avatar-option').forEach(b=>b.classList.toggle('selected',!photoUrl&&b.dataset.key===selectedAvatar))}
 async function initProfile(){selectedAvatar=profile.avatar_key||'avatar-01';photoUrl=profile.avatar_url||null;const root=$('avatarOptions');for(const [key,url] of Object.entries(presets)){const b=document.createElement('button');b.type='button';b.className='avatar-option';b.dataset.key=key;const img=document.createElement('img');img.src=url;img.alt='';img.addEventListener('error',()=>{img.style.display='none';b.textContent='🥊';b.title='Bild konnte nicht geladen werden: '+url});b.append(img);b.title=img.alt;b.addEventListener('click',()=>{selectedAvatar=key;photoUrl=null;$('photo').value='';drawAvatar()});root.append(b)}drawAvatar()}
@@ -103,8 +103,15 @@ $('cloudDraftSave').addEventListener('click',async()=>{
  finally{button.disabled=false}
 });
 const sessionDraftKey=()=>profile?'takeover_draft_'+profile.id:null;
+const submissionRetryKey=()=>profile?'takeover_submission_request_'+profile.id:null;
+let requestIdSupported=false;
+async function detectRequestId(){
+ const probe=await db.from('training_submissions').select('client_request_id')
+  .eq('boxer_id',profile.id).limit(1);
+ requestIdSupported=!probe.error;
+}
 function draftValue(){const key=sessionDraftKey();if(!key)return null;try{return JSON.parse(sessionStorage.getItem(key)||'null')}catch{return null}}
-function rememberDraft(){const key=sessionDraftKey();if(!key)return;const values=Object.fromEntries(draftFields.map(id=>[id,$(id).value]));try{sessionStorage.setItem(key,JSON.stringify(values));$('draftStatus').textContent='Entwurf auf diesem Gerät für diese Sitzung gesichert.'}catch{$('draftStatus').textContent='Zwischenspeichern auf diesem Gerät nicht verfügbar.'}}
+function rememberDraft(){const key=sessionDraftKey();if(!key)return;try{sessionStorage.removeItem(submissionRetryKey())}catch{}const values=Object.fromEntries(draftFields.map(id=>[id,$(id).value]));try{sessionStorage.setItem(key,JSON.stringify(values));$('draftStatus').textContent='Entwurf auf diesem Gerät für diese Sitzung gesichert.'}catch{$('draftStatus').textContent='Zwischenspeichern auf diesem Gerät nicht verfügbar.'}}
 function applyDraft(d){if(!d||typeof d!=='object')return;if(d.kind&&types.some(t=>String(t.id)===String(d.kind)))$('kind').value=String(d.kind);if(/^\d{4}-\d{2}-\d{2}$/.test(d.date||''))$('date').value=d.date;for(const id of ['notes','joggingKm','techniqueMinutes'])if(d[id]!=null)$(id).value=String(d[id]);updateFields();for(const id of ['notes','joggingKm','techniqueMinutes'])if(d[id]!=null)$(id).value=String(d[id]);}
 function restoreTrainingDraft(){const saved=draftValue();if(saved){applyDraft(saved);$('draftStatus').textContent='Letzten Sitzungsentwurf wiederhergestellt.'}else{try{const k=localStorage.getItem('takeover_last_type_'+profile.id);if(k&&types.some(t=>String(t.id)===k)){$('kind').value=k;updateFields()}}catch{}}}
 $('repeatTraining').addEventListener('click',()=>{let last=null;try{last=JSON.parse(localStorage.getItem('takeover_last_training_'+profile.id)||'null')}catch{}if(!last){show('Noch kein vorheriges Training gespeichert.');return}applyDraft({...last,date:$('date').value});rememberDraft();show('Letztes Training übernommen. Bitte Datum und Angaben prüfen.','success')});
@@ -158,14 +165,28 @@ $('form').addEventListener('submit',async e=>{
  if(!$('form').reportValidity())return;
  const saved={kind:String(type.id),date:$('date').value,notes:$('notes').value.trim(),joggingKm:$('joggingKm').value,techniqueMinutes:$('techniqueMinutes').value};
  trainingSubmitBusy=true;$('submit').disabled=true;show('Training wird eingereicht …');
+ let requestId=null;
+ if(requestIdSupported){
+  try{requestId=sessionStorage.getItem(submissionRetryKey());
+   if(!requestId){requestId=crypto.randomUUID();sessionStorage.setItem(submissionRetryKey(),requestId)}
+  }catch{requestId=crypto.randomUUID()}
+ }
  try{
-  const r=await db.from('training_submissions').insert({
+  const payload={
    boxer_id:profile.id,training_type_id:type.id,training_date:saved.date,notes:saved.notes,
    jogging_km:$('joggingField').classList.contains('hidden')?null:Number(saved.joggingKm),
    technique_minutes:$('techniqueField').classList.contains('hidden')?null:Number(saved.techniqueMinutes),status:'pending'
-  });
-  if(r.error)throw r.error;
-  try{localStorage.setItem('takeover_last_type_'+profile.id,String(type.id));localStorage.setItem('takeover_last_training_'+profile.id,JSON.stringify({...saved,notes:''}));sessionStorage.removeItem(sessionDraftKey())}catch{}if(cloudDraftAvailable){const cleanup=await db.from('training_drafts_v2').delete().eq('boxer_id',profile.id);if(cleanup.error)console.warn('Entwurf nach Einreichung nicht gelöscht:',cleanup.error.message)}
+  };
+  if(requestId)payload.client_request_id=requestId;
+  const r=await db.from('training_submissions').insert(payload);
+  if(r.error){
+   if(!(requestId&&r.error.code==='23505'))throw r.error;
+   const old=await db.from('training_submissions').select('id,status')
+    .eq('boxer_id',profile.id).eq('client_request_id',requestId).maybeSingle();
+   if(old.error||!old.data)throw r.error;
+   show('Training wurde bereits eingereicht – keine doppelten Punkte.', 'success');
+  }
+  try{localStorage.setItem('takeover_last_type_'+profile.id,String(type.id));localStorage.setItem('takeover_last_training_'+profile.id,JSON.stringify({...saved,notes:''}));sessionStorage.removeItem(sessionDraftKey());sessionStorage.removeItem(submissionRetryKey())}catch{}if(cloudDraftAvailable){const cleanup=await db.from('training_drafts_v2').delete().eq('boxer_id',profile.id);if(cleanup.error)console.warn('Entwurf nach Einreichung nicht gelöscht:',cleanup.error.message)}
   $('draftStatus').textContent='Erfolgreich eingereicht. Entwurf gelöscht.';
   show('Training eingereicht – wartet auf Bestätigung.','success');
   $('notes').value='';$('joggingKm').value='';$('techniqueMinutes').value='';$('kind').value=String(type.id);updateFields();await load();
