@@ -17,6 +17,15 @@ const cases=[
 ['Private draft denies anonymous',()=>assert.match(sql,/revoke all on public\.training_drafts_v2 from public, anon/i)],
 ['No production database write in CI script',()=>assert.doesNotMatch(read('.github/workflows/release-2-validation.yml'),/apply_migration|execute_sql|supabase db push|deploy-pages/)],
 ['Audit is limited to an authenticated admin',()=>{const audit=read('supabase/migrations/20261018210000_coach_training_audit_read.sql');assert.match(audit,/actor\.role = 'admin'/);assert.match(audit,/revoke all on function public\.coach_training_audit_recent\(integer\) from public, anon, authenticated/i);assert.match(coach,/db\.rpc\('coach_training_audit_recent'/)}],
+['Live duel privileged core is in private schema behind invoker API',()=>{
+ const m=read('supabase/migrations/20261018211000_duel_v2_live_scores.sql');
+ assert.match(m,/create schema if not exists league_duel_private/i);
+ assert.match(m,/create or replace function league_duel_private\.duel_v2_live_scores_core\(p_duel_id uuid\)/i);
+ assert.match(m,/create or replace function public\.duel_v2_live_scores\(p_duel_id uuid\)\s+returns jsonb language sql stable security invoker/i);
+ assert.match(m,/revoke all on function public\.duel_v2_live_scores\(uuid\) from public,anon,authenticated/i);
+ assert.match(m,/revoke all on schema league_duel_private from public, anon, authenticated/i);
+ assert.match(m,/actor\.id not in \(duel\.challenger_id,duel\.opponent_id\)/);
+}],
 ['Live duel scores enforce participant authorization',()=>{const duel=read('supabase/migrations/20261018211000_duel_v2_live_scores.sql');assert.match(duel,/actor\.id not in \(duel\.challenger_id,duel\.opponent_id\)/);assert.match(duel,/s\.status='approved'/);assert.match(duel,/s\.created_at<=least\(now\(\),duel\.ends_at\)/);assert.match(duel,/revoke all on function public\.duel_v2_live_scores\(uuid\) from public,anon,authenticated/i);assert.match(duels,/duel_v2_live_scores/)}],
 ['Duel invitation confirms exact opponent and duration',()=>assert.match(duels,/if\(!confirm\('Duell-Einladung senden\?/)],
 ['Training calendar uses confirmed Supabase entries',()=>{assert.match(boxer,/historyRows\.filter\(row=>row\.status==='approved'/);assert.match(boxer,/renderTrainingInsights\(\)/)}],
