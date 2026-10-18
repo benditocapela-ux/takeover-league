@@ -252,3 +252,10 @@ Read-only-Nachprüfung nach Stopp: 66 Trainingseinreichungen, 58 bestätigt, 2 o
 - Supabase Security Advisor nach den vier Migrationen: `anon_security_definer_function_executable` WARN (7), `authenticated_security_definer_function_executable` WARN (58), `auth_leaked_password_protection` WARN (1) und `rls_enabled_no_policy` INFO (11). Bestehende, absichtlich öffentlich lesbare Funktionen dürfen nicht pauschal abgeschaltet werden.
 
 **Nächster notwendiger Freigabeschritt:** Die Blockade der privilegierten Duell-SQL-Migration muss über einen autorisierten Prüf-/Freigabepfad aufgehoben werden. Bis dahin keine irreführende Freigabe weiterer produktiver SQL-Migrationen, kein Feature-Flag-Wechsel und kein Merge/Pages-Deployment. Weitere grüne CI-Tests auf dem Release-Branch sind ausschliesslich Staging-Abnahmen.
+
+
+### Live-Duelle – abschliessende Frontend-/TEST-Runde (18.10.2026)
+
+Die produktive RPC-Sicherheitsblockade ist **nicht** aufgehoben. Dennoch wurde die echte Duell-Seite im Release-Branch finalisiert: Live-Scorekarten, Vergleichsbalken, Restzeit, Trainerprüfung, 90-Sekunden-Aktualisierung, kein falscher Punktestand bei fehlendem RPC und robuster Schutz gegen ungültige/überlappende Antworten. Die neuen Chromium-Tests und das transaktionale TEST-Supabase-SQL bestätigen das UI-Verhalten und 50:70 Punkte bei einem offenen Training (zusätzlicher Warnzähler 1). Die TEST-Daten wurden zurückgerollt. Einzelheiten: `docs/TAKEOVER_LEAGUE_2_LIVE_DUELS_STATUS_2026-10-18.md`.
+
+**Status: FRONTEND fertig / isolierte SQL-Prüfung bestanden / PRODUKTIVMIGRATION blockiert / main & Pages unverändert.** Kein Umgehen der Sicherheitsprüfung. Eine echte freigegebene SQL-Ausführung und reale Rollenprüfung bleiben Voraussetzung für die produktive Live-Duell-Funktion.
