@@ -53,6 +53,28 @@ function renderPublicRadar(boxer,leader,levels,leaders){
  for(const [title,value,max] of defs){const line=document.createElement('div');line.className='radar-metric';
   const label=document.createElement('strong');label.textContent=title;line.append(label,document.createTextNode(fmt(value)+' · '+Math.round(100*value/max)+'% vom Liga-Maximum'));metrics.append(line)}
 }
+
+async function renderPublicBadges(name){
+ const status=$('publicBadgeStatus'),grid=$('publicBadgeGrid');if(!status||!grid)return;
+ grid.replaceChildren();
+ try{
+  const query=new URL(PUBLIC_URL+'/rest/v1/league_public_badges_v21');
+  query.searchParams.set('select','title,icon_key,earned_at');
+  query.searchParams.set('boxer_name','eq.'+name);
+  query.searchParams.set('order','earned_at.desc');
+  query.searchParams.set('limit','60');
+  const response=await fetch(query.href,{headers:{apikey:PUBLIC_KEY},cache:'no-store'});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  const badges=await response.json();if(!Array.isArray(badges))throw Error('Badgedaten ungültig');
+  status.textContent=badges.length?badges.length+' verdiente Abzeichen':'Noch keine Auszeichnungen erhalten.';
+  for(const badge of badges){
+   const card=document.createElement('article');card.className='badge-tile';
+   const title=document.createElement('strong');title.textContent=String(badge.title||'Achievement');
+   const earned=document.createElement('small');earned.textContent=badge.earned_at?'Verliehen '+new Date(badge.earned_at).toLocaleDateString('de-CH'):'';
+   card.append(title,earned);grid.append(card);
+  }
+ }catch(e){status.textContent='Öffentliche Auszeichnungen sind noch nicht verfügbar.'}
+}
 function photoUrl(a){
  if(a?.avatar_url){
   try{const u=new URL(a.avatar_url);if(u.protocol==='https:'&&u.hostname==='iqarjivcrddcixrvqbfb.supabase.co'&&u.pathname.startsWith('/storage/v1/object/public/boxer-avatars/'))return u.href}catch(_){}
@@ -96,6 +118,7 @@ async function init(){
   $('level').textContent=level.rank+' · '+level.level;
   $('levelFill').style.width=level.pct+'%';
   renderPublicRadar(boxer,leader[0]||{},levels,leaders);
+  renderPublicBadges(name);
   $('levelStatus').textContent='Rang '+level.rank+' · Level '+level.level;
   $('nextLevel').textContent='Noch '+fmt(level.remaining)+' EXP bis zum nächsten Level';
   const img=photoUrl(avatar[0]);
