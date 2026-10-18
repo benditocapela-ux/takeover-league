@@ -27,6 +27,12 @@ async function init(){
    if(!e.error)entries=e.data||[];if(!t.error)approved=t.data||[];
   }
  }
+ const finalized=await db.from('league_global_results_v21').select('challenge_id,boxer_name,progress,rank_position,completed').order('rank_position',{ascending:true}).limit(1000);
+ const resultMap=new Map();
+ if(!finalized.error)for(const row of finalized.data||[]){
+  if(!resultMap.has(row.challenge_id))resultMap.set(row.challenge_id,[]);
+  resultMap.get(row.challenge_id).push(row);
+ }
  const rows=challenges.data||[];const root=$('challenges');root.replaceChildren();
  if(!rows.length){root.append(make('p','Noch keine veröffentlichten Liga-Challenges.'));$('status').textContent='Neue Wettbewerbe werden hier veröffentlicht.';return}
  for(const c of rows){
@@ -34,6 +40,15 @@ async function init(){
   card.append(make('h2',c.title),make('p',c.description||'Trainiere für das gemeinsame Ziel.'));
   const unit=c.metric==='jogging_km'?'km':c.metric==='technique_minutes'?'Minuten':'Einheiten';
   const meta=make('p','Ziel: '+Number(c.target_value).toLocaleString('de-CH')+' '+unit+' · bis '+new Date(c.ends_at).toLocaleDateString('de-CH'));meta.className='muted';card.append(meta);
+  if(c.status==='closed'){
+   const results=resultMap.get(c.id)||[];
+   const heading=make('h3','Abschlussrangliste');card.append(heading);
+   if(!results.length)card.append(make('p','Noch keine Platzierungen veröffentlicht.'));
+   for(const result of results.slice(0,20)){
+    card.append(make('p','#'+result.rank_position+' · '+result.boxer_name+' · '+Number(result.progress).toLocaleString('de-CH')+' '+unit+(result.completed?' · Ziel erreicht':'')));
+   }
+   root.append(card);continue;
+  }
   const joined=entries.some(e=>e.challenge_id===c.id);
   if(joined){
    const start=new Date(c.starts_at).toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'});
