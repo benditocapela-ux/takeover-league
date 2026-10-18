@@ -1,7 +1,8 @@
 -- Takeover League 2.0 | Coach Challenges V2 production migration.
 -- GENERATED from individually reviewed/tested production-prep SQL modules.
 -- SAFE-DEFAULT: two feature flags remain disabled. Does not modify real challenge or boxer point rows.
--- APPLY ONLY AFTER EXPLICIT RELEASE APPROVAL AND DATA BACKUP.
+-- APPLY ONLY AFTER EXPLICIT RELEASE APPROVAL ("FREIGEBEN").
+-- Backup strongly recommended; user deliberately waived it, accepting possible permanent data loss.
 BEGIN;
 DO $preflight$
 BEGIN
