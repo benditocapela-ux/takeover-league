@@ -1,7 +1,25 @@
 <!doctype html>
 <html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Coach Challenges · Takeover League</title>
-<style>body{font:16px system-ui;background:#0b1422;color:#f5f5f6;margin:0;padding:20px}main{max-width:920px;margin:auto}a{color:#dfbd77}h1{color:#dfbd77}article{background:#16263a;border:1px solid #324359;border-radius:14px;padding:18px;margin:14px 0}button{background:#dfbd77;color:#111;border:0;border-radius:8px;padding:10px 14px;margin:5px;cursor:pointer}button:disabled{opacity:.5}input,textarea,select{background:#0b1422;color:white;border:1px solid #52647c;border-radius:8px;padding:10px;max-width:100%;box-sizing:border-box}form{display:grid;gap:10px;max-width:550px}small{color:#bdc8d4}[hidden]{display:none!important}.error{color:#ffb6b6}</style><link rel="stylesheet" href="./takeover-navigation.css"></head>
-<body><main><p><a href="./boxer.html">Produktions-Boxeransicht</a> · <a href="./coach.html">Produktions-Coachansicht</a></p><h1>Coach Challenges V2</h1><p id="rolloutNote">Freischaltung ausstehend – die bestehenden Trainingsfunktionen bleiben verfügbar.</p><p><strong>PRODUKTIONSVORBEREITUNG</strong> – Challenges sind noch nicht freigeschaltet.</p><p>Die Freischaltung erfolgt erst nach geprüfter Datenbankmigration und Berechtigungsprüfung.</p><p id="status" role="status">Verbindung wird geprüft …</p><section id="signin"><h2>Konto anmelden</h2><form id="login"><input name="email" type="email" autocomplete="username" placeholder="E-Mail" required><input name="password" type="password" autocomplete="current-password" placeholder="Passwort" required><button>Anmelden</button></form><button id="logout" type="button" hidden>Abmelden</button></section><section id="coach" hidden><h2>Challenge erstellen</h2><form id="create"><input name="title" required maxlength="120" placeholder="Titel"><textarea name="description" placeholder="Beschreibung"></textarea><select name="kind"><option value="individual">Individuell</option><option value="competition">Wettkampf</option><option value="coach_goal">Coach-Ziel</option></select><select name="days"><option value="7">7 Tage</option><option value="14">14 Tage</option><option value="30">30 Tage</option></select><button>Entwurf erstellen</button></form></section><button id="refresh" type="button" hidden>Challenges aktualisieren</button><div id="filters" hidden><label for="challengeSearch">Challenges suchen</label> <input id="challengeSearch" type="search" placeholder="Titel oder Beschreibung" aria-label="Challenges suchen"> <label for="challengeStatus">Status</label> <select id="challengeStatus" aria-label="Challenge-Status"><option value="all">Alle</option><option value="draft">Entwürfe</option><option value="open">Offen</option><option value="active">Aktiv</option><option value="awaiting_reviews">Bewertung</option><option value="settled">Abgeschlossen</option><option value="cancelled">Abgebrochen</option></select></div><section id="list"></section></main>
+<style>body{font:16px system-ui;background:#0b1422;color:#f5f5f6;margin:0;padding:20px}main{max-width:920px;margin:auto}a{color:#dfbd77}h1{color:#dfbd77}article{background:#16263a;border:1px solid #324359;border-radius:14px;padding:18px;margin:14px 0}button{background:#dfbd77;color:#111;border:0;border-radius:8px;padding:10px 14px;margin:5px;cursor:pointer}button:disabled{opacity:.5}input,textarea,select{background:#0b1422;color:white;border:1px solid #52647c;border-radius:8px;padding:10px;max-width:100%;box-sizing:border-box}form{display:grid;gap:10px;max-width:550px}small{color:#bdc8d4}[hidden]{display:none!important}.error{color:#ffb6b6}.personal-assignment{background:linear-gradient(145deg,#1b2a3d,#122138);border:1px solid #dfbd7766;border-radius:15px;padding:19px;margin:21px 0}
+.personal-assignment h3{color:#dfbd77;margin-top:0}.personal-assignment label{display:grid;gap:6px;font-size:13px;font-weight:700}
+.personal-assignment textarea,.personal-assignment input,.personal-assignment select{width:100%;max-width:100%}
+.personal-assignment #targetedHint{font-size:13px;color:#d0dce8}
+</style><link rel="stylesheet" href="./takeover-navigation.css"></head>
+<body><main><p><a href="./boxer.html">Produktions-Boxeransicht</a> · <a href="./coach.html">Produktions-Coachansicht</a></p><h1>Coach Challenges V2</h1><p id="rolloutNote">Persönliche Ziele, Wettbewerbe und manuelle Coach-Bewertungen.</p><p>Du kannst öffentlichen Challenges beitreten. Trainer können zusätzlich persönliche Challenges gezielt vergeben.</p><p id="status" role="status">Verbindung wird geprüft …</p><section id="signin"><h2>Konto anmelden</h2><form id="login"><input name="email" type="email" autocomplete="username" placeholder="E-Mail" required><input name="password" type="password" autocomplete="current-password" placeholder="Passwort" required><button>Anmelden</button></form><button id="logout" type="button" hidden>Abmelden</button></section><section id="coach" hidden><h2>Challenge erstellen</h2><form id="create"><input name="title" required maxlength="120" placeholder="Titel"><textarea name="description" placeholder="Beschreibung"></textarea><select name="kind"><option value="individual">Individuell</option><option value="competition">Wettkampf</option><option value="coach_goal">Coach-Ziel</option></select><select name="days"><option value="7">7 Tage</option><option value="14">14 Tage</option><option value="30">30 Tage</option></select><button>Entwurf erstellen</button></form>
+<section id="targetedAssignment" class="personal-assignment" hidden aria-labelledby="targetedTitle">
+ <h3 id="targetedTitle">🎯 Persönliche Challenge für <span id="targetedName">–</span></h3>
+ <p>Nur dieser Boxer erhält die Challenge. Sie startet nach dem Vergeben sofort. Die EXP werden erst nach deiner Bewertung und dem offiziellen Abschluss gutgeschrieben.</p>
+ <p id="targetedHint" role="status">Boxer wird geprüft …</p>
+ <form id="assignPersonal">
+  <label>Titel<input name="title" required minlength="3" maxlength="120" placeholder="z. B. 3 Techniktrainings absolvieren"></label>
+  <label>Beschreibung (optional)<textarea name="description" maxlength="2000" placeholder="Was soll erreicht werden?"></textarea></label>
+  <label>Individuelles Ziel<textarea name="goal" required minlength="5" maxlength="1000" placeholder="Konkretes, überprüfbares Ziel"></textarea></label>
+  <label>Dauer<select name="days" required><option value="7">7 Tage</option><option value="14">14 Tage</option><option value="30">30 Tage</option></select></label>
+  <label>Belohnung<select name="reward" required><option value="25">25 EXP</option><option value="50">50 EXP</option><option value="100">100 EXP</option><option value="150">150 EXP</option><option value="200">200 EXP</option></select></label>
+  <button type="submit" id="assignPersonalButton" disabled>Challenge direkt vergeben</button>
+ </form>
+</section>
+</section><button id="refresh" type="button" hidden>Challenges aktualisieren</button><div id="filters" hidden><label for="challengeSearch">Challenges suchen</label> <input id="challengeSearch" type="search" placeholder="Titel oder Beschreibung" aria-label="Challenges suchen"> <label for="challengeStatus">Status</label> <select id="challengeStatus" aria-label="Challenge-Status"><option value="all">Alle</option><option value="draft">Entwürfe</option><option value="open">Offen</option><option value="active">Aktiv</option><option value="awaiting_reviews">Bewertung</option><option value="settled">Abgeschlossen</option><option value="cancelled">Abgebrochen</option></select></div><section id="list"></section></main>
 <script>window.TAKEOVER_CHALLENGES_V2_ENABLED=true;</script><script type="module">
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const status=document.querySelector('#status'),refresh=document.querySelector('#refresh'),list=document.querySelector('#list'),coach=document.querySelector('#coach'),login=document.querySelector('#login'),logout=document.querySelector('#logout');
@@ -13,6 +31,10 @@ const dateLabel=value=>{if(!value)return '';const d=new Date(value);return Numbe
 const mayManage=c=>['coach','admin'].includes(role)&&(c.is_creator||role==='admin');
 
 let db,role='',busy=false,sessionEpoch=0;
+const requestedTarget=(new URLSearchParams(location.search).get('target')||'').trim().slice(0,120);
+let targetBoxerId=null,targetBoxerName='';
+const targetedSection=document.querySelector('#targetedAssignment');
+const targetedHint=document.querySelector('#targetedHint');
 async function rpc(name,args={}){const r=await db.rpc(name,args);if(r.error)throw r.error;return r.data}
 async function act(name,args){if(busy)return;busy=true;const epoch=sessionEpoch;try{say('Wird verarbeitet …');await rpc(name,args);if(epoch!==sessionEpoch||!role)return;await load()}catch(e){if(epoch===sessionEpoch)say(friendlyError(e),true)}finally{busy=false}}
 function action(parent,label,name,id){const b=el('button',label);b.type='button';b.onclick=()=>act(name,{p_challenge_id:id});parent.append(b)}
@@ -28,6 +50,7 @@ else if(!data.length)list.append(el('p','Keine Challenges entsprechen der Suche.
 for(const c of data){const a=document.createElement('article');a.append(el('h2',c.title),el('p',c.description||''),el('small',(statusLabel[c.status]||c.status)+' · '+c.joined_count+' Teilnehmende · '+c.duration_days+' Tage'));
 const starts=dateLabel(c.starts_at),ends=dateLabel(c.ends_at);
 if(starts||ends)a.append(el('p',[starts?'Start: '+starts:'',ends?'Ende: '+ends:''].filter(Boolean).join(' · ')));
+if(c.is_personal_assignment&&c.target_boxer_name)a.append(el('p','🎯 Persönlich vergeben an: '+c.target_boxer_name));
 if(c.goal_spec&&typeof c.goal_spec.goal_text==='string'&&c.goal_spec.goal_text.trim()){
   a.append(el('p','Ziel: '+c.goal_spec.goal_text.trim()));
   const exp=Number(c.goal_spec.reward_exp);
@@ -39,6 +62,8 @@ if(role==='boxer'&&c.my_enrollment_status){
   if(c.my_review_approved===true)a.append(el('p','Meine Bewertung: Bestanden'));
   if(c.my_review_approved===false)a.append(el('p','Meine Bewertung: Nicht bestanden'));
 }if(c.status==='open'&&(!c.my_enrollment_status||c.my_enrollment_status==='withdrawn')&&role==='boxer')action(a,'Teilnehmen','coach_challenge_v2_join',c.id);if(role==='boxer'&&c.my_enrollment_status==='joined'&&c.status==='open')action(a,'Teilnahme zurückziehen','coach_challenge_v2_withdraw',c.id);if(mayManage(c)&&c.status==='open')action(a,'Challenge starten','coach_challenge_v2_activate',c.id);
+if(mayManage(c)&&c.is_personal_assignment&&c.status==='active'){
+const cancel=el('button','Persönliche Challenge abbrechen');cancel.type='button';cancel.onclick=()=>{if(confirm('Direkte Challenge für '+c.target_boxer_name+' abbrechen? Nur unbewertete Challenges ohne Auszahlung lassen sich abbrechen.'))act('league_cancel_personal_challenge',{p_challenge_id:c.id})};a.append(cancel)}
 if(mayManage(c)&&c.status==='active'&&c.ends_at&&new Date(c.ends_at)<=new Date())action(a,'Bewertung beginnen','coach_challenge_v2_begin_reviews',c.id);
 if(mayManage(c)&&c.status==='draft'){
 const editToggle=el('button','Entwurf bearbeiten');editToggle.type='button';a.append(editToggle);
@@ -72,17 +97,56 @@ if(!people.length){a.append(el('p','Keine offenen Bewertungen.'));settle.disable
 const settle=el('button','EXP abschliessen');settle.type='button';settle.disabled=true;settle.title='Zuerst offene Bewertungen prüfen';settle.onclick=()=>{if(confirm('Alle Bewertungen abgeschlossen? EXP jetzt verbuchen?'))act('coach_challenge_v2_settle_manual',{p_challenge_id:c.id})};a.append(settle)}
 list.append(a)}say(data.length+' von '+allChallenges.length+' Challenges angezeigt.')}
 function clearChallengeSession(){
- sessionEpoch++;role='';coach.hidden=true;refresh.hidden=true;
+ sessionEpoch++;role='';coach.hidden=true;refresh.hidden=true;targetBoxerId=null;targetBoxerName='';targetedSection.hidden=true;
  document.querySelector('#filters').hidden=true;allChallenges=[];list.replaceChildren();
  login.hidden=false;logout.hidden=true;
  document.querySelector('#challengeSearch').value='';
  document.querySelector('#challengeStatus').value='all';
 }
-async function init(){const epoch=++sessionEpoch;role='';try{if(!window.TAKEOVER_CHALLENGES_V2_ENABLED){document.querySelector('#signin').hidden=true;coach.hidden=true;login.hidden=true;logout.hidden=true;refresh.hidden=true;document.querySelector('#filters').hidden=true;allChallenges=[];list.replaceChildren();say('Coach Challenges werden vorbereitet. Trainingspunkte bleiben unverändert.');return}if(!db){db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');db.auth.onAuthStateChange?.(event=>{if(event==='SIGNED_OUT')clearChallengeSession()});}const {data:{user},error:authError}=await db.auth.getUser();if(epoch!==sessionEpoch)return;if(authError){role='';coach.hidden=true;list.replaceChildren();throw authError}if(!user){role='';login.hidden=false;logout.hidden=true;coach.hidden=true;list.replaceChildren();throw Error('Bitte mit deinem Takeover-League-Konto anmelden.')}login.hidden=true;logout.hidden=false;const p=await db.from('profiles').select('role,is_active').eq('auth_user_id',user.id).maybeSingle();if(epoch!==sessionEpoch)return;if(p.error){role='';coach.hidden=true;list.replaceChildren();logout.hidden=false;throw p.error}if(!p.data?.is_active){role='';coach.hidden=true;list.replaceChildren();logout.hidden=false;throw Error('Kein aktives Profil')}if(!['boxer','coach','admin'].includes(p.data.role)){role='';coach.hidden=true;list.replaceChildren();logout.hidden=false;throw Error('Unbekannte Profil-Rolle')}role=p.data.role;coach.hidden=!['admin','coach'].includes(role);refresh.hidden=false;document.querySelector('#filters').hidden=false;await load()}catch(e){if(epoch!==sessionEpoch)return;if(!role){refresh.hidden=true;document.querySelector('#filters').hidden=true;allChallenges=[];list.replaceChildren()}say(friendlyError(e),true)}}
+async function prepareTargetedAssignment(){
+ targetBoxerId=null;targetBoxerName='';
+ targetedSection.hidden=true;
+ if(!requestedTarget||!['coach','admin'].includes(role))return;
+ targetedSection.hidden=false;
+ targetedHint.textContent='Boxer wird überprüft …';
+ document.querySelector('#assignPersonalButton').disabled=true;
+ try{
+   const rows=await rpc('league_personal_challenge_roster');
+   if(!Array.isArray(rows))throw Error('Boxerliste derzeit nicht verfügbar.');
+   const matches=rows.filter(r=>String(r.display_name||'').trim().toLocaleLowerCase('de-CH')===requestedTarget.toLocaleLowerCase('de-CH'));
+   if(matches.length!==1){
+     targetedHint.textContent=matches.length?'Dieser Name ist nicht eindeutig. Bitte einen anderen Boxer auswählen.':'Boxer nicht mehr aktiv oder nicht verfügbar.';
+     return;
+   }
+   targetBoxerId=matches[0].boxer_id;targetBoxerName=matches[0].display_name;
+   document.querySelector('#targetedName').textContent=targetBoxerName;
+   targetedHint.textContent='Zielboxer bestätigt. Die Zuweisung startet die Challenge nur für diesen Boxer.';
+   document.querySelector('#assignPersonalButton').disabled=false;
+ }catch(err){targetedHint.textContent='Zielboxer konnte nicht überprüft werden: '+friendlyError(err)}
+}
+async function init(){const epoch=++sessionEpoch;role='';try{if(!window.TAKEOVER_CHALLENGES_V2_ENABLED){document.querySelector('#signin').hidden=true;coach.hidden=true;login.hidden=true;logout.hidden=true;refresh.hidden=true;document.querySelector('#filters').hidden=true;allChallenges=[];list.replaceChildren();say('Coach Challenges werden vorbereitet. Trainingspunkte bleiben unverändert.');return}if(!db){db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');db.auth.onAuthStateChange?.(event=>{if(event==='SIGNED_OUT')clearChallengeSession()});}const {data:{user},error:authError}=await db.auth.getUser();if(epoch!==sessionEpoch)return;if(authError){role='';coach.hidden=true;list.replaceChildren();throw authError}if(!user){role='';login.hidden=false;logout.hidden=true;coach.hidden=true;list.replaceChildren();throw Error('Bitte mit deinem Takeover-League-Konto anmelden.')}login.hidden=true;logout.hidden=false;const p=await db.from('profiles').select('role,is_active').eq('auth_user_id',user.id).maybeSingle();if(epoch!==sessionEpoch)return;if(p.error){role='';coach.hidden=true;list.replaceChildren();logout.hidden=false;throw p.error}if(!p.data?.is_active){role='';coach.hidden=true;list.replaceChildren();logout.hidden=false;throw Error('Kein aktives Profil')}if(!['boxer','coach','admin'].includes(p.data.role)){role='';coach.hidden=true;list.replaceChildren();logout.hidden=false;throw Error('Unbekannte Profil-Rolle')}role=p.data.role;coach.hidden=!['admin','coach'].includes(role);refresh.hidden=false;document.querySelector('#filters').hidden=false;await load();await prepareTargetedAssignment()}catch(e){if(epoch!==sessionEpoch)return;if(!role){refresh.hidden=true;document.querySelector('#filters').hidden=true;allChallenges=[];list.replaceChildren()}say(friendlyError(e),true)}}
 login.onsubmit=async e=>{e.preventDefault();const f=new FormData(login);say('Anmeldung läuft …');try{const {error}=await db.auth.signInWithPassword({email:String(f.get('email')),password:String(f.get('password'))});if(error)throw error;login.reset();await init()}catch(err){say(friendlyError(err),true)}};logout.onclick=async()=>{clearChallengeSession();try{const {error}=await db.auth.signOut();if(error)throw error;say('Abgemeldet.')}catch(e){say('Abmeldung fehlgeschlagen: '+e.message,true)}};
 document.querySelector('#challengeSearch').addEventListener('input',renderChallenges);
 document.querySelector('#challengeStatus').addEventListener('change',renderChallenges);
 refresh.onclick=async()=>{if(busy)return;refresh.disabled=true;try{say('Challenges werden aktualisiert …');await load()}catch(e){say(friendlyError(e),true)}finally{refresh.disabled=false}};
+document.querySelector('#assignPersonal').onsubmit=async e=>{
+ e.preventDefault();
+ if(busy||!['coach','admin'].includes(role)||!targetBoxerId)return;
+ const fields=new FormData(e.target),title=String(fields.get('title')||'').trim(),goal=String(fields.get('goal')||'').trim();
+ const days=Number(fields.get('days')),reward=Number(fields.get('reward'));
+ if(title.length<3||title.length>120||goal.length<5||goal.length>1000||![7,14,30].includes(days)||![25,50,100,150,200].includes(reward)){
+  targetedHint.textContent='Bitte Titel, Ziel, Dauer und EXP-Belohnung prüfen.';return;
+ }
+ if(!confirm('Persönliche Challenge für '+targetBoxerName+' sofort starten? '+reward+' EXP werden erst nach erfolgreicher Trainerbewertung vergeben.'))return;
+ busy=true;const epoch=sessionEpoch;
+ const button=document.querySelector('#assignPersonalButton');button.disabled=true;
+ try{
+  await rpc('league_assign_personal_challenge',{p_boxer_id:targetBoxerId,p_title:title,p_description:String(fields.get('description')||''),p_goal_text:goal,p_duration_days:days,p_reward_exp:reward});
+  if(epoch!==sessionEpoch||!['coach','admin'].includes(role))return;
+  e.target.reset();targetedHint.textContent='Persönliche Challenge vergeben! Der ausgewählte Boxer sieht sie in seinem Challenge-Bereich.';await load();
+ }catch(err){if(epoch===sessionEpoch)targetedHint.textContent='Zuweisung fehlgeschlagen: '+friendlyError(err)}
+ finally{busy=false;if(epoch===sessionEpoch)button.disabled=false}
+};
 document.querySelector('#create').onsubmit=async e=>{e.preventDefault();if(busy||!role)return;busy=true;const epoch=sessionEpoch;const f=new FormData(e.target);try{await rpc('coach_challenge_v2_create_draft',{p_title:f.get('title'),p_description:f.get('description'),p_kind:f.get('kind'),p_duration_days:Number(f.get('days'))});if(epoch!==sessionEpoch||!role)return;e.target.reset();await load()}catch(err){if(epoch===sessionEpoch)say(friendlyError(err),true)}finally{busy=false}};
 init();
 </script><script src="./takeover-navigation.js" defer></script></body></html>
