@@ -59,13 +59,13 @@ const status=byId('status'),panel=byId('app'),auth=byId('auth'),form=byId('invit
 const el=(tag,text)=>{const node=document.createElement(tag);node.textContent=String(text??'');return node};
 const dateText=value=>{if(!value)return '–';const d=new Date(value);return Number.isNaN(d.getTime())?'–':d.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'})};
 const statuses={pending:'Einladung offen',active:'Aktiv',awaiting_reviews:'Wird ausgewertet',settled:'Abgeschlossen',declined:'Abgelehnt',expired:'Abgelaufen',cancelled:'Abgebrochen'};
-let db,profile=null,eligible=[],duels=[],busy=false,sessionEpoch=0;
+let db,profile=null,eligible=[],duels=[],busy=false,sessionEpoch=0;let liveScoreMap=new Map();
 const requestedOpponent=(new URLSearchParams(location.search).get('opponent')||'').trim().slice(0,120);
 let targetHint='';
 const say=(text,isError=false)=>{status.textContent=text;status.className=isError?'error':''};
 const message=e=>{const t=String(e?.message||e||'Unbekannter Fehler');if(/jwt expired|invalid jwt/i.test(t))return 'Sitzung abgelaufen. Bitte erneut anmelden.';if(/failed to fetch|networkerror/i.test(t))return 'Netzwerkfehler. Bitte Internetverbindung prüfen.';return t};
 async function rpc(name,args={}){const result=await db.rpc(name,args);if(result.error)throw result.error;return result.data}
-function reset(){sessionEpoch++;profile=null;eligible=[];duels=[];panel.hidden=true;auth.hidden=false;list.replaceChildren()}
+function reset(){sessionEpoch++;profile=null;eligible=[];duels=[];liveScoreMap.clear();panel.hidden=true;auth.hidden=false;list.replaceChildren()}
 function populate(){
  const challenger=form.elements.challenger,opponent=form.elements.opponent;
  const oldChallenger=challenger.value,oldOpponent=opponent.value;
@@ -111,7 +111,12 @@ function render(){
   if(duel.status==='settled'){
    card.append(el('p','Endstand (Trainingspunkte): '+duel.challenger_score+' : '+duel.opponent_score));
   }else if(duel.status==='active'){
-   card.append(el('p','Die Trainingspunkte werden nach Ablauf des Duells ausgewertet.'));
+   const score=liveScoreMap.get(duel.id);
+   if(score&&typeof score.challenger_score==='number'&&typeof score.opponent_score==='number'){
+    card.append(el('p','Aktueller Zwischenstand: '+score.challenger_score+' : '+score.opponent_score+' Trainingspunkte'));
+    if(score.pending)card.append(el('small',score.pending+' noch ungeprüfte Trainings können das Ergebnis ändern.'));
+    card.append(el('small','Unverbindlicher Zwischenstand; die endgültige Wertung erfolgt nach Trainerprüfung.'));
+   }else card.append(el('p','Aktueller Zwischenstand wird geladen, sobald die Datenbankfunktion freigeschaltet ist.'));
   }else if(duel.status==='awaiting_reviews'){
    card.append(el('p','Die Auswertung wartet noch auf abgeschlossene Trainingsbewertungen.'));
   }
@@ -140,6 +145,15 @@ async function load(){
  if(epoch!==sessionEpoch||!profile)return;
  duels=Array.isArray(all)?all:[];eligible=Array.isArray(boxers)?boxers:[];
  populate();render();
+ const active=duels.filter(d=>d.status==='active'||d.status==='awaiting_reviews');
+ if(active.length){
+  const result=await Promise.all(active.map(async d=>{
+   try{return [d.id,await rpc('duel_v2_live_scores',{p_duel_id:d.id})]}catch{return [d.id,null]}
+  }));
+  if(epoch!==sessionEpoch||!profile)return;
+  liveScoreMap=new Map(result.filter(([,v])=>v&&typeof v==='object'));
+  render();
+ }
  say(duels.length+' Duelle geladen.');
 }
 async function mutate(name,args){
@@ -179,6 +193,7 @@ byId('signin').onsubmit=async e=>{e.preventDefault();if(!db)return;const f=new F
  catch(err){say(message(err),true)}
 };
 init();
+setInterval(()=>{if(!document.hidden&&profile&&!busy)load().catch(e=>say(message(e),true))},90000);
 </script>
 <script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-navigation.js" defer></script></body>
 </html>
