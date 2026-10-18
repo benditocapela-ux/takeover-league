@@ -54,8 +54,11 @@ async function init(){
    const start=new Date(c.starts_at).toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'});
    const end=new Date(c.ends_at).toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'});
    const enrollment=entries.find(e=>e.challenge_id===c.id);
+   // Compare real instants, not timestamp strings: PostgreSQL can serialize UTC as Z or +00:00.
+   const joinedAt=Date.parse(enrollment.joined_at),closesAt=Date.parse(c.ends_at);
    const relevant=approved.filter(t=>t.training_date>=start&&t.training_date<=end
-      &&t.created_at>=enrollment.joined_at&&t.created_at<=c.ends_at);
+      &&Number.isFinite(joinedAt)&&Number.isFinite(closesAt)
+      &&Date.parse(t.created_at)>=joinedAt&&Date.parse(t.created_at)<=closesAt);
    const done=c.metric==='training_sessions'?relevant.length:relevant.reduce((sum,t)=>sum+Number(t[c.metric]||0),0);
    const pct=Math.max(0,Math.min(100,Math.round(100*done/Number(c.target_value))));
    card.append(make('p','Dein Fortschritt: '+done.toLocaleString('de-CH')+' / '+c.target_value+' '+unit+' ('+pct+'%)'));
