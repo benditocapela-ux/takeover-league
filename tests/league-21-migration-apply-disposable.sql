@@ -40,6 +40,7 @@ END $safety$;
 \i supabase/migrations/20261019032000_league_21_settlement_review_serialization.sql
 \i supabase/migrations/20261019033000_league_21_goal_training_corrections.sql
 \i supabase/migrations/20261019034000_league_21_goal_actual_exp_response.sql
+\i supabase/migrations/20261019035000_league_21_scoring_ledger_completeness.sql
 DO $assert$ BEGIN
  IF (SELECT count(*) FROM pg_catalog.pg_class c
   JOIN pg_catalog.pg_namespace n ON n.oid=c.relnamespace
