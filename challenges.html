@@ -8,13 +8,19 @@ const status=document.querySelector('#status'),list=document.querySelector('#lis
 const say=(s,error=false)=>{status.textContent=s;status.className=error?'error':''};
 const friendlyError=e=>{const msg=String(e?.message||e||'Unbekannter Fehler');if(/jwt expired|invalid jwt/i.test(msg))return 'Sitzung abgelaufen. Bitte neu anmelden.';if(/failed to fetch|networkerror/i.test(msg))return 'Netzwerkfehler. Bitte Verbindung prüfen und erneut versuchen.';return msg};
 const el=(tag,text)=>{const e=document.createElement(tag);e.textContent=text;return e};
+const statusLabel={draft:'Entwurf',open:'Offen',active:'Aktiv',awaiting_reviews:'Bewertung ausstehend',settled:'Abgeschlossen',cancelled:'Abgebrochen'};
+const dateLabel=value=>{if(!value)return '';const d=new Date(value);return Number.isNaN(d.getTime())?'':d.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'})};
+const mayManage=c=>['coach','admin'].includes(role)&&(c.is_creator||role==='admin');
+
 let db,role='',busy=false;
 async function rpc(name,args={}){const r=await db.rpc(name,args);if(r.error)throw r.error;return r.data}
 async function act(name,args){if(busy)return;busy=true;try{say('Wird verarbeitet …');await rpc(name,args);await load()}catch(e){say(friendlyError(e),true)}finally{busy=false}}
 function action(parent,label,name,id){const b=el('button',label);b.type='button';b.onclick=()=>act(name,{p_challenge_id:id});parent.append(b)}
-async function load(){const data=await rpc('coach_challenge_v2_list');list.replaceChildren();if(!(data||[]).length)list.append(el('p','Noch keine Challenges vorhanden.'));for(const c of data||[]){const a=document.createElement('article');a.append(el('h2',c.title),el('p',c.description||''),el('small',c.status+' · '+c.joined_count+' Teilnehmende · '+c.duration_days+' Tage'));if(c.status==='open'&&(!c.my_enrollment_status||c.my_enrollment_status==='withdrawn')&&role==='boxer')action(a,'Teilnehmen','coach_challenge_v2_join',c.id);if(role==='boxer'&&c.my_enrollment_status==='joined'&&c.status==='open')action(a,'Teilnahme zurückziehen','coach_challenge_v2_withdraw',c.id);if(['coach','admin'].includes(role)&&c.is_creator&&c.status==='open')action(a,'Challenge starten','coach_challenge_v2_activate',c.id);
-if(['coach','admin'].includes(role)&&c.is_creator&&c.status==='active'&&c.ends_at&&new Date(c.ends_at)<=new Date())action(a,'Bewertung beginnen','coach_challenge_v2_begin_reviews',c.id);
-if(['coach','admin'].includes(role)&&c.is_creator&&c.status==='draft'){
+async function load(){const data=await rpc('coach_challenge_v2_list');list.replaceChildren();if(!(data||[]).length)list.append(el('p','Noch keine Challenges vorhanden.'));for(const c of data||[]){const a=document.createElement('article');a.append(el('h2',c.title),el('p',c.description||''),el('small',(statusLabel[c.status]||c.status)+' · '+c.joined_count+' Teilnehmende · '+c.duration_days+' Tage'));
+const starts=dateLabel(c.starts_at),ends=dateLabel(c.ends_at);
+if(starts||ends)a.append(el('p',[starts?'Start: '+starts:'',ends?'Ende: '+ends:''].filter(Boolean).join(' · ')));if(c.status==='open'&&(!c.my_enrollment_status||c.my_enrollment_status==='withdrawn')&&role==='boxer')action(a,'Teilnehmen','coach_challenge_v2_join',c.id);if(role==='boxer'&&c.my_enrollment_status==='joined'&&c.status==='open')action(a,'Teilnahme zurückziehen','coach_challenge_v2_withdraw',c.id);if(mayManage(c)&&c.status==='open')action(a,'Challenge starten','coach_challenge_v2_activate',c.id);
+if(mayManage(c)&&c.status==='active'&&c.ends_at&&new Date(c.ends_at)<=new Date())action(a,'Bewertung beginnen','coach_challenge_v2_begin_reviews',c.id);
+if(mayManage(c)&&c.status==='draft'){
 const editToggle=el('button','Entwurf bearbeiten');editToggle.type='button';a.append(editToggle);
 const edit=document.createElement('form');edit.hidden=true;edit.setAttribute('aria-label','Entwurf bearbeiten: '+c.title);
 const editTitle=document.createElement('input');editTitle.name='title';editTitle.required=true;editTitle.minLength=3;editTitle.maxLength=120;editTitle.setAttribute('aria-label','Challenge-Titel');editTitle.value=c.title||'';
@@ -30,7 +36,7 @@ const reward=document.createElement('select');reward.setAttribute('aria-label','
 const save=el('button','Ziel und EXP speichern');save.type='submit';goal.append(description,reward,save);
 goal.onsubmit=e=>{e.preventDefault();act('coach_challenge_v2_save_goal_reward',{p_challenge_id:c.id,p_goal_text:description.value,p_review_mode:'manual',p_reward_exp:Number(reward.value),p_target_value:null,p_metric:null})};a.append(goal);
 }
-if(['coach','admin'].includes(role)&&c.is_creator&&c.status==='draft'){const open=el('button','Öffnen');open.type='button';open.onclick=()=>{if(confirm('Challenge für Boxer öffnen? Ziel und EXP müssen gespeichert sein.'))act('coach_challenge_v2_manage',{p_challenge_id:c.id,p_action:'open'})};a.append(open);}if(['coach','admin'].includes(role)&&c.is_creator&&c.status==='awaiting_reviews'){
+if(mayManage(c)&&c.status==='draft'){const open=el('button','Öffnen');open.type='button';open.onclick=()=>{if(confirm('Challenge für Boxer öffnen? Ziel und EXP müssen gespeichert sein.'))act('coach_challenge_v2_manage',{p_challenge_id:c.id,p_action:'open'})};a.append(open);}if(mayManage(c)&&c.status==='awaiting_reviews'){
 const review=el('button','Offene Bewertungen laden');review.type='button';
 review.onclick=async()=>{review.disabled=true;say('Bewertungen werden geladen …');try{const people=await rpc('coach_challenge_v2_review_candidates',{p_challenge_id:c.id});
 for(const p of people){const line=document.createElement('div');line.append(el('span',p.display_name+' '));const reason=document.createElement('input');reason.type='text';reason.setAttribute('aria-label','Begründung für '+p.display_name);reason.placeholder='Begründung (5–1000 Zeichen)';reason.maxLength=1000;line.append(reason);
