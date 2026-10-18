@@ -260,7 +260,7 @@ BEGIN
 END
 $second$;
 RESET ROLE;
-UPDATE public.league_coach_challenges SET ends_at=now()-interval '1 second'
+UPDATE public.league_coach_challenges SET starts_at=now()-interval '8 days',ends_at=now()-interval '1 second'
  WHERE id=current_setting('test.completed_id')::uuid;
 SET ROLE authenticated;
 SET request.jwt.claim.sub='22222222-2222-4222-8222-222222222222';
