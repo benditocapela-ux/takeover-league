@@ -48,6 +48,7 @@ CREATE INDEX league_coach_challenges_status_dates_idx ON public.league_coach_cha
 CREATE INDEX league_coach_challenge_entries_boxer_idx ON public.league_coach_challenge_entries(boxer_id,status);
 CREATE INDEX league_coach_challenge_reviews_reviewer_idx ON public.league_coach_challenge_reviews(reviewed_by);
 CREATE INDEX league_coach_challenge_exp_ledger_boxer_idx ON public.league_coach_challenge_exp_ledger(boxer_id);
+-- Fail closed even for table owners except privileged bypass-RLS roles.
 ALTER TABLE public.league_coach_challenges ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.league_coach_challenge_entries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.league_coach_challenge_reviews ENABLE ROW LEVEL SECURITY;
