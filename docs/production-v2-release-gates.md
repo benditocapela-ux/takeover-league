@@ -56,3 +56,9 @@ Vier V2-Tabellen vollständig nach Spalten und Constraints inventarisiert: `leag
 ## RLS-Bestätigung für Coach-Challenge-Tabellen
 
 Eine direkte Abfrage von `pg_class` und `pg_policies` im Testprojekt bestätigte am 18.10.2026: Für `league_coach_challenges`, `league_coach_challenge_entries`, `league_coach_challenge_reviews` und `league_coach_challenge_exp_ledger` ist RLS eingeschaltet (`relrowsecurity=true`), `FORCE ROW LEVEL SECURITY` ist aus und es gibt **keine** Tabellen-Policies. Normale Rollen erhalten damit keine direkten Zeilen-Zugriffe über RLS; die autorisierten `SECURITY DEFINER`-RPCs sind die beabsichtigte Schnittstelle. Vor Produktivfreigabe trotzdem tatsächliche Tabellen-Grants und direkte API-Abfragen mit echten Rollen testen.
+
+## SQL-Grants bestätigt (18.10.2026)
+
+Die expliziten Tabellen-Grants der vier V2-Coach-Challenge-Tabellen enthalten **ausschliesslich** `postgres` und `service_role`; `anon` und `authenticated` haben dort keine direkten Grants. Die 17 V2-RPCs gewähren `EXECUTE` ausschliesslich an `postgres`, `authenticated` und `service_role`. Die tatsächlichen ACLs bestätigen das beabsichtigte Muster: authentifizierte Nutzer arbeiten über geprüfte RPCs, nicht per direkten Tabellenoperationen. Die RPCs müssen auch in Produktion ihre `auth.uid()`-/Rollenprüfungen behalten.
+
+Der GitHub-Actions-Lauf zu Commit `ff49e8a` ist erfolgreich.
