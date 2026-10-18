@@ -103,6 +103,12 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  accept.click();await tick();await tick();
  assert.ok(invited.calls.some(x=>x.name==='duel_v2_respond'&&x.args.p_duel_id==='duel-1'&&x.args.p_accept===true));
  invited.dom.window.close();
+ const declining=await mount({profile:{id:'boxer-2',role:'boxer',is_active:true},duels:[incoming]});
+ const reject=[...declining.document.querySelectorAll('#duelList button')].find(x=>x.textContent==='Ablehnen');
+ reject.click();await tick();await tick();
+ assert.ok(declining.calls.some(x=>x.name==='duel_v2_respond'&&x.args.p_duel_id==='duel-1'&&x.args.p_accept===false));
+ declining.dom.window.close();
+
 
  const nonRecipient=await mount({profile:{id:'boxer-1',role:'boxer',is_active:true},duels:[incoming]});
  assert.equal(nonRecipient.document.querySelectorAll('#duelList button').length,0,'inviting boxer cannot accept own invitation');
@@ -113,6 +119,19 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  assert.match(expired.document.querySelector('#duelList').textContent,/Einladung abgelaufen/);
  expired.dom.window.close();
 
+ const finished={
+  ...incoming,status:'active',ends_at:'2020-10-20T12:00:00Z',
+  challenger_score:70,opponent_score:40
+ };
+ const coachReview=await mount({profile:{id:'coach-1',role:'coach',is_active:true},duels:[finished]});
+ const reconcileButton=[...coachReview.document.querySelectorAll('#duelList button')].find(x=>x.textContent==='Ergebnis prüfen');
+ assert.ok(reconcileButton,'coach can reconcile ended duels');
+ reconcileButton.click();await tick();await tick();
+ assert.ok(coachReview.calls.some(x=>x.name==='duel_v2_reconcile'&&x.args.p_duel_id==='duel-1'));
+ coachReview.dom.window.close();
+ const boxerReview=await mount({profile:{id:'boxer-1',role:'boxer',is_active:true},duels:[finished]});
+ assert.equal([...boxerReview.document.querySelectorAll('#duelList button')].some(x=>x.textContent==='Ergebnis prüfen'),false,'boxer cannot manually reconcile a duel');
+ boxerReview.dom.window.close();
  const completed=await mount({duels:[{
   ...incoming,status:'settled',challenger_score:120,opponent_score:95,winner_id:'boxer-1',
   ends_at:'2026-10-25T12:00:00Z'
