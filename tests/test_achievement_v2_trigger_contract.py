@@ -43,6 +43,38 @@ class AchievementTriggerContract(unittest.TestCase):
             r"FROM\s+PUBLIC\s*,\s*anon\s*,\s*authenticated",
         )
 
+    def test_ownership_transfer_recalculates_both_boxers(self):
+        self.assertRegex(
+            SQL,
+            r"(?is)OLD\\.boxer_id\\s+IS\\s+DISTINCT\\s+FROM\\s+NEW\\.boxer_id"
+            r".*?ORDER\\s+BY\\s+p\\.id\\s+FOR\\s+UPDATE"
+            r".*?recalculate_boxer_achievements_v2\\(OLD\\.boxer_id\\)"
+            r".*?recalculate_boxer_achievements_v2\\(NEW\\.boxer_id\\)",
+        )
+
+    def test_only_approved_submissions_count(self):
+        self.assertRegex(
+            SQL, r"(?is)WHERE\\s+s\\.boxer_id\\s*=\\s*p_boxer_id"
+                 r"\\s+AND\\s+s\\.status\\s*=\\s*'approved'",
+        )
+
+    def test_feature_flag_prevents_disabled_recalculation(self):
+        self.assertRegex(
+            SQL,
+            r"(?is)feature_key\\s*=\\s*'achievements'"
+            r".*?IF\\s+v_enabled\\s+IS\\s+DISTINCT\\s+FROM\\s+true"
+            r"\\s+THEN\\s+RETURN",
+        )
+
+    def test_ledger_is_unique_and_audited(self):
+        self.assertRegex(
+            SQL,
+            r"(?is)ON\\s+CONFLICT\\s*\\(boxer_id\\s*,\\s*achievement_id\\)"
+            r"\\s+DO\\s+NOTHING",
+        )
+        self.assertIn("INSERT INTO public.achievement_exp_events", SQL)
+        self.assertIn("IF v_was IS DISTINCT FROM v_should THEN", SQL)
+
 
 if __name__ == "__main__":
     unittest.main()
