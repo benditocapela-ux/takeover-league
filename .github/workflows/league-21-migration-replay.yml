@@ -61,3 +61,41 @@ jobs:
               and (select count(*) from public.point_transactions)=0
               and (select count(*) from public.league_feature_flags)=2
               then 'RESTORED' else 'DIRTY-REPLAY' end" | grep -qx RESTORED
+      - name: Install V2.1 in isolated DB for dump and restore rehearsal
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          psql -X -h localhost -U postgres -d league21_replay_ci -At -v ON_ERROR_STOP=1 \
+            -f tests/league-21-migration-apply-disposable.sql | tee /tmp/league21-installed.txt
+          grep -Eq '"release_21_postflight_passed"[[:space:]]*:[[:space:]]*true' /tmp/league21-installed.txt
+      - name: Verify disposable V2.1 backup and restored schema
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          docker run --rm --network host -e PGPASSWORD=postgres -v "$RUNNER_TEMP:/backups" \
+            postgres:${{ matrix.postgres }} pg_dump -h 127.0.0.1 -U postgres \
+            -d league21_replay_ci -Fc --no-owner -f /backups/league21-staging.dump
+          createdb -h localhost -U postgres league21_restore_probe
+          docker run --rm --network host -e PGPASSWORD=postgres -v "$RUNNER_TEMP:/backups" \
+            postgres:${{ matrix.postgres }} pg_restore -h 127.0.0.1 -U postgres \
+            -d league21_restore_probe --no-owner --exit-on-error /backups/league21-staging.dump
+          CHECK="select pg_catalog.jsonb_build_object(
+            'profiles',(select count(*) from public.profiles),
+            'points',(select count(*) from public.point_transactions),
+            'v21tables',(select count(*) from pg_catalog.pg_class c
+              join pg_catalog.pg_namespace n on n.oid=c.relnamespace
+              where n.nspname='public' and c.relname like '%_v21' and c.relkind='r'),
+            'flags',(select count(*) from public.league_feature_flags),
+            'goals',(select count(*) from public.league_boxer_goals_v21),
+            'duels',(select count(*) from public.league_duels))::text"
+          BEFORE="$(psql -X -h localhost -U postgres -d league21_replay_ci -Atc "$CHECK")"
+          AFTER="$(psql -X -h localhost -U postgres -d league21_restore_probe -Atc "$CHECK")"
+          test "$BEFORE" = "$AFTER"
+          psql -X -h localhost -U postgres -d league21_restore_probe -At -v ON_ERROR_STOP=1 \
+            -f supabase/production-prep/league_21_postflight_read_only.sql \
+            | tee /tmp/league21-restored-postflight.txt
+          grep -Eq '"release_21_postflight_passed"[[:space:]]*:[[:space:]]*true' \
+            /tmp/league21-restored-postflight.txt
+          echo "PASS: V2.1 disposable PostgreSQL dump and restore. NOT a production backup."
