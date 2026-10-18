@@ -46,6 +46,17 @@ const $=id=>document.getElementById(id),say=v=>$('status').textContent=v;
 let after=null,busy=false;
 const val=id=>$(id).value;
 const localDate=d=>new Date(Date.now()+d*86400000).toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'});
+// Resolve Zurich CET/CEST for the individual calendar boundary; never hardcode +02:00.
+function zurichBoundary(day,endOfDay=false){
+ const reference=new Date(day+'T00:00:00Z');
+ if(endOfDay)reference.setUTCDate(reference.getUTCDate()+1);
+ const tz=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Zurich',timeZoneName:'shortOffset'})
+  .formatToParts(reference).find(p=>p.type==='timeZoneName')?.value||'';
+ const match=/^GMT([+-])(\d{1,2})(?::(\d{2}))?$/.exec(tz);
+ if(!match)throw Error('Zeitzone Europe/Zurich nicht verfügbar.');
+ const offset=match[1]+match[2].padStart(2,'0')+':'+(match[3]||'00');
+ return day+(endOfDay?'T23:59:59':'T00:00:00')+offset;
+}
 $('seasonStart').value=localDate(0);$('seasonEnd').value=localDate(30);
 $('goalEnd').value=localDate(30);$('challengeStart').value=localDate(0);$('challengeEnd').value=localDate(7);
 function row(title,subtitle){const outer=document.createElement('div');outer.className='item';
@@ -152,7 +163,7 @@ $('goalForm').addEventListener('submit',e=>{e.preventDefault();submit(e.currentT
 $('challengeForm').addEventListener('submit',e=>{e.preventDefault();submit(e.currentTarget,async()=>{
  const start=val('challengeStart'),end=val('challengeEnd');const publish=$('publishChallenge').checked;
  if(publish&&!confirm('Diese Liga-Challenge jetzt für alle Boxer veröffentlichen?'))throw Error('Veröffentlichung abgebrochen.');
- const r=await db.rpc('league_v21_admin_create_global_challenge',{p_title:val('challengeTitle'),p_description:val('challengeDescription'),p_metric:val('challengeMetric'),p_target:Number(val('challengeTarget')),p_starts:start+'T00:00:00+02:00',p_ends:end+'T23:59:59+02:00',p_publish:publish});
+ const r=await db.rpc('league_v21_admin_create_global_challenge',{p_title:val('challengeTitle'),p_description:val('challengeDescription'),p_metric:val('challengeMetric'),p_target:Number(val('challengeTarget')),p_starts:zurichBoundary(start),p_ends:zurichBoundary(end,true),p_publish:publish});
  if(r.error)throw r.error;
 })});
 $('backfill').addEventListener('click',async()=>{
