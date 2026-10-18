@@ -75,3 +75,7 @@ Bei GO LIVE erst Migration `20261018230000_notification_mark_read.sql` anwenden 
 
 ### Live-Duell-Abnahme (Staging)
 Siehe `docs/TAKEOVER_LEAGUE_2_LIVE_DUELS_STATUS_2026-10-18.md`. Die fertige Duell-Benutzeroberfläche und ihre Testdatenbank-Abnahme sind **kein** Nachweis für produktive Funktionalität: `public.duel_v2_live_scores(uuid)` ist in Produktion nach der früheren Tool-Sicherheitsblockade weiterhin nicht installiert. Den fehlenden RPC nicht durch ungeschützte Clienttabellenabfragen oder alternative privilegierte SQL-Ausführung ersetzen. GO-LIVE-Flag bleibt HOLD.
+
+
+### Ausstehende Tool-Sicherheitsfreigabe der Live-Duell-Migration
+Die Migration `20261018211000_duel_v2_live_scores.sql` ist in Staging auf einen schmalen öffentlichen `SECURITY INVOKER`-Wrapper und einen `SECURITY DEFINER`-Kern im privaten `league_duel_private`-Schema umgestellt worden. Testmigration, Rollenrechte und 50:70-Live-Score-Transaktion bestanden. Vor dem nächsten Produktionsversuch ist die **ursprüngliche Tool-/Plattformblockade offiziell zu prüfen und freizugeben**. Der direkte Aufruf in einem anderen SQL-Werkzeug wäre kein akzeptabler Ersatz für die Freigabe. Vollständige Prüfung und Nachweise: `docs/TAKEOVER_LEAGUE_2_DUEL_SECURITY_REVIEW.md`.
