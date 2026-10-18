@@ -23,7 +23,7 @@ function progress(xp){
  const used=100*n+25*n*(n-1)/2;
  const needed=100+25*n;
  const ranks=['F','E','D','C','B','A','S'];
- return {level:n+1,rank:ranks[Math.min(n,ranks.length-1)],pct:Math.max(0,Math.min(100,(xp-used)/needed*100)),remaining:Math.max(0,needed-(xp-used))};
+ return {level:n+1,rank:ranks[Math.min(Math.floor(n/10),ranks.length-1)],pct:Math.max(0,Math.min(100,(xp-used)/needed*100)),remaining:Math.max(0,needed-(xp-used))};
 }
 function photoUrl(a){
  if(a?.avatar_url){
@@ -71,7 +71,7 @@ async function init(){
   $('nextLevel').textContent='Noch '+fmt(level.remaining)+' EXP bis zum nächsten Level';
   const img=photoUrl(avatar[0]);
   if(img){const picture=document.createElement('img');picture.src=img;picture.alt='';picture.addEventListener('error',()=>picture.remove());$('profilePhoto').replaceChildren(picture)}
-  $('duelAction').href='./duels.html?opponent='+encodeURIComponent(name);
+  $('duelAction').href='./duels.html?opponent='+encodeURIComponent(name);const cmp=$('compareAction');if(cmp)cmp.href='./boxer-compare.html?left='+encodeURIComponent(name);
   status.hidden=true;$('profileCard').hidden=false;
   showCoachAction(name);
  }catch(e){fail('Boxerprofil konnte nicht geladen werden: '+String(e.message||e))}
