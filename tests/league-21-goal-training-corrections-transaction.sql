@@ -87,4 +87,39 @@ do $a$ begin
   where goal_id=current_setting('gc.goal_two')::uuid)<>1
  then raise exception 'Date correction did not restore reward idempotently';end if;
 end$a$;
+-- Changes to a measured quantity must also pay/revoke/restore exact same reward.
+with inserted as (
+ insert into public.league_boxer_goals_v21(boxer_id,title,metric,target_value,
+  starts_on,ends_on,status,created_by,reward_exp)
+ values(current_setting('gc.two')::uuid,'TEST measured jogging goal','jogging_km',2,
+  current_date,current_date,'active',current_setting('gc.admin')::uuid,40)
+ returning id
+) select set_config('gc.goal_km',id::text,true) from inserted;
+update public.training_submissions set jogging_km=3
+ where id=current_setting('gc.training')::uuid;
+do $metric$ begin
+ if (select status from public.league_boxer_goals_v21
+ where id=current_setting('gc.goal_km')::uuid)<>'completed'
+ or (select exp from public.point_transactions t join public.league_goal_exp_ledger_v21 l on l.transaction_id=t.id
+ where l.goal_id=current_setting('gc.goal_km')::uuid)<>40
+ then raise exception 'Changed jogging distance did not award goal EXP';end if;
+ perform set_config('gc.km_tx',(select transaction_id::text from public.league_goal_exp_ledger_v21
+ where goal_id=current_setting('gc.goal_km')::uuid),true);
+end$metric$;
+update public.training_submissions set jogging_km=1 where id=current_setting('gc.training')::uuid;
+do $metric$ begin
+ if (select status from public.league_boxer_goals_v21
+ where id=current_setting('gc.goal_km')::uuid)<>'active'
+ or (select exp from public.point_transactions where id=current_setting('gc.km_tx')::uuid)<>0
+ then raise exception 'Reduced jogging distance did not revoke goal EXP';end if;
+end$metric$;
+update public.training_submissions set jogging_km=4 where id=current_setting('gc.training')::uuid;
+do $metric$ begin
+ if (select status from public.league_boxer_goals_v21
+ where id=current_setting('gc.goal_km')::uuid)<>'completed'
+ or (select exp from public.point_transactions where id=current_setting('gc.km_tx')::uuid)<>40
+ or (select count(*) from public.league_goal_exp_ledger_v21
+ where goal_id=current_setting('gc.goal_km')::uuid)<>1
+ then raise exception 'Restored jogging distance paid twice or failed to restore';end if;
+end$metric$;
 ROLLBACK;
