@@ -62,3 +62,7 @@ Eine direkte Abfrage von `pg_class` und `pg_policies` im Testprojekt bestätigte
 Die expliziten Tabellen-Grants der vier V2-Coach-Challenge-Tabellen enthalten **ausschliesslich** `postgres` und `service_role`; `anon` und `authenticated` haben dort keine direkten Grants. Die 17 V2-RPCs gewähren `EXECUTE` ausschliesslich an `postgres`, `authenticated` und `service_role`. Die tatsächlichen ACLs bestätigen das beabsichtigte Muster: authentifizierte Nutzer arbeiten über geprüfte RPCs, nicht per direkten Tabellenoperationen. Die RPCs müssen auch in Produktion ihre `auth.uid()`-/Rollenprüfungen behalten.
 
 Der GitHub-Actions-Lauf zu Commit `ff49e8a` ist erfolgreich.
+
+## Kritischer Produktionsschema-Unterschied: Transaktionskategorien
+
+Das Produktivprojekt akzeptiert bei `point_transactions.category` derzeit ausschliesslich `training`, `trainer_bonus`, `adjustment`, `legacy_import`, `automatic_bonus`, `achievement_exp`. Das Testprojekt erlaubt zusätzlich `duel_exp` und `challenge_exp`. Ohne Erweiterung scheitern V2-EXP-Auszahlungen in Produktion. Eine **noch nicht ausgeführte**, transaktionale und mit Vorprüfungen abgesicherte Migrationsdatei liegt unter `supabase/production-prep/20261018_extend_transaction_categories.sql`. Vor Ausführung bestehende Constraints, Trigger und Funktionsabhängigkeiten prüfen. **Nicht mit Testmigration `test_only_missing_base_tables` verwechseln.**
