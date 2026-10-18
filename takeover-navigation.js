@@ -27,7 +27,8 @@
        ['📊','Monatsranking','index.html#ranking','ranking'],
        ['🥊','Levels & EXP','index.html#levels','levels'],
        ['📜','Punkteverlauf','index.html#history','history'],
-       ['🏅','Monatsauszeichnungen','awards.html','']
+       ['🏅','Monatsauszeichnungen','awards.html',''],
+       ['⚖️','Boxer-Vergleich','boxer-compare.html','']
      ]],
      ['Neue Funktionen',[
        ['🎯','Challenges','challenges.html','',true],
