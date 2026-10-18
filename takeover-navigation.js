@@ -33,6 +33,7 @@
      ]],
      ['Neue Funktionen',[
        ['🎯','Challenges','challenges.html','',true],
+       ['⚡','Liga-Challenges','league-challenges.html','',true],
        ['🥊','Boxer-Duelle','duels.html','',true]
      ]],
      ['Mein Bereich',[
