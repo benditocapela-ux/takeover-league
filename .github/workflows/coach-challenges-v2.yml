@@ -5,12 +5,17 @@ on:
       - 'challenges-v2-preview.html'
       - 'tests/coach-challenges-v2.cjs'
       - 'tests/coach-challenges-v2-browser.cjs'
+      - 'challenges.html'
+      - 'supabase/production-prep/**'
       - '.github/workflows/coach-challenges-v2.yml'
   push:
     branches: [feature/coach-challenges-v2-ui]
     paths:
       - 'challenges-v2-preview.html'
       - 'tests/coach-challenges-v2.cjs'
+      - 'tests/coach-challenges-v2-browser.cjs'
+      - 'challenges.html'
+      - 'supabase/production-prep/**'
       - '.github/workflows/coach-challenges-v2.yml'
 jobs:
   static-checks:
