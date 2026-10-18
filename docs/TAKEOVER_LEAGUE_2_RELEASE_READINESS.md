@@ -57,3 +57,12 @@ Current release candidate: **not approved for production**. Owner approved chall
 ### Stop conditions
 
 Stop without writing to production if the read-only inventory shows an unknown schema version, an unexpected point transaction category, existing challenge payout records, an incompatible category check constraint, or missing backup/restore arrangements. Never infer production readiness from synthetic fixtures.
+
+## 2026-10-18 additional isolated integration evidence
+
+- TEST Supabase six training types seeded to match production points; production unchanged.
+- Achievement rollback-only integration: 10 approved sessions awarded training_10 (+25 EXP), second reconciliation was idempotent, rejection revoked achievement and zeroed EXP, earned/revoked events recorded. All test records rolled back.
+- Duel rollback-only integration with simulated request JWT subject: boxer invitation and acceptance; trainer settlement awarded 100/25 EXP; repeated settlement did not duplicate payouts; pending review blocked settlement; after rejection a 50/50 draw paid correctly. All duel test records rolled back. These are database tests, NOT real authenticated HTTP API tests.
+- Production read-only duel scoring data integrity: zero approved submissions lacking scoring transaction, zero duplicate scoring transactions, zero mismatched training owners, zero unlinked scoring transactions, zero linked adjustments.
+- Production security advisor reports anonymous EXECUTE on SECURITY DEFINER `public.recalculate_boxer_achievements_v2(uuid)`. Reviewed migration 006 revokes this; production implementation and permissions require explicit review/correction before enabling achievements. Do not alter production grants without owner approval.
+- Still blocked: real authenticated duel/achievement API negative tests, concurrency/lock-order, production backup/restore, migration-history reconciliation, production security fix, and owner-approved rollout.
