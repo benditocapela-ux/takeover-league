@@ -185,3 +185,21 @@ Die produktiven V2-RPCs für Challenge-Liste und -Fortschritt liefern JSONB, wä
 **Bis auf Weiteres zu blockieren:** Produktionsbackup inklusive realem Restore-Nachweis; signierte, echte Supabase Auth HTTP-Tests mit separaten Rollen; Auth-Leaked-Password-Protection; vollständige reale iOS-/Android-Browserabnahme; Flag-Aktivierung nur nach Freigabe; unabhängige Security-Review. Der Live-Betrieb darf nicht allein wegen grüner Mock-/CI-Tests freigegeben werden.
 
 **Die Hauptbranch `main`, GitHub Pages sowie die Produktionsdatenbank/Feature-Flags wurden nicht verändert.**
+
+
+---
+
+## UX-Abschlussintegration – 18.10.2026 (letzter Durchlauf)
+
+**Releasestatus weiterhin: NICHT LIVE, Release-Branch only.** Diese Ergänzung ist massgebend gegenüber älteren Fortschrittsschätzungen in diesem Dokument.
+
+- **#3:** `boxer.html` besitzt neu einen direkten Aufgabenbereich mit tatsächlich aus `training_submissions` geladenen offenen Einreichungen; die persönliche Mitteilungs-Inbox bleibt aus Sicherheitsgründen hinter dem bestehenden Supabase-Feature-Flag, das erst beim separat genehmigten Live-Rollout aktiviert werden darf.
+- **#12:** `challenges.html` zeigt auf den wirklichen Challenge-Karten Laufzeit, Teilnehmer-/Bewertungsstatus und bei automatischen Jogging-/Technikzielen den Fortschritt aus **eigenen, bestätigten** Trainingseinträgen. Bei manuellen Zielen bleibt die Coach-Bewertung verbindlich. Keine Punkte-/EXP-Vergabe durch die Benutzeroberfläche.
+- **#15:** Private Trainingsentwürfe werden automatisch nach 1,3 Sekunden ohne Aktivität gespeichert, sofern die RLS-Tabelle durch spätere Migration existiert. Solange die Migration fehlt, bleibt der Sitzungsentwurf auf dem Gerät. Verzögerte Cloud-Speicherungen werden vor dem Verwerfen oder nach erfolgreicher Einreichung serialisiert, um Wiederauftauchen alter Entwürfe zu vermeiden.
+- **#20/#24/#44/#45:** Neues gemeinsames `takeover-quick-actions.js` auf den vier echten Boxer-/Coach-/Challenge-/Duell-Seiten; mobile Bottom-Sheet-Dialoge, dieselben Aktionsmuster, direkte Wege, tastaturbedienbar, verborgene Coach-Bereiche werden ausgefiltert. Die bisherige Farbgestaltung bleibt bestehen.
+- **#13/#17/#42:** Echte Frontend-RPCs und additive SQL-Migrationen für Live-Duelle, geschützte Historie und Server-Idempotenz lagen bereits vor und werden nicht durch Demo-Implementierungen ersetzt. Ohne spätere Produktionsmigration sind diese Funktionen nicht vollständig live verfügbar.
+- **#37:** Bereits abgelehnte Trainings können bei fehlender verknüpfter Punktebuchung sicher und auditierbar durch denselben Admin innerhalb 15 Minuten in den offenen Status zurückversetzt werden. Bestätigte Trainings mit EXP/Punkten dürfen aus Integritätsgründen **nicht blind** rückgängig gemacht werden; bestehende Admin-Korrektur bleibt vorgeschrieben.
+
+**Aktualisierte UX-Matrix:** `docs/TAKEOVER_LEAGUE_2_UX_45_MATRIX_2026-10-18.md`: **39/45 im Anwendungscode integriert, 5/45 als Staging/Flag vorbereitet, 1/45 aus Sicherheitsgründen bewusst begrenzt.** Die Summe ist weder 45/45 live noch eine Zusicherung vollständig bestandener Echtgeräte-/Auth-Abnahme.
+
+**Vom Eigentümer zurückgestellte Vorabprüfungen:** Ein tatsächliches Produktionsbackup/Restore und signierte Real-Account-Login-Prüfungen sollen ausdrücklich **nicht** als vorgezogene Voraussetzungen verlangt werden. Diese Prüfschritte sind damit *bewusst ungetestet und risikobehaftet*, nicht als bestanden zu bewerten. Die vereinbarte Release-Grenze (kein main-Merge, keine produktiven SQL-Migrationen, kein Live-Deploy ohne ausdrücklich separates GO LIVE) bleibt vollständig bestehen.
