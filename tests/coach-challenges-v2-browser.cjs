@@ -53,6 +53,11 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null}={}){
  settle.click();await tick();await tick();
  assert.equal(reviewCoach.calls.some(c=>c.name==='coach_challenge_v2_settle_manual'),true);
  reviewCoach.dom.window.close();
+ const malicious=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[{id:'unsafe',title:'<img src=x onerror=alert(1)>',description:'<script>alert(1)</script>',status:'open',joined_count:0,duration_days:7,my_enrollment_status:null,is_creator:false}]});
+ assert.equal(malicious.document.querySelector('#list img'),null,'untrusted title must not render HTML');
+ assert.equal(malicious.document.querySelector('#list script'),null,'untrusted description must not render scripts');
+ assert.match(malicious.document.querySelector('#list').textContent,/<img src=x/);
+ malicious.dom.window.close();
  const inactive=await mount({user:{id:'inactive'},profile:{role:'coach',is_active:false}});
  assert.equal(inactive.document.querySelector('#coach').hidden,true);
  assert.equal(inactive.document.querySelector('#list').children.length,0);
