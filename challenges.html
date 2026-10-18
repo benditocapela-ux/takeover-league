@@ -95,6 +95,20 @@ for(const p of people){const line=document.createElement('div');line.append(el('
 for(const [label,approved] of [['Bestanden',true],['Nicht bestanden',false]]){const b=el('button',label);b.type='button';b.onclick=()=>{if(reason.value.trim().length<5){say('Begründung mindestens 5 Zeichen',true);return}act('coach_challenge_v2_review_manual',{p_challenge_id:c.id,p_boxer_id:p.boxer_id,p_approved:approved,p_reason:reason.value.trim()})};line.append(b)}a.append(line)}
 if(!people.length){a.append(el('p','Keine offenen Bewertungen.'));settle.disabled=false;settle.title='Alle Bewertungen erfasst – Abschluss möglich'}else{a.append(el('p',people.length+' offene Bewertungen – Abschluss gesperrt.'))}say(people.length+' offene Bewertungen geladen.')}catch(e){review.disabled=false;say(friendlyError(e),true)}};a.append(review);
 const settle=el('button','EXP abschliessen');settle.type='button';settle.disabled=true;settle.title='Zuerst offene Bewertungen prüfen';settle.onclick=()=>{if(confirm('Alle Bewertungen abgeschlossen? EXP jetzt verbuchen?'))act('coach_challenge_v2_settle_manual',{p_challenge_id:c.id})};a.append(settle)}
+if(c.status!=='draft'){
+ const view=el('button','Bewertungsfortschritt');view.type='button';
+ view.setAttribute('aria-label','Bewertungsfortschritt für '+c.title);
+ const detail=el('p','');detail.className='meta';detail.setAttribute('role','status');
+ view.onclick=async()=>{view.disabled=true;detail.textContent='Fortschritt wird geladen …';
+  try{const d=await rpc('coach_challenge_v2_progress',{p_challenge_id:c.id});
+   if(!d||Array.isArray(d))throw Error('Detaillierter Fortschritt ist in dieser Datenbankversion nicht verfügbar.');
+   detail.textContent='Teilnehmende: '+Number(d.joined_count||0)+' · Bewertet: '+Number(d.reviewed_count||0)+' · Offen: '+Number(d.pending_count||0)
+    +' – Zielerfüllung wird vom Coach beurteilt.';
+  }catch(err){detail.textContent='Fortschritt konnte nicht geladen werden: '+friendlyError(err)}
+  finally{view.disabled=false}
+ };
+ a.append(view,detail);
+}
 list.append(a)}say(data.length+' von '+allChallenges.length+' Challenges angezeigt.')}
 function clearChallengeSession(){
  sessionEpoch++;role='';coach.hidden=true;refresh.hidden=true;targetBoxerId=null;targetBoxerName='';targetedSection.hidden=true;
@@ -161,4 +175,5 @@ document.querySelector('#challengeTemplate').addEventListener('change',e=>{
 });
 document.querySelector('#create').onsubmit=async e=>{e.preventDefault();if(busy||!role)return;busy=true;const epoch=sessionEpoch;const f=new FormData(e.target);try{await rpc('coach_challenge_v2_create_draft',{p_title:f.get('title'),p_description:f.get('description'),p_kind:f.get('kind'),p_duration_days:Number(f.get('days'))});if(epoch!==sessionEpoch||!role)return;e.target.reset();await load()}catch(err){if(epoch===sessionEpoch)say(friendlyError(err),true)}finally{busy=false}};
 init();
+setInterval(()=>{if(!document.hidden&&role&&!busy)load().catch(e=>say(friendlyError(e),true))},90000);
 </script><script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-navigation.js" defer></script></body></html>
