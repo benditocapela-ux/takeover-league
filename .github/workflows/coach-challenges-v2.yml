@@ -12,8 +12,15 @@ on:
       - 'tests/duels-v2-browser.cjs'
       - 'login.html'
       - 'index.html'
+      - 'boxer-profile.html'
+      - 'boxer-profile.js'
+      - 'tests/boxer-profile-actions.cjs'
+      - 'tests/production-v2-personal-targeting.sql'
+      - 'tests/menu-navigation-compat.cjs'
       - 'coach.html'
       - 'boxer.html'
+      - 'boxer-dashboard-polish.css'
+      - 'tests/boxer-dashboard-polish.cjs'
       - 'supabase/production-prep/**'
       - 'supabase/migrations/**'
       - 'tests/production-v2-*.sql'
@@ -34,8 +41,15 @@ on:
       - 'tests/duels-v2-browser.cjs'
       - 'login.html'
       - 'index.html'
+      - 'boxer-profile.html'
+      - 'boxer-profile.js'
+      - 'tests/boxer-profile-actions.cjs'
+      - 'tests/production-v2-personal-targeting.sql'
+      - 'tests/menu-navigation-compat.cjs'
       - 'coach.html'
       - 'boxer.html'
+      - 'boxer-dashboard-polish.css'
+      - 'tests/boxer-dashboard-polish.cjs'
       - 'supabase/production-prep/**'
       - 'supabase/migrations/**'
       - 'tests/production-v2-*.sql'
@@ -56,6 +70,9 @@ jobs:
           node-version: '22'
       - run: npm install --no-save --no-package-lock jsdom@26.1.0
       - run: node tests/coach-challenges-v2.cjs
+      - run: node tests/menu-navigation-compat.cjs
+      - run: node tests/boxer-dashboard-polish.cjs
+      - run: node tests/boxer-profile-actions.cjs
       - run: node tests/coach-challenges-v2-browser.cjs
       - run: node tests/duels-v2-browser.cjs
       - run: node tests/production-v2-migration-bundle.cjs
@@ -185,3 +202,27 @@ jobs:
           psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -Atc \
             "SELECT CASE WHEN (SELECT count(*) FROM public.league_feature_flags WHERE feature_key IN ('coach_challenges','duels') AND is_enabled)=0 AND (SELECT count(*) FROM public.point_transactions)=4 AND (SELECT count(*) FROM public.profiles)=5 AND (SELECT count(*) FROM public.league_coach_challenges)=0 AND (SELECT count(*) FROM public.league_duels)=0 THEN 'safe' ELSE 'unexpected-data-change' END" \
             | grep -qx safe
+
+      - name: Verify direct personal challenge assignment and privacy on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 \
+            -c "CREATE DATABASE profile_actions" >/dev/null
+          psql -X -h localhost -U postgres -d profile_actions -v ON_ERROR_STOP=1 \
+            -f tests/production-v2-personal-targeting.sql
+
+      - name: Rehearse PostgreSQL backup and restore on disposable fixture
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          docker run --rm --network host -e PGPASSWORD=postgres -v "$RUNNER_TEMP:/backups" postgres:${{ matrix.postgres }} pg_dump -h 127.0.0.1 -U postgres -d profile_actions -Fc --no-owner --no-acl -f /backups/takeover_staging.dump
+          createdb -h localhost -U postgres takeover_restore_probe
+          docker run --rm --network host -e PGPASSWORD=postgres -v "$RUNNER_TEMP:/backups" postgres:${{ matrix.postgres }} pg_restore -h 127.0.0.1 -U postgres -d takeover_restore_probe --no-owner --no-acl --exit-on-error /backups/takeover_staging.dump
+          CHECK="SELECT jsonb_build_object('boxers',(SELECT count(*) FROM public.profiles),'challenges',(SELECT count(*) FROM public.league_coach_challenges),'targets',(SELECT count(*) FROM public.league_coach_challenge_targets),'transactions',(SELECT count(*) FROM public.point_transactions),'flags',(SELECT count(*) FROM public.league_feature_flags))::text"
+          BEFORE="$(psql -X -h localhost -U postgres -d profile_actions -Atc "$CHECK")"
+          AFTER="$(psql -X -h localhost -U postgres -d takeover_restore_probe -Atc "$CHECK")"
+          test "$BEFORE" = "$AFTER"
+          echo "PASS: Disposable staging fixtures restored identically; this does NOT verify a production backup."

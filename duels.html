@@ -15,8 +15,18 @@ input,select{background:#0b1422;color:white;border:1px solid #52647c;border-radi
 form{display:grid;gap:9px;max-width:600px}
 label{display:grid;gap:5px}small{color:#bdc8d4}.error{color:#ffaaaa}
 [hidden]{display:none!important}.meta{color:#bdc8d4;margin:6px 0}.actions{display:flex;flex-wrap:wrap;gap:6px}
+.live-overview{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:12px}
+.live-card{border:1px solid #516278;background:#0d1b2e;border-radius:14px;padding:15px;min-width:0}
+.live-names{font-weight:700;overflow-wrap:anywhere}
+.live-points{font-size:24px;font-weight:800;color:#dfbd77;margin:8px 0 4px;font-variant-numeric:tabular-nums}
+.live-track{height:10px;border-radius:999px;background:#4b5d72;overflow:hidden;margin:10px 0}
+.live-fill{height:100%;background:#dfbd77;transition:width .25s}
+.live-hint{display:block;color:#c4d0df;font-size:13px;margin:5px 0;overflow-wrap:anywhere}
+.live-hint.warning{color:#ffcf88}
+.live-reload-note{font-size:13px;color:#b9c5d5}
+button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid #dfbd77;outline-offset:3px}
 </style>
-</head>
+<link rel="stylesheet" href="./takeover-navigation.css"></head>
 <body>
 <main>
 <p><a href="./index.html">Liga</a> · <a href="./boxer.html">Boxer-Dashboard</a> · <a href="./coach.html">Trainer-Dashboard</a></p>
@@ -45,6 +55,12 @@ label{display:grid;gap:5px}small{color:#bdc8d4}.error{color:#ffaaaa}
 </form>
 <p id="inviteHint" class="meta"></p>
 </section>
+<section id="liveOverviewSection" class="panel" aria-label="Live-Duellübersicht" hidden>
+<h2>Live-Duellübersicht</h2>
+<p class="meta">Nur bestätigte Trainingspunkte zählen. Offene Trainings können den Zwischenstand verändern.</p>
+<p id="liveOverviewStatus" class="live-reload-note" role="status">Live-Duelle werden geladen …</p>
+<div id="liveOverviewList" class="live-overview" aria-live="polite"></div>
+</section>
 <section aria-label="Meine Duelle">
 <h2>Meine Duelle</h2>
 <div id="duelList"></div>
@@ -59,27 +75,123 @@ const status=byId('status'),panel=byId('app'),auth=byId('auth'),form=byId('invit
 const el=(tag,text)=>{const node=document.createElement(tag);node.textContent=String(text??'');return node};
 const dateText=value=>{if(!value)return '–';const d=new Date(value);return Number.isNaN(d.getTime())?'–':d.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'})};
 const statuses={pending:'Einladung offen',active:'Aktiv',awaiting_reviews:'Wird ausgewertet',settled:'Abgeschlossen',declined:'Abgelehnt',expired:'Abgelaufen',cancelled:'Abgebrochen'};
-let db,profile=null,eligible=[],duels=[],busy=false,sessionEpoch=0;
+let db,profile=null,eligible=[],duels=[],busy=false,sessionEpoch=0,loadRequestId=0;
+let liveScoreMap=new Map(),liveScoreErrors=new Map(),lastLiveUpdate=null,liveLoading=false;
+const requestedOpponent=(new URLSearchParams(location.search).get('opponent')||'').trim().slice(0,120);
+let targetHint='';
 const say=(text,isError=false)=>{status.textContent=text;status.className=isError?'error':''};
 const message=e=>{const t=String(e?.message||e||'Unbekannter Fehler');if(/jwt expired|invalid jwt/i.test(t))return 'Sitzung abgelaufen. Bitte erneut anmelden.';if(/failed to fetch|networkerror/i.test(t))return 'Netzwerkfehler. Bitte Internetverbindung prüfen.';return t};
 async function rpc(name,args={}){const result=await db.rpc(name,args);if(result.error)throw result.error;return result.data}
-function reset(){sessionEpoch++;profile=null;eligible=[];duels=[];panel.hidden=true;auth.hidden=false;list.replaceChildren()}
+function reset(){
+ sessionEpoch++;loadRequestId++;profile=null;eligible=[];duels=[];
+ liveScoreMap.clear();liveScoreErrors.clear();lastLiveUpdate=null;liveLoading=false;
+ panel.hidden=true;auth.hidden=false;list.replaceChildren();
+ byId('liveOverviewSection').hidden=true;byId('liveOverviewList').replaceChildren();
+}
 function populate(){
  const challenger=form.elements.challenger,opponent=form.elements.opponent;
- const requested=challenger.value;
+ const oldChallenger=challenger.value,oldOpponent=opponent.value;
  challenger.replaceChildren();opponent.replaceChildren();
  const boxer=profile.role==='boxer';
  const challengers=boxer?eligible.filter(x=>x.id===profile.id):eligible;
  for(const item of challengers){const option=el('option',item.display_name);option.value=item.id;challenger.append(option)}
- if(boxer)challenger.disabled=true;else challenger.disabled=false;
- if(!boxer&&challengers.some(x=>x.id===requested))challenger.value=requested;
+ challenger.disabled=boxer;
+ if(oldChallenger&&challengers.some(x=>x.id===oldChallenger))challenger.value=oldChallenger;
  if(boxer&&challengers.length)challenger.value=profile.id;
+ // Only an explicit, valid eligible opponent can be selected. Never quietly
+ // challenge the first unrelated boxer after a malformed or duplicate name.
+ const empty=el('option','Gegner wählen');empty.value='';opponent.append(empty);
  const id=challenger.value;
- for(const item of eligible.filter(x=>x.id!==id)){const option=el('option',item.display_name);option.value=item.id;opponent.append(option)}
- const usable=!!id&&!!opponent.value;form.querySelector('button[type=submit]').disabled=!usable;
- byId('inviteHint').textContent=usable?'Der Gegner muss die Einladung innerhalb von 48 Stunden bestätigen.':'Nicht genügend aktive Boxer für eine neue Einladung.';
+ for(const item of eligible.filter(x=>x.id!==id)){
+   const option=el('option',item.display_name);option.value=item.id;opponent.append(option);
+ }
+ opponent.value='';
+ targetHint='';
+ if(oldOpponent&&eligible.some(x=>x.id===oldOpponent&&x.id!==id)){
+   opponent.value=oldOpponent;
+ }else if(requestedOpponent){
+   const matches=eligible.filter(x=>x.display_name.trim().toLocaleLowerCase('de-CH')===requestedOpponent.toLocaleLowerCase('de-CH'));
+   if(matches.length===1&&matches[0].id!==id)opponent.value=matches[0].id;
+   else if(matches.length>1)targetHint='Mehrere Boxer haben diesen Namen. Bitte Gegner selbst wählen.';
+   else if(matches.length===1&&matches[0].id===id)targetHint='Du kannst dich nicht selbst herausfordern. Bitte anderen Gegner wählen.';
+   else targetHint='Der ausgewählte Boxer ist nicht für Duelle verfügbar. Bitte anderen Gegner wählen.';
+ }
+ const usable=!!id&&!!opponent.value;
+ form.querySelector('button[type=submit]').disabled=!usable;
+ byId('inviteHint').textContent=targetHint||(usable?'Der Gegner muss die Einladung innerhalb von 48 Stunden bestätigen.':'Wähle einen aktiven Gegner für die Einladung.');
 }
+
+const isDuelLive=d=>d.status==='active'||d.status==='awaiting_reviews';
+function validLiveScore(raw,d){
+ if(!raw||typeof raw!=='object'||Array.isArray(raw))return null;
+ const valid=n=>Number.isSafeInteger(n)&&n>=0;
+ if(!valid(raw.challenger_score)||!valid(raw.opponent_score)||!valid(raw.pending))return null;
+ if(raw.status!==d.status||raw.provisional!==true)return null;
+ return {challenger_score:raw.challenger_score,opponent_score:raw.opponent_score,
+  pending:raw.pending,status:raw.status,provisional:true};
+}
+function liveErrorMessage(err){
+ if(['PGRST202','42883'].includes(err?.code)||/could not find the function|does not exist/i.test(String(err?.message||'')))
+  return 'Live-Zwischenstand ist in der Datenbank noch nicht freigeschaltet.';
+ if(err?.code==='42501')return 'Keine Berechtigung für diesen Zwischenstand.';
+ return 'Zwischenstand momentan nicht verfügbar. Über „Duelle aktualisieren“ erneut versuchen.';
+}
+function duelTimeRemaining(d){
+ if(!d.ends_at)return 'Enddatum noch nicht festgelegt';
+ const end=new Date(d.ends_at).getTime();
+ if(!Number.isFinite(end))return 'Enddatum nicht verfügbar';
+ const remaining=Math.ceil((end-Date.now())/60000);
+ if(remaining<=0)return 'Laufzeit abgelaufen – Trainerprüfung ausstehend';
+ const days=Math.floor(remaining/1440),hours=Math.ceil((remaining%1440)/60);
+ if(days>0)return days+' Tage und '+hours+' Std. verbleibend';
+ if(hours>0)return hours+' Std. verbleibend';
+ return remaining+' Min. verbleibend';
+}
+function renderLiveOverview(){
+ const overview=byId('liveOverviewSection'),root=byId('liveOverviewList'),state=byId('liveOverviewStatus');
+ const active=duels.filter(isDuelLive);
+ overview.hidden=!active.length;root.replaceChildren();
+ if(!active.length)return;
+ const failed=active.filter(d=>liveScoreErrors.has(d.id)).length;
+ state.textContent=liveLoading?'Aktualisiere Zwischenstände …':
+   (lastLiveUpdate?'Stand: '+lastLiveUpdate.toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'})+' · ':'')+
+   active.length+' laufende Duelle'+(failed?' · '+failed+' Zwischenstände nicht verfügbar':'')+
+   ' · Aktualisierung alle 90 Sekunden';
+ for(const d of active){
+  const card=document.createElement('div');card.className='live-card';card.dataset.liveDuel=d.id;
+  card.append(el('div',String(d.challenger_name||'Boxer')+' vs. '+String(d.opponent_name||'Boxer')));
+  card.firstChild.className='live-names';
+  const score=liveScoreMap.get(d.id);
+  if(score){
+   const total=score.challenger_score+score.opponent_score;
+   const numbers=el('p',score.challenger_score.toLocaleString('de-CH')+' : '+score.opponent_score.toLocaleString('de-CH'));
+   numbers.className='live-points';card.append(numbers);
+   const track=document.createElement('div');track.className='live-track';
+   track.setAttribute('role','img');
+   track.setAttribute('aria-label',total?
+      (d.challenger_name||'Herausforderer')+': '+score.challenger_score+' Punkte; '+(d.opponent_name||'Gegner')+': '+score.opponent_score+' Punkte':
+      'Noch keine bestätigten Trainingspunkte');
+   const fill=document.createElement('div');fill.className='live-fill';
+   fill.style.width=(total?Math.round(100*score.challenger_score/total):50)+'%';
+   if(total===0)fill.style.background='#718399';
+   track.append(fill);card.append(track);
+   if(score.pending){
+    const p=el('small',score.pending+' offene Trainings können das Ergebnis verändern.');
+    p.className='live-hint warning';card.append(p);
+   }else{const p=el('small','Alle bisher bekannten Einträge sind geprüft.');p.className='live-hint';card.append(p)}
+  }else{
+   const warning=el('p',liveScoreErrors.get(d.id)||(liveLoading?'Berechne Zwischenstand …':'Noch kein Zwischenstand verfügbar.'));
+   warning.className='live-hint warning';card.append(warning);
+  }
+  const countdown=el('small',duelTimeRemaining(d));countdown.className='live-hint';card.append(countdown);
+  const caution=el('small',d.status==='awaiting_reviews'?'Auswertung läuft – noch kein Endergebnis.':'Vorläufig: Der Coach bestätigt das Endergebnis.');
+  caution.className='live-hint';card.append(caution);
+  root.append(card);
+ }
+}
+
 function render(){
+ renderLiveOverview();
  list.replaceChildren();
  if(!duels.length){list.append(el('p','Noch keine Duelle vorhanden.'));return}
  for(const duel of duels){
@@ -91,10 +203,15 @@ function render(){
   if(duel.ends_at)card.append(el('p','Ende: '+dateText(duel.ends_at)));
   if(duel.status==='settled'){
    card.append(el('p','Endstand (Trainingspunkte): '+duel.challenger_score+' : '+duel.opponent_score));
-  }else if(duel.status==='active'){
-   card.append(el('p','Die Trainingspunkte werden nach Ablauf des Duells ausgewertet.'));
-  }else if(duel.status==='awaiting_reviews'){
-   card.append(el('p','Die Auswertung wartet noch auf abgeschlossene Trainingsbewertungen.'));
+  }else if(isDuelLive(duel)){
+   const score=liveScoreMap.get(duel.id);
+   if(score){
+    card.append(el('p','Vorläufiger Zwischenstand: '+score.challenger_score+' : '+score.opponent_score+' Trainingspunkte'));
+    if(score.pending)card.append(el('small',score.pending+' offene Trainings können das Ergebnis verändern.'));
+   }else{
+    card.append(el('p',liveScoreErrors.get(duel.id)||(liveLoading?'Zwischenstand wird geladen …':'Zwischenstand noch nicht verfügbar.')));
+   }
+   if(duel.status==='awaiting_reviews')card.append(el('p','Die Trainerprüfung steht noch aus – keine endgültige Wertung.'));
   }
   if(duel.status==='settled'){
    const verdict=!duel.winner_id?'Unentschieden':duel.winner_id===duel.challenger_id?'Gewinner: '+duel.challenger_name:'Gewinner: '+duel.opponent_name;
@@ -116,12 +233,33 @@ function render(){
  }
 }
 async function load(){
- const epoch=sessionEpoch;
+ const epoch=sessionEpoch,requestId=++loadRequestId;
  const [all,boxers]=await Promise.all([rpc('duel_v2_list_mine'),rpc('duel_v2_eligible_boxers')]);
- if(epoch!==sessionEpoch||!profile)return;
+ if(epoch!==sessionEpoch||requestId!==loadRequestId||!profile)return;
  duels=Array.isArray(all)?all:[];eligible=Array.isArray(boxers)?boxers:[];
+ const active=duels.filter(isDuelLive);
+ // Keep the last valid score visible while the background refresh runs.
+ // Never reuse a score if the duel changed status or disappeared.
+ liveScoreMap=new Map(active.filter(d=>liveScoreMap.get(d.id)?.status===d.status)
+  .map(d=>[d.id,liveScoreMap.get(d.id)]));
+ liveScoreErrors=new Map();liveLoading=active.length>0;
+ if(!active.length)lastLiveUpdate=null;
  populate();render();
- say(duels.length+' Duelle geladen.');
+ if(active.length){
+  const result=await Promise.all(active.map(async d=>{
+   try{
+    const raw=await rpc('duel_v2_live_scores',{p_duel_id:d.id});
+    const score=validLiveScore(raw,d);
+    return {id:d.id,score,error:score?null:'Zwischenstand hat ein ungültiges Datenformat.'};
+   }catch(err){return {id:d.id,score:null,error:liveErrorMessage(err)}}
+  }));
+  if(epoch!==sessionEpoch||requestId!==loadRequestId||!profile)return;
+  liveScoreMap=new Map(result.filter(v=>v.score).map(v=>[v.id,v.score]));
+  liveScoreErrors=new Map(result.filter(v=>v.error).map(v=>[v.id,v.error]));
+  liveLoading=false;lastLiveUpdate=new Date();
+  render();
+ }
+ say(duels.length+' Duelle geladen.'+(liveScoreErrors.size?' Einige Live-Zwischenstände sind noch nicht verfügbar.':''));
 }
 async function mutate(name,args){
  if(busy)return;busy=true;const epoch=sessionEpoch;
@@ -146,10 +284,14 @@ async function init(){
  }catch(e){if(epoch!==sessionEpoch)return;if(!profile)reset();say(message(e),true)}
 }
 form.elements.challenger.addEventListener('change',populate);
+form.elements.opponent.addEventListener('change',()=>{const usable=!!form.elements.challenger.value&&!!form.elements.opponent.value;form.querySelector('button[type=submit]').disabled=!usable;if(usable)byId('inviteHint').textContent='Der Gegner muss die Einladung innerhalb von 48 Stunden bestätigen.'});
 form.onsubmit=e=>{e.preventDefault();if(busy||!profile)return;
  const challenger=form.elements.challenger.value,opponent=form.elements.opponent.value;
  const days=Number(form.elements.duration.value);
  if(!challenger||!opponent||challenger===opponent||![7,14].includes(days)){say('Wähle zwei unterschiedliche Boxer und 7 oder 14 Tage.',true);return}
+ const challengerName=eligible.find(x=>x.id===challenger)?.display_name||'Unbekannter Boxer';
+ const opponentName=eligible.find(x=>x.id===opponent)?.display_name||'Unbekannter Boxer';
+ if(!confirm('Duell-Einladung senden? '+challengerName+' fordert '+opponentName+' für '+days+' Tage heraus. Der Gegner muss innerhalb von 48 Stunden annehmen.'))return;
  mutate('duel_v2_invite',{p_challenger:challenger,p_opponent:opponent,p_duration_days:days});
 };
 byId('refresh').onclick=async()=>{if(busy)return;try{say('Aktualisiere Duelle …');await load()}catch(e){say(message(e),true)}};
@@ -159,6 +301,7 @@ byId('signin').onsubmit=async e=>{e.preventDefault();if(!db)return;const f=new F
  catch(err){say(message(err),true)}
 };
 init();
+setInterval(()=>{if(!document.hidden&&profile&&!busy)load().catch(e=>say(message(e),true))},90000);
 </script>
-</body>
+<script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-quick-actions.js" defer></script><script src="./takeover-navigation.js" defer></script></body>
 </html>
