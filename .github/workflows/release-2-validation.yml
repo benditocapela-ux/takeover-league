@@ -1,0 +1,21 @@
+name: Takeover League 2 - staging validation (no deploy)
+on:
+  push:
+    branches: [release/takeover-league-2-ready]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  static-and-existing-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node tests/release-static-contracts.cjs
+      - run: node tests/boxer-profile-actions.cjs
+      - run: node tests/menu-navigation-compat.cjs
+      - run: node tests/boxer-dashboard-polish.cjs
+      - run: node tests/ux-roadmap-phase0.cjs
