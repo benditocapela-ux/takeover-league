@@ -93,3 +93,9 @@ Stop without writing to production if the read-only inventory shows an unknown s
 - `tests/test_achievement_v2_trigger_contract.py` now statically checks the SQL DELETE trigger, `OLD.boxer_id` recalculation, and SECURITY DEFINER REVOKEs. `.github/workflows/achievement-v2-tests.yml` runs it and watches migration 006 changes. Achievement CI passed for commit `31a9e94c`.
 - TEST Supabase rollback-only flag test: award earned with achievements ON; with achievements OFF, rejecting a qualifying submission did not reconcile the ledger. PASS for disabled-feature guard. This deliberately leaves a stale award *while the flag is off*, so enabling achievements after a disabled interval requires an explicitly reviewed reconciliation/backfill plan.
 - These are not proof of safe production privileges or concurrency. No production changes authorized.
+
+## Duel invitation edge cases (2026-10-18)
+
+- TEST Supabase rollback-only: duplicate pending invite for same pair blocked; decline changes status; fresh 14-day invite after decline succeeds. PASS.
+- TEST Supabase rollback-only: after shifting both `invited_at` and `expires_at` consistently to preserve CHECK constraints, a 49-hour-old invitation cannot be accepted, status becomes `expired`, zero duel EXP ledger entries. PASS.
+- TEST and production not modified by these rolled-back cases. The first expiry fixture attempt violated an expected timestamp CHECK and was corrected before the successful test.
