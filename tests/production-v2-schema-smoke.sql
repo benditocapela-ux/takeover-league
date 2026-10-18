@@ -17,6 +17,7 @@ CREATE TABLE public.profiles (
 CREATE TABLE public.point_transactions (
  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
  boxer_id uuid,
+ submission_id uuid,
  points integer NOT NULL DEFAULT 0,
  exp integer NOT NULL DEFAULT 0,
  description text NOT NULL DEFAULT '',
@@ -25,6 +26,13 @@ CREATE TABLE public.point_transactions (
  category text NOT NULL,
  CONSTRAINT point_transactions_category_check
  CHECK (category IN ('training','trainer_bonus','adjustment','legacy_import','automatic_bonus','achievement_exp'))
+);
+CREATE TABLE public.training_submissions (
+ id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+ boxer_id uuid NOT NULL REFERENCES public.profiles(id),
+ training_date date NOT NULL,
+ status text NOT NULL CHECK (status IN ('pending','approved','rejected')),
+ created_at timestamptz NOT NULL DEFAULT now()
 );
 CREATE TABLE public.league_feature_flags (
  feature_key text PRIMARY KEY CHECK (feature_key ~ '^[a-z][a-z0-9_]*$'),
@@ -130,4 +138,16 @@ BEGIN
   RAISE EXCEPTION 'Rollback affected existing records';
  END IF;
 END $$;
-SELECT 'V2 migration fixture checks passed' AS result;
+\i supabase/migrations/20261018133000_duels_v2.sql
+\i tests/production-v2-duels-flow.sql
+\i supabase/production-prep/rollback_duels_v2_empty_only.sql
+DO $duelRollback$
+BEGIN
+ IF to_regclass('public.league_duels') IS NOT NULL
+ OR to_regclass('public.league_duel_exp_ledger') IS NOT NULL
+ OR to_regclass('public.league_duel_events') IS NOT NULL
+ THEN RAISE EXCEPTION 'Duel V2 rollback incomplete'; END IF;
+ IF (SELECT count(*) FROM public.point_transactions)<>3
+ THEN RAISE EXCEPTION 'Duel test changed original point transactions'; END IF;
+END $duelRollback$;
+SELECT 'Challenge and Duel V2 schema/RPC integration checks passed' AS result;
