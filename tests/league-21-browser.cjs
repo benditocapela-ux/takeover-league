@@ -1,0 +1,133 @@
+'use strict';
+// Full Chromium UI smoke with simulated API; never uses a production login.
+const assert=require('node:assert/strict'),fs=require('node:fs'),http=require('node:http'),path=require('node:path');
+const {chromium}=require('playwright');
+const root=process.cwd(),mime={'.html':'text/html','.js':'text/javascript','.css':'text/css','.webp':'image/webp'};
+const server=http.createServer((req,res)=>{
+ const rel=(new URL(req.url,'http://localhost').pathname.slice(1)||'index.html');
+ const file=path.resolve(root,decodeURIComponent(rel));
+ if(!file.startsWith(root+path.sep)){res.writeHead(403);res.end();return}
+ fs.readFile(file,(err,buf)=>{if(err){res.writeHead(404);res.end();return}
+ res.setHeader('Content-Type',mime[path.extname(file)]||'application/octet-stream');res.end(buf)});
+});
+function mockSupabase(){
+ const id='11111111-1111-4111-8111-111111111111';
+ const prof={id,auth_user_id:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',display_name:'Boxer Alpha',role:window.__testRole||'boxer',is_active:true};
+ const boxers=[
+  {id,display_name:'Boxer Alpha',role:'boxer',is_active:true},
+  {id:'22222222-2222-4222-8222-222222222222',display_name:'Boxer Beta',role:'boxer',is_active:true},
+  {id:'33333333-3333-4333-8333-333333333333',display_name:'Boxer Gamma',role:'boxer',is_active:true}
+ ];
+ const goals=[],progress=[];
+ window.__testCalls=[];
+ const league={
+  id:'dddddddd-dddd-4ddd-8ddd-dddddddddddd',title:'TEST Team Arena',
+  status:'active',duration_days:7,
+  participants:boxers.map(p=>({boxer_id:p.id,name:p.display_name,status:'accepted'})),results:[]
+ };
+ function from(table){
+  const constraints=[];
+  const builder={
+   select(){return builder},
+   eq(key,value){constraints.push([key,value]);return builder},
+   neq(){return builder},
+   order(){return builder},
+   limit(){return builder},
+   maybeSingle:async()=>({data:table==='profiles'?prof:null,error:null}),
+   then(resolve,reject){
+    let data=[];
+    if(table==='profiles')data=boxers;
+    if(table==='league_boxer_goals_v21')data=goals;
+    if(table==='league_goal_progress_v21')data=progress;
+    if(table==='training_submissions')data=[];
+    data=data.filter(row=>constraints.every(([key,value])=>row[key]===value));
+    return Promise.resolve({data,error:null}).then(resolve,reject)
+   }
+  };
+  return builder;
+ }
+ window.__testDb={
+  auth:{getUser:async()=>({data:{user:{id:prof.auth_user_id}},error:null})},
+  from,
+  async rpc(name,args={}){
+   window.__testCalls.push({name,args});
+   if(name==='league_v21_arena_list_mine')return {data:[league],error:null};
+   if(name==='league_v21_arena_live_scores')return {data:{status:'active',provisional:true,
+    participants:[{name:'Boxer Alpha',score:50,rank:1,pending:1},{name:'Boxer Beta',score:20,rank:2,pending:0},{name:'Boxer Gamma',score:0,rank:3,pending:0}]},error:null};
+   if(name==='league_v21_arena_create')return {data:'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee',error:null};
+   if(name==='league_v21_save_goal'){
+    goals.push({id:'ffffffff-ffff-4fff-8fff-ffffffffffff',boxer_id:id,title:args.p_title,metric:args.p_metric,
+    target_value:args.p_target,starts_on:'2026-10-18',ends_on:args.p_end_date,status:'active',reward_exp:0});
+    return {data:goals[0].id,error:null};
+   }
+   if(name==='league_v21_admin_create_season')return {data:'ssssssss-aaaa-4aaa-8aaa-aaaaaaaaaaaa',error:null};
+   return {data:null,error:{message:'Mock RPC not configured: '+name}};
+  }
+ };
+}
+async function main(){
+ await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
+ const base='http://127.0.0.1:'+server.address().port;
+ const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+ try{
+  for(const width of [375,1240]){
+   const context=await browser.newContext({viewport:{width,height:850}});
+   try{
+    await context.addInitScript({content:mockSupabase.toString().replace(/^function mockSupabase\(\)/,'function mockSupabase()')+';mockSupabase();'});
+    await context.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm',route=>
+      route.fulfill({status:200,contentType:'text/javascript',body:'export const createClient=()=>window.__testDb;'}));
+    await context.route('https://iqarjivcrddcixrvqbfb.supabase.co/rest/v1/**',route=>{
+     const url=route.request().url();
+     const response=url.includes('/rpc/get_public_levels')?[{boxer_name:'Boxer Alpha',lifetime_exp:1200}]
+      :url.includes('/rpc/get_public_leaderboard')?[{boxer_name:'Boxer Alpha',monthly_points:120,rank_position:1,approved_sessions:10,points_training:300,points_bonus:20}]
+      :url.includes('/rpc/get_public_boxer_avatars')?[{boxer_name:'Boxer Alpha',avatar_key:null,avatar_url:null}]:[];
+     route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(response)});
+    });
+    for(const [route,role] of [['goals.html','boxer'],['arena.html','admin'],['league-manager.html','admin'],
+       ['league-challenges.html','boxer'],['league-history.html','boxer'],['boxer-profile.html?name=Boxer%20Alpha','boxer']]){
+     const page=await context.newPage();const errors=[];
+     page.on('pageerror',e=>errors.push(e.message));
+     await page.addInitScript({content:'window.__testRole='+JSON.stringify(role)});
+     await page.goto(base+'/'+route,{waitUntil:'domcontentloaded'});
+     if(route.startsWith('goals')) {
+      await page.locator('#app').waitFor({state:'visible'});
+      await page.fill('#title','TEST Zwanzig Trainings');
+      await page.fill('#target','20');
+      await page.locator('#goalForm button[type=submit]').click();
+      await page.waitForFunction(()=>window.__testCalls.some(x=>x.name==='league_v21_save_goal'));
+      await page.locator('#goals article').first().waitFor();
+     }else if(route.startsWith('arena')){
+      await page.locator('#adminPanel').waitFor({state:'visible'});
+      await page.waitForFunction(()=>document.querySelector('#list')?.textContent.includes('50 Punkte'));
+      assert.match(await page.locator('#list').innerText(),/50 Punkte/);
+      await page.fill('#title','TEST Mehrgegner Arena');
+      await page.locator('#boxers').selectOption([
+       '11111111-1111-4111-8111-111111111111',
+       '22222222-2222-4222-8222-222222222222',
+       '33333333-3333-4333-8333-333333333333']);
+      await page.locator('#create button').click();
+      await page.waitForFunction(()=>window.__testCalls.some(x=>x.name==='league_v21_arena_create'));
+     }else if(route.startsWith('league-manager')){
+      await page.locator('#dashboard').waitFor({state:'visible'});
+      await page.fill('#seasonTitle','TEST Herbst 2026');
+      await page.locator('#seasonForm button').click();
+      await page.waitForFunction(()=>window.__testCalls.some(x=>x.name==='league_v21_admin_create_season'));
+     }else if(route.startsWith('league-history')){
+      await page.waitForFunction(()=>document.querySelector('#seasons')?.textContent.includes('Noch keine'));
+     }else if(route.startsWith('boxer-profile')){
+      await page.locator('#profileCard').waitFor({state:'visible'});
+      assert.ok(await page.locator('#sportRadar svg polygon').count()>0,'Radar not rendered');
+     }else if(route.startsWith('league-challenges')){
+      await page.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('Neue Wettbewerbe'));
+     }
+     const overflow=await page.evaluate(()=>document.documentElement.scrollWidth-innerWidth);
+     assert.ok(overflow<=5,'Horizontal overflow at '+width+' on '+route+': '+overflow);
+     assert.deepEqual(errors,[],'Runtime exception '+route+' '+width);
+     console.log('PASS V2.1 browser '+route+' '+width+'px');
+     await page.close();
+    }
+   }finally{await context.close()}
+  }
+ }finally{await browser.close();server.close()}
+}
+main().catch(e=>{console.error(e);server.close();process.exit(1)});
