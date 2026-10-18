@@ -46,6 +46,17 @@ async function load(){
   track.setAttribute('aria-label','Zielerreichung');track.setAttribute('aria-valuemin','0');track.setAttribute('aria-valuemax','100');track.setAttribute('aria-valuenow',String(pct));
   const fill=document.createElement('div');fill.style.width=pct+'%';track.append(fill);card.append(track);
   card.append(node('p','Frist: '+g.ends_on+' · '+(g.status==='active'?'Aktiv':g.status)));
+  if(g.status==='active'&&pct>=100){
+   const complete=node('button','Zielabschluss serverseitig prüfen');complete.type='button';
+   complete.addEventListener('click',async()=>{
+    complete.disabled=true;
+    const result=await db.rpc('league_v21_complete_goal',{p_goal:g.id});
+    if(result.error){say('Prüfung fehlgeschlagen: '+result.error.message);complete.disabled=false;return}
+    say(result.data?.status==='completed'?'Ziel erreicht und bestätigt – keine zusätzlichen EXP verbucht.':'Ziel noch nicht erfüllt.');
+    await load();
+   });
+   card.append(complete);
+  }
   if(g.metric==='custom'&&g.status==='active'){
    const form=document.createElement('form');const label=node('label','Manuellen Fortschritt hinzufügen');
    const amount=document.createElement('input');amount.type='number';amount.min='0.01';amount.max='1000000';amount.step='0.01';amount.required=true;amount.placeholder='Zusätzlicher Fortschritt';
