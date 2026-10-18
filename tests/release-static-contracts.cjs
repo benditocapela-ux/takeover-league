@@ -21,7 +21,18 @@ const cases=[
 ['Duel invitation confirms exact opponent and duration',()=>assert.match(duels,/if\(!confirm\('Duell-Einladung senden\?/)],
 ['Training calendar uses confirmed Supabase entries',()=>{assert.match(boxer,/historyRows\.filter\(row=>row\.status==='approved'/);assert.match(boxer,/renderTrainingInsights\(\)/)}],
 ['Server idempotency has a partial unique key',()=>{const idemp=read('supabase/migrations/20261018200000_training_submission_idempotency.sql');assert.match(idemp,/unique index if not exists/i);assert.match(idemp,/client_request_id is not null/);assert.match(boxer,/client_request_id=requestId/)}],
-['No application uses service role credentials',()=>{for(const file of ['boxer.html','coach.html','duels.html','challenges.html','boxer-compare.html'])assert.doesNotMatch(read(file),/sb_secret_|service_role/i)}]
+['No application uses service role credentials',()=>{for(const file of ['boxer.html','coach.html','duels.html','challenges.html','boxer-compare.html'])assert.doesNotMatch(read(file),/sb_secret_|service_role/i)}],
+['Undo rejection is admin-only, bounded, audited and has no linked ledger',()=>{
+ const u=read('supabase/migrations/20261018213000_admin_undo_recent_rejection.sql');
+ assert.match(u,/p.role='admin'/);assert.match(u,/reviewed_by is distinct from actor.id/);
+ assert.match(u,/interval '15 minutes'/);assert.match(u,/if exists\(select 1 from public.point_transactions t\s+where t.submission_id=training.id\)/);
+ assert.match(u,/insert into public.training_audit/);assert.match(coach,/admin_undo_recent_rejection/);
+}],
+['Private avatar update cannot be called anonymously after staged migration',()=>{
+ const sql=read('supabase/migrations/20261018214000_avatar_rpc_permissions.sql');
+ assert.match(sql,/REVOKE ALL ON FUNCTION public.update_my_boxer_avatar\(text,text\) FROM PUBLIC,anon/);
+ assert.match(sql,/GRANT EXECUTE ON FUNCTION public.update_my_boxer_avatar\(text,text\) TO authenticated/);
+}]
 ];
 let n=0;for(const [label,fn] of cases){try{fn();n++;console.log('PASS',label)}catch(e){console.error('FAIL',label,e.message);process.exitCode=1}}
 console.log(n+'/'+cases.length+' static source checks passed. No browser/E2E claims.');
