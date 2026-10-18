@@ -36,7 +36,7 @@ label{display:grid;gap:5px}small{color:#bdc8d4}.error{color:#ffaaaa}
 <div class="actions"><button id="refresh" type="button">Duelle aktualisieren</button><button id="logout" type="button">Abmelden</button></div>
 <section class="panel" id="invitePanel">
 <h2>Duell herausfordern</h2>
-<p>Wähle zwei aktive Boxer. Ein Duell dauert 7 oder 14 Tage und wird erst nach Annahme aktiv.</p>
+<p>Wähle zwei aktive Boxer. Ein Duell dauert 7 oder 14 Tage und wird erst nach Annahme aktiv. Vor dem Senden wird dir die Einladung zur Kontrolle angezeigt.</p>
 <form id="invite">
 <label>Herausforderer<select name="challenger" required></select></label>
 <label>Gegner<select name="opponent" required></select></label>
@@ -150,6 +150,10 @@ form.onsubmit=e=>{e.preventDefault();if(busy||!profile)return;
  const challenger=form.elements.challenger.value,opponent=form.elements.opponent.value;
  const days=Number(form.elements.duration.value);
  if(!challenger||!opponent||challenger===opponent||![7,14].includes(days)){say('Wähle zwei unterschiedliche Boxer und 7 oder 14 Tage.',true);return}
+ const challengerName=eligible.find(item=>item.id===challenger)?.display_name||'Unbekannter Boxer';
+ const opponentName=eligible.find(item=>item.id===opponent)?.display_name||'Unbekannter Boxer';
+ if(!confirm('Duell-Einladung senden?\\n'+challengerName+' vs. '+opponentName+
+   '\\nDauer: '+days+' Tage\\nDer Gegner muss innerhalb von 48 Stunden annehmen.'))return;
  mutate('duel_v2_invite',{p_challenger:challenger,p_opponent:opponent,p_duration_days:days});
 };
 byId('refresh').onclick=async()=>{if(busy)return;try{say('Aktualisiere Duelle …');await load()}catch(e){say(message(e),true)}};
