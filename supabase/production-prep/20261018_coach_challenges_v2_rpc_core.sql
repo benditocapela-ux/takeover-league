@@ -151,8 +151,8 @@ BEGIN
  THEN RAISE EXCEPTION 'Not challenge owner' USING ERRCODE='42501'; END IF;
  IF p_action='open' AND c.status='draft' THEN
    IF pg_catalog.char_length(pg_catalog.btrim(COALESCE(c.goal_spec->>'goal_text','')))<5
-   OR c.goal_spec->>'review_mode'<>'manual'
-   OR (c.goal_spec->>'reward_exp')::integer NOT IN (25,50,100,150,200)
+   OR c.goal_spec->>'review_mode' IS DISTINCT FROM 'manual'
+   OR COALESCE((c.goal_spec->>'reward_exp')::integer,0) NOT IN (25,50,100,150,200)
    THEN RAISE EXCEPTION 'Valid manual goal and reward required' USING ERRCODE='22023'; END IF;
    next_status:='open';
  ELSIF p_action='cancel' AND c.status IN ('draft','open') THEN next_status:='cancelled';
