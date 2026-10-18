@@ -139,4 +139,26 @@ assert.doesNotMatch(managerDates,/T23:59:59\+02:00|T00:00:00\+02:00/);
 const releaseGates=read('docs/TAKEOVER_LEAGUE_21_FINAL_RELEASE_GATES.md');
 assert.match(releaseGates,/NOCH OFFEN|NOCH NICHT|NOCH|NOT/);
 assert.match(releaseGates,/Backup/);
+const goalCorrections=read('supabase/migrations/20261019033000_league_21_goal_training_corrections.sql');
+assert.match(goalCorrections,/OLD\.boxer_id IS DISTINCT FROM NEW\.boxer_id/);
+assert.match(goalCorrections,/OLD\.training_date IS DISTINCT FROM NEW\.training_date/);
+assert.match(goalCorrections,/OLD\.jogging_km IS DISTINCT FROM NEW\.jogging_km/);
+assert.match(goalCorrections,/OLD\.technique_minutes IS DISTINCT FROM NEW\.technique_minutes/);
+assert.match(goalCorrections,/NEW\.training_date between x\.starts_on and x\.ends_on/);
+assert.match(goalCorrections,/OLD\.training_date between x\.starts_on and x\.ends_on/);
+assert.match(read('supabase/migrations/20261019034000_league_21_goal_actual_exp_response.sql'),/awarded=expected_exp/);
+assert.doesNotMatch(read('supabase/migrations/20261019034000_league_21_goal_actual_exp_response.sql'),/end if;\s+awarded=g\.reward_exp;\s+end if;/);
+const preflight=read('supabase/production-prep/league_21_preflight_read_only.sql');
+const postflight=read('supabase/production-prep/league_21_postflight_read_only.sql');
+for(const [name,sql] of [['preflight',preflight],['postflight',postflight]]){
+ assert.doesNotMatch(sql,/\b(?:insert\s+into|update\s+public\.|delete\s+from|drop\s+table|create\s+table|grant\s+|revoke\s+)\b/i,
+  'Release '+name+' must remain read only');
+ assert.match(sql,/passed/);
+}
+assert.match(preflight,/approved_training_has_ledger/);
+assert.match(preflight,/no_duplicate_training_ledger/);
+assert.match(postflight,/no_direct_client_v21_writes/);
+assert.match(postflight,/goal_exp_ledger_integrity/);
+assert.match(postflight,/global_exp_ledger_integrity/);
+assert.match(read('tests/league-21-goal-training-corrections-transaction.sql'),/ROLLBACK;/i);
 console.log('PASS V2.1 complete foundation contracts: goals, global challenges, backfill, season closure, Hall of Fame, public profile, H2H and reward isolation');
