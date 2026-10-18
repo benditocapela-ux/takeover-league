@@ -113,11 +113,15 @@ async function listGlobals(){
   if(c.status==='active'&&new Date(c.ends_at).getTime()<=Date.now()){
    const button=document.createElement('button');button.textContent='Ergebnis endgültig berechnen';
    button.type='button';button.onclick=async()=>{
-    if(!confirm('Die Liga-Challenge abschliessen und die Rangliste einmalig speichern? Es werden KEINE EXP vergeben.'))return;
+    const awards=Number(c.completion_exp||0)>0||Number(c.winner_exp||0)>0;
+    const notice=awards
+     ?'ACHTUNG: Liga-Challenge endgültig abschliessen? Alle erfolgreichen Boxer erhalten '+c.completion_exp+' EXP; Boxer auf Platz 1 zusätzlich '+c.winner_exp+' EXP. Die EXP werden sofort serverseitig gebucht. Dieser Abschluss lässt sich nicht einfach rückgängig machen.'
+     :'Liga-Challenge endgültig abschliessen? Die Rangliste wird gespeichert. Für diese Challenge sind 0 EXP als Belohnung festgelegt.';
+    if(!confirm(notice))return;
     button.disabled=true;
     const r=await db.rpc('league_v21_admin_close_global_challenge',{p_challenge:c.id});
     if(r.error){say('Abschluss fehlgeschlagen: '+r.error.message);button.disabled=false;return}
-    say('Challenge geschlossen – '+(r.data?.participants||0)+' Platzierungen gespeichert. Keine EXP gebucht.');
+    say('Challenge geschlossen – '+(r.data?.participants||0)+' Platzierungen gespeichert. '+(r.data?.rewards_paid?'EXP-Belohnungen wurden serverseitig vergeben.':'Keine EXP-Belohnungen konfiguriert.'));
     await listGlobals();
    };card.append(button)
   }root.append(card);
