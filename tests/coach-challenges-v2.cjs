@@ -2,4 +2,8 @@ const fs=require('node:fs');const vm=require('node:vm');const assert=require('no
 for(const page of ['challenges-v2-preview.html','challenges.html']){const markup=fs.readFileSync(page,'utf8');assert.match(markup,/<select name="days">/,'duration must be restricted to supported values');assert.match(markup,/<option value="7">7 Tage<\/option>/);assert.match(markup,/<option value="14">14 Tage<\/option>/);assert.match(markup,/<option value="30">30 Tage<\/option>/);}
 
 assert.match(production,/mayManage\(c\)/,'admin management helper missing');assert.match(production,/id="challengeSearch"/,'challenge search missing');assert.match(production,/id="challengeStatus"/,'status filter missing');assert.match(production,/id="refresh"/,'refresh control missing');
+const secureSql=fs.readFileSync('supabase/production-prep/20261018_restrict_achievement_recalculation.sql','utf8');
+assert.match(secureSql,/REVOKE EXECUTE ON FUNCTION public\.recalculate_boxer_achievements_v2\(uuid\)/);
+assert.match(secureSql,/FROM PUBLIC, anon, authenticated/);
+assert.doesNotMatch(secureSql,/DROP FUNCTION|CASCADE/);
 console.log('Coach Challenges V2: static safety and syntax checks passed');
