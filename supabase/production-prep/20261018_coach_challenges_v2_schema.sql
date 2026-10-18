@@ -14,7 +14,8 @@ CREATE TABLE public.league_coach_challenges (
  ends_at timestamptz,
  settled_at timestamptz,
  updated_at timestamptz NOT NULL DEFAULT now(),
- CONSTRAINT coach_challenge_dates_valid CHECK (starts_at IS NULL OR ends_at IS NULL OR ends_at > starts_at)
+ CONSTRAINT coach_challenge_dates_valid CHECK (starts_at IS NULL OR ends_at IS NULL OR ends_at > starts_at),
+ CONSTRAINT coach_challenge_settlement_dates_valid CHECK (settled_at IS NULL OR ends_at IS NOT NULL)
 );
 CREATE TABLE public.league_coach_challenge_entries (
  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -48,7 +49,7 @@ CREATE INDEX league_coach_challenges_status_dates_idx ON public.league_coach_cha
 CREATE INDEX league_coach_challenge_entries_boxer_idx ON public.league_coach_challenge_entries(boxer_id,status);
 CREATE INDEX league_coach_challenge_reviews_reviewer_idx ON public.league_coach_challenge_reviews(reviewed_by);
 CREATE INDEX league_coach_challenge_exp_ledger_boxer_idx ON public.league_coach_challenge_exp_ledger(boxer_id);
--- Fail closed even for table owners except privileged bypass-RLS roles.
+-- RLS blocks ordinary roles; table owners and BYPASSRLS roles are exempt unless FORCE RLS is enabled.
 ALTER TABLE public.league_coach_challenges ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.league_coach_challenge_entries ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.league_coach_challenge_reviews ENABLE ROW LEVEL SECURITY;
