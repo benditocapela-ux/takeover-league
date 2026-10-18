@@ -717,4 +717,6 @@ BEGIN
  THEN RAISE EXCEPTION 'Client table permission unexpected: %',tbl; END IF;
  END LOOP;
 END $postflight$;
+-- Inform Supabase PostgREST that newly created RPCs exist after transaction commit.
+NOTIFY pgrst, 'reload schema';
 COMMIT;
