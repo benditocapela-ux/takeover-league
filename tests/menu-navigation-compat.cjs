@@ -48,6 +48,16 @@ assert.equal(backdrop.hidden,true);
 button.click();
 backdrop.click();
 assert.equal(panel.getAttribute('aria-hidden'),'true');
-assert.equal(doc.querySelectorAll('.bottom button.nav[data-tab]').length,4);
-assert.equal(doc.querySelectorAll('.bottom .nav').length,6);
+assert.equal(doc.querySelectorAll('.bottom button.nav[data-tab]').length,2);
+assert.deepEqual(
+ Array.from(doc.querySelectorAll('.bottom button.nav[data-tab]')).map(x=>x.dataset.tab),
+ ['podium','ranking'],
+ 'Footer must show only podium and ranking as content tabs'
+);
+assert.equal(doc.querySelectorAll('.bottom .nav').length,4);
+assert.equal(doc.querySelectorAll('.bottom [data-tab="levels"], .bottom [data-tab="history"]').length,0);
+assert.ok(panel.querySelector('[data-menu-tab="levels"]'),'Levels remains in menu');
+assert.ok(panel.querySelector('[data-menu-tab="history"]'),'History remains in menu');
+assert.match(html,/getElementById\('takeover-menu-open'\)\?\.classList\.toggle\('active',tab==='levels'\|\|tab==='history'\)/,
+ 'Menu trigger must show active state when levels or history is selected');
 console.log('PASS: Original league palette + tabs preserved; menu, links, keyboard and close controls work.');
