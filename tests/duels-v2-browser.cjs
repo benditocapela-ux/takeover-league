@@ -77,6 +77,24 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  assert.equal(boxer.document.querySelector('#auth').hidden,false);
  boxer.dom.window.close();
 
+ const raced=await mount();
+ let resolveLateList;
+ const originalRpc=raced.db.rpc;
+ raced.db.rpc=(name,args)=>name==='duel_v2_list_mine'
+   ?new Promise(resolve=>{resolveLateList=resolve})
+   :originalRpc(name,args);
+ raced.document.querySelector('#refresh').click();await tick();
+ assert.equal(typeof resolveLateList,'function');
+ raced.document.querySelector('#logout').click();await tick();
+ resolveLateList({data:[{
+  id:'secret',challenger_id:'boxer-1',challenger_name:'Privater Teilnehmer',
+  opponent_id:'boxer-2',opponent_name:'Nur für Mitglieder',status:'pending',duration_days:7
+ }],error:null});
+ await tick();await tick();
+ assert.equal(raced.document.querySelector('#app').hidden,true,'logout hides duel application');
+ assert.equal(raced.document.querySelector('#duelList').children.length,0,'late requests must not restore private duels');
+ assert.doesNotMatch(raced.document.body.textContent,/Nur für Mitglieder/);
+ raced.dom.window.close();
  const coach=await mount({profile:{id:'coach-1',role:'coach',is_active:true}});
  const form=coach.document.querySelector('#invite');
  assert.equal(form.elements.challenger.disabled,false);
