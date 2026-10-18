@@ -37,12 +37,7 @@ UPDATE public.profiles SET auth_user_id='11111111-1111-4111-8111-111111111111', 
 INSERT INTO public.point_transactions(category) VALUES ('training');
 INSERT INTO public.league_feature_flags(feature_key,display_name,is_enabled)
  VALUES ('boxer_duels','Legacy Duels',false),('league_challenges','Legacy Challenges',false);
-\i supabase/production-prep/20261018_allow_coach_role.sql
-\i supabase/production-prep/20261018_extend_transaction_categories.sql
-\i supabase/production-prep/20261018_v2_feature_flags_disabled.sql
-\i supabase/production-prep/20261018_coach_challenges_v2_schema.sql
-\i supabase/production-prep/20261018_coach_challenges_v2_rpc_core.sql
-\i supabase/production-prep/20261018_coach_challenges_v2_rpc_review.sql
+\i supabase/migrations/20261018131000_coach_challenges_v2.sql
 DO $$
 BEGIN
  IF (SELECT count(*) FROM public.profiles) <> 1 OR
