@@ -6,7 +6,7 @@ const {JSDOM}=require('jsdom');
 const html=fs.readFileSync('challenges-v2-preview.html','utf8');
 const source=html.match(/<script type="module">([\s\S]*?)<\/script>/)[1].replace(/^import .*;\s*$/gm,'');
 const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
-async function mount({user=null,profile=null,challenges=[],rpcError=null}={}){
+async function mount({user=null,profile=null,challenges=[],rpcError=null,candidates=[]}={}){
  const dom=new JSDOM(html,{url:'https://example.test/challenges-v2-preview.html',runScripts:'outside-only'});
  const calls=[];
  const db={
