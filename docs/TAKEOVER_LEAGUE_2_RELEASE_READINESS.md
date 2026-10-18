@@ -73,3 +73,9 @@ Stop without writing to production if the read-only inventory shows an unknown s
 - TEST Supabase rollback-only SQL: a later valid reviewed training changed the duel winner from Boxer 1 to Boxer 2, corrected existing EXP ledger entries to 25/100, kept exactly two reward transactions, and recorded one `corrected` event. PASS.
 - TEST Supabase rollback-only SQL with simulated JWT subject: boxer attempt to invoke `duel_v2_reconcile` failed with coach-only authorization error, did not create reward ledger; simulated trainer then settled. PASS. This is NOT a signed HTTP JWT test.
 - After rollback, all three TEST feature flags remained disabled. Production remains unchanged.
+
+## Achievement ownership transfer integration (2026-10-18)
+
+- TEST Supabase rollback-only SQL: ten approved sessions earned `training_10` for Boxer 1; transferring all ten `training_submissions.boxer_id` values to Boxer 2 revoked the first award and granted the second. Separate `revoked` and `earned` event rows verified. PASS.
+- A further re-earn transition test was blocked by tool safety checks; **not passed**.
+- Post-test read-only inspection: zero test training submissions, achievement ledgers/events and duels; `achievements`, `duels`, and `coach_challenges` flags all false.
