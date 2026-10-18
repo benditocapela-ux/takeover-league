@@ -41,7 +41,7 @@ Stand: 18.10.2026, Branch `release/takeover-league-2-ready`.
 | 34 | Zuletzt bearbeitete Boxer | Code integriert | coach.html |
 | 35 | Aufgabenfilter | Code integriert | coach.html |
 | 36 | Coach-Aktionsvorlagen | Code integriert | challenges.html |
-| 37 | Sicheres Rückgängig | Offen | nicht umgesetzt: sicherer Punkte-/EXP-Rollback erforderlich |
+| 37 | Sicheres Rückgängig | Teilweise | coach.html; 20261018213000_admin_undo_recent_rejection.sql – nur eigene Ablehnung innerhalb 15 Min., ohne verknüpfte Buchung; bestätigte Punkte ausschliesslich über geprüfte Admin-Korrektur |
 | 38 | Prüfung vor Sammelaktionen | Code integriert | coach.html |
 | 39 | Automatische Aktualisierung | Code integriert | coach.html; duels.html; challenges.html |
 | 40 | Direktzugriff auf Boxer | Code integriert | coach.html |
@@ -51,8 +51,8 @@ Stand: 18.10.2026, Branch `release/takeover-league-2-ready`.
 | 44 | Kürzere Klickwege | Teilweise | coach.html; boxer.html |
 | 45 | Einheitliche Bedienmuster | Teilweise | takeover-navigation.js; shared CSS |
 
-**Bilanz:** 34/45 in den realen Code integriert, 5/45 als Staging/Flag vorbereitet, 5/45 teilweise umgesetzt, 1/45 offen. Die Zahl 34 ist **kein** End-to-End-Fertigstellungsgrad; vollständige produktive Abnahme aller 45 = **nicht nachgewiesen**.
+**Bilanz:** 34/45 in den realen Code integriert, 5/45 als Staging/Flag vorbereitet, 6/45 teilweise umgesetzt, 0/45 vollständig ungeplant. Die Zahl 34 ist **kein** End-to-End-Fertigstellungsgrad; vollständige produktive Abnahme aller 45 = **nicht nachgewiesen**.
 
-**Release-Grenzen:** #3 Feature-Flag derzeit aus. #13, #15, #17 und #42 benötigen geprüfte produktive SQL-Migrationen. #37 sichere rückwirkende Änderung bestätigter Punkte/EXP ist absichtlich nicht als einfachen Undo-Button umgesetzt, weil eine transaktionale Korrektur- und Auditstrategie nötig ist. #12/#20/#24/#44/#45 verlangen zusätzliche API- und mobile E2E-Abnahme.
+**Release-Grenzen:** #3 Feature-Flag derzeit aus. #13, #15, #17 und #42 benötigen geprüfte produktive SQL-Migrationen. #37 ist auf sichere, punktlose Ablehnungsrücknahmen beschränkt (im TEST inkl. RLS, Replay-Sperre, Audit und Null-Ledger-Guard geprüft); bereits bestätigte/vergütete Trainings gehen weiter über die bestehende kontrollierte Admin-Korrektur. #12/#20/#24/#44/#45 verlangen zusätzliche API- und mobile E2E-Abnahme.
 
 **Tests:** SQL-Rollenchecks auf isoliertem TEST für privaten Entwurf, persönliche Challenge-Zuweisung, Admin-Audit und Live-Duell-Zugriff; DB-Retry-ID-Eindeutigkeit transaktional überprüft. JSDOM/statische Regressionen auf GitHub Actions sind kein Ersatz für signierte HTTP- und reale Gerätesimulationen.
