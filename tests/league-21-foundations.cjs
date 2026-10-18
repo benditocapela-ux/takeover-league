@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),assert=require('node:assert/strict'),{JSDOM}=require('jsdom');
 const read=f=>fs.readFileSync(f,'utf8');
-for(const f of ['goals.html','league-history.html','league-challenges.html','boxer-profile.html']){
+for(const f of ['goals.html','league-history.html','league-challenges.html','league-manager.html','boxer-profile.html']){
  const d=new JSDOM(read(f),{url:'https://example.test/takeover-league/'+f});
  assert.ok(d.window.document.querySelector('meta[name=viewport]'),'responsive viewport '+f);
  assert.ok(d.window.document.querySelector('script[src="./takeover-navigation.js"]'),'site navigation '+f);
@@ -51,4 +51,31 @@ assert.match(achievements,/public\.recalculate_boxer_achievements_v2/);
 const duel=read('supabase/migrations/20261019013000_league_21_duel_reward_policy_quote.sql');
 assert.match(duel,/preview_only_no_payout/);
 assert.doesNotMatch(duel,/insert into public\.point_transactions|update public\.point_transactions/i);
-console.log('PASS V2.1 goals, achievement backfill, global challenges, public radar and H2H, seasons, safe quote isolation');
+const manager=read('league-manager.html');
+for(const rpc of ['league_v21_admin_create_season','league_v21_admin_season_action',
+ 'league_v21_admin_create_global_challenge','league_v21_reconcile_achievements',
+ 'league_v21_refresh_public_records','league_v21_save_goal'])assert.ok(manager.includes(rpc),'Manager missing '+rpc);
+assert.match(manager,/p\.data\.role!=='admin'/);
+const seasonAdmin=read('supabase/migrations/20261019015000_league_21_season_admin_closure.sql');
+assert.match(seasonAdmin,/p\.role='admin'/);
+assert.match(seasonAdmin,/row_number\(\) over\(order by/);
+assert.match(seasonAdmin,/status='closed'/);
+assert.doesNotMatch(seasonAdmin,/insert into public\.point_transactions/i);
+const challengeAdmin=read('supabase/migrations/20261019016000_league_21_global_challenge_admin_creation.sql');
+assert.match(challengeAdmin,/p\.role='admin'/);
+const badges=read('supabase/migrations/20261019018000_league_21_public_badge_projection.sql');
+assert.match(badges,/enable row level security/);
+assert.match(badges,/sync_public_badges_core/);
+assert.match(badges,/boxer_achievements/);
+assert.doesNotMatch(badges,/insert into public\.point_transactions/i);
+const publicRecords=read('supabase/migrations/20261019019000_league_21_public_records_projection.sql');
+assert.match(publicRecords,/p\.role='admin'/);
+assert.match(publicRecords,/approved_sessions/);
+assert.match(publicRecords,/max_technique_minutes/);
+assert.doesNotMatch(publicRecords,/notes|weight|insert into public\.point_transactions/i);
+const profile=read('boxer-profile.js');
+assert.match(profile,/renderPublicBadges\(name\)/);
+assert.match(profile,/renderPublicRecords\(name\)/);
+assert.match(profile,/league_public_badges_v21/);
+assert.match(profile,/league_public_records_v21/);
+console.log('PASS V2.1 complete foundation contracts: goals, global challenges, backfill, season closure, Hall of Fame, public profile, H2H and reward isolation');
