@@ -2,13 +2,26 @@
 \set ON_ERROR_STOP on
 CREATE ROLE anon NOLOGIN;
 CREATE ROLE authenticated NOLOGIN;
+CREATE SCHEMA auth;
+CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $auth$
+ SELECT NULLIF(current_setting('request.jwt.claim.sub',true),'')::uuid;
+$auth$;
 CREATE TABLE public.profiles (
  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+ auth_user_id uuid UNIQUE,
+ display_name text NOT NULL DEFAULT 'Boxer',
+ is_active boolean NOT NULL DEFAULT true,
  role text NOT NULL DEFAULT 'boxer',
  CONSTRAINT profiles_role_check CHECK (role IN ('boxer','admin'))
 );
 CREATE TABLE public.point_transactions (
  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+ boxer_id uuid,
+ points integer NOT NULL DEFAULT 0,
+ exp integer NOT NULL DEFAULT 0,
+ description text NOT NULL DEFAULT '',
+ effective_date date NOT NULL DEFAULT CURRENT_DATE,
+ created_by uuid,
  category text NOT NULL,
  CONSTRAINT point_transactions_category_check
  CHECK (category IN ('training','trainer_bonus','adjustment','legacy_import','automatic_bonus','achievement_exp'))
@@ -20,6 +33,7 @@ CREATE TABLE public.league_feature_flags (
 );
 INSERT INTO public.profiles(id,role)
  VALUES ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','boxer');
+UPDATE public.profiles SET auth_user_id='11111111-1111-4111-8111-111111111111', display_name='Test Boxer' WHERE id='aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
 INSERT INTO public.point_transactions(category) VALUES ('training');
 INSERT INTO public.league_feature_flags(feature_key,display_name,is_enabled)
  VALUES ('boxer_duels','Legacy Duels',false),('league_challenges','Legacy Challenges',false);
@@ -27,6 +41,8 @@ INSERT INTO public.league_feature_flags(feature_key,display_name,is_enabled)
 \i supabase/production-prep/20261018_extend_transaction_categories.sql
 \i supabase/production-prep/20261018_v2_feature_flags_disabled.sql
 \i supabase/production-prep/20261018_coach_challenges_v2_schema.sql
+\i supabase/production-prep/20261018_coach_challenges_v2_rpc_core.sql
+\i supabase/production-prep/20261018_coach_challenges_v2_rpc_review.sql
 DO $$
 BEGIN
  IF (SELECT count(*) FROM public.profiles) <> 1 OR
@@ -43,7 +59,8 @@ BEGIN
  OR has_table_privilege('anon','public.league_coach_challenges','SELECT')
  THEN RAISE EXCEPTION 'V2 table exposed to clients'; END IF;
 END $$;
-INSERT INTO public.profiles(id,role) VALUES('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb','coach');
+INSERT INTO public.profiles(id,auth_user_id,display_name,role)
+ VALUES('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb','22222222-2222-4222-8222-222222222222','Test Coach','coach');
 INSERT INTO public.point_transactions(category) VALUES ('duel_exp'),('challenge_exp');
 -- Verify all four tables reject direct application-role access.
 DO $safety$
