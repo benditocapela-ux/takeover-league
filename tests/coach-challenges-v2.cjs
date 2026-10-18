@@ -6,4 +6,11 @@ const secureSql=fs.readFileSync('supabase/production-prep/20261018_restrict_achi
 assert.match(secureSql,/REVOKE EXECUTE ON FUNCTION public\.recalculate_boxer_achievements_v2\(uuid\)/);
 assert.match(secureSql,/FROM PUBLIC, anon, authenticated/);
 assert.doesNotMatch(secureSql,/DROP FUNCTION|CASCADE/);
+const landing=fs.readFileSync('index.html','utf8');
+const loginPage=fs.readFileSync('login.html','utf8');
+const adminPage=fs.readFileSync('coach.html','utf8');
+assert.match(landing,/profile\.role==='coach'\?'\.\/challenges\.html'/,'coach dashboard shortcut must point to challenges');
+assert.match(loginPage,/profile\.role==='coach'\)\{location\.replace\('\.\/challenges\.html'\)/,'coach login must route to challenges');
+assert.match(loginPage,/profile\?\.role==='coach'\?'Trainer'/,'coach role must be displayed correctly');
+assert.match(adminPage,/me\.role!=='admin'/,'dedicated coaches must not bypass admin dashboard guard');
 console.log('Coach Challenges V2: static safety and syntax checks passed');
