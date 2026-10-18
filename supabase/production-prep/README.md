@@ -26,3 +26,7 @@ Production read-only counts: 14 profiles, 61 training submissions, 63 point tran
 5. **Still required:** import/review the 17 SECURITY DEFINER RPC definitions, reconcile full test-schema constraints, run real authenticated tests and review rollback. Do not enable the feature before these steps.
 
 The schema file intentionally uses CREATE TABLE (not IF NOT EXISTS) so existing objects cause a safe failure instead of silently retaining an incompatible definition.
+
+## Rollback guard
+
+`rollback_coach_challenges_v2_empty_only.sql` refuses to delete any table if V2 challenge data exists. If RPCs depend on these tables, PostgreSQL also rejects the DROP (no CASCADE). Remove the dependent V2 RPCs in a separately reviewed operation first. Do not use this rollback after live challenges or EXP awards exist; restore via a carefully designed forward fix instead.
