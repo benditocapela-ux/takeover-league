@@ -1,0 +1,140 @@
+name: Takeover League 2.1 migration replay (disposable PG only)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'supabase/migrations/**'
+      - 'supabase/production-prep/league_21_*.sql'
+      - 'tests/league-21-*.sql'
+      - '.github/workflows/league-21-migration-replay.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  league21-sql-replay:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Construct isolated production-like V2 base
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          createdb -h localhost -U postgres league21_replay_ci
+          psql -X -h localhost -U postgres -d league21_replay_ci -v ON_ERROR_STOP=1 \
+            -f tests/league-21-productionlike-baseline.sql
+      - name: Replay all V2.1 migrations in one rollback transaction
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          psql -X -h localhost -U postgres -d league21_replay_ci -At -v ON_ERROR_STOP=1 \
+            -f tests/league-21-migration-replay.sql | tee /tmp/league21-replay.txt
+          grep -Eq '"release_21_postflight_passed"[[:space:]]*:[[:space:]]*true' /tmp/league21-replay.txt
+      - name: Confirm transaction left original V2 data intact
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          psql -X -h localhost -U postgres -d league21_replay_ci -At \
+            -c "select case when to_regclass('public.league_seasons_v21') is null
+              and (select count(*) from public.profiles)=3
+              and (select count(*) from public.point_transactions)=0
+              and (select count(*) from public.league_feature_flags)=2
+              then 'RESTORED' else 'DIRTY-REPLAY' end" | grep -qx RESTORED
+      - name: Verify generated transactional release bundle on separate disposable PostgreSQL
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          node tests/build-league-21-release.cjs --check
+          node tests/build-league-21-release.cjs --output "$RUNNER_TEMP/league21-release.sql"
+          createdb -h localhost -U postgres league21_replay_release_bundle
+          # PostgreSQL roles are CLUSTER-scoped: they were created by the first fixture database.
+          # Omit only the two already-existing role creation statements in the second DB.
+          sed -e '/^create role anon nologin;$/d' -e '/^create role authenticated nologin;$/d' \
+            tests/league-21-productionlike-baseline.sql > "$RUNNER_TEMP/league21-second-baseline.sql"
+          psql -X -h localhost -U postgres -d league21_replay_release_bundle -v ON_ERROR_STOP=1 \
+            -f "$RUNNER_TEMP/league21-second-baseline.sql" >/dev/null
+          psql -X -h localhost -U postgres -d league21_replay_release_bundle -v ON_ERROR_STOP=1 \
+            -f "$RUNNER_TEMP/league21-release.sql" >/dev/null
+          psql -X -h localhost -U postgres -d league21_replay_release_bundle -At -v ON_ERROR_STOP=1 \
+            -f supabase/production-prep/league_21_postflight_read_only.sql \
+            | tee /tmp/league21-bundle-postflight.txt
+          grep -Eq '"release_21_postflight_passed"[[:space:]]*:[[:space:]]*true' \
+            /tmp/league21-bundle-postflight.txt
+          echo 'PASS: generated atomic release package installs and passes postflight without PROD access.'
+      - name: Install V2.1 in isolated DB for dump and restore rehearsal
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          psql -X -h localhost -U postgres -d league21_replay_ci -At -v ON_ERROR_STOP=1 \
+            -f tests/league-21-migration-apply-disposable.sql | tee /tmp/league21-installed.txt
+          grep -Eq '"release_21_postflight_passed"[[:space:]]*:[[:space:]]*true' /tmp/league21-installed.txt
+      - name: Verify V2.1 fixture semantics under real PostgreSQL roles
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          for fixture in \
+            tests/league-21-public-h2h-transaction.sql \
+            tests/league-21-season-fair-close-transaction.sql \
+            tests/league-21-global-settlement-transaction.sql \
+            tests/league-21-goal-training-corrections-transaction.sql \
+            tests/league-21-duel-missing-ledger-transaction.sql \
+            tests/league-21-arena-missing-ledger-transaction.sql; do
+            echo "Testing $fixture (transaction rollback)"
+            psql -X -h localhost -U postgres -d league21_replay_ci \
+              -v ON_ERROR_STOP=1 -f "$fixture" >/dev/null
+          done
+          echo 'PASS: All V2.1 transactional role and scoring fixtures'
+      - name: Verify disposable V2.1 backup and restored schema
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          docker run --rm --network host -e PGPASSWORD=postgres -v "$RUNNER_TEMP:/backups" \
+            postgres:${{ matrix.postgres }} pg_dump -h 127.0.0.1 -U postgres \
+            -d league21_replay_ci -Fc --no-owner -f /backups/league21-staging.dump
+          createdb -h localhost -U postgres league21_restore_probe
+          docker run --rm --network host -e PGPASSWORD=postgres -v "$RUNNER_TEMP:/backups" \
+            postgres:${{ matrix.postgres }} pg_restore -h 127.0.0.1 -U postgres \
+            -d league21_restore_probe --no-owner --exit-on-error /backups/league21-staging.dump
+          CHECK="select pg_catalog.jsonb_build_object(
+            'profiles',(select count(*) from public.profiles),
+            'points',(select count(*) from public.point_transactions),
+            'v21tables',(select count(*) from pg_catalog.pg_class c
+              join pg_catalog.pg_namespace n on n.oid=c.relnamespace
+              where n.nspname='public' and c.relname like '%_v21' and c.relkind='r'),
+            'flags',(select count(*) from public.league_feature_flags),
+            'goals',(select count(*) from public.league_boxer_goals_v21),
+            'duels',(select count(*) from public.league_duels))::text"
+          BEFORE="$(psql -X -h localhost -U postgres -d league21_replay_ci -Atc "$CHECK")"
+          AFTER="$(psql -X -h localhost -U postgres -d league21_restore_probe -Atc "$CHECK")"
+          test "$BEFORE" = "$AFTER"
+          psql -X -h localhost -U postgres -d league21_restore_probe -At -v ON_ERROR_STOP=1 \
+            -f supabase/production-prep/league_21_postflight_read_only.sql \
+            | tee /tmp/league21-restored-postflight.txt
+          grep -Eq '"release_21_postflight_passed"[[:space:]]*:[[:space:]]*true' \
+            /tmp/league21-restored-postflight.txt
+          echo "PASS: V2.1 disposable PostgreSQL dump and restore. NOT a production backup."

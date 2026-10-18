@@ -4,8 +4,8 @@
  'use strict';
  const page=(location.pathname.split('/').pop()||'index.html');
  const menus={
-  'boxer.html':[['＋ Training eintragen','#trainingFormCard'],['⏳ Offene Trainings','#boxerTaskCenter'],['📅 Trainingskalender','#trainingInsights'],['🎯 Challenges','./challenges.html'],['🥊 Duelle','./duels.html'],['🏅 Ranking','./index.html#ranking']],
-  'coach.html':[['⏳ Offene Trainings','#coachBulkControls'],['📋 Trainings bearbeiten','#allEntries'],['📜 Änderungshistorie','#coachAuditSection'],['🎯 Challenges vergeben','./challenges.html'],['🥊 Duelle','./duels.html']],
+  'boxer.html':[['＋ Training eintragen','#trainingFormCard'],['⏳ Offene Trainings','#boxerTaskCenter'],['📅 Trainingskalender','#trainingInsights'],['🎯 Challenges','./challenges.html'],['🥊 Duelle','./duels.html'],['🏟️ Mehrgegner-Arena','./arena.html'],['🏅 Ranking','./index.html#ranking']],
+  'coach.html':[['⏳ Offene Trainings','#coachBulkControls'],['📋 Trainings bearbeiten','#allEntries'],['📜 Änderungshistorie','#coachAuditSection'],['🎯 Challenges vergeben','./challenges.html'],['🛠️ League Manager','./league-manager.html'],['🥊 Duelle','./duels.html']],
   'challenges.html':[['🔄 Challenge-Liste','#list'],['＋ Coach-Challenge','#coach'],['🥊 Duelle','./duels.html'],['💪 Mein Training','./boxer.html']],
   'duels.html':[['＋ Duell einladen','#invitePanel'],['📋 Meine Duelle','#duelList'],['🎯 Challenges','./challenges.html'],['💪 Mein Training','./boxer.html']]
  };

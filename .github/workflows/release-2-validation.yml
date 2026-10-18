@@ -23,6 +23,9 @@ jobs:
       - run: node tests/boxer-profile-actions.cjs
       - run: node tests/menu-navigation-compat.cjs
       - run: node tests/boxer-dashboard-polish.cjs
+      - run: node --check tests/league-21-auth-staging-readonly.cjs
+      - run: node tests/build-league-21-release.cjs --check
+      - run: node tests/league-21-foundations.cjs
       - run: node tests/ux-roadmap-phase0.cjs
 
   chromium-public-smoke:
@@ -39,3 +42,4 @@ jobs:
       - run: node tests/release-auth-ui-mocked.cjs
       - run: node tests/boxer-responsive-layout-browser.cjs
       - run: node tests/release-live-duels-browser.cjs
+      - run: node tests/league-21-browser.cjs

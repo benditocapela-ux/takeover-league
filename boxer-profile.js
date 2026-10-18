@@ -25,6 +25,82 @@ function progress(xp){
  const ranks=['F','E','D','C','B','A','S'];
  return {level:n+1,rank:ranks[Math.min(Math.floor(n/10),ranks.length-1)],pct:Math.max(0,Math.min(100,(xp-used)/needed*100)),remaining:Math.max(0,needed-(xp-used))};
 }
+function renderPublicRadar(boxer,leader,levels,leaders){
+ const defs=[
+  ['EXP',Math.max(0,Number(boxer.lifetime_exp)||0),Math.max(1,...levels.map(x=>Number(x.lifetime_exp)||0))],
+  ['Monat',Math.max(0,Number(leader.monthly_points)||0),Math.max(1,...leaders.map(x=>Number(x.monthly_points)||0))],
+  ['Trainings',Math.max(0,Number(leader.approved_sessions)||0),Math.max(1,...leaders.map(x=>Number(x.approved_sessions)||0))],
+  ['Trainingspunkte',Math.max(0,Number(leader.points_training)||0),Math.max(1,...leaders.map(x=>Number(x.points_training)||0))],
+  ['Bonuspunkte',Math.max(0,Number(leader.points_bonus)||0),Math.max(1,...leaders.map(x=>Number(x.points_bonus)||0))]
+ ];
+ const center=130,r=87,polar=(i,percent)=>{
+  const angle=-Math.PI/2+2*Math.PI*i/defs.length;
+  return [center+Math.cos(angle)*r*percent,center+Math.sin(angle)*r*percent];
+ };
+ const polygon=ratio=>defs.map((_,i)=>polar(i,ratio).map(v=>v.toFixed(1)).join(',')).join(' ');
+ const values=defs.map((d,i)=>polar(i,Math.max(0,Math.min(1,d[1]/d[2]))).map(v=>v.toFixed(1)).join(',')).join(' ');
+ const svg=document.createElementNS('http://www.w3.org/2000/svg','svg');
+ svg.setAttribute('viewBox','0 0 260 260');svg.setAttribute('aria-hidden','true');
+ for(const ratio of [.25,.5,.75,1]){
+  const ring=document.createElementNS(svg.namespaceURI,'polygon');ring.setAttribute('points',polygon(ratio));
+  ring.setAttribute('fill','none');ring.setAttribute('stroke','#465977');ring.setAttribute('stroke-width','1');svg.append(ring);
+ }
+ const shape=document.createElementNS(svg.namespaceURI,'polygon');shape.setAttribute('points',values);
+ shape.setAttribute('fill','#dfbd7750');shape.setAttribute('stroke','#dfbd77');shape.setAttribute('stroke-width','2.8');svg.append(shape);
+ const root=$('sportRadar');root.replaceChildren(svg);
+ root.setAttribute('aria-label',defs.map(d=>d[0]+': '+fmt(d[1])+' von '+fmt(d[2])+' Liga-Maximum').join('; '));
+ const metrics=$('sportMetrics');metrics.replaceChildren();
+ for(const [title,value,max] of defs){const line=document.createElement('div');line.className='radar-metric';
+  const label=document.createElement('strong');label.textContent=title;line.append(label,document.createTextNode(fmt(value)+' · '+Math.round(100*value/max)+'% vom Liga-Maximum'));metrics.append(line)}
+}
+
+
+async function renderPublicRecords(name){
+ const status=$('recordStatus'),root=$('recordGrid');if(!status||!root)return;
+ root.replaceChildren();
+ try{
+  const query=new URL(PUBLIC_URL+'/rest/v1/league_public_records_v21');
+  query.searchParams.set('select','approved_sessions,active_days,max_jogging_km,max_technique_minutes,refreshed_at');
+  query.searchParams.set('boxer_name','eq.'+name);
+  query.searchParams.set('limit','2');
+  const response=await fetch(query.href,{headers:{apikey:PUBLIC_KEY},cache:'no-store'});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  const rows=await response.json();if(!Array.isArray(rows)||rows.length>1)throw Error('Ambiguous boxer');
+  if(!rows.length){status.textContent='Für diesen Boxer wurden noch keine öffentlichen Rekorde berechnet.';return}
+  const r=rows[0];
+  const values=[
+   ['Bestätigte Trainings',fmt(r.approved_sessions)],
+   ['Trainingstage',fmt(r.active_days)],
+   ['Längster Jogging-Eintrag',Number(r.max_jogging_km||0).toLocaleString('de-CH')+' km'],
+   ['Längste Technik-Einheit',fmt(r.max_technique_minutes)+' Min.']
+  ];
+  for(const [title,value] of values){const card=document.createElement('div');card.className='badge-tile';
+   const h=document.createElement('strong');h.textContent=title;
+   const p=document.createElement('small');p.textContent=value;card.append(h,p);root.append(card)}
+  status.textContent='Nur bestätigte Trainings · zuletzt berechnet '+new Date(r.refreshed_at).toLocaleDateString('de-CH');
+ }catch(e){status.textContent='Öffentliche Rekorde derzeit nicht verfügbar.'}
+}
+async function renderPublicBadges(name){
+ const status=$('publicBadgeStatus'),grid=$('publicBadgeGrid');if(!status||!grid)return;
+ grid.replaceChildren();
+ try{
+  const query=new URL(PUBLIC_URL+'/rest/v1/league_public_badges_v21');
+  query.searchParams.set('select','title,icon_key,earned_at');
+  query.searchParams.set('boxer_name','eq.'+name);
+  query.searchParams.set('order','earned_at.desc');
+  query.searchParams.set('limit','60');
+  const response=await fetch(query.href,{headers:{apikey:PUBLIC_KEY},cache:'no-store'});
+  if(!response.ok)throw new Error('HTTP '+response.status);
+  const badges=await response.json();if(!Array.isArray(badges))throw Error('Badgedaten ungültig');
+  status.textContent=badges.length?badges.length+' verdiente Abzeichen':'Noch keine Auszeichnungen erhalten.';
+  for(const badge of badges){
+   const card=document.createElement('article');card.className='badge-tile';
+   const title=document.createElement('strong');title.textContent=String(badge.title||'Achievement');
+   const earned=document.createElement('small');earned.textContent=badge.earned_at?'Verliehen '+new Date(badge.earned_at).toLocaleDateString('de-CH'):'';
+   card.append(title,earned);grid.append(card);
+  }
+ }catch(e){status.textContent='Öffentliche Auszeichnungen sind noch nicht verfügbar.'}
+}
 function photoUrl(a){
  if(a?.avatar_url){
   try{const u=new URL(a.avatar_url);if(u.protocol==='https:'&&u.hostname==='iqarjivcrddcixrvqbfb.supabase.co'&&u.pathname.startsWith('/storage/v1/object/public/boxer-avatars/'))return u.href}catch(_){}
@@ -67,6 +143,9 @@ async function init(){
   $('totalXp').textContent=fmt(xp);
   $('level').textContent=level.rank+' · '+level.level;
   $('levelFill').style.width=level.pct+'%';
+  renderPublicRadar(boxer,leader[0]||{},levels,leaders);
+  renderPublicBadges(name);
+  renderPublicRecords(name);
   $('levelStatus').textContent='Rang '+level.rank+' · Level '+level.level;
   $('nextLevel').textContent='Noch '+fmt(level.remaining)+' EXP bis zum nächsten Level';
   const img=photoUrl(avatar[0]);

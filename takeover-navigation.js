@@ -28,16 +28,21 @@
        ['🥊','Levels & EXP','index.html#levels','levels'],
        ['📜','Punkteverlauf','index.html#history','history'],
        ['🏅','Monatsauszeichnungen','awards.html',''],
-       ['⚖️','Boxer-Vergleich','boxer-compare.html','']
+       ['⚖️','Boxer-Vergleich','boxer-compare.html',''],
+       ['🏆','Saisons & Hall of Fame','league-history.html','']
      ]],
      ['Neue Funktionen',[
        ['🎯','Challenges','challenges.html','',true],
-       ['🥊','Boxer-Duelle','duels.html','',true]
+       ['⚡','Liga-Challenges','league-challenges.html','',true],
+       ['🥊','Boxer-Duelle','duels.html','',true],
+       ['🏟️','Mehrgegner-Arena','arena.html','',true]
      ]],
      ['Mein Bereich',[
        ['👤','Anmelden / Mein Account','login.html',''],
        ['💪','Mein Training','boxer.html',''],
-       ['🥇','Trainer-Dashboard','coach.html','']
+       ['🎯','Meine Ziele','goals.html',''],
+       ['🥇','Trainer-Dashboard','coach.html',''],
+       ['🛠️','League Manager 2.1','league-manager.html','']
      ]]
    ];
    const contents=entries.map(group=>

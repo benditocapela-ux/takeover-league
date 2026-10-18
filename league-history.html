@@ -1,0 +1,40 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Saisons & Hall of Fame · Takeover League</title>
+<style>:root{font:16px system-ui,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;padding:20px 14px 100px;background:#0b1422;color:#f4f7fc}main{max-width:950px;margin:auto}h1{color:#dfbd77}a{color:#dfbd77}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}.panel{border:1px solid #344860;background:#142238;border-radius:16px;padding:18px;margin:15px 0}.item{padding:12px;border:1px solid #3a506c;border-radius:10px;margin:10px 0;background:#0d1c2f}.muted{color:#b5c4d6}.place{color:#dfbd77;font-weight:800}h2{font-size:20px}</style><link rel="stylesheet" href="./takeover-navigation.css"></head><body>
+<main><a href="./index.html">← Liga</a><h1>🏆 Saisons & Hall of Fame</h1><p class="muted">Offizielle Saisonergebnisse und historische Auszeichnungen. Entwürfe und unveröffentlichte Ergebnisse bleiben verborgen.</p>
+<div class="grid">
+<section class="panel"><h2>📅 Saisons</h2><div id="seasons" aria-live="polite">Lade Saisons …</div></section>
+<section class="panel"><h2>🥇 Hall of Fame</h2><div id="honors" aria-live="polite">Lade Ehrungen …</div></section></div>
+<section class="panel"><h2>📊 Historische Saisonrankings</h2><div id="results" aria-live="polite">Lade Ranglisten …</div></section>
+</main>
+<script>
+const API='https://iqarjivcrddcixrvqbfb.supabase.co';
+const KEY='sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R';
+const make=(tag,text)=>{const e=document.createElement(tag);e.textContent=String(text??'');return e};
+async function list(table,fields,order){
+ const url=new URL(API+'/rest/v1/'+table);
+ url.searchParams.set('select',fields);url.searchParams.set('order',order);url.searchParams.set('limit','300');
+ const response=await fetch(url,{headers:{apikey:KEY},cache:'no-store'});
+ if(!response.ok)throw new Error('HTTP '+response.status);
+ const data=await response.json();if(!Array.isArray(data))throw new Error('Ungültige Antwort');return data;
+}
+function show(id,rows,build,empty){
+ const root=document.getElementById(id);root.replaceChildren();
+ if(!rows.length){root.append(make('p',empty));return}
+ for(const row of rows){const item=make('article','');item.className='item';build(row,item);root.append(item)}
+}
+async function init(){
+ const jobs=[
+  ['seasons','league_seasons_v21','id,title,starts_on,ends_on,status','starts_on.desc',r=>[r.title,r.starts_on+' bis '+r.ends_on], 'Noch keine veröffentlichte Saison.'],
+  ['honors','league_hall_of_fame_v21','id,title,boxer_name,description,awarded_at','awarded_at.desc',r=>[r.boxer_name+' · '+r.title,r.description||'Offizielle Auszeichnung'], 'Noch keine historischen Titel veröffentlicht.'],
+  ['results','league_season_results_v21','id,season_id,boxer_name,rank_position,points,exp','rank_position.asc',r=>['#'+r.rank_position+' · '+r.boxer_name,r.points+' Punkte · '+r.exp+' EXP'], 'Noch keine abgeschlossene Saison mit Rangliste.']
+ ];
+ await Promise.all(jobs.map(async([id,table,cols,order,text,empty])=>{
+  try{const rows=await list(table,cols,order);show(id,rows,(row,item)=>{
+   const [title,description]=text(row);
+   const strong=make('strong',title);strong.className='place';
+   const detail=make('p',description);detail.className='muted';item.append(strong,detail)
+  },empty)}catch(e){document.getElementById(id).textContent='Noch nicht verfügbar: '+e.message}
+ }));
+}
+init();
+</script><script src="./takeover-navigation.js" defer></script></body></html>

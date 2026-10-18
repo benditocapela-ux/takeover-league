@@ -1,0 +1,81 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Liga-Challenges · Takeover League 2.1</title>
+<style>:root{font:16px system-ui,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;padding:20px 14px 105px;background:#0b1422;color:#f4f7fc}main{max-width:940px;margin:auto}h1{color:#dfbd77}a{color:#dfbd77}.panel{background:#142238;border:1px solid #344860;border-radius:16px;padding:18px;margin:15px 0}.muted{color:#b8c7d7}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:14px}.card{padding:17px;border-radius:13px;background:#0c1a2b;border:1px solid #455a74}.card h2{font-size:19px;margin:0 0 8px}.card p{overflow-wrap:anywhere}button{padding:12px 16px;background:#dfbd77;color:#142034;border:0;border-radius:10px;font-weight:800;min-height:44px;cursor:pointer}button:disabled{opacity:.55}.bar{height:12px;background:#384961;border-radius:9px;overflow:hidden}.bar div{height:100%;background:#dfbd77}button:focus-visible,a:focus-visible{outline:3px solid #dfbd77;outline-offset:3px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"></head><body>
+<main><p><a href="./index.html">← Zur Liga</a></p><h1>⚡ Liga-Challenges</h1>
+<p class="muted">Gemeinsame Trainingsziele, zu denen sich Boxer freiwillig anmelden können. Nur bestätigte Trainings zählen, und EXP werden erst nach einer gesonderten serverseitigen Freigabe vergeben.</p>
+<p id="status" role="status">Lade Challenges …</p><div id="challenges" class="grid"></div></main>
+<script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
+const $=id=>document.getElementById(id),make=(tag,value)=>{const e=document.createElement(tag);e.textContent=String(value??'');return e};
+let boxer=null,entries=[],approved=[];
+async function init(){
+ const [{data:{user}},challenges]=await Promise.all([
+  db.auth.getUser(),
+  db.from('league_global_challenges_v21').select('id,title,description,metric,target_value,starts_at,ends_at,status').order('starts_at',{ascending:false}).limit(80)
+ ]);
+ if(challenges.error){$('status').textContent='Liga-Challenges sind noch nicht verfügbar: '+challenges.error.message;return}
+ if(user){
+  const p=await db.from('profiles').select('id,role,is_active').eq('auth_user_id',user.id).maybeSingle();
+  if(!p.error&&p.data?.role==='boxer'&&p.data.is_active){
+   boxer=p.data;
+   const [e,t]=await Promise.all([
+    db.from('league_global_entries_v21').select('challenge_id,joined_at').eq('boxer_id',boxer.id),
+    db.from('training_submissions').select('training_date,created_at,jogging_km,technique_minutes').eq('boxer_id',boxer.id).eq('status','approved').order('created_at',{ascending:false}).limit(3000)
+   ]);
+   if(!e.error)entries=e.data||[];if(!t.error)approved=t.data||[];
+  }
+ }
+ const finalized=await db.from('league_global_results_v21').select('challenge_id,boxer_name,progress,rank_position,completed').order('rank_position',{ascending:true}).limit(1000);
+ const resultMap=new Map();
+ if(!finalized.error)for(const row of finalized.data||[]){
+  if(!resultMap.has(row.challenge_id))resultMap.set(row.challenge_id,[]);
+  resultMap.get(row.challenge_id).push(row);
+ }
+ const rows=challenges.data||[];const root=$('challenges');root.replaceChildren();
+ if(!rows.length){root.append(make('p','Noch keine veröffentlichten Liga-Challenges.'));$('status').textContent='Neue Wettbewerbe werden hier veröffentlicht.';return}
+ for(const c of rows){
+  const card=make('article','');card.className='card';
+  card.append(make('h2',c.title),make('p',c.description||'Trainiere für das gemeinsame Ziel.'));
+  const unit=c.metric==='jogging_km'?'km':c.metric==='technique_minutes'?'Minuten':'Einheiten';
+  const meta=make('p','Ziel: '+Number(c.target_value).toLocaleString('de-CH')+' '+unit+' · bis '+new Date(c.ends_at).toLocaleDateString('de-CH'));meta.className='muted';card.append(meta);
+  if(c.status==='closed'){
+   const results=resultMap.get(c.id)||[];
+   const heading=make('h3','Abschlussrangliste');card.append(heading);
+   if(!results.length)card.append(make('p','Noch keine Platzierungen veröffentlicht.'));
+   for(const result of results.slice(0,20)){
+    card.append(make('p','#'+result.rank_position+' · '+result.boxer_name+' · '+Number(result.progress).toLocaleString('de-CH')+' '+unit+(result.completed?' · Ziel erreicht':'')));
+   }
+   root.append(card);continue;
+  }
+  const joined=entries.some(e=>e.challenge_id===c.id);
+  if(joined){
+   const start=new Date(c.starts_at).toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'});
+   const end=new Date(c.ends_at).toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'});
+   const enrollment=entries.find(e=>e.challenge_id===c.id);
+   // Compare real instants, not timestamp strings: PostgreSQL can serialize UTC as Z or +00:00.
+   const joinedAt=Date.parse(enrollment.joined_at),closesAt=Date.parse(c.ends_at);
+   const relevant=approved.filter(t=>t.training_date>=start&&t.training_date<=end
+      &&Number.isFinite(joinedAt)&&Number.isFinite(closesAt)
+      &&Date.parse(t.created_at)>=joinedAt&&Date.parse(t.created_at)<=closesAt);
+   const done=c.metric==='training_sessions'?relevant.length:relevant.reduce((sum,t)=>sum+Number(t[c.metric]||0),0);
+   const pct=Math.max(0,Math.min(100,Math.round(100*done/Number(c.target_value))));
+   card.append(make('p','Dein Fortschritt: '+done.toLocaleString('de-CH')+' / '+c.target_value+' '+unit+' ('+pct+'%)'));
+   const track=make('div','');track.className='bar';track.setAttribute('role','progressbar');track.setAttribute('aria-valuemin','0');track.setAttribute('aria-valuemax','100');track.setAttribute('aria-valuenow',String(pct));
+   const fill=make('div','');fill.style.width=pct+'%';track.append(fill);card.append(track);
+  }else if(boxer&&c.status==='active'){
+   const btn=make('button','Challenge beitreten');btn.type='button';btn.onclick=async()=>{
+    btn.disabled=true;btn.textContent='Anmeldung läuft …';
+    const r=await db.rpc('league_v21_join_global_challenge',{p_challenge:c.id});
+    if(r.error){$('status').textContent='Teilnahme nicht möglich: '+r.error.message;btn.disabled=false;btn.textContent='Erneut versuchen';return}
+    $('status').textContent='Erfolgreich angemeldet. Neu laden für deine Fortschritte.';
+    btn.textContent='Angemeldet';
+   };card.append(btn);
+  }else if(!boxer)card.append(make('p','Für die Teilnahme im Boxer-Dashboard anmelden.'));
+  root.append(card);
+ }
+ $('status').textContent=rows.length+' veröffentlichte Liga-Challenges geladen.';
+}
+init().catch(e=>{$('status').textContent='Challenges konnten nicht geladen werden: '+e.message});
+</script><script src="./takeover-navigation.js" defer></script></body></html>
