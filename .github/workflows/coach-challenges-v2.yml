@@ -212,3 +212,17 @@ jobs:
             -c "CREATE DATABASE profile_actions" >/dev/null
           psql -X -h localhost -U postgres -d profile_actions -v ON_ERROR_STOP=1 \
             -f tests/production-v2-personal-targeting.sql
+
+      - name: Rehearse PostgreSQL backup and restore on disposable fixture
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          pg_dump -h localhost -U postgres -d profile_actions -Fc --no-owner --no-acl -f /tmp/takeover_staging.dump
+          createdb -h localhost -U postgres takeover_restore_probe
+          pg_restore -h localhost -U postgres -d takeover_restore_probe --no-owner --no-acl --exit-on-error /tmp/takeover_staging.dump
+          CHECK="SELECT jsonb_build_object('boxers',(SELECT count(*) FROM public.profiles),'challenges',(SELECT count(*) FROM public.league_coach_challenges),'targets',(SELECT count(*) FROM public.league_coach_challenge_targets),'transactions',(SELECT count(*) FROM public.point_transactions),'flags',(SELECT count(*) FROM public.league_feature_flags))::text"
+          BEFORE="$(psql -X -h localhost -U postgres -d profile_actions -Atc "$CHECK")"
+          AFTER="$(psql -X -h localhost -U postgres -d takeover_restore_probe -Atc "$CHECK")"
+          test "$BEFORE" = "$AFTER"
+          echo "PASS: Disposable staging fixtures restored identically; this does NOT verify a production backup."
