@@ -145,3 +145,43 @@ Siehe `docs/TAKEOVER_LEAGUE_2_UX_45_MATRIX_2026-10-18.md`: **34/45 als Code im R
 7. Nach den finalen Änderungen müssen alle CI-Workflows erfolgreich sein; erst danach können Betreiber-Review, manuelle Go-Live-Freigabe und `main`-Merge stattfinden.
 
 **Verifiziert:** Hauptbranch und produktives Supabase-Projekt wurden in diesem Durchlauf nicht verändert; nur isoliertes TEST-Projekt und Release-Branch wurden bearbeitet.
+
+
+---
+
+## Sicherheit und Abnahme: Fortsetzung vom 18.10.2026 (nach Pull Request #8)
+
+**FREIGABE: HOLD – NICHT RELEASE-READY.** Dies ist ausdrücklich kein Live-Auftrag.
+
+### Zusätzliche, tatsächlich abgeschlossene Arbeiten
+
+- Admin-Rücknahme **nur** für eine eigene, maximal 15 Minuten alte, abgelehnte Trainingseinheit ohne irgendeine verknüpfte Punktebuchung: `supabase/migrations/20261018213000_admin_undo_recent_rejection.sql` und UI `coach.html`. TEST: Boxer/fehlende Adminrolle blockiert, genau eine zulässige Rücknahme, auditierter Wechsel zurück zu `pending`, Replay abgewiesen, vorhandene Null-Buchung ausdrücklich abgewiesen, alle Tests transaktional mit ROLLBACK. Es gibt **keinen** automatischen Undo bestätigter Trainings/EXP.
+- Zusätzliches Supabase-Hardening `20261018214000_avatar_rpc_permissions.sql`: anonyme Ausführung von `update_my_boxer_avatar` entzogen, `authenticated` erhalten. TEST: anonym abgewiesen, angemeldet zugelassen. Die Funktion selbst wurde in Produktion nur gelesen und ist bereits auf `auth.uid()`/eigenes aktives Boxerprofil beschränkt.
+- Sicherheitsprüfung 54 für `authenticated` ausführbarer SECURITY-DEFINER-Funktionen in Produktion: 48 enthalten unmittelbar erkennbare Berechtigungsmarker, fünf übrige sind absichtlich öffentliche Award-/Leaderboard-/Level-/Avatar-**Lese**-RPCs und eine Wrapperfunktion ruft die bereits admin-geschützte Edit-RPC auf. Dies ist eine Signatur-/Quellcodeprüfung, keine vollständige unabhängige Pentest-Zertifizierung. Die Produktivwarnung für geleakte Passwörter bleibt, weil die Einstellung nicht durch die verbundene SQL-Schnittstelle zugänglich ist.
+- Ein doppelt vorkommender Migrations-Zeitstempel und eine veraltete Definition von `duel_v2_live_scores` wurden entfernt. Der GitHub Release-Diff enthält jetzt je Zeitstempel eine Migration; die gültige Duell-RPC-Migration ist `20261018211000_duel_v2_live_scores.sql`.
+- Zusätzliche echte Chromium-Tests via `tests/release-browser-smoke.cjs` (responsive Profile, Vergleich und Navigation) und `tests/release-auth-ui-mocked.cjs` (Boxer-Einreichung, Doppelsubmit-Verhinderung, Coach-Sammelaktion und Undo, jeweils mit Fake-Supabase-Client). Keine produktiven Trainings wurden erzeugt.
+- GitHub CI Schema-Integration auf PostgreSQL 16 und 17 umfasst nun eine **synthetische** `pg_dump`/`pg_restore`-Probe. Ein zwischenzeitlicher pg_dump-Versionenfehler auf PG17 wurde durch versionsgleiche Docker-Clients korrigiert; anschliessend bestanden die PG16/17-Jobs (siehe GitHub Actions). **Nicht** mit einem verifizierten Produktionsbackup verwechseln.
+
+### Letzter produktiver Read-only Preflight
+
+| Prüfung | Beobachtung |
+|---|---:|
+| Aktive Boxer | 13 |
+| Bestätigte Trainings | 56 |
+| Offene Trainings | 0 |
+| Bestätigte Trainings ohne Training-/Legacy-Buchung | 0 |
+| Abgelehnte Trainings mit nicht-null Punkte- oder EXP-Buchung | 0 |
+| Doppelte Verknüpfungen zu Trainings | 0 |
+| Neue private Entwurfs-/Zuweisungstabellen in Produktion | Nein |
+
+Die produktiven V2-RPCs für Challenge-Liste und -Fortschritt liefern JSONB, während das isolierte Supabase-TEST vorbestehende TABLE-Signaturen nutzt. Die produktionsähnliche **disposable PostgreSQL**-Fixture `tests/production-v2-personal-targeting.sql` installiert und prüft die unveränderte Zuweisungsmigration erfolgreich auf PostgreSQL 16 und 17. Supabase TEST nutzt zusätzlich aliasbasierte Kompatibilitätsprüfung. Das tatsächliche produktive Upgrade benötigt dennoch Backup und Migration-Review.
+
+### UX-Gesamtbilanz und Gates
+
+**34/45 im realen Code, fünf Staging/Flag, sechs teilweise, null völlig ungeplant.** `docs/TAKEOVER_LEAGUE_2_UX_45_MATRIX_2026-10-18.md` ist die verbindliche Einzelübersicht. Das ist keine vollständige End-to-End-Abnahme aller 45 Punkte.
+
+`docs/TAKEOVER_LEAGUE_2_GO_LIVE_GATE.md` enthält die vollständige Migrationsreihenfolge, Rollen-, Sicherheits-, Backup-, Rollback- und manuelle Freigabeliste.
+
+**Bis auf Weiteres zu blockieren:** Produktionsbackup inklusive realem Restore-Nachweis; signierte, echte Supabase Auth HTTP-Tests mit separaten Rollen; Auth-Leaked-Password-Protection; vollständige reale iOS-/Android-Browserabnahme; Flag-Aktivierung nur nach Freigabe; unabhängige Security-Review. Der Live-Betrieb darf nicht allein wegen grüner Mock-/CI-Tests freigegeben werden.
+
+**Die Hauptbranch `main`, GitHub Pages sowie die Produktionsdatenbank/Feature-Flags wurden nicht verändert.**
