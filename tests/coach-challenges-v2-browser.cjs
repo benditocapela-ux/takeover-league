@@ -8,9 +8,9 @@ const source=html.match(/<script type="module">([\s\S]*?)<\/script>/)[1].replace
 const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
 async function mount({user=null,profile=null,challenges=[],rpcError=null,candidates=[]}={}){
  const dom=new JSDOM(html,{url:'https://example.test/challenges-v2-preview.html',runScripts:'outside-only'});
- const calls=[];
+ const calls=[];let onAuthEvent=null;
  const db={
-  auth:{getUser:async()=>({data:{user},error:null}),signInWithPassword:async()=>({error:null}),signOut:async()=>({error:null})},
+  auth:{getUser:async()=>({data:{user},error:null}),signInWithPassword:async()=>({error:null}),signOut:async()=>({error:null}),onAuthStateChange:cb=>{onAuthEvent=cb;return {data:{subscription:{unsubscribe(){}}}}}}, 
   from:(name)=>{assert.equal(name,'profiles');return {select:()=>({eq:()=>({maybeSingle:async()=>({data:profile,error:null})})})}},
   rpc:async(name,args)=>{calls.push({name,args});return rpcError?{data:null,error:{message:rpcError}}:{data:name==='coach_challenge_v2_list'?challenges:name==='coach_challenge_v2_review_candidates'?candidates:[],error:null}}
  };
@@ -18,7 +18,7 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null,candida
  dom.window.confirm=()=>true;
  dom.window.eval(source.replace('init();','window.__ready=init();'));
  await dom.window.__ready;
- return {dom,document:dom.window.document,calls,db};
+ return {dom,document:dom.window.document,calls,db,emitAuth:event=>onAuthEvent?.(event,null)};
 }
 (async()=>{
  const prodHtml=fs.readFileSync('challenges.html','utf8');
@@ -91,6 +91,16 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null,candida
  assert.equal(raced.document.querySelector('#coach').hidden,true);
  assert.doesNotMatch(raced.document.body.textContent,/Geheime Challenge/);
  raced.dom.window.close();
+ const fromAnotherTab=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[{
+ id:'private-from-tab',title:'Privater Trainingsplan',description:'Nur Boxer',
+ status:'open',joined_count:1,duration_days:7,is_creator:false
+ }]});
+ assert.match(fromAnotherTab.document.querySelector('#list').textContent,/Privater Trainingsplan/);
+ fromAnotherTab.emitAuth('SIGNED_OUT');
+ assert.equal(fromAnotherTab.document.querySelector('#login').hidden,false,'other-tab logout should show login');
+ assert.equal(fromAnotherTab.document.querySelector('#filters').hidden,true);
+ assert.equal(fromAnotherTab.document.querySelector('#list').children.length,0,'other-tab logout must wipe private challenges');
+ fromAnotherTab.dom.window.close();
  const filtering=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[
  {id:'one',title:'Sprint Challenge',description:'Laufen',status:'open',joined_count:0,duration_days:7,is_creator:false},
  {id:'two',title:'Technik Challenge',description:'Sandsack',status:'active',joined_count:2,duration_days:14,is_creator:false},
