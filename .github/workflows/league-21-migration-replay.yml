@@ -69,6 +69,23 @@ jobs:
           psql -X -h localhost -U postgres -d league21_replay_ci -At -v ON_ERROR_STOP=1 \
             -f tests/league-21-migration-apply-disposable.sql | tee /tmp/league21-installed.txt
           grep -Eq '"release_21_postflight_passed"[[:space:]]*:[[:space:]]*true' /tmp/league21-installed.txt
+      - name: Verify V2.1 fixture semantics under real PostgreSQL roles
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          for fixture in \
+            tests/league-21-public-h2h-transaction.sql \
+            tests/league-21-season-fair-close-transaction.sql \
+            tests/league-21-global-settlement-transaction.sql \
+            tests/league-21-goal-training-corrections-transaction.sql \
+            tests/league-21-duel-missing-ledger-transaction.sql \
+            tests/league-21-arena-missing-ledger-transaction.sql; do
+            echo "Testing $fixture (transaction rollback)"
+            psql -X -h localhost -U postgres -d league21_replay_ci \
+              -v ON_ERROR_STOP=1 -f "$fixture" >/dev/null
+          done
+          echo 'PASS: All V2.1 transactional role and scoring fixtures'
       - name: Verify disposable V2.1 backup and restored schema
         env:
           PGPASSWORD: postgres
