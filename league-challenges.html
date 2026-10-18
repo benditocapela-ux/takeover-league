@@ -21,8 +21,8 @@ async function init(){
   if(!p.error&&p.data?.role==='boxer'&&p.data.is_active){
    boxer=p.data;
    const [e,t]=await Promise.all([
-    db.from('league_global_entries_v21').select('challenge_id').eq('boxer_id',boxer.id),
-    db.from('training_submissions').select('training_date,jogging_km,technique_minutes').eq('boxer_id',boxer.id).eq('status','approved').limit(3000)
+    db.from('league_global_entries_v21').select('challenge_id,joined_at').eq('boxer_id',boxer.id),
+    db.from('training_submissions').select('training_date,created_at,jogging_km,technique_minutes').eq('boxer_id',boxer.id).eq('status','approved').order('created_at',{ascending:false}).limit(3000)
    ]);
    if(!e.error)entries=e.data||[];if(!t.error)approved=t.data||[];
   }
@@ -53,7 +53,9 @@ async function init(){
   if(joined){
    const start=new Date(c.starts_at).toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'});
    const end=new Date(c.ends_at).toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'});
-   const relevant=approved.filter(t=>t.training_date>=start&&t.training_date<=end);
+   const enrollment=entries.find(e=>e.challenge_id===c.id);
+   const relevant=approved.filter(t=>t.training_date>=start&&t.training_date<=end
+      &&t.created_at>=enrollment.joined_at&&t.created_at<=c.ends_at);
    const done=c.metric==='training_sessions'?relevant.length:relevant.reduce((sum,t)=>sum+Number(t[c.metric]||0),0);
    const pct=Math.max(0,Math.min(100,Math.round(100*done/Number(c.target_value))));
    card.append(make('p','Dein Fortschritt: '+done.toLocaleString('de-CH')+' / '+c.target_value+' '+unit+' ('+pct+'%)'));
