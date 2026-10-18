@@ -41,12 +41,14 @@ CREATE TABLE public.league_feature_flags (
 INSERT INTO public.profiles(id,auth_user_id,display_name,role)
 VALUES
  ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','11111111-1111-4111-8111-111111111111','Boxer Alpha','boxer'),
- ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb','22222222-2222-4222-8222-222222222222','Coach Alpha','coach'),
  ('cccccccc-cccc-4ccc-8ccc-cccccccccccc','33333333-3333-4333-8333-333333333333','League Admin','admin'),
- ('dddddddd-dddd-4ddd-8ddd-dddddddddddd','44444444-4444-4444-8444-444444444444','Other Coach','coach'),
  ('eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee','55555555-5555-4555-8555-555555555555','Boxer Beta','boxer');
 -- Old V2 migration itself extends role and category CHECKs.
 \i supabase/migrations/20261018131000_coach_challenges_v2.sql
+INSERT INTO public.profiles(id,auth_user_id,display_name,role)
+VALUES
+ ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb','22222222-2222-4222-8222-222222222222','Coach Alpha','coach'),
+ ('dddddddd-dddd-4ddd-8ddd-dddddddddddd','44444444-4444-4444-8444-444444444444','Other Coach','coach');
 UPDATE public.league_feature_flags SET is_enabled=true
  WHERE feature_key='coach_challenges';
 \i supabase/migrations/20261018170000_private_boxer_challenge_assignment.sql
