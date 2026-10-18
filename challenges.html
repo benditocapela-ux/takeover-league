@@ -218,4 +218,4 @@ document.querySelector('#challengeTemplate').addEventListener('change',e=>{
 document.querySelector('#create').onsubmit=async e=>{e.preventDefault();if(busy||!role)return;busy=true;const epoch=sessionEpoch;const f=new FormData(e.target);try{await rpc('coach_challenge_v2_create_draft',{p_title:f.get('title'),p_description:f.get('description'),p_kind:f.get('kind'),p_duration_days:Number(f.get('days'))});if(epoch!==sessionEpoch||!role)return;e.target.reset();await load()}catch(err){if(epoch===sessionEpoch)say(friendlyError(err),true)}finally{busy=false}};
 init();
 setInterval(()=>{if(!document.hidden&&role&&!busy)load().catch(e=>say(friendlyError(e),true))},90000);
-</script><script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-navigation.js" defer></script></body></html>
+</script><script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-quick-actions.js" defer></script><script src="./takeover-navigation.js" defer></script></body></html>
