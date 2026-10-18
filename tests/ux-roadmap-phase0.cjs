@@ -24,15 +24,18 @@ assert.equal(doc.querySelectorAll('#form').length,1);
 assert.equal(doc.querySelectorAll('#trainingHelp').length,1);
 assert.equal(doc.querySelector('#date').type,'date');
 assert.equal(doc.querySelector('#submit').type,'submit');
-assert.match(boxer,/localStorage\.getItem\('takeover:last-training-kind:v1'\)/);
-assert.match(boxer,/localStorage\.setItem\('takeover:last-training-kind:v1'/);
-assert.match(boxer,/types\.some\(item=>String\(item\.id\)===preferred\)/);
-assert.doesNotMatch(boxer,/localStorage\.setItem\([^)]*(?:notes|password|token|session)/i);
-assert.match(boxer,/training_submissions'\)\.insert/);
+// UX 2.0 keeps the most-used training kind per boxer; sensitive notes only
+// live in session storage or the RLS-protected optional Supabase draft.
+assert.match(boxer,/takeover_last_type_/);
+assert.match(boxer,/sessionStorage\\.setItem/);
+assert.match(boxer,/training_drafts_v2/);
+assert.match(boxer,/trainingSubmitBusy=true/);
+assert.doesNotMatch(boxer,/localStorage\\.setItem\\([^)]*(?:notes|password|token|session)/i);
+assert.match(boxer,/training_submissions'\\)\\.insert/);
 assert.match(boxer,/Training eingereicht – wartet auf Bestätigung/);
-assert.match(boxer,/\$\('joggingKm'\)\.value='';\$\('techniqueMinutes'\)\.value='';updateFields\(\);await load\(\)/);
-assert.doesNotMatch(boxer,/\$\('kind'\)\.value='';updateFields\(\);await load\(\)/,
-'Successful submit should keep the chosen training kind while clearing optional details.');
+assert.match(boxer,/\\$\\('joggingKm'\\)\\.value='';\\$\\('techniqueMinutes'\\)\\.value='';\\$\\('kind'\\)\\.value=String\\(type\\.id\\);updateFields\\(\\);await load\\(\\)/);
+assert.doesNotMatch(boxer,/\\$\\('kind'\\)\\.value='';updateFields\\(\\);await load\\(\\)/,
+ 'Successful submit should preserve the selected training kind.');
 assert.match(duel,/if\(!confirm\('Duell-Einladung senden\?/);
 assert.match(duel,/const challengerName=eligible\.find/);
 assert.match(duel,/const opponentName=eligible\.find/);
