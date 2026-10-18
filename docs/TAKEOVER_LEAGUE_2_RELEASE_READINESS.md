@@ -137,3 +137,10 @@ Stop without writing to production if the read-only inventory shows an unknown s
 - TEST rollback-only: 50 approved training submissions produced exactly three session achievement tiers and 210 EXP. PASS.
 - TEST rollback-only: 100 approved training submissions produced four session tiers and 460 EXP. Recalculation produced no extra events. PASS.
 - Both transactions rolled back; production unchanged. These single-session tests do not cover concurrent inserts.
+
+## Production function privilege verification (2026-10-18)
+
+- Production read-only `has_function_privilege`: `anon` EXECUTE=true and `authenticated` EXECUTE=true on `public.recalculate_boxer_achievements_v2(uuid)`; security advisor independently reports both. **BLOCKER**, no production changes authorized.
+- TEST read-only equivalent: both EXECUTE=false. Reviewed migration 006 already contains REVOKE statements, but production privileges differ from reviewed/test state.
+- An attempted additional TEST duel transaction was blocked by tool safety; no outcome claimed.
+- Remediation requires explicit production authorization and independent validation; never treat TEST privilege state as production evidence.
