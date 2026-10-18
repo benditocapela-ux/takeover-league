@@ -555,4 +555,6 @@ BEGIN
  THEN RAISE EXCEPTION 'Excessive duel table access: %',t; END IF;
  END LOOP;
 END $postflight$;
+-- Inform Supabase PostgREST that newly created RPCs exist after transaction commit.
+NOTIFY pgrst, 'reload schema';
 COMMIT;
