@@ -253,7 +253,7 @@ $('form').addEventListener('submit',async e=>{
    if(old.error||!old.data)throw r.error;
    show('Training wurde bereits eingereicht – keine doppelten Punkte.', 'success');
   }
-  try{localStorage.setItem('takeover_last_type_'+profile.id,String(type.id));localStorage.setItem('takeover_last_training_'+profile.id,JSON.stringify({...saved,notes:''}));sessionStorage.removeItem(sessionDraftKey());sessionStorage.removeItem(submissionRetryKey())}catch{}if(cloudDraftAvailable){const cleanup=await db.from('training_drafts_v2').delete().eq('boxer_id',profile.id);if(cleanup.error)console.warn('Entwurf nach Einreichung nicht gelöscht:',cleanup.error.message)}
+  try{localStorage.setItem('takeover_last_type_'+profile.id,String(type.id));localStorage.setItem('takeover_last_training_'+profile.id,JSON.stringify({kind:saved.kind,joggingKm:saved.joggingKm,techniqueMinutes:saved.techniqueMinutes}));sessionStorage.removeItem(sessionDraftKey());sessionStorage.removeItem(submissionRetryKey())}catch{}if(cloudDraftAvailable){const cleanup=await db.from('training_drafts_v2').delete().eq('boxer_id',profile.id);if(cleanup.error)console.warn('Entwurf nach Einreichung nicht gelöscht:',cleanup.error.message)}
   $('draftStatus').textContent='Erfolgreich eingereicht. Entwurf gelöscht.';
   show('Training eingereicht – wartet auf Bestätigung.','success');
   $('notes').value='';$('joggingKm').value='';$('techniqueMinutes').value='';$('kind').value=String(type.id);updateFields();await load();
