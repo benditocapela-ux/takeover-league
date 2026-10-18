@@ -24,12 +24,19 @@
   if(href.startsWith('#')){
    const target=document.getElementById(href.slice(1));
    if(!target)continue;
+   a.dataset.tlTarget=href.slice(1);
    a.addEventListener('click',e=>{e.preventDefault();dialog.close();target.scrollIntoView({behavior:'smooth',block:'start'});const input=target.querySelector('input:not([disabled]),select:not([disabled]),button:not([disabled])');if(input)input.focus({preventScroll:true})});
   }
   links.append(a);
  }
  dialog.append(heading,links);document.body.append(button,dialog);
- const open=()=>{if(!dialog.open)dialog.showModal()};
+ const open=()=>{
+  for(const a of links.querySelectorAll('a[data-tl-target]')){
+   const target=document.getElementById(a.dataset.tlTarget);
+   a.hidden=!target||!target.getClientRects().length||!!target.closest('[hidden]');
+  }
+  if(!dialog.open)dialog.showModal();
+ };
  button.addEventListener('click',open);close.addEventListener('click',()=>dialog.close());
  dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
  document.addEventListener('keydown',e=>{if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&!e.altKey){
