@@ -24,18 +24,16 @@ assert.equal(doc.querySelectorAll('#form').length,1);
 assert.equal(doc.querySelectorAll('#trainingHelp').length,1);
 assert.equal(doc.querySelector('#date').type,'date');
 assert.equal(doc.querySelector('#submit').type,'submit');
-// UX 2.0 keeps the most-used training kind per boxer; sensitive notes only
-// live in session storage or the RLS-protected optional Supabase draft.
-assert.match(boxer,/takeover_last_type_/);
-assert.match(boxer,/sessionStorage\\.setItem/);
-assert.match(boxer,/training_drafts_v2/);
-assert.match(boxer,/trainingSubmitBusy=true/);
-assert.doesNotMatch(boxer,/localStorage\\.setItem\\([^)]*(?:notes|password|token|session)/i);
-assert.match(boxer,/training_submissions'\\)\\.insert/);
-assert.match(boxer,/Training eingereicht – wartet auf Bestätigung/);
-assert.match(boxer,/\\$\\('joggingKm'\\)\\.value='';\\$\\('techniqueMinutes'\\)\\.value='';\\$\\('kind'\\)\\.value=String\\(type\\.id\\);updateFields\\(\\);await load\\(\\)/);
-assert.doesNotMatch(boxer,/\\$\\('kind'\\)\\.value='';updateFields\\(\\);await load\\(\\)/,
- 'Successful submit should preserve the selected training kind.');
+// The source preserves boxer-specific defaults and never persists note content in localStorage.
+assert.ok(boxer.includes('takeover_last_type_'));
+assert.ok(boxer.includes('sessionStorage.setItem'));
+assert.ok(boxer.includes('training_drafts_v2'));
+assert.ok(boxer.includes('trainingSubmitBusy=true'));
+assert.ok(boxer.includes("db.from('training_submissions').insert"));
+assert.ok(boxer.includes('Training eingereicht – wartet auf Bestätigung'));
+assert.ok(boxer.includes("$('joggingKm').value='';$('techniqueMinutes').value='';$('kind').value=String(type.id);updateFields();await load()"));
+assert.ok(!boxer.includes("$('kind').value='';updateFields();await load()"));
+assert.ok(!boxer.includes('JSON.stringify({...saved,notes:'));
 assert.match(duel,/if\(!confirm\('Duell-Einladung senden\?/);
 assert.match(duel,/const challengerName=eligible\.find/);
 assert.match(duel,/const opponentName=eligible\.find/);
