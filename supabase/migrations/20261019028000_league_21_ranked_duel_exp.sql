@@ -254,7 +254,7 @@ BEGIN
                                 'scores',pg_catalog.jsonb_build_array(p1,p2)));
  END IF;
  RETURN 'settled';
-END $function$
+END $function$;
 
 
 revoke all on function league_v21_private.duel_reconcile_ranked_core(uuid) from public,anon,authenticated;
