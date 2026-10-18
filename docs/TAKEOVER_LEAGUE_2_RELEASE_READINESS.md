@@ -79,3 +79,11 @@ Stop without writing to production if the read-only inventory shows an unknown s
 - TEST Supabase rollback-only SQL: ten approved sessions earned `training_10` for Boxer 1; transferring all ten `training_submissions.boxer_id` values to Boxer 2 revoked the first award and granted the second. Separate `revoked` and `earned` event rows verified. PASS.
 - A further re-earn transition test was blocked by tool safety checks; **not passed**.
 - Post-test read-only inspection: zero test training submissions, achievement ledgers/events and duels; `achievements`, `duels`, and `coach_challenges` flags all false.
+
+## Achievement DELETE regression and patch (2026-10-18)
+
+- TEST rollback-only regression exposed a real bug: deleting one of exactly ten approved sessions left `training_10` earned, because migration 006 trigger did not handle DELETE.
+- Development migration `006_achievement_v2_integrated_review.sql` updated in commit `e8f9fb9f`: trigger now fires AFTER DELETE; trigger function reconciles `OLD.boxer_id` and returns `OLD` for deletes.
+- TEST rollback-only validation installed the modified trigger/function inside a transaction, earned `training_10` with ten approved sessions, deleted one, verified zero earned ledger awards and exactly one `revoked` event, then rolled back all changes. PASS. The fix has NOT been applied persistently to TEST or production.
+- TEST rollback-only `earned` -> `revoked` -> `reearned` flow also passed: three event rows and one reused 25 EXP transaction.
+- Follow-up: CI regression coverage for DELETE, authenticated HTTP tests, concurrency and production privilege remediation remain necessary.
