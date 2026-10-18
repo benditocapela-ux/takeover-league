@@ -156,3 +156,51 @@ BEGIN
  END IF;
 END $cap$;
 ROLLBACK;
+
+-- Independent opponent-side cap: a boxer cannot accept a fourth active duel.
+BEGIN;
+INSERT INTO public.profiles(id,auth_user_id,role,is_active) VALUES
+ ('00000000-0000-0000-0000-0000000000a1','10000000-0000-0000-0000-0000000000a1','boxer',true),
+ ('00000000-0000-0000-0000-0000000000b2','10000000-0000-0000-0000-0000000000b2','boxer',true),
+ ('00000000-0000-0000-0000-0000000000b3','10000000-0000-0000-0000-0000000000b3','boxer',true),
+ ('00000000-0000-0000-0000-0000000000b4','10000000-0000-0000-0000-0000000000b4','boxer',true),
+ ('00000000-0000-0000-0000-0000000000b5','10000000-0000-0000-0000-0000000000b5','boxer',true);
+UPDATE public.league_feature_flags SET is_enabled=true WHERE feature_key='duels';
+DO $opponent_cap$
+DECLARE
+ target uuid := '00000000-0000-0000-0000-0000000000a1';
+ challenger uuid;
+ challenger_auth uuid;
+ duel uuid;
+ n integer;
+BEGIN
+ FOR n IN 2..5 LOOP
+  challenger:=('00000000-0000-0000-0000-' || lpad(to_hex(176+n),12,'0'))::uuid;
+  challenger_auth:=('10000000-0000-0000-0000-' || lpad(to_hex(176+n),12,'0'))::uuid;
+  PERFORM set_config('test.auth_uid',challenger_auth::text,true);
+  duel:=public.duel_v2_invite(challenger,target,7);
+  PERFORM set_config('test.auth_uid','10000000-0000-0000-0000-0000000000a1',true);
+  IF n<=4 THEN
+   IF public.duel_v2_respond(duel,true)<>'active' THEN
+    RAISE EXCEPTION 'Expected active duel %',n;
+   END IF;
+  ELSE
+   BEGIN
+    PERFORM public.duel_v2_respond(duel,true);
+    RAISE EXCEPTION 'Fourth opponent duel was accepted';
+   EXCEPTION WHEN raise_exception THEN
+    IF SQLERRM='Fourth opponent duel was accepted' THEN RAISE; END IF;
+    IF SQLERRM NOT LIKE 'Opponent has three active duels%' THEN
+     RAISE EXCEPTION 'Unexpected opponent cap error: %',SQLERRM;
+    END IF;
+   END;
+   IF (SELECT status FROM public.league_duels WHERE id=duel)<>'pending' THEN
+    RAISE EXCEPTION 'Opponent cap rejection changed invitation state';
+   END IF;
+  END IF;
+ END LOOP;
+ IF (SELECT count(*) FROM public.league_duels WHERE status='active')<>3 THEN
+  RAISE EXCEPTION 'Opponent-side three-active-duel limit violated';
+ END IF;
+END $opponent_cap$;
+ROLLBACK;
