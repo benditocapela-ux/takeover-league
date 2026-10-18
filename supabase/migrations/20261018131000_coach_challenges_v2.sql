@@ -3,6 +3,19 @@
 -- SAFE-DEFAULT: two feature flags remain disabled. Does not modify real challenge or boxer point rows.
 -- APPLY ONLY AFTER EXPLICIT RELEASE APPROVAL AND DATA BACKUP.
 BEGIN;
+DO $preflight$
+BEGIN
+ IF EXISTS (SELECT 1 FROM pg_catalog.pg_proc p
+ JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace
+ WHERE n.nspname='public' AND p.proname LIKE 'coach_challenge_v2_%')
+ THEN RAISE EXCEPTION 'V2 RPC names already exist; review migration collision'; END IF;
+ IF pg_catalog.to_regclass('public.league_coach_challenges') IS NOT NULL
+ OR pg_catalog.to_regclass('public.league_coach_challenge_entries') IS NOT NULL
+ OR pg_catalog.to_regclass('public.league_coach_challenge_reviews') IS NOT NULL
+ OR pg_catalog.to_regclass('public.league_coach_challenge_exp_ledger') IS NOT NULL
+ THEN RAISE EXCEPTION 'V2 challenge tables already exist; review schema collision'; END IF;
+END $preflight$;
+
 -- 1. 20261018_allow_coach_role.sql
 -- PREPARED ONLY: allow coach role for V2 challenge administration.
 -- Existing profiles and their roles remain unchanged.
@@ -608,4 +621,28 @@ BEGIN
 END LOOP;
 END
 $grant$;
+DO $postflight$
+DECLARE v_total integer; v_exposed integer; tbl text;
+BEGIN
+ IF NOT EXISTS(SELECT 1 FROM public.league_feature_flags
+ WHERE feature_key='coach_challenges' AND is_enabled IS FALSE)
+ OR NOT EXISTS(SELECT 1 FROM public.league_feature_flags
+ WHERE feature_key='duels' AND is_enabled IS FALSE)
+ THEN RAISE EXCEPTION 'V2 feature flags must remain disabled'; END IF;
+ SELECT count(*),count(*) FILTER (WHERE pg_catalog.has_function_privilege('anon',p.oid,'EXECUTE'))
+ INTO v_total,v_exposed
+ FROM pg_catalog.pg_proc p JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace
+ WHERE n.nspname='public' AND p.proname LIKE 'coach_challenge_v2_%';
+ IF v_total<>17 OR v_exposed<>0
+ THEN RAISE EXCEPTION 'Unexpected V2 function count or anonymous grants: %, %',v_total,v_exposed; END IF;
+ FOREACH tbl IN ARRAY ARRAY['league_coach_challenges','league_coach_challenge_entries',
+ 'league_coach_challenge_reviews','league_coach_challenge_exp_ledger'] LOOP
+ IF NOT EXISTS(SELECT 1 FROM pg_catalog.pg_class c WHERE c.oid=('public.'||tbl)::regclass
+ AND c.relrowsecurity)
+ THEN RAISE EXCEPTION 'RLS absent for %',tbl; END IF;
+ IF pg_catalog.has_table_privilege('anon','public.'||tbl,'SELECT')
+ OR pg_catalog.has_table_privilege('authenticated','public.'||tbl,'SELECT')
+ THEN RAISE EXCEPTION 'Client table permission unexpected: %',tbl; END IF;
+ END LOOP;
+END $postflight$;
 COMMIT;
