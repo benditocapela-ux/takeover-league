@@ -59,11 +59,11 @@ const status=byId('status'),panel=byId('app'),auth=byId('auth'),form=byId('invit
 const el=(tag,text)=>{const node=document.createElement(tag);node.textContent=String(text??'');return node};
 const dateText=value=>{if(!value)return '–';const d=new Date(value);return Number.isNaN(d.getTime())?'–':d.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'})};
 const statuses={pending:'Einladung offen',active:'Aktiv',awaiting_reviews:'Wird ausgewertet',settled:'Abgeschlossen',declined:'Abgelehnt',expired:'Abgelaufen',cancelled:'Abgebrochen'};
-let db,profile=null,eligible=[],duels=[],busy=false;
+let db,profile=null,eligible=[],duels=[],busy=false,sessionEpoch=0;
 const say=(text,isError=false)=>{status.textContent=text;status.className=isError?'error':''};
 const message=e=>{const t=String(e?.message||e||'Unbekannter Fehler');if(/jwt expired|invalid jwt/i.test(t))return 'Sitzung abgelaufen. Bitte erneut anmelden.';if(/failed to fetch|networkerror/i.test(t))return 'Netzwerkfehler. Bitte Internetverbindung prüfen.';return t};
 async function rpc(name,args={}){const result=await db.rpc(name,args);if(result.error)throw result.error;return result.data}
-function reset(){profile=null;eligible=[];duels=[];panel.hidden=true;auth.hidden=false;list.replaceChildren()}
+function reset(){sessionEpoch++;profile=null;eligible=[];duels=[];panel.hidden=true;auth.hidden=false;list.replaceChildren()}
 function populate(){
  const challenger=form.elements.challenger,opponent=form.elements.opponent;
  const requested=challenger.value;
@@ -116,28 +116,34 @@ function render(){
  }
 }
 async function load(){
+ const epoch=sessionEpoch;
  const [all,boxers]=await Promise.all([rpc('duel_v2_list_mine'),rpc('duel_v2_eligible_boxers')]);
+ if(epoch!==sessionEpoch||!profile)return;
  duels=Array.isArray(all)?all:[];eligible=Array.isArray(boxers)?boxers:[];
  populate();render();
  say(duels.length+' Duelle geladen.');
 }
 async function mutate(name,args){
- if(busy)return;busy=true;try{say('Änderung wird gespeichert …');await rpc(name,args);await load()}
- catch(e){say(message(e),true)}finally{busy=false}
+ if(busy)return;busy=true;const epoch=sessionEpoch;
+ try{say('Änderung wird gespeichert …');await rpc(name,args);if(epoch!==sessionEpoch||!profile)return;await load()}
+ catch(e){if(epoch===sessionEpoch)say(message(e),true)}finally{busy=false}
 }
 async function init(){
+ const epoch=++sessionEpoch;
  if(!window.TAKEOVER_DUELS_V2_ENABLED){reset();auth.hidden=true;say('Boxer-Duelle werden vorbereitet. Es werden keine Punkte verändert.');return}
  try{
   if(!db)db=createClient('https://cfgdvcccsqwfjajuizsr.supabase.co','sb_publishable_6xm0QLD1q8JEeVvJqGOCvQ_p-uwKG8N');
   const {data:{user},error}=await db.auth.getUser();
+  if(epoch!==sessionEpoch)return;
   if(error)throw error;
   if(!user){reset();say('Bitte anmelden, um deine Duelle zu sehen.');return}
   const p=await db.from('profiles').select('id,role,is_active').eq('auth_user_id',user.id).maybeSingle();
+  if(epoch!==sessionEpoch)return;
   if(p.error)throw p.error;
   if(!p.data?.is_active||!['boxer','coach','admin'].includes(p.data.role)){reset();throw Error('Kein aktives Boxer- oder Trainerprofil vorhanden.')}
   profile=p.data;auth.hidden=true;panel.hidden=false;
   await load();
- }catch(e){if(!profile)reset();say(message(e),true)}
+ }catch(e){if(epoch!==sessionEpoch)return;if(!profile)reset();say(message(e),true)}
 }
 form.elements.challenger.addEventListener('change',populate);
 form.onsubmit=e=>{e.preventDefault();if(busy||!profile)return;
@@ -147,7 +153,7 @@ form.onsubmit=e=>{e.preventDefault();if(busy||!profile)return;
  mutate('duel_v2_invite',{p_challenger:challenger,p_opponent:opponent,p_duration_days:days});
 };
 byId('refresh').onclick=async()=>{if(busy)return;try{say('Aktualisiere Duelle …');await load()}catch(e){say(message(e),true)}};
-byId('logout').onclick=async()=>{try{const {error}=await db.auth.signOut();if(error)throw error;reset();say('Abgemeldet.')}catch(e){say(message(e),true)}};
+byId('logout').onclick=async()=>{reset();try{const {error}=await db.auth.signOut();if(error)throw error;say('Abgemeldet.')}catch(e){say(message(e),true)}};
 byId('signin').onsubmit=async e=>{e.preventDefault();if(!db)return;const f=new FormData(e.target);
  try{const {error}=await db.auth.signInWithPassword({email:String(f.get('email')),password:String(f.get('password'))});if(error)throw error;e.target.reset();await init()}
  catch(err){say(message(err),true)}
