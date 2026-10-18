@@ -16,6 +16,7 @@ jobs:
           node-version: '22'
       - run: npm install --no-save --package-lock=false jsdom@26.1.0
       - run: node tests/release-static-contracts.cjs
+      - run: node tests/release-ux-staging.cjs
       - run: node tests/boxer-profile-actions.cjs
       - run: node tests/menu-navigation-compat.cjs
       - run: node tests/boxer-dashboard-polish.cjs
