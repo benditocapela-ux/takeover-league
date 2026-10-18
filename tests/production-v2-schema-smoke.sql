@@ -63,8 +63,7 @@ END $;
 -- Database rejects illegal challenge settings and duplicate enrollment/reward rows.
 DO $
 DECLARE cid uuid; boxer uuid := 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
-DECLARE trainer uuid := 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
-DECLARE failed boolean;
+trainer uuid := 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 BEGIN
  BEGIN
    INSERT INTO public.league_coach_challenges(created_by,title,challenge_kind,duration_days)
