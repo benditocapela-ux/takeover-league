@@ -30,6 +30,7 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null,candida
  prodDom.window.eval(prodSource.replace('init();','window.__ready=init();'));
  await prodDom.window.__ready;
  assert.equal(productionClientCalls,0,'disabled production page must never contact Supabase');
+ assert.equal(prodDom.window.document.querySelector('#filters').hidden,true,'production filters stay hidden during rollout');
  assert.equal(prodDom.window.document.querySelector('#refresh').hidden,true);
  assert.equal(prodDom.window.document.querySelector('#filters').hidden,true);
  assert.match(prodDom.window.document.querySelector('#status').textContent,/vorbereitet/);
