@@ -1,0 +1,81 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Meine Ziele · Takeover League 2.1</title>
+<style>:root{color-scheme:dark;font:16px system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;padding:20px 15px 100px;background:#0b1422;color:#f4f7fc}main{max-width:960px;margin:auto}h1{color:#dfbd77}a{color:#eac47d}.panel{margin:16px 0;padding:20px;background:#142238;border:1px solid #394961;border-radius:16px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:14px}label{display:grid;gap:7px;font-weight:600;margin-top:12px}input,select,textarea{width:100%;background:#0d1929;color:#fff;border:1px solid #536781;border-radius:9px;padding:12px;font:inherit;min-height:44px}button{min-height:44px;padding:11px 17px;background:#dfbd77;border:0;color:#152034;font-weight:750;border-radius:10px;cursor:pointer}button:disabled{opacity:.55}.muted{color:#b8c7d7}.goal{border:1px solid #3c526a;background:#101e30;border-radius:12px;padding:15px;overflow-wrap:anywhere}.track{height:12px;background:#35465f;border-radius:9px;overflow:hidden}.track>div{height:100%;background:#dfbd77}.goal strong{font-size:18px}.meta{font-size:13px;color:#b8c7d7}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #dfbd77;outline-offset:3px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"></head><body>
+<main><p><a href="./boxer.html">← Mein Training</a></p><h1>🎯 Meine Ziele</h1>
+<p class="muted">Persönliche Trainingsziele. Automatische Ziele berücksichtigen nur bestätigte Trainings; freie Ziele kannst du manuell aktualisieren.</p>
+<p id="status" role="status">Anmeldung wird geprüft …</p>
+<div id="app" hidden>
+<section class="panel"><h2>Neues Ziel</h2><form id="goalForm">
+<label>Titel<input id="title" required minlength="3" maxlength="120" placeholder="Zum Beispiel: 10 Laufeinheiten"></label>
+<label>Zielart<select id="metric"><option value="training_sessions">Bestätigte Trainingseinheiten</option><option value="jogging_km">Bestätigte Joggingkilometer</option><option value="technique_minutes">Bestätigte Technikminuten</option><option value="custom">Manuelles Ziel</option></select></label>
+<label>Zielwert<input id="target" type="number" min="1" max="1000000" step="0.1" required value="10"></label>
+<label>Deadline<input id="endsOn" type="date" required></label>
+<p><button type="submit" id="save">Ziel speichern</button></p></form></section>
+<section class="panel"><div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between"><h2>Meine Fortschritte</h2><button type="button" id="refresh">Aktualisieren</button></div><div class="grid" id="goals"></div></section>
+</div></main>
+<script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
+const $=id=>document.getElementById(id);
+const status=$('status');let profile=null;
+const tomorrow=new Date(Date.now()+30*86400000);$('endsOn').value=tomorrow.toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'});
+const say=t=>status.textContent=t;
+const format=n=>Number(n).toLocaleString('de-CH',{maximumFractionDigits:2});
+function node(tag,value){const e=document.createElement(tag);e.textContent=String(value||'');return e}
+async function load(){
+ if(!profile)return;
+ const [goals,progress,trainings]=await Promise.all([
+  db.from('league_boxer_goals_v21').select('id,title,metric,target_value,starts_on,ends_on,status').eq('boxer_id',profile.id).order('created_at',{ascending:false}),
+  db.from('league_goal_progress_v21').select('goal_id,progress_delta'),
+  db.from('training_submissions').select('training_date,status,jogging_km,technique_minutes').eq('boxer_id',profile.id).eq('status','approved').order('training_date',{ascending:false}).limit(3000)
+ ]);
+ if(goals.error||progress.error||trainings.error){say('Ziele konnten nicht geladen werden. '+(goals.error||progress.error||trainings.error).message);return}
+ const root=$('goals');root.replaceChildren();
+ const rows=goals.data||[];const manual=progress.data||[];
+ for(const g of rows){
+  const card=node('article','');card.className='goal';const title=node('strong',g.title);card.append(title);
+  const items=(trainings.data||[]).filter(t=>t.training_date>=g.starts_on&&t.training_date<=g.ends_on);
+  const value=g.metric==='custom'
+   ?manual.filter(x=>x.goal_id===g.id).reduce((a,x)=>a+Number(x.progress_delta||0),0)
+   :g.metric==='training_sessions'?items.length
+   :items.reduce((a,x)=>a+Number(x[g.metric]||0),0);
+  const max=Number(g.target_value),pct=Math.max(0,Math.min(100,Math.round(value/max*100)));
+  const summary=node('p',format(value)+' / '+format(max)+' · '+pct+'%');summary.className='meta';card.append(summary);
+  const track=document.createElement('div');track.className='track';track.setAttribute('role','progressbar');
+  track.setAttribute('aria-label','Zielerreichung');track.setAttribute('aria-valuemin','0');track.setAttribute('aria-valuemax','100');track.setAttribute('aria-valuenow',String(pct));
+  const fill=document.createElement('div');fill.style.width=pct+'%';track.append(fill);card.append(track);
+  card.append(node('p','Frist: '+g.ends_on+' · '+(g.status==='active'?'Aktiv':g.status)));
+  if(g.metric==='custom'&&g.status==='active'){
+   const form=document.createElement('form');const label=node('label','Manuellen Fortschritt hinzufügen');
+   const amount=document.createElement('input');amount.type='number';amount.min='0.01';amount.max='1000000';amount.step='0.01';amount.required=true;amount.placeholder='Zusätzlicher Fortschritt';
+   label.append(amount);const submit=node('button','Fortschritt erfassen');submit.type='submit';form.append(label,submit);
+   form.addEventListener('submit',async ev=>{
+    ev.preventDefault();submit.disabled=true;
+    const r=await db.rpc('league_v21_record_goal_progress',{p_goal:g.id,p_delta:Number(amount.value),p_note:null});
+    if(r.error){say('Fortschritt nicht gespeichert: '+r.error.message);submit.disabled=false;return}
+    say('Fortschritt erfasst.');await load();
+   });card.append(form);
+  }
+  root.append(card);
+ }
+ if(!rows.length)root.append(node('p','Noch keine Ziele. Erstelle dein erstes Ziel.'));
+ say(rows.length+' persönliche Ziele geladen.');
+}
+$('goalForm').addEventListener('submit',async ev=>{
+ ev.preventDefault();if(!profile)return;
+ $('save').disabled=true;say('Ziel wird gespeichert …');
+ const r=await db.rpc('league_v21_save_goal',{p_goal_id:null,p_boxer_id:profile.id,p_title:$('title').value,p_metric:$('metric').value,p_target:Number($('target').value),p_end_date:$('endsOn').value});
+ $('save').disabled=false;if(r.error){say('Speichern fehlgeschlagen: '+r.error.message);return}
+ $('goalForm').reset();say('Ziel gespeichert.');await load();
+});
+$('refresh').addEventListener('click',load);
+async function init(){
+ const {data:{user},error}=await db.auth.getUser();
+ if(error||!user){say('Bitte zuerst im Boxer-Dashboard anmelden.');return}
+ const r=await db.from('profiles').select('id,role,is_active').eq('auth_user_id',user.id).maybeSingle();
+ if(r.error||!r.data?.is_active||r.data.role!=='boxer'){say('Nur aktive Boxer können persönliche Ziele bearbeiten.');return}
+ profile=r.data;$('app').hidden=false;await load();
+}
+init().catch(e=>say('Fehler: '+e.message));
+</script><script src="./takeover-navigation.js" defer></script></body></html>
