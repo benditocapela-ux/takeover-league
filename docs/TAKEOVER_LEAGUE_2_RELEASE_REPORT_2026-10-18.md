@@ -1,3 +1,5 @@
+> **FINALER STATUS: GO LIVE ERFOLGREICH – 18.10.2026.** Stand dieser Chronik enthält ältere STOP/HOLD-Einträge, die den Verlauf vor der überarbeiteten Duell-Migration dokumentieren. Diese frühere Blockade ist **durch die im TEST geprüfte, private SECURITY-DEFINER-Core / öffentliche SECURITY-INVOKER-Fassung regulär über Supabase apply_migration gelöst worden**. Siehe Abschluss unten. Echtgeld-Backups oder signierte End-to-End-Login-Abnahmen wurden auf ausdrücklichen Wunsch des Eigentümers ausgelassen – diese Risiken sind **nicht** als bestanden anzusehen.
+
 # Takeover League 2.0 – Staging Release-Bericht
 Stand: 18.10.2026. Repository: benditocapela-ux/takeover-league
 Branch: `release/takeover-league-2-ready`
@@ -264,3 +266,35 @@ Die produktive RPC-Sicherheitsblockade ist **nicht** aufgehoben. Dennoch wurde d
 ### Bereinigungsversuch der Live-Duell-Sicherheitsblockade (18.10.2026)
 
 Die privilegierte Berechnungsfunktion wurde im **Release-Branch** von `public` nach `league_duel_private` verlegt; die öffentliche `duel_v2_live_scores(uuid)` ist jetzt ein `SECURITY INVOKER`-Wrapper. Das bisherige `SECURITY DEFINER`-Modell im öffentlichen Schema entspricht nicht der aktuellen Supabase-Empfehlung. Keine Erweiterung der API-Berechtigungen. Die geänderte Migration wurde im **isolierten TEST** erfolgreich angewendet, und die bisherigen Score-/Autorisierungsprüfungen bestanden erneut. Anonymes EXECUTE ist für Kern und Wrapper gesperrt. Die genaue ursprüngliche Tool-Blockierregel bleibt unbekannt, daher **kein Versuch einer erneuten produktiven Ausführung oder Umgehung**. Freigabevorlage: `docs/TAKEOVER_LEAGUE_2_DUEL_SECURITY_REVIEW.md`.
+
+
+---
+
+## ABSCHLUSS GO LIVE (18.10.2026)
+
+**Produktiv über den regulären Supabase-Migrationsweg angewendet und nachgeprüft:**
+- `takeover_league2_personal_challenge_assignment`
+- `league2_private_training_drafts`
+- `league2_training_request_idempotency`
+- `league2_admin_training_audit`
+- `takeover_league2_hardened_live_duel_score` (neuer `league_duel_private`-Kern + öffentlicher invoker Wrapper)
+- `league2_bounded_admin_rejection_undo`
+- `league2_avatar_anon_execute_lockdown`
+- `league2_owner_training_audit_history`
+
+Die `mark_my_notification_read(uuid)`-RPC war bereits vor diesem produktiven Durchlauf vorhanden; sie wurde **nicht** blind überschrieben. Das Frontend berücksichtigt deren idempotentes Wiederholungsverhalten.
+
+**Freigeschaltete Feature-Flags:**
+`coach_challenges=true`, `duels=true` (bereits vorher aktiv), sowie jetzt `notifications=true`, `performance_dashboard=true`, `achievements=true`, `coach_feedback=true`. Andere Legacy- oder unfertige Feature-Flags bleiben deaktiviert.
+
+**Nachprüfungen:**
+- 66 Trainingseinreichungen, 60 genehmigt, 71 Punktetransaktionen zum Zeitpunkt der Postflight-Abfrage; 0 genehmigte ohne Ledger, 0 doppelte Ledger und 0 Punkte/EXP für abgelehnte Einträge.
+- Geschützte API-Funktionen nicht anonym ausführbar; privates Duell-Schema ohne anonymes USAGE; RLS aktiv für Benachrichtigungen, Feedback und Boxer-Entwürfe.
+- Release PR #8 wurde per Squash zu `main` Commit `114ac0069dcc14905ec9c1a568d770ab217da58f` gemergt. GitHub Pages Run `39160151629` **success**, inklusive Schritt `Verify publicly served release`. Die V2-Integrationstests waren grün.
+- Nachkorrektur der Feature-Übersicht per PR #9 zu `main` Commit `93702411a99146973a6c77dd7f1296e601e5b5ca`. Statische/JSDOM- und Chromium-Tests bestanden; der zweite GitHub Pages Run `39160733708` **success**, inklusive öffentlich bedienter Release-Prüfung.
+
+**Webseite:** https://benditocapela-ux.github.io/takeover-league/
+
+**Restrisiko:** Kein echtes Produktionsbackup und keine signierten E2E-Logins vor dem Release auf ausdrückliche Eigentümerentscheidung. CI/mock-/transaktionale Rollenprüfungen ersetzen diese nicht. Sicherheitshinweis Supabase Auth Leaked Password Protection war zuvor offen; unter den angeschlossenen Tools fehlt hier die Schaltmöglichkeit. Nach Freigabe zuerst reale Boxer-/Trainer-Logins, Meldungen und Berechtigungen prüfen, bevor weitere Nutzer eingeladen werden. Live-Duelle können erst bei zwei tatsächlichen Teilnehmern vollständig real nachgestellt werden; zum letzten Preflight waren 0 Duelle im Produktivbestand.
+
+**GO LIVE erfolgreich: Code, Datenbank, freigegebene Funktionen und offizielles Hosting aktualisiert.**
