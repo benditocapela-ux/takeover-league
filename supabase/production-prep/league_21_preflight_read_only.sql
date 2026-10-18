@@ -25,10 +25,22 @@ WITH checks AS (
      group by t.submission_id having count(*)>1) dup) as no_duplicate_training_ledger,
   (select count(*)=2 from public.league_feature_flags
     where feature_key in ('coach_challenges','duels') and is_enabled) as original_v2_flags_active,
-  not pg_catalog.has_table_privilege('anon','public.point_transactions','SELECT')
+  (select c.relrowsecurity and not exists(
+    select 1 from pg_catalog.pg_policy p
+    where p.polrelid=c.oid and p.polcmd in ('r','*')
+      and (0::oid=any(p.polroles) or 'anon'::regrole::oid=any(p.polroles))
+   ) from pg_catalog.pg_class c where c.oid='public.point_transactions'::regclass)
     as anon_cannot_read_private_ledger,
-  not pg_catalog.has_table_privilege('authenticated','public.point_transactions','INSERT')
+  (select c.relrowsecurity and not exists(
+    select 1 from pg_catalog.pg_policy p
+    where p.polrelid=c.oid and p.polcmd in ('a','*')
+      and (0::oid=any(p.polroles) or 'authenticated'::regrole::oid=any(p.polroles))
+   ) from pg_catalog.pg_class c where c.oid='public.point_transactions'::regclass)
     as boxers_cannot_insert_ledger,
+  -- Legacy grants are broad but currently blocked by RLS. Keep visible for security review.
+  (pg_catalog.has_table_privilege('anon','public.point_transactions','SELECT')
+    or pg_catalog.has_table_privilege('authenticated','public.point_transactions','INSERT'))
+    as legacy_wide_table_grants,
   (select count(*)=2 from pg_catalog.pg_attribute a
    join pg_catalog.pg_class c on c.oid=a.attrelid
    join pg_catalog.pg_namespace n on n.oid=c.relnamespace
@@ -48,5 +60,5 @@ WITH checks AS (
 select pg_catalog.jsonb_build_object(
  'release_21_schema_preflight_passed',passed,
  'checks',details,
- 'notes','Read-only baseline validation only. Still requires login E2E, auth audit, backup/restore and approval.'
+ 'notes','Read-only preflight; legacy grants remain broad but RLS currently restricts access. Verify policies before release; still requires live logins, backup/restore, approval.'
 ) as release_21_preflight from audit;
