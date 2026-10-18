@@ -214,10 +214,22 @@ async function refreshBoxerNotifications(){
    mark.onclick=async()=>{
     mark.disabled=true;mark.textContent='Speichere …';
     const result=await db.rpc('mark_my_notification_read',{p_notification_id:note.id});
-    if(result.error||result.data!==true){
+    if(result.error){
      mark.disabled=false;mark.textContent='Als gelesen markieren';
      label.textContent='Mitteilung konnte nicht gespeichert werden. Bitte erneut versuchen.';
      return;
+    }
+    if(result.data!==true){
+     // A second tab may already have acknowledged the message.
+     // Re-check the server rather than claiming a failed or successful write.
+     const check=await db.from('boxer_notifications').select('read_at')
+       .eq('id',note.id).eq('recipient_id',profile.id).maybeSingle();
+     if(check.error||!check.data?.read_at){
+      mark.disabled=false;mark.textContent='Als gelesen markieren';
+      label.textContent='Mitteilung konnte nicht bestätigt werden. Bitte aktualisieren.';
+      return;
+     }
+     note.read_at=check.data.read_at;
     }
     note.read_at=new Date().toISOString();item.classList.add('ux-notice-read');mark.remove();
     label.textContent=rows.filter(x=>!x.read_at).length+' ungelesene von '+rows.length+' Mitteilungen';
