@@ -1,63 +1,112 @@
 const fs=require('node:fs');
 const assert=require('node:assert/strict');
 const {JSDOM}=require('jsdom');
-const html=fs.readFileSync('index.html','utf8');
+const pages=['index.html','login.html','boxer.html','coach.html','challenges.html','duels.html','awards.html','features.html','coming-soon.html'];
+const navScript=fs.readFileSync('takeover-navigation.js','utf8');
+const navCss=fs.readFileSync('takeover-navigation.css','utf8');
+const deploy=fs.readFileSync('.github/workflows/takeover-pages-deploy.yml','utf8');
 
-// Protect the existing league look and bottom navigation against a redesign.
-for(const original of [
- '--bg:#0b1220','--surface:#172235','--gold:#e8b953',
- 'THE TAKEOVER 🥊','id="podium"','id="ranking"','id="levels"','id="history"',
- '🏆 Podium','📊 Ranking','👤 Dashboard',
- 'id="podium-content"','id="ranking-content"','id="levels-content"','id="history-content"'
-]) assert.ok(html.includes(original),'Legacy UI changed: '+original);
-assert.ok(!html.includes('href="./features.html"'),'Stale coming-soon navigation remains');
-assert.match(html,/takeover-menu-panel/);
-assert.match(html,/takeover-menu-backdrop/);
-assert.match(html,/takeover-menu-open/);
-assert.match(html,/\.bottom button\.nav\[data-tab\]/,'Tab listener must ignore drawer trigger / ordinary links');
-const dom=new JSDOM(html,{url:'https://benditocapela-ux.github.io/takeover-league/',runScripts:'outside-only'});
-const {window}=dom,doc=window.document;
-const script=Array.from(doc.scripts).map(s=>s.textContent).find(s=>s.includes('setupTakeoverMenu()'));
-assert.ok(script,'Menu event handlers missing');
-let switched=null;
-window.switchTab=tab=>{switched=tab};
-window.eval(script);
-const button=doc.getElementById('takeover-menu-open');
-const panel=doc.getElementById('takeover-menu-panel');
-const backdrop=doc.getElementById('takeover-menu-backdrop');
-assert.equal(button.getAttribute('aria-expanded'),'false');
-assert.equal(panel.getAttribute('aria-hidden'),'true');
-assert.equal(backdrop.hidden,true);
-button.click();
-assert.equal(button.getAttribute('aria-expanded'),'true');
-assert.equal(panel.getAttribute('aria-hidden'),'false');
-assert.equal(backdrop.hidden,false);
-assert.ok(doc.body.classList.contains('takeover-menu-visible'));
-assert.equal(panel.querySelector('a[href="./challenges.html"]').getAttribute('href'),'./challenges.html');
-assert.equal(panel.querySelector('a[href="./duels.html"]').getAttribute('href'),'./duels.html');
-assert.equal(panel.querySelector('a[href="./awards.html"]').getAttribute('href'),'./awards.html');
-assert.equal(panel.querySelector('a[href="./boxer.html"]').getAttribute('href'),'./boxer.html');
-assert.equal(panel.querySelector('a[href="./coach.html"]').getAttribute('href'),'./coach.html');
-panel.querySelector('[data-menu-tab="levels"]').click();
-assert.equal(switched,'levels');
-assert.equal(button.getAttribute('aria-expanded'),'false');
-assert.equal(backdrop.hidden,true);
-button.click();
-doc.dispatchEvent(new window.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
-assert.equal(backdrop.hidden,true);
-button.click();
-backdrop.click();
-assert.equal(panel.getAttribute('aria-hidden'),'true');
-assert.equal(doc.querySelectorAll('.bottom button.nav[data-tab]').length,2);
-assert.deepEqual(
- Array.from(doc.querySelectorAll('.bottom button.nav[data-tab]')).map(x=>x.dataset.tab),
- ['podium','ranking'],
- 'Footer must show only podium and ranking as content tabs'
-);
-assert.equal(doc.querySelectorAll('.bottom .nav').length,4);
-assert.equal(doc.querySelectorAll('.bottom [data-tab="levels"], .bottom [data-tab="history"]').length,0);
-assert.ok(panel.querySelector('[data-menu-tab="levels"]'),'Levels remains in menu');
-assert.ok(panel.querySelector('[data-menu-tab="history"]'),'History remains in menu');
-assert.match(html,/getElementById\('takeover-menu-open'\)\?\.classList\.toggle\('active',tab==='levels'\|\|tab==='history'\)/,
- 'Menu trigger must show active state when levels or history is selected');
-console.log('PASS: Original league palette + tabs preserved; menu, links, keyboard and close controls work.');
+assert.match(deploy,/name '.*\.js'/,'Pages deployment must copy shared JavaScript');
+assert.match(deploy,/name '.*\.css'/,'Pages deployment must copy shared CSS');
+for(const fragment of ['.tl-menu-panel','.tl-menu-backdrop','.tl-global-bottom','--tl-nav-gold:#e8b953']) {
+ assert.ok(navCss.includes(fragment),'Shared original-color styling missing: '+fragment);
+}
+
+let inspected=0;
+for(const page of pages){
+ const html=fs.readFileSync(page,'utf8');
+ assert.match(html,/<link rel="stylesheet" href="\.\/takeover-navigation\.css">/,'Shared CSS missing from '+page);
+ assert.match(html,/<script src="\.\/takeover-navigation\.js" defer><\/script>/,'Shared menu JS missing from '+page);
+ assert.ok(!html.includes('id="takeover-menu-panel"'),'Duplicate drawer embedded in '+page);
+ const dom=new JSDOM(html,{
+   url:'https://benditocapela-ux.github.io/takeover-league/'+page,
+   runScripts:'outside-only'
+ });
+ const win=dom.window,doc=win.document;
+ let selectedTab=null;
+ win.switchTab=tab=>{selectedTab=tab;};
+ win.eval(navScript);
+ doc.dispatchEvent(new win.Event('DOMContentLoaded',{bubbles:true}));
+ const trigger=doc.getElementById('takeover-menu-open');
+ const panel=doc.getElementById('tl-menu-panel');
+ const backdrop=doc.getElementById('tl-menu-backdrop');
+ const close=doc.getElementById('tl-menu-close');
+ assert.ok(trigger&&panel&&backdrop&&close,'Menu button/drawer/close missing from '+page);
+ assert.equal(doc.querySelectorAll('#takeover-menu-open').length,1,'Multiple drawer buttons on '+page);
+ assert.equal(doc.querySelectorAll('#tl-menu-panel').length,1,'Multiple drawers on '+page);
+ assert.equal(trigger.getAttribute('aria-expanded'),'false',page+' drawer initial state');
+ assert.equal(panel.getAttribute('aria-hidden'),'true');
+ assert.equal(backdrop.hidden,true);
+
+ const menuLink=href=>panel.querySelector('a.tl-menu-link[href="'+href+'"]');
+ for(const href of [
+  './index.html#podium','./index.html#ranking','./index.html#levels','./index.html#history',
+  './awards.html','./challenges.html','./duels.html','./login.html','./boxer.html','./coach.html'
+ ])assert.ok(menuLink(href),'Drawer missing '+href+' on '+page);
+
+ const footer=page==='index.html'
+   ?doc.querySelector('.bottom')
+   :doc.querySelector('.tl-global-bottom');
+ assert.ok(footer,'Persistent bottom navigation missing on '+page);
+ assert.equal(footer.querySelectorAll('.nav,.tl-nav-item').length,4,'Bottom bar must have four items on '+page);
+ assert.ok(footer.querySelector('a[href="./login.html"]'),'Dashboard absent from bottom on '+page);
+ assert.ok(!footer.querySelector('[data-tab="levels"],[data-tab="history"],[data-tl-tab="levels"],[data-tl-tab="history"]'),
+ 'Levels/History must be drawer-only on '+page);
+ if(page==='index.html'){
+   assert.ok(html.includes('--bg:#0b1220')&&html.includes('--surface:#172235')&&html.includes('--gold:#e8b953'),'Original home colors changed');
+   for(const id of ['podium','ranking','levels','history','podium-content','ranking-content','levels-content','history-content'])
+     assert.ok(doc.getElementById(id),'Original league section missing: '+id);
+   assert.equal(doc.querySelectorAll('.tl-global-bottom').length,0,'Home must not have duplicate footer');
+ }else{
+   assert.equal(footer.querySelector('[data-tl-tab="podium"]').getAttribute('href'),'./index.html#podium');
+   assert.equal(footer.querySelector('[data-tl-tab="ranking"]').getAttribute('href'),'./index.html#ranking');
+ }
+ // Try to reopen the same menu repeatedly on every page.
+ for(let attempt=0;attempt<3;attempt++){
+   trigger.click();
+   assert.equal(trigger.getAttribute('aria-expanded'),'true','Cannot reopen menu on '+page);
+   assert.equal(panel.getAttribute('aria-hidden'),'false');
+   assert.equal(backdrop.hidden,false);
+   assert.ok(doc.body.classList.contains('tl-menu-visible'));
+   if(attempt===0){
+     close.click();
+   }else if(attempt===1){
+     doc.dispatchEvent(new win.KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
+   }else{
+     backdrop.click();
+   }
+   assert.equal(trigger.getAttribute('aria-expanded'),'false','Cannot close menu on '+page);
+   assert.equal(backdrop.hidden,true);
+   assert.equal(panel.getAttribute('aria-hidden'),'true');
+ }
+ if(page==='index.html'){
+   trigger.click();
+   menuLink('./index.html#levels').click();
+   assert.equal(selectedTab,'levels','Levels should open immediately on existing index');
+   assert.equal(win.location.hash,'#levels');
+   assert.equal(trigger.getAttribute('aria-expanded'),'false');
+   assert.ok(trigger.classList.contains('active'),'Drawer tab should highlight when Levels is selected');
+   trigger.click();
+   menuLink('./index.html#history').click();
+   assert.equal(selectedTab,'history');
+   assert.equal(win.location.hash,'#history');
+ }else{
+   assert.ok(menuLink('./index.html#levels'),'Levels must deep-link from '+page);
+   assert.ok(menuLink('./index.html#history'),'History must deep-link from '+page);
+ }
+ dom.window.close();
+ inspected++;
+}
+
+// The same links used on external pages must restore the original live tab view.
+for(const tab of ['levels','history','ranking']){
+ const src=fs.readFileSync('index.html','utf8');
+ const dom=new JSDOM(src,{url:'https://benditocapela-ux.github.io/takeover-league/index.html#'+tab,runScripts:'outside-only'});
+ let selected=null;
+ dom.window.switchTab=x=>{selected=x;};
+ dom.window.eval(navScript);
+ dom.window.document.dispatchEvent(new dom.window.Event('DOMContentLoaded',{bubbles:true}));
+ assert.equal(selected,tab,'Cross-page deep link failed to restore '+tab);
+ dom.window.close();
+}
+console.log('PASS: Shared drawer reopens on all '+inspected+' public HTML pages; index deep links, original layout, four footer items and focus controls verified.');
