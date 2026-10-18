@@ -2,6 +2,17 @@
 
 Stand: 18.10.2026. **Noch keine Freigabe.** `challenges.html` ist standardmässig deaktiviert.
 
+## Aktueller Release-Stand – nach den Integrationstests am 18.10.2026
+
+**Beide V2-Module sind im Entwicklungsbranch vorbereitet, nicht veröffentlicht.** Die frühere Stichproben-/Migrationsprüfung in den folgenden Abschnitten ist als Prüfchronik zu lesen; seitdem wurden die produktionsorientierten Versionen erstellt und umfangreich getestet.
+
+- Versionierte, atomare Release-SQL-Dateien: `supabase/migrations/20261018131000_coach_challenges_v2.sql` (4 Tabellen, 17 RPCs) und danach `supabase/migrations/20261018133000_duels_v2.sql` (3 Tabellen, 6 RPCs). Beide kollisionsgeschützt; Datenbank-Flags bleiben deaktiviert.
+- GitHub CI prüft produktionsorientierte Migrationen auf temporärem PostgreSQL 16, Rollen-/Zugriffsrechte, Challenge- und Duell-Abläufe, Rücknahmen, Wiederholungsversuche und EXP-Korrekturen. Zusätzlich erfolgreich: echte parallele DB-Verbindungen für Challenge-Abrechnung, Boxer-Anmeldung, Duell-Einladung **und gleichzeitige Duell-Abrechnung**.
+- Mock-Browser-Tests decken Frontend-Rollen, Anzeigen, XSS, deaktivierte Produktionsschalter und das sichere Ausblenden privater Daten bei verzögerten Serverantworten oder Sitzungsabmeldung in einem anderen Tab ab.
+- Letzte lesende Produktions-Bestandsaufnahme: 14 Profile, 61 Trainingsmeldungen, 66 Punktetransaktionen, Summe 2230 Punkte und 2230 EXP. Diese Werte sind nur eine Momentaufnahme, **kein eingefrorener Release-Stand**.
+- Die beiden gehosteten Testprojekt-Feature-Flags sind derzeit ebenfalls deaktiviert. Die bereits vorhandenen testseitigen Coach-Challenge-RPCs haben teils **andere Rückgabetypen** (TABLE/TEXT/UUID) als die neu vorbereiteten produktionsorientierten JSONB-RPCs. Damit ersetzen Testprojekt-Vorschauen und gemockte Browser-Tests **nicht** den finalen echten Hosted-Supabase/PostgREST-Vertragstest.
+- Offene Freigabegates: gehostete Login-/Rollen-Tests mit getrennten temporären Accounts, letzte Trigger-/EXP-Sicherheitsprüfung (insbesondere direkter Aufruf von `recalculate_boxer_achievements_v2`), Backup und aktueller Datenabgleich sowie kontrollierte Veröffentlichung und Freischaltung. **Keine produktive SQL-Migration, kein Merge und keine Freigabe erfolgt.**
+
 ## Verifizierter Zustand
 - Produktion: `iqarjivcrddcixrvqbfb`, 22 RLS-geschützte Tabellen, keine registrierten V2-Migrationen.
 - Test: `cfgdvcccsqwfjajuizsr`, 25 V2-Migrationen, separate Tabellen für Duelle und Coach Challenges.
