@@ -9,6 +9,7 @@ on:
       - 'supabase/production-prep/**'
       - 'supabase/migrations/**'
       - 'tests/production-v2-*.sql'
+      - 'tests/production-v2-*.cjs'
       - 'tests/production-v2-schema-smoke.sql'
       - '.github/workflows/coach-challenges-v2.yml'
   push:
@@ -21,6 +22,7 @@ on:
       - 'supabase/production-prep/**'
       - 'supabase/migrations/**'
       - 'tests/production-v2-*.sql'
+      - 'tests/production-v2-*.cjs'
       - '.github/workflows/coach-challenges-v2.yml'
 jobs:
   static-checks:
@@ -35,6 +37,7 @@ jobs:
       - run: npm install --no-save --no-package-lock jsdom@26
       - run: node tests/coach-challenges-v2.cjs
       - run: node tests/coach-challenges-v2-browser.cjs
+      - run: node tests/production-v2-migration-bundle.cjs
 
   schema-integration:
     runs-on: ubuntu-latest
