@@ -1,0 +1,41 @@
+/* Takeover League Design Foundation · Studio / de-CH · 4px raster */
+:root{
+  color-scheme:dark;
+  --font:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+  --bg:#0b1422;
+  --surface:#142238;
+  --surface-2:#0d1b2e;
+  --line:#314058;
+  --line-strong:#465b74;
+  --text:#f5f5f6;
+  --muted:#b6c2d0;
+  --gold:#dfbd77;
+  --gold-soft:color-mix(in srgb,var(--gold) 14%,transparent);
+  --ok:#9bdfae;
+  --pending:#f2cc78;
+  --bad:#f5a8aa;
+  --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:24px;
+  --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;
+  --sp-5:20px;--sp-6:24px;--sp-7:28px;--sp-8:32px;
+  --fs-xs:12px;--fs-sm:14px;--fs-base:16px;--fs-md:18px;
+  --fs-lg:20px;--fs-xl:24px;--fs-2xl:30px;--fs-3xl:36px;
+  --shadow-card:0 12px 32px color-mix(in srgb,var(--bg) 65%,transparent);
+  --focus-ring:0 0 0 3px var(--gold);
+}
+html{font-family:var(--font)}
+body{font-family:var(--font)}
+:where(a,button,input,select,textarea,summary,[role="tab"]):focus-visible{
+  outline:3px solid var(--gold);outline-offset:3px;
+}
+.tl-icon{display:inline-block;width:1.15em;height:1.15em;vertical-align:-.16em;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.tl-icon--large{width:1.5em;height:1.5em}
+.pill.approved,.pill.pending,.pill.rejected{
+  display:inline-flex;align-items:center;gap:var(--sp-1);
+  border:1px solid currentColor;font-weight:700;
+}
+.pill.approved{color:var(--ok);background:color-mix(in srgb,var(--ok) 14%,var(--surface-2))}
+.pill.pending{color:var(--pending);background:color-mix(in srgb,var(--pending) 14%,var(--surface-2))}
+.pill.rejected{color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--surface-2))}
+@media (orientation:landscape){
+ body{padding-left:max(var(--sp-3),env(safe-area-inset-left));padding-right:max(var(--sp-3),env(safe-area-inset-right))}
+}
