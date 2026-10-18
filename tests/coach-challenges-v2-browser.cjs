@@ -29,6 +29,13 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null}={}){
  const coach=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[]});
  assert.equal(coach.document.querySelector('#coach').hidden,false);
  assert.match(coach.document.querySelector('#list').textContent,/Noch keine Challenges/);
+ coach.document.querySelector('#create [name=title]').value='Neuer Test';
+ coach.document.querySelector('#create').dispatchEvent(new coach.dom.window.Event('submit',{bubbles:true,cancelable:true}));
+ await tick();await tick();
+ assert.equal(coach.calls.some(c=>c.name==='coach_challenge_v2_create_draft'&&c.args.p_title==='Neuer Test'),true);
+ coach.document.querySelector('#logout').click();await tick();await tick();
+ assert.equal(coach.document.querySelector('#coach').hidden,true);
+ assert.equal(coach.document.querySelector('#login').hidden,false);
  coach.dom.window.close();
  const boxer=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[{id:'challenge-id',title:'Box-Test',description:'Training',status:'open',joined_count:0,duration_days:7,my_enrollment_status:null,is_creator:false}]});
  assert.equal(boxer.document.querySelector('#coach').hidden,true);
@@ -45,5 +52,5 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null}={}){
  assert.equal(invalid.document.querySelector('#coach').hidden,true);
  assert.match(invalid.document.querySelector('#status').textContent,/Unbekannte/);
  invalid.dom.window.close();
- console.log('Mocked browser smoke tests passed: guest, coach, boxer join, inactive and invalid roles');
+ console.log('Mocked browser smoke tests passed: guest, coach draft and logout, boxer join, inactive and invalid roles');
 })().catch(e=>{console.error(e);process.exitCode=1});
