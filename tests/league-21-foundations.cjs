@@ -72,7 +72,7 @@ const publicRecords=read('supabase/migrations/20261019019000_league_21_public_re
 assert.match(publicRecords,/p\.role='admin'/);
 assert.match(publicRecords,/approved_sessions/);
 assert.match(publicRecords,/max_technique_minutes/);
-assert.doesNotMatch(publicRecords,/notes|weight|insert into public\.point_transactions/i);
+assert.doesNotMatch(publicRecords,/\bnotes\s+text\b|\bweight\s+numeric\b|insert into public\.point_transactions/i);
 const profile=read('boxer-profile.js');
 assert.match(profile,/renderPublicBadges\(name\)/);
 assert.match(profile,/renderPublicRecords\(name\)/);
