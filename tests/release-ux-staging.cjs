@@ -21,6 +21,16 @@ boxer.window.close();
 const coach=documentOf('coach.html');
 for(const id of ['coachBoxerQuick','coachBoxerQuickBody','pendingSearch','bulkApprove','bulkReject','recentBoxers'])assert.ok(coach.window.document.getElementById(id),'Coach UX missing '+id);
 coach.window.close();
+const duelPage=documentOf('duels.html');
+for(const id of ['liveOverviewSection','liveOverviewStatus','liveOverviewList','duelList','refresh'])
+ assert.ok(duelPage.window.document.getElementById(id),'Live duel UI missing '+id);
+duelPage.window.close();
+const duelHtml=read('duels.html');
+assert.match(duelHtml,/function renderLiveOverview\(/);
+assert.match(duelHtml,/function validLiveScore\(/);
+assert.match(duelHtml,/liveScoreErrors/);
+assert.match(duelHtml,/sessionEpoch\|\|requestId!==loadRequestId/);
+assert.match(duelHtml,/duel\.status==='awaiting_reviews'/);
 const compare=documentOf('boxer-compare.html');
 assert.ok(compare.window.document.getElementById('left'));
 assert.ok(compare.window.document.getElementById('right'));
