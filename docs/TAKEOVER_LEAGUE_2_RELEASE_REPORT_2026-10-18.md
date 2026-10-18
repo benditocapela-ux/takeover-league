@@ -238,3 +238,17 @@ Read-only-Nachprüfung nach Stopp: 66 Trainingseinreichungen, 58 bestätigt, 2 o
 **WICHTIG:** `mark_my_notification_read(uuid)` wurde bei der Nachprüfung als vorhanden gemeldet, obwohl im hier ausgeführten Migrationsverlauf kein entsprechender Apply-Schritt erfolgte und in der Migrationstabelle kein neuer Eintrag dafür zu finden war. Diese Abweichung muss vor Fortsetzung aufgeklärt werden; keine Provenienz behaupten.
 
 **Wiederaufnahme erst nach Bereinigung der Tool-Sicherheitsblockade**, anschliessend verbleibende Migrationen einzeln verifizieren, berechtigte Feature-Flags prüfen, GitHub-Release-Commit erneut einfrieren, merge/deploy erst nach vollständigem Postflight. Niemals noch einmal bereits installierte Initialmigrationen blind anwenden. Kein „Live“ behaupten, bevor GitHub Pages tatsächlich aktualisiert und erreichbar geprüft wurde.
+
+
+### GO LIVE – Prüfung nach gestoppter Duell-Migration (18.10.2026)
+
+**Entscheidung: STOP, kein Merge und kein Pages-Deploy.** Auf erneute Anweisung wurde die zuvor blockierte Migration inhaltlich und gegen die produktive `duel_v2_reconcile(uuid)`-Implementierung untersucht. Die Live-Score-RPC liest ausschliesslich genehmigte Trainings für Teilnehmer und aktive Admins/Coaches; sie prüft `auth.uid()`, Rollen, Duellteilnahme, den Feature-Flag-Status sowie die Eindeutigkeit verknüpfter Punktetransaktionen. Sie ist im isolierten TEST-Projekt installiert und hat dort `anon EXECUTE=false`, `authenticated EXECUTE=true`. Diese Prüfungen ersetzen **keine** Freigabe des blockierten Produktionstools. Eine Umgehung der Sicherheitsblockade über einen anderen SQL-Ausführungspfad wurde nicht versucht.
+
+**Produktionsstatus erneut read-only bestätigt:**
+- `duel_v2_live_scores(uuid)`, `admin_undo_recent_rejection(uuid)` und `league_training_audit_recent(uuid)` sind weiterhin **nicht** installiert.
+- Vier frühere produktive Migrationen sind in `supabase_migrations` protokolliert, und deren RLS-/Privilegienprüfung ist erfolgreich.
+- Keine genehmigten Trainings ohne Ledger und keine doppelten Ledgerzuordnungen. `main` und GitHub Pages weiterhin unverändert.
+- `mark_my_notification_read(uuid)` ist in Produktion zwar vorhanden, stammt aber **nicht** aus dem hier dokumentierten vierteiligen Migration-Apply. Die vorhandene Implementierung verwendet ein anderes API-Verhalten: Bereits gelesene Mitteilungen liefern `false`, statt bei Wiederholung `true` zurückzugeben. `boxer.html` wurde auf dem Release-Branch so abgesichert, dass es in diesem Fall den tatsächlichen Lesestatus nachlädt, statt einen falschen Fehler anzuzeigen. Der Ursprung dieser Funktion muss vor einer Migration der gleichnamigen RPC geklärt werden; keine blinde Überschreibung.
+- Supabase Security Advisor nach den vier Migrationen: `anon_security_definer_function_executable` WARN (7), `authenticated_security_definer_function_executable` WARN (58), `auth_leaked_password_protection` WARN (1) und `rls_enabled_no_policy` INFO (11). Bestehende, absichtlich öffentlich lesbare Funktionen dürfen nicht pauschal abgeschaltet werden.
+
+**Nächster notwendiger Freigabeschritt:** Die Blockade der privilegierten Duell-SQL-Migration muss über einen autorisierten Prüf-/Freigabepfad aufgehoben werden. Bis dahin keine irreführende Freigabe weiterer produktiver SQL-Migrationen, kein Feature-Flag-Wechsel und kein Merge/Pages-Deployment. Weitere grüne CI-Tests auf dem Release-Branch sind ausschliesslich Staging-Abnahmen.
