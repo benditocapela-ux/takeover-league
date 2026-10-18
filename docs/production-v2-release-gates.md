@@ -70,3 +70,7 @@ Das Produktivprojekt akzeptiert bei `point_transactions.category` derzeit aussch
 ## Feature-Flag-Differenz zwischen Test und Produktion
 
 Im Testprojekt existieren die V2-Schlüssel `coach_challenges` und `duels`, beide deaktiviert. In Produktion fehlen beide; dort existieren ältere, ebenfalls deaktivierte Schlüssel `league_challenges` und `boxer_duels`. Die V2-RPCs prüfen die **neuen** Schlüssel, daher ist die Unterscheidung wichtig. Die vorbereitete Datei `supabase/production-prep/20261018_v2_feature_flags_disabled.sql` legt die beiden neuen Flags ausschliesslich als **deaktiviert** an, ohne bestehende Legacy-Flags anzutasten. Nicht ausgeführt.
+
+## Produktionsrolle Coach fehlt im Schema
+
+Produktion enthält derzeit 13 Boxer-Profile und ein Admin-Profil, aber **kein** Coach-Profil. Die `profiles.role`-Constraint erlaubt aktuell nur `boxer` und `admin`; die V2-RPCs erlauben Coach-Aktionen für `coach` oder `admin`. Eine dritte vorbereitete Migration `supabase/production-prep/20261018_allow_coach_role.sql` erweitert nur die zulässigen Rollen, ohne Profile oder bestehende Rollen umzuschreiben. Vor Ausführung Constraint-Namen und Abhängigkeiten prüfen; die vorhandene Admin-Rolle kann weiterhin Coach-Aufgaben wahrnehmen.
