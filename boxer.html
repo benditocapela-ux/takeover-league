@@ -27,7 +27,7 @@ async function loadExpRank(){
  const into=xp-start;
  const percent=Math.min(100,Math.max(0,100*into/needed));
  const ranks=['F','E','D','C','B','A','S'];
- $('expRankLetter').textContent=ranks[Math.min(level-1,ranks.length-1)];
+ $('expRankLetter').textContent=ranks[Math.min(Math.floor((level-1)/10),ranks.length-1)];
  $('expRankLevel').textContent=fmt(level);
  $('expRankTotal').textContent=fmt(xp);
  $('expRankProgress').textContent=`${fmt(into)} / ${fmt(needed)} EXP im aktuellen Level`;
