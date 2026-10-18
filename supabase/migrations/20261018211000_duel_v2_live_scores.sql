@@ -1,6 +1,12 @@
 -- Takeover League 2.0 - authenticated, participant-limited live duel score.
--- Staged; do not execute on production without a separate GO LIVE.
-create or replace function public.duel_v2_live_scores(p_duel_id uuid)
+-- Security hardening: SECURITY DEFINER logic lives ONLY in an unexposed schema.
+-- public API is a SECURITY INVOKER wrapper. Owner and participant checks remain in core.
+create schema if not exists league_duel_private;
+revoke all on schema league_duel_private from public, anon, authenticated;
+grant usage on schema league_duel_private to authenticated;
+
+-- Previously blocked in production; this hardened version is TEST-ONLY until an authorized security review clears it.
+create or replace function league_duel_private.duel_v2_live_scores_core(p_duel_id uuid)
 returns jsonb language plpgsql stable security definer set search_path = ''
 as $function$
 declare
@@ -55,5 +61,15 @@ begin
   'status',duel.status,'provisional',true);
 end;
 $function$;
+revoke all on function league_duel_private.duel_v2_live_scores_core(uuid) from public,anon,authenticated;
+grant execute on function league_duel_private.duel_v2_live_scores_core(uuid) to authenticated;
+
+-- Public wrapper runs as caller and returns only the validated, compact aggregate.
+create or replace function public.duel_v2_live_scores(p_duel_id uuid)
+returns jsonb language sql stable security invoker set search_path = ''
+as $api$
+  select league_duel_private.duel_v2_live_scores_core(p_duel_id);
+$api$;
 revoke all on function public.duel_v2_live_scores(uuid) from public,anon,authenticated;
 grant execute on function public.duel_v2_live_scores(uuid) to authenticated;
+
