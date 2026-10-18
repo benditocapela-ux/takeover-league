@@ -12,6 +12,7 @@ on:
       - 'tests/duels-v2-browser.cjs'
       - 'login.html'
       - 'index.html'
+      - 'tests/menu-navigation-compat.cjs'
       - 'coach.html'
       - 'boxer.html'
       - 'supabase/production-prep/**'
@@ -34,6 +35,7 @@ on:
       - 'tests/duels-v2-browser.cjs'
       - 'login.html'
       - 'index.html'
+      - 'tests/menu-navigation-compat.cjs'
       - 'coach.html'
       - 'boxer.html'
       - 'supabase/production-prep/**'
@@ -56,6 +58,7 @@ jobs:
           node-version: '22'
       - run: npm install --no-save --no-package-lock jsdom@26.1.0
       - run: node tests/coach-challenges-v2.cjs
+      - run: node tests/menu-navigation-compat.cjs
       - run: node tests/coach-challenges-v2-browser.cjs
       - run: node tests/duels-v2-browser.cjs
       - run: node tests/production-v2-migration-bundle.cjs
