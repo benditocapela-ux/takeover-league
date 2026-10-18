@@ -125,3 +125,9 @@ Stop without writing to production if the read-only inventory shows an unknown s
 - TEST rollback-only: 25 approved sessions earned exactly two session achievement tiers, totaling 85 EXP; explicit recalculation added no events (idempotent). PASS.
 - TEST read-only post-check: zero training submissions, achievement events/ledger, duel rows/ledger; achievements, duels, coach_challenges flags all false. No test residue.
 - All six CI workflows completed successfully for commit `2ecdbdfa`.
+
+## Multi-tier achievement transfer and revocation (2026-10-18)
+
+- TEST rollback-only: 25 approved sessions (two tiers, 85 EXP) transferred from Boxer 1 to Boxer 2. Original boxer had zero earned tiers/EXP; new boxer had two earned tiers/85 EXP. PASS.
+- TEST rollback-only: after 25 approved sessions, rejecting 16 (25 to 9) revoked both tiers, left zero achievement EXP, and generated two revoke events. PASS.
+- Post-test read-only: zero submissions, achievement events/ledger and duels; all three feature flags remain false.
