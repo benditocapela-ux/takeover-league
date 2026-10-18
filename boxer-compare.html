@@ -1,7 +1,8 @@
 <!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Boxer vergleichen · Takeover League</title>
-<style>:root{font-family:Inter,system-ui,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#0b1422;color:#f5f5f6;padding:20px 16px 95px}main{max-width:870px;margin:auto}h1{color:#dfbd77;font-size:clamp(26px,5vw,38px)}h2{margin-top:4px}.intro{color:#b6c2d0;line-height:1.5}a{color:#dfbd77}.panel{background:#142238;border:1px solid #314058;border-radius:16px;padding:18px;margin:14px 0}label{display:grid;gap:8px;font-weight:650}select,input{padding:13px;background:#0c1727;border:1px solid #52647c;border-radius:10px;color:white;width:100%;font:inherit;min-height:46px}button{border:1px solid #dfbd77;background:#dfbd77;color:#0b1422;font-weight:700;border-radius:9px;min-height:44px;padding:9px 14px;cursor:pointer}button.secondary{background:#24364a;color:white;border-color:#52647c}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.stat{background:#0b1726;border-radius:11px;padding:13px;border:1px solid #32475d}.stat strong{display:block;color:#dfbd77;font-size:22px}.muted,small{color:#b6c2d0}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.favorite{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}.favorite button{font-size:13px}.progress{height:9px;border-radius:8px;background:#304158;overflow:hidden}.progress>div{height:100%;background:#dfbd77}.status{min-height:24px;margin:12px 0;color:#b6c2d0}.hidden{display:none!important}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #f0c87d;outline-offset:2px}</style>
+<style>:root{font-family:Inter,system-ui,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#0b1422;color:#f5f5f6;padding:20px 16px 95px}main{max-width:870px;margin:auto}h1{color:#dfbd77;font-size:clamp(26px,5vw,38px)}h2{margin-top:4px}.intro{color:#b6c2d0;line-height:1.5}a{color:#dfbd77}.panel{background:#142238;border:1px solid #314058;border-radius:16px;padding:18px;margin:14px 0}label{display:grid;gap:8px;font-weight:650}select,input{padding:13px;background:#0c1727;border:1px solid #52647c;border-radius:10px;color:white;width:100%;font:inherit;min-height:46px}button{border:1px solid #dfbd77;background:#dfbd77;color:#0b1422;font-weight:700;border-radius:9px;min-height:44px;padding:9px 14px;cursor:pointer}button.secondary{background:#24364a;color:white;border-color:#52647c}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px}.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px}.stat{background:#0b1726;border-radius:11px;padding:13px;border:1px solid #32475d}.stat strong{display:block;color:#dfbd77;font-size:22px}.muted,small{color:#b6c2d0}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}.favorite{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}.favorite button{font-size:13px}.progress{height:9px;border-radius:8px;background:#304158;overflow:hidden}.progress>div{height:100%;background:#dfbd77}.h2h-row{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:10px;border-top:1px solid #40536b;padding:12px 0}.h2h-row strong{text-align:center;color:#dfbd77}.h2h-row .left{text-align:right}.h2h-row .right{text-align:left}.status{min-height:24px;margin:12px 0;color:#b6c2d0}.hidden{display:none!important}button:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #f0c87d;outline-offset:2px}</style>
 <link rel="stylesheet" href="./takeover-navigation.css"></head><body><main><header><a href="./index.html">← Zur Liga</a> · <a href="./boxer.html">Mein Dashboard</a></header><h1>🥊 Boxer vergleichen</h1><p class="intro">Vergleiche bestätigte Monats-Punkte und dauerhafte EXP aus den öffentlichen Liga-Ranglisten. Favoriten bleiben nur auf diesem Gerät gespeichert. Private Trainings- und Gewichtsangaben werden nicht geladen.</p>
 <p class="status" role="status" id="status">Lade Liga-Daten …</p><section class="panel" id="chooser" hidden><div class="grid"><label>Boxer 1<select id="left"></select></label><label>Boxer 2<select id="right"></select></label></div><div class="actions"><button type="button" id="compare">Vergleichen</button><button type="button" id="swap" class="secondary">Reihenfolge tauschen</button></div></section><section class="grid" id="results" aria-live="polite"></section>
+<section id="headToHead" class="panel" hidden aria-labelledby="headToHeadTitle"><h2 id="headToHeadTitle">⚖️ Head-to-Head</h2><p class="muted">Nur öffentliche Ligastatistiken. Ein Kategorien-Vorsprung ist kein Duellsieg.</p><div id="h2hRows"></div></section>
 <section class="panel"><h2>Meine Favoriten</h2><p class="muted">Tippe auf „Merken“ bei einem Boxer. Die Liste wird nicht mit deinem Account synchronisiert.</p><div class="favorite" id="favorites"><span class="muted">Noch keine Favoriten.</span></div></section></main>
 <script type="module">
 const API='https://iqarjivcrddcixrvqbfb.supabase.co',KEY='sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R';
@@ -27,6 +28,34 @@ function uniqueProfiles(levels){
 }
 function clearAndOptions(el){const current=el.value;el.replaceChildren(new Option('Boxer auswählen',''));for(const x of members)el.add(new Option(x.name,x.name));if(members.some(m=>m.name===current))el.value=current}
 function addStat(parent,label,value){const node=document.createElement('div');node.className='stat';const title=document.createElement('small');title.textContent=label;const strong=document.createElement('strong');strong.textContent=value;node.append(title,strong);parent.append(node)}
+function renderHeadToHead(){
+ const root=$('headToHead'),rows=$('h2hRows');rows.replaceChildren();
+ const left=members.find(x=>x.name===$('left').value),right=members.find(x=>x.name===$('right').value);
+ if(!left||!right||left.name===right.name){root.hidden=true;return}
+ root.hidden=false;
+ const l=rankMap.get(left.name)||{},r=rankMap.get(right.name)||{};
+ const metrics=[
+  ['Gesamt-EXP',left.exp,right.exp],
+  ['Monatspunkte',l.monthly_points,r.monthly_points],
+  ['Bestätigte Einheiten',l.approved_sessions,r.approved_sessions],
+  ['Trainingspunkte',l.points_training,r.points_training],
+  ['Bonuspunkte',l.points_bonus,r.points_bonus]
+ ];
+ const heading=document.createElement('p');heading.className='muted';heading.textContent=left.name+' vs. '+right.name;rows.append(heading);
+ let leftLead=0,rightLead=0;
+ for(const [label,lv,rv] of metrics){
+  const a=Number(lv)||0,b=Number(rv)||0;
+  if(a>b)leftLead++;if(b>a)rightLead++;
+  const row=document.createElement('div');row.className='h2h-row';
+  const leftCell=document.createElement('span');leftCell.className='left';leftCell.textContent=fmt(a)+(a>b?' ●':'');
+  const center=document.createElement('strong');center.textContent=label;
+  const rightCell=document.createElement('span');rightCell.className='right';rightCell.textContent=(b>a?'● ':'')+fmt(b);
+  row.append(leftCell,center,rightCell);rows.append(row);
+ }
+ const summary=document.createElement('p');summary.className='muted';
+ summary.textContent='Kategorien-Vorsprung: '+left.name+' '+leftLead+' : '+rightLead+' '+right.name+'.';
+ rows.append(summary);
+}
 function draw(){
  $('results').replaceChildren();
  for(const id of ['left','right']){
@@ -48,6 +77,7 @@ function draw(){
   favorite.onclick=()=>{let a=readFavorites();a=a.includes(name)?a.filter(x=>x!==name):[...a,name].slice(0,30);try{localStorage.setItem(favKey,JSON.stringify(a))}catch{setStatus('Favoriten konnten nicht auf diesem Gerät gespeichert werden.',true)}draw();drawFavorites()};
   actions.append(favorite);article.append(actions);$('results').append(article);
  }
+ renderHeadToHead();
  if($('left').value&&$('right').value&&$('left').value===$('right').value)setStatus('Du hast denselben Boxer zweimal gewählt. Wähle zwei unterschiedliche Boxer.');
  else setStatus('Aktuelle öffentliche Liga-Daten.');
  const params=new URLSearchParams();if($('left').value)params.set('left',$('left').value);if($('right').value)params.set('right',$('right').value);
