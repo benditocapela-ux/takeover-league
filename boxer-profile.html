@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b1220">
+<title>Boxerprofil · Takeover League</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--surface:#172235;--gold:#dfbd77;--text:#f4f7fc;--muted:#a9b5c8}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 50% 0,#1b2b42,#0b1220 62%);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:740px;margin:0 auto;padding:22px 16px 118px}
+a{color:var(--gold)}.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:25px}
+.brand{font-weight:900;letter-spacing:1.9px;font-size:13px;color:var(--gold)}
+.back{font-size:12px;font-weight:750;text-decoration:none;border:1px solid #51647e;border-radius:10px;padding:9px 13px}
+.eyebrow{font-size:11px;letter-spacing:2px;color:var(--gold);font-weight:850;text-transform:uppercase}
+.panel{background:linear-gradient(140deg,#192b43,#111d30);border:1px solid #d7ae6250;border-radius:20px;padding:clamp(20px,4vw,30px);box-shadow:0 18px 50px #0004}
+.hero{display:flex;align-items:center;gap:21px;flex-wrap:wrap}
+.photo{width:92px;height:92px;flex:0 0 92px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:3px solid #d7ae62;background:#243650;overflow:hidden;font-size:37px}
+.photo img{width:100%;height:100%;object-fit:cover}
+.hero h1{font-size:clamp(24px,5vw,36px);letter-spacing:-.8px;margin:6px 0 4px;overflow-wrap:anywhere}
+.role{font-size:12px;color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:25px}
+.stat{border:1px solid #40516a;border-radius:13px;background:#0e1b2e;padding:15px 11px;text-align:center}
+.stat strong{display:block;color:var(--gold);font-size:clamp(19px,4vw,29px);font-variant-numeric:tabular-nums}
+.stat span{display:block;color:var(--muted);font-size:11px;line-height:1.4;margin-top:5px}
+.bar{height:10px;margin-top:21px;background:#304157;border-radius:30px;overflow:hidden}
+#levelFill{width:0;height:100%;background:linear-gradient(90deg,#a88139,#f0d38a);border-radius:inherit}
+.levelText{font-size:12px;color:var(--muted);margin-top:9px;display:flex;justify-content:space-between;gap:8px}
+.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px}
+.action{display:flex;align-items:center;justify-content:center;text-decoration:none;text-align:center;border:1px solid #586983;background:#263750;color:#f4f7fc;border-radius:12px;padding:14px 12px;font-weight:850;font-size:13px}
+.action.primary{background:var(--gold);border-color:var(--gold);color:#102034}
+.action:hover{filter:brightness(1.13)}
+.action:focus-visible{outline:2px solid #f3d182;outline-offset:3px}
+.action[hidden]{display:none}
+.note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:18px}
+#status{margin:15px 0;color:var(--muted);font-size:13px}
+.error{color:#ffb6b6!important}
+[hidden]{display:none!important}
+@media(max-width:420px){.photo{width:75px;height:75px;flex-basis:75px}.stats{gap:6px}.stat{padding:11px 5px}.action{padding:12px 7px;font-size:12px}}
+</style>
+<link rel="stylesheet" href="./takeover-navigation.css">
+</head>
+<body>
+<main>
+<div class="topbar"><span class="brand">TAKEOVER LEAGUE</span><a class="back" href="./index.html#ranking">← Ranking</a></div>
+<p id="status" role="status">Öffentliches Boxerprofil wird geladen …</p>
+<article id="profileCard" class="panel" hidden>
+ <div class="eyebrow">🥊 Boxerprofil · Takeover League 2.0</div>
+ <div class="hero">
+   <div id="profilePhoto" class="photo" aria-hidden="true">🥊</div>
+   <div><h1 id="profileName">–</h1><div id="profileRank" class="role">Liga-Boxer</div></div>
+ </div>
+ <div class="stats" aria-label="Öffentliche Boxerstatistik">
+  <div class="stat"><strong id="monthlyPoints">–</strong><span>Monatspunkte</span></div>
+  <div class="stat"><strong id="totalXp">–</strong><span>Gesamt-EXP</span></div>
+  <div class="stat"><strong id="level">–</strong><span>Level</span></div>
+ </div>
+ <div class="bar"><div id="levelFill"></div></div>
+ <div class="levelText"><span id="levelStatus">Fortschritt</span><span id="nextLevel">–</span></div>
+ <div class="actions">
+   <a id="duelAction" class="action primary" href="./duels.html">🥊 Herausfordern</a>
+   <a id="challengeAction" class="action" href="./challenges.html" hidden>🎯 Persönliche Challenge vergeben</a>
+ </div>
+ <p class="note">Hier werden nur öffentliche Liga-Daten angezeigt. E-Mail, Gewicht, Login und private Coach-Rückmeldungen bleiben verborgen. Duelle benötigen eine Anmeldung und die Bestätigung des Gegners. Persönliche Challenges können nur von einem berechtigten Trainer vergeben werden.</p>
+</article>
+</main>
+<script src="./boxer-profile.js" defer></script>
+<script src="./takeover-navigation.js" defer></script>
+</body>
+</html>

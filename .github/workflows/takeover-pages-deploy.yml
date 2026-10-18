@@ -41,8 +41,10 @@ jobs:
           touch _site/.nojekyll
           test -s _site/takeover-navigation.js
           test -s _site/takeover-navigation.css
+          test -s _site/boxer-profile.js
+          test -s _site/boxer-profile.html
           # All production HTML entrypoints must ship the shared, re-openable menu.
-          for page in index login boxer coach challenges duels awards features coming-soon; do
+          for page in index login boxer coach challenges duels awards features coming-soon boxer-profile; do
             grep -Fq 'takeover-navigation.js' "_site/${page}.html"
             grep -Fq 'takeover-navigation.css' "_site/${page}.html"
           done

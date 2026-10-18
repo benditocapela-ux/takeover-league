@@ -84,7 +84,7 @@
        const tabname=item.dataset.tlTab||item.dataset.tab;
        const isMenu=item===trigger;
        const active=!!tabname&&atHome&&tabname===tab ||
-         isMenu&&(open || atHome&&(tab==='levels'||tab==='history') || ['challenges.html','duels.html','awards.html','features.html','coming-soon.html'].includes(page)) ||
+         isMenu&&(open || atHome&&(tab==='levels'||tab==='history') || ['challenges.html','duels.html','awards.html','features.html','coming-soon.html','boxer-profile.html'].includes(page)) ||
          item.classList.contains('tl-dashboard-nav')&&['login.html','boxer.html','coach.html'].includes(page);
        item.classList.toggle(atHome?'active':'tl-active',!!active);
        if(active && item.tagName==='A')item.setAttribute('aria-current','page');
