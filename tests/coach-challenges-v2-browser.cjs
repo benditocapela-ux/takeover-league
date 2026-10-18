@@ -44,6 +44,15 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null}={}){
  boxer.document.querySelector('#list button').click();await tick();await tick();
  assert.equal(boxer.calls.some(c=>c.name==='coach_challenge_v2_join'&&c.args.p_challenge_id==='challenge-id'),true);
  boxer.dom.window.close();
+ const reviewCoach=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[{id:'review-id',title:'Review',description:'Test',status:'awaiting_reviews',joined_count:1,duration_days:7,is_creator:true}]});
+ const settle=Array.from(reviewCoach.document.querySelectorAll('#list button')).find(b=>b.textContent==='EXP abschliessen');
+ assert.equal(settle.disabled,true,'EXP cannot settle before review candidate check');
+ const reviewButton=Array.from(reviewCoach.document.querySelectorAll('#list button')).find(b=>b.textContent==='Offene Bewertungen laden');
+ reviewButton.click();await tick();await tick();
+ assert.equal(settle.disabled,false,'EXP can settle after zero open candidates');
+ settle.click();await tick();await tick();
+ assert.equal(reviewCoach.calls.some(c=>c.name==='coach_challenge_v2_settle_manual'),true);
+ reviewCoach.dom.window.close();
  const inactive=await mount({user:{id:'inactive'},profile:{role:'coach',is_active:false}});
  assert.equal(inactive.document.querySelector('#coach').hidden,true);
  assert.equal(inactive.document.querySelector('#list').children.length,0);
