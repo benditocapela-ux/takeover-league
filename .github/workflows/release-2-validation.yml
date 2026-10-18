@@ -36,3 +36,4 @@ jobs:
       - run: npx playwright install --with-deps chromium
       - run: node tests/release-browser-smoke.cjs
       - run: node tests/release-auth-ui-mocked.cjs
+      - run: node tests/release-live-duels-browser.cjs
