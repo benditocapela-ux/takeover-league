@@ -16,6 +16,7 @@ on:
       - 'supabase/migrations/**'
       - 'tests/production-v2-*.sql'
       - 'tests/production-v2-*.cjs'
+      - 'tests/production-v2-*.sh'
       - 'tests/production-v2-schema-smoke.sql'
       - '.github/workflows/coach-challenges-v2.yml'
   push:
@@ -35,6 +36,7 @@ on:
       - 'supabase/migrations/**'
       - 'tests/production-v2-*.sql'
       - 'tests/production-v2-*.cjs'
+      - 'tests/production-v2-*.sh'
       - '.github/workflows/coach-challenges-v2.yml'
 jobs:
   static-checks:
@@ -93,3 +95,8 @@ jobs:
           fi
           psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -Atc "SELECT CASE WHEN (SELECT count(*) FROM public.point_transactions)=3 AND (SELECT count(*) FROM public.profiles)=5 AND NOT EXISTS(SELECT 1 FROM public.league_feature_flags WHERE feature_key IN ('coach_challenges','duels') AND is_enabled) AND (SELECT count(*) FROM public.league_coach_challenges)=0 AND (SELECT count(*) FROM public.league_duels)=0 THEN 'safe' ELSE 'FAILED' END" | grep -qx safe
 
+
+      - name: Run concurrent V2 settlement, join and duel invitation checks
+        env:
+          PGPASSWORD: postgres
+        run: bash tests/production-v2-concurrency.sh
