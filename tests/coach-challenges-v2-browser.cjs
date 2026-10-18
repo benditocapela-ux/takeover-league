@@ -36,6 +36,20 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null,candida
  assert.match(prodDom.window.document.querySelector('#status').textContent,/vorbereitet/);
  assert.equal(prodDom.window.document.querySelector('#signin').hidden,true);
  prodDom.window.close();
+ const enabled=new JSDOM(prodHtml,{url:'https://example.test/challenges.html',runScripts:'outside-only'});
+ const enabledCalls=[];
+ enabled.window.createClient=()=>({
+ auth:{getUser:async()=>({data:{user:{id:'coach'}},error:null}),signOut:async()=>({error:null})},
+ from:()=>({select:()=>({eq:()=>({maybeSingle:async()=>({data:{role:'admin',is_active:true},error:null})})})}),
+ rpc:async(name,args)=>{enabledCalls.push({name,args});return {data:name==='coach_challenge_v2_list'?[]:null,error:null}}
+ });
+ enabled.window.eval('window.TAKEOVER_CHALLENGES_V2_ENABLED=true;');
+ enabled.window.eval(prodSource.replace('init();','window.__ready=init();'));
+ await enabled.window.__ready;
+ assert.equal(enabled.window.document.querySelector('#coach').hidden,false);
+ assert.equal(enabledCalls.some(c=>c.name==='coach_challenge_v2_list'),true);
+ enabled.window.close();
+
  const guest=await mount();
  assert.equal(guest.document.querySelector('#login').hidden,false);
  assert.equal(guest.document.querySelector('#coach').hidden,true);
