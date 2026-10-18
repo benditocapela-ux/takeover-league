@@ -40,7 +40,8 @@
        ['👤','Anmelden / Mein Account','login.html',''],
        ['💪','Mein Training','boxer.html',''],
        ['🎯','Meine Ziele','goals.html',''],
-       ['🥇','Trainer-Dashboard','coach.html','']
+       ['🥇','Trainer-Dashboard','coach.html',''],
+       ['🛠️','League Manager 2.1','league-manager.html','']
      ]]
    ];
    const contents=entries.map(group=>
