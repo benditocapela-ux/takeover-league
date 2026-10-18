@@ -1,9 +1,9 @@
 /* Takeover League 2.0 shared navigation. Uses the existing league navy/gold palette. */
 :root{--tl-nav-bg:var(--bg);--tl-nav-surface:var(--surface);--tl-nav-text:var(--text);--tl-nav-muted:var(--muted);--tl-nav-gold:var(--gold)}
 body.tl-global-nav-page{padding-bottom:calc(92px + env(safe-area-inset-bottom))!important}
-.tl-global-bottom{position:fixed;bottom:0;left:0;right:0;z-index:55;background:color-mix(in srgb,var(--surface-2) 96%,transparent);border-top:1px solid color-mix(in srgb,var(--text) 11%,transparent);padding:var(--sp-3) max(var(--sp-3),env(safe-area-inset-right)) calc(var(--sp-3) + env(safe-area-inset-bottom));box-sizing:border-box;font:700 13px system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
+.tl-global-bottom{position:fixed;bottom:0;left:0;right:0;z-index:55;background:color-mix(in srgb,var(--surface-2) 96%,transparent);border-top:1px solid color-mix(in srgb,var(--text) 11%,transparent);padding:var(--sp-3) max(var(--sp-3),env(safe-area-inset-right)) calc(var(--sp-3) + env(safe-area-inset-bottom)) max(var(--sp-3),env(safe-area-inset-left));box-sizing:border-box;font:700 13px system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif}
 .tl-global-nav-items{display:flex;gap:4px;max-width:740px;margin:0 auto}
-.tl-global-nav-items .tl-nav-item{flex:1;min-width:0;display:flex;align-items:center;justify-content:center;border:0;border-radius:var(--r-md);background:transparent;color:var(--tl-nav-muted);min-height:42px;padding:var(--sp-3) 4px;font:700 clamp(11px,2.5vw,13px) system-ui,-apple-system,sans-serif;text-align:center;text-decoration:none;white-space:nowrap;cursor:pointer}
+.tl-global-nav-items .tl-nav-item{gap:var(--sp-1);flex:1;min-width:0;display:flex;align-items:center;justify-content:center;border:0;border-radius:var(--r-md);background:transparent;color:var(--tl-nav-muted);min-height:42px;padding:var(--sp-3) 4px;font:700 clamp(11px,2.5vw,13px) system-ui,-apple-system,sans-serif;text-align:center;text-decoration:none;white-space:nowrap;cursor:pointer}
 .tl-global-nav-items .tl-nav-item:hover,.tl-global-nav-items .tl-nav-item:focus-visible{background:var(--surface);color:var(--gold);outline:2px solid var(--tl-nav-gold);outline-offset:1px}
 .tl-global-nav-items .tl-nav-item.tl-active{background:var(--surface);color:var(--gold)}
 .tl-menu-backdrop{position:fixed;inset:0;background:rgba(1,7,18,.67);z-index:200;opacity:0;transition:opacity .22s ease;cursor:pointer}
@@ -22,9 +22,12 @@ body.tl-menu-visible{overflow:hidden}
 .tl-menu-link{width:100%;box-sizing:border-box;display:flex;align-items:center;gap:var(--sp-3);min-height:49px;border:1px solid transparent;border-radius:var(--r-md);padding:var(--sp-3) var(--sp-3);background:transparent;color:var(--tl-nav-text);font:700 14px/1.3 system-ui,-apple-system,sans-serif;text-decoration:none;text-align:left;cursor:pointer}
 .tl-menu-link:hover,.tl-menu-link:focus-visible{background:var(--surface);border-color:color-mix(in srgb,var(--text) 14%,transparent);outline:2px solid color-mix(in srgb,var(--gold) 47%,transparent);outline-offset:0}
 .tl-menu-link.tl-current{background:var(--surface);border-color:color-mix(in srgb,var(--gold) 44%,transparent);color:var(--gold)}
-.tl-menu-icon{width:25px;flex:0 0 25px;font-size:var(--fs-md);text-align:center}
+.tl-menu-icon{display:inline-flex;align-items:center;justify-content:center;width:25px;flex:0 0 25px;font-size:var(--fs-md);text-align:center}
 .tl-menu-label{flex:1;min-width:0}
 .tl-menu-arrow{font-size:var(--fs-base);font-weight:500;color:var(--muted)}
 .tl-menu-pill{display:inline-block;padding:3px 6px;border-radius:5px;background:var(--surface);color:var(--gold);font-weight:800;font-size:9px;letter-spacing:.4px;margin-left:4px}
 .tl-menu-foot{border-top:1px solid color-mix(in srgb,var(--text) 11%,transparent);margin-top:var(--sp-6);padding:var(--sp-4) var(--sp-3);color:var(--tl-nav-muted);font-size:var(--fs-xs)}
 @media(prefers-reduced-motion:reduce){.tl-menu-backdrop,.tl-menu-panel{transition:none}}
+
+.tl-menu-icon .tl-icon{width:22px;height:22px}
+.tl-global-nav-items .tl-icon{width:18px;height:18px}

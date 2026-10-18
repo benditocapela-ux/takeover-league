@@ -29,9 +29,17 @@ assert.ok(doc.querySelector('#avatarEditor').contains(doc.querySelector('#avatar
 assert.ok(doc.querySelector('#avatarEditor').contains(doc.querySelector('#saveAvatar')),'Avatar save button must remain available');
 assert.ok(doc.querySelector('#form').contains(doc.querySelector('#submit')),'Submit must stay inside training form');
 assert.ok(doc.querySelector('.boxer-hero .boxer-quick-links a[href="#trainingFormCard"]'),'Quick submission link missing');
-for(const href of ['./challenges.html','./duels.html']){
- assert.ok(doc.querySelector('.boxer-quick-links a[href="'+href+'"]'),'Quick V2 link missing: '+href);
+assert.equal(doc.querySelectorAll('.boxer-quick-links a').length,1,'Studio must have exactly one hero CTA');
+for(const [tabId,panelId] of [['studioTabOverview','studioPanelOverview'],['studioTabHistory','studioPanelHistory'],['studioTabDetails','studioPanelDetails']]){
+ const tab=doc.getElementById(tabId),panel=doc.getElementById(panelId);
+ assert.ok(tab&&panel,'Studio tab and panel missing: '+tabId);
+ assert.equal(tab.getAttribute('role'),'tab');
+ assert.equal(panel.getAttribute('role'),'tabpanel');
+ assert.equal(tab.getAttribute('aria-controls'),panelId);
 }
+assert.ok(doc.getElementById('studioPanelOverview').contains(doc.getElementById('trainingFormCard')));
+assert.ok(doc.getElementById('studioPanelHistory').contains(doc.getElementById('entriesCard')));
+assert.ok(doc.getElementById('studioPanelDetails').contains(doc.getElementById('expRankSection')));
 assert.ok(doc.querySelector('link[href="./boxer-dashboard-polish.css"]'),'Polish styles missing');
 assert.ok(doc.querySelector('link[href="./takeover-navigation.css"]'),'Common menu styles missing');
 assert.ok(doc.querySelector('script[src="./takeover-navigation.js"]'),'Persistent menu missing');
@@ -56,12 +64,11 @@ assert.ok(html.includes("$('heroPending').textContent=$('statPending').textConte
 assert.ok(html.includes("$('heroTotal').textContent=$('statTotal').textContent"),
  'Hero summary must reuse the same total count as training history');
 
-for(const token of ['--bx-bg:#0b1220','--bx-gold:#dfbd77','#content.hidden{display:none}',
- '#content>#trainingFormCard','#content>#trainingStats',
- '#content>#expRankSection','#content>#performance30Section']){
- assert.ok(css.includes(token),'Missing polish or auth concealment CSS: '+token);
+for(const token of ['--bx-bg:var(--bg)','--bx-gold:var(--gold)','#content.studio-content.hidden{display:none}', '.studio-pane[hidden]{display:none!important}', '.studio-tabs [role="tab"]']){
+ assert.ok(css.includes(token),'Missing Studio token or concealed panel CSS: '+token);
 }
+assert.ok(html.includes('stroke-dasharray'),'Pure SVG EXP progress missing');
 assert.ok(!/script\s+src=["']https?:/i.test(html),'Unexpected new third-party script');
 doc.getElementById('avatarEditor').open=true;
 assert.equal(doc.getElementById('avatarEditor').open,true,'Avatar edit controls must be expandable');
-console.log('PASS: Boxer Hub design preserves original IDs, login/auth checks, training submit, avatar controls, EXP, stats, shared menu and responsive CSS.');
+console.log('PASS: Boxer Studio design preserves original IDs, login/auth checks, training submit, avatar controls, EXP, stats, shared menu and responsive CSS.');

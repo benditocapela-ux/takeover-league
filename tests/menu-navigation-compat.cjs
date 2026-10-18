@@ -8,7 +8,7 @@ const deploy=fs.readFileSync('.github/workflows/takeover-pages-deploy.yml','utf8
 
 assert.match(deploy,/name '.*\.js'/,'Pages deployment must copy shared JavaScript');
 assert.match(deploy,/name '.*\.css'/,'Pages deployment must copy shared CSS');
-for(const fragment of ['.tl-menu-panel','.tl-menu-backdrop','.tl-global-bottom','--tl-nav-gold:#e8b953']) {
+for(const fragment of ['.tl-menu-panel','.tl-menu-backdrop','.tl-global-bottom','--tl-nav-gold:var(--gold)']) {
  assert.ok(navCss.includes(fragment),'Shared original-color styling missing: '+fragment);
 }
 
@@ -53,7 +53,9 @@ for(const page of pages){
  assert.ok(!footer.querySelector('[data-tab="levels"],[data-tab="history"],[data-tl-tab="levels"],[data-tl-tab="history"]'),
  'Levels/History must be drawer-only on '+page);
  if(page==='index.html'){
-   assert.ok(html.includes('--bg:#0b1220')&&html.includes('--surface:#172235')&&html.includes('--gold:#e8b953'),'Original home colors changed');
+   assert.ok(html.includes('href="./takeover-theme.css"'),'Central design foundation missing from index');
+   const theme=fs.readFileSync('takeover-theme.css','utf8');
+   for(const token of ['--bg:#0b1422','--surface:#142238','--gold:#dfbd77'])assert.ok(theme.includes(token),'Central token missing: '+token);
    for(const id of ['podium','ranking','levels','history','podium-content','ranking-content','levels-content','history-content'])
      assert.ok(doc.getElementById(id),'Original league section missing: '+id);
    assert.equal(doc.querySelectorAll('.tl-global-bottom').length,0,'Home must not have duplicate footer');
