@@ -89,8 +89,12 @@ function render(){
   card.append(el('p',expired?'Einladung abgelaufen':(statuses[duel.status]||duel.status)));
   card.append(el('p','Laufzeit: '+duel.duration_days+' Tage · Einladung: '+dateText(duel.invited_at)));
   if(duel.ends_at)card.append(el('p','Ende: '+dateText(duel.ends_at)));
-  if(['active','awaiting_reviews','settled'].includes(duel.status)){
-   card.append(el('p','Trainingspunkte: '+duel.challenger_score+' : '+duel.opponent_score));
+  if(duel.status==='settled'){
+   card.append(el('p','Endstand (Trainingspunkte): '+duel.challenger_score+' : '+duel.opponent_score));
+  }else if(duel.status==='active'){
+   card.append(el('p','Die Trainingspunkte werden nach Ablauf des Duells ausgewertet.'));
+  }else if(duel.status==='awaiting_reviews'){
+   card.append(el('p','Die Auswertung wartet noch auf abgeschlossene Trainingsbewertungen.'));
   }
   if(duel.status==='settled'){
    const verdict=!duel.winner_id?'Unentschieden':duel.winner_id===duel.challenger_id?'Gewinner: '+duel.challenger_name:'Gewinner: '+duel.opponent_name;
