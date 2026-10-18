@@ -45,6 +45,13 @@ for each row when (
  old.status is distinct from new.status or old.challenger_score is distinct from new.challenger_score
  or old.opponent_score is distinct from new.opponent_score or old.winner_id is distinct from new.winner_id
 ) execute function league_v21_private.sync_public_duel_history();
+-- A historical import may create an already-settled row in one statement.
+-- Project that result immediately as well, not only on later UPDATE.
+drop trigger if exists league_v21_public_duel_history_insert on public.league_duels;
+create trigger league_v21_public_duel_history_insert after insert on public.league_duels
+for each row when (NEW.status='settled' and NEW.settled_at is not null)
+execute function league_v21_private.sync_public_duel_history();
+
 -- Backfill only already-finalized public game scores; no reward or training changes.
 insert into public.league_public_duel_history_v21(
  duel_id,challenger_id,opponent_id,challenger_name,opponent_name,
