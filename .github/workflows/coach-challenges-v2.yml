@@ -127,3 +127,21 @@ jobs:
             -f supabase/production-prep/release_postflight_read_only.sql \
             | tee /tmp/takeover-v2-postflight-result.txt
           grep -Eq '"release_integrity_passed"[[:space:]]*:[[:space:]]*true' /tmp/takeover-v2-postflight-result.txt
+      - name: Rehearse guarded V2 activation and non-destructive emergency disable
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 \
+            -f supabase/production-prep/activate_v2_only_after_freigeben.sql >/dev/null
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -Atc \
+            "SELECT count(*) FROM public.league_feature_flags WHERE feature_key IN ('coach_challenges','duels') AND is_enabled" \
+            | grep -qx 2
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -At \
+            -f supabase/production-prep/release_postflight_read_only.sql \
+            | grep -Eq '"release_integrity_passed"[[:space:]]*:[[:space:]]*true'
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 \
+            -f supabase/production-prep/emergency_disable_v2_flags_only.sql >/dev/null
+          psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -Atc \
+            "SELECT CASE WHEN (SELECT count(*) FROM public.league_feature_flags WHERE feature_key IN ('coach_challenges','duels') AND is_enabled)=0 AND (SELECT count(*) FROM public.point_transactions)=4 AND (SELECT count(*) FROM public.profiles)=5 AND (SELECT count(*) FROM public.league_coach_challenges)=0 AND (SELECT count(*) FROM public.league_duels)=0 THEN 'safe' ELSE 'unexpected-data-change' END" \
+            | grep -qx safe
