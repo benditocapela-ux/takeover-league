@@ -11,7 +11,7 @@
 - Duelltest: Boxer lädt zweiten Boxer ein; Selbstannahme verweigert, Gegner nimmt an, Admin darf ein abgelaufenes Duell abstimmen.
 - Anonyme Datenbankrolle und unbekannte authentifizierte Identität dürfen weder geschützte V2-Tabellen noch privilegierte V2-RPCs einsehen.
 - Tests fanden als **SQL-Transaktionen mit simulierten `auth.uid()`-Claims und `SET LOCAL ROLE`** statt und wurden ausnahmslos mit `ROLLBACK` beendet. Eine notwendige temporäre Coach-Rollen-Constraint-Anpassung wurde ebenfalls zurückgerollt.
-- Unveränderter Testprojekt-Zustand danach geprüft: 3 Auth-Benutzer/3 Profile, 1 bestehende Challenge, 0 Duelle, 1 Punktetransaktion; beide Test-Flags aus; Coach-Profil-Constraint wieder Boxer/Admin.
+- Nach den vollständig zurückgerollten Funktionstests wurde **gesondert** eine bewusst permanente Testprojekt-Migration `allow_coach_role_test_only` ausgeführt. Testprojekt erlaubt damit nun Boxer/Admin/Coach. Weiterhin nur 3 Auth-Benutzer/3 Profile, 1 bestehende Challenge, 0 Duelle, 1 Punktetransaktion, 0 aktive Coach-Profile; beide Test-Flags aus. **Produktion unverändert.**
 
 **Grenze:** Datenbankrollen unter echten Supabase-Instanzen sind noch keine Auth-Passwortanmeldungen und keine authentischen HTTP/PostgREST-JWT-Tests. Das Testprojekt enthält momentan auch noch ältere RPC-Rückgabetypen. Echte temporäre Coach-/Boxer-/Admin-Login-Konten plus Testabläufe im Browser bleiben Freigabevoraussetzung.
 
