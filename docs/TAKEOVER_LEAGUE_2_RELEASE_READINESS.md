@@ -131,3 +131,9 @@ Stop without writing to production if the read-only inventory shows an unknown s
 - TEST rollback-only: 25 approved sessions (two tiers, 85 EXP) transferred from Boxer 1 to Boxer 2. Original boxer had zero earned tiers/EXP; new boxer had two earned tiers/85 EXP. PASS.
 - TEST rollback-only: after 25 approved sessions, rejecting 16 (25 to 9) revoked both tiers, left zero achievement EXP, and generated two revoke events. PASS.
 - Post-test read-only: zero submissions, achievement events/ledger and duels; all three feature flags remain false.
+
+## High-volume achievement threshold tests (2026-10-18)
+
+- TEST rollback-only: 50 approved training submissions produced exactly three session achievement tiers and 210 EXP. PASS.
+- TEST rollback-only: 100 approved training submissions produced four session tiers and 460 EXP. Recalculation produced no extra events. PASS.
+- Both transactions rolled back; production unchanged. These single-session tests do not cover concurrent inserts.
