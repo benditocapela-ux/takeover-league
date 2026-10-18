@@ -123,8 +123,9 @@ const seasonFair=read('supabase/migrations/20261019031000_league_21_season_fair_
 assert.match(seasonFair,/Pending season trainings require coach review/);
 assert.match(seasonFair,/rank\(\) over\(order by/);
 assert.doesNotMatch(seasonFair,/insert into public\.point_transactions/i);
-assert.match(read('league-challenges.html'),/t\.created_at>=enrollment\.joined_at/);
-assert.match(read('league-challenges.html'),/t\.created_at<=c\.ends_at/);
+assert.match(read('league-challenges.html'),/Date\.parse\(t\.created_at\)>=joinedAt/);
+assert.match(read('league-challenges.html'),/Date\.parse\(t\.created_at\)<=closesAt/);
+assert.match(read('league-challenges.html'),/Date\.parse\(enrollment\.joined_at\)/);
 const serialized=read('supabase/migrations/20261019032000_league_21_settlement_review_serialization.sql');
 assert.match(serialized,/FOR UPDATE OF s/);
 assert.match(serialized,/FOR UPDATE OF t/);
@@ -139,6 +140,20 @@ assert.doesNotMatch(managerDates,/T23:59:59\+02:00|T00:00:00\+02:00/);
 const releaseGates=read('docs/TAKEOVER_LEAGUE_21_FINAL_RELEASE_GATES.md');
 assert.match(releaseGates,/NOCH OFFEN|NOCH NICHT|NOCH|NOT/);
 assert.match(releaseGates,/Backup/);
+const duelArenaScores=read('supabase/migrations/20261019035000_league_21_scoring_ledger_completeness.sql');
+assert.match(duelArenaScores,/duel_reconcile_ranked_core/);
+assert.match(duelArenaScores,/arena_finish_core/);
+assert.match(duelArenaScores,/Approved duel training has missing or invalid scoring ledger/);
+assert.match(duelArenaScores,/Approved arena training has missing or invalid scoring ledger/);
+for(const p of ['tests/league-21-migration-replay.sql','tests/league-21-migration-apply-disposable.sql']){
+ assert.match(read(p),/20261019035000_league_21_scoring_ledger_completeness\.sql/);
+}
+for(const p of ['tests/league-21-arena-missing-ledger-transaction.sql','tests/league-21-duel-missing-ledger-transaction.sql']){
+ assert.match(read(p),/missing|unbooked|incomplete/i);
+ assert.match(read(p),/rollback;/i);
+}
+assert.doesNotMatch(read('league-manager.html'),/Es werden KEINE EXP vergeben|Keine EXP gebucht/);
+assert.match(read('league-manager.html'),/EXP werden sofort serverseitig gebucht/);
 const goalCorrections=read('supabase/migrations/20261019033000_league_21_goal_training_corrections.sql');
 assert.match(goalCorrections,/OLD\.boxer_id IS DISTINCT FROM NEW\.boxer_id/);
 assert.match(goalCorrections,/OLD\.training_date IS DISTINCT FROM NEW\.training_date/);
