@@ -184,6 +184,9 @@ form.onsubmit=e=>{e.preventDefault();if(busy||!profile)return;
  const challenger=form.elements.challenger.value,opponent=form.elements.opponent.value;
  const days=Number(form.elements.duration.value);
  if(!challenger||!opponent||challenger===opponent||![7,14].includes(days)){say('Wähle zwei unterschiedliche Boxer und 7 oder 14 Tage.',true);return}
+ const challengerName=eligible.find(x=>x.id===challenger)?.display_name||'Unbekannter Boxer';
+ const opponentName=eligible.find(x=>x.id===opponent)?.display_name||'Unbekannter Boxer';
+ if(!confirm('Duell-Einladung senden? '+challengerName+' fordert '+opponentName+' für '+days+' Tage heraus. Der Gegner muss innerhalb von 48 Stunden annehmen.'))return;
  mutate('duel_v2_invite',{p_challenger:challenger,p_opponent:opponent,p_duration_days:days});
 };
 byId('refresh').onclick=async()=>{if(busy)return;try{say('Aktualisiere Duelle …');await load()}catch(e){say(message(e),true)}};
