@@ -5,7 +5,7 @@
 .personal-assignment textarea,.personal-assignment input,.personal-assignment select{width:100%;max-width:100%}
 .personal-assignment #targetedHint{font-size:13px;color:#d0dce8}
 </style><link rel="stylesheet" href="./takeover-navigation.css"></head>
-<body><main><p><a href="./boxer.html">Produktions-Boxeransicht</a> · <a href="./coach.html">Produktions-Coachansicht</a></p><h1>Coach Challenges V2</h1><p id="rolloutNote">Persönliche Ziele, Wettbewerbe und manuelle Coach-Bewertungen.</p><p>Du kannst öffentlichen Challenges beitreten. Trainer können zusätzlich persönliche Challenges gezielt vergeben.</p><p id="status" role="status">Verbindung wird geprüft …</p><section id="signin"><h2>Konto anmelden</h2><form id="login"><input name="email" type="email" autocomplete="username" placeholder="E-Mail" required><input name="password" type="password" autocomplete="current-password" placeholder="Passwort" required><button>Anmelden</button></form><button id="logout" type="button" hidden>Abmelden</button></section><section id="coach" hidden><h2>Challenge erstellen</h2><form id="create"><input name="title" required maxlength="120" placeholder="Titel"><textarea name="description" placeholder="Beschreibung"></textarea><select name="kind"><option value="individual">Individuell</option><option value="competition">Wettkampf</option><option value="coach_goal">Coach-Ziel</option></select><select name="days"><option value="7">7 Tage</option><option value="14">14 Tage</option><option value="30">30 Tage</option></select><button>Entwurf erstellen</button></form>
+<body><main><p><a href="./boxer.html">Produktions-Boxeransicht</a> · <a href="./coach.html">Produktions-Coachansicht</a></p><h1>Coach Challenges V2</h1><p id="rolloutNote">Persönliche Ziele, Wettbewerbe und manuelle Coach-Bewertungen.</p><p>Du kannst öffentlichen Challenges beitreten. Trainer können zusätzlich persönliche Challenges gezielt vergeben.</p><p id="status" role="status">Verbindung wird geprüft …</p><section id="signin"><h2>Konto anmelden</h2><form id="login"><input name="email" type="email" autocomplete="username" placeholder="E-Mail" required><input name="password" type="password" autocomplete="current-password" placeholder="Passwort" required><button>Anmelden</button></form><button id="logout" type="button" hidden>Abmelden</button></section><section id="coach" hidden><h2>Challenge erstellen</h2><label for="challengeTemplate">Schnellvorlage (optional)</label><select id="challengeTemplate" aria-label="Challenge-Vorlage auswählen"><option value="">Ohne Vorlage</option><option value="technique">Technik-Fokus</option><option value="conditioning">Ausdauer-Fokus</option><option value="consistency">Trainingskonstanz</option></select><small>Die Vorlage füllt nur das Formular aus. Vor dem Erstellen können alle Angaben geändert werden.</small><form id="create"><input name="title" required maxlength="120" placeholder="Titel"><textarea name="description" placeholder="Beschreibung"></textarea><select name="kind"><option value="individual">Individuell</option><option value="competition">Wettkampf</option><option value="coach_goal">Coach-Ziel</option></select><select name="days"><option value="7">7 Tage</option><option value="14">14 Tage</option><option value="30">30 Tage</option></select><button>Entwurf erstellen</button></form>
 <section id="targetedAssignment" class="personal-assignment" hidden aria-labelledby="targetedTitle">
  <h3 id="targetedTitle">🎯 Persönliche Challenge für <span id="targetedName">–</span></h3>
  <p>Nur dieser Boxer erhält die Challenge. Sie startet nach dem Vergeben sofort. Die EXP werden erst nach deiner Bewertung und dem offiziellen Abschluss gutgeschrieben.</p>
@@ -147,6 +147,18 @@ document.querySelector('#assignPersonal').onsubmit=async e=>{
  }catch(err){if(epoch===sessionEpoch)targetedHint.textContent='Zuweisung fehlgeschlagen: '+friendlyError(err)}
  finally{busy=false;if(epoch===sessionEpoch)button.disabled=false}
 };
+const coachTemplates={
+ technique:{title:'Technik-Fokus',description:'Technische Fortschritte im Trainingsalltag dokumentieren.',kind:'coach_goal',days:'14'},
+ conditioning:{title:'Ausdauer-Fokus',description:'Ausdauer-Einheiten über den Challenge-Zeitraum dokumentieren.',kind:'individual',days:'14'},
+ consistency:{title:'Konstanz',description:'Regelmässige Trainingsaktivität nachvollziehbar erfassen.',kind:'competition',days:'7'}
+};
+document.querySelector('#challengeTemplate').addEventListener('change',e=>{
+ const v=coachTemplates[e.target.value];if(!v)return;
+ const form=document.querySelector('#create');
+ form.elements.title.value=v.title;form.elements.description.value=v.description;
+ form.elements.kind.value=v.kind;form.elements.days.value=v.days;
+ say('Vorlage geladen. Angaben prüfen und dann Entwurf erstellen.');
+});
 document.querySelector('#create').onsubmit=async e=>{e.preventDefault();if(busy||!role)return;busy=true;const epoch=sessionEpoch;const f=new FormData(e.target);try{await rpc('coach_challenge_v2_create_draft',{p_title:f.get('title'),p_description:f.get('description'),p_kind:f.get('kind'),p_duration_days:Number(f.get('days'))});if(epoch!==sessionEpoch||!role)return;e.target.reset();await load()}catch(err){if(epoch===sessionEpoch)say(friendlyError(err),true)}finally{busy=false}};
 init();
 </script><script src="./takeover-navigation.js" defer></script></body></html>
