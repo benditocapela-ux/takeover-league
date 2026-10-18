@@ -76,3 +76,20 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f tests/production-v2-schema-smoke.sql
+      - name: Verify duplicate releases fail atomically without changing fixtures
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261018131000_coach_challenges_v2.sql >/dev/null
+          psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261018133000_duels_v2.sql >/dev/null
+          if psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261018131000_coach_challenges_v2.sql >/dev/null 2>&1; then
+            echo 'ERROR: Reapplying Coach Challenges V2 did not fail safely'
+            exit 1
+          fi
+          if psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f supabase/migrations/20261018133000_duels_v2.sql >/dev/null 2>&1; then
+            echo 'ERROR: Reapplying Duels V2 did not fail safely'
+            exit 1
+          fi
+          psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -Atc "SELECT CASE WHEN (SELECT count(*) FROM public.point_transactions)=3 AND (SELECT count(*) FROM public.profiles)=5 AND NOT EXISTS(SELECT 1 FROM public.league_feature_flags WHERE feature_key IN ('coach_challenges','duels') AND is_enabled) AND (SELECT count(*) FROM public.league_coach_challenges)=0 AND (SELECT count(*) FROM public.league_duels)=0 THEN 'safe' ELSE 'FAILED' END" | grep -qx safe
+
