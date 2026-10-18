@@ -1,4 +1,59 @@
-<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1220"><title>Takeover League 2.0 – Features</title><style>*{box-sizing:border-box}body{margin:0;background:#090e19;color:#f3f5fc;font:16px system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:880px;margin:auto;padding:28px 18px 90px}a{color:inherit;text-decoration:none}.back{display:inline-block;margin-bottom:32px;color:#bac4d8}.eyebrow{font-size:12px;letter-spacing:2px;color:#f6b64a;font-weight:800}h1{font-size:clamp(28px,6vw,46px);margin:8px 0}p{color:#aeb9cd;line-height:1.55}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:12px;margin-top:28px}.card{display:block;border:1px solid #2c364d;border-radius:16px;background:#141d2e;padding:19px;transition:border-color .15s,transform .15s}.card:hover,.card:focus-visible{border-color:#f6b64a;transform:translateY(-2px)}.ico{font-size:26px}.title{font-weight:750;margin:12px 0 8px}.badge{display:inline-block;font-size:11px;font-weight:750;letter-spacing:.6px;color:#f8c86d;background:#4a381f;border-radius:50px;padding:5px 9px}.desc{font-size:13px;margin-top:12px}.footer{margin-top:32px;font-size:13px}</style><link rel="stylesheet" href="./takeover-navigation.css"></head><body><main><a class="back" href="./index.html">← Zurück zur Liga</a><div class="eyebrow">TAKEOVER LEAGUE 2.0</div><h1>Die nächste Runde beginnt.</h1><p>Entdecke die kommenden Funktionen. Sie sind bereits sichtbar und werden schrittweise freigeschaltet.</p><div class="grid" id="features"></div><p class="footer">Die bisherigen Liga-Funktionen bleiben weiterhin verfügbar.</p></main><script>
-const features=[['achievements','🏅','Achievements','Sammle Auszeichnungen in mehreren Stufen.'],['boxer_duels','🥊','Boxer-Duelle','Fordere andere Boxer heraus.'],['coach_feedback','📝','Coach-Feedback','Erhalte persönliches Feedback.'],['coach_goals','🎯','Coach-Ziele','Arbeite an deinen Trainingszielen.'],['hall_of_fame','🏆','Hall of Fame','Entdecke die Besten der Liga.'],['league_challenges','⚡','Liga-Challenges','Stelle dich gemeinsamen Challenges.'],['notifications','🔔','Benachrichtigungen','Bleibe über Fortschritte informiert.'],['palmares','🥇','Palmarès','Deine sportlichen Erfolge im Überblick.'],['performance_dashboard','📈','Performance-Dashboard','Analysiere deine Trainingsleistung.'],['public_boxer_profiles','👤','Boxerprofile','Entdecke die Profile der Liga.'],['seasons','📅','Saisons','Neue Wettkämpfe in jeder Saison.']];
-const root=document.getElementById('features');for(const [key,icon,title,desc] of features){const a=document.createElement('a');a.className='card';a.href='./coming-soon.html?feature='+encodeURIComponent(key);const ico=document.createElement('div');ico.className='ico';ico.textContent=icon;const h=document.createElement('div');h.className='title';h.textContent=title;const b=document.createElement('span');b.className='badge';b.textContent='COMING SOON';const p=document.createElement('p');p.className='desc';p.textContent=desc;a.append(ico,h,b,p);root.append(a)}
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b1220"><title>Takeover League 2.0 – Features</title><style>*{box-sizing:border-box}body{margin:0;background:#090e19;color:#f3f5fc;font:16px system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:880px;margin:auto;padding:28px 18px 90px}a{color:inherit;text-decoration:none}.back{display:inline-block;margin-bottom:32px;color:#bac4d8}.eyebrow{font-size:12px;letter-spacing:2px;color:#f6b64a;font-weight:800}h1{font-size:clamp(28px,6vw,46px);margin:8px 0}p{color:#aeb9cd;line-height:1.55}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:12px;margin-top:28px}.card{display:block;border:1px solid #2c364d;border-radius:16px;background:#141d2e;padding:19px;transition:border-color .15s,transform .15s}.card:hover,.card:focus-visible{border-color:#f6b64a;transform:translateY(-2px)}.ico{font-size:26px}.title{font-weight:750;margin:12px 0 8px}.badge{display:inline-block;font-size:11px;font-weight:750;letter-spacing:.6px;color:#f8c86d;background:#4a381f;border-radius:50px;padding:5px 9px}.desc{font-size:13px;margin-top:12px}.badge.online{background:#264336;color:#bbefd3}.card[aria-disabled="true"]{opacity:.8}.footer{margin-top:32px;font-size:13px}</style><link rel="stylesheet" href="./takeover-navigation.css"></head><body><main><a class="back" href="./index.html">← Zurück zur Liga</a><div class="eyebrow">TAKEOVER LEAGUE 2.0</div><h1>Die nächste Runde beginnt.</h1><p>Entdecke die Funktionen der Liga. Bereits freigeschaltete Bereiche kannst du direkt öffnen.</p><p id="featureStatus" role="status" aria-live="polite">Prüfe verfügbare Funktionen …</p><div class="grid" id="features"></div><p class="footer">Die bisherigen Liga-Funktionen bleiben weiterhin verfügbar.</p></main><script>
+'use strict';
+// The existing legacy feature names map to their tested V2 flags without
+// mutating flags or relying on authenticated sessions.
+const features=[
+ ['achievements','🏅','Achievements','Sammle Auszeichnungen in mehreren Stufen.','achievements','./boxer.html#achievementsV2'],
+ ['boxer_duels','🥊','Boxer-Duelle','Fordere andere Boxer heraus.','duels','./duels.html'],
+ ['coach_feedback','📝','Coach-Feedback','Erhalte persönliches Feedback.','coach_feedback','./boxer.html#boxerFeedbackSection'],
+ ['coach_goals','🎯','Coach-Ziele','Arbeite an deinen Trainingszielen.','coach_challenges','./challenges.html'],
+ ['hall_of_fame','🏆','Hall of Fame','Entdecke die Besten der Liga.','hall_of_fame',null],
+ ['league_challenges','⚡','Liga-Challenges','Stelle dich gemeinsamen Challenges.','league_challenges',null],
+ ['notifications','🔔','Benachrichtigungen','Bleibe über Fortschritte informiert.','notifications','./boxer.html#boxerNotificationSection'],
+ ['palmares','🥇','Palmarès','Deine sportlichen Erfolge im Überblick.','palmares',null],
+ ['performance_dashboard','📈','Performance-Dashboard','Analysiere deine Trainingsleistung.','performance_dashboard','./boxer.html#performance30Section'],
+ ['public_boxer_profiles','👤','Boxerprofile','Entdecke die Profile der Liga.','public_boxer_profiles','./index.html#ranking'],
+ ['seasons','📅','Saisons','Neue Wettkämpfe in jeder Saison.','seasons',null]
+];
+const API='https://iqarjivcrddcixrvqbfb.supabase.co';
+const KEY='sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R';
+const root=document.getElementById('features'),status=document.getElementById('featureStatus'),tiles=[];
+for(const [key,icon,title,desc,flag,href] of features){
+ const a=document.createElement('a');a.className='card';
+ a.href='./coming-soon.html?feature='+encodeURIComponent(key);
+ const ico=document.createElement('div');ico.className='ico';ico.textContent=icon;
+ const h=document.createElement('div');h.className='title';h.textContent=title;
+ const b=document.createElement('span');b.className='badge';b.textContent='PRÜFE STATUS';
+ const p=document.createElement('p');p.className='desc';p.textContent=desc;
+ a.append(ico,h,b,p);root.append(a);tiles.push({a,b,key,flag,href});
+}
+async function refreshFeatureDirectory(){
+ try{
+  const response=await fetch(API+'/rest/v1/league_feature_flags?select=feature_key,is_enabled',{
+   headers:{apikey:KEY},credentials:'omit',cache:'no-store'
+  });
+  if(!response.ok)throw Error('Feature-Status HTTP '+response.status);
+  const data=await response.json();
+  if(!Array.isArray(data))throw Error('Unbekanntes Antwortformat');
+  const enabled=new Set(data.filter(x=>x.is_enabled===true).map(x=>x.feature_key));
+  let count=0;
+  for(const {a,b,key,flag,href} of tiles){
+   const live=!!href&&enabled.has(flag);
+   a.href=live?href:'./coming-soon.html?feature='+encodeURIComponent(key);
+   a.removeAttribute('aria-disabled');
+   b.textContent=live?'LIVE':'COMING SOON';
+   b.classList.toggle('online',live);
+   if(live)count++;
+  }
+  status.textContent=count+' Funktionen sind freigeschaltet. Weitere folgen schrittweise.';
+ }catch(err){
+  for(const {a,b,key} of tiles){
+   a.href='./coming-soon.html?feature='+encodeURIComponent(key);
+   b.textContent='STATUS NICHT VERFÜGBAR';
+   b.classList.remove('online');
+  }
+  status.textContent='Der aktuelle Funktionsstatus ist momentan nicht abrufbar. Die übrigen Liga-Menüs bleiben verfügbar.';
+ }
+}
+refreshFeatureDirectory();
 </script><script src="./takeover-navigation.js" defer></script></body></html>
