@@ -12,7 +12,7 @@ function parseScripts(p){
  }
 }
 for(const p of ['boxer.html','coach.html','index.html','challenges.html','duels.html','boxer-compare.html'])parseScripts(p);
-for(const p of ['takeover-ux-scroll.js','index-my-position.js','boxer-profile.js','takeover-navigation.js']){
+for(const p of ['takeover-ux-scroll.js','takeover-quick-actions.js','index-my-position.js','boxer-profile.js','takeover-navigation.js']){
  assert.doesNotThrow(()=>new vm.Script(read(p)),p+' syntax');
 }
 const boxer=documentOf('boxer.html');
@@ -30,6 +30,14 @@ assert.match(read('index-my-position.js'),/auth\.getUser/);
 assert.match(read('boxer.html'),/client_request_id/);
 assert.match(read('supabase\/migrations\/20261018200000_training_submission_idempotency.sql'),/unique index/i);
 for(const p of ['boxer.html','boxer-profile.js','index.html'])assert.match(read(p),/Math\.floor\((?:\(level-1\)|n)\/10\)/,'Ten levels per rank in '+p);
+assert.match(read('boxer.html'),/function renderMyTasks\(/,'boxer task source');
+assert.match(read('boxer.html'),/schedulePrivateDraftSave\(/,'private cloud autosave source');
+assert.match(read('challenges.html'),/myAutomaticGoalProgress\(/,'authenticated automatic progress');
+assert.match(read('challenges.html'),/\.eq\('status','approved'\)/,'confirmed challenge training only');
+for(const p of ['boxer.html','coach.html','challenges.html','duels.html']){
+ assert.match(read(p),/takeover-quick-actions\.js/,'shared quick actions on '+p);
+}
+assert.match(read('takeover-quick-actions.js'),/showModal\(\)/,'accessible bottom-sheet dialog');
 const deployment=read('.github/workflows/takeover-pages-deploy.yml');
 assert.match(deployment,/rm -f[^\n]*league2-preview\.html/);
 assert.doesNotMatch(read('boxer-compare.html'),/service_role|sb_secret_/i);
