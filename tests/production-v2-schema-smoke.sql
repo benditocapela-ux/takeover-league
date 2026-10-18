@@ -37,7 +37,8 @@ CREATE TABLE public.training_submissions (
 CREATE TABLE public.league_feature_flags (
  feature_key text PRIMARY KEY CHECK (feature_key ~ '^[a-z][a-z0-9_]*$'),
  display_name text NOT NULL,
- is_enabled boolean NOT NULL DEFAULT false
+ is_enabled boolean NOT NULL DEFAULT false,
+ updated_at timestamptz NOT NULL DEFAULT now()
 );
 INSERT INTO public.profiles(id,role)
  VALUES ('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','boxer');
