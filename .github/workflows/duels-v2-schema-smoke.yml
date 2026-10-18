@@ -1,0 +1,312 @@
+name: Duel V2 isolated PostgreSQL schema smoke
+
+on:
+  push:
+    branches:
+      - develop/takeover-league-2-foundation
+    paths:
+      - 'supabase/preflight/TAKEOVER_LEAGUE_2_READ_ONLY_INVENTORY.sql'
+      - 'supabase/tests/DUELS_V2_SCHEMA_SMOKE_FIXTURE.sql'
+      - 'supabase/tests/DUELS_V2_PREFLIGHT_READ_ONLY.sql'
+      - 'supabase/tests/DUELS_V2_RPC_INVENTORY_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/DUELS_V2_SCHEMA_BEHAVIOR_SMOKE.sql'
+      - 'supabase/migrations/007_duels_v2_schema_review.sql'
+      - 'supabase/migrations/008_duels_v2_invitation_rpc_review.sql'
+      - 'supabase/migrations/009_duels_v2_settlement_review.sql'
+      - 'supabase/migrations/010_duels_v2_read_rpc_review.sql'
+      - 'supabase/migrations/011_coach_challenges_v2_schema_review.sql'
+      - 'supabase/migrations/012_coach_challenges_v2_enrollment_rpc_review.sql'
+      - 'supabase/migrations/013_coach_challenges_v2_management_rpc_review.sql'
+      - 'supabase/migrations/014_coach_challenges_v2_withdraw_rpc_review.sql'
+      - 'supabase/migrations/015_coach_challenges_v2_read_rpc_review.sql'
+      - 'supabase/migrations/016_coach_challenges_v2_edit_draft_rpc_review.sql'
+      - 'supabase/migrations/017_coach_challenges_v2_goal_definition_rpc_review.sql'
+      - 'supabase/migrations/018_coach_challenges_v2_progress_rpc_review.sql'
+      - 'supabase/migrations/019_coach_challenges_v2_manual_review_rpc_review.sql'
+      - 'supabase/migrations/020_coach_challenges_v2_review_read_rpc_review.sql'
+      - 'supabase/migrations/02[1-9]_coach_challenges_v2_*.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_*'
+      - 'supabase/tests/COACH_CHALLENGES_V2_SCHEMA_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_ENROLLMENT_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_MANAGEMENT_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_WITHDRAW_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_READ_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_EDIT_DRAFT_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_GOAL_DEFINITION_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_PROGRESS_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_MANUAL_REVIEW_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_REVIEW_STATUS_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_AUDIT_READ_ONLY.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_INTEGRITY_ASSERTIONS_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_INVALID_LEDGER_FIXTURE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_API_PERMISSIONS_SMOKE.sql'
+      - 'supabase/tests/DUELS_V2_READ_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/DUELS_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/DUELS_V2_BATCH_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/DUELS_V2_CONCURRENT_SETTLEMENT_SETUP.sql'
+      - 'supabase/tests/DUELS_V2_INVITATION_BEHAVIOR_SMOKE.sql'
+      - '.github/workflows/duels-v2-schema-smoke.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'supabase/preflight/TAKEOVER_LEAGUE_2_READ_ONLY_INVENTORY.sql'
+      - 'supabase/tests/DUELS_V2_*'
+      - 'supabase/migrations/00[7-9]_duels_v2_*'
+      - 'supabase/migrations/010_duels_v2_read_rpc_review.sql'
+      - '.github/workflows/duels-v2-schema-smoke.yml'
+      - 'supabase/migrations/011_coach_challenges_v2_schema_review.sql'
+      - 'supabase/migrations/012_coach_challenges_v2_enrollment_rpc_review.sql'
+      - 'supabase/migrations/013_coach_challenges_v2_management_rpc_review.sql'
+      - 'supabase/migrations/014_coach_challenges_v2_withdraw_rpc_review.sql'
+      - 'supabase/migrations/015_coach_challenges_v2_read_rpc_review.sql'
+      - 'supabase/migrations/016_coach_challenges_v2_edit_draft_rpc_review.sql'
+      - 'supabase/migrations/017_coach_challenges_v2_goal_definition_rpc_review.sql'
+      - 'supabase/migrations/018_coach_challenges_v2_progress_rpc_review.sql'
+      - 'supabase/migrations/019_coach_challenges_v2_manual_review_rpc_review.sql'
+      - 'supabase/migrations/020_coach_challenges_v2_review_read_rpc_review.sql'
+      - 'supabase/migrations/02[1-9]_coach_challenges_v2_*.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_*'
+      - 'supabase/tests/COACH_CHALLENGES_V2_SCHEMA_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_ENROLLMENT_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_MANAGEMENT_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_WITHDRAW_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_READ_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_EDIT_DRAFT_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_GOAL_DEFINITION_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_PROGRESS_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_MANUAL_REVIEW_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_REVIEW_STATUS_BEHAVIOR_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_AUDIT_READ_ONLY.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_INTEGRITY_ASSERTIONS_SMOKE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_INVALID_LEDGER_FIXTURE.sql'
+      - 'supabase/tests/COACH_CHALLENGES_V2_API_PERMISSIONS_SMOKE.sql'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  schema-smoke:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: duel_test
+          POSTGRES_PASSWORD: synthetic_only
+          POSTGRES_DB: duel_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U duel_test -d duel_test"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      PGHOST: localhost
+      PGPORT: 5432
+      PGUSER: duel_test
+      PGPASSWORD: synthetic_only
+      PGDATABASE: duel_test
+      PGOPTIONS: -csearch_path=public
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create synthetic base schema
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_SCHEMA_SMOKE_FIXTURE.sql
+      - name: Prepare synthetic Supabase migration tracking for read-only inventory
+        run: |
+          psql -X -v ON_ERROR_STOP=1 <<'SQL'
+          CREATE SCHEMA supabase_migrations;
+          CREATE TABLE supabase_migrations.schema_migrations(version text PRIMARY KEY);
+          INSERT INTO supabase_migrations.schema_migrations(version) VALUES ('synthetic_only');
+          SQL
+      - name: Execute production inventory against disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/preflight/TAKEOVER_LEAGUE_2_READ_ONLY_INVENTORY.sql
+      - name: Verify PostgreSQL read-only transaction rejects writes
+        shell: bash
+        run: |
+          set -euo pipefail
+          if psql -X -v ON_ERROR_STOP=1 <<'SQL' > /tmp/readonly-denied.log 2>&1
+          BEGIN TRANSACTION READ ONLY;
+          INSERT INTO supabase_migrations.schema_migrations(version) VALUES ('must_fail');
+          COMMIT;
+          SQL
+          then
+            echo 'READ ONLY transaction accepted an INSERT' >&2
+            exit 1
+          fi
+          grep -q 'read-only transaction' /tmp/readonly-denied.log
+          test "$(psql -X -v ON_ERROR_STOP=1 -Atc "SELECT count(*) FROM supabase_migrations.schema_migrations WHERE version='must_fail'")" = "0"
+      - name: Execute read-only schema and training RPC preflight on synthetic database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_PREFLIGHT_READ_ONLY.sql
+      - name: Verify public-only training RPC inventory on synthetic database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_RPC_INVENTORY_BEHAVIOR_SMOKE.sql
+      - name: Apply disabled coach challenge schema in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/011_coach_challenges_v2_schema_review.sql
+      - name: Exercise coach challenge schema invariants
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_SCHEMA_BEHAVIOR_SMOKE.sql
+      - name: Apply coach challenge enrollment RPCs in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/012_coach_challenges_v2_enrollment_rpc_review.sql
+      - name: Exercise coach challenge enrollment permissions
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_ENROLLMENT_BEHAVIOR_SMOKE.sql
+      - name: Apply coach challenge management RPC in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/013_coach_challenges_v2_management_rpc_review.sql
+      - name: Exercise coach challenge management authorization
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_MANAGEMENT_BEHAVIOR_SMOKE.sql
+      - name: Apply coach challenge withdrawal RPC in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/014_coach_challenges_v2_withdraw_rpc_review.sql
+      - name: Exercise boxer withdrawal security and state transitions
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_WITHDRAW_BEHAVIOR_SMOKE.sql
+      - name: Apply coach challenge read RPC in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/015_coach_challenges_v2_read_rpc_review.sql
+      - name: Exercise coach challenge read authorization
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_READ_BEHAVIOR_SMOKE.sql
+      - name: Apply challenge draft edit RPC
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/016_coach_challenges_v2_edit_draft_rpc_review.sql
+      - name: Exercise challenge draft editing and ownership
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_EDIT_DRAFT_BEHAVIOR_SMOKE.sql
+      - name: Apply coach challenge goal definition RPC in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/017_coach_challenges_v2_goal_definition_rpc_review.sql
+      - name: Exercise manual and automatic goal authoring security
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_GOAL_DEFINITION_BEHAVIOR_SMOKE.sql
+      - name: Apply read-only automatic challenge progress RPC in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/018_coach_challenges_v2_progress_rpc_review.sql
+      - name: Exercise automatic challenge progress against approved training
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_PROGRESS_BEHAVIOR_SMOKE.sql
+      - name: Apply private manual review RPC in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/019_coach_challenges_v2_manual_review_rpc_review.sql
+      - name: Exercise manual coach review ownership and audit
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_MANUAL_REVIEW_BEHAVIOR_SMOKE.sql
+      - name: Apply private manual review status RPC
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/020_coach_challenges_v2_review_read_rpc_review.sql
+      - name: Exercise private manual review status visibility
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_REVIEW_STATUS_BEHAVIOR_SMOKE.sql
+      - name: Apply challenge picker, activation, review transition and reward RPCs
+        run: |
+          for n in 021 022 023 025 026; do
+            for file in supabase/migrations/${n}_coach_challenges_v2_*.sql; do
+              psql -X -v ON_ERROR_STOP=1 -f "$file"
+            done
+          done
+      - name: Exercise atomic goal and reward save
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_ATOMIC_GOAL_REWARD_BEHAVIOR_SMOKE.sql
+      - name: Exercise activation validation and one-way transition
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_ACTIVATION_BEHAVIOR_SMOKE.sql
+      - name: Audit coach challenge integrity in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_AUDIT_READ_ONLY.sql
+      - name: Assert coach challenge integrity with failure-on-violation checks
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_INTEGRITY_ASSERTIONS_SMOKE.sql
+      - name: Prove challenge integrity audit rejects a withdrawn boxer EXP ledger
+        shell: bash
+        run: |
+          set -euo pipefail
+          if psql -X -v ON_ERROR_STOP=1 \
+            -f supabase/tests/COACH_CHALLENGES_V2_INVALID_LEDGER_FIXTURE.sql \
+            -f supabase/tests/COACH_CHALLENGES_V2_INTEGRITY_ASSERTIONS_SMOKE.sql \
+            > /tmp/challenge-invalid-ledger.log 2>&1; then
+            echo 'Integrity assertions accepted invalid ledger' >&2
+            exit 1
+          fi
+          grep -q 'Unenrolled boxer has challenge EXP ledger' /tmp/challenge-invalid-ledger.log
+      - name: Apply duel schema migration 007 in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/007_duels_v2_schema_review.sql
+      - name: Verify schema constraints, permissions and disabled flag
+        run: |
+          psql -X -v ON_ERROR_STOP=1 <<'SQL'
+          DO $smoke$
+          BEGIN
+            IF NOT EXISTS (SELECT 1 FROM public.league_feature_flags
+                           WHERE feature_key='duels' AND is_enabled=false) THEN
+              RAISE EXCEPTION 'Duel feature flag is not disabled by default';
+            END IF;
+            IF to_regclass('public.league_duels') IS NULL
+               OR to_regclass('public.league_duel_exp_ledger') IS NULL
+               OR to_regclass('public.league_duel_events') IS NULL THEN
+              RAISE EXCEPTION 'Required duel tables missing';
+            END IF;
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace
+              WHERE n.nspname='public' AND c.relname='league_duels'
+                AND c.relrowsecurity
+            ) THEN
+              RAISE EXCEPTION 'Duel RLS is not enabled';
+            END IF;
+            IF NOT EXISTS (
+              SELECT 1 FROM pg_indexes
+              WHERE schemaname='public' AND indexname='league_duels_one_active_per_pair'
+            ) THEN
+              RAISE EXCEPTION 'Missing active-pair unique index';
+            END IF;
+          END $smoke$;
+          SQL
+
+      - name: Exercise actual PostgreSQL duel constraints
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_SCHEMA_BEHAVIOR_SMOKE.sql
+
+      - name: Apply duel invitation RPC migration 008 in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/008_duels_v2_invitation_rpc_review.sql
+      - name: Exercise invitation and acceptance RPCs in PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_INVITATION_BEHAVIOR_SMOKE.sql
+
+      - name: Apply duel settlement migration 009 in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/009_duels_v2_settlement_review.sql
+      - name: Apply review-only manual challenge settlement in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/027_coach_challenges_v2_manual_settlement_review.sql
+      - name: Apply owner-only challenge goal detail reader
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/028_coach_challenges_v2_goal_details_review.sql
+      - name: Verify saved challenge goal privacy and draft-only access
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_GOAL_DETAILS_BEHAVIOR_SMOKE.sql
+      - name: Exercise challenge EXP payout once and reject duplicate settlement
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql
+      - name: Verify challenge RPC grants and API table isolation
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/COACH_CHALLENGES_V2_API_PERMISSIONS_SMOKE.sql
+      - name: Exercise settlement and payout idempotency in PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_SETTLEMENT_BEHAVIOR_SMOKE.sql
+
+      - name: Exercise due duel batch settlement in PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_BATCH_BEHAVIOR_SMOKE.sql
+
+      - name: Apply duel read RPC migration 010 in disposable database
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/010_duels_v2_read_rpc_review.sql
+
+      - name: Exercise duel read visibility in PostgreSQL
+        run: psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_READ_BEHAVIOR_SMOKE.sql
+
+      - name: Exercise simultaneous duel settlement on isolated PostgreSQL
+        shell: bash
+        run: |
+          set -euo pipefail
+          psql -X -v ON_ERROR_STOP=1 -f supabase/tests/DUELS_V2_CONCURRENT_SETTLEMENT_SETUP.sql
+          psql -X -v ON_ERROR_STOP=1 <<'SQL'
+          CREATE FUNCTION public.test_slow_duel_reward() RETURNS trigger
+          LANGUAGE plpgsql AS $slow$
+          BEGIN
+            IF NEW.category='duel_exp' THEN PERFORM pg_sleep(1); END IF;
+            RETURN NEW;
+          END $slow$;
+          CREATE TRIGGER test_slow_duel_reward BEFORE INSERT ON public.point_transactions
+          FOR EACH ROW EXECUTE FUNCTION public.test_slow_duel_reward();
+          SQL
+          sql="SELECT set_config('test.auth_uid','10000000-0000-0000-0000-0000000000c3',false); SELECT public.duel_v2_reconcile('40000000-0000-0000-0000-000000000001');"
+          psql -X -v ON_ERROR_STOP=1 -Atc "$sql" > /tmp/duel-race-1.log 2>&1 &
+          first=$!
+          psql -X -v ON_ERROR_STOP=1 -Atc "$sql" > /tmp/duel-race-2.log 2>&1 &
+          second=$!
+          wait "$first"
+          wait "$second"
+          grep -qx 'settled' /tmp/duel-race-1.log
+          grep -qx 'settled' /tmp/duel-race-2.log
+          psql -X -v ON_ERROR_STOP=1 <<'SQL'
+          DO $race$
+          BEGIN
+            IF (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>2
+               OR (SELECT count(*) FROM public.league_duel_exp_ledger
+                   WHERE duel_id='40000000-0000-0000-0000-000000000001')<>2
+               OR (SELECT count(*) FROM public.league_duel_events
+                   WHERE duel_id='40000000-0000-0000-0000-000000000001' AND event_type='settled')<>1
+            THEN RAISE EXCEPTION 'Concurrent reconciliation created duplicate payout or event'; END IF;
+          END $race$;
+          SQL
+

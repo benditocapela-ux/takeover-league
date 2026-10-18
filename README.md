@@ -16,3 +16,7 @@ Mobile öffentliche Rangliste. Nur Daten aus dem **öffentlichen** Google-Sheets
 Die Website fragt die drei öffentlichen Sheets-Tabs über den Google-Visualization-Endpunkt ab. Falls die Daten nicht geladen werden, kann es nötig sein, die **öffentliche Ranglisten-Arbeitsmappe** unter **Datei → Freigeben → Im Web veröffentlichen** zu veröffentlichen. **Niemals die private Trainerdatei veröffentlichen.** Bei Veröffentlichung im Web prüfen, dass keine privaten Daten in der öffentlichen Arbeitsmappe stehen.
 
 Google-Sheets-Zugriff und GitHub-Pages-Hosting müssen nach Upload auf dem Handy getestet werden; eine erfolgreiche Live-Anbindung ist vorab nicht bestätigt.
+
+## Release readiness
+
+Before production SQL, deployment, merging, or enabling any V2 feature, review [Takeover League 2.0 release readiness](docs/TAKEOVER_LEAGUE_2_RELEASE_READINESS.md). CI uses disposable test databases; green tests do not authorize production changes.

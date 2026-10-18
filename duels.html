@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Duelle · Takeover League</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,system-ui,Arial,sans-serif}
+*{box-sizing:border-box}body{margin:0;padding:18px;background:#0b1422;color:#f5f5f6}
+main{max-width:800px;margin:auto}a{color:#dfbd77}header,.line{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-weight:850;letter-spacing:2px;color:#dfbd77}
+.card{background:#142238;border:1px solid #314058;border-radius:16px;padding:20px;margin:18px 0}
+.muted{color:#b6c2d0}.hidden{display:none}.error{color:#ffb0b0}
+label{display:block;margin:14px 0 6px;font-weight:700}select,button{font:inherit;padding:12px;border-radius:10px}
+select{width:100%;background:#0c1727;color:#fff;border:1px solid #465b74}
+button{border:0;background:#dfbd77;color:#101827;font-weight:800;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#263850;color:#fff}
+.duel{border-top:1px solid #34465f;padding:16px 0}.duel strong{color:#dfbd77}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+</style></head>
+<body><main><header><span class="brand">TAKEOVER LEAGUE</span><nav><a href="./index.html">Liga</a> · <a href="./boxer.html">Training</a></nav></header>
+<h1>🥊 Duelle <small class="muted">2.0</small></h1>
+<p id="status" role="status" class="muted">Anmeldung wird geprüft …</p>
+<div id="app" class="hidden">
+<section class="card"><h2>Boxer herausfordern</h2>
+<p class="muted">Der andere Boxer muss innerhalb von 48 Stunden annehmen. Ein Duell dauert 7 oder 14 Tage.</p>
+<form id="inviteForm"><div id="challengerField" class="hidden"><label for="challenger">Herausforderer</label><select id="challenger"><option value="">Boxer wählen</option></select></div><label for="opponent">Gegner</label><select id="opponent" required><option value="">Boxer wählen</option></select>
+<label for="duration">Dauer</label><select id="duration"><option value="7">7 Tage</option><option value="14">14 Tage</option></select>
+<p><button id="inviteButton" type="submit">Duell anfragen</button></p></form></section>
+<section class="card"><div class="line"><h2>Meine Duelle</h2><div class="actions"><button id="reconcileDue" class="secondary hidden" type="button">Abgelaufene Duelle abrechnen</button><button id="recheckSettled" class="secondary hidden" type="button">Abgerechnete Duelle nachprüfen</button><button id="refresh" class="secondary" type="button">Aktualisieren</button></div></div>
+<div id="duelList" aria-live="polite">Wird geladen …</div></section>
+</div></main>
+<script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
+const $=id=>document.getElementById(id);
+let me=null,boxers=[];
+let refreshSequence=0;
+const setStatus=(message,isError=false)=>{$('status').textContent=message;$('status').className=isError?'error':'muted'};
+const date=v=>v?new Date(v).toLocaleString('de-CH'):'–';
+const statuses={pending:'Anfrage offen',active:'Aktiv',awaiting_reviews:'Wartet auf Trainingsfreigaben',settled:'Abgeschlossen',declined:'Abgelehnt',expired:'Abgelaufen',cancelled:'Abgebrochen'};
+async function refresh(){
+ const sequence=++refreshSequence;
+ const r=await db.rpc('duel_v2_list_mine');
+ if(sequence!==refreshSequence)return false;
+ if(r.error){$('duelList').textContent='Duelle konnten nicht geladen werden: '+r.error.message;throw r.error}
+ $('duelList').replaceChildren();
+ if(!r.data?.length){$('duelList').textContent='Noch keine Duelle vorhanden.';return}
+ for(const d of r.data){
+  const item=document.createElement('article');item.className='duel';
+  const heading=document.createElement('strong');heading.textContent=d.challenger_name+' vs. '+d.opponent_name;
+  const state=document.createElement('p');state.textContent=(statuses[d.status]||d.status)+' · '+d.duration_days+' Tage';
+  const info=document.createElement('p');info.className='muted';
+  info.textContent=d.status==='pending'?'Annehmen bis: '+date(d.expires_at):
+   'Beginn: '+date(d.accepted_at)+' · Ende: '+date(d.ends_at);
+  item.append(heading,state,info);
+  if(d.status==='pending'&&new Date(d.expires_at)<=new Date()){
+   const expired=document.createElement('p');expired.className='muted';expired.textContent='Einladung abgelaufen – keine Annahme mehr möglich.';item.append(expired);
+  }
+  if(d.status==='settled'){
+   const score=document.createElement('p');score.textContent='Trainingspunkte: '+d.challenger_score+' : '+d.opponent_score;
+   item.append(score);
+  }
+  if(['active','awaiting_reviews','settled'].includes(d.status) && me.role!=='boxer' && d.ends_at && new Date(d.ends_at)<=new Date()) {
+   const actions=document.createElement('div');actions.className='actions';
+   const reconcile=document.createElement('button');reconcile.type='button';reconcile.className='secondary';
+   reconcile.textContent='Ergebnis prüfen / aktualisieren';
+   reconcile.addEventListener('click',async()=>{
+    reconcile.disabled=true;
+    try{
+     const result=await db.rpc('duel_v2_reconcile',{p_duel_id:d.id});
+     if(result.error)setStatus('Auswertung fehlgeschlagen: '+result.error.message,true);
+     else setStatus(result.data==='awaiting_reviews'?'Wartet auf offene Trainingsfreigaben.':result.data==='pending_correction'?'Bereits ausbezahlt; offene Trainingsfreigaben verhindern die Nachkorrektur.':'Duellauswertung aktualisiert.');
+     await refresh();
+    }catch(err){setStatus('Auswertung fehlgeschlagen: '+err.message,true)}
+    finally{reconcile.disabled=false;}
+   });actions.append(reconcile);item.append(actions);
+  }
+  if(d.status==='pending'&&d.opponent_id===me.id&&new Date(d.expires_at)>new Date()){
+   const actions=document.createElement('div');actions.className='actions';
+   for(const [accept,label] of [[true,'Annehmen'],[false,'Ablehnen']]){
+    const button=document.createElement('button');button.type='button';button.textContent=label;
+    if(!accept)button.className='secondary';
+    button.addEventListener('click',async()=>{
+     for(const control of actions.querySelectorAll('button'))control.disabled=true;
+     try{
+      const response=await db.rpc('duel_v2_respond',{p_duel_id:d.id,p_accept:accept});
+      if(response.error)setStatus(response.error.message,true);
+      else setStatus(response.data==='expired'?'Einladung ist inzwischen abgelaufen.':accept?'Duell angenommen.':'Anfrage abgelehnt.');
+      await refresh();
+     }catch(err){setStatus('Antwort fehlgeschlagen: '+err.message,true)}
+     finally{for(const control of actions.querySelectorAll('button'))control.disabled=false;}
+    });actions.append(button);
+   }item.append(actions);
+  }
+  $('duelList').append(item);
+ }
+}
+async function init(){
+ const {data:{user},error}=await db.auth.getUser();
+ if(error||!user){location.replace('./login.html?next=duels.html');return}
+ const p=await db.from('profiles').select('id,display_name,role,is_active').eq('auth_user_id',user.id).maybeSingle();
+ if(p.error||!p.data?.is_active||!['boxer','admin','coach'].includes(p.data.role)){
+  setStatus('Du benötigst ein aktives Liga-Konto.',true);return
+ }
+ me=p.data;
+ const flag=await db.from('league_feature_flags').select('is_enabled').eq('feature_key','duels').maybeSingle();
+ if(flag.error||flag.data?.is_enabled!==true){setStatus('Duelle sind noch nicht freigeschaltet.');return}
+ const r=await db.rpc('duel_v2_eligible_boxers');
+ if(r.error){setStatus('Duell-Funktion ist noch nicht verfügbar: '+r.error.message,true);return}
+ boxers=r.data||[];
+ const select=$('opponent'),challengerSelect=$('challenger');
+ if(me.role!=='boxer'){$('challengerField').classList.remove('hidden');$('reconcileDue').classList.remove('hidden');$('recheckSettled').classList.remove('hidden')}
+ for(const b of boxers.filter(b=>b.id!==me.id)){
+  const option=document.createElement('option');option.value=b.id;option.textContent=b.display_name;select.append(option);
+ }
+ if(me.role!=='boxer')for(const b of boxers){const option=document.createElement('option');option.value=b.id;option.textContent=b.display_name;challengerSelect.append(option);
+ 
+ }
+ // Coach-selected challenger must not appear as their own opponent.
+ const syncOpponentOptions=()=>{
+  const selectedChallenger=me.role==='boxer'?me.id:challengerSelect.value;
+  const previous=select.value;
+  select.replaceChildren(new Option('Boxer wählen',''));
+  for(const b of boxers){
+   if(b.id===selectedChallenger)continue;
+   select.add(new Option(b.display_name,b.id));
+  }
+  if(previous!==selectedChallenger&&boxers.some(b=>b.id===previous))select.value=previous;
+ };
+ challengerSelect.addEventListener('change',syncOpponentOptions);
+ syncOpponentOptions();
+ $('app').classList.remove('hidden');setStatus('Duelle werden geladen …');try{const updated=await refresh();if(updated!==false)setStatus('Duellübersicht')}catch(err){setStatus('Duellübersicht konnte nicht geladen werden: '+err.message,true)}
+}
+$('inviteForm').addEventListener('submit',async e=>{
+ e.preventDefault();
+ const opponent=$('opponent').value;if(!opponent)return;
+ const challenger=me.role==='boxer'?me.id:$('challenger').value;
+ if(!challenger||challenger===opponent){setStatus('Wähle zwei unterschiedliche Boxer.',true);return}
+ $('inviteButton').disabled=true;
+ try{
+  const r=await db.rpc('duel_v2_invite',{p_challenger:challenger,p_opponent:opponent,p_duration_days:Number($('duration').value)});
+  if(r.error)throw r.error;
+  setStatus('Duellanfrage versendet.');await refresh();
+ }catch(err){setStatus('Duellanfrage fehlgeschlagen: '+err.message,true)}
+ finally{$('inviteButton').disabled=false}
+});
+$('refresh').addEventListener('click',async()=>{
+ const button=$('refresh');button.disabled=true;
+ try{const updated=await refresh();if(updated!==false)setStatus('Duellübersicht aktualisiert.')}catch(err){setStatus('Aktualisierung fehlgeschlagen: '+err.message,true)}
+ finally{button.disabled=false}
+});
+// Stable cursor prevents rechecking the same 100 duels on each batch.
+const batchCursors={unfinished:null,all:null};
+let batchRunning=false;
+async function reconcileBatches(includeSettled){
+ const mode=includeSettled?'all':'unfinished';
+ let cursor=batchCursors[mode],checked=0,settled=0,waiting=0,corrections=0;
+ for(let page=0;page<50;page++){
+  const result=await db.rpc('duel_v2_reconcile_due',{p_include_settled:includeSettled,p_after:cursor});
+  if(result.error)throw result.error;
+  const rows=result.data||[];
+  checked+=rows.length;
+  settled+=rows.filter(r=>r.outcome==='settled').length;
+  waiting+=rows.filter(r=>r.outcome==='awaiting_reviews').length;
+  corrections+=rows.filter(r=>r.outcome==='pending_correction').length;
+  if(rows.length<100){batchCursors[mode]=null;return {checked,settled,waiting,corrections,more:false}}
+  cursor=rows[rows.length-1].duel_id;
+  batchCursors[mode]=cursor;
+ }
+ return {checked,settled,waiting,corrections,more:true};
+}
+$('reconcileDue').addEventListener('click',async()=>{
+ if(batchRunning)return;
+ batchRunning=true;
+ const button=$('reconcileDue');button.disabled=true;$('recheckSettled').disabled=true;
+ try{
+  const r=await reconcileBatches(false);
+  setStatus(r.settled+' Duelle abgerechnet, '+(r.waiting+r.corrections)+' warten auf Freigaben.'+(r.more?' Weitere Duelle vorhanden; erneut ausführen.':''));
+  await refresh();
+ }catch(err){setStatus('Sammelauswertung fehlgeschlagen: '+err.message,true)}
+ finally{button.disabled=false;$('recheckSettled').disabled=false;batchRunning=false}
+});
+$('recheckSettled').addEventListener('click',async()=>{
+ if(batchRunning)return;
+ batchRunning=true;
+ const button=$('recheckSettled');button.disabled=true;$('reconcileDue').disabled=true;
+ try{
+  const r=await reconcileBatches(true);
+  setStatus(r.checked+' Duelle geprüft, '+r.corrections+' Nachkorrekturen warten auf Freigaben.'+(r.more?' Weitere Duelle vorhanden; erneut ausführen.':''));
+  await refresh();
+ }catch(err){setStatus('Nachprüfung fehlgeschlagen: '+err.message,true)}
+ finally{button.disabled=false;$('reconcileDue').disabled=false;batchRunning=false}
+});
+init();
+</script></body></html>

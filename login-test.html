@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>TEST ONLY · Takeover League Login</title>
+<style>body{font-family:system-ui;background:#0b1422;color:white;max-width:440px;margin:9vh auto;padding:24px}input,button{font:inherit;padding:12px;width:100%;box-sizing:border-box;margin:9px 0}button{cursor:pointer;background:#dfbd77;border:0}a{color:#dfbd77}#msg{min-height:2em}</style></head>
+<body><h1>TEST ONLY · Anmeldung</h1><p>Diese Seite verwendet ausschliesslich die isolierte Supabase-Testdatenbank. Keine Produktionskonten verwenden.</p>
+<form id="login"><label>E-Mail<input id="email" type="email" autocomplete="username" required></label><label>Passwort<input id="password" type="password" autocomplete="current-password" required></label><button id="submit">Anmelden</button></form><p id="msg" role="status"></p>
+<script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const db=createClient('https://cfgdvcccsqwfjajuizsr.supabase.co','sb_publishable_6xm0QLD1q8JEeVvJqGOCvQ_p-uwKG8N');
+if(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'){document.body.textContent='TEST ONLY: Anmeldung nur über HTTPS oder localhost.';throw Error('Insecure test login origin')}
+const msg=document.getElementById('msg'),button=document.getElementById('submit');
+const {data:{user}}=await db.auth.getUser();
+if(user)location.replace('./challenges-test.html');
+document.getElementById('login').addEventListener('submit',async event=>{
+ event.preventDefault();button.disabled=true;msg.textContent='Anmeldung wird geprüft …';
+ try{
+  const {error}=await db.auth.signInWithPassword({email:document.getElementById('email').value.trim(),password:document.getElementById('password').value});
+  if(error){msg.textContent='Anmeldung fehlgeschlagen: '+error.message;return;}
+  document.getElementById('password').value='';
+  location.replace('./challenges-test.html');
+ }finally{button.disabled=false;}
+});
+</script></body></html>

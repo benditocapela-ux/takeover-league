@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>TEST ONLY · Coach Challenges · Takeover League</title>
+<style>
+:root{color-scheme:dark;font-family:Inter,system-ui,Arial,sans-serif}*{box-sizing:border-box}
+body{margin:0;padding:18px;background:#0b1422;color:#f5f5f6}main{max-width:820px;margin:auto}
+a,.brand{color:#dfbd77}.brand{font-weight:850;letter-spacing:2px}
+header,.line,.actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.card{background:#142238;border:1px solid #314058;border-radius:16px;padding:20px;margin:18px 0}
+.muted{color:#b6c2d0}.hidden{display:none}.error{color:#ffb0b0}
+label{display:block;margin:12px 0 5px;font-weight:700}
+input,textarea,select,button{font:inherit;padding:11px;border-radius:10px}
+input,textarea,select{width:100%;background:#0c1727;color:#fff;border:1px solid #465b74}
+button{border:0;background:#dfbd77;color:#101827;font-weight:800;cursor:pointer}
+button:disabled{opacity:.5;cursor:not-allowed}.secondary{background:#263850;color:#fff}
+.challenge{border-top:1px solid #34465f;padding:16px 0}.challenge strong{color:#dfbd77}
+.actions{justify-content:flex-start;margin-top:10px}
+</style></head><body data-environment="test"><main>
+<header><span class="brand">TAKEOVER LEAGUE · TEST ONLY</span><nav><a href="./login-test.html">Test-Login</a></nav></header>
+<h1>🏆 Coach Challenges <small class="muted">2.0 · Testdatenbank</small></h1><p class="muted">Isolierte Testumgebung – keine echten Liga-Daten oder produktiven Konten verwenden.</p>
+<p id="status" class="muted" role="status">Anmeldung wird geprüft …</p>
+<div id="app" class="hidden">
+<section id="coachPanel" class="card hidden"><h2 id="formHeading">Challenge-Entwurf erstellen</h2>
+<p class="muted">Zuerst Challenge-Entwurf erstellen, dann ein individuelles Ziel und 25–200 EXP festlegen. Danach die Anmeldung öffnen und die Challenge starten. Nach Ablauf bewertet der Trainer alle Teilnehmer und rechnet die EXP einmalig ab. Automatische Abrechnung bleibt deaktiviert.</p>
+<form id="createForm">
+<label for="title">Titel</label><input id="title" maxlength="120" minlength="3" required>
+<label for="description">Beschreibung</label><textarea id="description" rows="3"></textarea>
+<label for="kind">Art</label><select id="kind"><option value="individual">Individuell</option><option value="competition">Wettbewerb</option><option value="coach_goal">Trainerziel</option></select>
+<label for="duration">Dauer</label><select id="duration"><option value="7">7 Tage</option><option value="14">14 Tage</option><option value="30">30 Tage</option></select>
+<p class="actions"><button id="createButton" type="submit">Entwurf speichern</button><button id="cancelEdit" class="secondary hidden" type="button">Bearbeitung abbrechen</button></p></form></section>
+<section id="goalPanel" class="card hidden"><h2>Individuelles Challenge-Ziel</h2><form id="goalForm">
+<p id="goalChallengeName" class="muted"></p>
+<label for="goalText">Zielbeschreibung</label><textarea id="goalText" minlength="5" maxlength="1000" required></textarea>
+<label for="goalMode">Kontrolle</label><select id="goalMode"><option value="manual">Manuell durch Trainer</option><option value="automatic" disabled>Automatisch (in Vorbereitung)</option></select>
+<div id="goalTargetGroup" class="hidden"><label for="goalMetric">Messgrösse</label><select id="goalMetric"><option value="jogging_km">Bestätigte Jogging-Kilometer</option><option value="technique_minutes">Bestätigte Technik-Minuten</option></select><label for="goalTarget">Zielwert</label><input id="goalTarget" type="number" min="0.01" max="1000000" step="any"></div>
+<label for="goalReward">EXP bei erfolgreichem Abschluss</label><select id="goalReward"><option value="25">25 EXP</option><option value="50">50 EXP</option><option value="100">100 EXP</option><option value="150">150 EXP</option><option value="200">200 EXP</option></select><p class="muted">Die Belohnung wird im Entwurf gespeichert. Es werden noch keine EXP ausgezahlt.</p>
+<p class="actions"><button id="saveGoal" type="submit">Ziel speichern</button><button id="cancelGoal" type="button" class="secondary">Abbrechen</button></p>
+</form></section>
+<section id="reviewPanel" class="card hidden"><h2>Manuelle Zielprüfung</h2><p id="reviewChallengeName" class="muted"></p><form id="reviewForm"><label for="reviewBoxer">Angemeldeten Boxer auswählen</label><select id="reviewBoxer" required><option value="">Bitte Boxer auswählen</option></select><p id="reviewParticipantsStatus" class="muted" role="status"></p><label for="reviewDecision">Entscheidung</label><select id="reviewDecision"><option value="true">Ziel erreicht</option><option value="false">Ziel nicht erreicht</option></select><label for="reviewReason">Interne Begründung (mindestens 5 Zeichen)</label><textarea id="reviewReason" minlength="5" maxlength="1000" required></textarea><p class="muted">Nur nach Ablauf einer manuellen Challenge im Status „Wartet auf Freigaben“. Die Entscheidung ist einmalig und zahlt keine EXP aus.</p><div class="actions"><button id="saveReview" type="submit">Entscheidung speichern</button><button id="cancelReview" type="button" class="secondary">Abbrechen</button></div></form></section>
+<section class="card"><div class="line"><h2>Challenges</h2><button id="refresh" class="secondary" type="button">Aktualisieren</button></div>
+<label for="challengeSearch">Challenge suchen</label><input id="challengeSearch" type="search" placeholder="Titel oder Beschreibung" autocomplete="off">
+<div class="line"><label for="statusFilter">Status <select id="statusFilter"><option value="all">Alle</option><option value="draft">Entwurf</option><option value="open">Anmeldung offen</option><option value="active">Aktiv</option><option value="awaiting_reviews">Wartet auf Freigaben</option><option value="settled">Abgeschlossen</option><option value="cancelled">Abgesagt</option></select></label><label for="kindFilter">Art <select id="kindFilter"><option value="all">Alle</option><option value="individual">Individuell</option><option value="competition">Wettbewerb</option><option value="coach_goal">Trainerziel</option></select></label></div>
+<div class="line"><p id="resultCount" class="muted" aria-live="polite"></p><button id="clearFilters" class="secondary" type="button">Filter zurücksetzen</button></div>
+<div id="challengeList" aria-live="polite">Wird geladen …</div></section>
+</div></main>
+<script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const db=createClient('https://cfgdvcccsqwfjajuizsr.supabase.co','sb_publishable_6xm0QLD1q8JEeVvJqGOCvQ_p-uwKG8N');
+if(location.protocol!=='https:'&&location.hostname!=='localhost'&&location.hostname!=='127.0.0.1'){document.body.textContent='TEST ONLY: Diese Vorschau benötigt HTTPS oder localhost.';throw Error('Insecure test preview origin')}
+const $=id=>document.getElementById(id);
+let me=null,sequence=0,editingId=null,actionBusy=false,formBusy=false,refreshBusy=false,goalEditingId=null,reviewChallengeId=null,allChallenges=[];
+const labels={draft:'Entwurf',open:'Anmeldung offen',active:'Aktiv',awaiting_reviews:'Wartet auf Freigaben',settled:'Abgeschlossen',cancelled:'Abgesagt'};
+const kindLabels={individual:'Individuell',competition:'Wettbewerb',coach_goal:'Trainerziel'};
+const dateFormatter=new Intl.DateTimeFormat('de-CH',{day:'2-digit',month:'2-digit',year:'numeric',timeZone:'Europe/Zurich'});
+function status(message,error=false){$('status').textContent=message;$('status').className=error?'error':'muted'}
+function button(label,secondary,action){
+ const el=document.createElement('button');el.type='button';el.textContent=label;
+ if(secondary)el.className='secondary';
+ el.addEventListener('click',async()=>{if(actionBusy||formBusy||refreshBusy)return;actionBusy=true;sequence++;$('challengeList').setAttribute('aria-busy','false');el.disabled=true;try{const changed=await action();if(changed!==false){try{await refresh()}catch(e){status('Aktion gespeichert, aber Aktualisierung fehlgeschlagen: '+e.message,true)}}}catch(e){status('Aktion fehlgeschlagen: '+e.message,true)}finally{el.disabled=false;actionBusy=false}});
+ return el;
+}
+async function rpc(name,args){const r=await db.rpc(name,args);if(r.error)throw r.error;return r.data}
+function renderChallenges(){
+ const statusFilter=$('statusFilter').value,kindFilter=$('kindFilter').value;
+ const term=$('challengeSearch').value.trim().toLocaleLowerCase('de-CH');
+ const rows=allChallenges.filter(c=>(statusFilter==='all'||c.status===statusFilter)&&(kindFilter==='all'||c.challenge_kind===kindFilter)&&(!term||(c.title+' '+(c.description||'')).toLocaleLowerCase('de-CH').includes(term)));
+ const list=$('challengeList');list.replaceChildren();
+ $('resultCount').textContent=rows.length+' von '+allChallenges.length+' geladenen Challenges angezeigt.'+(allChallenges.length===100?' Hinweis: Höchstens 100 Einträge geladen.':'');
+ if(!rows.length){list.textContent=allChallenges.length?'Keine Challenges für diesen Filter.':'Noch keine sichtbaren Challenges.';return}
+ renderCards(rows,list);
+}
+async function refresh(){
+ const current=++sequence;
+ const list=$('challengeList');list.setAttribute('aria-busy','true');
+ let rows;
+ try{rows=await rpc('coach_challenge_v2_list')}
+ catch(error){if(current!==sequence)return false;throw error}
+ finally{if(current===sequence)list.setAttribute('aria-busy','false')}
+ if(current!==sequence)return false;
+ allChallenges=rows||[];renderChallenges();
+ return true;
+}
+function renderCards(rows,list){
+ for(const c of rows){
+  const article=document.createElement('article');article.className='challenge';
+  const title=document.createElement('strong');title.textContent=c.title;
+  const details=document.createElement('p');
+  details.textContent=(labels[c.status]||c.status)+' · '+(kindLabels[c.challenge_kind]||c.challenge_kind)+' · '+c.duration_days+' Tage · '+c.joined_count+' angemeldet';
+  article.append(title,details);
+  if(c.status==='open'){
+   const note=document.createElement('p');note.className='muted';
+   note.textContent='Nur Anmeldung: Challenge-Zeitraum und EXP-Vergabe haben noch nicht begonnen.';
+   article.append(note);
+  }
+  if(c.starts_at&&c.ends_at){
+   const window=document.createElement('p');window.className='muted';
+   window.textContent='Zeitraum: '+dateFormatter.format(new Date(c.starts_at))+' – '+dateFormatter.format(new Date(c.ends_at));
+   article.append(window);
+  }
+  if(c.description){const desc=document.createElement('p');desc.textContent=c.description;article.append(desc)}
+  if(c.my_enrollment_status){const joined=document.createElement('p');joined.className='muted';joined.textContent='Dein Teilnahmestatus: '+(c.my_enrollment_status==='joined'?'Angemeldet':c.my_enrollment_status==='withdrawn'?'Zurückgezogen':c.my_enrollment_status);article.append(joined)}
+  const actions=document.createElement('div');actions.className='actions';
+  if(me.role==='boxer'&&c.status==='open'&&(!c.my_enrollment_status||c.my_enrollment_status==='withdrawn'))
+   actions.append(button('Teilnehmen',false,async()=>{await rpc('coach_challenge_v2_join',{p_challenge_id:c.id});status('Anmeldung gespeichert.')}));
+  if(me.role==='boxer'&&c.status==='open'&&c.my_enrollment_status==='joined')
+   actions.append(button('Abmelden',true,async()=>{if(!confirm('Von dieser Challenge abmelden? Solange die Anmeldung offen ist, kannst du erneut teilnehmen.'))return false;await rpc('coach_challenge_v2_withdraw',{p_challenge_id:c.id});status('Abmeldung gespeichert.')}));
+  if(me.role==='boxer'&&c.my_enrollment_status==='withdrawn'&&c.status==='open'){
+   const notice=document.createElement('p');notice.className='muted';
+   notice.textContent='Du hast dich abgemeldet. Solange die Anmeldung offen ist, kannst du erneut teilnehmen.';article.append(notice);
+  }
+  if(me.role!=='boxer'&&(c.is_creator||me.role==='admin')){
+   if(c.status==='awaiting_reviews')actions.append(button('Challenge abrechnen',false,async()=>{if(!confirm('Alle Teilnehmer bewertet? Die EXP werden jetzt einmalig vergeben.'))return false;await rpc('coach_challenge_v2_settle_manual',{p_challenge_id:c.id});status('Challenge abgerechnet. EXP-Auszahlungen wurden gespeichert.')}));
+   if(c.status==='awaiting_reviews')actions.append(button('Manuell prüfen',true,async()=>{
+    reviewChallengeId=c.id;$('reviewChallengeName').textContent=c.title;
+    $('reviewForm').reset();$('reviewPanel').classList.remove('hidden');
+    $('reviewPanel').scrollIntoView({behavior:'smooth',block:'start'});await loadReviewParticipants(c.id);$('reviewBoxer').focus();return false;
+   }));
+   if(c.status==='active'&&c.ends_at&&new Date(c.ends_at).getTime()<=Date.now())actions.append(button('Prüfung nach Ablauf öffnen',true,async()=>{if(!confirm('Ist die Challenge abgelaufen? Die Datenbank prüft den Ablauf nochmals.'))return false;await rpc('coach_challenge_v2_begin_reviews',{p_challenge_id:c.id});status('Manuelle Prüfung geöffnet.')}));
+   if(c.status==='open')actions.append(button('Challenge starten',false,async()=>{if(!confirm('Challenge jetzt starten? Die Laufzeit beginnt sofort und kann nicht zurückgesetzt werden.'))return false;await rpc('coach_challenge_v2_activate',{p_challenge_id:c.id});status('Challenge gestartet. Es wurden keine EXP ausgezahlt.')}));
+   if(c.status==='draft')actions.append(button('Ziel festlegen',true,async()=>{
+    const savedGoal=await rpc('coach_challenge_v2_goal_details',{p_challenge_id:c.id});
+    goalEditingId=c.id;$('goalChallengeName').textContent=c.title;
+    $('goalForm').reset();updateGoalTarget();
+    if(goalEditingId!==c.id)return false;
+    if(savedGoal&&savedGoal.goal_text){
+     $('goalText').value=savedGoal.goal_text;
+     $('goalMode').value='manual';
+     if([25,50,100,150,200].includes(Number(savedGoal.reward_exp)))
+      $('goalReward').value=String(savedGoal.reward_exp);
+     updateGoalTarget();
+    }
+    $('goalPanel').classList.remove('hidden');
+    $('goalPanel').scrollIntoView({behavior:'smooth',block:'start'});$('goalText').focus();
+    return false;
+   }));
+   if(c.status==='draft')actions.append(button('Entwurf bearbeiten',true,async()=>{
+    editingId=c.id;
+    $('title').value=c.title;$('description').value=c.description||'';
+    $('kind').value=c.challenge_kind;$('duration').value=String(c.duration_days);
+    $('formHeading').textContent='Challenge-Entwurf bearbeiten';
+    $('createButton').textContent='Änderungen speichern';
+    $('cancelEdit').classList.remove('hidden');
+    $('coachPanel').scrollIntoView({behavior:'smooth',block:'start'});
+    $('title').focus();
+    return false;
+   }));
+   if(c.status==='draft')actions.append(button('Anmeldung öffnen',false,async()=>{await rpc('coach_challenge_v2_manage',{p_challenge_id:c.id,p_action:'open'});status('Anmeldung geöffnet.')}));
+   if(['draft','open'].includes(c.status))actions.append(button('Absagen',true,async()=>{
+    if(!confirm('Diese Challenge wirklich absagen?'))return false;
+    await rpc('coach_challenge_v2_manage',{p_challenge_id:c.id,p_action:'cancel'});status('Challenge abgesagt.');
+   }));
+  }
+  if(actions.childElementCount)article.append(actions);
+  list.append(article);
+ }
+}
+async function init(){
+ const {data:{user},error}=await db.auth.getUser();
+ if(error||!user){location.replace('./login-test.html');return}
+ const p=await db.from('profiles').select('id,role,is_active').eq('auth_user_id',user.id).maybeSingle();
+ if(p.error||!p.data?.is_active||!['boxer','coach','admin'].includes(p.data.role)){status('Aktives Liga-Konto erforderlich.',true);return}
+ me=p.data;
+ const flag=await db.from('league_feature_flags').select('is_enabled').eq('feature_key','coach_challenges').maybeSingle();
+ if(flag.error||flag.data?.is_enabled!==true){status('TESTDATENBANK: Coach Challenges sind noch deaktiviert. Vor dem Integrationstest muss der Test-Feature-Flag kontrolliert aktiviert werden.');return}
+ if(me.role!=='boxer')$('coachPanel').classList.remove('hidden');
+ $('app').classList.remove('hidden');
+ try{if(await refresh())status('Challenge-Übersicht geladen.')}catch(e){status('Challenges konnten nicht geladen werden: '+e.message,true)}
+}
+function resetEditor(){
+ editingId=null;$('createForm').reset();
+ $('formHeading').textContent='Challenge-Entwurf erstellen';
+ $('createButton').textContent='Entwurf speichern';
+ $('cancelEdit').classList.add('hidden');
+}
+function updateGoalTarget(){
+ const automatic=$('goalMode').value==='automatic';
+ $('goalTargetGroup').classList.toggle('hidden',!automatic);
+ $('goalTarget').required=automatic;
+ if(!automatic)$('goalTarget').value='';
+}
+function closeGoalEditor(){
+ goalEditingId=null;$('goalForm').reset();updateGoalTarget();$('goalPanel').classList.add('hidden');
+}
+async function loadReviewParticipants(challengeId){
+ const select=$('reviewBoxer'),notice=$('reviewParticipantsStatus'),save=$('saveReview');
+ select.replaceChildren(new Option('Wird geladen …',''));select.disabled=true;save.disabled=true;
+ notice.textContent='Teilnehmer und vorhandene Entscheidungen werden geladen …';
+ try{
+  const [participants,reviews]=await Promise.all([rpc('coach_challenge_v2_review_candidates',{p_challenge_id:challengeId}),rpc('coach_challenge_v2_review_status',{p_challenge_id:challengeId})]);
+  if(reviewChallengeId!==challengeId)return;
+  const reviewed=new Set((reviews||[]).map(r=>r.boxer_id));
+  const eligible=(participants||[]).filter(p=>!reviewed.has(p.boxer_id));
+  select.replaceChildren(new Option('Bitte Boxer auswählen',''));
+  for(const p of eligible)select.add(new Option(p.display_name||p.boxer_id,p.boxer_id));
+  notice.textContent=eligible.length+' Boxer zur Prüfung verfügbar; '+reviewed.size+' bereits entschieden.';
+  select.disabled=!eligible.length;save.disabled=!eligible.length;
+ }catch(e){if(reviewChallengeId!==challengeId)return;select.replaceChildren(new Option('Teilnehmer nicht verfügbar',''));notice.textContent='Boxerauswahl nicht verfügbar: '+e.message;status(notice.textContent,true)}
+}
+function closeReviewEditor(){reviewChallengeId=null;$('reviewForm').reset();$('reviewPanel').classList.add('hidden')}
+$('cancelReview').addEventListener('click',()=>{if(!formBusy&&!actionBusy)closeReviewEditor()});
+$('reviewForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(formBusy||actionBusy||refreshBusy||!reviewChallengeId)return;
+ formBusy=true;const control=$('saveReview');control.disabled=true;$('cancelReview').disabled=true;
+ try{
+  await rpc('coach_challenge_v2_review_manual',{p_challenge_id:reviewChallengeId,p_boxer_id:$('reviewBoxer').value.trim(),p_approved:$('reviewDecision').value==='true',p_reason:$('reviewReason').value});
+  closeReviewEditor();status('Trainerentscheidung gespeichert. Es wurden keine EXP ausgezahlt.');
+  try{await refresh()}catch(err){status('Entscheidung gespeichert, aber Aktualisierung fehlgeschlagen: '+err.message,true)}
+ }catch(err){status('Trainerentscheidung fehlgeschlagen: '+err.message,true)}
+ finally{control.disabled=false;$('cancelReview').disabled=false;formBusy=false}
+});
+$('goalMode').addEventListener('change',updateGoalTarget);
+$('cancelGoal').addEventListener('click',()=>{if(!formBusy&&!actionBusy)closeGoalEditor()});
+$('goalForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(formBusy||actionBusy||refreshBusy||!goalEditingId)return;
+ sequence++;formBusy=true;const control=$('saveGoal');control.disabled=true;$('cancelGoal').disabled=true;
+ let saved=false;
+ try{
+  const automatic=$('goalMode').value==='automatic';
+  const target=automatic?Number($('goalTarget').value):null;
+  if(automatic&&(!Number.isFinite(target)||target<=0||target>1000000))throw Error('Ungültiger Zielwert');
+  await rpc('coach_challenge_v2_save_goal_reward',{p_challenge_id:goalEditingId,p_goal_text:$('goalText').value,p_review_mode:$('goalMode').value,p_reward_exp:Number($('goalReward').value),p_target_value:target,p_metric:automatic?$('goalMetric').value:null});
+  saved=true;closeGoalEditor();status('Challenge-Ziel gespeichert. Noch keine EXP-Vergabe.');
+  try{await refresh()}catch(err){status('Ziel gespeichert, aber Aktualisierung fehlgeschlagen: '+err.message,true)}
+ }catch(err){if(!saved)status('Ziel speichern fehlgeschlagen: '+err.message,true)}
+ finally{control.disabled=false;$('cancelGoal').disabled=false;formBusy=false}
+});
+$('challengeSearch').addEventListener('input',renderChallenges);
+$('clearFilters').addEventListener('click',()=>{$('challengeSearch').value='';$('statusFilter').value='all';$('kindFilter').value='all';renderChallenges();$('challengeSearch').focus()});
+$('statusFilter').addEventListener('change',renderChallenges);
+$('kindFilter').addEventListener('change',renderChallenges);
+$('cancelEdit').addEventListener('click',()=>{if(!formBusy)resetEditor()});
+$('createForm').addEventListener('submit',async e=>{
+ e.preventDefault();if(formBusy||actionBusy||refreshBusy)return;
+ sequence++;$('challengeList').setAttribute('aria-busy','false');formBusy=true;const control=$('createButton');control.disabled=true;
+ $('cancelEdit').disabled=true;
+ const editing=editingId;
+ let saved=false;
+ try{
+  const values={p_title:$('title').value,p_description:$('description').value,p_kind:$('kind').value};
+  if(editing){
+   await rpc('coach_challenge_v2_edit_draft',{p_id:editing,...values,p_days:Number($('duration').value)});
+  }else{
+   await rpc('coach_challenge_v2_create_draft',{...values,p_duration_days:Number($('duration').value)});
+  }
+  saved=true;
+  resetEditor();
+  status(editing?'Challenge-Entwurf aktualisiert.':'Challenge-Entwurf erstellt.');
+  try{await refresh()}catch(err){status('Entwurf gespeichert, aber Aktualisierung fehlgeschlagen: '+err.message,true)}
+ }catch(err){if(!saved)status((editing?'Bearbeiten':'Erstellen')+' fehlgeschlagen: '+err.message,true)}
+ finally{control.disabled=false;$('cancelEdit').disabled=false;formBusy=false}
+});
+$('refresh').addEventListener('click',async()=>{
+ if(formBusy||actionBusy||refreshBusy)return;
+ refreshBusy=true;const control=$('refresh');control.disabled=true;
+ try{if(await refresh())status('Challenge-Übersicht aktualisiert.')}catch(e){status('Aktualisierung fehlgeschlagen: '+e.message,true)}
+ finally{control.disabled=false;refreshBusy=false}
+});
+const testLogout=document.createElement('button');
+testLogout.type='button';testLogout.textContent='Testkonto abmelden';
+testLogout.style.cssText='position:fixed;right:12px;bottom:12px;z-index:100;padding:10px;background:#dfbd77;color:#0b1422;border:0;border-radius:8px;cursor:pointer';
+testLogout.addEventListener('click',async()=>{
+ testLogout.disabled=true;
+ const {error}=await db.auth.signOut();
+ if(error){status('Abmelden fehlgeschlagen: '+error.message,true);testLogout.disabled=false;return}
+ location.replace('./login-test.html');
+});
+document.body.append(testLogout);
+init().catch(e=>{status('Initialisierung fehlgeschlagen: '+(e?.message||'Unbekannter Fehler'),true)});
+</script></body></html>
