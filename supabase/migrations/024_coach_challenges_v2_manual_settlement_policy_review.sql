@@ -1,0 +1,11 @@
+-- REVIEW ONLY. Product policy pending explicit coach approval before production enablement.
+-- Per-challenge manual reward configuration: 25, 50, 100, 150 or 200 EXP.
+-- Approved participant: configured reward_exp; rejected participant: 0 EXP.
+-- These amounts are currently engineering defaults, NOT user-approved policy.
+-- A challenge's reward must be fixed in its draft before activation.
+-- Every joined participant must have exactly one immutable manual review.
+-- Settlement locks the challenge row, verifies expiry and ownership,
+-- rejects preexisting orphan payouts, and writes an idempotent reward ledger.
+-- Payout and challenge status update share one PostgreSQL transaction.
+-- The coach_challenges feature flag remains disabled pending approval.
+-- This file is documentation only; executable settlement is in migration 027.

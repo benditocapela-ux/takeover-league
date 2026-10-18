@@ -1,0 +1,76 @@
+name: Duel V2 static contract tests
+
+on:
+  push:
+    branches:
+      - develop/takeover-league-2-foundation
+    paths:
+      - 'duels.html'
+      - 'challenges.html'
+      - 'coach-challenge-progress.js'
+      - 'tests/coach-challenge-progress.test.mjs'
+      - 'tests/test_coach_challenges_v2_ui.py'
+      - 'tests/test_coach_challenges_v2_migration_contract.py'
+      - 'tests/test_v2_release_guardrails.py'
+      - 'supabase/migrations/01[1-6]_coach_challenges_v2_*'
+      - 'supabase/tests/COACH_CHALLENGES_V2_*'
+      - 'login.html'
+      - 'supabase/migrations/007_duels_v2_schema_review.sql'
+      - 'supabase/migrations/008_duels_v2_invitation_rpc_review.sql'
+      - 'supabase/migrations/009_duels_v2_settlement_review.sql'
+      - 'supabase/migrations/010_duels_v2_read_rpc_review.sql'
+      - 'tests/test_duels_v2_contract.py'
+      - 'tests/test_duels_v2_sql_syntax.py'
+      - 'supabase/tests/DUELS_V2_PREFLIGHT_READ_ONLY.sql'
+      - 'supabase/tests/DUELS_V2_LEDGER_AUDIT_READ_ONLY.sql'
+      - 'supabase/tests/DUELS_V2_INTEGRATION_TEST_MATRIX.md'
+      - '.github/workflows/duels-v2-tests.yml'
+  pull_request:
+    paths:
+      - 'duels.html'
+      - 'challenges.html'
+      - 'coach-challenge-progress.js'
+      - 'tests/coach-challenge-progress.test.mjs'
+      - 'tests/test_coach_challenges_v2_ui.py'
+      - 'tests/test_coach_challenges_v2_migration_contract.py'
+      - 'tests/test_v2_release_guardrails.py'
+      - 'supabase/migrations/01[1-6]_coach_challenges_v2_*'
+      - 'supabase/tests/COACH_CHALLENGES_V2_*'
+      - 'supabase/migrations/007_duels_v2_schema_review.sql'
+      - 'supabase/migrations/008_duels_v2_invitation_rpc_review.sql'
+      - 'supabase/migrations/009_duels_v2_settlement_review.sql'
+      - 'supabase/migrations/010_duels_v2_read_rpc_review.sql'
+      - 'tests/test_duels_v2_contract.py'
+      - 'tests/test_duels_v2_sql_syntax.py'
+      - '.github/workflows/duels-v2-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install PostgreSQL SQL parser
+        run: python -m pip install 'pglast>=7,<9'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test approved-training goal progress preview
+        run: node --test tests/coach-challenge-progress.test.mjs
+      - name: Run duel contract checks
+        run: python -m unittest discover -s tests -p 'test_duels_v2_contract.py' -v
+      - name: Run Coach Challenges UI security checks
+        run: python -m pip install pytest && python -m pytest tests/test_coach_challenges_v2_ui.py -q
+      - name: Run Coach Challenges migration security checks
+        run: python -m pytest tests/test_coach_challenges_v2_migration_contract.py -q
+      - name: Enforce V2 release safety gates
+        run: python -m pytest tests/test_v2_release_guardrails.py -q
+      - name: Parse duel SQL with PostgreSQL grammar
+        run: python -m unittest discover -s tests -p 'test_duels_v2_sql_syntax.py' -v

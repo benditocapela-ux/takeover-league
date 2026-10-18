@@ -1,0 +1,29 @@
+name: Achievement V2 rule tests
+
+on:
+  push:
+    branches:
+      - develop/takeover-league-2-foundation
+    paths:
+      - 'tests/test_achievement_v2_rules.py'
+      - '.github/workflows/achievement-v2-tests.yml'
+  pull_request:
+    paths:
+      - 'tests/test_achievement_v2_rules.py'
+      - '.github/workflows/achievement-v2-tests.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  rule-tests:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run pure-rule regression tests
+        run: python -m unittest discover -s tests -p 'test_achievement_v2_rules.py' -v

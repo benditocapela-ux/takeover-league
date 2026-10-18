@@ -28,6 +28,7 @@ el('roleText').textContent=profile?.role==='admin'?'Trainer / Admin':profile?.ro
 el('nextText').textContent=profile?.is_active===false?'Dein Konto ist deaktiviert.':profile?.role==='admin'?'Dein Trainerzugang ist aktiv. Öffne dein Coach-Dashboard.':profile?.role==='boxer'?'Dein Boxer-Login funktioniert. Du kannst jetzt dein persönliches Dashboard öffnen.':'Bitte den Trainer kontaktieren, um dein Profil zu verknüpfen.';
 if(profileError)message('Profil konnte nicht geladen werden: '+profileError.message,true);
 const next=new URLSearchParams(location.search).get('next');
+if(!profileError && profile?.is_active && next==='duels.html' && (profile.role==='boxer'||profile.role==='admin'||profile.role==='coach')){location.replace('./duels.html');return;}
 if(!profileError && profile?.is_active && (redirectAfterLogin || next==='boxer.html' || next==='coach.html' || next==='dashboard')){
  if(profile.role==='admin'){location.replace('./coach.html');return;}
  if(profile.role==='boxer'){location.replace('./boxer.html');return;}
