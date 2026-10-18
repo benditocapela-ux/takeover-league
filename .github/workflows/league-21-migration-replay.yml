@@ -61,6 +61,24 @@ jobs:
               and (select count(*) from public.point_transactions)=0
               and (select count(*) from public.league_feature_flags)=2
               then 'RESTORED' else 'DIRTY-REPLAY' end" | grep -qx RESTORED
+      - name: Verify generated transactional release bundle on separate disposable PostgreSQL
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          node tests/build-league-21-release.cjs --check
+          node tests/build-league-21-release.cjs --output "$RUNNER_TEMP/league21-release.sql"
+          createdb -h localhost -U postgres league21_replay_release_bundle
+          psql -X -h localhost -U postgres -d league21_replay_release_bundle -v ON_ERROR_STOP=1 \
+            -f tests/league-21-productionlike-baseline.sql >/dev/null
+          psql -X -h localhost -U postgres -d league21_replay_release_bundle -v ON_ERROR_STOP=1 \
+            -f "$RUNNER_TEMP/league21-release.sql" >/dev/null
+          psql -X -h localhost -U postgres -d league21_replay_release_bundle -At -v ON_ERROR_STOP=1 \
+            -f supabase/production-prep/league_21_postflight_read_only.sql \
+            | tee /tmp/league21-bundle-postflight.txt
+          grep -Eq '"release_21_postflight_passed"[[:space:]]*:[[:space:]]*true' \
+            /tmp/league21-bundle-postflight.txt
+          echo 'PASS: generated atomic release package installs and passes postflight without PROD access.'
       - name: Install V2.1 in isolated DB for dump and restore rehearsal
         env:
           PGPASSWORD: postgres
