@@ -151,6 +151,14 @@ CREATE OR REPLACE FUNCTION public._award_achievements_on_approval()
 RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path TO ''
 AS $fn$
 BEGIN
+ IF TG_OP='DELETE' THEN
+  -- Reconcile the previous owner after a deleted approved submission.
+  -- This trigger runs AFTER DELETE, so the removed row is excluded from totals.
+  PERFORM 1 FROM public.profiles p
+   WHERE p.id=OLD.boxer_id FOR UPDATE;
+  PERFORM public.recalculate_boxer_achievements_v2(OLD.boxer_id);
+  RETURN OLD;
+ END IF;
  IF TG_OP='UPDATE' AND OLD.boxer_id IS DISTINCT FROM NEW.boxer_id THEN
   -- Acquire both profile locks in deterministic UUID order before reconciliation.
   -- This reduces profile-lock inversion; other application locks still need testing.
@@ -170,7 +178,7 @@ REVOKE ALL ON FUNCTION public._award_achievements_on_approval() FROM PUBLIC,anon
 
 DROP TRIGGER IF EXISTS trg_auto_achievements_approved ON public.training_submissions;
 CREATE TRIGGER trg_auto_achievements_approved
-AFTER INSERT OR UPDATE OF status,boxer_id,training_type_id,training_date,jogging_km,technique_minutes
+AFTER INSERT OR DELETE OR UPDATE OF status,boxer_id,training_type_id,training_date,jogging_km,technique_minutes
 ON public.training_submissions FOR EACH ROW
 EXECUTE FUNCTION public._award_achievements_on_approval();
 
