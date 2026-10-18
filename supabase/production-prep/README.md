@@ -1,36 +1,31 @@
-# Production V2 preflight checklist
+# Takeover League 2.0 – production rollout (NOT APPLIED)
 
-Run read-only checks before any schema change.
+## Release artifact
 
-1. Record counts for profiles, training_submissions and point_transactions.
-2. Confirm profiles role constraint accepts boxer, admin and (after migration) coach.
-3. Confirm point_transactions category constraint accepts duel_exp and challenge_exp after migration.
-4. Confirm coach_challenges and duels feature flags exist and remain disabled.
-5. Confirm new V2 tables and functions do not overwrite legacy league_challenges or boxer_duels.
-6. Verify all V2 tables have RLS enabled and no direct authenticated/anon grants.
-7. Verify all 17 coach_challenge_v2 functions have role-specific auth.uid() checks and authenticated-only EXECUTE.
-8. Test rollback, authorized user actions, denied access and EXP idempotency before enabling any flag.
+**Single atomic versioned migration:** `supabase/migrations/20261018131000_coach_challenges_v2.sql`.
 
-Production deployment must remain disabled until all checks pass.
+This contains the four guarded compatibility/schema modules, an internal authenticated-actor helper and **all 17** coach challenge V2 RPCs. It starts with collision checks and finishes by verifying both V2 feature flags remain disabled, all four new tables have RLS enabled and anonymous callers cannot execute RPCs or select V2 tables. The transaction aborts on failure. Do **not** apply it to production until the release gates below are satisfied.
 
-## Baseline snapshot (18 October 2026)
+The `20261018_*.sql` files in this folder are editable source modules, not additional migrations to execute after the bundle. `tests/production-v2-migration-bundle.cjs` fails CI if the bundle drifts from those modules. The explicit rollback files must only be used with empty V2 tables and must remove V2 RPCs before their tables. Never use CASCADE or overwrite live EXP.
 
-Production read-only counts: 14 profiles, 61 training submissions, 63 point transactions. Recheck immediately before and after deployment; live counts can grow naturally, so compare identities and sums as well as row totals.
+## Verified in disposable PostgreSQL CI
 
-## Prepared migration order (NOT APPLIED)
+- Exact versioned migration installs cleanly on PostgreSQL 16.
+- Existing profiles, point transactions and legacy feature flags remain intact.
+- Coach creates/edits/publishes/activates; boxer joins/withdraws/rejoins.
+- Admin can inspect challenges; unrelated coach and boxer cannot manage another coach's records.
+- Feature-disabled and anonymous RPC calls are rejected; normal users have no direct access to any V2 table.
+- Manual review blocks premature settlement; approved and rejected participants are handled distinctly.
+- Approved boxer gets one `challenge_exp` transaction and one ledger entry, with no duplicate EXP on repeated settlement.
+- All 17 RPC grants checked; both RPC and empty-table rollbacks exercised.
+- Mock browser and static frontend checks continue to run.
 
-1. `20261018_allow_coach_role.sql` — add coach role compatibility.
-2. `20261018_extend_transaction_categories.sql` — allow V2 EXP transaction categories.
-3. `20261018_v2_feature_flags_disabled.sql` — register new V2 flags, disabled.
-4. `20261018_coach_challenges_v2_schema.sql` — create four RLS-protected tables.
-5. **Still required:** import/review the 17 SECURITY DEFINER RPC definitions, reconcile full test-schema constraints, run real authenticated tests and review rollback. Do not enable the feature before these steps.
+**Remaining before release:** Validate the actual Supabase Auth/PostgREST/RLS environment with temporary accounts; inspect production database triggers and constraint compatibility; recheck existing user balances/history; complete the final UI/backend integration review and deliberate feature activation. Disposable PostgreSQL tests are not equivalent to live Supabase E2E. Keep `window.TAKEOVER_CHALLENGES_V2_ENABLED=false` and database `coach_challenges.is_enabled=false` until both sets of gates pass.
 
-The schema file intentionally uses CREATE TABLE (not IF NOT EXISTS) so existing objects cause a safe failure instead of silently retaining an incompatible definition.
+## Baseline (18 October 2026, historical reference)
 
-## Rollback guard
+Previous production snapshot: 14 profiles, 61 training submissions, 63 point transactions. These counts change naturally; take a new read-only baseline immediately before any rollout and compare identifiers, balances and totals rather than expecting exact historic counts.
 
-`rollback_coach_challenges_v2_empty_only.sql` refuses to delete any table if V2 challenge data exists. If RPCs depend on these tables, PostgreSQL also rejects the DROP (no CASCADE). Remove the dependent V2 RPCs in a separately reviewed operation first. Do not use this rollback after live challenges or EXP awards exist; restore via a carefully designed forward fix instead.
+## Independent security fix (NOT APPLIED)
 
-## Achievement recalculation access hardening
-
-A production audit found the SECURITY DEFINER RPC `recalculate_boxer_achievements_v2(uuid)` callable by anonymous and authenticated clients without its own caller-authorization check. Prepared (not applied): `20261018_restrict_achievement_recalculation.sql` revokes client EXECUTE only. First verify no existing frontend calls rely on this RPC and test the postgres-owned approval trigger after the revoke; do not deploy blindly.
+`20261018_restrict_achievement_recalculation.sql` revokes direct client EXECUTE of unrestricted `recalculate_boxer_achievements_v2(uuid)`. Review its effect on the postgres-owned training-approval trigger before deploying it separately. It is **not bundled** with the coach challenges migration.
