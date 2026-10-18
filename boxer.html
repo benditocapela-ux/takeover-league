@@ -224,10 +224,18 @@ async function refreshBoxerNotifications(){
    };
    item.append(mark);
   }
-  const path=String(note.target_path||'');
-  try{const dest=new URL(path,location.href);const name=dest.pathname.split('/').pop();
-   if(dest.origin===location.origin&&allowed.has(name)&&!path.startsWith('/')&&!path.startsWith('//')){
-    const link=document.createElement('a');link.href=dest.href;link.textContent='Ansehen';item.append(link)
+  const path=String(note.target_path||'').trim();
+  try{
+   // Existing Supabase triggers use '/boxer.html'; GitHub Pages uses a project subpath.
+   // Normalize only a whitelisted local filename, never arbitrary URLs or parent traversal.
+   const clean=path.startsWith('/')&&!path.startsWith('//')?path.slice(1):path.replace(/^\.\//,'');
+   const [filename,queryString]=clean.split('?',2);
+   if(allowed.has(filename)&&!filename.includes('/')&&(!queryString||!/[#\\]/.test(queryString))){
+    const base=new URL('./',location.href);
+    const dest=new URL('./'+filename+(queryString?'?'+queryString:''),base);
+    if(dest.origin===location.origin&&dest.pathname.startsWith(base.pathname)){
+     const link=document.createElement('a');link.href=dest.href;link.textContent='Ansehen';item.append(link);
+    }
    }
   }catch{}
   root.append(item);
