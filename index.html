@@ -167,7 +167,7 @@ loadLevels();
    if(error||!user){location.href=fallback;return}
    const {data:profile,error:pe}=await client.from('profiles').select('role,is_active').eq('auth_user_id',user.id).maybeSingle();
    if(pe||!profile||!profile.is_active){location.href='./login.html';return}
-   location.href=profile.role==='admin'?'./coach.html':profile.role==='boxer'?'./boxer.html':'./login.html';
+   location.href=profile.role==='admin'?'./coach.html':profile.role==='boxer'?'./boxer.html':profile.role==='coach'?'./challenges.html':'./login.html';
   }catch(err){console.error('Dashboard-Navigation:',err);location.href=fallback}
  });
 })();
