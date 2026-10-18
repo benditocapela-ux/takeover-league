@@ -25,7 +25,7 @@
 <label>Beginn<input id="challengeStart" type="date" required></label>
 <label>Ende<input id="challengeEnd" type="date" required></label>
 <label><input id="publishChallenge" type="checkbox" style="width:auto;min-height:auto"> Sofort veröffentlichen</label>
-<p><button type="submit">Liga-Challenge erstellen</button></p></form></section>
+<p><button type="submit">Liga-Challenge erstellen</button></p></form><h3>Veröffentlichte Challenges</h3><div id="globalList"></div></section>
 <section class="panel"><h2>🏅 Achievement-Nachberechnung</h2>
 <p class="muted">Bestehende Achievement-Ledger werden in begrenzten Gruppen abgeglichen. Die serverseitige Routine verhindert doppelte Buchungen. Vor dem Start aktuelle Punkte/EXP kontrollieren.</p>
 <p id="backfillStatus">Noch nicht gestartet.</p><button id="backfill" type="button">Nächste 10 Boxer prüfen</button>
@@ -45,6 +45,27 @@ $('goalEnd').value=localDate(30);$('challengeStart').value=localDate(0);$('chall
 function row(title,subtitle){const outer=document.createElement('div');outer.className='item';
  const h=document.createElement('strong');h.textContent=title;
  const p=document.createElement('p');p.className='muted';p.textContent=subtitle;outer.append(h,p);return outer}
+async function listGlobals(){
+ const r=await db.from('league_global_challenges_v21')
+  .select('id,title,status,ends_at').order('ends_at',{ascending:false}).limit(60);
+ const root=$('globalList');root.replaceChildren();
+ if(r.error){root.textContent='Challenges derzeit nicht verfügbar.';return}
+ for(const c of r.data||[]){
+  const card=row(c.title,'Status: '+c.status+' · Ende: '+new Date(c.ends_at).toLocaleDateString('de-CH'));
+  if(c.status==='active'&&new Date(c.ends_at).getTime()<=Date.now()){
+   const button=document.createElement('button');button.textContent='Ergebnis endgültig berechnen';
+   button.type='button';button.onclick=async()=>{
+    if(!confirm('Die Liga-Challenge abschliessen und die Rangliste einmalig speichern? Es werden KEINE EXP vergeben.'))return;
+    button.disabled=true;
+    const r=await db.rpc('league_v21_admin_close_global_challenge',{p_challenge:c.id});
+    if(r.error){say('Abschluss fehlgeschlagen: '+r.error.message);button.disabled=false;return}
+    say('Challenge geschlossen – '+(r.data?.participants||0)+' Platzierungen gespeichert. Keine EXP gebucht.');
+    await listGlobals();
+   };card.append(button)
+  }root.append(card);
+ }
+ if(!r.data?.length)root.textContent='Noch keine Liga-Challenges angelegt.';
+}
 async function listSeasons(){
  const r=await db.from('league_seasons_v21').select('id,title,starts_on,ends_on,status').order('starts_on',{ascending:false}).limit(80);
  const root=$('seasonList');root.replaceChildren();
@@ -69,7 +90,7 @@ async function listSeasons(){
 async function submit(form,action){
  if(busy)return;
  busy=true;const btn=form.querySelector('button[type=submit]');btn.disabled=true;say('Speichere …');
- try{await action();say('Erfolgreich gespeichert.');form.reset();await listSeasons()}
+ try{await action();say('Erfolgreich gespeichert.');form.reset();await Promise.all([listSeasons(),listGlobals()])}
  catch(e){say('Fehler: '+e.message)}
  finally{busy=false;btn.disabled=false}
 }
@@ -117,7 +138,7 @@ async function init(){
  if(r.error){say('Boxerliste nicht verfügbar: '+r.error.message);return}
  const select=$('boxerId');select.replaceChildren(new Option('Boxer auswählen',''));
  for(const boxer of r.data||[])select.add(new Option(boxer.display_name,boxer.id));
- $('dashboard').hidden=false;say('Admin-Verwaltung bereit.');await listSeasons();
+ $('dashboard').hidden=false;say('Admin-Verwaltung bereit.');await Promise.all([listSeasons(),listGlobals()]);
 }
 init().catch(e=>say('Verwaltung nicht verfügbar: '+e.message));
 </script><script src="./takeover-navigation.js" defer></script></body></html>
