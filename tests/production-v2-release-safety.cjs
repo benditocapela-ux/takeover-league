@@ -45,9 +45,25 @@ assert.match(post,/protected_authenticated_rpcs=23/);
 assert.match(post,/v2_tables=7 AND rls_protected_tables=7/);
 assert.match(post,/invalid_challenge_exp_ledgers=0/);
 assert.match(post,/invalid_duel_exp_ledgers=0/);
+const activation=read('supabase/production-prep/activate_v2_only_after_freigeben.sql');
+const emergency=read('supabase/production-prep/emergency_disable_v2_flags_only.sql');
+assert.match(activation,/BEGIN;/);
+assert.match(activation,/COMMIT;/);
+assert.match(activation,/protected_rpc<>23/);
+assert.match(activation,/protected_tables<>7/);
+assert.match(activation,/Achievement EXP security patch has not been applied/);
+assert.match(activation,/UPDATE public\.league_feature_flags/);
+assert.doesNotMatch(activation,/\b(?:UPDATE|DELETE|TRUNCATE)\s+(?:FROM\s+)?public\.(?!league_feature_flags\b)/i,
+ 'V2 activation may only write to feature flags');
+assert.match(emergency,/UPDATE public\.league_feature_flags/);
+assert.match(emergency,/SET is_enabled=false/);
+assert.doesNotMatch(emergency,/\b(?:DELETE|TRUNCATE|DROP)\b/i,
+ 'emergency off-switch must preserve all boxer data and EXP');
 const releaseRunbook=read('docs/RELEASE_NACH_FREIGEBEN.md');
 assert.match(releaseRunbook,/release_preflight_read_only\.sql/);
 assert.match(releaseRunbook,/release_postflight_read_only\.sql/);
+assert.match(releaseRunbook,/activate_v2_only_after_freigeben\.sql/);
+assert.match(releaseRunbook,/emergency_disable_v2_flags_only\.sql/);
 assert.match(releaseRunbook,/«FREIGEBEN»/,'Release must require explicit final approval');
 assert.match(releaseRunbook,/ohne Backup/i,'Conscious no-backup risk decision must be documented');
 assert.match(releaseRunbook,/release_coach_challenges_v2/);
