@@ -40,3 +40,9 @@ Die produktive Trigger-Funktion `public._award_achievements_on_approval()` ruft 
 Aus dem Testprojekt wurden die SQL-Definitionen von `coach_challenge_v2_create_draft`, `join`, `review_manual`, `settle_manual` und `list` geprüft. Diese Funktionen nutzen `SECURITY DEFINER` mit leerem `search_path`, prüfen aktive Profile über `auth.uid()`, verlangen das Feature-Flag und beschränken Aktionen nach Rolle bzw. Challenge-Eigentümer. `settle_manual` sperrt den Challenge-Datensatz für die Transaktion, verlangt vollständige Reviews und verhindert doppelte Erstbuchungen. Eine Stichprobe ersetzt keine vollständige Prüfung aller 17 Funktionen.
 
 **Behobene UI/Backend-Abweichung:** Das Backend akzeptiert Challenge-Arten `individual`, `competition`, `coach_goal` und Laufzeiten **7, 14, 30** Tage. Beide Oberflächen und ein Regressionstest wurden entsprechend angepasst.
+
+## Vollständiger statischer RPC-Berechtigungsscan (17/17)
+
+Am 18.10.2026 wurden alle 17 `coach_challenge_v2_*`-Funktionen direkt im Testprojekt abgefragt. **Jede** ist `SECURITY DEFINER`, verweigert `anon` das `EXECUTE`-Recht und enthält im SQL-Funktionskörper eine `auth.uid()`-Prüfung, eine `is_active`-Prüfung und eine Abfrage des `league_feature_flags`-Gates. Das ist eine **statische Vollständigkeitsprüfung**, keine Laufzeitprüfung mit verschiedenen JWT-Rollen; Rollen-, Eigentümer- und Race-Condition-Tests bleiben vor Produktion notwendig.
+
+Der GitHub-CI-Lauf für Commit `1c2635c` ist erfolgreich abgeschlossen (statische und Mock-Browser-Tests).
