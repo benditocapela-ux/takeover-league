@@ -87,3 +87,9 @@ Stop without writing to production if the read-only inventory shows an unknown s
 - TEST rollback-only validation installed the modified trigger/function inside a transaction, earned `training_10` with ten approved sessions, deleted one, verified zero earned ledger awards and exactly one `revoked` event, then rolled back all changes. PASS. The fix has NOT been applied persistently to TEST or production.
 - TEST rollback-only `earned` -> `revoked` -> `reearned` flow also passed: three event rows and one reused 25 EXP transaction.
 - Follow-up: CI regression coverage for DELETE, authenticated HTTP tests, concurrency and production privilege remediation remain necessary.
+
+## CI DELETE guard and disabled-flag behavior (2026-10-18)
+
+- `tests/test_achievement_v2_trigger_contract.py` now statically checks the SQL DELETE trigger, `OLD.boxer_id` recalculation, and SECURITY DEFINER REVOKEs. `.github/workflows/achievement-v2-tests.yml` runs it and watches migration 006 changes. Achievement CI passed for commit `31a9e94c`.
+- TEST Supabase rollback-only flag test: award earned with achievements ON; with achievements OFF, rejecting a qualifying submission did not reconcile the ledger. PASS for disabled-feature guard. This deliberately leaves a stale award *while the flag is off*, so enabling achievements after a disabled interval requires an explicitly reviewed reconciliation/backfill plan.
+- These are not proof of safe production privileges or concurrency. No production changes authorized.
