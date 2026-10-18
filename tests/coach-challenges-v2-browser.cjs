@@ -123,6 +123,32 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null,candida
  assert.match(dates.document.querySelector('#list').textContent,/Start:/);
  assert.match(dates.document.querySelector('#list').textContent,/Ende:/);
  dates.dom.window.close();
+ const goalDisplay=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[{
+ id:'completed-id',title:'Auswertung',description:'Training',status:'settled',joined_count:2,
+ duration_days:14,goal_spec:{goal_text:'Drei Sparrings absolvieren',reward_exp:150},
+ my_enrollment_status:'completed',my_review_approved:true,is_creator:false
+ }]});
+ assert.match(goalDisplay.document.querySelector('#list').textContent,/Ziel: Drei Sparrings absolvieren/,'boxer sees the goal');
+ assert.match(goalDisplay.document.querySelector('#list').textContent,/Belohnung bei Bestehen: 150 EXP/,'boxer sees reward');
+ assert.match(goalDisplay.document.querySelector('#list').textContent,/Meine Bewertung: Bestanden/,'boxer sees own review');
+ assert.equal(goalDisplay.document.querySelector('#list button'),null,'settled challenge has no actions for boxer');
+ goalDisplay.dom.window.close();
+ const deniedReward=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[{
+ id:'rejected-id',title:'Abgelehnt',description:'Review',status:'settled',joined_count:1,
+ duration_days:7,goal_spec:{goal_text:'Sauber boxen',reward_exp:100},
+ my_enrollment_status:'completed',my_review_approved:false,is_creator:false
+ }]});
+ assert.match(deniedReward.document.querySelector('#list').textContent,/Meine Bewertung: Nicht bestanden/);
+ deniedReward.dom.window.close();
+ const cancelCoach=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[{
+ id:'cancel-id',title:'Absagbar',description:'Plan',status:'open',joined_count:0,
+ duration_days:7,is_creator:true
+ }]});
+ const cancelButton=[...cancelCoach.document.querySelectorAll('#list button')].find(x=>x.textContent==='Challenge abbrechen');
+ assert.ok(cancelButton,'coach can cancel an open challenge');
+ cancelButton.click();await tick();await tick();
+ assert.ok(cancelCoach.calls.some(x=>x.name==='coach_challenge_v2_manage'&&x.args.p_action==='cancel'&&x.args.p_challenge_id==='cancel-id'));
+ cancelCoach.dom.window.close();
  const boxer=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[{id:'challenge-id',title:'Box-Test',description:'Training',status:'open',joined_count:0,duration_days:7,my_enrollment_status:null,is_creator:false}]});
  assert.equal(boxer.document.querySelector('#coach').hidden,true);
  assert.match(boxer.document.querySelector('#list').textContent,/Box-Test/);
