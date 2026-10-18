@@ -25,6 +25,13 @@ Die fehlenden echten Boxer/Admin/Coach-Login-Tests und ein getestetes Produktion
 - Abgelehnte oder wieder geöffnete Ziele melden korrekt `exp_awarded: 0` in der API; zuvor wurde irreführend der konfigurierte Reward gemeldet.
 - **Nicht durchgeführt:** echter produktiver Backup-/Restore-Test, echte Nutzerkonten-Abnahme, Replay sämtlicher Migrationen in neu erstellter produktionsgleicher Umgebung. Deshalb bleibt der Merge gesperrt.
 
+## Automatisierte Migrationsabnahme und Wiederherstellung (19.10.2026)
+- Neuer GitHub-Workflow `.github/workflows/league-21-migration-replay.yml`, Ergebnis **erfolgreich** für PostgreSQL **16 und 17**.
+- Führt **alle 24** chronologisch sortierten V2.1-Migrationen auf separaten Wegwerf-Datenbanken aus; bestätigt 17 RLS-geschützte V2.1-Tabellen und zulässige RPC-Grants. Der erste Durchlauf erfolgt in einer einzigen Transaktion mit **ROLLBACK** und geprüftem unveränderten Altbestand.
+- Zweiter Durchlauf installiert 2.1 vollständig auf demselben Wegwerf-V2-Schema; anschliessend `pg_dump` → `pg_restore` in eine frische Datenbank. Schema-/Datenzähler sowie der vollständige 2.1-Postflight sind vor und nach Restore konsistent. **Beide PostgreSQL-Versionen grün.**
+- Das lokale Basisschema `tests/league-21-productionlike-baseline.sql` deckt die verwendeten V2-Schnittstellen und produktiven `NOT NULL`-Felder ab, ist jedoch **kein vollständiger Supabase-Produktionsklon**.
+- **Immer noch offen und Freigabeblocker:** Backup und verifizierte Wiederherstellung der **echten** Produktionsdaten und Auth-/Storage-Abhängigkeiten; echter Boxer-/Admin-/Trainer-Login-Test; vollständiger Definer-Funktions-Audit. Deshalb GO-LIVE weiterhin gesperrt.
+
 ## Sicherheitsadvisor – offene Warnungen
 **Keine Warnungen dieser Art pauschal ignorieren.**
 - Produktiv **6 anon** + **60 authenticated** ausführbare SECURITY DEFINER-Funktionen im öffentlichen API-Schema (vorbestehende Anwendung), weitere darunter 34 im Testprojekt. Viele haben beabsichtigte serverseitige Rollenprüfungen, aber die tatsächlichen Checks aller kritischen Funktionen müssen noch explizit auditiert werden.
