@@ -17,3 +17,14 @@ Stand: 18.10.2026. **Noch keine Freigabe.** `challenges.html` ist standardmässi
 5. Nach erfolgreichen Prüfungen `TAKEOVER_CHALLENGES_V2_ENABLED` gezielt aktivieren, Release deployen und unmittelbar Basis-Smoketests durchführen.
 
 **Keine automatische Änderung an produktiven Boxer-Punkten oder Berechtigungen in diesem Branch.**
+
+## CI-Schutz für den Rollout
+- Die Produktionsseite bleibt per `TAKEOVER_CHALLENGES_V2_ENABLED=false` deaktiviert.
+- Ein Mock-Browsertest prüft, dass beim deaktivierten Rollout **kein** Supabase-Client initialisiert wird.
+- Die produktiven Dashboards verlinken auf die deaktivierte Produktionsseite, nicht auf die Testdatenbank.
+- Der isolierte Preview-Browsertest und die statischen Prüfungen laufen in GitHub Actions.
+
+## Beobachtung zur Funktionsberechtigung
+- Eine read-only Prüfung bestätigte, dass `recalculate_boxer_achievements_v2(uuid)` für `anon` und `authenticated` ausführbar ist.
+- Der Funktionskörper enthält keine eigene Prüfung des aufrufenden Benutzers. Der Funktionscode verändert Achievement- und Transaktionsdaten. **Freigabeblocker.**
+- Die einfache Katalogprüfung über `pg_depend` ergab keine direkten Funktionsabhängigkeiten. Das schliesst dynamische Aufrufe nicht aus.
