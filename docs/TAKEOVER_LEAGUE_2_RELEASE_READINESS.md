@@ -111,3 +111,10 @@ Stop without writing to production if the read-only inventory shows an unknown s
 - TEST rollback-only: database `point_transactions_submission_id_key` rejected a second scoring transaction for the same submission before reconciliation; direct duplicate-payout RPC path was therefore not exercised. Expected database invariant verified.
 - TEST rollback-only: an approved submission whose training_date fell within the duel but whose created_at was after the duel ended was excluded from scoring; settlement yielded a 50/50 tie. PASS.
 - No persistent test or production changes.
+
+## Duel negative scoring, flag-off and replay checks (2026-10-18)
+
+- TEST rollback-only: negative points on an approved training caused `duel_v2_reconcile` to fail closed, with zero duel EXP ledger rows. PASS.
+- TEST rollback-only: after valid 50/50 settlement, disabling `duels` prevented subsequent reconciliation and left two existing reward ledger entries unchanged. PASS.
+- TEST rollback-only with simulated boxer JWT subject: replaying `duel_v2_reconcile` after settlement was denied; two payout transactions remained unchanged. PASS. Not a real signed HTTP JWT test.
+- Five CI code workflows passed for prior commit `3abac8b4`; Pages was still in progress when checked.
