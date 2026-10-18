@@ -16,7 +16,13 @@
 <label>Messwert<select id="goalMetric"><option value="training_sessions">Bestätigte Trainings</option><option value="jogging_km">Joggingkilometer</option><option value="technique_minutes">Technikminuten</option><option value="custom">Manuell</option></select></label>
 <label>Zielmenge<input id="goalTarget" type="number" min="1" max="1000000" step="0.1" value="10" required></label>
 <label>Deadline<input id="goalEnd" type="date" required></label>
-<p><button type="submit">Ziel zuweisen</button></p></form></section>
+<p><button type="submit">Ziel zuweisen</button></p></form>
+<h3>EXP für automatische Ziele festlegen</h3>
+<p class="muted">Nur Admins dürfen EXP einstellen. Manuelle Ziele erhalten keine automatische Belohnung; belohnte Zielvorgaben bleiben unveränderlich.</p>
+<label>Ziel wählen<select id="rewardGoal"><option value="">Ziel auswählen</option></select></label>
+<label>EXP-Belohnung<input id="goalRewardExp" type="number" min="0" max="250" step="1" value="50"></label>
+<button type="button" id="saveGoalReward">EXP-Regel sicher speichern</button>
+</section>
 <section class="panel"><h2>⚡ Liga-Challenge</h2><form id="challengeForm">
 <label>Name<input id="challengeTitle" required minlength="3" maxlength="120"></label>
 <label>Beschreibung<textarea id="challengeDescription" maxlength="1000" rows="2"></textarea></label>
@@ -45,6 +51,27 @@ $('goalEnd').value=localDate(30);$('challengeStart').value=localDate(0);$('chall
 function row(title,subtitle){const outer=document.createElement('div');outer.className='item';
  const h=document.createElement('strong');h.textContent=title;
  const p=document.createElement('p');p.className='muted';p.textContent=subtitle;outer.append(h,p);return outer}
+async function loadRewardGoals(){
+ const r=await db.from('league_boxer_goals_v21')
+  .select('id,title,metric,boxer_id,status,reward_exp')
+  .eq('status','active').neq('metric','custom').order('created_at',{ascending:false}).limit(100);
+ const select=$('rewardGoal');select.replaceChildren(new Option('Ziel auswählen',''));
+ if(r.error){say('Ziele konnten nicht geladen werden: '+r.error.message);return}
+ for(const goal of r.data||[]){
+  const option=new Option(goal.title+' · '+goal.metric+' · '+goal.reward_exp+' EXP',goal.id);
+  select.add(option);
+ }
+}
+$('saveGoalReward').addEventListener('click',async()=>{
+ const id=val('rewardGoal'),exp=Number(val('goalRewardExp'));
+ if(!id||!Number.isSafeInteger(exp)||exp<0||exp>250){say('Gültiges Ziel und 0–250 EXP auswählen.');return}
+ if(!confirm('EXP-Belohnung '+exp+' für dieses automatisch geprüfte Boxerziel festlegen?'))return;
+ const button=$('saveGoalReward');button.disabled=true;
+ const r=await db.rpc('league_v21_admin_set_goal_reward',{p_goal:id,p_exp:exp});
+ if(r.error){say('EXP-Regel nicht gespeichert: '+r.error.message)}
+ else {say('Belohnungsregel gespeichert.');await loadRewardGoals()}
+ button.disabled=false;
+});
 async function listGlobals(){
  const r=await db.from('league_global_challenges_v21')
   .select('id,title,status,ends_at').order('ends_at',{ascending:false}).limit(60);
@@ -90,7 +117,7 @@ async function listSeasons(){
 async function submit(form,action){
  if(busy)return;
  busy=true;const btn=form.querySelector('button[type=submit]');btn.disabled=true;say('Speichere …');
- try{await action();say('Erfolgreich gespeichert.');form.reset();await Promise.all([listSeasons(),listGlobals()])}
+ try{await action();say('Erfolgreich gespeichert.');form.reset();await Promise.all([listSeasons(),listGlobals(),loadRewardGoals()])}
  catch(e){say('Fehler: '+e.message)}
  finally{busy=false;btn.disabled=false}
 }
