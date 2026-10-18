@@ -60,6 +60,7 @@ jobs:
       - run: node tests/duels-v2-browser.cjs
       - run: node tests/production-v2-migration-bundle.cjs
       - run: node tests/production-v2-release-safety.cjs
+      - run: node tests/production-v2-manual-release-guide.cjs
       - run: node tests/hosted-v2-anon-http.cjs
       - run: node tests/hosted-v2-pages-readonly.cjs
 
