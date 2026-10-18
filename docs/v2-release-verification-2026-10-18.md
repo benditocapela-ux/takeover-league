@@ -2,6 +2,10 @@
 
 **Status: NO-GO für Produktion bis ausdrücklichem «FREIGEBEN» und bestandenen technischen Gates.** Das produktive Supabase-Projekt wurde ausschließlich mit SELECT/Katalogabfragen geprüft. Keine Live-Migration, keine Änderung an Boxer-Konten, Einträgen oder EXP. Beide neuen Frontend-Funktionen bleiben standardmäßig deaktiviert. Der GitHub-PR bleibt Draft.
 
+## Weitere Nutzerentscheidung: Vorab-Anmeldetests überspringen
+
+Der Nutzer führt die Auth-/Login-Erprobung mit realen Boxern **erst nach der kontrollierten Liveschaltung** durch. Dieses bewusste Überspringen bedeutet **nicht**, dass Coach-/Boxer-/Admin-Passwortanmeldungen bereits bestanden wurden. Die gehosteten rollenbasierten SQL- und anonymen HTTPS-Tests bleiben gültig; die Veröffentlichung muss mit einem kleinen Live-Piloten beginnen und bei Fehlern die neuen Funktionen deaktivieren können. Produktionsmigrationen und GitHub-Deployment bleiben weiterhin durch das separate «FREIGEBEN» geschützt.
+
 ## Release-Entscheidung des Nutzers (18.10.2026): ohne Backup veröffentlichen
 
 Der Nutzer hat ausdrücklich entschieden, den V2-Rollout **ohne vorheriges Backup** durchführen zu wollen. Die Datensicherung bleibt daher **eine dringende Empfehlung, aber kein automatischer Freigabe-Blocker**. Der Nutzer akzeptiert damit bewusst das Risiko, dass bei einer fehlgeschlagenen Produktionsmigration bestehende Trainingshistorien, EXP und Profile möglicherweise nicht wiederhergestellt werden können. Das Risiko wird durch Tests und atomare SQL-Migrationen **reduziert, nicht beseitigt**. Die Free-Plan-Einschränkungen gelten unverändert.
