@@ -20,7 +20,7 @@ assert.doesNotMatch(guard,/\bCASCADE\b|DROP FUNCTION|DROP TABLE/i);
 assert.match(read('tests/production-v2-achievements-hardening.sql'),/legitimate approval trigger/i);
 for(const file of ['challenges.html','duels.html']){
  const html=read(file);
- assert.match(html,/window\.TAKEOVER_(?:CHALLENGES|DUELS)_V2_ENABLED=false/,'production must remain disabled: '+file);
+ assert.match(html,/window\.TAKEOVER_(?:CHALLENGES|DUELS)_V2_ENABLED=true/,'production frontend release flag must be enabled: '+file);
  assert.doesNotMatch(html,/service_role|sb_secret_/i,'secret key leaked into frontend: '+file);
 }
 assert.match(ignore,/\.env/);

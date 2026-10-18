@@ -9,7 +9,7 @@ const prodSource=production.match(/<script type="module">([\s\S]*?)<\/script>/)?
 assert.ok(source&&prodSource,'both duel scripts required');
 new vm.Script('(async()=>{'+source+'})()');
 new vm.Script('(async()=>{'+prodSource+'})()');
-assert.match(production,/TAKEOVER_DUELS_V2_ENABLED=false/,'live duel feature must remain disabled');
+assert.match(production,/TAKEOVER_DUELS_V2_ENABLED=true/,'released duel UI must be enabled');
 assert.match(preview,/cfgdvcccsqwfjajuizsr\.supabase\.co/);
 assert.doesNotMatch(preview,/iqarjivcrddcixrvqbfb/);
 assert.match(production,/iqarjivcrddcixrvqbfb\.supabase\.co/);

@@ -35,6 +35,6 @@ assert.match(duels,/feature_key='duels' AND is_enabled IS FALSE/,'duel rollout m
 assert.match(duels,/FROM PUBLIC,anon/,'duel functions must revoke anonymous execution');
 assert.doesNotMatch(duels,/test_only_missing_base_tables/,'test-only tables must not ship');
 const duelPage=fs.readFileSync('duels.html','utf8');
-assert.match(duelPage,/TAKEOVER_DUELS_V2_ENABLED=false/,'duel production frontend must remain disabled');
+assert.match(duelPage,/TAKEOVER_DUELS_V2_ENABLED=true/,'released duel frontend must be enabled');
 assert.match(duelPage,/iqarjivcrddcixrvqbfb/,'duel production frontend must use live project only');
 console.log('Atomic production migration matches all six modules and includes all 17 protected RPCs');
