@@ -40,3 +40,4 @@ jobs:
       - run: node tests/release-auth-ui-mocked.cjs
       - run: node tests/boxer-responsive-layout-browser.cjs
       - run: node tests/release-live-duels-browser.cjs
+      - run: node tests/league-21-browser.cjs
