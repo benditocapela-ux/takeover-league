@@ -1,16 +1,16 @@
-<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>League Manager · Takeover League 2.1</title><style>:root{font:16px system-ui,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;padding:20px 15px 100px;background:#0b1422;color:#f4f7fc}main{max-width:1020px;margin:auto}h1{color:#dfbd77}.muted{color:#b8c7d7}a{color:#dfbd77}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:15px}.panel{background:#142238;border:1px solid #374b62;padding:19px;border-radius:15px;margin:12px 0;min-width:0}.panel h2{font-size:20px;margin-top:0}label{display:grid;gap:7px;margin-top:12px;font-weight:600}input,select,textarea{width:100%;min-height:43px;color:#fff;background:#0b192a;border:1px solid #506783;border-radius:9px;padding:11px;font:inherit}button{border:0;border-radius:9px;background:#dfbd77;color:#102033;padding:11px 15px;min-height:44px;font-weight:800;cursor:pointer}button:disabled{opacity:.55}.item{border:1px solid #42536c;background:#0f1c2e;padding:12px;border-radius:11px;margin:9px 0}.actions{display:flex;flex-wrap:wrap;gap:8px}.danger{background:#573542;color:#fff}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #dfbd77;outline-offset:2px}</style>
-<link rel="stylesheet" href="./takeover-navigation.css"></head><body>
-<main><a href="./coach.html">← Trainer-Dashboard</a><h1>🥇 League Manager 2.1</h1>
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>League Manager · Takeover League 2.1</title><style>:root{font:16px system-ui,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 100px;background:var(--bg);color:var(--text)}main{max-width:1020px;margin:auto}h1{color:var(--gold)}.muted{color:var(--text)}a{color:var(--gold)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:var(--sp-4)}.panel{background:var(--surface);border:1px solid var(--line);padding:var(--sp-5);border-radius:var(--r-lg);margin:var(--sp-3) 0;min-width:0}.panel h2{font-size:var(--fs-lg);margin-top:0}label{display:grid;gap:7px;margin-top:var(--sp-3);font-weight:600}input,select,textarea{width:100%;min-height:43px;color:var(--text);background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:var(--sp-3);font:inherit}button{border:0;border-radius:var(--r-sm);background:var(--gold);color:var(--surface);padding:var(--sp-3) var(--sp-4);min-height:44px;font-weight:800;cursor:pointer}button:disabled{opacity:.55}.item{border:1px solid var(--line-strong);background:var(--surface-2);padding:var(--sp-3);border-radius:var(--r-md);margin:9px 0}.actions{display:flex;flex-wrap:wrap;gap:var(--sp-2)}.danger{background:var(--line);color:var(--text)}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"></head><body>
+<main><a href="./coach.html">← Trainer-Dashboard</a><h1><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-medal"></use></svg> League Manager 2.1</h1>
 <p class="muted">Saisons, individuelle Boxerziele, Liga-Challenges und Achievement-Nachberechnung. Aktionen sind nur mit einem aktiven Admin-Account möglich.</p>
 <p id="status" role="status">Prüfe Admin-Zugang …</p>
 <div id="dashboard" hidden class="grid">
-<section class="panel"><h2>📅 Saisonverwaltung</h2><form id="seasonForm">
+<section class="panel"><h2><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-season"></use></svg> Saisonverwaltung</h2><form id="seasonForm">
 <label>Bezeichnung<input id="seasonTitle" required minlength="3" maxlength="100" placeholder="Herbst 2026"></label>
 <label>Start<input id="seasonStart" type="date" required></label>
 <label>Ende<input id="seasonEnd" type="date" required></label>
 <p><button type="submit">Saison als Entwurf erstellen</button></p></form><div id="seasonList"></div></section>
-<section class="panel"><h2>🎯 Boxerziele</h2><form id="goalForm">
+<section class="panel"><h2><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-target"></use></svg> Boxerziele</h2><form id="goalForm">
 <label>Boxer<select id="boxerId" required></select></label>
 <label>Ziel<input id="goalTitle" minlength="3" maxlength="120" required placeholder="30 Trainings"></label>
 <label>Messwert<select id="goalMetric"><option value="training_sessions">Bestätigte Trainings</option><option value="jogging_km">Joggingkilometer</option><option value="technique_minutes">Technikminuten</option><option value="custom">Manuell</option></select></label>
@@ -23,7 +23,7 @@
 <label>EXP-Belohnung<input id="goalRewardExp" type="number" min="0" max="250" step="1" value="50"></label>
 <button type="button" id="saveGoalReward">EXP-Regel sicher speichern</button>
 </section>
-<section class="panel"><h2>⚡ Liga-Challenge</h2><form id="challengeForm">
+<section class="panel"><h2><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-bolt"></use></svg> Liga-Challenge</h2><form id="challengeForm">
 <label>Name<input id="challengeTitle" required minlength="3" maxlength="120"></label>
 <label>Beschreibung<textarea id="challengeDescription" maxlength="1000" rows="2"></textarea></label>
 <label>Messwert<select id="challengeMetric"><option value="training_sessions">Trainings</option><option value="jogging_km">Joggingkilometer</option><option value="technique_minutes">Technikminuten</option></select></label>
@@ -32,11 +32,11 @@
 <label>Ende<input id="challengeEnd" type="date" required></label>
 <label><input id="publishChallenge" type="checkbox" style="width:auto;min-height:auto"> Sofort veröffentlichen</label>
 <p><button type="submit">Liga-Challenge erstellen</button></p></form><h3>Veröffentlichte Challenges</h3><div id="globalList"></div></section>
-<section class="panel"><h2>🏅 Achievement-Nachberechnung</h2>
+<section class="panel"><h2><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-medal"></use></svg> Achievement-Nachberechnung</h2>
 <p class="muted">Bestehende Achievement-Ledger werden in begrenzten Gruppen abgeglichen. Die serverseitige Routine verhindert doppelte Buchungen. Vor dem Start aktuelle Punkte/EXP kontrollieren.</p>
 <p id="backfillStatus">Noch nicht gestartet.</p><button id="backfill" type="button">Nächste 10 Boxer prüfen</button>
-<hr style="border:0;border-top:1px solid #40516a;margin:18px 0">
-<h3>📊 Öffentliche Rekorde</h3><p class="muted">Nur öffentliche Summen und Rekorde bestätigter Trainings. Keine Notizen oder privaten Gewichtsangaben.</p>
+<hr style="border:0;border-top:1px solid var(--line-strong);margin:var(--sp-5) 0">
+<h3><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-chart"></use></svg> Öffentliche Rekorde</h3><p class="muted">Nur öffentliche Summen und Rekorde bestätigter Trainings. Keine Notizen oder privaten Gewichtsangaben.</p>
 <p id="recordsStatus" class="muted">Noch nicht aktualisiert.</p><button type="button" id="refreshRecords">Nächste 25 Boxer synchronisieren</button>
 </section></div>
 </main><script type="module">
