@@ -16,3 +16,13 @@ Production deployment must remain disabled until all checks pass.
 ## Baseline snapshot (18 October 2026)
 
 Production read-only counts: 14 profiles, 61 training submissions, 63 point transactions. Recheck immediately before and after deployment; live counts can grow naturally, so compare identities and sums as well as row totals.
+
+## Prepared migration order (NOT APPLIED)
+
+1. `20261018_allow_coach_role.sql` — add coach role compatibility.
+2. `20261018_extend_transaction_categories.sql` — allow V2 EXP transaction categories.
+3. `20261018_v2_feature_flags_disabled.sql` — register new V2 flags, disabled.
+4. `20261018_coach_challenges_v2_schema.sql` — create four RLS-protected tables.
+5. **Still required:** import/review the 17 SECURITY DEFINER RPC definitions, reconcile full test-schema constraints, run real authenticated tests and review rollback. Do not enable the feature before these steps.
+
+The schema file intentionally uses CREATE TABLE (not IF NOT EXISTS) so existing objects cause a safe failure instead of silently retaining an incompatible definition.
