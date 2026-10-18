@@ -60,24 +60,43 @@ const el=(tag,text)=>{const node=document.createElement(tag);node.textContent=St
 const dateText=value=>{if(!value)return '–';const d=new Date(value);return Number.isNaN(d.getTime())?'–':d.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'})};
 const statuses={pending:'Einladung offen',active:'Aktiv',awaiting_reviews:'Wird ausgewertet',settled:'Abgeschlossen',declined:'Abgelehnt',expired:'Abgelaufen',cancelled:'Abgebrochen'};
 let db,profile=null,eligible=[],duels=[],busy=false,sessionEpoch=0;
+const requestedOpponent=(new URLSearchParams(location.search).get('opponent')||'').trim().slice(0,120);
+let targetHint='';
 const say=(text,isError=false)=>{status.textContent=text;status.className=isError?'error':''};
 const message=e=>{const t=String(e?.message||e||'Unbekannter Fehler');if(/jwt expired|invalid jwt/i.test(t))return 'Sitzung abgelaufen. Bitte erneut anmelden.';if(/failed to fetch|networkerror/i.test(t))return 'Netzwerkfehler. Bitte Internetverbindung prüfen.';return t};
 async function rpc(name,args={}){const result=await db.rpc(name,args);if(result.error)throw result.error;return result.data}
 function reset(){sessionEpoch++;profile=null;eligible=[];duels=[];panel.hidden=true;auth.hidden=false;list.replaceChildren()}
 function populate(){
  const challenger=form.elements.challenger,opponent=form.elements.opponent;
- const requested=challenger.value;
+ const oldChallenger=challenger.value,oldOpponent=opponent.value;
  challenger.replaceChildren();opponent.replaceChildren();
  const boxer=profile.role==='boxer';
  const challengers=boxer?eligible.filter(x=>x.id===profile.id):eligible;
  for(const item of challengers){const option=el('option',item.display_name);option.value=item.id;challenger.append(option)}
- if(boxer)challenger.disabled=true;else challenger.disabled=false;
- if(!boxer&&challengers.some(x=>x.id===requested))challenger.value=requested;
+ challenger.disabled=boxer;
+ if(oldChallenger&&challengers.some(x=>x.id===oldChallenger))challenger.value=oldChallenger;
  if(boxer&&challengers.length)challenger.value=profile.id;
+ // Only an explicit, valid eligible opponent can be selected. Never quietly
+ // challenge the first unrelated boxer after a malformed or duplicate name.
+ const empty=el('option','Gegner wählen');empty.value='';opponent.append(empty);
  const id=challenger.value;
- for(const item of eligible.filter(x=>x.id!==id)){const option=el('option',item.display_name);option.value=item.id;opponent.append(option)}
- const usable=!!id&&!!opponent.value;form.querySelector('button[type=submit]').disabled=!usable;
- byId('inviteHint').textContent=usable?'Der Gegner muss die Einladung innerhalb von 48 Stunden bestätigen.':'Nicht genügend aktive Boxer für eine neue Einladung.';
+ for(const item of eligible.filter(x=>x.id!==id)){
+   const option=el('option',item.display_name);option.value=item.id;opponent.append(option);
+ }
+ opponent.value='';
+ targetHint='';
+ if(oldOpponent&&eligible.some(x=>x.id===oldOpponent&&x.id!==id)){
+   opponent.value=oldOpponent;
+ }else if(requestedOpponent){
+   const matches=eligible.filter(x=>x.display_name.trim().toLocaleLowerCase('de-CH')===requestedOpponent.toLocaleLowerCase('de-CH'));
+   if(matches.length===1&&matches[0].id!==id)opponent.value=matches[0].id;
+   else if(matches.length>1)targetHint='Mehrere Boxer haben diesen Namen. Bitte Gegner selbst wählen.';
+   else if(matches.length===1&&matches[0].id===id)targetHint='Du kannst dich nicht selbst herausfordern. Bitte anderen Gegner wählen.';
+   else targetHint='Der ausgewählte Boxer ist nicht für Duelle verfügbar. Bitte anderen Gegner wählen.';
+ }
+ const usable=!!id&&!!opponent.value;
+ form.querySelector('button[type=submit]').disabled=!usable;
+ byId('inviteHint').textContent=targetHint||(usable?'Der Gegner muss die Einladung innerhalb von 48 Stunden bestätigen.':'Wähle einen aktiven Gegner für die Einladung.');
 }
 function render(){
  list.replaceChildren();
@@ -146,6 +165,7 @@ async function init(){
  }catch(e){if(epoch!==sessionEpoch)return;if(!profile)reset();say(message(e),true)}
 }
 form.elements.challenger.addEventListener('change',populate);
+form.elements.opponent.addEventListener('change',()=>{const usable=!!form.elements.challenger.value&&!!form.elements.opponent.value;form.querySelector('button[type=submit]').disabled=!usable;if(usable)byId('inviteHint').textContent='Der Gegner muss die Einladung innerhalb von 48 Stunden bestätigen.'});
 form.onsubmit=e=>{e.preventDefault();if(busy||!profile)return;
  const challenger=form.elements.challenger.value,opponent=form.elements.opponent.value;
  const days=Number(form.elements.duration.value);
