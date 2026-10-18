@@ -105,3 +105,9 @@ Stop without writing to production if the read-only inventory shows an unknown s
 - TEST rollback-only SQL: self-invitation rejected, unsupported 3-day duration rejected, valid 14-day duration accepted. PASS.
 - TEST rollback-only SQL with simulated JWT subject: neither trainer nor inviting boxer can accept an invitation reserved for the opponent; pending status unchanged. PASS. Not an authenticated HTTP test.
 - All six CI workflows succeeded for commit `91749c93`. Production untouched.
+
+## Duel scoring integrity edge cases (2026-10-18)
+
+- TEST rollback-only: database `point_transactions_submission_id_key` rejected a second scoring transaction for the same submission before reconciliation; direct duplicate-payout RPC path was therefore not exercised. Expected database invariant verified.
+- TEST rollback-only: an approved submission whose training_date fell within the duel but whose created_at was after the duel ended was excluded from scoring; settlement yielded a 50/50 tie. PASS.
+- No persistent test or production changes.
