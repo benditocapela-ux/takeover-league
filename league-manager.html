@@ -1,0 +1,110 @@
+<!doctype html><html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>League Manager · Takeover League 2.1</title><style>:root{font:16px system-ui,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;padding:20px 15px 100px;background:#0b1422;color:#f4f7fc}main{max-width:1020px;margin:auto}h1{color:#dfbd77}.muted{color:#b8c7d7}a{color:#dfbd77}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:15px}.panel{background:#142238;border:1px solid #374b62;padding:19px;border-radius:15px;margin:12px 0;min-width:0}.panel h2{font-size:20px;margin-top:0}label{display:grid;gap:7px;margin-top:12px;font-weight:600}input,select,textarea{width:100%;min-height:43px;color:#fff;background:#0b192a;border:1px solid #506783;border-radius:9px;padding:11px;font:inherit}button{border:0;border-radius:9px;background:#dfbd77;color:#102033;padding:11px 15px;min-height:44px;font-weight:800;cursor:pointer}button:disabled{opacity:.55}.item{border:1px solid #42536c;background:#0f1c2e;padding:12px;border-radius:11px;margin:9px 0}.actions{display:flex;flex-wrap:wrap;gap:8px}.danger{background:#573542;color:#fff}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #dfbd77;outline-offset:2px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"></head><body>
+<main><a href="./coach.html">← Trainer-Dashboard</a><h1>🥇 League Manager 2.1</h1>
+<p class="muted">Saisons, individuelle Boxerziele, Liga-Challenges und Achievement-Nachberechnung. Aktionen sind nur mit einem aktiven Admin-Account möglich.</p>
+<p id="status" role="status">Prüfe Admin-Zugang …</p>
+<div id="dashboard" hidden class="grid">
+<section class="panel"><h2>📅 Saisonverwaltung</h2><form id="seasonForm">
+<label>Bezeichnung<input id="seasonTitle" required minlength="3" maxlength="100" placeholder="Herbst 2026"></label>
+<label>Start<input id="seasonStart" type="date" required></label>
+<label>Ende<input id="seasonEnd" type="date" required></label>
+<p><button type="submit">Saison als Entwurf erstellen</button></p></form><div id="seasonList"></div></section>
+<section class="panel"><h2>🎯 Boxerziele</h2><form id="goalForm">
+<label>Boxer<select id="boxerId" required></select></label>
+<label>Ziel<input id="goalTitle" minlength="3" maxlength="120" required placeholder="30 Trainings"></label>
+<label>Messwert<select id="goalMetric"><option value="training_sessions">Bestätigte Trainings</option><option value="jogging_km">Joggingkilometer</option><option value="technique_minutes">Technikminuten</option><option value="custom">Manuell</option></select></label>
+<label>Zielmenge<input id="goalTarget" type="number" min="1" max="1000000" step="0.1" value="10" required></label>
+<label>Deadline<input id="goalEnd" type="date" required></label>
+<p><button type="submit">Ziel zuweisen</button></p></form></section>
+<section class="panel"><h2>⚡ Liga-Challenge</h2><form id="challengeForm">
+<label>Name<input id="challengeTitle" required minlength="3" maxlength="120"></label>
+<label>Beschreibung<textarea id="challengeDescription" maxlength="1000" rows="2"></textarea></label>
+<label>Messwert<select id="challengeMetric"><option value="training_sessions">Trainings</option><option value="jogging_km">Joggingkilometer</option><option value="technique_minutes">Technikminuten</option></select></label>
+<label>Zielmenge<input id="challengeTarget" type="number" min="1" max="1000000" step="1" value="10" required></label>
+<label>Beginn<input id="challengeStart" type="date" required></label>
+<label>Ende<input id="challengeEnd" type="date" required></label>
+<label><input id="publishChallenge" type="checkbox" style="width:auto;min-height:auto"> Sofort veröffentlichen</label>
+<p><button type="submit">Liga-Challenge erstellen</button></p></form></section>
+<section class="panel"><h2>🏅 Achievement-Nachberechnung</h2>
+<p class="muted">Bestehende Achievement-Ledger werden in begrenzten Gruppen abgeglichen. Die serverseitige Routine verhindert doppelte Buchungen. Vor dem Start aktuelle Punkte/EXP kontrollieren.</p>
+<p id="backfillStatus">Noch nicht gestartet.</p><button id="backfill" type="button">Nächste 10 Boxer prüfen</button>
+</section></div>
+</main><script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
+const $=id=>document.getElementById(id),say=v=>$('status').textContent=v;
+let after=null,busy=false;
+const val=id=>$(id).value;
+const localDate=d=>new Date(Date.now()+d*86400000).toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'});
+$('seasonStart').value=localDate(0);$('seasonEnd').value=localDate(30);
+$('goalEnd').value=localDate(30);$('challengeStart').value=localDate(0);$('challengeEnd').value=localDate(7);
+function row(title,subtitle){const outer=document.createElement('div');outer.className='item';
+ const h=document.createElement('strong');h.textContent=title;
+ const p=document.createElement('p');p.className='muted';p.textContent=subtitle;outer.append(h,p);return outer}
+async function listSeasons(){
+ const r=await db.from('league_seasons_v21').select('id,title,starts_on,ends_on,status').order('starts_on',{ascending:false}).limit(80);
+ const root=$('seasonList');root.replaceChildren();
+ if(r.error){root.textContent='Saisons konnten nicht geladen werden: '+r.error.message;return}
+ for(const s of r.data||[]){
+  const card=row(s.title,s.starts_on+' bis '+s.ends_on+' · '+s.status);
+  if(s.status!=='closed'){
+   const button=document.createElement('button');button.textContent=s.status==='draft'?'Aktivieren':'Saison abschliessen';
+   button.type='button';button.className=s.status==='active'?'danger':'';
+   button.onclick=async()=>{
+    if(!confirm('Saison '+s.title+' wirklich '+(s.status==='draft'?'aktivieren':'abschliessen und Rangliste endgültig speichern')+'?'))return;
+    button.disabled=true;
+    const r=await db.rpc('league_v21_admin_season_action',{p_season:s.id,p_action:s.status==='draft'?'activate':'close'});
+    if(r.error){say('Saisonänderung fehlgeschlagen: '+r.error.message);button.disabled=false;return}
+    say('Saisonstatus aktualisiert.');await listSeasons();
+   };card.append(button);
+  }
+  root.append(card);
+ }
+ if(!r.data?.length)root.textContent='Noch keine Saison angelegt.';
+}
+async function submit(form,action){
+ if(busy)return;
+ busy=true;const btn=form.querySelector('button[type=submit]');btn.disabled=true;say('Speichere …');
+ try{await action();say('Erfolgreich gespeichert.');form.reset();await listSeasons()}
+ catch(e){say('Fehler: '+e.message)}
+ finally{busy=false;btn.disabled=false}
+}
+$('seasonForm').addEventListener('submit',e=>{e.preventDefault();submit(e.currentTarget,async()=>{
+ const r=await db.rpc('league_v21_admin_create_season',{p_title:val('seasonTitle'),p_start:val('seasonStart'),p_end:val('seasonEnd')});
+ if(r.error)throw r.error;
+})});
+$('goalForm').addEventListener('submit',e=>{e.preventDefault();submit(e.currentTarget,async()=>{
+ const r=await db.rpc('league_v21_save_goal',{p_goal_id:null,p_boxer_id:val('boxerId'),p_title:val('goalTitle'),p_metric:val('goalMetric'),p_target:Number(val('goalTarget')),p_end_date:val('goalEnd')});
+ if(r.error)throw r.error;
+})});
+$('challengeForm').addEventListener('submit',e=>{e.preventDefault();submit(e.currentTarget,async()=>{
+ const start=val('challengeStart'),end=val('challengeEnd');const publish=$('publishChallenge').checked;
+ if(publish&&!confirm('Diese Liga-Challenge jetzt für alle Boxer veröffentlichen?'))throw Error('Veröffentlichung abgebrochen.');
+ const r=await db.rpc('league_v21_admin_create_global_challenge',{p_title:val('challengeTitle'),p_description:val('challengeDescription'),p_metric:val('challengeMetric'),p_target:Number(val('challengeTarget')),p_starts:start+'T00:00:00+02:00',p_ends:end+'T23:59:59+02:00',p_publish:publish});
+ if(r.error)throw r.error;
+})});
+$('backfill').addEventListener('click',async()=>{
+ if(!confirm('Bis zu 10 Boxer-Achievements abgleichen? Dadurch können EXP gutgeschrieben oder korrigiert werden.'))return;
+ const button=$('backfill');button.disabled=true;$('backfillStatus').textContent='Nachberechnung läuft …';
+ const r=await db.rpc('league_v21_reconcile_achievements',{p_limit:10,p_after:after});
+ if(r.error){$('backfillStatus').textContent='Fehler: '+r.error.message}
+ else{const d=r.data||{};after=d.last_boxer_id||after;
+  $('backfillStatus').textContent=(d.processed||0)+' Boxer geprüft. '+(d.has_more?'Weitere Boxer verfügbar.':'Alle aktiven Boxer geprüft.');
+  button.disabled=!d.has_more;
+ }
+ if(r.error)button.disabled=false;
+});
+async function init(){
+ const {data:{user},error}=await db.auth.getUser();
+ if(error||!user){say('Bitte als Admin anmelden.');return}
+ const p=await db.from('profiles').select('role,is_active').eq('auth_user_id',user.id).maybeSingle();
+ if(p.error||!p.data?.is_active||p.data.role!=='admin'){say('Kein aktiver Admin-Zugang.');return}
+ const r=await db.from('profiles').select('id,display_name').eq('role','boxer').eq('is_active',true).order('display_name');
+ if(r.error){say('Boxerliste nicht verfügbar: '+r.error.message);return}
+ const select=$('boxerId');select.replaceChildren(new Option('Boxer auswählen',''));
+ for(const boxer of r.data||[])select.add(new Option(boxer.display_name,boxer.id));
+ $('dashboard').hidden=false;say('Admin-Verwaltung bereit.');await listSeasons();
+}
+init().catch(e=>say('Verwaltung nicht verfügbar: '+e.message));
+</script><script src="./takeover-navigation.js" defer></script></body></html>
