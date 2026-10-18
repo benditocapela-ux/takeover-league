@@ -29,6 +29,9 @@
 <section class="panel"><h2>🏅 Achievement-Nachberechnung</h2>
 <p class="muted">Bestehende Achievement-Ledger werden in begrenzten Gruppen abgeglichen. Die serverseitige Routine verhindert doppelte Buchungen. Vor dem Start aktuelle Punkte/EXP kontrollieren.</p>
 <p id="backfillStatus">Noch nicht gestartet.</p><button id="backfill" type="button">Nächste 10 Boxer prüfen</button>
+<hr style="border:0;border-top:1px solid #40516a;margin:18px 0">
+<h3>📊 Öffentliche Rekorde</h3><p class="muted">Nur öffentliche Summen und Rekorde bestätigter Trainings. Keine Notizen oder privaten Gewichtsangaben.</p>
+<p id="recordsStatus" class="muted">Noch nicht aktualisiert.</p><button type="button" id="refreshRecords">Nächste 25 Boxer synchronisieren</button>
 </section></div>
 </main><script type="module">
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
@@ -94,6 +97,16 @@ $('backfill').addEventListener('click',async()=>{
   button.disabled=!d.has_more;
  }
  if(r.error)button.disabled=false;
+});
+let recordsAfter=null;
+$('refreshRecords').addEventListener('click',async()=>{
+ if(!confirm('Öffentliche Statistiken aus bestätigten Trainings neu berechnen?'))return;
+ const btn=$('refreshRecords');btn.disabled=true;$('recordsStatus').textContent='Berechne Rekorde …';
+ const r=await db.rpc('league_v21_refresh_public_records',{p_limit:25,p_after:recordsAfter});
+ if(r.error){$('recordsStatus').textContent='Nicht möglich: '+r.error.message;btn.disabled=false;return}
+ const d=r.data||{};recordsAfter=d.last_boxer_id||recordsAfter;
+ $('recordsStatus').textContent=(d.processed||0)+' Boxerrekorde aktualisiert. '+(d.has_more?'Weitere verfügbar.':'Aktualisierung abgeschlossen.');
+ btn.disabled=!d.has_more;
 });
 async function init(){
  const {data:{user},error}=await db.auth.getUser();
