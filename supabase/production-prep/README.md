@@ -30,3 +30,7 @@ The schema file intentionally uses CREATE TABLE (not IF NOT EXISTS) so existing 
 ## Rollback guard
 
 `rollback_coach_challenges_v2_empty_only.sql` refuses to delete any table if V2 challenge data exists. If RPCs depend on these tables, PostgreSQL also rejects the DROP (no CASCADE). Remove the dependent V2 RPCs in a separately reviewed operation first. Do not use this rollback after live challenges or EXP awards exist; restore via a carefully designed forward fix instead.
+
+## Achievement recalculation access hardening
+
+A production audit found the SECURITY DEFINER RPC `recalculate_boxer_achievements_v2(uuid)` callable by anonymous and authenticated clients without its own caller-authorization check. Prepared (not applied): `20261018_restrict_achievement_recalculation.sql` revokes client EXECUTE only. First verify no existing frontend calls rely on this RPC and test the postgres-owned approval trigger after the revoke; do not deploy blindly.
