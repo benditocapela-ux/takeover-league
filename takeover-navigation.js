@@ -28,7 +28,8 @@
        ['🥊','Levels & EXP','index.html#levels','levels'],
        ['📜','Punkteverlauf','index.html#history','history'],
        ['🏅','Monatsauszeichnungen','awards.html',''],
-       ['⚖️','Boxer-Vergleich','boxer-compare.html','']
+       ['⚖️','Boxer-Vergleich','boxer-compare.html',''],
+       ['🏆','Saisons & Hall of Fame','league-history.html','']
      ]],
      ['Neue Funktionen',[
        ['🎯','Challenges','challenges.html','',true],
@@ -37,6 +38,7 @@
      ['Mein Bereich',[
        ['👤','Anmelden / Mein Account','login.html',''],
        ['💪','Mein Training','boxer.html',''],
+       ['🎯','Meine Ziele','goals.html',''],
        ['🥇','Trainer-Dashboard','coach.html','']
      ]]
    ];
