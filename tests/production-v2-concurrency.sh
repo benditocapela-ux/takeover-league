@@ -97,9 +97,9 @@ SQL
 
 # Clean temporary fixtures and prove existing scores/users were preserved.
 psql_run <<'SQL' >"$tmpdir/cleanup.out"
+DELETE FROM public.league_duel_exp_ledger;
 DELETE FROM public.point_transactions WHERE category='duel_exp'
  AND description IN (SELECT 'Duel reward: '||id::text FROM public.league_duels);
-DELETE FROM public.league_duel_exp_ledger;
 DELETE FROM public.league_duel_events;
 DELETE FROM public.league_duels;
 DELETE FROM public.league_coach_challenge_exp_ledger;
