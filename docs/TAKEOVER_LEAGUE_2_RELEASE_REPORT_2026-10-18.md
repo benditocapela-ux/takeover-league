@@ -61,3 +61,47 @@ Informationen: https://supabase.com/docs/guides/database/database-linter?lint=00
 5. Erst nach positivem Gate `main` mergen und Pages deployen, danach Postflight mit Rollbackplan. Kein GO LIVE ohne dokumentiertes PASS.
 
 **Keine Produktivänderung ist Teil dieses Berichts.**
+
+
+---
+## Nachtrag: Final-Completion-Durchlauf (18.10.2026)
+
+**Freigabestatus unverändert: NICHT RELEASE-READY. Hauptbranch, Produktiv-SQL und öffentliche Webseite unverändert.**
+
+### Neu im Release-Branch
+- `boxer.html`: echter Kalender der bestätigten Trainings, Streaks (mit Zürcher Trainingstag), Wochenchart, serverseitig gesperrte erneute Request-ID bei verfügbarer Migration, privater Benachrichtigungsbereich unter bestehendem Feature-Flag, rollenbegrenzte Änderungsübersicht.
+- `coach.html`: echte Schnellansicht als Dialog/Bottom-Sheet, direkt aus der Freigabe- und Trainingsliste; Aktivitätsfilter, zuletzt angesehene Boxer, idle-schonender Refresh und Audit-Panel.
+- `index-my-position.js`: eigener Ranking-Sprung nach authentifizierter Profilauflösung; Namensmehrdeutigkeiten blockieren die automatische Auswahl.
+- `boxer-compare.html`: echte öffentliche Monatsrang- und Lifetime-EXP-Werte; auf diesem Gerät gespeicherte Favoriten ohne private Attribute.
+- `takeover-ux-scroll.js`: Rücknavigations-/Tabscrollpositionen je Sitzung.
+- `challenges.html`: frei editierbare Trainer-Vorlagen, echte aggregierte Bewertungsfortschrittsabfrage und Polling bei aktiver Ansicht.
+- `duels.html`: read-only Zwischenstände aus einer geschützten Duel-RPC, wo die Migration verfügbar ist; kein erfundener Score bei deaktiviertem Backend.
+- Rangberechnung auf öffentlichen Levels, Boxer-Dashboard, Profilansicht und Vergleich auf **10 Levels pro Rang** vereinheitlicht.
+- `docs/TAKEOVER_LEAGUE_2_UX_45_RELEASE_MATRIX.md`: alle 45 UX-Punkte einzeln erfasst. **34/45 im Branch quellenbasiert integriert, 11/45 teilweise/offen; 0/45 abschliessend im echten Produktionsbrowser freigegeben.**
+
+### Supabase TEST – ausgeführte Nachweise
+- `20261018200000_training_submission_idempotency.sql`: Spalte `client_request_id` und eindeutiger Index `(boxer_id,client_request_id)` erfolgreich angelegt. Transaktionaler Duplicate-Insert-Test hat genau einen Datensatz akzeptiert; Rollback, keine Testreste.
+- `20261018210000_duel_v2_live_scores.sql`: Berechtigungsgeprüfte RPC erfolgreich auf TEST angelegt. Unter simulierter Boxer-JWT-Rolle Testduell mit realer Funktion abgefragt (0:0 bei leeren Trainingstransaktionen), danach rollback. Anonymes EXECUTE verboten; keine persistierten Testduelle.
+- `20261018220000_training_audit_reader.sql`: begrenzte RLS-/Rollenfunktion angelegt; unter simulierter JWT-Rolle eigene Historie lesbar, fremder Boxer explizit verboten. Keine Audit-JSON-Binärdaten an öffentliche Clients ausgegeben.
+- Frühere `training_drafts_v2` RLS-Tests weiterhin gültig; `training_drafts_v2` und `client_request_id` bleiben in Produktion **nicht vorhanden**.
+- Private persönliche Challenge-Zuweisung auf TEST mittels Test-only-kompatibler RPC-Aliasse `supabase/test-only/personal_assignment_compat_stage.sql` installiert, ohne bestehende TABLE-Rückgabesignaturen zu löschen. Produktionsgetreue interne Rollenprüfung nur im isolierten TEST ergänzt (`supabase/test-only/production_actor_contract_test_fixture.sql`). Transaktional nachgewiesen: Coach kann Ziel zuweisen, betroffener Boxer sieht es, anderer Boxer nicht, fremder Boxer kann Coach-Roster nicht lesen. Flags und Daten danach zurückgerollt; keine Testzuweisungen persistiert.
+- **Wichtig:** Diese Testaliases ersetzen nicht den Test der originalen Produktivmigration `20261018170000_private_boxer_challenge_assignment.sql` auf einer DB mit vollständig identischen JSONB-RPC-Signaturen. Der zuvor gefundene 42P13-Unterschied im unabhängigen Testprojekt besteht in den ORIGINALEN Signaturen weiter.
+
+### Nachprüfung produktiver Datenbank (nur SELECT)
+- 13 aktive Boxer, 56 bestätigte Trainings, davon 35 durch `legacy_import` und 21 durch reguläre Trainings-Ledger erklärt; weitere 4 storniert mit 0 Punkten/0 EXP.
+- Alle vier neuen Migrationselemente (private Drafts, Request-ID, Zwischenstands-RPC, Audit-RPC) und privates Challenge-Zuordnungsobjekt sind in Produktion **noch nicht vorhanden**. Keine produktiven Features/Flags geändert.
+- Security Advisor: 7 Warnungen für anonym aufrufbare SECURITY-DEFINER-Funktionen, 54 für authentifizierte Rollen sowie geleakter-Passwort-Schutz deaktiviert. Diese sind Review-Einträge, nicht automatisch bestätigte Exploits; keine pauschale Änderung vorgenommen.
+
+### Nachweis GitHub Actions
+- Pull Request [#8](https://github.com/benditocapela-ux/takeover-league/pull/8) **besteht bereits als WIP/DRAFT**, kein Merge.
+- Auf Commit `0f84614e56ce49766d534c00b2c63e448833f4e8`: [PR Integration Run 39151107876](https://github.com/benditocapela-ux/takeover-league/actions/runs/39151107876) **erfolgreich**: `static-checks`, `schema-integration (16)` und `schema-integration (17)` waren grün. JSDOM-/Public-HTTP-, lokale PostgreSQL-Integrations- und Transaktionsprüfungen wurden dort ausgeführt. Live-Pages-Schritt korrekt übersprungen.
+- Neue zusätzliche `tests/release-ux-staging.cjs` und eigener `release-2-validation.yml` auf Pull-Request-Ausführung vorbereitet. **Für den aktualisierten finalen Branch-Head ist ein erneutes grünes Ergebnis noch nicht nachgewiesen.** Keine Tests ohne tatsächliche Ausführung als bestanden deklarieren.
+
+### Verbleibende harte Gates vor GO LIVE
+1. TEST- und Produktivschema/Versionen inklusive Original-42P13-Migration auf gleichartiger Staging-DB vollständig nachstellen; Änderungsreihenfolge und Rollback sichern.
+2. Produktives Backup/Restore und verantwortliche Person für Produktion bestätigen; erst danach explizite SQL-Freigabe einholen.
+3. Rollenunterschied `coach` vs `admin` bei `review_training` und Admin-Dashboard sicher lösen; coach darf nicht stillschweigend andere Admin-Rechte erhalten.
+4. Signierte echte HTTP-Login-/Benutzerrollen-E2E-Tests sowie Mobile-Browsertests für Boxer/Coach durchführen; kein Zugangspasswort im Repository.
+5. Audit bei Metrikkorrekturen, echte sichere Rücknahmen, vollständige automatische Zielfortschritte und konsistente Bedienmuster abschliessen; siehe 11 offene UX-Punkte.
+6. Security-Advisor-Meldungen gezielt einzeln prüfen, gegebenenfalls Testfixes, erneute Advisors, finale CI für exakten Release-SHA.
+7. Release-Freeze, DDL und Flag-Gates nach eigener Abnahme, dann **separates ausdrückliches GO LIVE**.
