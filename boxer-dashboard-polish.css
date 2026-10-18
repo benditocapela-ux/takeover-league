@@ -130,3 +130,72 @@ main>header .bar #logout:hover{background:var(--line)}
  .boxer-challenge-links{padding:var(--sp-4)!important}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.boxer-quick-links a{transition:none}}
+
+
+/* Studio Dashboard: isolated tab layout, original cards and IDs retained. */
+#content.studio-content{display:block;max-width:100%;min-width:0}
+#content.studio-content.hidden{display:none}
+.studio-tabs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-1);position:sticky;top:0;z-index:15;padding:var(--sp-2);margin:0 0 var(--sp-5);border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface-2);box-shadow:var(--shadow-card)}
+.studio-tabs [role="tab"]{display:flex;align-items:center;justify-content:center;gap:var(--sp-2);background:transparent;color:var(--muted);border:1px solid transparent;border-radius:var(--r-md);min-width:0;min-height:48px;padding:var(--sp-3);font:800 var(--fs-base) var(--font);cursor:pointer}
+.studio-tabs [role="tab"][aria-selected="true"]{color:var(--bg);background:var(--gold);box-shadow:var(--shadow-card)}
+.studio-tabs [role="tab"]:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+.studio-pane[hidden]{display:none!important}
+.studio-pane:not([hidden]){display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:var(--sp-4);align-items:start}
+.studio-pane>.card{grid-column:1/-1;min-width:0;margin:0;padding:var(--sp-6);background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);box-shadow:var(--shadow-card);overflow-wrap:anywhere}
+.studio-pane>.card h2{margin:0 0 var(--sp-3);font-size:var(--fs-lg);color:var(--text)}
+.studio-pane>.card h3{font-size:var(--fs-base);margin:var(--sp-5) 0 var(--sp-3)}
+.studio-pane>.card .muted{color:var(--muted)}
+.studio-pane>.card a,.studio-pane>.card a:hover{color:var(--gold)}
+.studio-pane-overview>.boxer-hero{grid-column:1/-1;margin:0;padding:var(--sp-7);background:linear-gradient(135deg,var(--surface),var(--surface-2));border-color:var(--line-strong)}
+.studio-identity{margin-top:var(--sp-4);display:grid;gap:var(--sp-2)}
+.studio-identity>strong{font-size:var(--fs-xl);color:var(--text)}
+.studio-identity-meta{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
+.studio-identity-meta>span{padding:var(--sp-2) var(--sp-3);border:1px solid var(--line-strong);border-radius:var(--r-sm);background:var(--surface-2);color:var(--muted);font-size:var(--fs-xs)}
+.studio-identity-meta b{color:var(--gold);font-variant-numeric:tabular-nums}
+.studio-ring-wrap{grid-column:1/-1;display:flex;align-items:center;gap:var(--sp-4);padding:var(--sp-2);border:1px solid var(--line);border-radius:var(--r-md)}
+.studio-ring{position:relative;display:grid;place-items:center;flex:0 0 92px;width:92px;height:92px}
+.studio-ring-svg{width:92px;height:92px;transform:rotate(-90deg);overflow:visible}
+.studio-ring-track,.studio-ring-progress{fill:none;stroke-width:9}
+.studio-ring-track{stroke:var(--line)}
+.studio-ring-progress{stroke:var(--gold);stroke-linecap:round;transition:stroke-dasharray .2s ease}
+.studio-ring>span{position:absolute;font-size:var(--fs-base);font-weight:900;font-variant-numeric:tabular-nums}
+.studio-ring-copy{display:grid;gap:var(--sp-2)}
+.studio-ring-copy strong{color:var(--text);font-size:var(--fs-sm)}
+.studio-ring-copy span{color:var(--muted);font-size:var(--fs-xs)}
+.studio-pane-overview>.studio-summary{grid-column:span 6}
+.studio-section-overline{font-size:var(--fs-xs);font-weight:900;letter-spacing:1.4px;color:var(--gold);margin-bottom:var(--sp-2)}
+.studio-summary-metrics{display:grid;grid-template-columns:1fr 1fr;gap:var(--sp-3)}
+.studio-summary-metrics>div{display:grid;gap:var(--sp-2);padding:var(--sp-4);border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2)}
+.studio-summary-metrics strong{color:var(--gold);font-size:var(--fs-2xl)}
+.studio-summary-metrics span{color:var(--muted);font-size:var(--fs-xs)}
+.studio-recent-row{padding:var(--sp-3) 0;border-bottom:1px solid var(--line)}
+.studio-recent-head{display:flex;justify-content:space-between;align-items:center;gap:var(--sp-2)}
+.studio-recent-head strong{font-size:var(--fs-sm)}
+.studio-recent-row p{margin:var(--sp-2) 0 0;overflow-wrap:anywhere}
+.studio-text-link{display:inline-flex;align-items:center;min-height:44px;margin-top:var(--sp-2);font-weight:800}
+.studio-pane-overview>#trainingFormCard{grid-column:span 7;border-top:2px solid var(--gold)}
+.studio-pane-overview>#boxerTaskCenter,.studio-pane-overview>#boxerNotificationSection{grid-column:span 5}
+.studio-pane-details>#profileCard{border-color:var(--gold)}
+.studio-pane-details>#trainingStats,.studio-pane-details>#expRankSection,.studio-pane-details>#performance30Section,.studio-pane-details>#boxerFeedbackSection{grid-column:span 6}
+.studio-pane-history>#trainingInsights{grid-column:1/-1}
+.studio-pane #trainingFormCard #submit{background:var(--surface-2);color:var(--gold);border:1px solid var(--gold);min-height:48px}
+.studio-pane #trainingFormCard #submit:hover{background:var(--gold-soft)}
+.studio-pane .boxer-quick-links a.primary,.studio-pane .boxer-quick-links a.primary:hover{background:var(--gold);color:var(--bg)}
+.studio-pane .boxer-hero-stats{align-content:start}
+.studio-pane #trainingInsights .ux-calendar{gap:var(--sp-2)}
+.studio-pane #expRankSection .exp-fill{background:var(--gold)}
+@media(max-width:760px){
+ .studio-pane:not([hidden]){gap:var(--sp-3)}
+ .studio-pane>.card,.studio-pane-overview>.studio-summary,.studio-pane-overview>#trainingFormCard,.studio-pane-overview>#boxerTaskCenter,.studio-pane-overview>#boxerNotificationSection,.studio-pane-details>#trainingStats,.studio-pane-details>#expRankSection,.studio-pane-details>#performance30Section,.studio-pane-details>#boxerFeedbackSection{grid-column:1/-1}
+ .studio-pane-overview>.boxer-hero{grid-template-columns:1fr;padding:var(--sp-5)}
+ .studio-tabs{margin-bottom:var(--sp-3)}
+}
+@media(max-width:520px){
+ .studio-tabs [role="tab"]{gap:var(--sp-1);padding:var(--sp-2);font-size:var(--fs-sm)}
+ .studio-tabs [role="tab"] .tl-icon{width:1em;height:1em}
+ .studio-pane>.card{padding:var(--sp-4)}
+ .studio-pane-overview>.boxer-hero{padding:var(--sp-4)}
+ .studio-identity-meta>span{flex:1 1 auto}
+ .studio-recent-head{align-items:start}
+}
+@media(prefers-reduced-motion:reduce){.studio-ring-progress{transition:none}}
