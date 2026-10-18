@@ -14,7 +14,7 @@ const mayManage=c=>['coach','admin'].includes(role)&&(c.is_creator||role==='admi
 
 let db,role='',busy=false,sessionEpoch=0;
 async function rpc(name,args={}){const r=await db.rpc(name,args);if(r.error)throw r.error;return r.data}
-async function act(name,args){if(busy)return;busy=true;try{say('Wird verarbeitet …');await rpc(name,args);await load()}catch(e){say(friendlyError(e),true)}finally{busy=false}}
+async function act(name,args){if(busy)return;busy=true;const epoch=sessionEpoch;try{say('Wird verarbeitet …');await rpc(name,args);if(epoch!==sessionEpoch||!role)return;await load()}catch(e){if(epoch===sessionEpoch)say(friendlyError(e),true)}finally{busy=false}}
 function action(parent,label,name,id){const b=el('button',label);b.type='button';b.onclick=()=>act(name,{p_challenge_id:id});parent.append(b)}
 let allChallenges=[];
 async function load(){const epoch=sessionEpoch;const data=await rpc('coach_challenge_v2_list');if(epoch!==sessionEpoch||!role)return;allChallenges=Array.isArray(data)?data:[];renderChallenges()}
@@ -76,6 +76,6 @@ login.onsubmit=async e=>{e.preventDefault();const f=new FormData(login);say('Anm
 document.querySelector('#challengeSearch').addEventListener('input',renderChallenges);
 document.querySelector('#challengeStatus').addEventListener('change',renderChallenges);
 refresh.onclick=async()=>{if(busy)return;refresh.disabled=true;try{say('Challenges werden aktualisiert …');await load()}catch(e){say(friendlyError(e),true)}finally{refresh.disabled=false}};
-document.querySelector('#create').onsubmit=async e=>{e.preventDefault();if(busy)return;busy=true;const f=new FormData(e.target);try{await rpc('coach_challenge_v2_create_draft',{p_title:f.get('title'),p_description:f.get('description'),p_kind:f.get('kind'),p_duration_days:Number(f.get('days'))});e.target.reset();await load()}catch(err){say(friendlyError(err),true)}finally{busy=false}};
+document.querySelector('#create').onsubmit=async e=>{e.preventDefault();if(busy||!role)return;busy=true;const epoch=sessionEpoch;const f=new FormData(e.target);try{await rpc('coach_challenge_v2_create_draft',{p_title:f.get('title'),p_description:f.get('description'),p_kind:f.get('kind'),p_duration_days:Number(f.get('days'))});if(epoch!==sessionEpoch||!role)return;e.target.reset();await load()}catch(err){if(epoch===sessionEpoch)say(friendlyError(err),true)}finally{busy=false}};
 init();
 </script></body></html>
