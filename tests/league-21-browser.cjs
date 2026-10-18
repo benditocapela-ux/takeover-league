@@ -33,7 +33,7 @@ function mockSupabase(){
    neq(){return builder},
    order(){return builder},
    limit(){return builder},
-   maybeSingle:async()=>({data:table==='profiles'?prof:null,error:null}),
+   maybeSingle:async()=>({data:table==='profiles'?{...prof,role:window.__testRole||'boxer'}:null,error:null}),
    then(resolve,reject){
     let data=[];
     if(table==='profiles')data=boxers;
