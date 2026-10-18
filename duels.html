@@ -66,11 +66,13 @@ async function rpc(name,args={}){const result=await db.rpc(name,args);if(result.
 function reset(){profile=null;eligible=[];duels=[];panel.hidden=true;auth.hidden=false;list.replaceChildren()}
 function populate(){
  const challenger=form.elements.challenger,opponent=form.elements.opponent;
+ const requested=challenger.value;
  challenger.replaceChildren();opponent.replaceChildren();
  const boxer=profile.role==='boxer';
  const challengers=boxer?eligible.filter(x=>x.id===profile.id):eligible;
  for(const item of challengers){const option=el('option',item.display_name);option.value=item.id;challenger.append(option)}
  if(boxer)challenger.disabled=true;else challenger.disabled=false;
+ if(!boxer&&challengers.some(x=>x.id===requested))challenger.value=requested;
  if(boxer&&challengers.length)challenger.value=profile.id;
  const id=challenger.value;
  for(const item of eligible.filter(x=>x.id!==id)){const option=el('option',item.display_name);option.value=item.id;opponent.append(option)}
