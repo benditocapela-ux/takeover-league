@@ -45,10 +45,9 @@ assert.match(post,/protected_authenticated_rpcs=23/);
 assert.match(post,/v2_tables=7 AND rls_protected_tables=7/);
 assert.match(post,/invalid_challenge_exp_ledgers=0/);
 assert.match(post,/invalid_duel_exp_ledgers=0/);
+const releaseRunbook=read('docs/RELEASE_NACH_FREIGEBEN.md');
 assert.match(releaseRunbook,/release_preflight_read_only\.sql/);
 assert.match(releaseRunbook,/release_postflight_read_only\.sql/);
-
-const releaseRunbook=read('docs/RELEASE_NACH_FREIGEBEN.md');
 assert.match(releaseRunbook,/«FREIGEBEN»/,'Release must require explicit final approval');
 assert.match(releaseRunbook,/ohne Backup/i,'Conscious no-backup risk decision must be documented');
 assert.match(releaseRunbook,/release_coach_challenges_v2/);
