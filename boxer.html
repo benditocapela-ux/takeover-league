@@ -71,14 +71,15 @@ $('saveAvatar').addEventListener('click',async()=>{const button=$('saveAvatar');
 $('kind').addEventListener('change',updateFields);
 
 const draftFields=['kind','date','notes','joggingKm','techniqueMinutes'];
-let cloudDraftAvailable=false,cloudDraftTimer=null,cloudDraftSequence=0;
+let cloudDraftAvailable=false,cloudDraftTimer=null,cloudDraftSequence=0,cloudDraftInFlight=Promise.resolve();
 function schedulePrivateDraftSave(){
  if(!cloudDraftAvailable||!profile)return;
  if(cloudDraftTimer!==null)clearTimeout(cloudDraftTimer);
  const sequence=++cloudDraftSequence;
  $('draftStatus').textContent='Änderungen werden privat gesichert …';
- cloudDraftTimer=setTimeout(async()=>{
+ cloudDraftTimer=setTimeout(()=>{
   cloudDraftTimer=null;
+  cloudDraftInFlight=cloudDraftInFlight.then(async()=>{
   const kind=types.find(t=>String(t.id)===$('kind').value);
   const km=$('joggingKm').value,mins=$('techniqueMinutes').value;
   try{
@@ -90,6 +91,7 @@ function schedulePrivateDraftSave(){
    if(r.error)throw r.error;
    if(sequence===cloudDraftSequence)$('draftStatus').textContent='Privater Entwurf in Supabase gesichert – noch nicht eingereicht.';
   }catch(e){if(sequence===cloudDraftSequence)$('draftStatus').textContent='Cloud-Speichern fehlgeschlagen; lokaler Entwurf ist weiterhin gesichert.'}
+  });
  },1300);
 }
 async function loadCloudDraft(){
@@ -135,7 +137,7 @@ function rememberDraft(){const key=sessionDraftKey();if(!key)return;try{sessionS
 function applyDraft(d){if(!d||typeof d!=='object')return;if(d.kind&&types.some(t=>String(t.id)===String(d.kind)))$('kind').value=String(d.kind);if(/^\d{4}-\d{2}-\d{2}$/.test(d.date||''))$('date').value=d.date;for(const id of ['notes','joggingKm','techniqueMinutes'])if(d[id]!=null)$(id).value=String(d[id]);updateFields();for(const id of ['notes','joggingKm','techniqueMinutes'])if(d[id]!=null)$(id).value=String(d[id]);}
 function restoreTrainingDraft(){const saved=draftValue();if(saved){applyDraft(saved);$('draftStatus').textContent='Letzten Sitzungsentwurf wiederhergestellt.'}else{try{const k=localStorage.getItem('takeover_last_type_'+profile.id);if(k&&types.some(t=>String(t.id)===k)){$('kind').value=k;updateFields()}}catch{}}}
 $('repeatTraining').addEventListener('click',()=>{let last=null;try{last=JSON.parse(localStorage.getItem('takeover_last_training_'+profile.id)||'null')}catch{}if(!last){show('Noch kein vorheriges Training gespeichert.');return}applyDraft({...last,date:$('date').value});rememberDraft();show('Letztes Training übernommen. Bitte Datum und Angaben prüfen.','success')});
-$('clearDraft').addEventListener('click',async()=>{if(!confirm('Diesen nicht eingereichten Trainingsentwurf verwerfen?'))return;if(cloudDraftTimer!==null){clearTimeout(cloudDraftTimer);cloudDraftTimer=null}cloudDraftSequence++;try{sessionStorage.removeItem(sessionDraftKey());sessionStorage.removeItem(submissionRetryKey())}catch{}if(cloudDraftAvailable){const result=await db.from('training_drafts_v2').delete().eq('boxer_id',profile.id);if(result.error){show('Cloud-Entwurf konnte nicht gelöscht werden: '+result.error.message,'error');return}}$('form').reset();const d=new Date();$('date').value=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');updateFields();$('draftStatus').textContent='Entwurf verworfen.'});
+$('clearDraft').addEventListener('click',async()=>{if(!confirm('Diesen nicht eingereichten Trainingsentwurf verwerfen?'))return;if(cloudDraftTimer!==null){clearTimeout(cloudDraftTimer);cloudDraftTimer=null}cloudDraftSequence++;await cloudDraftInFlight;try{sessionStorage.removeItem(sessionDraftKey());sessionStorage.removeItem(submissionRetryKey())}catch{}if(cloudDraftAvailable){const result=await db.from('training_drafts_v2').delete().eq('boxer_id',profile.id);if(result.error){show('Cloud-Entwurf konnte nicht gelöscht werden: '+result.error.message,'error');return}}$('form').reset();const d=new Date();$('date').value=[d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-');updateFields();$('draftStatus').textContent='Entwurf verworfen.'});
 $('form').addEventListener('input',rememberDraft);
 
 
@@ -299,7 +301,7 @@ $('form').addEventListener('submit',async e=>{
    if(old.error||!old.data)throw r.error;
    show('Training wurde bereits eingereicht – keine doppelten Punkte.', 'success');
   }
-  try{localStorage.setItem('takeover_last_type_'+profile.id,String(type.id));localStorage.setItem('takeover_last_training_'+profile.id,JSON.stringify({kind:saved.kind,joggingKm:saved.joggingKm,techniqueMinutes:saved.techniqueMinutes}));sessionStorage.removeItem(sessionDraftKey());sessionStorage.removeItem(submissionRetryKey())}catch{}if(cloudDraftAvailable){const cleanup=await db.from('training_drafts_v2').delete().eq('boxer_id',profile.id);if(cleanup.error)console.warn('Entwurf nach Einreichung nicht gelöscht:',cleanup.error.message)}
+  try{localStorage.setItem('takeover_last_type_'+profile.id,String(type.id));localStorage.setItem('takeover_last_training_'+profile.id,JSON.stringify({kind:saved.kind,joggingKm:saved.joggingKm,techniqueMinutes:saved.techniqueMinutes}));sessionStorage.removeItem(sessionDraftKey());sessionStorage.removeItem(submissionRetryKey())}catch{}if(cloudDraftAvailable){await cloudDraftInFlight;const cleanup=await db.from('training_drafts_v2').delete().eq('boxer_id',profile.id);if(cleanup.error)console.warn('Entwurf nach Einreichung nicht gelöscht:',cleanup.error.message)}
   $('draftStatus').textContent='Erfolgreich eingereicht. Entwurf gelöscht.';
   show('Training eingereicht – wartet auf Bestätigung.','success');
   $('notes').value='';$('joggingKm').value='';$('techniqueMinutes').value='';$('kind').value=String(type.id);updateFields();await load();
