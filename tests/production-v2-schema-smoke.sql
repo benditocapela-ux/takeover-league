@@ -45,6 +45,67 @@ BEGIN
 END $$;
 INSERT INTO public.profiles(id,role) VALUES('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb','coach');
 INSERT INTO public.point_transactions(category) VALUES ('duel_exp'),('challenge_exp');
+-- Verify all four tables reject direct application-role access.
+DO $
+DECLARE item text; role_name text; privilege text;
+BEGIN
+ FOREACH item IN ARRAY ARRAY['league_coach_challenges','league_coach_challenge_entries',
+   'league_coach_challenge_reviews','league_coach_challenge_exp_ledger'] LOOP
+   FOREACH role_name IN ARRAY ARRAY['anon','authenticated'] LOOP
+     FOREACH privilege IN ARRAY ARRAY['SELECT','INSERT','UPDATE','DELETE'] LOOP
+       IF has_table_privilege(role_name,'public.'||item,privilege) THEN
+         RAISE EXCEPTION 'Unexpected client permission: % % %',role_name,item,privilege;
+       END IF;
+     END LOOP;
+   END LOOP;
+ END LOOP;
+END $;
+-- Database rejects illegal challenge settings and duplicate enrollment/reward rows.
+DO $
+DECLARE cid uuid; boxer uuid := 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa';
+DECLARE trainer uuid := 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
+DECLARE failed boolean;
+BEGIN
+ BEGIN
+   INSERT INTO public.league_coach_challenges(created_by,title,challenge_kind,duration_days)
+   VALUES(trainer,'No','individual',7);
+   RAISE EXCEPTION 'Expected invalid title rejection';
+ EXCEPTION WHEN check_violation THEN NULL; END;
+ BEGIN
+   INSERT INTO public.league_coach_challenges(created_by,title,challenge_kind,duration_days)
+   VALUES(trainer,'Valid title','group',7);
+   RAISE EXCEPTION 'Expected invalid kind rejection';
+ EXCEPTION WHEN check_violation THEN NULL; END;
+ BEGIN
+   INSERT INTO public.league_coach_challenges(created_by,title,challenge_kind,duration_days)
+   VALUES(trainer,'Valid title','individual',10);
+   RAISE EXCEPTION 'Expected invalid duration rejection';
+ EXCEPTION WHEN check_violation THEN NULL; END;
+ INSERT INTO public.league_coach_challenges(created_by,title,challenge_kind,duration_days)
+ VALUES(trainer,'Test Challenge','individual',7) RETURNING id INTO cid;
+ INSERT INTO public.league_coach_challenge_entries(challenge_id,boxer_id)
+ VALUES(cid,boxer);
+ BEGIN
+   INSERT INTO public.league_coach_challenge_entries(challenge_id,boxer_id)
+   VALUES(cid,boxer);
+   RAISE EXCEPTION 'Expected duplicate enrollment rejection';
+ EXCEPTION WHEN unique_violation THEN NULL; END;
+ INSERT INTO public.league_coach_challenge_exp_ledger(challenge_id,boxer_id,awarded_exp)
+ VALUES(cid,boxer,25);
+ BEGIN
+   INSERT INTO public.league_coach_challenge_exp_ledger(challenge_id,boxer_id,awarded_exp)
+   VALUES(cid,boxer,75);
+   RAISE EXCEPTION 'Expected reward validation or uniqueness rejection';
+ EXCEPTION WHEN check_violation OR unique_violation THEN NULL; END;
+ BEGIN
+   INSERT INTO public.league_coach_challenge_reviews(challenge_id,boxer_id,reviewed_by,approved,reason)
+   VALUES(cid,boxer,trainer,true,'bad');
+   RAISE EXCEPTION 'Expected invalid review reason rejection';
+ EXCEPTION WHEN check_violation THEN NULL; END;
+ DELETE FROM public.league_coach_challenge_exp_ledger WHERE challenge_id=cid;
+ DELETE FROM public.league_coach_challenge_entries WHERE challenge_id=cid;
+ DELETE FROM public.league_coach_challenges WHERE id=cid;
+END $;
 \i supabase/production-prep/rollback_coach_challenges_v2_empty_only.sql
 DO $$
 BEGIN
