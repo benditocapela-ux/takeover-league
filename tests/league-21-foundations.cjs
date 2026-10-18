@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),assert=require('node:assert/strict'),{JSDOM}=require('jsdom');
 const read=f=>fs.readFileSync(f,'utf8');
-for(const f of ['goals.html','league-history.html','boxer-profile.html']){
+for(const f of ['goals.html','league-history.html','league-challenges.html','boxer-profile.html']){
  const d=new JSDOM(read(f),{url:'https://example.test/takeover-league/'+f});
  assert.ok(d.window.document.querySelector('meta[name=viewport]'),'responsive viewport '+f);
  assert.ok(d.window.document.querySelector('script[src="./takeover-navigation.js"]'),'site navigation '+f);
@@ -31,4 +31,24 @@ assert.match(rpc,/actor\.id<>target\.id/);
 assert.match(rpc,/goal\.metric<>'custom' and actor\.role='boxer'/);
 assert.match(rpc,/security invoker/);
 assert.doesNotMatch(rpc,/insert into public\.point_transactions|update public\.point_transactions/i,'Goal progress must not grant EXP without reconciliation');
-console.log('PASS V2.1 profile radar, season/Hall-of-Fame pages, owner goal API and reward isolation');
+const global=read('league-challenges.html');
+assert.match(global,/league_global_challenges_v21/);
+assert.match(global,/league_v21_join_global_challenge/);
+assert.match(global,/training_submissions/);
+assert.match(global,/\.eq\('status','approved'\)/);
+const globalSql=read('supabase/migrations/20261019014000_league_21_global_challenges.sql');
+assert.match(globalSql,/unique\(challenge_id,boxer_id\)/);
+assert.match(globalSql,/on conflict\(challenge_id,boxer_id\)/);
+assert.match(globalSql,/enable row level security/);
+assert.doesNotMatch(globalSql,/insert into public\.point_transactions/i);
+const compare=read('boxer-compare.html');
+assert.match(compare,/function renderHeadToHead\(/);
+assert.match(compare,/id="headToHead"/);
+const achievements=read('supabase/migrations/20261019012000_league_21_admin_achievement_backfill.sql');
+assert.match(achievements,/p\.role='admin'/);
+assert.match(achievements,/p_limit not between 1 and 25/);
+assert.match(achievements,/public\.recalculate_boxer_achievements_v2/);
+const duel=read('supabase/migrations/20261019013000_league_21_duel_reward_policy_quote.sql');
+assert.match(duel,/preview_only_no_payout/);
+assert.doesNotMatch(duel,/insert into public\.point_transactions|update public\.point_transactions/i);
+console.log('PASS V2.1 goals, achievement backfill, global challenges, public radar and H2H, seasons, safe quote isolation');
