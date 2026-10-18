@@ -6,6 +6,26 @@ const index=read('index.html'),profile=read('boxer-profile.html'),
  src=read('boxer-profile.js'),duels=read('duels.html'),challenges=read('challenges.html');
 const migration=read('supabase/migrations/20261018170000_private_boxer_challenge_assignment.sql');
 const deploy=read('.github/workflows/takeover-pages-deploy.yml');
+const indexDom=new JSDOM(index,{url:'https://benditocapela-ux.github.io/takeover-league/',runScripts:'outside-only'});
+const challengeDom=new JSDOM(challenges,{url:'https://benditocapela-ux.github.io/takeover-league/challenges.html',runScripts:'outside-only'});
+const duelDom=new JSDOM(duels,{url:'https://benditocapela-ux.github.io/takeover-league/duels.html',runScripts:'outside-only'});
+const indexScript=[...indexDom.window.document.querySelectorAll('script:not([src])')].find(x=>x.textContent.includes('function renderLevels'));
+assert.ok(indexScript,'Original ranking render script missing');
+assert.doesNotThrow(()=>new Function(indexScript.textContent),'Index inline leaderboard JavaScript must parse');
+for(const [label,dom] of [['coach challenge',challengeDom],['duels',duelDom]]){
+ const moduleText=dom.window.document.querySelector('script[type="module"]')?.textContent||'';
+ assert.ok(moduleText.includes('import {createClient}'),'Existing Supabase module script absent in '+label);
+ assert.doesNotThrow(()=>new Function(moduleText.replace(/^\s*import\s+[^;]+;\s*/,'').replace(/^\s*import\s+[^;]+;\s*/gm,'')),label+' module JavaScript must parse');
+}
+const personalForm=challengeDom.window.document.querySelector('#assignPersonal');
+assert.ok(personalForm,'Personal challenge form not found in actual HTML DOM');
+assert.ok(personalForm.closest('#targetedAssignment')?.closest('#coach'),
+ 'Only authenticated coach view must contain the assignment form');
+assert.equal(personalForm.elements.title.required,true);
+assert.equal(personalForm.elements.goal.required,true);
+assert.equal(challengeDom.window.document.querySelector('#targetedAssignment').hidden,true);
+assert.equal(duelDom.window.document.querySelector('form#invite').elements.opponent.required,true);
+
 
 assert.match(index,/href="\.\/boxer-profile\.html\?name=\$\{safe\(encodeURIComponent\(e.name\)\)\}"/,
  'Monthly ranking rows must link to public boxer profile');
