@@ -4,6 +4,7 @@
 .personal-assignment h3{color:#dfbd77;margin-top:0}.personal-assignment label{display:grid;gap:6px;font-size:13px;font-weight:700}
 .personal-assignment textarea,.personal-assignment input,.personal-assignment select{width:100%;max-width:100%}
 .personal-assignment #targetedHint{font-size:13px;color:#d0dce8}
+ .tl-challenge-progress{display:grid;gap:7px;margin:12px 0;padding:12px;border:1px solid #43556b;border-radius:12px}.tl-challenge-track{height:11px;overflow:hidden;border-radius:8px;background:#33455b}.tl-challenge-fill{height:100%;background:#dfbd77;transition:width .2s}.tl-progress-action{min-height:44px;justify-self:start}.tl-challenge-progress p{margin:0}
 </style><link rel="stylesheet" href="./takeover-navigation.css"></head>
 <body><main><p><a href="./boxer.html">Produktions-Boxeransicht</a> · <a href="./coach.html">Produktions-Coachansicht</a></p><h1>Coach Challenges V2</h1><p id="rolloutNote">Persönliche Ziele, Wettbewerbe und manuelle Coach-Bewertungen.</p><p>Du kannst öffentlichen Challenges beitreten. Trainer können zusätzlich persönliche Challenges gezielt vergeben.</p><p id="status" role="status">Verbindung wird geprüft …</p><section id="signin"><h2>Konto anmelden</h2><form id="login"><input name="email" type="email" autocomplete="username" placeholder="E-Mail" required><input name="password" type="password" autocomplete="current-password" placeholder="Passwort" required><button>Anmelden</button></form><button id="logout" type="button" hidden>Abmelden</button></section><section id="coach" hidden><h2>Challenge erstellen</h2><label for="challengeTemplate">Schnellvorlage (optional)</label><select id="challengeTemplate" aria-label="Challenge-Vorlage auswählen"><option value="">Ohne Vorlage</option><option value="technique">Technik-Fokus</option><option value="conditioning">Ausdauer-Fokus</option><option value="consistency">Trainingskonstanz</option></select><small>Die Vorlage füllt nur das Formular aus. Vor dem Erstellen können alle Angaben geändert werden.</small><form id="create"><input name="title" required maxlength="120" placeholder="Titel"><textarea name="description" placeholder="Beschreibung"></textarea><select name="kind"><option value="individual">Individuell</option><option value="competition">Wettkampf</option><option value="coach_goal">Coach-Ziel</option></select><select name="days"><option value="7">7 Tage</option><option value="14">14 Tage</option><option value="30">30 Tage</option></select><button>Entwurf erstellen</button></form>
 <section id="targetedAssignment" class="personal-assignment" hidden aria-labelledby="targetedTitle">
@@ -38,6 +39,46 @@ const targetedHint=document.querySelector('#targetedHint');
 async function rpc(name,args={}){const r=await db.rpc(name,args);if(r.error)throw r.error;return r.data}
 async function act(name,args){if(busy)return;busy=true;const epoch=sessionEpoch;try{say('Wird verarbeitet …');await rpc(name,args);if(epoch!==sessionEpoch||!role)return;await load()}catch(e){if(epoch===sessionEpoch)say(friendlyError(e),true)}finally{busy=false}}
 function action(parent,label,name,id){const b=el('button',label);b.type='button';b.onclick=()=>act(name,{p_challenge_id:id});parent.append(b)}
+
+function safePercent(n){return Math.max(0,Math.min(100,Math.round(n)))}
+function challengeProgressCard(c){
+ const root=document.createElement('section');root.className='tl-challenge-progress';root.setAttribute('aria-label','Fortschritt: '+String(c.title||'Challenge'));
+ const info=el('p','');info.className='meta';info.setAttribute('role','status');
+ const bar=document.createElement('div');bar.className='tl-challenge-track';bar.setAttribute('role','progressbar');bar.setAttribute('aria-label','Verstrichene Challenge-Zeit');bar.setAttribute('aria-valuemin','0');bar.setAttribute('aria-valuemax','100');
+ const fill=document.createElement('div');fill.className='tl-challenge-fill';bar.append(fill);
+ const daysLeft=c.ends_at?Math.max(0,Math.ceil((new Date(c.ends_at).getTime()-Date.now())/86400000)):null;
+ const started=c.starts_at?new Date(c.starts_at).getTime():NaN,ends=c.ends_at?new Date(c.ends_at).getTime():NaN;
+ const timePct=Number.isFinite(started)&&Number.isFinite(ends)&&ends>started?safePercent((Date.now()-started)/(ends-started)*100):0;
+ fill.style.width=timePct+'%';bar.setAttribute('aria-valuenow',String(timePct));
+ info.textContent=['active','awaiting_reviews','settled'].includes(c.status)
+  ?(c.status==='settled'?'Challenge abgeschlossen.':daysLeft===null?'Zeitraum wird geladen.':daysLeft+' Tage bis zum Ende.')+' · '+timePct+'% der Zeit verstrichen'
+  :'Start nach Freigabe durch den Coach.';
+ root.append(info,bar);
+ const view=el('button','Fortschritt aktualisieren');view.type='button';view.className='tl-progress-action';
+ const detail=el('p','');detail.className='meta';detail.setAttribute('role','status');
+ view.onclick=async()=>{
+  if(busy)return;
+  view.disabled=true;detail.textContent='Lade aktuellen Challenge-Fortschritt …';
+  try{
+   const d=await rpc('coach_challenge_v2_progress',{p_challenge_id:c.id});
+   if(!d||typeof d!=='object'||Array.isArray(d))throw Error('Detaillierter Fortschritt in dieser Datenbankversion nicht verfügbar.');
+   if(role==='boxer'){
+    const state=d.my_enrollment_status||c.my_enrollment_status;
+    detail.textContent=state==='joined'?'Du bist angemeldet. Deine Trainings zählen nach Bestätigung durch den Coach.':
+      state==='completed'?'Teilnahme abgeschlossen.':state==='withdrawn'?'Teilnahme zurückgezogen.':'Du bist noch nicht angemeldet.';
+    if(d.my_review_approved===true)detail.textContent+=' Bewertung: Bestanden.';
+    if(d.my_review_approved===false)detail.textContent+=' Bewertung: Nicht bestanden.';
+    if(d.my_review_approved==null&&d.status==='awaiting_reviews')detail.textContent+=' Coach-Bewertung ausstehend.';
+   }else{
+    detail.textContent='Teilnehmende: '+Number(d.joined_count||0)+' · Bewertet: '+Number(d.reviewed_count||0)+' · Noch offen: '+Number(d.pending_count||0)+'.';
+   }
+  }catch(err){detail.textContent='Fortschritt konnte nicht geladen werden: '+friendlyError(err)}
+  finally{view.disabled=false}
+ };
+ root.append(view,detail);
+ return root;
+}
+
 let allChallenges=[];
 async function load(){const epoch=sessionEpoch;const data=await rpc('coach_challenge_v2_list');if(epoch!==sessionEpoch||!role)return;allChallenges=Array.isArray(data)?data:[];renderChallenges()}
 function renderChallenges(){
@@ -56,6 +97,7 @@ if(c.goal_spec&&typeof c.goal_spec.goal_text==='string'&&c.goal_spec.goal_text.t
   const exp=Number(c.goal_spec.reward_exp);
   if([25,50,100,150,200].includes(exp))a.append(el('p','Belohnung bei Bestehen: '+exp+' EXP'));
 }
+if(['active','awaiting_reviews','settled'].includes(c.status)&&(role!=='boxer'||!!c.my_enrollment_status))a.append(challengeProgressCard(c));
 const enrollmentLabels={joined:'Angemeldet',withdrawn:'Zurückgezogen',completed:'Abgeschlossen'};
 if(role==='boxer'&&c.my_enrollment_status){
   a.append(el('p','Meine Teilnahme: '+(enrollmentLabels[c.my_enrollment_status]||c.my_enrollment_status)));
