@@ -75,6 +75,22 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null,candida
  assert.equal(coach.document.querySelector('#login').hidden,false);
  assert.equal(coach.document.querySelector('#refresh').hidden,true,'refresh hidden after logout');
  coach.dom.window.close();
+ const raced=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[]});
+ let resolveLate;
+ const originalRaceRpc=raced.db.rpc;
+ raced.db.rpc=(name,args)=>name==='coach_challenge_v2_list'
+   ?new Promise(resolve=>{resolveLate=resolve})
+   :originalRaceRpc(name,args);
+ raced.document.querySelector('#refresh').click();await tick();
+ assert.equal(typeof resolveLate,'function','refresh should have started pending RPC');
+ raced.document.querySelector('#logout').click();await tick();
+ resolveLate({data:[{id:'secret',title:'Geheime Challenge',description:'privat',status:'draft',is_creator:true,joined_count:1,duration_days:7}],error:null});
+ await tick();await tick();
+ assert.equal(raced.document.querySelector('#list').children.length,0,'late refresh must not restore private challenges after logout');
+ assert.equal(raced.document.querySelector('#filters').hidden,true,'private filters remain hidden after logout');
+ assert.equal(raced.document.querySelector('#coach').hidden,true);
+ assert.doesNotMatch(raced.document.body.textContent,/Geheime Challenge/);
+ raced.dom.window.close();
  const filtering=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[
  {id:'one',title:'Sprint Challenge',description:'Laufen',status:'open',joined_count:0,duration_days:7,is_creator:false},
  {id:'two',title:'Technik Challenge',description:'Sandsack',status:'active',joined_count:2,duration_days:14,is_creator:false},
