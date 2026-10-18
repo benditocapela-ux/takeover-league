@@ -18,6 +18,7 @@ on:
       - 'supabase/migrations/**'
       - 'tests/production-v2-*.sql'
       - 'tests/production-v2-*.cjs'
+      - 'tests/hosted-v2-*.cjs'
       - 'tests/production-v2-*.sh'
       - 'tests/production-v2-schema-smoke.sql'
       - '.github/workflows/coach-challenges-v2.yml'
@@ -39,6 +40,7 @@ on:
       - 'supabase/migrations/**'
       - 'tests/production-v2-*.sql'
       - 'tests/production-v2-*.cjs'
+      - 'tests/hosted-v2-*.cjs'
       - 'tests/production-v2-*.sh'
       - '.github/workflows/coach-challenges-v2.yml'
 jobs:
@@ -58,6 +60,7 @@ jobs:
       - run: node tests/duels-v2-browser.cjs
       - run: node tests/production-v2-migration-bundle.cjs
       - run: node tests/production-v2-release-safety.cjs
+      - run: node tests/hosted-v2-anon-http.cjs
 
   schema-integration:
     runs-on: ubuntu-latest
