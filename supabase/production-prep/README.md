@@ -12,3 +12,7 @@ Run read-only checks before any schema change.
 8. Test rollback, authorized user actions, denied access and EXP idempotency before enabling any flag.
 
 Production deployment must remain disabled until all checks pass.
+
+## Baseline snapshot (18 October 2026)
+
+Production read-only counts: 14 profiles, 61 training submissions, 63 point transactions. Recheck immediately before and after deployment; live counts can grow naturally, so compare identities and sums as well as row totals.
