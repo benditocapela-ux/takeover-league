@@ -126,7 +126,7 @@ async function main(){
   }
   const action=page.locator('.tl-quick-open');await action.waitFor({state:'visible'});
   await action.click();assert.equal(await page.locator('.tl-quick-dialog').evaluate(el=>el.open),true);
-  const expected=role==='boxer'?'Training eintragen':'Offene Trainings';
+  const expected=role==='boxer'?'Challenge-Liste':'Offene Trainings';
   assert.match(await page.locator('.tl-quick-links').innerText(),new RegExp(expected));
   await page.locator('.tl-quick-close').click();assert.equal(await page.locator('.tl-quick-dialog').evaluate(el=>el.open),false);
   const x=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
