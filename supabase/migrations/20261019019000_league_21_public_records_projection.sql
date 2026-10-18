@@ -43,7 +43,7 @@ begin
        max_technique_minutes=excluded.max_technique_minutes,refreshed_at=excluded.refreshed_at
   returning boxer_id
  )
- select count(*)::integer,max(boxer_id) into v_processed,v_last from stored;
+ select count(*)::integer,(array_agg(boxer_id order by boxer_id desc))[1] into v_processed,v_last from stored;
  return pg_catalog.jsonb_build_object('processed',v_processed,'last_boxer_id',coalesce(v_last,p_after),
    'has_more',exists(select 1 from public.profiles p where p.role='boxer' and p.is_active and (coalesce(v_last,p_after) is null or p.id>coalesce(v_last,p_after))));
 end$f$;
