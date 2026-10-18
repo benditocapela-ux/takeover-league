@@ -57,7 +57,8 @@ UPDATE public.league_feature_flags SET is_enabled=true WHERE feature_key='coach_
 INSERT INTO public.profiles(id,auth_user_id,display_name,role)
 VALUES
  ('cccccccc-cccc-4ccc-8ccc-cccccccccccc','33333333-3333-4333-8333-333333333333','Test Admin','admin'),
- ('dddddddd-dddd-4ddd-8ddd-dddddddddddd','44444444-4444-4444-8444-444444444444','Other Coach','coach');
+ ('dddddddd-dddd-4ddd-8ddd-dddddddddddd','44444444-4444-4444-8444-444444444444','Other Coach','coach'),
+ ('eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee','55555555-5555-4555-8555-555555555555','Rejected Boxer','boxer');
 
 SET ROLE authenticated;
 SET request.jwt.claim.sub='22222222-2222-4222-8222-222222222222';
@@ -146,6 +147,15 @@ BEGIN
 END $boxer$;
 RESET ROLE;
 
+-- A second boxer joins, then fails the manual review: no EXP should be paid.
+SET ROLE authenticated;
+SET request.jwt.claim.sub='55555555-5555-4555-8555-555555555555';
+DO $secondboxer$
+BEGIN
+ PERFORM public.coach_challenge_v2_join(current_setting('test.challenge_id')::uuid);
+END $secondboxer$;
+RESET ROLE;
+
 SET ROLE authenticated;
 SET request.jwt.claim.sub='22222222-2222-4222-8222-222222222222';
 DO $activate$
@@ -172,7 +182,7 @@ DECLARE cid uuid:=current_setting('test.challenge_id')::uuid; data jsonb;
 BEGIN
  PERFORM public.coach_challenge_v2_begin_reviews(cid);
  data:=public.coach_challenge_v2_review_candidates(cid);
- IF pg_catalog.jsonb_array_length(data)<>1 THEN RAISE EXCEPTION 'Missing manual candidate'; END IF;
+ IF pg_catalog.jsonb_array_length(data)<>2 THEN RAISE EXCEPTION 'Missing manual candidates'; END IF;
  BEGIN
   PERFORM public.coach_challenge_v2_settle_manual(cid);
   RAISE EXCEPTION 'Settlement permitted before review';
@@ -181,8 +191,18 @@ BEGIN
  PERFORM public.coach_challenge_v2_review_manual(
  cid,'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',true,'Successful test sparring');
  data:=public.coach_challenge_v2_review_status(cid);
- IF (data->>'pending_count')::integer<>0 OR (data->>'approved_count')::integer<>1
- THEN RAISE EXCEPTION 'Review counts incorrect'; END IF;
+ IF (data->>'pending_count')::integer<>1 OR (data->>'approved_count')::integer<>1
+ THEN RAISE EXCEPTION 'Partial review counts incorrect'; END IF;
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(cid);
+  RAISE EXCEPTION 'Settlement permitted with second review pending';
+ EXCEPTION WHEN invalid_parameter_value THEN NULL;
+ END;
+ PERFORM public.coach_challenge_v2_review_manual(
+ cid,'eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee',false,'Goal not achieved in sparring');
+ data:=public.coach_challenge_v2_review_status(cid);
+ IF (data->>'pending_count')::integer<>0 OR (data->>'approved_count')::integer<>1 OR (data->>'rejected_count')::integer<>1
+ THEN RAISE EXCEPTION 'Final review counts incorrect'; END IF;
  data:=public.coach_challenge_v2_settle_manual(cid);
  IF (data->>'awards')::integer<>1 THEN RAISE EXCEPTION 'EXP award missing'; END IF;
  data:=public.coach_challenge_v2_settle_manual(cid);
@@ -201,8 +221,11 @@ BEGIN
  WHERE challenge_id=cid AND awarded_exp=150)<>1
  THEN RAISE EXCEPTION 'EXP ledger duplicated'; END IF;
  IF (SELECT count(*) FROM public.league_coach_challenge_entries
- WHERE challenge_id=cid AND status='completed')<>1
+ WHERE challenge_id=cid AND status='completed')<>2
  THEN RAISE EXCEPTION 'Enrollment not settled'; END IF;
+ IF EXISTS (SELECT 1 FROM public.league_coach_challenge_exp_ledger
+ WHERE challenge_id=cid AND boxer_id='eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee')
+ THEN RAISE EXCEPTION 'Rejected boxer incorrectly received EXP'; END IF;
 END $verify$;
 
 -- Empty all newly created V2 records to exercise the prepared rollback.
