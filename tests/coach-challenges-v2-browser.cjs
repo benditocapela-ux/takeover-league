@@ -65,6 +65,18 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null,candida
  await tick();await tick();
  assert.equal(draft.calls.some(c=>c.name==='coach_challenge_v2_edit_draft'&&c.args.p_id==='draft-id'&&c.args.p_title==='Neuer Titel'&&c.args.p_kind==='competition'&&c.args.p_days===30),true,'draft edit must call supported RPC signature');
  draft.dom.window.close();
+ const admin=await mount({user:{id:'admin-id'},profile:{role:'admin',is_active:true},challenges:[{id:'other-draft',title:'Fremder Entwurf',description:'Freigabe',status:'draft',joined_count:0,duration_days:7,challenge_kind:'individual',is_creator:false}]});
+ assert.equal([...admin.document.querySelectorAll('#list button')].some(b=>b.textContent==='Entwurf bearbeiten'),true,'admin can manage drafts from other coaches');
+ assert.equal([...admin.document.querySelectorAll('#list button')].some(b=>b.textContent==='Öffnen'),true,'admin can open drafts from other coaches');
+ admin.dom.window.close();
+ const foreignCoach=await mount({user:{id:'coach-id'},profile:{role:'coach',is_active:true},challenges:[{id:'other-draft',title:'Fremder Entwurf',description:'Nicht meiner',status:'draft',joined_count:0,duration_days:7,is_creator:false}]});
+ assert.equal(foreignCoach.document.querySelectorAll('#list form').length,0,'coach may not edit other coach drafts');
+ foreignCoach.dom.window.close();
+ const dates=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[{id:'dated',title:'Datiert',description:'Datumstest',status:'active',joined_count:1,duration_days:7,starts_at:'2026-10-19T00:00:00Z',ends_at:'2026-10-26T00:00:00Z',is_creator:false}]});
+ assert.match(dates.document.querySelector('#list').textContent,/Aktiv/);
+ assert.match(dates.document.querySelector('#list').textContent,/Start:/);
+ assert.match(dates.document.querySelector('#list').textContent,/Ende:/);
+ dates.dom.window.close();
  const boxer=await mount({user:{id:'boxer-id'},profile:{role:'boxer',is_active:true},challenges:[{id:'challenge-id',title:'Box-Test',description:'Training',status:'open',joined_count:0,duration_days:7,my_enrollment_status:null,is_creator:false}]});
  assert.equal(boxer.document.querySelector('#coach').hidden,true);
  assert.match(boxer.document.querySelector('#list').textContent,/Box-Test/);
