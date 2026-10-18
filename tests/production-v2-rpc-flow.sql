@@ -282,6 +282,89 @@ BEGIN
  THEN RAISE EXCEPTION 'Rejected boxer incorrectly received EXP'; END IF;
 END $verify$;
 
+-- Corruption simulations: a payout without its ledger, or a broken ledger,
+-- must abort settlement instead of silently minting duplicate EXP.
+DO $corruptSetup$
+DECLARE ch uuid;
+BEGIN
+ INSERT INTO public.league_coach_challenges
+ (created_by,title,description,challenge_kind,duration_days,goal_spec,status,starts_at,ends_at)
+ VALUES ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb','Orphan payout test',
+  'Fixture','individual',7,
+  '{"version":1,"goal_text":"Earn a coach review","review_mode":"manual","reward_exp":150}'::jsonb,
+  'awaiting_reviews',now()-INTERVAL '9 days',now()-INTERVAL '2 days')
+ RETURNING id INTO ch;
+ PERFORM pg_catalog.set_config('test.corrupt_challenge_id',ch::text,false);
+ INSERT INTO public.league_coach_challenge_entries(challenge_id,boxer_id)
+ VALUES(ch,'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
+ INSERT INTO public.league_coach_challenge_reviews
+ (challenge_id,boxer_id,reviewed_by,approved,reason)
+ VALUES(ch,'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
+ 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',true,'Approved by coach fixture');
+ INSERT INTO public.point_transactions
+ (boxer_id,points,exp,category,description,effective_date,created_by)
+ VALUES('aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',0,150,'challenge_exp',
+ 'Coach Challenge: '||ch::text||' | Orphan payout test',CURRENT_DATE,
+ 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb');
+END $corruptSetup$;
+SET ROLE authenticated;
+SET request.jwt.claim.sub='22222222-2222-4222-8222-222222222222';
+DO $orphanCheck$
+DECLARE failed boolean:=false;
+BEGIN
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(current_setting('test.corrupt_challenge_id')::uuid);
+ EXCEPTION WHEN check_violation THEN failed:=true;
+ END;
+ IF NOT failed THEN RAISE EXCEPTION 'Orphaned payout was accepted or failed for wrong reason'; END IF;
+END $orphanCheck$;
+RESET ROLE;
+DO $removeOrphan$
+DECLARE ch uuid:=current_setting('test.corrupt_challenge_id')::uuid;
+BEGIN
+ IF (SELECT status FROM public.league_coach_challenges WHERE id=ch)<>'awaiting_reviews'
+ OR EXISTS(SELECT 1 FROM public.league_coach_challenge_exp_ledger WHERE challenge_id=ch)
+ THEN RAISE EXCEPTION 'Orphan check partially committed payout'; END IF;
+ DELETE FROM public.point_transactions
+ WHERE category='challenge_exp' AND description='Coach Challenge: '||ch::text||' | Orphan payout test';
+ INSERT INTO public.league_coach_challenge_exp_ledger
+ (challenge_id,boxer_id,transaction_id,awarded_exp)
+ VALUES(ch,'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',NULL,150);
+END $removeOrphan$;
+SET ROLE authenticated;
+SET request.jwt.claim.sub='22222222-2222-4222-8222-222222222222';
+DO $brokenLedgerCheck$
+DECLARE failed boolean:=false;
+BEGIN
+ BEGIN
+  PERFORM public.coach_challenge_v2_settle_manual(current_setting('test.corrupt_challenge_id')::uuid);
+ EXCEPTION WHEN check_violation THEN failed:=true;
+ END;
+ IF NOT failed THEN RAISE EXCEPTION 'Broken ledger was accepted'; END IF;
+END $brokenLedgerCheck$;
+RESET ROLE;
+DELETE FROM public.league_coach_challenge_exp_ledger
+WHERE challenge_id=current_setting('test.corrupt_challenge_id')::uuid;
+SET ROLE authenticated;
+SET request.jwt.claim.sub='22222222-2222-4222-8222-222222222222';
+DO $recovery$
+DECLARE result jsonb;
+BEGIN
+ result:=public.coach_challenge_v2_settle_manual(current_setting('test.corrupt_challenge_id')::uuid);
+ IF (result->>'awards')::integer<>1 THEN RAISE EXCEPTION 'Recovery settlement failed'; END IF;
+END $recovery$;
+RESET ROLE;
+DO $recoveryVerify$
+DECLARE ch uuid:=current_setting('test.corrupt_challenge_id')::uuid;
+BEGIN
+ IF (SELECT count(*) FROM public.point_transactions
+ WHERE description LIKE 'Coach Challenge: '||ch::text||' | %')<>1
+ THEN RAISE EXCEPTION 'Recovery duplicated transaction'; END IF;
+ IF (SELECT count(*) FROM public.league_coach_challenge_exp_ledger
+ WHERE challenge_id=ch AND awarded_exp=150)<>1
+ THEN RAISE EXCEPTION 'Recovery ledger invalid'; END IF;
+END $recoveryVerify$;
+
 -- Empty all newly created V2 records to exercise the prepared rollback.
 DELETE FROM public.league_coach_challenge_exp_ledger;
 DELETE FROM public.league_coach_challenge_reviews;
