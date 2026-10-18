@@ -65,11 +65,12 @@ Laut Supabase-Dokumentation zum Backup/Restore können beim passenden aktuellen 
 
 ```bash
 umask 077
-mkdir -p ./takeover-private-backup
-supabase db dump --db-url "$DATABASE_URL" -f ./takeover-private-backup/roles.sql --role-only
-supabase db dump --db-url "$DATABASE_URL" -f ./takeover-private-backup/schema.sql
-supabase db dump --db-url "$DATABASE_URL" -f ./takeover-private-backup/data.sql --data-only --use-copy
-sha256sum ./takeover-private-backup/*.sql > ./takeover-private-backup/SHA256SUMS
+mkdir -p "$HOME/takeover-private-backup"
+chmod 700 "$HOME/takeover-private-backup"
+supabase db dump --db-url "$DATABASE_URL" -f "$HOME/takeover-private-backup/roles.sql" --role-only
+supabase db dump --db-url "$DATABASE_URL" -f "$HOME/takeover-private-backup/schema.sql"
+supabase db dump --db-url "$DATABASE_URL" -f "$HOME/takeover-private-backup/data.sql" --data-only --use-copy
+shasum -a 256 "$HOME"/takeover-private-backup/*.sql > "$HOME/takeover-private-backup/SHA256SUMS"
 ```
 
 **Erforderliche Nachweise:** fehlerfreier Dump, sicherer verschlüsselter Aufbewahrungsort, erfolgreiche Wiederherstellung in einer **frischen isolierten** PostgreSQL-/Supabase-Testinstanz, passende Profil-/Trainings-/EXP-Zählungen und ein realistisch dokumentierter Wiederanlauf. Ein SQL-Dump deckt nicht automatisch die eigentlichen Storage-Dateiobjekte ab (z. B. Avatare). Der geeignete Backup-/Restore-Weg muss auch diese gesondert berücksichtigen, sofern genutzt.
