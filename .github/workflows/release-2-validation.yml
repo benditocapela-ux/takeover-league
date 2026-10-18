@@ -23,6 +23,7 @@ jobs:
       - run: node tests/boxer-profile-actions.cjs
       - run: node tests/menu-navigation-compat.cjs
       - run: node tests/boxer-dashboard-polish.cjs
+      - run: node --check tests/league-21-auth-staging-readonly.cjs
       - run: node tests/league-21-foundations.cjs
       - run: node tests/ux-roadmap-phase0.cjs
 
