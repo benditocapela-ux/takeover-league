@@ -57,6 +57,7 @@ jobs:
       - run: node tests/coach-challenges-v2-browser.cjs
       - run: node tests/duels-v2-browser.cjs
       - run: node tests/production-v2-migration-bundle.cjs
+      - run: node tests/production-v2-release-safety.cjs
 
   schema-integration:
     runs-on: ubuntu-latest
