@@ -31,6 +31,23 @@ assert.match(release,/Free/);
 assert.match(release,/ROLLBACK/);
 assert.match(release,/\$HOME\/takeover-private-backup/,'backup path must be outside the Git repo');
 assert.match(read('supabase/production-prep/README.md'),/NOT APPLIED/);
+for(const path of ['release_preflight_read_only.sql','release_postflight_read_only.sql']){
+ const sql=read('supabase/production-prep/'+path);
+ const stripped=sql.split('\n').filter(s=>!s.trim().startsWith('--')).join('\n').replace(/'EXECUTE'/g,"'privilege-name'");
+ assert.match(stripped,/^\s*(?:WITH|SELECT)\s+/i,path+' must be a read-only SELECT');
+ assert.doesNotMatch(stripped,/\b(?:INSERT|UPDATE|DELETE|ALTER|TRUNCATE|DROP|CREATE|DO|CALL|COPY|EXECUTE)\b/i,
+   path+' must never modify live state');
+}
+assert.match(read('supabase/production-prep/release_preflight_read_only.sql'),/ready_for_controlled_release/);
+const post=read('supabase/production-prep/release_postflight_read_only.sql');
+assert.match(post,/release_integrity_passed/);
+assert.match(post,/protected_authenticated_rpcs=23/);
+assert.match(post,/v2_tables=7 AND rls_protected_tables=7/);
+assert.match(post,/invalid_challenge_exp_ledgers=0/);
+assert.match(post,/invalid_duel_exp_ledgers=0/);
+assert.match(releaseRunbook,/release_preflight_read_only\.sql/);
+assert.match(releaseRunbook,/release_postflight_read_only\.sql/);
+
 const releaseRunbook=read('docs/RELEASE_NACH_FREIGEBEN.md');
 assert.match(releaseRunbook,/«FREIGEBEN»/,'Release must require explicit final approval');
 assert.match(releaseRunbook,/ohne Backup/i,'Conscious no-backup risk decision must be documented');
