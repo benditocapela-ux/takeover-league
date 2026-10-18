@@ -108,3 +108,51 @@ BEGIN
  END IF;
 END $test$;
 ROLLBACK;
+
+-- Independent cap scenario: four distinct opponents, at most three active duels.
+BEGIN;
+INSERT INTO public.profiles(id,auth_user_id,role,is_active) VALUES
+ ('00000000-0000-0000-0000-0000000000a1','10000000-0000-0000-0000-0000000000a1','boxer',true),
+ ('00000000-0000-0000-0000-0000000000b2','10000000-0000-0000-0000-0000000000b2','boxer',true),
+ ('00000000-0000-0000-0000-0000000000b3','10000000-0000-0000-0000-0000000000b3','boxer',true),
+ ('00000000-0000-0000-0000-0000000000b4','10000000-0000-0000-0000-0000000000b4','boxer',true),
+ ('00000000-0000-0000-0000-0000000000b5','10000000-0000-0000-0000-0000000000b5','boxer',true);
+UPDATE public.league_feature_flags SET is_enabled=true WHERE feature_key='duels';
+DO $cap$
+DECLARE
+ a uuid := '00000000-0000-0000-0000-0000000000a1';
+ opponent uuid;
+ opponent_auth uuid;
+ duel uuid;
+ n integer;
+BEGIN
+ FOR n IN 2..5 LOOP
+  opponent:=('00000000-0000-0000-0000-' || lpad(to_hex(176+n),12,'0'))::uuid;
+  opponent_auth:=('10000000-0000-0000-0000-' || lpad(to_hex(176+n),12,'0'))::uuid;
+  PERFORM set_config('test.auth_uid','10000000-0000-0000-0000-0000000000a1',true);
+  duel:=public.duel_v2_invite(a,opponent,7);
+  PERFORM set_config('test.auth_uid',opponent_auth::text,true);
+  IF n<=4 THEN
+   IF public.duel_v2_respond(duel,true)<>'active' THEN
+    RAISE EXCEPTION 'Expected active duel %',n;
+   END IF;
+  ELSE
+   BEGIN
+    PERFORM public.duel_v2_respond(duel,true);
+    RAISE EXCEPTION 'Fourth active duel was accepted';
+   EXCEPTION WHEN raise_exception THEN
+    IF SQLERRM='Fourth active duel was accepted' THEN RAISE; END IF;
+    IF SQLERRM NOT LIKE 'Challenger has three active duels%' THEN
+     RAISE EXCEPTION 'Unexpected cap error: %',SQLERRM;
+    END IF;
+   END;
+   IF (SELECT status FROM public.league_duels WHERE id=duel)<>'pending' THEN
+    RAISE EXCEPTION 'Cap rejection changed invitation state';
+   END IF;
+  END IF;
+ END LOOP;
+ IF (SELECT count(*) FROM public.league_duels WHERE status='active')<>3 THEN
+  RAISE EXCEPTION 'Three-active-duel limit violated';
+ END IF;
+END $cap$;
+ROLLBACK;
