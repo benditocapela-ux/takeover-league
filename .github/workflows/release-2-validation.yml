@@ -2,6 +2,8 @@ name: Takeover League 2 - staging validation (no deploy)
 on:
   push:
     branches: [release/takeover-league-2-ready]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
