@@ -7,7 +7,7 @@ Stand: 18.10.2026, Branch `release/takeover-league-2-ready`.
 |---:|---|---|---|
 | 1 | Persönliches Dashboard | Code integriert | boxer.html |
 | 2 | Training schnell einreichen | Code integriert | boxer.html |
-| 3 | Aufgaben und Benachrichtigungen | Staging/Flag | boxer.html; Supabase notifications flag |
+| 3 | Aufgaben und Benachrichtigungen | Staging/Flag | boxer.html; Supabase notifications flag; `20261018230000_notification_mark_read.sql` – echte Inbox mit sicherem Lesestatus im TEST geprüft |
 | 4 | Einheitliche Boxerprofile | Code integriert | boxer-profile.html; boxer-profile.js |
 | 5 | Suche und Filter | Code integriert | coach.html; index.html |
 | 6 | Direkte Duellaktionen | Code integriert | boxer-profile.js; duels.html |
@@ -64,3 +64,5 @@ Stand: 18.10.2026, Branch `release/takeover-league-2-ready`.
 - `takeover-quick-actions.js`: einheitliche schnelle Navigation mit responsivem Bottom-Sheet und `Ctrl/⌘+K`; verborgene Coach-Abschnitte werden beim Öffnen ausgefiltert (#20,24,44,45).
 - `duels.html`, `coach.html`: einheitlicher Schnellzugriff. Vorhandene Live-Scores (#13), Audit-Historie (#17), Undo (#37) bleiben serverseitig abgesichert und weiterhin an die jeweilige Migration gebunden.
 - Ohne die separat genehmigte produktive Migration oder Freischaltung bleiben #3 (Inbox), #13, #15 (Cloud), #17 und #42 **Staging-Funktionen**. UI-Konsistenz und Tests sind nicht mit einem nachweislich funktionierenden Live-Feature gleichzusetzen.
+
+**Inbox-Nachtrag:** Die im produktiven Schema vorhandenen Trigger für Trainingsfreigabe/Coach-Feedback und die Besitzer-RLS wurden read-only überprüft. Neue `mark_my_notification_read`-RPC im isolierten Supabase-TEST: Besitzerzugriff, Fremdzugriff, wiederholte Ausführung und anonyme Rechte geprüft. Funktion bleibt bei produktiv ausgeschaltetem Flag deaktiviert; keine Live-Freischaltung erfolgt.
