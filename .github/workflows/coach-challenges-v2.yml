@@ -4,6 +4,7 @@ on:
     paths:
       - 'challenges-v2-preview.html'
       - 'tests/coach-challenges-v2.cjs'
+      - 'tests/coach-challenges-v2-browser.cjs'
       - '.github/workflows/coach-challenges-v2.yml'
   push:
     branches: [feature/coach-challenges-v2-ui]
@@ -21,4 +22,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - run: npm install --no-save --no-package-lock jsdom@26
       - run: node tests/coach-challenges-v2.cjs
+      - run: node tests/coach-challenges-v2-browser.cjs
