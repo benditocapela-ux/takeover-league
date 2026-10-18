@@ -69,8 +69,12 @@ jobs:
           node tests/build-league-21-release.cjs --check
           node tests/build-league-21-release.cjs --output "$RUNNER_TEMP/league21-release.sql"
           createdb -h localhost -U postgres league21_replay_release_bundle
+          # PostgreSQL roles are CLUSTER-scoped: they were created by the first fixture database.
+          # Omit only the two already-existing role creation statements in the second DB.
+          sed -e '/^create role anon nologin;$/d' -e '/^create role authenticated nologin;$/d' \
+            tests/league-21-productionlike-baseline.sql > "$RUNNER_TEMP/league21-second-baseline.sql"
           psql -X -h localhost -U postgres -d league21_replay_release_bundle -v ON_ERROR_STOP=1 \
-            -f tests/league-21-productionlike-baseline.sql >/dev/null
+            -f "$RUNNER_TEMP/league21-second-baseline.sql" >/dev/null
           psql -X -h localhost -U postgres -d league21_replay_release_bundle -v ON_ERROR_STOP=1 \
             -f "$RUNNER_TEMP/league21-release.sql" >/dev/null
           psql -X -h localhost -U postgres -d league21_replay_release_bundle -At -v ON_ERROR_STOP=1 \
