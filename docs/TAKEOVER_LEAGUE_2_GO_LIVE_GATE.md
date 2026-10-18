@@ -46,3 +46,24 @@ If staging database tests and signed Auth gate pass, apply reviewed SQL in order
 To recover the frontend, revert to the recorded known-good Pages commit. For new features, disable only the new feature flags via reviewed emergency SQL rather than destroying data. Schema migrations are additive: DO NOT blindly reverse them after real user data is written. Restore requires the verified backup/PITR plan and a planned maintenance window.
 
 **NO LIVE until operational checks are completed. Passing CI alone is insufficient.**
+
+
+---
+
+## Änderungsvermerk – UX-Finalisierung, 18.10.2026
+
+Die im Release-Branch zuvor als teilweise bezeichneten UX-Punkte #12, #20, #24, #44 und #45 besitzen jetzt funktionsfähige, automatisiert browsergetestete Integrationen in den wirklichen Seiten. Auch #3 hat eine aktive persönliche Aufgabenübersicht, während die Benachrichtigungs-Inbox weiterhin nur bei aktiviertem Flag geladen wird. Der private Cloud-Entwurf (#15) wird nach Inaktivität automatisch gespeichert, sobald seine geprüfte Migration produktiv verfügbar ist.
+
+**Codebilanz vor Freischaltung:** 39 UX-Punkte im realen Code integriert; fünf weitere besitzen funktionsfähige Staging-/Feature-Flag-Integrationen (#3, #13, #15, #17, #42); #37 bleibt auf die sichere Rücknahme unvergüteter, abgelehnter Trainings beschränkt. Die vollständige Codeabdeckung darf nicht als 45 erfolgreich live geprüfte Funktionen ausgegeben werden.
+
+### Vom Eigentümer ausdrücklich zurückgestellte Prüfungen
+- **Kein vorgezogenes Produktionsbackup/Restore verlangt:** Der Benutzer akzeptiert ausdrücklich das Verlustrisiko. Weder die CI-Fixture noch Supabase TEST ersetzen eine echte Produktivsicherung. Vor unvermeidlichen destruktiven Migrationen trotzdem Stop statt Datenrisiko akzeptieren; additive Migrationen bevorzugen.
+- **Keine realen Benutzeranmeldungen vor dem Live-Release verlangt:** Auth-/RLS-Zugriffe wurden auf TEST durch Rollensimulation und lokal im Browser durch Mock-Supabase überprüft, nicht durch reale signierte JWTs. Direkt nach einem allfälligen GO LIVE sind echte Boxer-/Admin-Login-Smoke-Tests die erste Priorität, bevor alle Boxer die neuen Funktionen verwenden.
+- Diese Waiver sind **keine bestandenen Tests** und keine Sicherheitsgarantie. Es bleibt Aufgabe des Releaseoperators, das Restrisiko bei der separaten GO-LIVE-Entscheidung zu berücksichtigen.
+
+### Verbleibende technische Aktivierungsabhängigkeiten
+- Migrationsliste oben vollständig auf produktionsgleicher Struktur und in richtiger Reihenfolge prüfen, bei GO LIVE nur notwendige additive SQL-Stücke unter expliziter Freigabe anwenden.
+- Prüfen, ob Feature-Flag `notifications` und weitere derzeit deaktivierte Anzeigen nach serverseitiger Prüfung aktiviert werden sollen. Privilegien und RLS vor jeder Aktivierung erneut validieren.
+- Trainer-Berechtigung: die Produktions-RPC `review_training` bleibt absichtlich `admin`-only; `coach` erhält durch neue UI keine impliziten Sonderrechte.
+- Code-Seiten `boxer.html`, `coach.html`, `challenges.html`, `duels.html` veröffentlichen neu `takeover-quick-actions.js` per bestehender statischer `*.js`-Kopie im GitHub-Pages-Workflow.
+- **Nicht freigegeben:** `main`-Merge, produktives SQL, produktive Feature-Flags, Live-Pages. Dies bleibt einem getrennten GO LIVE vorbehalten.
