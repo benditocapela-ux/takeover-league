@@ -105,3 +105,43 @@ Informationen: https://supabase.com/docs/guides/database/database-linter?lint=00
 5. Audit bei Metrikkorrekturen, echte sichere Rücknahmen, vollständige automatische Zielfortschritte und konsistente Bedienmuster abschliessen; siehe 11 offene UX-Punkte.
 6. Security-Advisor-Meldungen gezielt einzeln prüfen, gegebenenfalls Testfixes, erneute Advisors, finale CI für exakten Release-SHA.
 7. Release-Freeze, DDL und Flag-Gates nach eigener Abnahme, dann **separates ausdrückliches GO LIVE**.
+
+
+---
+
+# Abschlussnachtrag – 18.10.2026, Release-Branch nach UX-Runde 2
+
+**Aktueller Beschluss: NICHT RELEASE-READY.** Frühere offene Punkte gelten nur dort als geklärt, wo unten eine konkrete Prüfung genannt ist. Keine Live-Änderungen.
+
+## Neu integrierte reale Ansichten
+- Boxer: Trainingskalender (30 Tage), Wochenstatistik, Trainingstage-Streak aus bestätigten Supabase-Einträgen, eigene private Mitteilungen nur bei freigeschaltetem Feature-Flag, Unterstützung von Client-Request-IDs bei Trainingseinreichungen.
+- Coach: Boxer-Schnellansicht als Dialog/mobile Bottom-Sheet, kürzere Direktaktionen, automatische Aktualisierung bei Inaktivität, Admin-Audit-Anzeige über dedizierte RPC (zurzeit in Produktion noch nicht installiert).
+- Liga: `boxer-compare.html` mit öffentlichen Live-RPC-Daten und lokalen Favoriten, `index-my-position.js` für eigenes Ranking, gemeinsames `takeover-ux-scroll.js` für Zurück-Navigation, einheitliche Berechnung von zehn Levels pro Rang.
+- Duelle: Eindeutige Bestätigung von Gegner/Dauer vor Einladung; `duels.html` bezieht Provisorium von `duel_v2_live_scores` (noch nicht produktiv migriert); automatischer Refresh bei aktiver Sitzung.
+
+## UX-45-Status
+Siehe `docs/TAKEOVER_LEAGUE_2_UX_45_MATRIX_2026-10-18.md`: **34/45 als Code im Release-Branch**, **5/45 Staging/Flag**, **5/45 teilweise**, **1/45 offen**. Dies ist ausdrücklich **keine** vollumfängliche Live- oder End-to-End-Abnahme. Ein umfassender Rollout aller 45 UX-Punkte ist noch nicht technisch bestätigt.
+
+## Neue TEST-Datenbankprüfungen
+- `20261018190000_training_drafts_v2.sql`: sichere, private RLS-Entwürfe im isolierten Supabase-Testprojekt, anonyme Rechte gesperrt.
+- `20261018200000_training_submission_idempotency.sql`: einzigartige Kombination von Boxer und Request-ID; Transaktion mit Doppelversuch abgewiesen, danach Rollback.
+- `20261018210000_coach_training_audit_read.sql`: geschützte Audit-RPC im TEST installiert; signierten JWT-Kontext unter `SET LOCAL ROLE authenticated` simuliert. Boxer abgewiesen, Admin zugelassen.
+- `20261018211000_duel_v2_live_scores.sql`: geschützte Live-Score-RPC im TEST installiert. Teilnehmer mit gültigem Auth-Kontext erhält vorläufige Werte; nicht verknüpfter Benutzer abgewiesen; keine Detaildaten ausgegeben; kein produktiver SQL-Lauf.
+- Die TEST-Datenbank enthielt die Rollenkontraktfunktion `league_private.coach_v2_actor` nicht. Eine isolierte, an Produktion angelehnte Test-Funktion wurde angelegt. Die persönliche Challenge-Zuweisung liess sich über TEST-Aliasfunktionen ohne destruktiven Ersatz inkompatibler `TABLE`-Rückgabetypen installieren. Transaktionaler Test: beauftragter Boxer sieht die Challenge, fremder Boxer nicht, Boxer hat keinen Coach-Roster-Zugang; Rollback ohne Testdatenspuren. **Echte identische produktionsnahe Migration aller Versionen weiterhin offen.**
+
+## CI nach aktivierter Draft-PR
+- [Draft Pull Request #8](https://github.com/benditocapela-ux/takeover-league/pull/8) gegen `main`, ausdrücklich WIP, nicht gemerged, nicht deployed.
+- `Takeover League V2 Integration Checks`: Statische Browser-/Source-Tests und PostgreSQL 16/17-Schema-Integration bestanden (PR-Run 39151451007; danach erneut erfolgreich für Commit `109f4aa`).
+- `Takeover League 2 - staging validation (no deploy)`: Ein Testfehler bei der fehlenden Duell-Bestätigungsfunktion wurde aus realem Log (Run 39151280614) reproduziert und am Code behoben; spätere Runs 39151450976 und 39151585694 waren erfolgreich.
+- **Eine grüne CI ist keine reale Boxer-/Admin-Anmeldung und kein Test auf iOS/Android.** Ergebnisse nach diesem Bericht müssen jeweils dem letzten Release-Commit zugeordnet sein.
+
+## Noch offene Release-Gates (zwingend)
+1. Produktive Backups und getesteter Restore; nach expliziter Freigabe geprüfte additive Migrationen in Produktionsreihenfolge anwenden; TEST- und Produktions-Rückgabetypen harmonisieren bzw. schemaidentisches Staging herstellen.
+2. Verbindlich entscheiden, ob nur `admin` oder auch `coach` Trainings bestätigen darf. Aktuelle Produktions-RPC `review_training` prüft bewusst nur aktive Admins. Keine ungetestete Rollenerweiterung.
+3. Vollständiger, authentifizierter Browser-/HTTP-E2E-Test mit echten Testbenutzern für Boxer, Coach und Admin; prüfen, dass RLS und Statuswechsel unter realen JWTs korrekt funktionieren.
+4. Nach Migration der zusätzlichen RPCs Live-Duellstände, Audit-Anzeige, Entwürfe und Request-ID-Retry-End-to-End testen. Feature-Flags nach Freigabe einzeln aktivieren.
+5. Sicheres Rückgängig bestätigter Transaktionen (#37) benötigt eine transaktionale und auditierbare Korrekturlogik. Keine unkontrollierte Löschung oder rückwirkende Punkteveränderung.
+6. Mobile Tests auf echten Geräten, Accessibility, 45-UX-Akzeptanzliste, Leistungs-/Ausfalltests und Prüfung der Supabase Security Advisor Warnungen inklusive Leaked Password Protection.
+7. Nach den finalen Änderungen müssen alle CI-Workflows erfolgreich sein; erst danach können Betreiber-Review, manuelle Go-Live-Freigabe und `main`-Merge stattfinden.
+
+**Verifiziert:** Hauptbranch und produktives Supabase-Projekt wurden in diesem Durchlauf nicht verändert; nur isoliertes TEST-Projekt und Release-Branch wurden bearbeitet.
