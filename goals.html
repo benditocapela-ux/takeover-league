@@ -26,7 +26,7 @@ function node(tag,value){const e=document.createElement(tag);e.textContent=Strin
 async function load(){
  if(!profile)return;
  const [goals,progress,trainings]=await Promise.all([
-  db.from('league_boxer_goals_v21').select('id,title,metric,target_value,starts_on,ends_on,status').eq('boxer_id',profile.id).order('created_at',{ascending:false}),
+  db.from('league_boxer_goals_v21').select('id,title,metric,target_value,starts_on,ends_on,status,reward_exp').eq('boxer_id',profile.id).order('created_at',{ascending:false}),
   db.from('league_goal_progress_v21').select('goal_id,progress_delta'),
   db.from('training_submissions').select('training_date,status,jogging_km,technique_minutes').eq('boxer_id',profile.id).eq('status','approved').order('training_date',{ascending:false}).limit(3000)
  ]);
@@ -41,7 +41,7 @@ async function load(){
    :g.metric==='training_sessions'?items.length
    :items.reduce((a,x)=>a+Number(x[g.metric]||0),0);
   const max=Number(g.target_value),pct=Math.max(0,Math.min(100,Math.round(value/max*100)));
-  const summary=node('p',format(value)+' / '+format(max)+' · '+pct+'%');summary.className='meta';card.append(summary);
+  const summary=node('p',format(value)+' / '+format(max)+' · '+pct+'% · '+(g.reward_exp>0?g.reward_exp+' EXP nach serverseitiger Freigabe':'Ohne EXP-Belohnung'));summary.className='meta';card.append(summary);
   const track=document.createElement('div');track.className='track';track.setAttribute('role','progressbar');
   track.setAttribute('aria-label','Zielerreichung');track.setAttribute('aria-valuemin','0');track.setAttribute('aria-valuemax','100');track.setAttribute('aria-valuenow',String(pct));
   const fill=document.createElement('div');fill.style.width=pct+'%';track.append(fill);card.append(track);
@@ -52,7 +52,8 @@ async function load(){
     complete.disabled=true;
     const result=await db.rpc('league_v21_complete_goal',{p_goal:g.id});
     if(result.error){say('Prüfung fehlgeschlagen: '+result.error.message);complete.disabled=false;return}
-    say(result.data?.status==='completed'?'Ziel erreicht und bestätigt – keine zusätzlichen EXP verbucht.':'Ziel noch nicht erfüllt.');
+    const completed=result.data?.status==='completed',fresh=result.data?.changed===true,reward=Number(result.data?.exp_awarded||0);
+    say(completed?(fresh?(reward>0?'Ziel abgeschlossen – '+reward+' EXP gutgeschrieben.':'Ziel abgeschlossen – ohne EXP-Belohnung.'):'Ziel war bereits abgeschlossen. EXP wurden nicht erneut vergeben.'):'Ziel noch nicht erfüllt.');
     await load();
    });
    card.append(complete);
