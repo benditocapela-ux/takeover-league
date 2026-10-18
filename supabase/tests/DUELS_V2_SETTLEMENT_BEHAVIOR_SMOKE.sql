@@ -96,6 +96,30 @@ BEGIN
   RAISE EXCEPTION 'Legacy duplicate scoring minted EXP';
  END IF;
  DELETE FROM public.point_transactions WHERE id='30000000-0000-0000-0000-000000000008';
+ -- A negative transaction must fail closed even when another training
+ -- offsets it to a nonnegative aggregate score.
+ INSERT INTO public.training_submissions(id,boxer_id,training_date,status,created_at)
+ VALUES ('20000000-0000-0000-0000-000000000009',a,current_date-3,'approved',now()-interval '3 days'),
+        ('20000000-0000-0000-0000-000000000010',a,current_date-3,'approved',now()-interval '3 days');
+ INSERT INTO public.point_transactions(id,boxer_id,submission_id,points,exp,category,description,effective_date,created_by)
+ VALUES ('30000000-0000-0000-0000-000000000009',a,'20000000-0000-0000-0000-000000000009',-100,0,'training','Negative training',current_date-3,coach),
+        ('30000000-0000-0000-0000-000000000010',a,'20000000-0000-0000-0000-000000000010',100,0,'training','Offset training',current_date-3,coach);
+ BEGIN
+  PERFORM public.duel_v2_reconcile(duel);
+  RAISE EXCEPTION 'Offset negative transaction was accepted';
+ EXCEPTION WHEN raise_exception THEN
+  IF SQLERRM='Offset negative transaction was accepted' THEN RAISE; END IF;
+  IF SQLERRM NOT LIKE 'Negative duel scoring transaction%' THEN
+   RAISE EXCEPTION 'Unexpected negative transaction error: %',SQLERRM;
+  END IF;
+ END;
+ IF (SELECT count(*) FROM public.point_transactions WHERE category='duel_exp')<>0 THEN
+  RAISE EXCEPTION 'Negative transaction minted EXP';
+ END IF;
+ DELETE FROM public.point_transactions WHERE id IN
+  ('30000000-0000-0000-0000-000000000009','30000000-0000-0000-0000-000000000010');
+ DELETE FROM public.training_submissions WHERE id IN
+  ('20000000-0000-0000-0000-000000000009','20000000-0000-0000-0000-000000000010');
  result:=public.duel_v2_reconcile(duel);
  IF result<>'settled' THEN RAISE EXCEPTION 'Expected settled, got %',result; END IF;
  IF (SELECT count(*) FROM public.league_duel_exp_ledger WHERE duel_id=duel AND transaction_id IS NOT NULL)<>2 THEN
