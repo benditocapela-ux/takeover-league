@@ -34,3 +34,9 @@ Stand: 18.10.2026. **Noch keine Freigabe.** `challenges.html` ist standardmässi
 Die produktive Trigger-Funktion `public._award_achievements_on_approval()` ruft `public.recalculate_boxer_achievements_v2(uuid)` für neue und gegebenenfalls alte Boxer-IDs auf. Beide Funktionen gehören `postgres` und sind `SECURITY DEFINER`. Die Achievement-Funktion hat aktuell explizite `EXECUTE`-Rechte für `PUBLIC`, `anon`, `authenticated`, `service_role` und `postgres`. Die Trigger-Funktion hat nur `postgres` und `service_role` in der expliziten ACL. Das spricht dafür, dass eine gezielte Sperre der direkten Aufrufe für `PUBLIC`, `anon` und `authenticated` den internen Aufruf erhalten sollte; vor Umsetzung trotzdem prüfen.
 
 **Geplante Änderung, nicht ausgeführt:** `REVOKE EXECUTE ON FUNCTION public.recalculate_boxer_achievements_v2(uuid) FROM PUBLIC, anon, authenticated;` Die Rechte für `postgres` und `service_role` bleiben unverändert. Danach Berechtigungen und einen legitimen Trainingsfreigabe-Workflow verifizieren. Die öffentliche Leaderboard-RPCs nicht pauschal sperren.
+
+## Coach-Challenge-RPC-Stichprobe
+
+Aus dem Testprojekt wurden die SQL-Definitionen von `coach_challenge_v2_create_draft`, `join`, `review_manual`, `settle_manual` und `list` geprüft. Diese Funktionen nutzen `SECURITY DEFINER` mit leerem `search_path`, prüfen aktive Profile über `auth.uid()`, verlangen das Feature-Flag und beschränken Aktionen nach Rolle bzw. Challenge-Eigentümer. `settle_manual` sperrt den Challenge-Datensatz für die Transaktion, verlangt vollständige Reviews und verhindert doppelte Erstbuchungen. Eine Stichprobe ersetzt keine vollständige Prüfung aller 17 Funktionen.
+
+**Behobene UI/Backend-Abweichung:** Das Backend akzeptiert Challenge-Arten `individual`, `competition`, `coach_goal` und Laufzeiten **7, 14, 30** Tage. Beide Oberflächen und ein Regressionstest wurden entsprechend angepasst.
