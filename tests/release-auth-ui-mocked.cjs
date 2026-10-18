@@ -15,7 +15,10 @@ function injected(role){
  const boxer={id:boxerId,auth_user_id:'44444444-4444-4444-8444-444444444444',display_name:'Test Boxer',role:'boxer',is_active:true,avatar_key:'boxing',avatar_url:null};
  const admin={id:adminId,auth_user_id:'33333333-3333-4333-8333-333333333333',display_name:'Test Admin',role:'admin',is_active:true};
  const trainer=[{id:1,name:'Reguläres Boxtraining',points:50,is_active:true},{id:2,name:'Joggen',points:20,is_active:true}];
- let submissions=role==='boxer'?[]:[
+ let submissions=role==='boxer'?[{
+ id:'a3333333-3333-4333-8333-333333333333',boxer_id:boxerId,training_type_id:2,
+ training_date:'2026-10-17',notes:'',status:'approved',created_at:'2026-10-17T13:00:00Z',jogging_km:4.5,technique_minutes:null
+ }]:[
   {id:'a1111111-1111-4111-8111-111111111111',boxer_id:boxerId,training_type_id:1,training_date:'2026-10-17',notes:'',status:'pending',created_at:'2026-10-17T10:00:00Z',reviewed_at:null,reviewed_by:null},
   {id:'a2222222-2222-4222-8222-222222222222',boxer_id:boxerId,training_type_id:2,training_date:'2026-10-17',notes:'',status:'rejected',created_at:'2026-10-17T11:00:00Z',reviewed_at:new Date().toISOString(),reviewed_by:adminId}
  ];
@@ -25,9 +28,11 @@ function injected(role){
   {feature_key:'notifications',is_enabled:false},{feature_key:'coach_feedback',is_enabled:false},
   {feature_key:'performance_dashboard',is_enabled:false}]};
  function query(table,opts={}){
-  const filter=[],ordering=[],self={
+  const filter=[],bounds=[],ordering=[],self={
    select:(fields,options)=>query(table,{...opts,fields,options}),
    eq:(col,val)=>{filter.push([col,val]);return self},
+   gte:(col,val)=>{bounds.push([col,val,'gte']);return self},
+   lte:(col,val)=>{bounds.push([col,val,'lte']);return self},
    order:(col,v)=>{ordering.push([col,v]);return self},
    limit:(n)=>{opts.limit=n;return self},range:(from,to)=>{opts.range=[from,to];return self},
    maybeSingle:async()=>{const r=compute();return {data:r.data?.[0]||null,error:null}},
@@ -40,7 +45,7 @@ function injected(role){
    then:(resolve,reject)=>Promise.resolve(compute()).then(resolve,reject)
   };
   function compute(){
-   let items=(all[table]||[]).filter(x=>filter.every(([k,v])=>x[k]===v));
+   let items=(all[table]||[]).filter(x=>filter.every(([k,v])=>x[k]===v)&&bounds.every(([k,v,op])=>op==='gte'?x[k]>=v:x[k]<=v));
    for(const [k,v] of ordering){items=items.slice().sort((a,b)=>v?.ascending?(a[k]>b[k]?1:-1):(a[k]>b[k]?-1:1))}
    if(opts.range)items=items.slice(opts.range[0],opts.range[1]+1);
    if(opts.limit!=null)items=items.slice(0,opts.limit);
@@ -59,6 +64,17 @@ function injected(role){
    if(name==='admin_undo_recent_rejection'){stats.undo++;submissions=submissions.map(x=>x.id===args.p_submission_id?{...x,status:'pending',reviewed_at:null,reviewed_by:null}:x);all.training_submissions=submissions;return {data:{status:'pending'},error:null}}
    if(name==='coach_list_unlinked_accounts'||name==='coach_training_audit_recent')return {data:[],error:null};
    if(name==='get_boxer_training_audit')return {data:[],error:null};
+   if(name==='coach_challenge_v2_list')return {data:[{
+    id:'abcd0000-abcd-4000-abcd-000000000001',title:'Joggingziel',description:'Laufen',
+    duration_days:7,status:'active',joined_count:1,my_enrollment_status:role==='boxer'?'joined':null,
+    starts_at:'2026-10-15T00:00:00+02:00',ends_at:'2026-10-22T23:59:00+02:00',
+    goal_spec:{review_mode:'automatic',metric:'jogging_km',target_value:10,goal_text:'10 Kilometer'}
+   }],error:null};
+   if(name==='coach_challenge_v2_progress')return {data:{
+    status:'active',joined_count:1,reviewed_count:0,pending_count:1,
+    my_enrollment_status:role==='boxer'?'joined':null,
+    goal_spec:{review_mode:'automatic',metric:'jogging_km',target_value:10}
+   },error:null};
    return {data:[],error:null};
   }
  };
@@ -89,6 +105,13 @@ async function main(){
    assert.equal(submitted.length,1,'Double submit should create just one training');
    assert.equal(submitted[0].status,'pending');
    console.log('PASS boxer form submission; cloud autosave; task center; duplicate click suppressed, mobile Chromium');
+   await page.goto(url+'/challenges.html');
+   await page.waitForFunction(()=>document.querySelector('#list article')!==null);
+   await page.getByRole('button',{name:'Fortschritt aktualisieren'}).first().click();
+   await page.waitForFunction(()=>document.querySelector('.tl-challenge-progress p[role=status]')?.textContent.includes('Bestätigte Leistung:'));
+   assert.match(await page.locator('.tl-challenge-progress').first().innerText(),/4[.,]5 \/ 10 km/);
+   console.log('PASS authenticated boxer automatic challenge progress from own approved training');
+
   } else {
    await page.goto(url+'/coach.html');
    await page.waitForFunction(()=>!document.querySelector('#content').classList.contains('hidden'));
