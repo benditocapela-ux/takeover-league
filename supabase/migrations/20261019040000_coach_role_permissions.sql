@@ -200,8 +200,10 @@ $function$
 ;
 REVOKE ALL ON FUNCTION league_private.coach_training_bonus_refresh(uuid) FROM PUBLIC,anon,authenticated;
 
--- Privileged admin_edit_training retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.admin_edit_training(p_submission_id uuid, p_boxer_id uuid, p_training_type_id bigint, p_training_date date, p_notes text, p_status text)
+-- Privileged admin_edit_training: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_0$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='admin_edit_training') THEN
+  EXECUTE $ddl_0$CREATE OR REPLACE FUNCTION public.admin_edit_training(p_submission_id uuid, p_boxer_id uuid, p_training_type_id bigint, p_training_date date, p_notes text, p_status text)
  RETURNS jsonb
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -291,10 +293,14 @@ BEGIN
   'points',CASE WHEN p_status='approved' THEN v_points ELSE 0 END);
 END;
 $function$
-;
+;$ddl_0$;
+ END IF;
+END $guard_0$;
 
--- Privileged admin_undo_recent_rejection retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.admin_undo_recent_rejection(p_submission_id uuid)
+-- Privileged admin_undo_recent_rejection: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_1$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='admin_undo_recent_rejection') THEN
+  EXECUTE $ddl_1$CREATE OR REPLACE FUNCTION public.admin_undo_recent_rejection(p_submission_id uuid)
  RETURNS jsonb
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -331,10 +337,14 @@ begin
  return pg_catalog.jsonb_build_object('submission_id',training.id,'status','pending','undo','rejection_only');
 end;
 $function$
-;
+;$ddl_1$;
+ END IF;
+END $guard_1$;
 
--- Privileged coach_add_boxer_palmares retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.coach_add_boxer_palmares(p_boxer_id uuid, p_title text, p_event_name text DEFAULT ''::text, p_achievement_type text DEFAULT 'other'::text, p_result text DEFAULT ''::text, p_achievement_date date DEFAULT NULL::date, p_description text DEFAULT ''::text)
+-- Privileged coach_add_boxer_palmares: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_2$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='coach_add_boxer_palmares') THEN
+  EXECUTE $ddl_2$CREATE OR REPLACE FUNCTION public.coach_add_boxer_palmares(p_boxer_id uuid, p_title text, p_event_name text DEFAULT ''::text, p_achievement_type text DEFAULT 'other'::text, p_result text DEFAULT ''::text, p_achievement_date date DEFAULT NULL::date, p_description text DEFAULT ''::text)
  RETURNS uuid
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -374,10 +384,14 @@ BEGIN
  RETURN v_entry_id;
 END;
 $function$
-;
+;$ddl_2$;
+ END IF;
+END $guard_2$;
 
--- Privileged coach_add_hall_of_fame_entry retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.coach_add_hall_of_fame_entry(p_boxer_id uuid, p_title text, p_description text DEFAULT ''::text, p_award_category text DEFAULT 'special'::text, p_season_id uuid DEFAULT NULL::uuid, p_awarded_on date DEFAULT CURRENT_DATE)
+-- Privileged coach_add_hall_of_fame_entry: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_3$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='coach_add_hall_of_fame_entry') THEN
+  EXECUTE $ddl_3$CREATE OR REPLACE FUNCTION public.coach_add_hall_of_fame_entry(p_boxer_id uuid, p_title text, p_description text DEFAULT ''::text, p_award_category text DEFAULT 'special'::text, p_season_id uuid DEFAULT NULL::uuid, p_awarded_on date DEFAULT CURRENT_DATE)
  RETURNS uuid
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -427,10 +441,14 @@ BEGIN
  RETURN v_entry_id;
 END;
 $function$
-;
+;$ddl_3$;
+ END IF;
+END $guard_3$;
 
--- Privileged coach_award_season_hall_of_fame retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.coach_award_season_hall_of_fame(p_season_id uuid)
+-- Privileged coach_award_season_hall_of_fame: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_4$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='coach_award_season_hall_of_fame') THEN
+  EXECUTE $ddl_4$CREATE OR REPLACE FUNCTION public.coach_award_season_hall_of_fame(p_season_id uuid)
  RETURNS TABLE(season_id uuid, winner_count integer, created_entries integer)
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -491,10 +509,14 @@ BEGIN
  RETURN QUERY SELECT v_season.id,v_winners,v_created;
 END;
 $function$
-;
+;$ddl_4$;
+ END IF;
+END $guard_4$;
 
--- Privileged coach_create_boxer_duel retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.coach_create_boxer_duel(p_challenger_id uuid, p_opponent_id uuid, p_title text, p_description text, p_duel_type text, p_starts_on date, p_ends_on date, p_target_value numeric DEFAULT NULL::numeric)
+-- Privileged coach_create_boxer_duel: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_5$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='coach_create_boxer_duel') THEN
+  EXECUTE $ddl_5$CREATE OR REPLACE FUNCTION public.coach_create_boxer_duel(p_challenger_id uuid, p_opponent_id uuid, p_title text, p_description text, p_duel_type text, p_starts_on date, p_ends_on date, p_target_value numeric DEFAULT NULL::numeric)
  RETURNS uuid
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -521,10 +543,14 @@ BEGIN
  RETURN v_id;
 END;
 $function$
-;
+;$ddl_5$;
+ END IF;
+END $guard_5$;
 
--- Privileged coach_create_league_challenge retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.coach_create_league_challenge(p_title text, p_description text, p_starts_on date, p_ends_on date, p_challenge_type text, p_target_value numeric DEFAULT NULL::numeric)
+-- Privileged coach_create_league_challenge: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_6$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='coach_create_league_challenge') THEN
+  EXECUTE $ddl_6$CREATE OR REPLACE FUNCTION public.coach_create_league_challenge(p_title text, p_description text, p_starts_on date, p_ends_on date, p_challenge_type text, p_target_value numeric DEFAULT NULL::numeric)
  RETURNS uuid
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -560,10 +586,14 @@ BEGIN
  RETURN v_id;
 END;
 $function$
-;
+;$ddl_6$;
+ END IF;
+END $guard_6$;
 
--- Privileged coach_create_league_season retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.coach_create_league_season(p_name text, p_starts_on date, p_ends_on date, p_description text DEFAULT ''::text)
+-- Privileged coach_create_league_season: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_7$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='coach_create_league_season') THEN
+  EXECUTE $ddl_7$CREATE OR REPLACE FUNCTION public.coach_create_league_season(p_name text, p_starts_on date, p_ends_on date, p_description text DEFAULT ''::text)
  RETURNS uuid
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -597,10 +627,14 @@ BEGIN
  RETURN v_new_id;
 END;
 $function$
-;
+;$ddl_7$;
+ END IF;
+END $guard_7$;
 
--- Privileged coach_finalize_boxer_duel retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.coach_finalize_boxer_duel(p_duel_id uuid)
+-- Privileged coach_finalize_boxer_duel: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_8$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='coach_finalize_boxer_duel') THEN
+  EXECUTE $ddl_8$CREATE OR REPLACE FUNCTION public.coach_finalize_boxer_duel(p_duel_id uuid)
  RETURNS TABLE(duel_id uuid, final_status text, winner_id uuid, challenger_score numeric, opponent_score numeric, is_tie boolean)
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -640,10 +674,14 @@ BEGIN
   v_score.challenger_progress,v_score.opponent_progress,v_score.is_tie;
 END;
 $function$
-;
+;$ddl_8$;
+ END IF;
+END $guard_8$;
 
--- Privileged coach_finalize_league_season retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.coach_finalize_league_season(p_season_id uuid)
+-- Privileged coach_finalize_league_season: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_9$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='coach_finalize_league_season') THEN
+  EXECUTE $ddl_9$CREATE OR REPLACE FUNCTION public.coach_finalize_league_season(p_season_id uuid)
  RETURNS TABLE(season_id uuid, boxer_count integer, final_status text)
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -719,10 +757,14 @@ BEGIN
  RETURN QUERY SELECT v_season.id,v_count,'completed'::text;
 END;
 $function$
-;
+;$ddl_9$;
+ END IF;
+END $guard_9$;
 
--- Privileged coach_set_boxer_duel_status retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.coach_set_boxer_duel_status(p_duel_id uuid, p_new_status text)
+-- Privileged coach_set_boxer_duel_status: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_10$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='coach_set_boxer_duel_status') THEN
+  EXECUTE $ddl_10$CREATE OR REPLACE FUNCTION public.coach_set_boxer_duel_status(p_duel_id uuid, p_new_status text)
  RETURNS text
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -751,10 +793,14 @@ BEGIN
  RETURN p_new_status;
 END;
 $function$
-;
+;$ddl_10$;
+ END IF;
+END $guard_10$;
 
--- Privileged coach_set_goal_status retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.coach_set_goal_status(p_goal_id uuid, p_new_status text)
+-- Privileged coach_set_goal_status: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_11$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='coach_set_goal_status') THEN
+  EXECUTE $ddl_11$CREATE OR REPLACE FUNCTION public.coach_set_goal_status(p_goal_id uuid, p_new_status text)
  RETURNS TABLE(goal_id uuid, goal_status text, changed_at timestamp with time zone)
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -790,10 +836,14 @@ BEGIN
  RETURN QUERY SELECT p_goal_id,p_new_status,v_updated_at;
 END;
 $function$
-;
+;$ddl_11$;
+ END IF;
+END $guard_11$;
 
--- Privileged coach_set_league_challenge_status retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.coach_set_league_challenge_status(p_challenge_id uuid, p_new_status text)
+-- Privileged coach_set_league_challenge_status: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_12$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='coach_set_league_challenge_status') THEN
+  EXECUTE $ddl_12$CREATE OR REPLACE FUNCTION public.coach_set_league_challenge_status(p_challenge_id uuid, p_new_status text)
  RETURNS text
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -828,10 +878,14 @@ BEGIN
  RETURN p_new_status;
 END;
 $function$
-;
+;$ddl_12$;
+ END IF;
+END $guard_12$;
 
--- Privileged coach_set_league_season_status retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.coach_set_league_season_status(p_season_id uuid, p_new_status text)
+-- Privileged coach_set_league_season_status: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_13$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='coach_set_league_season_status') THEN
+  EXECUTE $ddl_13$CREATE OR REPLACE FUNCTION public.coach_set_league_season_status(p_season_id uuid, p_new_status text)
  RETURNS text
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -864,10 +918,14 @@ BEGIN
  RETURN p_new_status;
 END;
 $function$
-;
+;$ddl_13$;
+ END IF;
+END $guard_13$;
 
--- Privileged coach_training_audit_recent retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.coach_training_audit_recent(p_limit integer DEFAULT 50)
+-- Privileged coach_training_audit_recent: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_14$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='coach_training_audit_recent') THEN
+  EXECUTE $ddl_14$CREATE OR REPLACE FUNCTION public.coach_training_audit_recent(p_limit integer DEFAULT 50)
  RETURNS TABLE(audit_id bigint, happened_at timestamp with time zone, boxer_name text, changed_by_name text, old_status text, new_status text, old_points integer, new_points integer)
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
@@ -900,10 +958,14 @@ begin
   limit greatest(1, least(coalesce(p_limit,50),100));
 end;
 $function$
-;
+;$ddl_14$;
+ END IF;
+END $guard_14$;
 
--- Privileged coach_upsert_achievement_definition retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.coach_upsert_achievement_definition(p_code text, p_title text, p_description text DEFAULT ''::text, p_category text DEFAULT 'general'::text, p_icon_key text DEFAULT NULL::text, p_is_active boolean DEFAULT false)
+-- Privileged coach_upsert_achievement_definition: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_15$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='coach_upsert_achievement_definition') THEN
+  EXECUTE $ddl_15$CREATE OR REPLACE FUNCTION public.coach_upsert_achievement_definition(p_code text, p_title text, p_description text DEFAULT ''::text, p_category text DEFAULT 'general'::text, p_icon_key text DEFAULT NULL::text, p_is_active boolean DEFAULT false)
  RETURNS uuid
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -933,10 +995,14 @@ BEGIN
  RETURN v_id;
 END;
 $function$
-;
+;$ddl_15$;
+ END IF;
+END $guard_15$;
 
--- Privileged get_boxer_duel_score retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.get_boxer_duel_score(p_duel_id uuid)
+-- Privileged get_boxer_duel_score: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_16$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='get_boxer_duel_score') THEN
+  EXECUTE $ddl_16$CREATE OR REPLACE FUNCTION public.get_boxer_duel_score(p_duel_id uuid)
  RETURNS TABLE(duel_id uuid, challenger_id uuid, opponent_id uuid, challenger_progress numeric, opponent_progress numeric, leading_boxer_id uuid, is_tie boolean)
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
@@ -1004,10 +1070,14 @@ BEGIN
    v_challenger=v_opponent;
 END;
 $function$
-;
+;$ddl_16$;
+ END IF;
+END $guard_16$;
 
--- Privileged get_boxer_exp_level_rank retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.get_boxer_exp_level_rank(p_boxer_id uuid)
+-- Privileged get_boxer_exp_level_rank: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_17$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='get_boxer_exp_level_rank') THEN
+  EXECUTE $ddl_17$CREATE OR REPLACE FUNCTION public.get_boxer_exp_level_rank(p_boxer_id uuid)
  RETURNS TABLE(boxer_id uuid, lifetime_exp bigint, lifetime_points bigint, level_number integer, level_start_exp bigint, next_level_exp bigint, exp_into_level bigint, exp_to_next_level bigint, rank_letter text)
  LANGUAGE sql
  STABLE
@@ -1047,10 +1117,14 @@ SELECT s.id,s.exp,s.points,s.lvl,s.start_exp,
             WHEN s.exp>=4500 THEN 'D' WHEN s.exp>=1500 THEN 'E' ELSE 'F' END
 FROM selected s;
 $function$
-;
+;$ddl_17$;
+ END IF;
+END $guard_17$;
 
--- Privileged get_boxer_performance_30d retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.get_boxer_performance_30d(p_boxer_id uuid, p_period_end date DEFAULT CURRENT_DATE)
+-- Privileged get_boxer_performance_30d: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_18$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='get_boxer_performance_30d') THEN
+  EXECUTE $ddl_18$CREATE OR REPLACE FUNCTION public.get_boxer_performance_30d(p_boxer_id uuid, p_period_end date DEFAULT CURRENT_DATE)
  RETURNS TABLE(boxer_id uuid, period_start date, period_end date, approved_sessions bigint, active_days bigint, training_equivalents numeric, distinct_training_types bigint, consistency_score numeric, volume_score numeric, variety_score numeric, total_score numeric)
  LANGUAGE sql
  STABLE
@@ -1093,10 +1167,14 @@ AS $function$
   round(LEAST(40::numeric,a.days*40.0/12)+LEAST(40::numeric,a.ve*40.0/20)+LEAST(20::numeric,a.types*20.0/5),2)
  FROM permitted p CROSS JOIN aggregate_values a;
 $function$
-;
+;$ddl_18$;
+ END IF;
+END $guard_18$;
 
--- Privileged get_league_challenge_progress retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.get_league_challenge_progress(p_challenge_id uuid, p_boxer_id uuid DEFAULT NULL::uuid)
+-- Privileged get_league_challenge_progress: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_19$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='get_league_challenge_progress') THEN
+  EXECUTE $ddl_19$CREATE OR REPLACE FUNCTION public.get_league_challenge_progress(p_challenge_id uuid, p_boxer_id uuid DEFAULT NULL::uuid)
  RETURNS TABLE(challenge_id uuid, boxer_id uuid, challenge_type text, target_value numeric, progress_value numeric, progress_percent numeric, goal_reached boolean)
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
@@ -1157,10 +1235,14 @@ BEGIN
  LEFT JOIN public.training_types t ON t.id=s.training_type_id;
 END;
 $function$
-;
+;$ddl_19$;
+ END IF;
+END $guard_19$;
 
--- Privileged review_training retains all original business guards except active trainer role expansion.
-CREATE OR REPLACE FUNCTION public.review_training(p_submission_id uuid, p_decision text)
+-- Privileged review_training: replace existing production function; never create missing legacy API in isolated test.
+DO $guard_20$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc f JOIN pg_namespace ns ON ns.oid=f.pronamespace WHERE ns.nspname='public' AND f.proname='review_training') THEN
+  EXECUTE $ddl_20$CREATE OR REPLACE FUNCTION public.review_training(p_submission_id uuid, p_decision text)
  RETURNS jsonb
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -1222,7 +1304,11 @@ BEGIN
   );
 END;
 $function$
-;
+;$ddl_20$;
+ END IF;
+END $guard_20$;
+
+
 
 DO $policy$ BEGIN IF to_regclass('public.boxer_achievements') IS NOT NULL AND NOT EXISTS (SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='boxer_achievements' AND policyname='coach_v3_boxer_achievements_read_enabled') THEN
  EXECUTE $ddl$CREATE POLICY "coach_v3_boxer_achievements_read_enabled" ON public.boxer_achievements FOR SELECT TO authenticated USING (((EXISTS ( SELECT 1
