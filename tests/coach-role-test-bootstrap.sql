@@ -564,5 +564,7 @@ DO $testinsert$ BEGIN
   WHERE ((t.id = training_submissions.training_type_id) AND t.is_active)))))$ddl$;
  END IF;
 END $testinsert$;
+-- The original production helper is not callable by application roles; keep the TEST bootstrap equally restrictive.
+REVOKE ALL ON FUNCTION public._sync_one_auto_bonus(uuid,text,date,date,integer,uuid) FROM PUBLIC, anon, authenticated;
 
 COMMIT;

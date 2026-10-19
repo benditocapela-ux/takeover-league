@@ -1333,4 +1333,26 @@ DO $guardpolicy$ BEGIN IF to_regclass('public.training_submissions') IS NOT NULL
    FROM profiles p
   WHERE ((p.id = training_submissions.boxer_id) AND (p.auth_user_id = ( SELECT auth.uid() AS uid))))) OR ( SELECT is_league_admin() AS is_league_admin)));
  END IF; END $guardpolicy$;
+-- Restore the exact pre-release broad application-role table grants if an emergency
+-- full rollback is authorised. NOTE: this reintroduces TRUNCATE (not protected by RLS).
+-- Never run during normal operation; use only under explicit owner authorisation.
+DO $restore_grants$ BEGIN
+ IF to_regclass('public.profiles') IS NOT NULL THEN
+   GRANT ALL PRIVILEGES ON TABLE public.profiles TO anon, authenticated;
+ END IF;
+ IF to_regclass('public.training_submissions') IS NOT NULL THEN
+   GRANT ALL PRIVILEGES ON TABLE public.training_submissions TO anon, authenticated;
+ END IF;
+ IF to_regclass('public.point_transactions') IS NOT NULL THEN
+   GRANT ALL PRIVILEGES ON TABLE public.point_transactions TO anon, authenticated;
+ END IF;
+ IF to_regclass('public.training_types') IS NOT NULL THEN
+   GRANT ALL PRIVILEGES ON TABLE public.training_types TO anon, authenticated;
+ END IF;
+ IF to_regclass('public.training_drafts_v2') IS NOT NULL THEN
+   GRANT ALL PRIVILEGES ON TABLE public.training_drafts_v2 TO authenticated;
+ END IF;
+ -- Do not reopen _sync_one_auto_bonus: it was already revoked in production.
+END $restore_grants$;
+
 COMMIT;

@@ -92,6 +92,18 @@ DO $boxer$
 DECLARE denied boolean:=false; n integer;
 BEGIN
  IF public.is_league_coach() THEN RAISE EXCEPTION 'Boxer wrongly recognized as coach'; END IF;
+ IF has_table_privilege('authenticated','public.training_submissions','UPDATE')
+  OR has_table_privilege('authenticated','public.point_transactions','INSERT')
+  OR has_table_privilege('authenticated','public.point_transactions','TRUNCATE')
+  OR has_table_privilege('anon','public.profiles','TRUNCATE')
+  OR has_table_privilege('anon','public.training_types','TRUNCATE')
+  OR has_table_privilege('authenticated','public.training_drafts_v2','TRUNCATE') THEN
+  RAISE EXCEPTION 'Unsafe direct table DML or TRUNCATE privileges';
+ END IF;
+ IF has_function_privilege('authenticated','public._sync_one_auto_bonus(uuid,text,date,date,integer,uuid)','EXECUTE') THEN
+  RAISE EXCEPTION 'Untrusted caller can execute internal auto-bonus synchronizer';
+ END IF;
+ RAISE NOTICE 'PASS: no direct writes to ledger and no dangerous TRUNCATE grants';
  SELECT count(*) INTO n FROM public.get_boxer_exp_level_rank(current_setting('coach_test.coach_profile')::uuid);
  IF n<>0 THEN RAISE EXCEPTION 'Boxer sees other coach private rank/level stats'; END IF;
  BEGIN

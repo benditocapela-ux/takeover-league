@@ -20,5 +20,10 @@ assert.match(fixture,/SET LOCAL ROLE authenticated/);
 assert.match(fixture,/ROLLBACK;\s*$/);
 assert.match(fixture,/get_boxer_performance_30d/);
 assert.match(fixture,/admin_undo_recent_rejection/);
+assert.match(migration,/REVOKE ALL PRIVILEGES ON TABLE public\.point_transactions FROM PUBLIC, anon, authenticated/);
+assert.match(migration,/GRANT SELECT, INSERT ON TABLE public\.training_submissions TO authenticated/);
+assert.match(migration,/REVOKE ALL ON FUNCTION public\._sync_one_auto_bonus/);
+assert.match(fixture,/has_table_privilege\('authenticated','public\.point_transactions','TRUNCATE'\)/);
+assert.match(fixture,/has_function_privilege\('authenticated','public\._sync_one_auto_bonus/);
 
 console.log('PASS: Design foundation and coach/boxer Studio access remain intact');

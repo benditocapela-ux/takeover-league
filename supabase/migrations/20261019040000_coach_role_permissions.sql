@@ -1728,4 +1728,35 @@ DO $statsexec$ BEGIN
  END IF;
 END $statsexec$;
 
+-- Access-contract hardening: RLS cannot protect TRUNCATE. Existing production ACLs
+-- included anon/authenticated TRUNCATE and direct writes on core tables.
+-- Keep only the table privileges the frontend actually uses; SECURITY DEFINER RPCs
+-- still perform protected decisions/ledger corrections as the database function owner.
+DO $core_grants$ BEGIN
+ IF to_regclass('public.profiles') IS NOT NULL THEN
+   REVOKE ALL PRIVILEGES ON TABLE public.profiles FROM PUBLIC, anon, authenticated;
+   GRANT SELECT ON TABLE public.profiles TO authenticated;
+ END IF;
+ IF to_regclass('public.training_submissions') IS NOT NULL THEN
+   REVOKE ALL PRIVILEGES ON TABLE public.training_submissions FROM PUBLIC, anon, authenticated;
+   GRANT SELECT, INSERT ON TABLE public.training_submissions TO authenticated;
+ END IF;
+ IF to_regclass('public.point_transactions') IS NOT NULL THEN
+   REVOKE ALL PRIVILEGES ON TABLE public.point_transactions FROM PUBLIC, anon, authenticated;
+   GRANT SELECT ON TABLE public.point_transactions TO authenticated;
+ END IF;
+ IF to_regclass('public.training_types') IS NOT NULL THEN
+   REVOKE ALL PRIVILEGES ON TABLE public.training_types FROM PUBLIC, anon, authenticated;
+   GRANT SELECT ON TABLE public.training_types TO authenticated;
+ END IF;
+ IF to_regclass('public.training_drafts_v2') IS NOT NULL THEN
+   REVOKE ALL PRIVILEGES ON TABLE public.training_drafts_v2 FROM PUBLIC, anon, authenticated;
+   GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.training_drafts_v2 TO authenticated;
+ END IF;
+ IF to_regprocedure('public._sync_one_auto_bonus(uuid,text,date,date,integer,uuid)') IS NOT NULL THEN
+   REVOKE ALL ON FUNCTION public._sync_one_auto_bonus(uuid,text,date,date,integer,uuid)
+     FROM PUBLIC, anon, authenticated;
+ END IF;
+END $core_grants$;
+
 COMMIT;
