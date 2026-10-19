@@ -41,7 +41,23 @@
    addSectionWayfinders();
    // Single shared drawer. The home page supplies its existing four-item footer.
    const entries=[
-     ['🏆 Die Liga',[
+     ['👤 Mein Bereich',[
+       ['user','Anmelden / Mein Account','login.html',''],
+       ['dumbbell','Mein Studio','boxer.html',''],
+       ['target','Meine Ziele','goals.html',''],
+       ['medal','Trainer-Dashboard','coach.html',''],
+       ['goal','League Manager 2.1','league-manager.html',''],
+       ['user','Clubverwaltung','admin.html','',false,true]
+     ]],
+     ['🥊 Kämpfe',[
+       ['boxing-glove','Duell starten','duels.html','',true],
+       ['arena','Mehrgegner-Arena','arena.html','',true]
+     ]],
+     ['🎯 Herausforderungen',[
+       ['bolt','Live Challenges','league-challenges.html','',true],
+       ['target','Persönliche Challenges','challenges.html','',true]
+     ]],
+     ['🏆 Liga & Erfolge',[
        ['trophy','Podium','index.html#podium','podium'],
        ['chart','Monatsranking','index.html#ranking','ranking'],
        ['boxing-glove','Levels & EXP','index.html#levels','levels'],
@@ -49,30 +65,18 @@
        ['medal','Monatsauszeichnungen','awards.html',''],
        ['scale','Boxer-Vergleich','boxer-compare.html',''],
        ['trophy','Saisons & Hall of Fame','league-history.html','']
-     ]],
-     ['🥊 Neue Funktionen',[
-       ['target','Challenges','challenges.html','',true],
-       ['bolt','Liga-Challenges','league-challenges.html','',true],
-       ['boxing-glove','Boxer-Duelle','duels.html','',true],
-       ['arena','Mehrgegner-Arena','arena.html','',true]
-     ]],
-     ['👤 Mein Bereich',[
-       ['user','Anmelden / Mein Account','login.html',''],
-       ['dumbbell','Mein Training','boxer.html',''],
-       ['target','Meine Ziele','goals.html',''],
-       ['medal','Trainer-Dashboard','coach.html',''],
-       ['goal','League Manager 2.1','league-manager.html',''],
-       ['user','Clubverwaltung','admin.html','',false,true]
      ]]
    ];
-   const contents=entries.map(group=>
-     '<div class="tl-menu-group"><div class="tl-menu-group-title">'+group[0]+'</div>'+
+   const contents=entries.map((group,index)=>
+     '<details class="tl-menu-group"'+(index===1?' open':'')+'>'+
+     '<summary class="tl-menu-group-title"><span>'+group[0]+'</span><span class="tl-menu-group-chevron" aria-hidden="true">⌄</span></summary>'+
+     '<div class="tl-menu-group-items">'+
      group[1].map(item=>
        '<a class="tl-menu-link" href="./'+item[2]+'"'+(item[3]?' data-tl-section="'+item[3]+'"':'')+(item[5]?' data-tl-admin hidden':'')+(['boxer.html','goals.html','coach.html','league-manager.html'].includes(item[2])?' data-tl-private hidden':'')+'>'+
          '<span class="tl-menu-icon" aria-hidden="true">'+emoji(item[0])+'</span>'+
          '<span class="tl-menu-label">'+item[1]+(item[4]?' <span class="tl-menu-pill">2.0</span>':'')+'</span>'+
          '<span class="tl-menu-arrow" aria-hidden="true">↗</span>'+
-       '</a>').join('')+'</div>').join('');
+       '</a>').join('')+'</div></details>').join('');
    document.body.insertAdjacentHTML('beforeend',
       '<div id="tl-menu-backdrop" class="tl-menu-backdrop" hidden aria-hidden="true"></div>'+
       '<aside id="tl-menu-panel" class="tl-menu-panel" role="dialog" aria-modal="true" aria-label="Alle Takeover League Bereiche" aria-hidden="true" inert>'+

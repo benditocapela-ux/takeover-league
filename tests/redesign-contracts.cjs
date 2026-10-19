@@ -17,7 +17,9 @@ for(const [path,b] of Object.entries(baseline)){
   ? ['guest-tab-overview','guest-tab-ranking','guest-tab-challenges','guest-tab-duels','guest-tab-history'] : [];
  assert.deepEqual(addedIds,allowedAdded,`${path}: unexpected additional DOM ID`);
  assert.deepEqual(gotRpc,b.rpc,`${path}: RPC literal list changed`);
- assert.equal((s.match(/<script\b/gi)||[]).length,b.scriptCount,`${path}: unexpected script change`);
+ const choiceCardPages=new Set(['arena.html','boxer.html','challenges.html','duels.html','goals.html']);
+ const expectedScriptCount=b.scriptCount+(choiceCardPages.has(path)?1:0);
+ assert.equal((s.match(/<script\b/gi)||[]).length,expectedScriptCount,`${path}: unexpected script change`);
  assert.match(s,/takeover-redesign\.css/,`${path}: must import production stylesheet`);
  ids+=gotIds.length;rpcCount+=gotRpc.length;
 }

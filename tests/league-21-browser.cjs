@@ -104,6 +104,8 @@ async function main(){
       await page.locator('#app').waitFor({state:'visible'});
       await page.fill('#title','TEST Zwanzig Trainings');
       await page.fill('#target','20');
+      await page.getByRole('button',{name:'Manuelles Ziel'}).click();
+      assert.equal(await page.locator('#metric').inputValue(),'custom','Goal-type card must update the native select');
       await page.locator('#goalForm button[type=submit]').click();
       await page.waitForFunction(()=>window.__testCalls.some(x=>x.name==='league_v21_save_goal'));
       await page.locator('#goals article').first().waitFor();
@@ -112,11 +114,12 @@ async function main(){
       await page.waitForFunction(()=>document.querySelector('#list')?.textContent.includes('50 Punkte'));
       assert.match(await page.locator('#list').innerText(),/50 Punkte/);
       await page.fill('#title','TEST Mehrgegner Arena');
-      await page.locator('#boxers').selectOption([
-       '11111111-1111-4111-8111-111111111111',
-       '22222222-2222-4222-8222-222222222222',
-       '33333333-3333-4333-8333-333333333333']);
-      await page.locator('#create button').click();
+      await page.getByRole('button',{name:'Boxer Alpha'}).click();
+      await page.getByRole('button',{name:'Boxer Beta'}).click();
+      await page.getByRole('button',{name:'Boxer Gamma'}).click();
+      assert.equal(await page.locator('#boxers').evaluate(el=>el.selectedOptions.length),3,
+       'Horizontal boxer cards must update the native multi-select');
+      await page.locator('#create button[type=submit]').click();
       await page.waitForFunction(()=>window.__testCalls.some(x=>x.name==='league_v21_arena_create'));
      }else if(route.startsWith('league-manager')){
       await page.locator('#dashboard').waitFor({state:'visible'});

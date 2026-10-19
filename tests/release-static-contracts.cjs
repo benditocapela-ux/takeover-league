@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),assert=require('node:assert/strict');
 function read(path){return fs.readFileSync(path,'utf8')}
-const boxer=read('boxer.html'),coach=read('coach.html'),duels=read('duels.html'),challenges=read('challenges.html'),sql=read('supabase/migrations/20261018190000_training_drafts_v2.sql');
+const boxer=read('boxer.html'),coach=read('coach.html'),duels=read('duels.html'),challenges=read('challenges.html'),goals=read('goals.html'),arena=read('arena.html'),choiceCards=read('takeover-choice-cards.js'),redesign=read('takeover-redesign.css'),navigation=read('takeover-navigation.js'),sql=read('supabase/migrations/20261018190000_training_drafts_v2.sql');
 const cases=[
 ['Boxer uses real authenticated submission table',()=>assert.match(boxer,/db\.from\('training_submissions'\)\.insert/)],
 ['Boxer retains submission lock',()=>assert.match(boxer,/trainingSubmitBusy=true/)],
@@ -31,6 +31,10 @@ const cases=[
 ['Duel invitation confirms exact opponent and duration',()=>assert.match(duels,/if\(!confirm\('Duell-Einladung senden\?/)],
 ['Training calendar uses confirmed Supabase entries',()=>{assert.match(boxer,/historyRows\.filter\(row=>row\.status==='approved'/);assert.match(boxer,/renderTrainingInsights\(\)/)}],
 ['Server idempotency has a partial unique key',()=>{const idemp=read('supabase/migrations/20261018200000_training_submission_idempotency.sql');assert.match(idemp,/unique index if not exists/i);assert.match(idemp,/client_request_id is not null/);assert.match(boxer,/client_request_id=requestId/)}],
+['Menu separates private area, fights, challenges and league achievements',()=>{assert.match(navigation,/👤 Mein Bereich/);assert.match(navigation,/🥊 Kämpfe/);assert.match(navigation,/🎯 Herausforderungen/);assert.match(navigation,/🏆 Liga & Erfolge/);assert.match(navigation,/Live Challenges/);assert.match(navigation,/Persönliche Challenges/);assert.match(navigation,/Duell starten/)}],
+['Horizontal choice cards preserve native form values and support multiple selection',()=>{assert.match(choiceCards,/select\.multiple/);assert.match(choiceCards,/dispatchEvent\(new Event\('change'/);assert.match(choiceCards,/aria-pressed/);assert.match(redesign,/\.tl-choice-track/);assert.match(redesign,/prefers-reduced-motion/)}],
+['Horizontal choice cards are included only on intended non-coach form pages',()=>{for(const page of [boxer,duels,challenges,goals,arena])assert.match(page,/takeover-choice-cards\.js/);assert.doesNotMatch(coach,/takeover-choice-cards\.js/)}],
+['Arena keeps its existing native multi-select contract',()=>{assert.match(arena,/<select multiple id="boxers"/);assert.match(arena,/selectedOptions/);assert.match(arena,/3 bis 8 Boxer auswählen|3–8 Boxer auswählen/)}],
 ['No application uses service role credentials',()=>{for(const file of ['boxer.html','coach.html','duels.html','challenges.html','boxer-compare.html'])assert.doesNotMatch(read(file),/sb_secret_|service_role/i)}],
 ['Undo rejection is admin-only, bounded, audited and has no linked ledger',()=>{
  const u=read('supabase/migrations/20261018213000_admin_undo_recent_rejection.sql');
