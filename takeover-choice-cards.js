@@ -56,8 +56,9 @@
    });
    if(select.multiple){
     const count=selected.size;
-    note.textContent=count+' ausgewählt · Wähle 3–8 Boxer.';
-    note.classList.toggle('is-valid',count>=3&&count<=8);
+    const valid=count>=3&&count<=8;
+    note.textContent=valid?count+' Boxer ausgewählt.':count+' ausgewählt · Wähle 3–8 Boxer.';
+    note.classList.toggle('is-valid',valid);
    }
    wrapper.classList.toggle('is-disabled',select.disabled);
   }
