@@ -17,6 +17,57 @@
    });
  }
 
+ function enhanceChoiceSelects(){
+   const selects=Array.from(document.querySelectorAll('select[data-tl-choice]'));
+   selects.forEach(select=>{
+     if(select.dataset.tlChoiceEnhanced==='true')return;
+     const key=select.dataset.tlChoice;
+     const rail=Array.from(document.querySelectorAll('.tl-choice-rail[data-choice-for]')).find(node=>node.dataset.choiceFor===key);
+     if(!rail)return;
+     select.dataset.tlChoiceEnhanced='true';
+     const render=()=>{
+       rail.replaceChildren();
+       const options=Array.from(select.options).filter(option=>{
+         if(option.disabled)return false;
+         const value=option.value,label=(option.textContent||'').trim();
+         if(value===''&&/^(bitte wählen|bitte auswählen|auswählen|gegner wählen)$/i.test(label))return false;
+         return true;
+       });
+       options.forEach(option=>{
+         const label=(option.textContent||'').trim()||option.value||'Auswahl';
+         const words=label.split(/\\s+/).filter(Boolean);
+         const initials=String(option.dataset.tlChoiceIcon||(/\\d+/.exec(label)?.[0])||
+           (words.length>1?words[0][0]+words[words.length-1][0]:label.slice(0,2))).toLocaleUpperCase('de-CH').slice(0,3);
+         const button=document.createElement('button');
+         button.type='button';button.className='tl-choice-card';button.dataset.value=option.value;button.tabIndex=-1;
+         button.disabled=select.disabled||option.disabled;
+         button.setAttribute('aria-pressed',String(option.selected));
+         const top=document.createElement('span');top.className='tl-choice-card-top';
+         const avatar=document.createElement('span');avatar.className='tl-choice-avatar';avatar.textContent=initials||'✓';
+         const tag=document.createElement('span');tag.className='tl-choice-card-tag';tag.textContent=select.multiple?'MEHRFACH':'AUSWAHL';
+         const check=document.createElement('span');check.className='tl-choice-card-check';check.textContent='✓';check.setAttribute('aria-hidden','true');
+         top.append(avatar,tag,check);
+         const title=document.createElement('span');title.className='tl-choice-card-name';title.textContent=label;
+         const meta=document.createElement('span');meta.className='tl-choice-card-meta';
+         meta.textContent=option.dataset.tlChoiceHint||(option.selected?'Ausgewählt':select.multiple?'Antippen zum Auswählen':'Antippen zur Auswahl');
+         button.append(top,title,meta);
+         button.addEventListener('click',()=>{
+           if(select.disabled||option.disabled)return;
+           if(select.multiple)option.selected=!option.selected;
+           else select.value=option.value;
+           select.dispatchEvent(new Event('change',{bubbles:true}));
+         });
+         rail.append(button);
+       });
+     };
+     select.addEventListener('change',render);
+     if(typeof MutationObserver!=='undefined'){
+       const observer=new MutationObserver(render);
+       observer.observe(select,{childList:true,subtree:true,attributes:true});
+     }
+     render();
+   });
+ }
  function start(){
    if(document.getElementById('tl-menu-panel'))return;
    const pathname=window.location.pathname;
@@ -39,6 +90,7 @@
      homeNav.forEach(([selector,id])=>{const link=document.querySelector(selector);if(!link)return;const label=(link.textContent||'').trim();link.innerHTML=emoji(id)+' '+label;});
    }
    addSectionWayfinders();
+   enhanceChoiceSelects();
    // Single shared drawer. The home page supplies its existing four-item footer.
    const entries=[
      {
