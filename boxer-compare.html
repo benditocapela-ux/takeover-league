@@ -138,9 +138,13 @@ function draw(){
 function drawFavorites(){
  const root=$('favorites');root.replaceChildren();const a=readFavorites().filter(name=>members.some(m=>m.name===name));
  if(!a.length){const p=document.createElement('span');p.className='muted';p.textContent='Noch keine Favoriten.';root.append(p);return}
- for(const name of a){const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent='★ '+name;button.onclick=()=>{$('left').value=name;draw()};root.append(button)}
+ for(const name of a){const button=document.createElement('button');button.type='button';button.className='secondary';button.textContent='★ '+name;button.onclick=()=>{$('left').value=name;$('left').dispatchEvent(new Event('change',{bubbles:true}))};root.append(button)}
 }
-$('compare').onclick=draw;$('swap').onclick=()=>{const a=$('left').value;$('left').value=$('right').value;$('right').value=a;draw()};
+$('compare').onclick=draw;$('swap').onclick=()=>{
+ const a=$('left').value;$('left').value=$('right').value;$('right').value=a;
+ $('left').dispatchEvent(new Event('change',{bubbles:true}));
+ $('right').dispatchEvent(new Event('change',{bubbles:true}));
+};
 for(const id of ['left','right'])$(id).onchange=draw;
 async function init(){
  try{const [leaders,levels]=await Promise.all([rpc('get_public_leaderboard'),rpc('get_public_levels')]);
