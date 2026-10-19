@@ -50,6 +50,10 @@ jobs:
           for page in arena goals league-manager league-challenges league-history boxer-compare admin; do
             test -s "_site/${page}.html"
           done
+          # Guest showcase: the public, account-free view of the league.
+          test -s _site/guest.html
+          grep -Fq 'iqarjivcrddcixrvqbfb' _site/guest.html
+          grep -Fq 'Als Gast ansehen' _site/login.html
           test -s _site/takeover-quick-actions.js
           for page in boxer coach challenges duels; do
             grep -Fq 'takeover-quick-actions.js' "_site/${page}.html"

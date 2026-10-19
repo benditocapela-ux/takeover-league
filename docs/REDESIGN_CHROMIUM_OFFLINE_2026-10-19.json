@@ -1,0 +1,434 @@
+[
+  {
+    "page": "admin.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "admin.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "admin.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "admin.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "arena.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "arena.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "arena.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "arena.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "awards.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "awards.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "awards.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "awards.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "boxer-compare.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "boxer-compare.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "boxer-compare.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "boxer-compare.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "boxer-profile.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "boxer-profile.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "boxer-profile.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "boxer-profile.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "boxer.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "boxer.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "boxer.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "boxer.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "challenges.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "challenges.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "challenges.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "challenges.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "coach.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "coach.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "coach.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "coach.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "coming-soon.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "coming-soon.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "coming-soon.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "coming-soon.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "duels.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "duels.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "duels.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "duels.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "features.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "features.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "features.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "features.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "goals.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "goals.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "goals.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "goals.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "guest.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "guest.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "guest.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "guest.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "index.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "index.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "index.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "index.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "league-challenges.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "league-challenges.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "league-challenges.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "league-challenges.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "league-history.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "league-history.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "league-history.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "league-history.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "league-manager.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "league-manager.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "league-manager.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "league-manager.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "login.html",
+    "width": 320,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "login.html",
+    "width": 390,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "login.html",
+    "width": 768,
+    "overflow": 0,
+    "browser_errors": 0
+  },
+  {
+    "page": "login.html",
+    "width": 1440,
+    "overflow": 0,
+    "browser_errors": 0
+  }
+]

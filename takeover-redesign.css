@@ -1,0 +1,184 @@
+/* TAKEOVER LEAGUE · Sport-Dashboard × Fight Night
+   Visual-only layer. No roles, values, DOM IDs or RPC semantics are changed.
+   Shared rhythm: navy / restrained gold / quiet green · de-CH · mobile first. */
+:root{
+ --gold:#c9a86b;--gold-2:#d0ad68;--gold-deep:#9e7d3e;--ok:#558f6a;
+ --bg:#070d1a;--bg-deep:#040a15;--surface:#0e1c32;--surface-2:#0a1528;
+ --surface-3:#132642;--line:#212f49;--line-strong:#354a67;
+ --text:#e8ecf3;--muted:#aab9cc;--text-2:#d1dbe8;
+ --fight-panel:linear-gradient(145deg,#0e1c32,#0a1528 82%);
+ --fight-glow:0 15px 35px #02060f7d;
+ --fight-edge:color-mix(in srgb,var(--gold) 34%,var(--line));
+}
+html{box-sizing:border-box;-webkit-text-size-adjust:100%;scroll-padding-top:20px}
+*,*::before,*::after{box-sizing:inherit}
+body[data-tl-screen]{min-width:0;min-height:100vh;color:var(--text);background:radial-gradient(ellipse 110% 380px at 50% -170px,#c9a86b18,transparent 75%),linear-gradient(180deg,#080f1d,var(--bg) 42%,var(--bg-deep));background-attachment:fixed;font-family:var(--font);line-height:1.5;padding-bottom:max(104px,calc(84px + env(safe-area-inset-bottom)))}
+body[data-tl-screen] :where(main,.wrap,.shell){min-width:0}
+body[data-tl-screen] :where(main){width:min(100%,1100px);margin-inline:auto}
+body[data-tl-screen] :where(.card,.panel,.feature-card,.stat-card,.metric-card,.public-sport-profile,.public-badges,.guestbar,.studio-summary){background:var(--fight-panel);border:1px solid var(--line);border-top:2px solid var(--fight-edge);border-radius:15px;box-shadow:var(--fight-glow);min-width:0}
+body[data-tl-screen] :where(.card,.panel,.feature-card,.stat-card,.metric-card,.public-sport-profile,.public-badges){padding:clamp(14px,2.4vw,22px)}
+body[data-tl-screen] :where(h1,h2,h3){letter-spacing:-.025em;line-height:1.16;font-weight:850;text-wrap:balance}
+body[data-tl-screen] h1{font-size:clamp(25px,5vw,38px)}
+body[data-tl-screen] h2{font-size:clamp(17px,2.5vw,23px)}
+body[data-tl-screen] h3{font-size:clamp(15px,2vw,19px)}
+body[data-tl-screen] :where(p,.muted,.sub,.caption,small){overflow-wrap:anywhere}
+body[data-tl-screen] :where(a,button,input,select,textarea,summary,[role="tab"]):focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+body[data-tl-screen] :where(button,[role="button"],input[type="submit"],.btn,.action){min-height:44px;touch-action:manipulation}
+body[data-tl-screen] :where(button,input,select,textarea){font-family:inherit;font-size:max(14px,1em)}
+body[data-tl-screen] :where(input:not([type="checkbox"]):not([type="radio"]),select,textarea){background:#081323;color:var(--text);border:1px solid var(--line-strong);border-radius:10px;min-height:44px;max-width:100%;box-sizing:border-box}
+body[data-tl-screen] :where(input,select,textarea)::placeholder{color:#98abc1}
+body[data-tl-screen] :where(label){font-weight:750;color:var(--text-2)}
+body[data-tl-screen] :where(button,.btn){border-radius:10px;font-weight:800;letter-spacing:.005em}
+body[data-tl-screen] :where(button:disabled,[aria-disabled="true"]){cursor:not-allowed;opacity:.55}
+body[data-tl-screen] :where(.secondary-btn,.secondary,.ghost){background:var(--surface-3);color:var(--text);border:1px solid var(--line-strong)}
+body[data-tl-screen] :where(.secondary-btn,.secondary,.ghost):hover{border-color:var(--gold)}
+body[data-tl-screen] :where(.approve,.approved,.success,.ok){--state-color:var(--ok)}
+body[data-tl-screen] :where(.pending,.wait){--state-color:var(--gold)}
+body[data-tl-screen] :where(.reject,.rejected,.error){--state-color:var(--bad)}
+body[data-tl-screen] :where(.status,.pill,.tag,.badge){max-width:100%;overflow-wrap:anywhere}
+body[data-tl-screen] :where(.pill,.tag,.badge,.state){border-radius:999px;font-weight:750}
+body[data-tl-screen] :where(.pill.approved,.pill.pending,.pill.rejected){background:color-mix(in srgb,var(--state-color) 12%,var(--surface-2));border-color:color-mix(in srgb,var(--state-color) 50%,var(--line));color:var(--state-color)}
+body[data-tl-screen] :where(.pill.approved,.pill.pending,.pill.rejected)::before{content:none}
+body[data-tl-screen] :where(.entry,.row,.training,.type-row){border-bottom-color:var(--line)}
+body[data-tl-screen] :where(table){width:100%;border-collapse:separate;border-spacing:0}
+body[data-tl-screen] :where(th){color:var(--muted);font-size:12px;letter-spacing:.055em;text-transform:uppercase;font-weight:850}
+body[data-tl-screen] :where(td,th){border-bottom:1px solid var(--line)}
+body[data-tl-screen] :where(progress){accent-color:var(--gold);height:12px}
+body[data-tl-screen] :where(.progress,.exp-track,.bar-track){border-radius:999px;overflow:hidden;background:var(--line)}
+body[data-tl-screen] :where(.exp-fill,.progress-fill,.ux-week-fill){background:linear-gradient(180deg,#d0ad68,#9e7d3e)}
+body[data-tl-screen] :where(dialog,[role="dialog"]:not(.tl-menu-panel)){background:var(--surface);color:var(--text);border:1px solid var(--gold-deep);border-radius:var(--r-lg);box-shadow:0 28px 80px #000b;max-width:min(92vw,690px)}
+body[data-tl-screen] :where(dialog)::backdrop{background:#010611bf;backdrop-filter:blur(4px)}
+body[data-tl-screen] :where([hidden],.hidden,.hide){display:none!important}
+body[data-tl-screen] :where([aria-live="polite"],[role="status"]){overflow-wrap:anywhere}
+body[data-tl-screen] :where(.empty,.empty-state){border:1px dashed var(--line-strong);border-radius:12px;background:#0b172a;padding:16px;color:var(--muted)}
+/* Page wayfinder: genuine screen name and navigational actions only, no pretend stats. */
+.tl-screen-ribbon{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:2px 0 20px;padding:13px 15px;border:1px solid #c9a86b47;background:linear-gradient(110deg,#15243e,#0c182c 80%);border-radius:13px;box-shadow:0 8px 24px #02060f38}
+.tl-screen-identity{min-width:0;display:flex;gap:10px;align-items:center}
+.tl-screen-symbol{font-size:23px;flex:none;width:42px;height:42px;display:grid;place-items:center;background:#101f35;border:1px solid #c9a86b6b;border-radius:11px}
+.tl-screen-eyebrow{font-size:10px;letter-spacing:.17em;font-weight:900;color:var(--gold);text-transform:uppercase}
+.tl-screen-title{margin:2px 0 0;font-size:clamp(14px,2.7vw,19px);font-weight:850;letter-spacing:-.02em;color:var(--text)}
+.tl-screen-links{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tl-screen-links a{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:9px 12px;border-radius:10px;border:1px solid var(--line-strong);background:#0b182c;color:var(--text-2);font-size:12px;font-weight:800;text-decoration:none;white-space:normal}
+.tl-screen-links a:hover,.tl-screen-links a:focus-visible{color:var(--gold);border-color:var(--gold)}
+.tl-screen-links a.tl-screen-primary{background:linear-gradient(135deg,#d0ad68,#9e7d3e);color:#0b1323;border:0}
+.tl-screen-links a.tl-screen-primary:hover{background:#e0bc78;color:#09111f}
+/* Stronger application-level hierarchy for cards, lists and real values. */
+body[data-tl-screen] :where(.stats,.stat-highlights,.exp-rank-grid,.metrics){gap:12px}
+body[data-tl-screen] :where(.stat,.exp-rank-stat,.metric,.metric-tile){background:#0a172a;border:1px solid var(--line);border-radius:12px}
+body[data-tl-screen] :where(.stat strong,.exp-rank-stat strong,.metric strong,.stat-highlights strong){font-family:var(--mono);letter-spacing:-.035em;font-variant-numeric:tabular-nums;color:var(--gold)}
+body[data-tl-screen] :where(.stat span,.exp-rank-stat span){color:var(--muted)}
+/* Sticky context navigation with safe areas and clear 44px targets. */
+body[data-tl-screen] .tl-global-bottom{background:#080f1df2;border-top:1px solid #c9a86b40;backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px)}
+body[data-tl-screen] .tl-global-nav-items .tl-nav-item{min-height:48px;border-radius:11px}
+body[data-tl-screen] .tl-menu-panel{background:#0b172a;padding-top:calc(24px + env(safe-area-inset-top))}
+body[data-tl-screen] .tl-menu-link{min-height:48px}
+body[data-tl-screen] .tl-menu-link[hidden]{display:none!important}
+/* PUBLIC LIGA: podium, rankings, history and live data remain original JS-owned DOM. */
+body[data-tl-screen="index"] .heading{background:linear-gradient(125deg,#172943,#0b172a 80%);border:1px solid var(--line);border-top:2px solid #c9a86b88;border-radius:16px;padding:clamp(17px,4vw,29px);box-shadow:var(--fight-glow)}
+body[data-tl-screen="index"] .page{min-width:0}
+body[data-tl-screen="index"] #podium :where(.podium,.podium-grid){gap:12px}
+body[data-tl-screen="index"] :where(.rank-row,.rank-card,.leaderboard-row){background:#0a172a;border:1px solid var(--line);border-radius:12px}
+body[data-tl-screen="index"] :where(.points,.total-points,.exp){font-variant-numeric:tabular-nums}
+body[data-tl-screen="index"] .bottom{backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-top:1px solid #c9a86b45;background:#080f1df0}
+body[data-tl-screen="index"] .bottom :where(.nav,button,a){min-height:48px}
+/* GUEST: never gain authenticated UI or access by appearance. */
+body[data-tl-screen="guest"] .wrap{width:min(100%,980px);max-width:980px}
+body[data-tl-screen="guest"] .top{background:transparent;border-bottom:1px solid var(--line);margin-bottom:18px}
+body[data-tl-screen="guest"] .guestbar{background:linear-gradient(110deg,#192943,#0a1528);border-color:#c9a86b55}
+body[data-tl-screen="guest"] .podium .card{background:linear-gradient(155deg,#152743,#0a172c);border:1px solid var(--line)}
+body[data-tl-screen="guest"] .podium .card.first{border-color:#c9a86b75;border-top:3px solid var(--gold)}
+body[data-tl-screen="guest"] .row{background:#0b182c;border:1px solid var(--line);min-height:58px}
+body[data-tl-screen="guest"] .tabs button,body[data-tl-screen="guest"] nav button{min-height:46px}
+body[data-tl-screen="guest"] .tag.ok{color:#91c29f;background:#558f6a22;border-color:#558f6a60}
+/* BOXER: summary, training form, history, details and dynamic notifications. */
+body[data-tl-screen="boxer"] main{max-width:1030px}
+body[data-tl-screen="boxer"] .studio-tabs{display:flex;gap:8px;background:#091629;border:1px solid var(--line);padding:7px;border-radius:13px}
+body[data-tl-screen="boxer"] .studio-tabs [role="tab"]{flex:1;min-height:48px;border-radius:9px;display:flex;align-items:center;justify-content:center;gap:8px}
+body[data-tl-screen="boxer"] .studio-tabs [aria-selected="true"]{background:#182b45;color:var(--gold);border-color:#c9a86b77}
+body[data-tl-screen="boxer"] .boxer-hero{background:linear-gradient(135deg,#152944,#0c192e 74%);border:1px solid #c9a86b59;border-top:2px solid var(--gold);box-shadow:var(--fight-glow);border-radius:16px}
+body[data-tl-screen="boxer"] .boxer-hero h1{font-size:clamp(28px,6vw,42px);letter-spacing:-.05em}
+body[data-tl-screen="boxer"] :where(.studio-identity,.studio-ring-wrap,.boxer-hero-stat){border-color:var(--line)}
+body[data-tl-screen="boxer"] :where(.ux-notice,.feedback-note,.type-row){background:#0b182d;border-color:var(--line);border-radius:11px}
+body[data-tl-screen="boxer"] #trainingFormCard{border-top:3px solid var(--gold)}
+body[data-tl-screen="boxer"] .ux-week-bars{background:#091628;border:1px solid var(--line);padding:14px 10px 12px;border-radius:12px}
+body[data-tl-screen="boxer"] .studio-ring-progress{stroke:var(--gold)}
+body[data-tl-screen="boxer"] :where(.studio-pane,.studio-content){min-width:0}
+/* COACH: review queue and permission-sensitive controls remain in their own sections. */
+body[data-tl-screen="coach"] main{max-width:1110px}
+body[data-tl-screen="coach"] #content>.card:first-of-type{border-top:3px solid var(--gold)}
+body[data-tl-screen="coach"] :where(.entry,.review-card,.coach-training-row){background:#0b192e;border:1px solid var(--line);padding:14px;border-radius:11px;margin-block:8px}
+body[data-tl-screen="coach"] .actions{display:flex;flex-wrap:wrap;gap:9px}
+body[data-tl-screen="coach"] .approve{background:#558f6a;color:#fff;border:1px solid #80b392}
+body[data-tl-screen="coach"] .reject{background:#44232c;color:#ffdadd;border:1px solid #9d6269}
+body[data-tl-screen="coach"] :where(.filters,.coach-filters,.filter-bar){background:#0a172b;border:1px solid var(--line);border-radius:11px;padding:12px}
+body[data-tl-screen="coach"] dialog{padding:clamp(16px,3vw,26px)}
+/* ADMIN: clear ownership, status and restricted controls in dense responsive rows. */
+body[data-tl-screen="admin"] main{max-width:1120px}
+body[data-tl-screen="admin"] #adminContent>.panel:first-child{border-top:3px solid var(--gold)}
+body[data-tl-screen="admin"] :where(.summary,.inline-actions){gap:10px}
+body[data-tl-screen="admin"] :where(td strong,td small){overflow-wrap:anywhere}
+body[data-tl-screen="admin"] :where(.tag.pending){background:#c9a86b24;color:#e2be7d;border-color:#c9a86b60}
+body[data-tl-screen="admin"] :where(.warn){background:#c9a86b12;border-color:var(--gold);border-radius:0 10px 10px 0}
+/* LOGIN: three real states, no demonstration accounts. */
+body[data-tl-screen="login"] main.card{width:min(100%,580px);max-width:580px;background:linear-gradient(145deg,#11233d,#0a172a);border-top:3px solid var(--gold);box-shadow:0 20px 55px #01050dbb;padding:clamp(19px,4vw,32px)}
+body[data-tl-screen="login"] :where(#loginView,#registerView,#accountView){min-width:0}
+body[data-tl-screen="login"] :where(input[type="email"],input[type="password"],input[type="text"]){min-height:48px}
+body[data-tl-screen="login"] :where(#loginView button,#registerView button){min-height:48px}
+/* Goals, training challenges, leagues, duels, arenas: purposeful editorial grouping. */
+body[data-tl-screen="goals"] :where(form,section.panel){min-width:0}
+body[data-tl-screen="goals"] main .panel:first-of-type{border-top:3px solid var(--gold)}
+body[data-tl-screen="challenges"] main>section:not([class]){background:var(--fight-panel);border:1px solid var(--line);border-radius:15px;padding:clamp(15px,3vw,22px);margin-bottom:16px}
+body[data-tl-screen="challenges"] :where(.personal-assignment,.challenge-card){border:1px solid var(--line-strong);background:#0b192d;border-radius:11px;padding:12px}
+body[data-tl-screen="league-challenges"] :where(.panel,.challenge-item){border-top:2px solid var(--fight-edge)}
+body[data-tl-screen="duels"] #invitePanel{border-top:3px solid var(--gold)}
+body[data-tl-screen="duels"] :where(#liveOverviewSection,.duel-card,.match-card){background:linear-gradient(135deg,#142642,#091629);border:1px solid var(--line);border-radius:12px}
+body[data-tl-screen="arena"] #adminPanel{border-top:3px solid var(--gold)}
+body[data-tl-screen="arena"] :where(.arena-card,.member-card){background:#0b192e;border:1px solid var(--line);border-radius:12px}
+body[data-tl-screen="league-manager"] main>.panel{margin-bottom:18px}
+body[data-tl-screen="league-manager"] main>.panel:first-of-type{border-top:3px solid var(--gold)}
+body[data-tl-screen="league-history"] main>.panel{min-height:120px}
+/* Profiles, comparison, awards: strong numbers and readable public statistics. */
+body[data-tl-screen="boxer-profile"] :where(.public-sport-profile,.public-badges){margin-block:15px}
+body[data-tl-screen="boxer-profile"] :where(.record-value,.performance-value){font-variant-numeric:tabular-nums;color:var(--gold)}
+body[data-tl-screen="boxer-compare"] #chooser{border-top:3px solid var(--gold)}
+body[data-tl-screen="boxer-compare"] #results{gap:15px}
+body[data-tl-screen="boxer-compare"] :where(#headToHead,#directDuels){border-top:2px solid var(--fight-edge)}
+body[data-tl-screen="awards"] :where(.award-row,.entry){background:#0b172a;border:1px solid var(--line);border-radius:11px;margin:8px 0;padding:12px}
+/* Feature index / Coming soon: clear editorial entrypoints, never false 'live' status. */
+body[data-tl-screen="features"] :where(.feature-card,.feature){background:var(--fight-panel);border:1px solid var(--line);border-radius:13px;min-width:0}
+body[data-tl-screen="coming-soon"] main.panel{width:min(100%,750px);text-align:center;background:linear-gradient(145deg,#152741,#0b172a);padding:clamp(24px,6vw,55px)}
+/* Responsive and accessibility guarantees. */
+@media(max-width:700px){
+ body[data-tl-screen]{background-attachment:scroll}
+ .tl-screen-ribbon{align-items:flex-start;padding:12px;gap:10px}
+ .tl-screen-links{width:100%;display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+ .tl-screen-links a{padding:9px 8px;text-align:center}
+ body[data-tl-screen] :where(.stats,.exp-rank-grid){grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}
+ body[data-tl-screen="coach"] .actions button{flex:1 1 100px}
+ body[data-tl-screen="boxer"] .studio-tabs [role="tab"]{padding:10px 6px;font-size:12px}
+ body[data-tl-screen="guest"] .podium{gap:10px}
+ body[data-tl-screen] :where(.grid,.row){min-width:0}
+}
+@media(max-width:390px){
+ .tl-screen-title{font-size:15px}
+ .tl-screen-eyebrow{font-size:9px}
+ body[data-tl-screen] :where(h1){overflow-wrap:anywhere}
+ body[data-tl-screen] .tl-global-nav-items .tl-nav-item{font-size:11px;white-space:normal}
+}
+@media(prefers-reduced-motion:reduce){
+ body[data-tl-screen] *,body[data-tl-screen] *::before,body[data-tl-screen] *::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
+}
+/* Guest-specific five-way bottom rail; legible even on 320–390 px phones. */
+body[data-tl-screen="guest"] .bottom{background:#080f1df2;border-top:1px solid #c9a86b55;padding-bottom:calc(7px + env(safe-area-inset-bottom));backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+body[data-tl-screen="guest"] .bottom .inner{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;max-width:770px}
+body[data-tl-screen="guest"] .bottom .inner button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;white-space:normal;overflow-wrap:normal;min-width:0;min-height:56px;font:750 clamp(9px,2.35vw,12px)/1.2 var(--font);padding:6px 1px;border:1px solid transparent}
+body[data-tl-screen="guest"] .bottom .inner button.on{border-color:#c9a86b55;background:#152741}
+/* Real, aria-hidden decorative icons instead of screenreader-uncontrolled pseudo-elements. */
+body[data-tl-screen="guest"] .bottom .inner .guest-tab-emoji{font-size:17px;line-height:1;display:block}
+body[data-tl-screen="guest"] .guestbar a{color:#0a1324!important;background:#c9a86b;font-weight:900;min-height:44px;display:inline-flex;align-items:center;justify-content:center;text-shadow:none}
+body[data-tl-screen="guest"] .bottom button[aria-selected="true"]{color:var(--gold);border-color:#c9a86b55;background:#152741}
+body[data-tl-screen] :where(.loading,[data-state="loading"]){color:var(--muted);font-style:normal}
+body[data-tl-screen] :where([role="alert"],.err,.error,.error-message){overflow-wrap:anywhere}
+body[data-tl-screen] :where(.empty-state,[data-state="empty"]){background:var(--surface-2);border:1px dashed var(--line-strong);border-radius:12px;padding:14px;color:var(--muted)}
+body[data-tl-screen] :where(a,button){-webkit-tap-highlight-color:transparent}
+@media(min-width:850px){body[data-tl-screen="guest"] .guestbar{display:flex;align-items:center}}

@@ -32,6 +32,9 @@ for(const page of pages){
  const backdrop=doc.getElementById('tl-menu-backdrop');
  const close=doc.getElementById('tl-menu-close');
  assert.ok(trigger&&panel&&backdrop&&close,'Menu button/drawer/close missing from '+page);
+ assert.ok(trigger.querySelector('.tl-emoji'),'Menu button needs a clear emoji wayfinder on '+page);
+ assert.ok(panel.querySelector('.tl-menu-icon .tl-emoji'),'Drawer links need emoji wayfinders on '+page);
+ if(page==='index.html')assert.ok(doc.querySelector('[data-tl-wayfinder] .tl-section-emoji'),'League sections need emoji wayfinders');
  assert.equal(doc.querySelectorAll('#takeover-menu-open').length,1,'Multiple drawer buttons on '+page);
  assert.equal(doc.querySelectorAll('#tl-menu-panel').length,1,'Multiple drawers on '+page);
  assert.equal(trigger.getAttribute('aria-expanded'),'false',page+' drawer initial state');
@@ -55,7 +58,7 @@ for(const page of pages){
  if(page==='index.html'){
    assert.ok(html.includes('href="./takeover-theme.css"'),'Central design foundation missing from index');
    const theme=fs.readFileSync('takeover-theme.css','utf8');
-   for(const token of ['--bg:#0b1422','--surface:#142238','--gold:#dfbd77'])assert.ok(theme.includes(token),'Central token missing: '+token);
+   for(const token of ['--bg:#070d1a','--surface:#0e1c32','--gold:#c9a86b','--ok:#558f6a'])assert.ok(theme.includes(token),'Central token missing: '+token);
    for(const id of ['podium','ranking','levels','history','podium-content','ranking-content','levels-content','history-content'])
      assert.ok(doc.getElementById(id),'Original league section missing: '+id);
    assert.equal(doc.querySelectorAll('.tl-global-bottom').length,0,'Home must not have duplicate footer');

@@ -11,3 +11,7 @@ takeover-private-backup/
 *.sql.gz
 *.sql.age
 *.sql.gpg
+
+# Local dependencies (no build step in the app, jsdom only for local test runs)
+node_modules/
+_site/

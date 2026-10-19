@@ -34,3 +34,13 @@ body.tl-menu-visible{overflow:hidden}
 
 /* HTML hidden must win over the generic flex link rule (admin-only navigation). */
 .tl-menu-link[hidden]{display:none!important}
+
+/* Emoji wayfinding, tuned to stay legible without crowding the four-item bar. */
+.tl-emoji{display:inline-flex;align-items:center;justify-content:center;min-width:1.25em;font-size:1.16em;line-height:1;vertical-align:-.08em}
+.tl-section-emoji{display:inline-block;margin-right:.1em;font-size:.92em;vertical-align:-.03em}
+.tl-global-nav-items .tl-nav-item{gap:5px}
+.tl-menu-group-title{display:flex;align-items:center;gap:7px}
+.tl-menu-icon .tl-emoji{font-size:21px}
+
+/* HTML hidden supersedes the flex style for authenticated menu entries. */
+.tl-menu-link[hidden]{display:none!important}
