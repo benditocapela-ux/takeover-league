@@ -54,11 +54,11 @@
        ['boxing-glove','Duell starten','duels.html','',true],
        ['arena','Mehrgegner-Arena','arena.html','',true],
        ['bolt','Liga-Challenges','league-challenges.html','',true],
-       ['target','Challenges verwalten','challenges.html','',true]
+       ['target','Persönliche Challenges','challenges.html','',true]
      ]],
      ['👤 Mein Bereich',[
        ['user','Anmelden / Mein Account','login.html',''],
-       ['dumbbell','Mein Training','boxer.html',''],
+       ['dumbbell','Mein Studio','boxer.html',''],
        ['target','Meine Ziele','goals.html',''],
        ['medal','Trainer-Dashboard','coach.html',''],
        ['goal','League Manager 2.1','league-manager.html',''],
