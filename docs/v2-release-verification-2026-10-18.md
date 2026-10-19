@@ -1,3 +1,7 @@
+> ⚠️ **ÜBERHOLT – historischer Entwicklungs- oder Release-Zwischenstand.** Frühere Aussagen wie «nicht veröffentlicht», «HOLD», «NICHT AUSGEFÜHRT» und «kein Live-Release» dürfen nicht mehr als aktueller Produktionsstatus gelesen werden.
+> **Tatsächlich:** Takeover League 2.1 ist auf `main` (`4aae67e` → `4430bc4` → `0cd262e`) und mit der atomaren Migration `20261018231319` in Produktion. Echte Backup-/Restore-, Real-Login- und vollständige Security-Definer-Gates sind dadurch **NICHT** bestanden.
+> **Verbindlicher aktueller Überblick:** [RELEASE_STATUS_2_1_2026-10-19.md](RELEASE_STATUS_2_1_2026-10-19.md). Der übrige Text bleibt unverändert als historische Momentaufnahme erhalten.
+
 # Takeover League 2.0 – Releaseprüfung (18. Oktober 2026)
 
 **Status: NO-GO für Produktion bis ausdrücklichem «FREIGEBEN» und bestandenen technischen Gates.** Das produktive Supabase-Projekt wurde ausschließlich mit SELECT/Katalogabfragen geprüft. Keine Live-Migration, keine Änderung an Boxer-Konten, Einträgen oder EXP. Beide neuen Frontend-Funktionen bleiben standardmäßig deaktiviert. Der GitHub-PR bleibt Draft.

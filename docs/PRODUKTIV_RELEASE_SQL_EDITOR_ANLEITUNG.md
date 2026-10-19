@@ -1,3 +1,7 @@
+> ⚠️ **ÜBERHOLT – historischer Entwicklungs- oder Release-Zwischenstand.** Frühere Aussagen wie «nicht veröffentlicht», «HOLD», «NICHT AUSGEFÜHRT» und «kein Live-Release» dürfen nicht mehr als aktueller Produktionsstatus gelesen werden.
+> **Tatsächlich:** Takeover League 2.1 ist auf `main` (`4aae67e` → `4430bc4` → `0cd262e`) und mit der atomaren Migration `20261018231319` in Produktion. Echte Backup-/Restore-, Real-Login- und vollständige Security-Definer-Gates sind dadurch **NICHT** bestanden.
+> **Verbindlicher aktueller Überblick:** [RELEASE_STATUS_2_1_2026-10-19.md](RELEASE_STATUS_2_1_2026-10-19.md). Der übrige Text bleibt unverändert als historische Momentaufnahme erhalten.
+
 # Freigegebener Takeover-League-V2-Release: manuelle Supabase-Ausführung bei Connector-Sperre
 
 **Status 18.10.2026: FREIGEGEBEN, ABER NOCH NICHT INSTALLIERT.** Die GitHub-/Supabase-Integration hat den Produktions-DDL-Aufruf trotz expliziter Nutzerfreigabe mit einer Sicherheitsprüfung blockiert. Keine Umgehung dieser Sperre durch den Assistenten. Als regulärer, durch den Projektinhaber kontrollierter Weg steht das offizielle Supabase SQL Editor Interface zur Verfügung. Alle nachstehenden Dateien sind versionierte, im CI auf PostgreSQL 16 und 17 geprüfte SQL-Skripte; sie wurden bisher **nicht** auf Produktion ausgeführt.
