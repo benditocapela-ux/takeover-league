@@ -7,8 +7,10 @@
 <p id="status" role="status">Prüfe Anmeldung …</p>
 <section id="adminPanel" class="panel" hidden><h2>Trainer: Arena erstellen</h2>
 <form id="create"><label>Name<input id="title" minlength="3" maxlength="120" required></label>
-<label>Laufzeit<select id="duration"><option value="7">7 Tage</option><option value="14">14 Tage</option></select></label>
-<label>3–8 Boxer auswählen (Strg für Mehrfachauswahl)<select multiple id="boxers" aria-label="Boxer für Arena auswählen"></select></label>
+<label class="tl-native-select-label">Laufzeit auswählen<select id="duration" data-tl-choice="arena-duration"><option value="7">7 Tage</option><option value="14">14 Tage</option></select></label>
+<div class="tl-choice-field"><div class="tl-choice-heading"><span>Laufzeit</span><small>Wie lange soll die Arena laufen?</small></div><div class="tl-choice-rail tl-choice-rail--compact" data-choice-for="arena-duration" aria-hidden="true"></div></div>
+<label class="tl-native-select-label">Boxer auswählen<select multiple id="boxers" data-tl-choice="arena-boxers" aria-label="Boxer für Arena auswählen"></select></label>
+<div class="tl-choice-field"><div class="tl-choice-heading"><span>Boxer auswählen</span><small>Wähle 3–8 Boxer. Mehrere Karten sind möglich.</small></div><div class="tl-choice-rail" data-choice-for="arena-boxers" aria-hidden="true"></div></div>
 <button type="submit">Einladungen verschicken</button></form></section>
 <section class="panel"><div class="row"><h2>Meine Arenen</h2><button id="reload" type="button">Aktualisieren</button></div>
 <div id="list" class="grid"></div></section>
