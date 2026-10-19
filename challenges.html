@@ -85,7 +85,7 @@ function challengeProgressCard(c){
   try{
    const d=await rpc('coach_challenge_v2_progress',{p_challenge_id:c.id});
    if(!d||typeof d!=='object'||Array.isArray(d))throw Error('Detaillierter Fortschritt in dieser Datenbankversion nicht verfügbar.');
-   if(role==='boxer'){
+   if(['boxer','coach'].includes(role)){
     const state=d.my_enrollment_status||c.my_enrollment_status;
     detail.textContent=state==='joined'?'Du bist angemeldet. Deine Trainings zählen nach Bestätigung durch den Coach.':
       state==='completed'?'Teilnahme abgeschlossen.':state==='withdrawn'?'Teilnahme zurückgezogen.':'Du bist noch nicht angemeldet.';
@@ -129,13 +129,13 @@ if(c.goal_spec&&typeof c.goal_spec.goal_text==='string'&&c.goal_spec.goal_text.t
   const exp=Number(c.goal_spec.reward_exp);
   if([25,50,100,150,200].includes(exp))a.append(el('p','Belohnung bei Bestehen: '+exp+' EXP'));
 }
-if(['active','awaiting_reviews','settled'].includes(c.status)&&(role!=='boxer'||!!c.my_enrollment_status))a.append(challengeProgressCard(c));
+if(['active','awaiting_reviews','settled'].includes(c.status)&&(!['boxer','coach'].includes(role)||!!c.my_enrollment_status))a.append(challengeProgressCard(c));
 const enrollmentLabels={joined:'Angemeldet',withdrawn:'Zurückgezogen',completed:'Abgeschlossen'};
-if(role==='boxer'&&c.my_enrollment_status){
+if(['boxer','coach'].includes(role)&&c.my_enrollment_status){
   a.append(el('p','Meine Teilnahme: '+(enrollmentLabels[c.my_enrollment_status]||c.my_enrollment_status)));
   if(c.my_review_approved===true)a.append(el('p','Meine Bewertung: Bestanden'));
   if(c.my_review_approved===false)a.append(el('p','Meine Bewertung: Nicht bestanden'));
-}if(c.status==='open'&&(!c.my_enrollment_status||c.my_enrollment_status==='withdrawn')&&role==='boxer')action(a,'Teilnehmen','coach_challenge_v2_join',c.id);if(role==='boxer'&&c.my_enrollment_status==='joined'&&c.status==='open')action(a,'Teilnahme zurückziehen','coach_challenge_v2_withdraw',c.id);if(mayManage(c)&&c.status==='open')action(a,'Challenge starten','coach_challenge_v2_activate',c.id);
+}if(c.status==='open'&&(!c.my_enrollment_status||c.my_enrollment_status==='withdrawn')&&['boxer','coach'].includes(role))action(a,'Teilnehmen','coach_challenge_v2_join',c.id);if(['boxer','coach'].includes(role)&&c.my_enrollment_status==='joined'&&c.status==='open')action(a,'Teilnahme zurückziehen','coach_challenge_v2_withdraw',c.id);if(mayManage(c)&&c.status==='open')action(a,'Challenge starten','coach_challenge_v2_activate',c.id);
 if(mayManage(c)&&c.is_personal_assignment&&c.status==='active'){
 const cancel=el('button','Persönliche Challenge abbrechen');cancel.type='button';cancel.onclick=()=>{if(confirm('Direkte Challenge für '+c.target_boxer_name+' abbrechen? Nur unbewertete Challenges ohne Auszahlung lassen sich abbrechen.'))act('league_cancel_personal_challenge',{p_challenge_id:c.id})};a.append(cancel)}
 if(mayManage(c)&&c.status==='active'&&c.ends_at&&new Date(c.ends_at)<=new Date())action(a,'Bewertung beginnen','coach_challenge_v2_begin_reviews',c.id);

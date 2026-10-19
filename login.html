@@ -22,16 +22,16 @@ const message=(txt,error=false)=>{el('message').textContent=txt;el('message').cl
 async function render(){const {data:{user},error}=await supabase.auth.getUser();if(error||!user){showAuth(authMode);return;}
 const {data:profile,error:profileError}=await supabase.from('profiles').select('display_name,role,is_active').eq('auth_user_id',user.id).maybeSingle();
 el('loginView').classList.add('hide');el('registerView').classList.add('hide');el('accountView').classList.remove('hide');el('displayName').textContent=profile?.display_name||'Account';el('emailText').textContent=user.email||'';
-el('dashboardLink').href=profile?.role==='admin'&&profile?.is_active?'./coach.html':profile?.role==='boxer'&&profile?.is_active?'./boxer.html':profile?.role==='coach'&&profile?.is_active?'./challenges.html':'./index.html';
+el('dashboardLink').href=profile?.role==='admin'&&profile?.is_active?'./coach.html':profile?.role==='boxer'&&profile?.is_active?'./boxer.html':profile?.role==='coach'&&profile?.is_active?'./coach.html':'./index.html';
 el('dashboardLink').textContent=profile?.is_active&&(profile?.role==='admin'||profile?.role==='boxer'||profile?.role==='coach')?'Dashboard öffnen →':'Zur Liga →';
-el('roleText').textContent=profile?.role==='admin'?'Trainer / Admin':profile?.role==='boxer'?'Boxer':profile?.role==='coach'?'Trainer':'Noch kein Boxerprofil verknüpft';
-el('nextText').textContent=profile?.is_active===false?'Dein Konto ist deaktiviert.':profile?.role==='admin'?'Dein Trainerzugang ist aktiv. Öffne dein Coach-Dashboard.':profile?.role==='boxer'?'Dein Boxer-Login funktioniert. Du kannst jetzt dein persönliches Dashboard öffnen.':profile?.role==='coach'?'Dein Trainerzugang ist aktiv. Öffne den Challenge-Bereich.':'Bitte den Trainer kontaktieren, um dein Profil zu verknüpfen.';
+el('roleText').textContent=profile?.role==='admin'?'Trainer / Admin':profile?.role==='boxer'?'Boxer':profile?.role==='coach'?'Coach / Boxer':'Noch kein Boxerprofil verknüpft';
+el('nextText').textContent=profile?.is_active===false?'Dein Konto ist deaktiviert.':profile?.role==='admin'?'Dein Trainerzugang ist aktiv. Öffne dein Coach-Dashboard.':profile?.role==='boxer'?'Dein Boxer-Login funktioniert. Du kannst jetzt dein persönliches Dashboard öffnen.':profile?.role==='coach'?'Dein Coach-Zugang ist aktiv. Trainings kannst du auch im Boxer-Studio einreichen.':'Bitte den Trainer kontaktieren, um dein Profil zu verknüpfen.';
 if(profileError)message('Profil konnte nicht geladen werden: '+profileError.message,true);
 const next=new URLSearchParams(location.search).get('next');
 if(!profileError && profile?.is_active && (redirectAfterLogin || next==='boxer.html' || next==='coach.html' || next==='challenges.html' || next==='dashboard')){
  if(profile.role==='admin'){location.replace('./coach.html');return;}
  if(profile.role==='boxer'){location.replace('./boxer.html');return;}
- if(profile.role==='coach'){location.replace('./challenges.html');return;}
+ if(profile.role==='coach'){location.replace('./coach.html');return;}
 }
 }
 el('showRegister').addEventListener('click',()=>showAuth('register'));
