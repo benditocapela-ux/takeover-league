@@ -44,3 +44,33 @@ body.tl-menu-visible{overflow:hidden}
 
 /* HTML hidden supersedes the flex style for authenticated menu entries. */
 .tl-menu-link[hidden]{display:none!important}
+
+
+/* Accordion navigation: clear hierarchy while preserving the existing navy/gold theme. */
+.tl-menu-group{
+  margin-top:var(--sp-3);
+  border:1px solid color-mix(in srgb,var(--text) 8%,transparent);
+  border-radius:var(--r-lg);
+  background:color-mix(in srgb,var(--surface) 44%,transparent);
+  overflow:hidden;
+}
+.tl-menu-group[open]{
+  border-color:color-mix(in srgb,var(--gold) 24%,var(--line));
+  background:color-mix(in srgb,var(--surface) 76%,transparent);
+}
+.tl-menu-group-title{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin:0;padding:14px 14px;min-height:52px;
+  list-style:none;text-transform:none;letter-spacing:.1px;font-size:14px;
+  font-weight:850;color:var(--tl-nav-text);cursor:pointer;user-select:none;
+}
+.tl-menu-group-title::-webkit-details-marker{display:none}
+.tl-menu-group-title::marker{content:""}
+.tl-menu-group[open]>.tl-menu-group-title{color:var(--gold)}
+.tl-menu-group-chevron{display:inline-flex;align-items:center;justify-content:center;
+  width:26px;height:26px;border-radius:8px;background:var(--surface);
+  color:var(--gold);font-size:20px;line-height:1;transition:transform .18s ease}
+.tl-menu-group[open]>.tl-menu-group-title .tl-menu-group-chevron{transform:rotate(180deg)}
+.tl-menu-group-items{padding:0 8px 9px}
+.tl-menu-group-items .tl-menu-link{min-height:47px}
+@media(prefers-reduced-motion:reduce){.tl-menu-group-chevron{transition:none}}
