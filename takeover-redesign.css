@@ -182,3 +182,211 @@ body[data-tl-screen] :where([role="alert"],.err,.error,.error-message){overflow-
 body[data-tl-screen] :where(.empty-state,[data-state="empty"]){background:var(--surface-2);border:1px dashed var(--line-strong);border-radius:12px;padding:14px;color:var(--muted)}
 body[data-tl-screen] :where(a,button){-webkit-tap-highlight-color:transparent}
 @media(min-width:850px){body[data-tl-screen="guest"] .guestbar{display:flex;align-items:center}}
+
+
+/* Duell invitation: touch-friendly horizontal choices without changing RPCs. */
+body[data-tl-screen="duels"] #invite{
+  max-width:none;
+  gap:18px;
+}
+body[data-tl-screen="duels"] .tl-choice-field{min-width:0}
+body[data-tl-screen="duels"] .tl-choice-heading{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:4px 12px;
+  margin:2px 0 8px;
+  color:var(--text-2);
+  font-weight:800;
+}
+body[data-tl-screen="duels"] .tl-choice-heading small{
+  color:var(--muted);
+  font-size:12px;
+  font-weight:500;
+}
+body[data-tl-screen="duels"] .tl-choice-rail{
+  display:flex;
+  align-items:stretch;
+  gap:10px;
+  min-width:0;
+  overflow-x:auto;
+  overflow-y:hidden;
+  padding:4px 2px 11px;
+  margin:0 -2px;
+  scroll-snap-type:x mandatory;
+  overscroll-behavior-inline:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:thin;
+  scrollbar-color:var(--line-strong) transparent;
+}
+body[data-tl-screen="duels"] .tl-choice-card{
+  position:relative;
+  display:flex;
+  flex:0 0 clamp(145px,42vw,190px);
+  flex-direction:column;
+  align-items:stretch;
+  justify-content:flex-start;
+  gap:9px;
+  min-width:0;
+  min-height:116px;
+  margin:0;
+  padding:12px;
+  border:1px solid var(--line-strong);
+  border-radius:15px;
+  background:linear-gradient(145deg,var(--surface-3),var(--surface-2) 80%);
+  color:var(--text);
+  box-shadow:0 8px 20px color-mix(in srgb,var(--bg) 40%,transparent);
+  text-align:left;
+  white-space:normal;
+  scroll-snap-align:start;
+  transition:border-color .16s ease,background .16s ease,box-shadow .16s ease,transform .16s ease;
+  touch-action:pan-x;
+}
+body[data-tl-screen="duels"] .tl-choice-card:hover{
+  border-color:color-mix(in srgb,var(--gold) 70%,var(--line-strong));
+  transform:translateY(-1px);
+}
+body[data-tl-screen="duels"] .tl-choice-card[aria-pressed="true"]{
+  border-color:var(--gold);
+  background:linear-gradient(145deg,color-mix(in srgb,var(--gold) 14%,var(--surface-3)),var(--surface-2) 85%);
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--gold) 34%,transparent),0 10px 24px color-mix(in srgb,var(--gold) 8%,transparent);
+}
+body[data-tl-screen="duels"] .tl-choice-card:focus-visible{
+  outline:3px solid var(--gold);
+  outline-offset:2px;
+}
+body[data-tl-screen="duels"] .tl-choice-card:disabled{
+  opacity:.9;
+  cursor:default;
+}
+body[data-tl-screen="duels"] .tl-choice-card-top{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+  min-width:0;
+}
+body[data-tl-screen="duels"] .tl-choice-avatar{
+  display:grid;
+  place-items:center;
+  width:36px;
+  height:36px;
+  flex:0 0 36px;
+  border:1px solid color-mix(in srgb,var(--gold) 46%,var(--line));
+  border-radius:50%;
+  background:color-mix(in srgb,var(--gold) 12%,var(--surface));
+  color:var(--gold);
+  font-size:13px;
+  font-weight:900;
+  letter-spacing:.3px;
+}
+body[data-tl-screen="duels"] .tl-choice-card-tag{
+  margin-left:auto;
+  color:var(--muted);
+  font-size:10px;
+  font-weight:850;
+  letter-spacing:1px;
+}
+body[data-tl-screen="duels"] .tl-choice-card-check{
+  display:grid;
+  place-items:center;
+  width:22px;
+  height:22px;
+  flex:0 0 22px;
+  border:1px solid var(--line-strong);
+  border-radius:50%;
+  color:transparent;
+  font-size:12px;
+  font-weight:900;
+}
+body[data-tl-screen="duels"] .tl-choice-card[aria-pressed="true"] .tl-choice-card-check{
+  border-color:var(--gold);
+  background:var(--gold);
+  color:var(--bg-deep);
+}
+body[data-tl-screen="duels"] .tl-choice-card-name{
+  display:block;
+  overflow-wrap:anywhere;
+  color:var(--text);
+  font-size:14px;
+  font-weight:850;
+  line-height:1.25;
+}
+body[data-tl-screen="duels"] .tl-choice-card-meta{
+  display:block;
+  color:var(--muted);
+  font-size:11px;
+  line-height:1.3;
+}
+body[data-tl-screen="duels"] .tl-choice-empty{
+  flex:0 0 auto;
+  padding:14px;
+  border:1px dashed var(--line-strong);
+  border-radius:12px;
+  color:var(--muted);
+  font-size:13px;
+}
+body[data-tl-screen="duels"] .tl-choice-rail--compact .tl-choice-card{
+  flex-basis:clamp(132px,34vw,164px);
+  min-height:105px;
+}
+body[data-tl-screen="duels"] .tl-choice-rail--compact .tl-choice-avatar{
+  border-radius:10px;
+}
+body[data-tl-screen="duels"] .tl-native-select-label:not(:focus-within){
+  position:absolute!important;
+  width:1px!important;
+  height:1px!important;
+  padding:0!important;
+  margin:-1px!important;
+  overflow:hidden!important;
+  clip:rect(0,0,0,0)!important;
+  clip-path:inset(50%)!important;
+  white-space:nowrap!important;
+  border:0!important;
+}
+body[data-tl-screen="duels"] .tl-native-select-label select{
+  position:absolute;
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip:rect(0,0,0,0);
+  clip-path:inset(50%);
+  opacity:0;
+}
+body[data-tl-screen="duels"] .tl-native-select-label:focus-within{
+  position:relative!important;
+  width:auto!important;
+  height:auto!important;
+  padding:0!important;
+  margin:0!important;
+  overflow:visible!important;
+  clip:auto!important;
+  clip-path:none!important;
+  white-space:normal!important;
+}
+body[data-tl-screen="duels"] .tl-native-select-label:focus-within select{
+  position:static;
+  width:100%;
+  height:auto;
+  max-width:100%;
+  margin:0;
+  padding:12px;
+  overflow:visible;
+  clip:auto;
+  clip-path:none;
+  opacity:1;
+}
+body[data-tl-screen="duels"] #invite button[type="submit"]{
+  min-height:52px;
+  margin:0;
+  border-radius:13px;
+  font-weight:900;
+  box-shadow:0 8px 22px color-mix(in srgb,var(--gold) 13%,transparent);
+}
+@media(prefers-reduced-motion:reduce){
+  body[data-tl-screen="duels"] .tl-choice-card{transition:none}
+}
