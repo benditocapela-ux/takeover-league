@@ -89,6 +89,13 @@ async function main(){
      route.fulfill({status:200,contentType:'text/javascript',body:'export const createClient=()=>window.__liveDuelsSupabase;'}));
     await page.goto(base+'/duels.html',{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.querySelectorAll('[data-live-duel]').length===2);
+    await page.getByRole('button',{name:'Boxer Beta',exact:true}).click();
+    assert.equal(await page.locator('#invite select[name=opponent]').inputValue(),opponent,
+     'Opponent card must update the native duel select');
+    await page.getByRole('button',{name:'14 Tage',exact:true}).click();
+    assert.equal(await page.locator('#invite select[name=duration]').inputValue(),'14',
+     'Duration card must update the native duel select');
+    console.log('PASS horizontal duel opponent and duration cards, width '+width);
     await page.waitForFunction(()=>document.querySelector('[data-live-duel] .live-points')?.textContent.includes('70'));
     assert.equal(await page.locator('[data-live-duel]').count(),2);
     assert.match(await page.locator('[data-live-duel]').first().innerText(),/70 : 40/);
