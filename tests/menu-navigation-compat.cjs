@@ -1,7 +1,7 @@
 const fs=require('node:fs');
 const assert=require('node:assert/strict');
 const {JSDOM}=require('jsdom');
-const pages=['index.html','login.html','boxer.html','coach.html','challenges.html','duels.html','awards.html','features.html','coming-soon.html','boxer-profile.html'];
+const pages=['index.html','login.html','boxer.html','coach.html','challenges.html','duels.html','awards.html','features.html','coming-soon.html','boxer-profile.html','arena.html','goals.html'];
 const navScript=fs.readFileSync('takeover-navigation.js','utf8');
 const navCss=fs.readFileSync('takeover-navigation.css','utf8');
 const deploy=fs.readFileSync('.github/workflows/takeover-pages-deploy.yml','utf8');
@@ -63,6 +63,43 @@ for(const page of pages){
  close.click();
  assert.equal(trigger.getAttribute('aria-expanded'),'false','Accordion test should leave menu closed on '+page);
 
+ if(page==='boxer.html'){
+   const select=doc.querySelector('select[data-tl-choice="training-kind"]');
+   const rail=doc.querySelector('.tl-choice-rail[data-choice-for="training-kind"]');
+   assert.ok(select&&rail,'Training choice-card markup missing');
+   const option=doc.createElement('option');option.value='browser-fixture';option.textContent='Sparring';
+   select.append(option);select.dispatchEvent(new win.Event('change',{bubbles:true}));
+   const card=rail.querySelector('button[data-value="browser-fixture"]');
+   assert.ok(card,'Training type card should refresh when options arrive');
+   card.click();assert.equal(select.value,'browser-fixture','Training card must synchronize with the existing select');
+ }
+ if(page==='goals.html'){
+   const select=doc.querySelector('select[data-tl-choice="goal-metric"]');
+   const rail=doc.querySelector('.tl-choice-rail[data-choice-for="goal-metric"]');
+   assert.ok(select&&rail&&rail.querySelectorAll('.tl-choice-card').length===4,'Goal metrics should render as choice cards');
+   rail.querySelector('button[data-value="jogging_km"]').click();
+   assert.equal(select.value,'jogging_km','Goal metric card must update the existing select');
+ }
+ if(page==='challenges.html'){
+   const select=doc.querySelector('select[data-tl-choice="challenge-kind"]');
+   const rail=doc.querySelector('.tl-choice-rail[data-choice-for="challenge-kind"]');
+   assert.ok(select&&rail&&rail.querySelectorAll('.tl-choice-card').length===3,'Challenge types should render as choice cards');
+   rail.querySelector('button[data-value="competition"]').click();
+   assert.equal(select.value,'competition','Challenge type card must update the existing select');
+ }
+ if(page==='arena.html'){
+   const select=doc.querySelector('select[data-tl-choice="arena-boxers"]');
+   const rail=doc.querySelector('.tl-choice-rail[data-choice-for="arena-boxers"]');
+   assert.ok(select&&rail,'Arena boxer choice-card markup missing');
+   for(const [value,label] of [['alpha','Boxer Alpha'],['beta','Boxer Beta'],['gamma','Boxer Gamma']]){
+     const option=doc.createElement('option');option.value=value;option.textContent=label;select.append(option);
+   }
+   select.dispatchEvent(new win.Event('change',{bubbles:true}));
+   const cards=rail.querySelectorAll('.tl-choice-card');
+   assert.equal(cards.length,3,'Arena options should render as multi-select cards');
+   cards[0].click();cards[1].click();
+   assert.equal(select.selectedOptions.length,2,'Arena cards should preserve multi-select behavior');
+ }
  const footer=page==='index.html'
    ?doc.querySelector('.bottom')
    :doc.querySelector('.tl-global-bottom');
