@@ -47,7 +47,7 @@ jobs:
           test -s _site/boxer-profile.js
           test -s _site/boxer-profile.html
           # League 2.1 static entrypoints must be packaged in the public release.
-          for page in arena goals league-manager league-challenges league-history boxer-compare; do
+          for page in arena goals league-manager league-challenges league-history boxer-compare admin; do
             test -s "_site/${page}.html"
           done
           test -s _site/takeover-quick-actions.js
@@ -55,7 +55,7 @@ jobs:
             grep -Fq 'takeover-quick-actions.js' "_site/${page}.html"
           done
           # All production HTML entrypoints must ship the shared, re-openable menu.
-          for page in index login boxer coach challenges duels awards features coming-soon boxer-profile; do
+          for page in index login boxer coach admin challenges duels awards features coming-soon boxer-profile; do
             grep -Fq 'takeover-navigation.js' "_site/${page}.html"
             grep -Fq 'takeover-navigation.css' "_site/${page}.html"
           done

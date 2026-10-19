@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="de-CH"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Clubverwaltung · Takeover League</title>
+<link rel="stylesheet" href="./takeover-theme.css">
+<link rel="stylesheet" href="./takeover-navigation.css">
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);padding:var(--sp-5);font-family:var(--font)}
+main{max-width:1180px;margin:auto}h1{font-size:clamp(27px,5vw,39px);margin:var(--sp-5) 0 var(--sp-2)}
+h2{font-size:var(--fs-lg)}p{color:var(--muted);line-height:1.5}
+a{color:var(--gold)}button,select,input{font:inherit}button{min-height:42px;border-radius:var(--r-sm);padding:8px 12px;border:1px solid var(--gold);background:var(--surface);color:var(--gold);cursor:pointer;font-weight:700}
+button:disabled{opacity:.5;cursor:wait}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+header{display:flex;justify-content:space-between;align-items:center;gap:var(--sp-4);flex-wrap:wrap}.brand{font-weight:800;letter-spacing:.14em;color:var(--gold);font-size:var(--fs-xs)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--sp-5);margin:var(--sp-6) 0}
+.hidden{display:none!important}.danger{border-color:var(--bad);color:var(--bad)}.status{min-height:24px;color:var(--muted)}.status.error{color:var(--bad)}
+.summary{display:flex;flex-wrap:wrap;gap:10px}.summary strong{color:var(--gold)}
+.table-wrap{overflow-x:auto;width:100%}table{border-collapse:collapse;width:100%;min-width:800px}th,td{text-align:left;padding:12px 10px;vertical-align:top;border-bottom:1px solid var(--line)}th{color:var(--muted);font-size:var(--fs-xs);font-weight:800}
+tr.inactive{opacity:.65;background:color-mix(in srgb,var(--bad) 6%,transparent)}
+tr.new-profile{box-shadow:inset 3px 0 var(--gold)}
+td strong{display:block}small{display:block;color:var(--muted);font-size:var(--fs-xs);margin-top:3px}
+td input[type="email"],td select{max-width:240px;width:100%;min-height:42px;background:var(--bg);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:7px;color:var(--text)}
+td input[type="checkbox"]{width:22px;height:22px;accent-color:var(--gold)}
+.field{display:grid;gap:7px;align-items:start}.inline-actions{display:flex;gap:6px;flex-wrap:wrap}
+.tag{display:inline-block;font-size:11px;line-height:1.4;background:var(--surface-2);border:1px solid var(--line-strong);padding:2px 7px;border-radius:50px;color:var(--muted)}
+.tag.pending{color:var(--gold)}.tag.danger{color:var(--bad)}
+pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:13px;background:var(--bg);border-radius:var(--r-sm);border:1px solid var(--line-strong);font-size:var(--fs-xs)}
+.warn{border-left:3px solid var(--gold);padding:var(--sp-4);background:var(--surface-2)}
+@media(max-width:700px){body{padding:var(--sp-3)}.panel{padding:var(--sp-4)}.table-wrap{overflow:visible}table,thead,tbody,tr,td{display:block;width:100%;min-width:0}thead{position:absolute;clip:rect(0,0,0,0);width:1px;height:1px;overflow:hidden}tr{border:1px solid var(--line);border-radius:var(--r-md);margin:12px 0;padding:8px 11px}td{border:none;border-bottom:1px dashed var(--line);padding:9px 0}td:last-child{border-bottom:0}td::before{content:attr(data-label);display:block;color:var(--muted);font-size:11px;font-weight:800;margin-bottom:5px}td input[type="email"],td select{max-width:100%}}
+</style></head><body>
+<main><header><div class="brand">TAKEOVER LEAGUE / ADMIN</div><div>
+<a href="./coach.html">Trainer-Dashboard</a> · <a href="./login.html">Mein Account</a></div></header>
+<h1>Clubverwaltung</h1>
+<p>Nur der Eigentümer-Admin darf Rollen, Kontozustände und die öffentliche Sichtbarkeit verwalten.</p>
+<div id="adminStatus" class="status" role="status" aria-live="polite">Admin-Berechtigung wird überprüft …</div>
+<section id="adminContent" class="hidden">
+<div class="panel"><div class="inline-actions" style="justify-content:space-between;align-items:center">
+<div><h2>Boxerprofile &amp; Zugänge</h2><div id="profileTotals" class="summary" aria-live="polite"></div></div>
+<button type="button" id="adminRefresh">Aktualisieren</button></div>
+<p class="warn">Neue Anmeldungen sind sofort aktiv, aber zunächst <strong>nicht öffentlich sichtbar</strong>. Bei vorbereiteten Profilen zuerst die E-Mail hinterlegen. Die Registrierung mit exakt dieser Adresse übernimmt dann das bestehende Profil samt Trainings und Punkten.</p>
+<div class="table-wrap"><table aria-label="Profile verwalten"><thead><tr><th>Profil</th><th>E-Mail / Verknüpfung</th><th>Rolle</th><th>Aktiv</th><th>Öffentlich</th></tr></thead><tbody id="profilesBody"></tbody></table></div>
+</div>
+<div class="panel"><h2>Vollständige Login-Sperre – nur manuell</h2>
+<p>Die Deaktivierung eines Profils sperrt Daten und Funktionen, <strong>nicht die Anmeldung</strong>. Um eine Person auch am Login zu hindern, kann der Admin in der Supabase-Konsole <code>auth.users.banned_until</code> setzen. Diese Befehle werden hier niemals ausgeführt. Der Platzhalter ist vor einer bewussten manuellen Ausführung zu ersetzen.</p>
+<h3>Login sperren</h3><pre id="banSql">update auth.users set banned_until = now() + interval '100 years'
+where email = '&lt;email&gt;';</pre><button type="button" data-copy="banSql">SQL-Text kopieren</button>
+<h3>Sperre aufheben</h3><pre id="unbanSql">update auth.users set banned_until = null
+where email = '&lt;email&gt;';</pre><button type="button" data-copy="unbanSql">SQL-Text kopieren</button>
+</div>
+<div class="panel"><h2>Letzte Verwaltungsänderungen</h2><p>Rollen, Aktivierungen, Sichtbarkeit und hinterlegte E-Mails werden serverseitig protokolliert.</p><div id="adminAudit"></div></div>
+</section>
+</main>
+<script type="module">
+import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
+const $=id=>document.getElementById(id);
+const msg=(value,error=false)=>{const el=$('adminStatus');el.textContent=value;el.classList.toggle('error',error)};
+let admin=false;
+const add=(tag,text,cls)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el};
+async function mustBeAdmin(){
+ const {data:{user},error}=await db.auth.getUser();
+ if(error||!user)throw Error('Bitte zuerst anmelden.');
+ const profile=await db.from('profiles').select('id,role,is_active').eq('auth_user_id',user.id).maybeSingle();
+ if(profile.error||!profile.data||profile.data.role!=='admin'||profile.data.is_active!==true)
+  throw Error('Zugriff verweigert: Nur der aktive Eigentümer-Admin darf Profile verwalten.');
+ admin=true;
+}
+async function save(rpc,params,question,success){
+ if(!admin)return;
+ if(question&&!confirm(question))return;
+ msg('Änderung wird gespeichert …');
+ const result=await db.rpc(rpc,params);
+ if(result.error){msg('Speichern fehlgeschlagen: '+result.error.message,true);return}
+ await load(true);
+ msg(success);
+}
+function buildRow(p){
+ const tr=add('tr');tr.className=(!p.is_active?'inactive ':'')+(p.is_active&&!p.is_listed?'new-profile':'');
+ const makeCell=(label)=>{const td=add('td');td.dataset.label=label;tr.append(td);return td};
+ const name=makeCell('Profil');
+ name.append(add('strong',p.display_name));
+ name.append(add('small',new Date(p.created_at).toLocaleDateString('de-CH')));
+ if(p.role==='admin')name.append(add('span','Eigentümer-Admin','tag'));
+ else if(!p.is_active)name.append(add('span','Deaktiviert','tag danger'));
+ else if(!p.is_listed)name.append(add('span','Neu / noch nicht öffentlich','tag pending'));
+ const account=makeCell('E-Mail / Zugang');
+ if(p.has_account){account.append(add('strong',p.email||'Verknüpft (E-Mail unbekannt)'));account.append(add('small','Account verknüpft · E-Mail nicht bearbeitbar'))}
+ else{
+  const field=add('div',undefined,'field'),mail=add('input');
+  mail.type='email';mail.placeholder='person@beispiel.ch';mail.autocomplete='off';mail.maxLength=254;mail.value=p.email||'';
+  mail.setAttribute('aria-label','Vorbereitete E-Mail für '+p.display_name);
+  const saveBtn=add('button','E-Mail speichern');saveBtn.type='button';
+  saveBtn.onclick=()=>save('admin_set_profile_email',{p_profile_id:p.id,p_email:mail.value},
+    'Vorbereitete E-Mail für '+p.display_name+' ändern? Nur eine spätere Registrierung mit genau dieser Adresse wird zugeordnet.',
+    'E-Mail gespeichert. Die Person kann sich mit dieser Adresse registrieren.');
+  field.append(mail,saveBtn);account.append(field,add('small','Noch kein Account · E-Mail vor Registrierung eintragen'));
+ }
+ const role=makeCell('Rolle');
+ const roleSelect=add('select');for(const value of ['boxer','coach'])roleSelect.add(new Option(value==='coach'?'Coach + Boxer':'Boxer',value));
+ roleSelect.value=p.role==='admin'?'boxer':p.role;roleSelect.disabled=p.role==='admin';
+ roleSelect.setAttribute('aria-label','Rolle für '+p.display_name);
+ const roleBtn=add('button','Rolle speichern');roleBtn.type='button';roleBtn.disabled=p.role==='admin';
+ roleBtn.onclick=()=>save('admin_set_profile_role',{p_profile_id:p.id,p_role:roleSelect.value},
+   'Rolle von '+p.display_name+' zu '+roleSelect.value+' ändern? Coach erhält Trainingsfreigabe- und Ligarechte.',
+   'Rolle erfolgreich gespeichert.');
+ role.append(roleSelect,roleBtn);
+ if(p.role==='admin')role.append(add('small','Die Adminrolle ist geschützt.'));
+ const active=makeCell('Aktiv / inaktiv');
+ const check=add('input');check.type='checkbox';check.checked=!!p.is_active;check.disabled=p.role==='admin';
+ check.setAttribute('aria-label','Aktivitätsstatus '+p.display_name);
+ const activeBtn=add('button',p.is_active?'Deaktivieren':'Aktivieren',p.is_active?'danger':'');activeBtn.type='button';activeBtn.disabled=p.role==='admin';
+ activeBtn.onclick=()=>{
+  const next=check.checked;
+  const target=next!==p.is_active?next:!p.is_active;
+  const warning=target?'Profil aktivieren? Daten und Funktionen werden wieder zugänglich.':
+   "Der Zugang verliert sofort alle Daten und Funktionen. Die Anmeldung bleibt möglich, das Profil meldet sich mit 'Kein aktives Profil'.";
+  save('admin_set_profile_active',{p_profile_id:p.id,p_active:target},p.display_name+': '+warning,
+   target?'Profil aktiviert.':'Profil deaktiviert – Login weiterhin möglich.');
+ };
+ active.append(check,activeBtn);
+ const listed=makeCell('Öffentlich sichtbar');
+ const pub=add('input');pub.type='checkbox';pub.checked=!!p.is_listed;pub.setAttribute('aria-label','Öffentlich sichtbar: '+p.display_name);
+ pub.disabled=p.role==='admin';
+ const listedBtn=add('button','Sichtbarkeit speichern');listedBtn.type='button';listedBtn.disabled=p.role==='admin';
+ listedBtn.onclick=()=>save('admin_set_profile_listed',{p_profile_id:p.id,p_listed:pub.checked},
+  (pub.checked?'Öffentliche Ranglisten-Sichtbarkeit einschalten für ':'Öffentliche Sichtbarkeit abschalten für ')+p.display_name+'?',
+  'Öffentliche Sichtbarkeit gespeichert.');
+ listed.append(pub,listedBtn);
+ return tr;
+}
+async function load(silent=false){
+ if(!admin)return;if(!silent)msg('Profile werden geladen …');
+ const result=await db.rpc('admin_list_profiles');
+ if(result.error){msg('Profile konnten nicht geladen werden: '+result.error.message,true);return;}
+ const rows=Array.isArray(result.data)?result.data:[];
+ rows.sort((a,b)=>(a.has_account===b.has_account?0:a.has_account?1:-1)||((a.is_listed===b.is_listed)?0:a.is_listed?1:-1)||a.display_name.localeCompare(b.display_name,'de-CH'));
+ const body=$('profilesBody');body.replaceChildren();
+ for(const row of rows)body.append(buildRow(row));
+ $('profileTotals').replaceChildren(
+  add('span',rows.length+' Profile'),
+  add('span',' · '+rows.filter(x=>x.is_active).length+' aktiv'),
+  add('span',' · '+rows.filter(x=>!x.has_account).length+' ohne Zugang'),
+  add('span',' · '+rows.filter(x=>!x.is_listed).length+' nicht öffentlich')
+ );
+ $('adminContent').classList.remove('hidden');if(!silent)msg('Verwaltung geladen.');
+ await loadAudit();
+}
+async function loadAudit(){
+ const r=await db.from('profile_admin_audit').select('action,created_at,profile_id').order('created_at',{ascending:false}).limit(15);
+ const root=$('adminAudit');root.replaceChildren();
+ if(r.error){root.append(add('p','Änderungshistorie konnte nicht geladen werden: '+r.error.message));return;}
+ if(!r.data?.length){root.append(add('p','Noch keine Verwaltungsänderungen.'));return;}
+ for(const entry of r.data){
+  const p=add('p',new Date(entry.created_at).toLocaleString('de-CH')+' · '+({role:'Rolle',active:'Aktivierung',listed:'Öffentlichkeit',email:'E-Mail'}[entry.action]||entry.action)+' · Profil '+entry.profile_id);
+  root.append(p);
+ }
+}
+$('adminRefresh').addEventListener('click',()=>load());
+document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{
+ try{await navigator.clipboard.writeText($(button.dataset.copy).textContent);msg('SQL-Hinweis kopiert. Er wurde nicht ausgeführt.')}
+ catch{msg('Kopieren nicht möglich. SQL-Text oben manuell markieren.',true)}
+}));
+try{await mustBeAdmin();await load()}catch(e){msg(e.message,true);$('adminContent').classList.add('hidden')}
+</script>
+<script src="./takeover-navigation.js" defer></script>
+</body></html>

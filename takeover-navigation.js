@@ -43,13 +43,14 @@
        ['dumbbell','Mein Training','boxer.html',''],
        ['target','Meine Ziele','goals.html',''],
        ['medal','Trainer-Dashboard','coach.html',''],
-       ['goal','League Manager 2.1','league-manager.html','']
+       ['goal','League Manager 2.1','league-manager.html',''],
+       ['user','Clubverwaltung','admin.html','',false,true]
      ]]
    ];
    const contents=entries.map(group=>
      '<div class="tl-menu-group"><div class="tl-menu-group-title">'+group[0]+'</div>'+
      group[1].map(item=>
-       '<a class="tl-menu-link" href="./'+item[2]+'"'+(item[3]?' data-tl-section="'+item[3]+'"':'')+'>'+
+       '<a class="tl-menu-link" href="./'+item[2]+'"'+(item[3]?' data-tl-section="'+item[3]+'"':'')+(item[5]?' data-tl-admin hidden':'')+'>'+
          '<span class="tl-menu-icon" aria-hidden="true">'+iconSvg(item[0])+'</span>'+
          '<span class="tl-menu-label">'+item[1]+(item[4]?' <span class="tl-menu-pill">2.0</span>':'')+'</span>'+
          '<span class="tl-menu-arrow" aria-hidden="true">↗</span>'+
@@ -66,7 +67,23 @@
    const backdrop=document.getElementById('tl-menu-backdrop');
    const close=document.getElementById('tl-menu-close');
    const menuEntries=Array.from(panel.querySelectorAll('a.tl-menu-link'));
+   const adminEntry=panel.querySelector('a[data-tl-admin]');
    const bottomItems=Array.from(document.querySelectorAll(atHome?'.bottom .nav':'.tl-global-bottom .tl-nav-item'));
+   // The menu is only a convenience. Actual authorization is enforced in admin RPCs.
+   // No new provider: reuse the same pinned Supabase CDN and production endpoint.
+   async function resolveAdminLink(){
+     if(!adminEntry)return;
+     adminEntry.hidden=true;
+     try{
+       const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+       const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
+       const sess=await db.auth.getSession();if(!sess.data.session)return;
+       const {data:{user},error}=await db.auth.getUser();if(error||!user)return;
+       const p=await db.from('profiles').select('role,is_active').eq('auth_user_id',user.id).maybeSingle();
+       if(!p.error&&p.data?.role==='admin'&&p.data?.is_active===true)adminEntry.hidden=false;
+     }catch{adminEntry.hidden=true;}
+   }
+   void resolveAdminLink();
    let restoreFocus=null;
    let open=false;
    function currentTab(){
@@ -92,7 +109,7 @@
        const isMenu=item===trigger;
        const active=!!tabname&&atHome&&tabname===tab ||
          isMenu&&(open || atHome&&(tab==='levels'||tab==='history') || ['challenges.html','duels.html','awards.html','features.html','coming-soon.html','boxer-profile.html'].includes(page)) ||
-         item.classList.contains('tl-dashboard-nav')&&['login.html','boxer.html','coach.html'].includes(page);
+         item.classList.contains('tl-dashboard-nav')&&['login.html','boxer.html','coach.html','admin.html'].includes(page);
        item.classList.toggle(atHome?'active':'tl-active',!!active);
        if(active && item.tagName==='A')item.setAttribute('aria-current','page');
        else item.removeAttribute('aria-current');
