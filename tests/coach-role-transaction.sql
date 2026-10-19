@@ -29,7 +29,7 @@ END $prepare$;
 SET LOCAL ROLE authenticated;
 SELECT set_config('request.jwt.claim.sub',current_setting('coach_test.coach_user'),true);
 DO $coach$
-DECLARE result jsonb; cols text; n integer;
+DECLARE result jsonb; cols text; n integer; self_id uuid; blocked boolean:=false;
 BEGIN
  IF NOT public.is_league_coach() OR public.is_league_admin() THEN
   RAISE EXCEPTION 'Coach actor check failed';
@@ -41,6 +41,14 @@ BEGIN
  SELECT count(*) INTO n FROM public.coach_list_boxers()
  WHERE id=current_setting('coach_test.boxer_profile')::uuid;
  IF n<>1 THEN RAISE EXCEPTION 'Coach list cannot read boxer'; END IF;
+ -- A coach retains boxer rights: may INSERT own pending training, never award self points.
+ INSERT INTO public.training_submissions(boxer_id,training_type_id,training_date,status,notes)
+ VALUES (current_setting('coach_test.coach_profile')::uuid,
+         (SELECT id FROM public.training_types WHERE is_active ORDER BY id LIMIT 1),CURRENT_DATE,'pending','Coach self-submit ROLLBACK')
+ RETURNING id INTO self_id;
+ IF (SELECT status FROM public.training_submissions WHERE id=self_id)<>'pending' THEN RAISE EXCEPTION 'Coach own training not pending'; END IF;
+ IF EXISTS (SELECT 1 FROM public.point_transactions WHERE submission_id=self_id) THEN RAISE EXCEPTION 'Coach credited own unreviewed points'; END IF;
+ RAISE NOTICE 'PASS: coach can submit own pending training without points';
  SELECT public.review_training(current_setting('coach_test.submission')::uuid,'approved') INTO result;
  IF result->>'status'<>'approved' OR (result->>'points_awarded')::int<>current_setting('coach_test.points')::int THEN
   RAISE EXCEPTION 'Approval result mismatch: %',result;
@@ -50,6 +58,12 @@ BEGIN
  AND points=current_setting('coach_test.points')::int AND exp=current_setting('coach_test.points')::int
  AND created_by=current_setting('coach_test.coach_profile')::uuid;
  IF n<>1 THEN RAISE EXCEPTION 'Coach ledger missing / mismatched'; END IF;
+ -- Direct global bonus recalculation remains restricted even though reviews may update affected bonuses.
+ BEGIN
+  PERFORM public.recalculate_boxer_bonuses(current_setting('coach_test.boxer_profile')::uuid);
+ EXCEPTION WHEN OTHERS THEN blocked:=true;
+ END;
+ IF NOT blocked THEN RAISE EXCEPTION 'Coach can directly call global recalculate_boxer_bonuses'; END IF;
  RAISE NOTICE 'PASS: active coach approved training, generated points and EXP, boxer list limited';
 END $coach$;
 SELECT set_config('request.jwt.claim.sub',current_setting('coach_test.boxer_user'),true);

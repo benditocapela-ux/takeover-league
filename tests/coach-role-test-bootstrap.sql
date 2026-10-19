@@ -465,4 +465,18 @@ END $seed$;
 DO $test$ BEGIN IF to_regclass('public.league_test_boxers') IS NULL THEN RAISE EXCEPTION 'Not the isolated test project'; END IF; END $test$;
 GRANT SELECT ON public.point_transactions,public.training_submissions,public.training_types TO authenticated;
 
+-- Test-only mirror of existing production own-row submission access.
+GRANT SELECT ON public.profiles TO authenticated;
+GRANT INSERT ON public.training_submissions TO authenticated;
+DO $testinsert$ BEGIN
+ IF to_regclass('public.league_test_boxers') IS NULL THEN RAISE EXCEPTION 'Not test'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM pg_policies WHERE schemaname='public' AND tablename='training_submissions' AND policyname='submissions boxer insert pending') THEN
+  EXECUTE $ddl$CREATE POLICY "submissions boxer insert pending" ON public.training_submissions FOR INSERT TO authenticated WITH CHECK (((status = 'pending'::text) AND (reviewed_by IS NULL) AND (reviewed_at IS NULL) AND (EXISTS ( SELECT 1
+   FROM profiles p
+  WHERE ((p.id = training_submissions.boxer_id) AND (p.auth_user_id = ( SELECT auth.uid() AS uid)) AND p.is_active))) AND (EXISTS ( SELECT 1
+   FROM training_types t
+  WHERE ((t.id = training_submissions.training_type_id) AND t.is_active)))))$ddl$;
+ END IF;
+END $testinsert$;
+
 COMMIT;
