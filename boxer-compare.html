@@ -36,7 +36,7 @@ function uniqueProfiles(levels){
  const names=new Map();for(const a of levels){const name=String(a.boxer_name||'').trim();if(!name)continue;const norm=name.toLocaleLowerCase('de-CH');names.set(norm,(names.get(norm)||0)+1)}
  return levels.filter(a=>{const n=String(a.boxer_name||'').trim();return n&&names.get(n.toLocaleLowerCase('de-CH'))===1}).map(a=>({name:String(a.boxer_name).trim(),exp:Number(a.lifetime_exp)||0}));
 }
-function clearAndOptions(el){const current=el.value;el.replaceChildren(new Option('Boxer auswählen',''));for(const x of members)el.add(new Option(x.name,x.name));if(members.some(m=>m.name===current))el.value=current}
+function clearAndOptions(el){const current=el.value;el.replaceChildren(new Option('Boxer auswählen',''));for(const x of members)el.add(new Option(x.name,x.name));if(members.some(m=>m.name===current))el.value=current;el.dispatchEvent(new Event('change',{bubbles:true}))}
 function addStat(parent,label,value){const node=document.createElement('div');node.className='stat';const title=document.createElement('small');title.textContent=label;const strong=document.createElement('strong');strong.textContent=value;node.append(title,strong);parent.append(node)}
 
 async function loadPublicDuelHistory(){
