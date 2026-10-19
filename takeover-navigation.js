@@ -17,67 +17,6 @@
    });
  }
 
- let choiceSelectObserver=null;
- function enhanceChoiceSelects(){
-   const selects=Array.from(document.querySelectorAll('select[data-tl-choice]'));
-   selects.forEach(select=>{
-     if(select.dataset.tlChoiceEnhanced==='true')return;
-     const key=select.dataset.tlChoice;
-     const rail=Array.from(document.querySelectorAll('.tl-choice-rail[data-choice-for]')).find(node=>node.dataset.choiceFor===key);
-     if(!rail)return;
-     select.dataset.tlChoiceEnhanced='true';
-     const render=()=>{
-       const scrollLeft=rail.scrollLeft;
-       rail.replaceChildren();
-       const options=Array.from(select.options).filter(option=>{
-         if(option.disabled)return false;
-         const value=option.value,label=(option.textContent||'').trim();
-         if(value===''&&/^(bitte wählen|bitte auswählen|auswählen|gegner wählen|ziel auswählen|boxer auswählen)$/i.test(label))return false;
-         return true;
-       });
-       options.forEach(option=>{
-         const label=(option.textContent||'').trim()||option.value||'Auswahl';
-         const words=label.split(/\s+/).filter(Boolean);
-         const initials=String(option.dataset.tlChoiceIcon||(/\d+/.exec(label)?.[0])||
-           (words.length>1?words[0][0]+words[words.length-1][0]:label.slice(0,2))).toLocaleUpperCase('de-CH').slice(0,3);
-         const button=document.createElement('button');
-         button.type='button';button.className='tl-choice-card';button.dataset.value=option.value;button.tabIndex=-1;
-         button.disabled=select.disabled||option.disabled;
-         button.setAttribute('aria-pressed',String(option.selected));
-         const top=document.createElement('span');top.className='tl-choice-card-top';
-         const avatar=document.createElement('span');avatar.className='tl-choice-avatar';avatar.textContent=initials||'✓';
-         const tag=document.createElement('span');tag.className='tl-choice-card-tag';tag.textContent=select.multiple?'MEHRFACH':'AUSWAHL';
-         const check=document.createElement('span');check.className='tl-choice-card-check';check.textContent='✓';check.setAttribute('aria-hidden','true');
-         top.append(avatar,tag,check);
-         const title=document.createElement('span');title.className='tl-choice-card-name';title.textContent=label;
-         const meta=document.createElement('span');meta.className='tl-choice-card-meta';
-         meta.textContent=option.dataset.tlChoiceHint||(option.selected?'Ausgewählt':select.multiple?'Antippen zum Auswählen':'Antippen zur Auswahl');
-         button.append(top,title,meta);
-         button.addEventListener('click',()=>{
-           if(select.disabled||option.disabled)return;
-           if(select.multiple)option.selected=!option.selected;
-           else select.value=option.value;
-           select.dispatchEvent(new Event('change',{bubbles:true}));
-         });
-         rail.append(button);
-       });
-       rail.scrollLeft=scrollLeft;
-     };
-     select.addEventListener('change',render);
-     if(select.form)select.form.addEventListener('reset',()=>window.setTimeout(render,0));
-     render();
-   });
-   if(!choiceSelectObserver&&typeof MutationObserver!=='undefined'&&document.body){
-     choiceSelectObserver=new MutationObserver(records=>{
-       const addedChoice=records.some(record=>Array.from(record.addedNodes).some(node=>{
-         if(node.nodeType!==1)return false;
-         return node.matches('select[data-tl-choice]')||!!node.querySelector('select[data-tl-choice]');
-       }));
-       if(addedChoice)enhanceChoiceSelects();
-     });
-     choiceSelectObserver.observe(document.body,{childList:true,subtree:true});
-   }
- }
  function start(){
    if(document.getElementById('tl-menu-panel'))return;
    const pathname=window.location.pathname;
@@ -100,42 +39,33 @@
      homeNav.forEach(([selector,id])=>{const link=document.querySelector(selector);if(!link)return;const label=(link.textContent||'').trim();link.innerHTML=emoji(id)+' '+label;});
    }
    addSectionWayfinders();
-   enhanceChoiceSelects();
    // Single shared drawer. The home page supplies its existing four-item footer.
    const entries=[
-     {
-       icon:'👤',title:'Mein Bereich',summary:'Profil, Ziele und persönliche Aufgaben',
-       items:[
-         ['user','Mein Account','login.html',''],
-         ['dumbbell','Mein Studio','boxer.html',''],
-         ['user','Boxerprofil','boxer-profile.html',''],
-         ['target','Meine Ziele','goals.html',''],
-         ['medal','Coach-Dashboard','coach.html',''],
-         ['goal','Liga-Verwaltung','league-manager.html',''],
-         ['user','Clubverwaltung','admin.html','',false,true]
-       ]
-     },
-     {
-       icon:'🥊',title:'Kämpfe & Challenges',summary:'Duelle und sportliche Herausforderungen',
-       items:[
-         ['boxing-glove','Duell starten','duels.html','',true],
-         ['arena','Mehrgegner-Arena','arena.html','',true],
-         ['bolt','Liga-Challenges','league-challenges.html','',true],
-         ['target','Persönliche Challenges','challenges.html','',true]
-       ]
-     },
-     {
-       icon:'🏆',title:'Liga & Erfolge',summary:'Ranglisten, Punkte und Auszeichnungen',
-       items:[
-         ['trophy','Podium','index.html#podium','podium'],
-         ['chart','Monatsranking','index.html#ranking','ranking'],
-         ['boxing-glove','Levels & EXP','index.html#levels','levels'],
-         ['scroll','Punkteverlauf','index.html#history','history'],
-         ['medal','Monatsauszeichnungen','awards.html',''],
-         ['scale','Boxer-Vergleich','boxer-compare.html',''],
-         ['trophy','Saisons & Hall of Fame','league-history.html','']
-       ]
-     }
+     {icon:'👤',title:'Mein Bereich',summary:'Profil, Training und persönliche Ziele',items:[
+       ['user','Anmelden / Mein Account','login.html',''],
+       ['dumbbell','Mein Studio','boxer.html',''],
+       ['target','Meine Ziele','goals.html',''],
+       ['medal','Trainer-Dashboard','coach.html',''],
+       ['goal','League Manager 2.1','league-manager.html',''],
+       ['user','Clubverwaltung','admin.html','',false,true]
+     ]},
+     {icon:'🥊',title:'Kämpfe',summary:'Duelle starten und in der Arena antreten',items:[
+       ['boxing-glove','Duell starten','duels.html','',true],
+       ['arena','Mehrgegner-Arena','arena.html','',true]
+     ]},
+     {icon:'🎯',title:'Herausforderungen',summary:'Persönliche und Liga-Challenges entdecken',items:[
+       ['bolt','Live Challenges','league-challenges.html','',true],
+       ['target','Persönliche Challenges','challenges.html','',true]
+     ]},
+     {icon:'🏆',title:'Liga & Erfolge',summary:'Ranglisten, Fortschritt und Auszeichnungen',items:[
+       ['trophy','Podium','index.html#podium','podium'],
+       ['chart','Monatsranking','index.html#ranking','ranking'],
+       ['boxing-glove','Levels & EXP','index.html#levels','levels'],
+       ['scroll','Punkteverlauf','index.html#history','history'],
+       ['medal','Monatsauszeichnungen','awards.html',''],
+       ['scale','Boxer-Vergleich','boxer-compare.html',''],
+       ['trophy','Saisons & Hall of Fame','league-history.html','']
+     ]}
    ];
    const contents=entries.map((group,index)=>{
      const groupId='tl-menu-group-'+index;
@@ -144,20 +74,14 @@
          '<span class="tl-menu-group-mark" aria-hidden="true">'+group.icon+'</span>'+
          '<span class="tl-menu-group-copy"><span class="tl-menu-group-name">'+group.title+'</span><span class="tl-menu-group-summary">'+group.summary+'</span></span>'+
          '<span class="tl-menu-group-chevron" aria-hidden="true">⌄</span>'+
-       '</button>'+
-       '<div class="tl-menu-group-links" id="'+groupId+'-links" hidden>'+
-         group.items.map(item=>{
-           const [icon,label,href,section,pill,adminOnly]=item;
-           const privateOnly=['boxer.html','goals.html','coach.html','league-manager.html'].includes(href);
-           return '<a class="tl-menu-link" href="./'+href+'"'+(section?' data-tl-section="'+section+'"':'')+(adminOnly?' data-tl-admin hidden':'')+(privateOnly?' data-tl-private hidden':'')+'>'+
-             '<span class="tl-menu-icon" aria-hidden="true">'+emoji(icon)+'</span>'+
-             '<span class="tl-menu-label">'+label+(pill?' <span class="tl-menu-pill">2.0</span>':'')+'</span>'+
+       '</button><div class="tl-menu-group-links" id="'+groupId+'-links" hidden>'+
+         group.items.map(item=>
+           '<a class="tl-menu-link" href="./'+item[2]+'"'+(item[3]?' data-tl-section="'+item[3]+'"':'')+(item[5]?' data-tl-admin hidden':'')+(['boxer.html','goals.html','coach.html','league-manager.html'].includes(item[2])?' data-tl-private hidden':'')+'>'+
+             '<span class="tl-menu-icon" aria-hidden="true">'+emoji(item[0])+'</span>'+
+             '<span class="tl-menu-label">'+item[1]+(item[4]?' <span class="tl-menu-pill">2.0</span>':'')+'</span>'+
              '<span class="tl-menu-arrow" aria-hidden="true">↗</span>'+
-           '</a>';
-         }).join('')+
-       '</div></section>';
+           '</a>').join('')+'</div></section>';
    }).join('');
-   
    document.body.insertAdjacentHTML('beforeend',
       '<div id="tl-menu-backdrop" class="tl-menu-backdrop" hidden aria-hidden="true"></div>'+
       '<aside id="tl-menu-panel" class="tl-menu-panel" role="dialog" aria-modal="true" aria-label="Alle Takeover League Bereiche" aria-hidden="true" inert>'+
@@ -231,18 +155,18 @@
      if(expanded){
        panel.querySelectorAll('.tl-menu-group').forEach(other=>{
          if(other===group)return;
-         const otherToggle=other.querySelector('.tl-menu-group-toggle');
-         const otherLinks=other.querySelector('.tl-menu-group-links');
-         if(otherToggle)otherToggle.setAttribute('aria-expanded','false');
-         if(otherLinks)otherLinks.hidden=true;
+         const toggle=other.querySelector('.tl-menu-group-toggle');
+         const links=other.querySelector('.tl-menu-group-links');
+         if(toggle)toggle.setAttribute('aria-expanded','false');
+         if(links)links.hidden=true;
          other.classList.remove('tl-menu-group--open');
        });
      }
-     const groupToggle=group.querySelector('.tl-menu-group-toggle');
-     const groupLinks=group.querySelector('.tl-menu-group-links');
-     if(!groupToggle||!groupLinks)return;
-     groupToggle.setAttribute('aria-expanded',String(expanded));
-     groupLinks.hidden=!expanded;
+     const toggle=group.querySelector('.tl-menu-group-toggle');
+     const links=group.querySelector('.tl-menu-group-links');
+     if(!toggle||!links)return;
+     toggle.setAttribute('aria-expanded',String(expanded));
+     links.hidden=!expanded;
      group.classList.toggle('tl-menu-group--open',expanded);
    }
    function currentTab(){

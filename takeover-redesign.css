@@ -183,210 +183,52 @@ body[data-tl-screen] :where(.empty-state,[data-state="empty"]){background:var(--
 body[data-tl-screen] :where(a,button){-webkit-tap-highlight-color:transparent}
 @media(min-width:850px){body[data-tl-screen="guest"] .guestbar{display:flex;align-items:center}}
 
-
-/* Duell invitation: touch-friendly horizontal choices without changing RPCs. */
-body[data-tl-screen="duels"] #invite{
-  max-width:none;
-  gap:18px;
+/* Interactive horizontal choice cards · navy/gold · native select stays authoritative. */
+.tl-choice-native{
+ position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;
+ overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important;
 }
-body[data-tl-screen] .tl-choice-field{min-width:0}
-body[data-tl-screen] .tl-choice-heading{
-  display:flex;
-  flex-wrap:wrap;
-  align-items:baseline;
-  justify-content:space-between;
-  gap:4px 12px;
-  margin:2px 0 8px;
-  color:var(--text-2);
-  font-weight:800;
+.tl-choice-field{width:100%;min-width:0;margin:8px 0 14px}
+.tl-choice-track{
+ display:flex;align-items:stretch;gap:10px;width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;
+ padding:4px 3px 12px;scroll-snap-type:x mandatory;overscroll-behavior-inline:contain;
+ -webkit-overflow-scrolling:touch;scrollbar-width:thin;scrollbar-color:var(--gold-deep) transparent;
 }
-body[data-tl-screen] .tl-choice-heading small{
-  color:var(--muted);
-  font-size:12px;
-  font-weight:500;
+.tl-choice-card{
+ position:relative;display:flex;flex:0 0 clamp(124px,42%,174px);min-width:0;min-height:108px;
+ flex-direction:column;align-items:flex-start;justify-content:space-between;gap:9px;
+ padding:13px 13px 12px;border:1px solid var(--line-strong);border-radius:14px;
+ background:linear-gradient(150deg,var(--surface-2),var(--surface));
+ color:var(--text);font:inherit;font-weight:700;text-align:left;cursor:pointer;
+ scroll-snap-align:start;transition:border-color .16s ease,background .16s ease,box-shadow .16s ease,transform .16s ease;
 }
-body[data-tl-screen] .tl-choice-rail{
-  display:flex;
-  align-items:stretch;
-  gap:10px;
-  min-width:0;
-  overflow-x:auto;
-  overflow-y:hidden;
-  padding:4px 2px 11px;
-  margin:0 -2px;
-  scroll-snap-type:x mandatory;
-  overscroll-behavior-inline:contain;
-  -webkit-overflow-scrolling:touch;
-  scrollbar-width:thin;
-  scrollbar-color:var(--line-strong) transparent;
+.tl-choice-card:hover{border-color:color-mix(in srgb,var(--gold) 62%,var(--line-strong));transform:translateY(-1px)}
+.tl-choice-card.is-selected{
+ border-color:var(--gold);background:linear-gradient(145deg,color-mix(in srgb,var(--gold) 13%,var(--surface)),var(--surface-2));
+ box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--gold) 42%,transparent),0 5px 18px color-mix(in srgb,var(--gold) 10%,transparent);
 }
-body[data-tl-screen] .tl-choice-card{
-  position:relative;
-  display:flex;
-  flex:0 0 clamp(145px,42vw,190px);
-  flex-direction:column;
-  align-items:stretch;
-  justify-content:flex-start;
-  gap:9px;
-  min-width:0;
-  min-height:116px;
-  margin:0;
-  padding:12px;
-  border:1px solid var(--line-strong);
-  border-radius:15px;
-  background:linear-gradient(145deg,var(--surface-3),var(--surface-2) 80%);
-  color:var(--text);
-  box-shadow:0 8px 20px color-mix(in srgb,var(--bg) 40%,transparent);
-  text-align:left;
-  white-space:normal;
-  scroll-snap-align:start;
-  transition:border-color .16s ease,background .16s ease,box-shadow .16s ease,transform .16s ease;
-  touch-action:pan-x;
+.tl-choice-card:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.tl-choice-card:disabled{opacity:.72;cursor:default;transform:none}
+.tl-choice-mark{
+ display:grid;place-items:center;width:34px;height:34px;flex:0 0 34px;border-radius:10px;
+ background:color-mix(in srgb,var(--gold) 12%,var(--surface-3));color:var(--gold);font-size:19px;font-weight:850;
 }
-body[data-tl-screen] .tl-choice-card:hover{
-  border-color:color-mix(in srgb,var(--gold) 70%,var(--line-strong));
-  transform:translateY(-1px);
+.tl-choice-copy{display:block;width:100%;font-size:14px;line-height:1.3;overflow-wrap:anywhere}
+.tl-choice-check{
+ position:absolute;top:10px;right:10px;display:grid;place-items:center;min-width:20px;height:20px;
+ padding:0 4px;border-radius:999px;background:var(--surface-3);color:var(--muted);font-size:12px;font-weight:900;
 }
-body[data-tl-screen] .tl-choice-card[aria-pressed="true"]{
-  border-color:var(--gold);
-  background:linear-gradient(145deg,color-mix(in srgb,var(--gold) 14%,var(--surface-3)),var(--surface-2) 85%);
-  box-shadow:0 0 0 1px color-mix(in srgb,var(--gold) 34%,transparent),0 10px 24px color-mix(in srgb,var(--gold) 8%,transparent);
+.tl-choice-card.is-selected .tl-choice-check{background:var(--gold);color:var(--bg)}
+.tl-choice-heading{display:flex;flex-direction:column;gap:3px;margin:0 2px 8px}
+.tl-choice-heading>span{color:var(--gold);font-size:var(--fs-sm);font-weight:850;letter-spacing:.2px}
+.tl-choice-heading>small{color:var(--muted);font-size:var(--fs-sm);line-height:1.4}
+.tl-choice-hint{margin:0 2px 8px;color:var(--muted);font-size:var(--fs-sm);line-height:1.4}
+.tl-choice-note{margin:0;padding:0 2px;color:var(--muted);font-size:var(--fs-sm)}
+.tl-choice-note.is-valid{color:var(--gold)}
+.tl-choice-empty{display:block;padding:13px 3px;color:var(--muted);font-size:var(--fs-sm)}
+.tl-choice-native:focus-visible+.tl-choice-field .tl-choice-track,label:focus-within+.tl-choice-field .tl-choice-track{outline:2px solid var(--gold);outline-offset:2px;border-radius:12px}
+.tl-choice-field.is-disabled .tl-choice-card{cursor:default}
+@media(min-width:700px){
+ .tl-choice-card{flex-basis:158px;min-height:112px}
 }
-body[data-tl-screen] .tl-choice-card:focus-visible{
-  outline:3px solid var(--gold);
-  outline-offset:2px;
-}
-body[data-tl-screen] .tl-choice-card:disabled{
-  opacity:.9;
-  cursor:default;
-}
-body[data-tl-screen] .tl-choice-card-top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:8px;
-  min-width:0;
-}
-body[data-tl-screen] .tl-choice-avatar{
-  display:grid;
-  place-items:center;
-  width:36px;
-  height:36px;
-  flex:0 0 36px;
-  border:1px solid color-mix(in srgb,var(--gold) 46%,var(--line));
-  border-radius:50%;
-  background:color-mix(in srgb,var(--gold) 12%,var(--surface));
-  color:var(--gold);
-  font-size:13px;
-  font-weight:900;
-  letter-spacing:.3px;
-}
-body[data-tl-screen] .tl-choice-card-tag{
-  margin-left:auto;
-  color:var(--muted);
-  font-size:10px;
-  font-weight:850;
-  letter-spacing:1px;
-}
-body[data-tl-screen] .tl-choice-card-check{
-  display:grid;
-  place-items:center;
-  width:22px;
-  height:22px;
-  flex:0 0 22px;
-  border:1px solid var(--line-strong);
-  border-radius:50%;
-  color:transparent;
-  font-size:12px;
-  font-weight:900;
-}
-body[data-tl-screen] .tl-choice-card[aria-pressed="true"] .tl-choice-card-check{
-  border-color:var(--gold);
-  background:var(--gold);
-  color:var(--bg-deep);
-}
-body[data-tl-screen] .tl-choice-card-name{
-  display:block;
-  overflow-wrap:anywhere;
-  color:var(--text);
-  font-size:14px;
-  font-weight:850;
-  line-height:1.25;
-}
-body[data-tl-screen] .tl-choice-card-meta{
-  display:block;
-  color:var(--muted);
-  font-size:11px;
-  line-height:1.3;
-}
-body[data-tl-screen] .tl-choice-empty{
-  flex:0 0 auto;
-  padding:14px;
-  border:1px dashed var(--line-strong);
-  border-radius:12px;
-  color:var(--muted);
-  font-size:13px;
-}
-body[data-tl-screen] .tl-choice-rail--compact .tl-choice-card{
-  flex-basis:clamp(132px,34vw,164px);
-  min-height:105px;
-}
-body[data-tl-screen] .tl-choice-rail--compact .tl-choice-avatar{
-  border-radius:10px;
-}
-body[data-tl-screen] .tl-native-select-label:not(:focus-within){
-  position:absolute!important;
-  width:1px!important;
-  height:1px!important;
-  padding:0!important;
-  margin:-1px!important;
-  overflow:hidden!important;
-  clip:rect(0,0,0,0)!important;
-  clip-path:inset(50%)!important;
-  white-space:nowrap!important;
-  border:0!important;
-}
-body[data-tl-screen] .tl-native-select-label select{
-  position:absolute;
-  width:1px;
-  height:1px;
-  padding:0;
-  margin:-1px;
-  overflow:hidden;
-  clip:rect(0,0,0,0);
-  clip-path:inset(50%);
-  opacity:0;
-}
-body[data-tl-screen] .tl-native-select-label:focus-within{
-  position:relative!important;
-  width:auto!important;
-  height:auto!important;
-  padding:0!important;
-  margin:0!important;
-  overflow:visible!important;
-  clip:auto!important;
-  clip-path:none!important;
-  white-space:normal!important;
-}
-body[data-tl-screen] .tl-native-select-label:focus-within select{
-  position:static;
-  width:100%;
-  height:auto;
-  max-width:100%;
-  margin:0;
-  padding:12px;
-  overflow:visible;
-  clip:auto;
-  clip-path:none;
-  opacity:1;
-}
-body[data-tl-screen="duels"] #invite button[type="submit"]{
-  min-height:52px;
-  margin:0;
-  border-radius:13px;
-  font-weight:900;
-  box-shadow:0 8px 22px color-mix(in srgb,var(--gold) 13%,transparent);
-}
-@media(prefers-reduced-motion:reduce){
-  body[data-tl-screen] .tl-choice-card{transition:none}
-}
+@media(prefers-reduced-motion:reduce){.tl-choice-card{transition:none}.tl-choice-card:hover{transform:none}}

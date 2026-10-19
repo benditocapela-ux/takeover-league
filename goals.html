@@ -8,7 +8,7 @@
 <div id="app" hidden>
 <section class="panel"><h2>Neues Ziel</h2><form id="goalForm">
 <label>Titel<input id="title" required minlength="3" maxlength="120" placeholder="Zum Beispiel: 10 Laufeinheiten"></label>
-<label class="tl-native-select-label">Zielart auswählen<select id="metric" data-tl-choice="goal-metric"><option value="training_sessions">Bestätigte Trainingseinheiten</option><option value="jogging_km">Bestätigte Joggingkilometer</option><option value="technique_minutes">Bestätigte Technikminuten</option><option value="custom">Manuelles Ziel</option></select></label><div class="tl-choice-field"><div class="tl-choice-heading"><span>Zielart</span><small>Wähle, woran du arbeiten möchtest</small></div><div class="tl-choice-rail" data-choice-for="goal-metric" aria-hidden="true"></div></div>
+<label>Zielart<select id="metric" data-tl-choice-hint="Wähle, woran du arbeiten möchtest."><option value="training_sessions">Bestätigte Trainingseinheiten</option><option value="jogging_km">Bestätigte Joggingkilometer</option><option value="technique_minutes">Bestätigte Technikminuten</option><option value="custom">Manuelles Ziel</option></select></label>
 <label>Zielwert<input id="target" type="number" min="1" max="1000000" step="0.1" required value="10"></label>
 <label>Deadline<input id="endsOn" type="date" required></label>
 <p><button type="submit" id="save">Ziel speichern</button></p></form></section>
@@ -90,4 +90,4 @@ async function init(){
  profile=r.data;$('app').hidden=false;await load();
 }
 init().catch(e=>say('Fehler: '+e.message));
-</script><script src="./takeover-navigation.js" defer></script></body></html>
+</script><script src="./takeover-choice-cards.js" defer></script><script src="./takeover-navigation.js" defer></script></body></html>
