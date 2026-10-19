@@ -11,22 +11,22 @@
 <label>Ende<input id="seasonEnd" type="date" required></label>
 <p><button type="submit">Saison als Entwurf erstellen</button></p></form><div id="seasonList"></div></section>
 <section class="panel"><h2><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-target"></use></svg> Boxerziele</h2><form id="goalForm">
-<label>Boxer<select id="boxerId" required></select></label>
+<label class="tl-native-select-label">Boxer auswählen<select id="boxerId" required data-tl-choice="manager-boxer"></select></label><div class="tl-choice-field"><div class="tl-choice-heading"><span>Boxer</span><small>Wähle, wem das Ziel zugewiesen wird</small></div><div class="tl-choice-rail" data-choice-for="manager-boxer" aria-hidden="true"></div></div>
 <label>Ziel<input id="goalTitle" minlength="3" maxlength="120" required placeholder="30 Trainings"></label>
-<label>Messwert<select id="goalMetric"><option value="training_sessions">Bestätigte Trainings</option><option value="jogging_km">Joggingkilometer</option><option value="technique_minutes">Technikminuten</option><option value="custom">Manuell</option></select></label>
+<label class="tl-native-select-label">Messwert auswählen<select id="goalMetric" data-tl-choice="manager-goal-metric"><option value="training_sessions">Bestätigte Trainings</option><option value="jogging_km">Joggingkilometer</option><option value="technique_minutes">Technikminuten</option><option value="custom">Manuell</option></select></label><div class="tl-choice-field"><div class="tl-choice-heading"><span>Messwert</span><small>Wähle die passende Einheit</small></div><div class="tl-choice-rail" data-choice-for="manager-goal-metric" aria-hidden="true"></div></div>
 <label>Zielmenge<input id="goalTarget" type="number" min="1" max="1000000" step="0.1" value="10" required></label>
 <label>Deadline<input id="goalEnd" type="date" required></label>
 <p><button type="submit">Ziel zuweisen</button></p></form>
 <h3>EXP für automatische Ziele festlegen</h3>
 <p class="muted">Nur Admins dürfen EXP einstellen. Manuelle Ziele erhalten keine automatische Belohnung; belohnte Zielvorgaben bleiben unveränderlich.</p>
-<label>Ziel wählen<select id="rewardGoal"><option value="">Ziel auswählen</option></select></label>
+<label class="tl-native-select-label">Ziel auswählen<select id="rewardGoal" data-tl-choice="manager-reward-goal"><option value="">Ziel auswählen</option></select></label><div class="tl-choice-field"><div class="tl-choice-heading"><span>Ziel auswählen</span><small>Wähle eine bestehende Zielregel</small></div><div class="tl-choice-rail" data-choice-for="manager-reward-goal" aria-hidden="true"></div></div>
 <label>EXP-Belohnung<input id="goalRewardExp" type="number" min="0" max="250" step="1" value="50"></label>
 <button type="button" id="saveGoalReward">EXP-Regel sicher speichern</button>
 </section>
 <section class="panel"><h2><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-bolt"></use></svg> Liga-Challenge</h2><form id="challengeForm">
 <label>Name<input id="challengeTitle" required minlength="3" maxlength="120"></label>
 <label>Beschreibung<textarea id="challengeDescription" maxlength="1000" rows="2"></textarea></label>
-<label>Messwert<select id="challengeMetric"><option value="training_sessions">Trainings</option><option value="jogging_km">Joggingkilometer</option><option value="technique_minutes">Technikminuten</option></select></label>
+<label class="tl-native-select-label">Messwert auswählen<select id="challengeMetric" data-tl-choice="manager-challenge-metric"><option value="training_sessions">Trainings</option><option value="jogging_km">Joggingkilometer</option><option value="technique_minutes">Technikminuten</option></select></label><div class="tl-choice-field"><div class="tl-choice-heading"><span>Challenge-Messwert</span><small>Wähle die Einheit für den Wettbewerb</small></div><div class="tl-choice-rail" data-choice-for="manager-challenge-metric" aria-hidden="true"></div></div>
 <label>Zielmenge<input id="challengeTarget" type="number" min="1" max="1000000" step="1" value="10" required></label>
 <label>Beginn<input id="challengeStart" type="date" required></label>
 <label>Ende<input id="challengeEnd" type="date" required></label>
