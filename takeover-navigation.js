@@ -63,6 +63,7 @@
        rail.scrollLeft=scrollLeft;
      };
      select.addEventListener('change',render);
+     if(select.form)select.form.addEventListener('reset',()=>window.setTimeout(render,0));
      if(typeof MutationObserver!=='undefined'){
        const observer=new MutationObserver(render);
        observer.observe(select,{childList:true,subtree:true,attributes:true});
