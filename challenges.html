@@ -27,6 +27,17 @@ const status=document.querySelector('#status'),refresh=document.querySelector('#
 const say=(s,error=false)=>{status.textContent=s;status.className=error?'error':''};
 const friendlyError=e=>{const msg=String(e?.message||e||'Unbekannter Fehler');if(/jwt expired|invalid jwt/i.test(msg))return 'Sitzung abgelaufen. Bitte neu anmelden.';if(/failed to fetch|networkerror/i.test(msg))return 'Netzwerkfehler. Bitte Verbindung prüfen und erneut versuchen.';return msg};
 const el=(tag,text)=>{const e=document.createElement(tag);e.textContent=text;return e};
+const choiceField=(select,key,title,subtitle)=>{
+ select.dataset.tlChoice=key;
+ const label=document.createElement('label');label.className='tl-native-select-label';
+ label.append(document.createTextNode(title+' auswählen'),select);
+ const field=document.createElement('div');field.className='tl-choice-field';
+ const heading=el('div','');heading.className='tl-choice-heading';
+ heading.append(el('span',title),el('small',subtitle));
+ const rail=el('div','');rail.className='tl-choice-rail';rail.dataset.choiceFor=key;rail.setAttribute('aria-hidden','true');
+ field.append(heading,rail);
+ return [label,field];
+};
 const statusLabel={draft:'Entwurf',open:'Offen',active:'Aktiv',awaiting_reviews:'Bewertung ausstehend',settled:'Abgeschlossen',cancelled:'Abgebrochen'};
 const dateLabel=value=>{if(!value)return '';const d=new Date(value);return Number.isNaN(d.getTime())?'':d.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'})};
 const mayManage=c=>['coach','admin'].includes(role)&&(c.is_creator||role==='admin');
@@ -145,14 +156,17 @@ const edit=document.createElement('form');edit.hidden=true;edit.setAttribute('ar
 const editTitle=document.createElement('input');editTitle.name='title';editTitle.required=true;editTitle.minLength=3;editTitle.maxLength=120;editTitle.setAttribute('aria-label','Challenge-Titel');editTitle.value=c.title||'';
 const editDescription=document.createElement('textarea');editDescription.name='description';editDescription.setAttribute('aria-label','Beschreibung');editDescription.value=c.description||'';
 const editKind=document.createElement('select');editKind.name='kind';editKind.setAttribute('aria-label','Challenge-Art');for(const [value,label] of [['individual','Individuell'],['competition','Wettkampf'],['coach_goal','Coach-Ziel']]){const option=el('option',label);option.value=value;editKind.append(option)}editKind.value=c.challenge_kind||'individual';
+const [editKindLabel,editKindField]=choiceField(editKind,'challenge-edit-kind','Challenge-Art','Wähle den passenden Challenge-Typ');
 const editDays=document.createElement('select');editDays.name='days';editDays.setAttribute('aria-label','Dauer');for(const days of [7,14,30]){const option=el('option',days+' Tage');option.value=String(days);editDays.append(option)}editDays.value=String(c.duration_days||7);
-const editSave=el('button','Änderungen speichern');editSave.type='submit';edit.append(editTitle,editDescription,editKind,editDays,editSave);a.append(edit);
+const [editDaysLabel,editDaysField]=choiceField(editDays,'challenge-edit-days','Dauer','Lege die Laufzeit fest');
+const editSave=el('button','Änderungen speichern');editSave.type='submit';edit.append(editTitle,editDescription,editKindLabel,editKindField,editDaysLabel,editDaysField,editSave);a.append(edit);
 editToggle.onclick=()=>{edit.hidden=!edit.hidden;editToggle.setAttribute('aria-expanded',String(!edit.hidden))};editToggle.setAttribute('aria-expanded','false');
 edit.onsubmit=e=>{e.preventDefault();const title=editTitle.value.trim();if(title.length<3||title.length>120){say('Titel muss 3–120 Zeichen haben.',true);return}act('coach_challenge_v2_edit_draft',{p_id:c.id,p_title:title,p_description:editDescription.value,p_kind:editKind.value,p_days:Number(editDays.value)})};
 const goal=document.createElement('form');goal.setAttribute('aria-label','Ziel und EXP für '+c.title);
 const description=el('textarea','');description.setAttribute('aria-label','Challenge-Ziel');description.placeholder='Individuelles Ziel (mind. 5 Zeichen)';description.required=true;description.minLength=5;description.maxLength=1000;
 const reward=document.createElement('select');reward.setAttribute('aria-label','EXP-Belohnung');for(const n of [25,50,100,150,200]){const o=el('option',n+' EXP');o.value=n;reward.append(o)}
-const save=el('button','Ziel und EXP speichern');save.type='submit';goal.append(description,reward,save);
+const [rewardLabel,rewardField]=choiceField(reward,'challenge-edit-reward','EXP-Belohnung','Belohnung bei erfolgreichem Abschluss');
+const save=el('button','Ziel und EXP speichern');save.type='submit';goal.append(description,rewardLabel,rewardField,save);
 goal.onsubmit=e=>{e.preventDefault();act('coach_challenge_v2_save_goal_reward',{p_challenge_id:c.id,p_goal_text:description.value,p_review_mode:'manual',p_reward_exp:Number(reward.value),p_target_value:null,p_metric:null})};a.append(goal);
 }
 if(mayManage(c)&&c.status==='draft'){const open=el('button','Öffnen');open.type='button';open.onclick=()=>{if(confirm('Challenge für Boxer öffnen? Ziel und EXP müssen gespeichert sein.'))act('coach_challenge_v2_manage',{p_challenge_id:c.id,p_action:'open'})};a.append(open);}
@@ -190,6 +204,7 @@ function clearChallengeSession(){
  login.hidden=false;logout.hidden=true;
  document.querySelector('#challengeSearch').value='';
  document.querySelector('#challengeStatus').value='all';
+ document.querySelector('#challengeStatus').dispatchEvent(new Event('change',{bubbles:true}));
 }
 async function prepareTargetedAssignment(){
  targetBoxerId=null;targetBoxerName='';
@@ -244,7 +259,8 @@ document.querySelector('#challengeTemplate').addEventListener('change',e=>{
  const v=coachTemplates[e.target.value];if(!v)return;
  const form=document.querySelector('#create');
  form.elements.title.value=v.title;form.elements.description.value=v.description;
- form.elements.kind.value=v.kind;form.elements.days.value=v.days;
+ form.elements.kind.value=v.kind;form.elements.kind.dispatchEvent(new Event('change',{bubbles:true}));
+ form.elements.days.value=v.days;form.elements.days.dispatchEvent(new Event('change',{bubbles:true}));
  say('Vorlage geladen. Angaben prüfen und dann Entwurf erstellen.');
 });
 document.querySelector('#create').onsubmit=async e=>{e.preventDefault();if(busy||!role)return;busy=true;const epoch=sessionEpoch;const f=new FormData(e.target);try{await rpc('coach_challenge_v2_create_draft',{p_title:f.get('title'),p_description:f.get('description'),p_kind:f.get('kind'),p_duration_days:Number(f.get('days'))});if(epoch!==sessionEpoch||!role)return;e.target.reset();await load()}catch(err){if(epoch===sessionEpoch)say(friendlyError(err),true)}finally{busy=false}};
