@@ -31,7 +31,7 @@
        const options=Array.from(select.options).filter(option=>{
          if(option.disabled)return false;
          const value=option.value,label=(option.textContent||'').trim();
-         if(value===''&&/^(bitte wählen|bitte auswählen|auswählen|gegner wählen|ziel auswählen)$/i.test(label))return false;
+         if(value===''&&/^(bitte wählen|bitte auswählen|auswählen|gegner wählen|ziel auswählen|boxer auswählen)$/i.test(label))return false;
          return true;
        });
        options.forEach(option=>{
