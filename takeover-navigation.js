@@ -26,6 +26,7 @@
      if(!rail)return;
      select.dataset.tlChoiceEnhanced='true';
      const render=()=>{
+       const scrollLeft=rail.scrollLeft;
        rail.replaceChildren();
        const options=Array.from(select.options).filter(option=>{
          if(option.disabled)return false;
@@ -59,6 +60,7 @@
          });
          rail.append(button);
        });
+       rail.scrollLeft=scrollLeft;
      };
      select.addEventListener('change',render);
      if(typeof MutationObserver!=='undefined'){
