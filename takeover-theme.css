@@ -2,23 +2,33 @@
 :root{
   color-scheme:dark;
   --font:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  --bg:#0b1422;
-  --surface:#142238;
-  --surface-2:#0d1b2e;
-  --line:#314058;
-  --line-strong:#465b74;
-  --text:#f5f5f6;
-  --muted:#b6c2d0;
-  --gold:#dfbd77;
+  --bg:#070d1a;
+  --surface:#0e1c32;
+  --surface-2:#0a1528;
+  --surface-3:#132642;
+  --bg-deep:#040a15;
+  --line:#212f49;
+  --line-strong:#2f435e;
+  --line-soft:#1b2f4b;
+  --text:#e8ecf3;
+  --text-2:#cbd6e7;
+  --muted:#9aabbf;
+  --muted-2:#7588a3;
+  --gold:#c9a86b;
   --gold-soft:color-mix(in srgb,var(--gold) 14%,transparent);
-  --ok:#9bdfae;
-  --pending:#f2cc78;
-  --bad:#f5a8aa;
+  --gold-2:#d0ad68;
+  --gold-deep:#9e7d3e;
+  --gold-glow:rgba(201,168,107,.14);
+  --ok:#558f6a;
+  --pending:#d4b16a;
+  --bad:#ce8689;
+  --info:#6fb3d9;
   --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:24px;
   --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;
   --sp-5:20px;--sp-6:24px;--sp-7:28px;--sp-8:32px;
   --fs-xs:12px;--fs-sm:14px;--fs-base:16px;--fs-md:18px;
   --fs-lg:20px;--fs-xl:24px;--fs-2xl:30px;--fs-3xl:36px;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   --shadow-card:0 12px 32px color-mix(in srgb,var(--bg) 65%,transparent);
   --focus-ring:0 0 0 3px var(--gold);
 }
@@ -38,4 +48,26 @@ body{font-family:var(--font)}
 .pill.rejected{color:var(--bad);background:color-mix(in srgb,var(--bad) 14%,var(--surface-2))}
 @media (orientation:landscape){
  body{padding-left:max(var(--sp-3),env(safe-area-inset-left));padding-right:max(var(--sp-3),env(safe-area-inset-right))}
+}
+
+
+/* Shared sport-dashboard / fight-night finish: clearer hierarchy, grounded green, less generic card chrome. */
+:where(h1,h2,h3){font-weight:850;letter-spacing:-.025em;line-height:1.22}
+:where(.card,.panel,.stat-card,.metric-card,.dashboard-card,.feature-card){
+  border-color:color-mix(in srgb,var(--line) 82%,var(--gold) 18%);
+  border-top:2px solid color-mix(in srgb,var(--gold) 34%,var(--line));
+  box-shadow:0 12px 30px color-mix(in srgb,var(--bg-deep) 34%,transparent);
+}
+:where(.pill.approved,.status.approved,.badge.online){
+  color:var(--ok);
+  border-color:color-mix(in srgb,var(--ok) 56%,var(--line));
+  background:color-mix(in srgb,var(--ok) 12%,var(--surface-2));
+}
+/* Status symbols are intentionally simple and consistent across pages. */
+.pill.approved::before{content:"✅";font-size:.9em}
+.pill.pending::before{content:"⏳";font-size:.9em}
+.pill.rejected::before{content:"⛔";font-size:.9em}
+@media(prefers-reduced-motion:no-preference){
+  :where(.card,.panel,.stat-card,.metric-card,.dashboard-card,.feature-card){transition:border-color .16s ease,box-shadow .16s ease,transform .16s ease}
+  :where(.card,.panel,.stat-card,.metric-card,.dashboard-card,.feature-card):hover{border-color:color-mix(in srgb,var(--gold) 48%,var(--line));box-shadow:0 16px 34px color-mix(in srgb,var(--bg-deep) 50%,transparent)}
 }
