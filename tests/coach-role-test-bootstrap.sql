@@ -430,6 +430,18 @@ BEGIN
 END;
 $function$
 ;
+CREATE OR REPLACE FUNCTION public.is_league_admin()
+ RETURNS boolean
+ LANGUAGE sql
+ STABLE SECURITY DEFINER
+ SET search_path TO ''
+AS $function$
+  select exists (
+    select 1 from public.profiles p
+    where p.auth_user_id = (select auth.uid()) and p.role = 'admin' and p.is_active
+  );
+$function$
+;
 DO $sentinel$ BEGIN
  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname='trg_notify_training_decision' AND tgrelid='public.training_submissions'::regclass) THEN
  CREATE TRIGGER trg_notify_training_decision AFTER UPDATE OF status
@@ -449,4 +461,8 @@ BEGIN
   UPDATE public.profiles SET role='coach' WHERE id=test_user;
  END IF;
 END $seed$;
+-- TEST PROJECT ONLY. Mirror production SELECT table grants for trainer smoke.
+DO $test$ BEGIN IF to_regclass('public.league_test_boxers') IS NULL THEN RAISE EXCEPTION 'Not the isolated test project'; END IF; END $test$;
+GRANT SELECT ON public.point_transactions,public.training_submissions,public.training_types TO authenticated;
+
 COMMIT;

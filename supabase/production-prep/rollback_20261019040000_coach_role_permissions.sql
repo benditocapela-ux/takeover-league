@@ -1009,4 +1009,232 @@ $function$
 DROP FUNCTION IF EXISTS public.coach_list_boxers();
 DROP FUNCTION IF EXISTS public.is_league_coach();
 DROP FUNCTION IF EXISTS league_private.coach_training_bonus_refresh(uuid);
+DO $coachrollback$ BEGIN IF to_regclass('public.training_drafts_v2') IS NOT NULL THEN
+ DROP POLICY IF EXISTS coach_v3_training_drafts_own ON public.training_drafts_v2;
+END IF; END $coachrollback$;
+CREATE OR REPLACE FUNCTION public._notify_training_decision()
+ RETURNS trigger
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+BEGIN
+ IF NEW.status NOT IN ('approved','rejected') OR NEW.status IS NOT DISTINCT FROM OLD.status THEN
+  RETURN NEW;
+ END IF;
+ IF NOT EXISTS (SELECT 1 FROM public.league_feature_flags WHERE feature_key='notifications' AND is_enabled=true) THEN
+  RETURN NEW;
+ END IF;
+ IF NOT EXISTS (SELECT 1 FROM public.profiles WHERE id=NEW.boxer_id AND role='boxer' AND is_active=true) THEN
+  RETURN NEW;
+ END IF;
+ INSERT INTO public.boxer_notifications(recipient_id,notification_type,title,message,target_path)
+ VALUES (
+  NEW.boxer_id,
+  CASE WHEN NEW.status='approved' THEN 'training_approved' ELSE 'training_rejected' END,
+  CASE WHEN NEW.status='approved' THEN 'Training bestaetigt' ELSE 'Training abgelehnt' END,
+  CASE WHEN NEW.status='approved' THEN 'Dein Training vom '||to_char(NEW.training_date,'DD.MM.YYYY')||' wurde bestaetigt.'
+       ELSE 'Dein Training vom '||to_char(NEW.training_date,'DD.MM.YYYY')||' wurde abgelehnt.' END,
+  '/boxer.html'
+ );
+ RETURN NEW;
+END;
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.mark_my_notification_read(p_notification_id uuid)
+ RETURNS boolean
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO 'pg_catalog', 'public', 'pg_temp'
+AS $function$
+DECLARE
+ v_user uuid;
+ v_changed integer;
+BEGIN
+ v_user := (SELECT auth.uid());
+ IF v_user IS NULL THEN
+  RAISE EXCEPTION 'Anmeldung erforderlich' USING ERRCODE='28000';
+ END IF;
+ IF NOT EXISTS (SELECT 1 FROM public.league_feature_flags
+                WHERE feature_key='notifications' AND is_enabled=true) THEN
+  RAISE EXCEPTION 'Benachrichtigungen sind noch nicht freigeschaltet' USING ERRCODE='42501';
+ END IF;
+ IF p_notification_id IS NULL THEN
+  RETURN false;
+ END IF;
+ UPDATE public.boxer_notifications n
+ SET read_at = GREATEST(statement_timestamp(), n.created_at)
+ WHERE n.id = p_notification_id
+   AND n.read_at IS NULL
+   AND EXISTS (
+    SELECT 1 FROM public.profiles p
+    WHERE p.id=n.recipient_id AND p.auth_user_id=v_user
+      AND p.role='boxer' AND p.is_active=true
+   );
+ GET DIAGNOSTICS v_changed = ROW_COUNT;
+ RETURN v_changed=1;
+END;
+$function$
+;
+
+CREATE OR REPLACE FUNCTION public.update_my_boxer_avatar(p_avatar_key text, p_avatar_url text)
+ RETURNS void
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO ''
+AS $function$
+declare v_uid uuid := auth.uid();
+begin
+ if v_uid is null then raise exception 'Nicht angemeldet'; end if;
+ if (p_avatar_key is null) = (p_avatar_url is null) then raise exception 'Avatar oder Foto waehlen'; end if;
+ if p_avatar_key is not null and p_avatar_key not in (
+ 'boxing','champion','fire','lightning','lion','crown',
+ 'avatar-01','avatar-02','avatar-03','avatar-04','avatar-05','avatar-06','avatar-07',
+ 'avatar-08','avatar-09','avatar-10','avatar-11','avatar-12','avatar-13','avatar-14'
+ ) then raise exception 'Ungueltiger Avatar'; end if;
+ if p_avatar_url is not null and (
+ p_avatar_url not like 'https://iqarjivcrddcixrvqbfb.supabase.co/storage/v1/object/public/boxer-avatars/' || v_uid::text || '/%'
+ or length(p_avatar_url)>600
+ ) then raise exception 'Ungueltiger Bildpfad'; end if;
+ update public.profiles set avatar_key=p_avatar_key,avatar_url=p_avatar_url
+ where auth_user_id=v_uid and role='boxer' and is_active=true;
+ if not found then raise exception 'Aktives Boxerprofil fehlt'; end if;
+end $function$
+;
+
+CREATE OR REPLACE FUNCTION public.recalculate_boxer_achievements_v2(p_boxer_id uuid)
+ RETURNS void
+ LANGUAGE plpgsql
+ SECURITY DEFINER
+ SET search_path TO ''
+AS $function$
+DECLARE
+  v_flag boolean;
+  v_stats record;
+  v_def record;
+  v_earned boolean;
+  v_exp integer;
+  v_tx uuid;
+  v_old_earned boolean;
+  v_old_exp integer;
+BEGIN
+  SELECT is_enabled INTO v_flag FROM public.league_feature_flags
+  WHERE feature_key='achievements';
+  IF v_flag IS DISTINCT FROM true THEN RETURN; END IF;
+
+  -- Serialize award reconciliation for a boxer; no untrusted direct EXECUTE grant.
+  PERFORM 1 FROM public.profiles
+  WHERE id=p_boxer_id AND role='boxer' AND is_active=true FOR UPDATE;
+  IF NOT FOUND THEN RETURN; END IF;
+
+  SELECT
+    count(*)::bigint AS sessions,
+    count(DISTINCT training_date)::bigint AS days,
+    COALESCE(sum(jogging_km) FILTER (WHERE training_type_id=6),0)::numeric AS km,
+    COALESCE(sum(technique_minutes) FILTER (WHERE training_type_id=3),0)::bigint AS minutes,
+    count(*) FILTER (WHERE training_type_id=5)::bigint AS sprints,
+    count(*) FILTER (WHERE training_type_id=2)::bigint AS sparring,
+    count(*) FILTER (WHERE training_type_id=4)::bigint AS strength,
+    LEAST(
+      count(*) FILTER (WHERE training_type_id=1),
+      count(*) FILTER (WHERE training_type_id=2),
+      count(*) FILTER (WHERE training_type_id=3),
+      count(*) FILTER (WHERE training_type_id=4),
+      count(*) FILTER (WHERE training_type_id=5),
+      count(*) FILTER (WHERE training_type_id=6)
+    )::bigint AS complete
+  INTO v_stats
+  FROM public.training_submissions
+  WHERE boxer_id=p_boxer_id AND status='approved';
+
+  FOR v_def IN
+    SELECT d.id,d.code,
+      CASE WHEN d.code LIKE 'training_%' THEN v_stats.sessions
+           WHEN d.code LIKE 'consistent_%' THEN v_stats.days
+           WHEN d.code LIKE 'road_%' THEN v_stats.km
+           WHEN d.code LIKE 'flash_%' THEN v_stats.sprints
+           WHEN d.code LIKE 'technician_%' THEN v_stats.minutes
+           WHEN d.code LIKE 'fighter_%' THEN v_stats.sparring
+           WHEN d.code LIKE 'engine_%' THEN v_stats.strength
+           WHEN d.code LIKE 'complete_%' THEN v_stats.complete
+           ELSE 0 END AS progress,
+      split_part(d.code,'_',2)::numeric AS threshold,
+      CASE
+        WHEN d.code IN ('training_10','consistent_10','road_25','flash_5',
+          'technician_300','fighter_5','engine_10','complete_1') THEN 25
+        WHEN d.code IN ('training_25','consistent_25','road_75','flash_15',
+          'technician_900','fighter_15','engine_25','complete_3') THEN 60
+        WHEN d.code IN ('training_50','consistent_60','road_150','flash_30',
+          'technician_1800','fighter_30','engine_50','complete_7') THEN 125
+        ELSE 250 END AS reward
+    FROM public.achievement_definitions d
+    WHERE d.is_active=true
+      AND d.code ~ '^(training|consistent|road|flash|technician|fighter|engine|complete)_[0-9]+
+    ORDER BY d.code
+  LOOP
+    v_earned := v_def.progress >= v_def.threshold;
+    v_exp := CASE WHEN v_earned THEN v_def.reward ELSE 0 END;
+
+    INSERT INTO public.achievement_exp_ledger(boxer_id,achievement_id,exp_amount,is_earned)
+    VALUES(p_boxer_id,v_def.id,v_def.reward,false)
+    ON CONFLICT(boxer_id,achievement_id) DO NOTHING;
+
+    SELECT transaction_id,is_earned,exp_amount INTO v_tx,v_old_earned,v_old_exp
+    FROM public.achievement_exp_ledger
+    WHERE boxer_id=p_boxer_id AND achievement_id=v_def.id FOR UPDATE;
+
+    -- Preserve transaction identity across revocation and re-earning.
+    IF v_tx IS NULL AND v_earned THEN
+      INSERT INTO public.point_transactions
+        (boxer_id,submission_id,points,exp,category,description,effective_date)
+      VALUES (p_boxer_id,NULL,0,v_def.reward,'achievement_exp',
+              'Achievement: '||v_def.code,current_date)
+      RETURNING id INTO v_tx;
+    ELSIF v_tx IS NOT NULL AND v_old_earned IS DISTINCT FROM v_earned THEN
+      UPDATE public.point_transactions
+      SET exp=v_exp,points=0
+      WHERE id=v_tx AND boxer_id=p_boxer_id AND category='achievement_exp';
+      IF NOT FOUND THEN
+        RAISE EXCEPTION 'Achievement transaction integrity failure: %',v_tx;
+      END IF;
+    END IF;
+
+    UPDATE public.achievement_exp_ledger
+    SET transaction_id=v_tx,is_earned=v_earned,exp_amount=v_def.reward,
+        last_reconciled_at=now()
+    WHERE boxer_id=p_boxer_id AND achievement_id=v_def.id;
+
+    IF v_earned THEN
+      INSERT INTO public.boxer_achievements
+        (boxer_id,achievement_id,source_key,metadata)
+      VALUES(p_boxer_id,v_def.id,'achievement_v2',
+        jsonb_build_object('reward_exp',v_def.reward,'threshold',v_def.threshold))
+      ON CONFLICT(boxer_id,achievement_id) DO NOTHING;
+    ELSE
+      DELETE FROM public.boxer_achievements
+      WHERE boxer_id=p_boxer_id AND achievement_id=v_def.id;
+    END IF;
+  END LOOP;
+END
+$function$
+;
+DO $guardpolicy$ BEGIN IF to_regclass('public.profiles') IS NOT NULL THEN
+ DROP POLICY IF EXISTS "profiles own or admin read" ON public.profiles;
+ CREATE POLICY "profiles own or admin read" ON public.profiles FOR SELECT TO authenticated USING (((auth_user_id = ( SELECT auth.uid() AS uid)) OR ( SELECT is_league_admin() AS is_league_admin)));
+ END IF; END $guardpolicy$;
+
+DO $guardpolicy$ BEGIN IF to_regclass('public.point_transactions') IS NOT NULL THEN
+ DROP POLICY IF EXISTS "transactions own or admin read" ON public.point_transactions;
+ CREATE POLICY "transactions own or admin read" ON public.point_transactions FOR SELECT TO authenticated USING (((EXISTS ( SELECT 1
+   FROM profiles p
+  WHERE ((p.id = point_transactions.boxer_id) AND (p.auth_user_id = ( SELECT auth.uid() AS uid))))) OR ( SELECT is_league_admin() AS is_league_admin)));
+ END IF; END $guardpolicy$;
+
+DO $guardpolicy$ BEGIN IF to_regclass('public.training_submissions') IS NOT NULL THEN
+ DROP POLICY IF EXISTS "submissions own or admin read" ON public.training_submissions;
+ CREATE POLICY "submissions own or admin read" ON public.training_submissions FOR SELECT TO authenticated USING (((EXISTS ( SELECT 1
+   FROM profiles p
+  WHERE ((p.id = training_submissions.boxer_id) AND (p.auth_user_id = ( SELECT auth.uid() AS uid))))) OR ( SELECT is_league_admin() AS is_league_admin)));
+ END IF; END $guardpolicy$;
 COMMIT;

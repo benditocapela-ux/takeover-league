@@ -48,9 +48,9 @@ async function refreshCoachAudit(){
 }
 $('refreshCoachAudit').addEventListener('click',refreshCoachAudit);
 
-let currentPeople=[],currentTypes=[],allTrainings=[],visibleTrainings=8,currentAdminId=null;
+let currentPeople=[],currentTypes=[],allTrainings=[],visibleTrainings=8,currentAdminId=null,currentRole=null;
 function openBoxerQuick(id){
- const boxer=currentPeople.find(x=>x.id===id&&x.role==='boxer');if(!boxer)return;
+ const boxer=currentPeople.find(x=>x.id===id&&['boxer','coach'].includes(x.role));if(!boxer)return;
  rememberRecentlyViewedBoxer(id);
  const target=$('coachBoxerQuickBody');target.replaceChildren();
  const entries=allTrainings.filter(t=>t.boxer_id===id);
@@ -74,7 +74,7 @@ function rememberRecentlyViewedBoxer(id){
 function renderRecentBoxers(){
  const root=$('recentBoxers');if(!root)return;root.replaceChildren();
  let ids=[];try{ids=JSON.parse(sessionStorage.getItem('takeover_coach_recent_ids')||'[]')}catch{}
- const found=ids.map(id=>currentPeople.find(p=>p.id===id&&p.role==='boxer')).filter(Boolean);
+ const found=ids.map(id=>currentPeople.find(p=>p.id===id&&['boxer','coach'].includes(p.role))).filter(Boolean);
  if(!found.length)return;
  const title=document.createElement('strong');title.textContent='Zuletzt angesehene Boxer: ';root.append(title);
  for(const p of found){const a=document.createElement('a');a.href='./boxer-profile.html?name='+encodeURIComponent(p.display_name);a.textContent=p.display_name;a.addEventListener('click',()=>rememberRecentlyViewedBoxer(p.id));root.append(a)}
@@ -162,7 +162,7 @@ function editorRow(s,people,types){
   const form=document.createElement('form');form.className='editbox';
   const field=(title,control)=>{const label=document.createElement('label');label.textContent=title;label.append(control);form.append(label);return control};
   const select=(options,value)=>{const el=document.createElement('select');for(const [v,t] of options){const op=document.createElement('option');op.value=v;op.textContent=t;el.append(op)}el.value=String(value);return el};
-  const boxer=field('Boxer',select(currentPeople.filter(x=>x.role==='boxer').map(x=>[x.id,x.display_name]),s.boxer_id));
+  const boxer=field('Boxer',select(currentPeople.filter(x=>['boxer','coach'].includes(x.role)).map(x=>[x.id,x.display_name]),s.boxer_id));
   const type=field('Trainingsart',select(currentTypes.map(x=>[x.id,`${x.name} (${x.points} Punkte)`]),s.training_type_id));
   const date=document.createElement('input');date.type='date';date.value=s.training_date;field('Datum',date);
   const notes=document.createElement('textarea');notes.rows=2;notes.value=s.notes||'';field('Bemerkung',notes);
@@ -196,13 +196,15 @@ function editorRow(s,people,types){
 
 
 async function loadAccounts(){
+ if(currentRole!=='admin')return; // Account linkage remains admin-only, never exposed to coach.
  const area=$('accountEntries');const status=$('accountStatus');
  area.textContent='Lade Registrierungen …';
  const {data:accounts,error}=await db.rpc('coach_list_unlinked_accounts');
  if(error){area.textContent='Registrierungen konnten nicht geladen werden: '+error.message+' (SQL-Erweiterung bereits ausgeführt?)';return;}
  area.replaceChildren();
  if(!accounts?.length){area.textContent='Keine offenen Registrierungen.';return;}
- const available=currentPeople.filter(p=>p.role==='boxer' && !p.auth_user_id);
+ const {data:available,error:unlinkedError}=await db.from('profiles').select('id,display_name,role').eq('role','boxer').is('auth_user_id',null);
+ if(unlinkedError){area.textContent='Nicht verknüpfte Profile konnten nicht geladen werden: '+unlinkedError.message;return;}
  for(const a of accounts){
   const wrapper=document.createElement('div');wrapper.className='account-row';
   const info=document.createElement('div');info.className='account-email';
@@ -238,7 +240,7 @@ async function setupCoachFeedback(){
  if(!coachFeedbackEnabled){panel.classList.add('hidden');status.textContent='Coming Soon – Coach-Feedback ist noch nicht freigeschaltet.';return}
  panel.classList.remove('hidden');status.textContent='Persönliche Rückmeldungen für Boxer.';
  const select=$('coachFeedbackBoxer'),old=select.value;select.replaceChildren(new Option('Bitte auswählen',''));
- currentPeople.filter(p=>p.role==='boxer'&&p.is_active).sort((a,b)=>a.display_name.localeCompare(b.display_name,'de')).forEach(p=>select.add(new Option(p.display_name,p.id)));select.value=old;
+ currentPeople.filter(p=>['boxer','coach'].includes(p.role)&&p.is_active).sort((a,b)=>a.display_name.localeCompare(b.display_name,'de')).forEach(p=>select.add(new Option(p.display_name,p.id)));select.value=old;
  await loadCoachFeedbackHistory();
 }
 async function loadCoachFeedbackHistory(){
@@ -256,16 +258,16 @@ $('coachFeedbackForm').addEventListener('submit',async e=>{
  if(!boxer_id||!title||!message)return;
  const {data:{user},error:authError}=await db.auth.getUser();if(authError||!user){status.textContent='Bitte erneut anmelden.';return}
  const {data:me,error:profileError}=await db.from('profiles').select('id,role,is_active').eq('auth_user_id',user.id).maybeSingle();
- if(profileError||!me||me.role!=='admin'||!me.is_active){status.textContent='Keine Coach-Berechtigung.';return}
+ if(profileError||!me||!['admin','coach'].includes(me.role)||!me.is_active){status.textContent='Keine Coach-Berechtigung.';return}
  button.disabled=true;status.textContent='Feedback wird gesendet …';
  const result=await db.from('boxer_coach_feedback').insert({boxer_id,coach_id:me.id,title,message});
  button.disabled=false;if(result.error){status.textContent='Senden fehlgeschlagen: '+result.error.message;return}
  status.textContent='Feedback gesendet.';$('coachFeedbackForm').reset();await loadCoachFeedbackHistory();
 });
 
-async function load(clearStatus=true){ if(clearStatus)$('status').textContent='';$('error').textContent='';const {data:{user},error:authError}=await db.auth.getUser();if(authError||!user){fail('Bitte zuerst unter login.html anmelden.');return}const {data:p,error:pe}=await db.from('profiles').select('id,display_name,role,is_active,auth_user_id').eq('auth_user_id',user.id).maybeSingle();if(pe||!p||p.role!=='admin'||!p.is_active){fail('Zugriff verweigert: Nur aktive Trainer-Accounts dürfen dieses Dashboard öffnen.');return}currentAdminId=p.id;$('welcome').textContent=`Willkommen, ${p.display_name}.`;const [pr,tr,sr,ar]=await Promise.all([db.from('profiles').select('id,display_name,role,is_active,auth_user_id'),db.from('training_types').select('id,name,points'),db.from('training_submissions').select('id,boxer_id,training_type_id,training_date,notes,status,jogging_km,technique_minutes,created_at').eq('status','pending').order('created_at',{ascending:false}).limit(100),db.from('training_submissions').select('id',{count:'exact',head:true}).eq('status','approved')]);for(const r of [pr,tr,sr,ar])if(r.error){fail('Daten konnten nicht geladen werden: '+r.error.message);return}currentPeople=pr.data;currentTypes=tr.data;renderRecentBoxers();const people=new Map(pr.data.map(x=>[x.id,x.display_name]));const types=new Map(tr.data.map(x=>[x.id,x.name]));$('pendingCount').textContent=sr.data.length===100?'100+':String(sr.data.length);$('boxerCount').textContent=pr.data.filter(x=>x.role==='boxer'&&x.is_active).length;$('approvedCount').textContent=ar.count??'–';pendingBatchRows=sr.data;renderPending();const {data:all,error:allError}=await db.from('training_submissions').select('id,boxer_id,training_type_id,training_date,notes,status,jogging_km,technique_minutes,created_at,reviewed_at,reviewed_by').order('created_at',{ascending:false}).limit(1000);
+async function load(clearStatus=true){ if(clearStatus)$('status').textContent='';$('error').textContent='';const {data:{user},error:authError}=await db.auth.getUser();if(authError||!user){fail('Bitte zuerst unter login.html anmelden.');return}const {data:p,error:pe}=await db.from('profiles').select('id,display_name,role,is_active,auth_user_id').eq('auth_user_id',user.id).maybeSingle();if(pe||!p||!['admin','coach'].includes(p.role)||!p.is_active){fail('Zugriff verweigert: Nur aktive Trainer-Accounts dürfen dieses Dashboard öffnen.');return}currentAdminId=p.id;currentRole=p.role;$('accountEntries').closest('section').classList.toggle('hidden',p.role!=='admin');$('welcome').textContent=`Willkommen, ${p.display_name}.`;const [pr,tr,sr,ar]=await Promise.all([db.rpc('coach_list_boxers'),db.from('training_types').select('id,name,points'),db.from('training_submissions').select('id,boxer_id,training_type_id,training_date,notes,status,jogging_km,technique_minutes,created_at').eq('status','pending').order('created_at',{ascending:false}).limit(100),db.from('training_submissions').select('id',{count:'exact',head:true}).eq('status','approved')]);for(const r of [pr,tr,sr,ar])if(r.error){fail('Daten konnten nicht geladen werden: '+r.error.message);return}currentPeople=pr.data;currentTypes=tr.data;renderRecentBoxers();const people=new Map(pr.data.map(x=>[x.id,x.display_name]));const types=new Map(tr.data.map(x=>[x.id,x.name]));$('pendingCount').textContent=sr.data.length===100?'100+':String(sr.data.length);$('boxerCount').textContent=pr.data.filter(x=>['boxer','coach'].includes(x.role)&&x.is_active).length;$('approvedCount').textContent=ar.count??'–';pendingBatchRows=sr.data;renderPending();const {data:all,error:allError}=await db.from('training_submissions').select('id,boxer_id,training_type_id,training_date,notes,status,jogging_km,technique_minutes,created_at,reviewed_at,reviewed_by').order('created_at',{ascending:false}).limit(1000);
 if(allError){$('allEntries').textContent='Fehler beim Laden: '+allError.message}
-else{allTrainings=all;fillFilter('filterBoxer',pr.data.filter(x=>x.role==='boxer'),'Alle Boxer');fillFilter('filterType',tr.data,'Alle Trainingsarten');renderFilteredTrainings()}
+else{allTrainings=all;fillFilter('filterBoxer',pr.data.filter(x=>['boxer','coach'].includes(x.role)),'Alle Boxer');fillFilter('filterType',tr.data,'Alle Trainingsarten');renderFilteredTrainings()}
 $('content').classList.remove('hidden');await loadAccounts();await setupCoachFeedback();await refreshCoachAudit()}
 for(const id of ['trainingSearch','filterBoxer','filterType','filterFrom','filterTo','filterStatus'])$(id).addEventListener('input',()=>{visibleTrainings=8;renderFilteredTrainings()});
 $('showMore').addEventListener('click',()=>{visibleTrainings+=10;renderFilteredTrainings()});
