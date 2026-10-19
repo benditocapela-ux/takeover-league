@@ -97,7 +97,7 @@ $('create').addEventListener('submit',async e=>{
  e.preventDefault();const ids=[...$('boxers').selectedOptions].map(o=>o.value);
  if(ids.length<3||ids.length>8){say('Genau 3 bis 8 Boxer auswählen.');return}
  if(new Set(ids).size!==ids.length){say('Jeder Boxer darf nur einmal eingeladen werden.');return}
- const button=e.currentTarget.querySelector('button');button.disabled=true;
+ const button=e.currentTarget.querySelector('button[type="submit"]');button.disabled=true;
  try{await rpc('league_v21_arena_create',{p_title:$('title').value,p_duration:Number($('duration').value),p_boxers:ids});
   say('Arena-Einladungen erstellt.');$('create').reset();await load()}
  catch(e){say('Arena konnte nicht erstellt werden: '+e.message)}
