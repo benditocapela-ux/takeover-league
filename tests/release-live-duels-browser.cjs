@@ -90,7 +90,7 @@ async function main(){
     await page.goto(base+'/duels.html',{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.querySelectorAll('[data-live-duel]').length===2);
     await page.getByRole('button',{name:'Boxer Beta',exact:true}).click();
-    assert.equal(await page.locator('#invite select[name=opponent]').inputValue(),opponent,
+    assert.equal(await page.locator('#invite select[name=opponent]').inputValue(),'bbbb2222-2222-4222-8222-222222222222',
      'Opponent card must update the native duel select');
     await page.getByRole('button',{name:'14 Tage',exact:true}).click();
     assert.equal(await page.locator('#invite select[name=duration]').inputValue(),'14',
