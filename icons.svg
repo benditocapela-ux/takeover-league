@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+<symbol id="icon-trophy" viewBox="0 0 24 24"><path d="M8 3h8v8a4 4 0 0 1-8 0V3ZM8 5H4v3a4 4 0 0 0 4 4M16 5h4v3a4 4 0 0 1-4 4M12 15v4m-5 2h10m-8-2h6"/></symbol>
+<symbol id="icon-chart" viewBox="0 0 24 24"><path d="M3 3v18h18M7 16v-5m5 5V6m5 10V9"/></symbol>
+<symbol id="icon-boxing-glove" viewBox="0 0 24 24"><path d="M8 20V9a5 5 0 0 1 5-5 4 4 0 0 1 4 4v2h2a2 2 0 0 1 2 2v3a5 5 0 0 1-5 5H8Zm0-4h13M8 10H5a3 3 0 0 0-2 5l5 4"/></symbol>
+<symbol id="icon-scroll" viewBox="0 0 24 24"><path d="M6 4h12a3 3 0 0 1 3 3v11a3 3 0 0 1-6 0V7a3 3 0 0 0-6 0v13H5a3 3 0 0 1-3-3V7a3 3 0 0 1 6 0M9 10h4m-4 4h4"/></symbol>
+<symbol id="icon-medal" viewBox="0 0 24 24"><circle cx="12" cy="15" r="6"/><path d="m8 3 4 6 4-6M6 3h12m-6 9 1 2 2 .3-1.5 1.5.4 2.2-1.9-1-1.9 1 .4-2.2L9 14.3l2-.3z"/></symbol>
+<symbol id="icon-dumbbell" viewBox="0 0 24 24"><path d="M6 7v10m-3-7v4m6-9v14m6-14v14m3-12v10m3-7v4M3 12h18"/></symbol>
+<symbol id="icon-scale" viewBox="0 0 24 24"><path d="M12 3v18M5 7h14M6 7l-4 7h8L6 7Zm12 0-4 7h8l-4-7ZM8 21h8"/></symbol>
+<symbol id="icon-target" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/></symbol>
+<symbol id="icon-bolt" viewBox="0 0 24 24"><path d="m13 2-9 12h7l-1 8 10-13h-7V2z"/></symbol>
+<symbol id="icon-run" viewBox="0 0 24 24"><circle cx="15" cy="4" r="2"/><path d="m10 21 2-6-4-4-3 2m13 8-3-5-3-1m-6-8 5-2 4 4 4 1M8 11l4-2"/></symbol>
+<symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+<symbol id="icon-refresh" viewBox="0 0 24 24"><path d="M20 7v5h-5M4 17v-5h5M5 10a8 8 0 0 1 14-3l1 5M4 12l1 5a8 8 0 0 0 14-3"/></symbol>
+<symbol id="icon-goal" viewBox="0 0 24 24"><path d="M5 21V3m0 1h13l-3 5 3 5H5M8 21h9"/></symbol>
+<symbol id="icon-arena" viewBox="0 0 24 24"><path d="m3 7 9-4 9 4v10l-9 4-9-4V7Zm0 0 9 4 9-4M12 11v10M7 9v9m10-9v9"/></symbol>
+<symbol id="icon-season" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M7 3v4m10-4v4M3 10h18m-12 5 2 2 4-4"/></symbol>
+<symbol id="icon-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21a8 8 0 0 1 16 0"/></symbol>
+<symbol id="icon-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
+<symbol id="icon-chevron-right" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+</svg>

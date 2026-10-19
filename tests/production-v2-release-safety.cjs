@@ -75,7 +75,7 @@ for(const page of ['challenges.html','duels.html']){
 }
 for(const file of ['boxer.html','coach.html']){
  const html=read(file);
- assert.ok(html.includes('Challenges &amp; Boxer-Duelle'),file+' missing neutral V2 navigation');
+ assert.ok(file==='coach.html'?html.includes('Challenges &amp; Boxer-Duelle'):(html.includes('id="boxerTaskCenter"')&&html.includes('href="./challenges.html"')&&html.includes('href="./duels.html"')),file+' missing neutral V2 navigation');
  assert.ok(!html.includes('Coach Challenges V2 – in Vorbereitung'),file+' contains stale launch text');
 }
 console.log('Release safety guards passed: read-only baseline, protected Achievement revoke, disabled V2 frontends and private backups');

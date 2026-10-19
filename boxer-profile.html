@@ -6,50 +6,50 @@
 <meta name="theme-color" content="#0b1220">
 <title>Boxerprofil · Takeover League</title>
 <style>
-:root{color-scheme:dark;--bg:#0b1220;--surface:#172235;--gold:#dfbd77;--text:#f4f7fc;--muted:#a9b5c8}
+:root{color-scheme:dark;}
 *{box-sizing:border-box}
-body{margin:0;background:radial-gradient(circle at 50% 0,#1b2b42,#0b1220 62%);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
-main{max-width:740px;margin:0 auto;padding:22px 16px 118px}
-a{color:var(--gold)}.topbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:25px}
-.brand{font-weight:900;letter-spacing:1.9px;font-size:13px;color:var(--gold)}
-.back{font-size:12px;font-weight:750;text-decoration:none;border:1px solid #51647e;border-radius:10px;padding:9px 13px}
-.eyebrow{font-size:11px;letter-spacing:2px;color:var(--gold);font-weight:850;text-transform:uppercase}
-.panel{background:linear-gradient(140deg,#192b43,#111d30);border:1px solid #d7ae6250;border-radius:20px;padding:clamp(20px,4vw,30px);box-shadow:0 18px 50px #0004}
-.hero{display:flex;align-items:center;gap:21px;flex-wrap:wrap}
-.photo{width:92px;height:92px;flex:0 0 92px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:3px solid #d7ae62;background:#243650;overflow:hidden;font-size:37px}
+body{margin:0;background:radial-gradient(circle at 50% 0,var(--surface),var(--bg) 62%);color:var(--text);font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:740px;margin:0 auto;padding:var(--sp-6) var(--sp-4) 118px}
+a{color:var(--gold)}.topbar{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);margin-bottom:25px}
+.brand{font-weight:900;letter-spacing:1.9px;font-size:var(--fs-sm);color:var(--gold)}
+.back{font-size:var(--fs-xs);font-weight:750;text-decoration:none;border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:9px var(--sp-3)}
+.eyebrow{font-size:var(--fs-xs);letter-spacing:2px;color:var(--gold);font-weight:850;text-transform:uppercase}
+.panel{background:linear-gradient(140deg,var(--surface),var(--surface));border:1px solid color-mix(in srgb,var(--gold) 31%,transparent);border-radius:var(--r-lg);padding:clamp(var(--sp-5),4vw,var(--sp-8));box-shadow:0 18px 50px color-mix(in srgb,var(--bg) 27%,transparent)}
+.hero{display:flex;align-items:center;gap:var(--sp-5);flex-wrap:wrap}
+.photo{width:92px;height:92px;flex:0 0 92px;display:flex;align-items:center;justify-content:center;border-radius:50%;border:3px solid var(--gold);background:var(--line);overflow:hidden;font-size:var(--fs-3xl)}
 .photo img{width:100%;height:100%;object-fit:cover}
 .hero h1{font-size:clamp(24px,5vw,36px);letter-spacing:-.8px;margin:6px 0 4px;overflow-wrap:anywhere}
-.role{font-size:12px;color:var(--muted)}
-.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:25px}
-.stat{border:1px solid #40516a;border-radius:13px;background:#0e1b2e;padding:15px 11px;text-align:center}
+.role{font-size:var(--fs-xs);color:var(--muted)}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-3);margin-top:25px}
+.stat{border:1px solid var(--line-strong);border-radius:var(--r-md);background:var(--surface-2);padding:var(--sp-4) var(--sp-3);text-align:center}
 .stat strong{display:block;color:var(--gold);font-size:clamp(19px,4vw,29px);font-variant-numeric:tabular-nums}
-.stat span{display:block;color:var(--muted);font-size:11px;line-height:1.4;margin-top:5px}
-.bar{height:10px;margin-top:21px;background:#304157;border-radius:30px;overflow:hidden}
-#levelFill{width:0;height:100%;background:linear-gradient(90deg,#a88139,#f0d38a);border-radius:inherit}
-.levelText{font-size:12px;color:var(--muted);margin-top:9px;display:flex;justify-content:space-between;gap:8px}
-.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:20px}
-.action{display:flex;align-items:center;justify-content:center;text-decoration:none;text-align:center;border:1px solid #586983;background:#263750;color:#f4f7fc;border-radius:12px;padding:14px 12px;font-weight:850;font-size:13px}
-.action.primary{background:var(--gold);border-color:var(--gold);color:#102034}
+.stat span{display:block;color:var(--muted);font-size:var(--fs-xs);line-height:1.4;margin-top:5px}
+.bar{height:10px;margin-top:var(--sp-5);background:var(--line);border-radius:30px;overflow:hidden}
+#levelFill{width:0;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold));border-radius:inherit}
+.levelText{font-size:var(--fs-xs);color:var(--muted);margin-top:9px;display:flex;justify-content:space-between;gap:var(--sp-2)}
+.actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--sp-3);margin-top:var(--sp-5)}
+.action{display:flex;align-items:center;justify-content:center;text-decoration:none;text-align:center;border:1px solid var(--line-strong);background:var(--line);color:var(--text);border-radius:var(--r-md);padding:var(--sp-4) var(--sp-3);font-weight:850;font-size:var(--fs-sm)}
+.action.primary{background:var(--gold);border-color:var(--gold);color:var(--surface)}
 .action:hover{filter:brightness(1.13)}
-.action:focus-visible{outline:2px solid #f3d182;outline-offset:3px}
+.action:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .action[hidden]{display:none}
-.public-sport-profile{margin-top:23px;padding-top:18px;border-top:1px solid #43536a}.public-sport-profile h2{font-size:19px;margin:0 0 6px}.radar-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:10px}#sportRadar svg{width:100%;max-height:260px}#sportMetrics{display:grid;gap:8px}.radar-metric{font-size:12px;color:#d6e2ef}.radar-metric strong{color:var(--gold);display:block}@media(max-width:550px){.radar-wrap{grid-template-columns:1fr}#sportRadar{max-width:350px;margin:auto}}
-.public-badges{margin-top:20px;padding-top:14px;border-top:1px solid #42536b}.public-badges h2{font-size:19px;margin:0 0 7px}.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:10px}.badge-tile{padding:12px;border:1px solid #a6884e;background:#17283b;border-radius:11px}.badge-tile strong{display:block;color:#edcb85}.badge-tile small{color:#bac8d8}.note{font-size:12px;color:var(--muted);line-height:1.6;margin-top:18px}
-#status{margin:15px 0;color:var(--muted);font-size:13px}
-.error{color:#ffb6b6!important}
+.public-sport-profile{margin-top:var(--sp-6);padding-top:var(--sp-5);border-top:1px solid var(--line-strong)}.public-sport-profile h2{font-size:var(--fs-md);margin:0 0 6px}.radar-wrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:center;gap:var(--sp-3)}#sportRadar svg{width:100%;max-height:260px}#sportMetrics{display:grid;gap:var(--sp-2)}.radar-metric{font-size:var(--fs-xs);color:var(--text)}.radar-metric strong{color:var(--gold);display:block}@media(max-width:550px){.radar-wrap{grid-template-columns:1fr}#sportRadar{max-width:350px;margin:auto}}
+.public-badges{margin-top:var(--sp-5);padding-top:var(--sp-4);border-top:1px solid var(--line-strong)}.public-badges h2{font-size:var(--fs-md);margin:0 0 7px}.badge-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,190px),1fr));gap:var(--sp-3)}.badge-tile{padding:var(--sp-3);border:1px solid var(--gold);background:var(--surface);border-radius:var(--r-md)}.badge-tile strong{display:block;color:var(--gold)}.badge-tile small{color:var(--text)}.note{font-size:var(--fs-xs);color:var(--muted);line-height:1.6;margin-top:var(--sp-5)}
+#status{margin:var(--sp-4) 0;color:var(--muted);font-size:var(--fs-sm)}
+.error{color:var(--bad)!important}
 [hidden]{display:none!important}
-@media(max-width:420px){.photo{width:75px;height:75px;flex-basis:75px}.stats{gap:6px}.stat{padding:11px 5px}.action{padding:12px 7px;font-size:12px}}
+@media(max-width:420px){.photo{width:75px;height:75px;flex-basis:75px}.stats{gap:6px}.stat{padding:var(--sp-3) 5px}.action{padding:var(--sp-3) 7px;font-size:var(--fs-xs)}}
 </style>
 <link rel="stylesheet" href="./takeover-navigation.css">
-</head>
+<link rel="stylesheet" href="./takeover-theme.css"></head>
 <body>
 <main>
 <div class="topbar"><span class="brand">TAKEOVER LEAGUE</span><a class="back" href="./index.html#ranking">← Ranking</a></div>
 <p id="status" role="status">Öffentliches Boxerprofil wird geladen …</p>
 <article id="profileCard" class="panel" hidden>
- <div class="eyebrow">🥊 Boxerprofil · Takeover League 2.0</div>
+ <div class="eyebrow"><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-boxing-glove"></use></svg> Boxerprofil · Takeover League 2.0</div>
  <div class="hero">
-   <div id="profilePhoto" class="photo" aria-hidden="true">🥊</div>
+   <div id="profilePhoto" class="photo" aria-hidden="true"><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-boxing-glove"></use></svg></div>
    <div><h1 id="profileName">–</h1><div id="profileRank" class="role">Liga-Boxer</div></div>
  </div>
  <div class="stats" aria-label="Öffentliche Boxerstatistik">
@@ -64,12 +64,12 @@ a{color:var(--gold)}.topbar{display:flex;align-items:center;justify-content:spac
   <p class="role">Relative Ligawerte aus öffentlichen Trainings- und EXP-Daten – keine medizinische oder sportwissenschaftliche Leistungsdiagnose.</p>
   <div class="radar-wrap"><div id="sportRadar" role="img" aria-label="Vergleich des Boxers mit den höchsten öffentlichen Liga-Werten"></div><div id="sportMetrics"></div></div>
  </section>
- <section id="publicRecords" class="public-badges" aria-labelledby="recordsHeading"><h2 id="recordsHeading">📊 Persönliche Rekorde</h2><p id="recordStatus" class="role">Rekorde werden geladen …</p><div id="recordGrid" class="badge-grid"></div></section>
- <section id="publicBadges" class="public-badges" aria-labelledby="badgeHeading"><h2 id="badgeHeading">🏅 Auszeichnungen</h2><p id="publicBadgeStatus" class="role">Abzeichen werden geladen …</p><div id="publicBadgeGrid" class="badge-grid"></div></section>
+ <section id="publicRecords" class="public-badges" aria-labelledby="recordsHeading"><h2 id="recordsHeading"><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-chart"></use></svg> Persönliche Rekorde</h2><p id="recordStatus" class="role">Rekorde werden geladen …</p><div id="recordGrid" class="badge-grid"></div></section>
+ <section id="publicBadges" class="public-badges" aria-labelledby="badgeHeading"><h2 id="badgeHeading"><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-medal"></use></svg> Auszeichnungen</h2><p id="publicBadgeStatus" class="role">Abzeichen werden geladen …</p><div id="publicBadgeGrid" class="badge-grid"></div></section>
  <div class="actions">
-   <a id="compareAction" class="action" href="./boxer-compare.html">⚖️ Vergleichen</a>
-   <a id="duelAction" class="action primary" href="./duels.html">🥊 Herausfordern</a>
-   <a id="challengeAction" class="action" href="./challenges.html" hidden>🎯 Persönliche Challenge vergeben</a>
+   <a id="compareAction" class="action" href="./boxer-compare.html"><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-scale"></use></svg> Vergleichen</a>
+   <a id="duelAction" class="action primary" href="./duels.html"><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-boxing-glove"></use></svg> Herausfordern</a>
+   <a id="challengeAction" class="action" href="./challenges.html" hidden><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-target"></use></svg> Persönliche Challenge vergeben</a>
  </div>
  <p class="note">Hier werden nur öffentliche Liga-Daten angezeigt. E-Mail, Gewicht, Login und private Coach-Rückmeldungen bleiben verborgen. Duelle benötigen eine Anmeldung und die Bestätigung des Gegners. Persönliche Challenges können nur von einem berechtigten Trainer vergeben werden.</p>
 </article>
