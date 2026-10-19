@@ -47,11 +47,26 @@ button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(
 <section class="panel" id="invitePanel">
 <h2>Duell herausfordern</h2>
 <p>Wähle zwei aktive Boxer. Ein Duell dauert 7 oder 14 Tage und wird erst nach Annahme aktiv.</p>
-<form id="invite">
-<label>Herausforderer<select name="challenger" required></select></label>
-<label>Gegner<select name="opponent" required></select></label>
-<label>Laufzeit<select name="duration" required><option value="7">7 Tage</option><option value="14">14 Tage</option></select></label>
-<button type="submit">Einladung senden</button>
+<form id="invite" novalidate>
+<label class="tl-native-select-label">Herausforderer auswählen<select name="challenger" required aria-label="Herausforderer"></select></label>
+<div class="tl-choice-field">
+<div class="tl-choice-heading"><span>Herausforderer</span><small>Wähle, wer die Einladung sendet</small></div>
+<div class="tl-choice-rail" data-choice-for="challenger" aria-hidden="true"></div>
+</div>
+<label class="tl-native-select-label">Gegner auswählen<select name="opponent" required aria-label="Gegner"></select></label>
+<div class="tl-choice-field">
+<div class="tl-choice-heading"><span>Gegner</span><small>Wische seitwärts durch die aktiven Boxer</small></div>
+<div class="tl-choice-rail" data-choice-for="opponent" aria-hidden="true"></div>
+</div>
+<label class="tl-native-select-label">Laufzeit auswählen<select name="duration" required aria-label="Laufzeit"><option value="7">7 Tage</option><option value="14">14 Tage</option></select></label>
+<div class="tl-choice-field">
+<div class="tl-choice-heading"><span>Laufzeit</span><small>Wie lange soll das Duell laufen?</small></div>
+<div class="tl-choice-rail tl-choice-rail--compact" data-choice-for="duration" aria-hidden="true">
+<button type="button" class="tl-choice-card" data-value="7" tabindex="-1" aria-pressed="true"><span class="tl-choice-card-top"><span class="tl-choice-avatar">7</span><span class="tl-choice-card-check" aria-hidden="true">✓</span></span><span class="tl-choice-card-name">7 Tage</span><span class="tl-choice-card-meta">Kompakter Wettkampf</span></button>
+<button type="button" class="tl-choice-card" data-value="14" tabindex="-1" aria-pressed="false"><span class="tl-choice-card-top"><span class="tl-choice-avatar">14</span><span class="tl-choice-card-check" aria-hidden="true">✓</span></span><span class="tl-choice-card-name">14 Tage</span><span class="tl-choice-card-meta">Mehr Zeit fürs Duell</span></button>
+</div>
+</div>
+<button type="submit">🥊 Einladung senden</button>
 </form>
 <p id="inviteHint" class="meta"></p>
 </section>
@@ -72,6 +87,9 @@ button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const byId=id=>document.getElementById(id);
 const status=byId('status'),panel=byId('app'),auth=byId('auth'),form=byId('invite'),list=byId('duelList');
+const challengerChoices=form.querySelector('[data-choice-for="challenger"]');
+const opponentChoices=form.querySelector('[data-choice-for="opponent"]');
+const durationChoices=form.querySelector('[data-choice-for="duration"]');
 const el=(tag,text)=>{const node=document.createElement(tag);node.textContent=String(text??'');return node};
 const dateText=value=>{if(!value)return '–';const d=new Date(value);return Number.isNaN(d.getTime())?'–':d.toLocaleDateString('de-CH',{day:'2-digit',month:'2-digit',year:'numeric'})};
 const statuses={pending:'Einladung offen',active:'Aktiv',awaiting_reviews:'Wird ausgewertet',settled:'Abgeschlossen',declined:'Abgelehnt',expired:'Abgelaufen',cancelled:'Abgebrochen'};
@@ -79,6 +97,52 @@ let db,profile=null,eligible=[],duels=[],busy=false,sessionEpoch=0,loadRequestId
 let liveScoreMap=new Map(),liveScoreErrors=new Map(),lastLiveUpdate=null,liveLoading=false;
 const requestedOpponent=(new URLSearchParams(location.search).get('opponent')||'').trim().slice(0,120);
 let targetHint='';
+const boxerInitials=name=>{
+ const parts=String(name||'').trim().split(/\s+/).filter(Boolean);
+ return (parts.length>1?parts[0][0]+parts[parts.length-1][0]:String(name||'?').slice(0,2)).toLocaleUpperCase('de-CH');
+};
+function syncChoiceState(container,select){
+ if(!container||!select)return;
+ container.querySelectorAll('.tl-choice-card[data-value]').forEach(button=>{
+  const selected=button.dataset.value===select.value;
+  button.setAttribute('aria-pressed',String(selected));
+  button.classList.toggle('is-selected',selected);
+ });
+}
+function renderBoxerChoices(container,items,select){
+ container.replaceChildren();
+ if(!items.length){
+  const empty=el('div','Kein geeigneter Boxer verfügbar.');
+  empty.className='tl-choice-empty';
+  container.append(empty);
+  return;
+ }
+ for(const item of items){
+  const button=el('button','');
+  button.type='button';
+  button.className='tl-choice-card';
+  button.dataset.value=item.id;
+  button.tabIndex=-1;
+  button.disabled=select.disabled;
+  button.setAttribute('aria-pressed',String(select.value===item.id));
+  const top=el('span','');top.className='tl-choice-card-top';
+  const avatar=el('span',boxerInitials(item.display_name));avatar.className='tl-choice-avatar';
+  const tag=el('span',item.id===profile?.id?'DU':'BOXER');tag.className='tl-choice-card-tag';
+  const check=el('span','✓');check.className='tl-choice-card-check';check.setAttribute('aria-hidden','true');
+  top.append(avatar,tag,check);
+  const name=el('span',item.display_name);name.className='tl-choice-card-name';
+  const meta=el('span',item.id===profile?.id?'Dein Profil':'Aktiver Boxer');meta.className='tl-choice-card-meta';
+  button.append(top,name,meta);
+  button.addEventListener('click',()=>{
+   if(select.disabled)return;
+   select.value=item.id;
+   select.dispatchEvent(new Event('change',{bubbles:true}));
+   syncChoiceState(container,select);
+  });
+  container.append(button);
+ }
+ syncChoiceState(container,select);
+}
 const say=(text,isError=false)=>{status.textContent=text;status.className=isError?'error':''};
 const message=e=>{const t=String(e?.message||e||'Unbekannter Fehler');if(/jwt expired|invalid jwt/i.test(t))return 'Sitzung abgelaufen. Bitte erneut anmelden.';if(/failed to fetch|networkerror/i.test(t))return 'Netzwerkfehler. Bitte Internetverbindung prüfen.';return t};
 async function rpc(name,args={}){const result=await db.rpc(name,args);if(result.error)throw result.error;return result.data}
@@ -119,6 +183,9 @@ function populate(){
  const usable=!!id&&!!opponent.value;
  form.querySelector('button[type=submit]').disabled=!usable;
  byId('inviteHint').textContent=targetHint||(usable?'Der Gegner muss die Einladung innerhalb von 48 Stunden bestätigen.':'Wähle einen aktiven Gegner für die Einladung.');
+ renderBoxerChoices(challengerChoices,challengers,challenger);
+ renderBoxerChoices(opponentChoices,eligible.filter(x=>x.id!==id),opponent);
+ syncChoiceState(durationChoices,form.elements.duration);
 }
 
 const isDuelLive=d=>d.status==='active'||d.status==='awaiting_reviews';
@@ -284,7 +351,22 @@ async function init(){
  }catch(e){if(epoch!==sessionEpoch)return;if(!profile)reset();say(message(e),true)}
 }
 form.elements.challenger.addEventListener('change',populate);
-form.elements.opponent.addEventListener('change',()=>{const usable=!!form.elements.challenger.value&&!!form.elements.opponent.value;form.querySelector('button[type=submit]').disabled=!usable;if(usable)byId('inviteHint').textContent='Der Gegner muss die Einladung innerhalb von 48 Stunden bestätigen.'});
+form.elements.opponent.addEventListener('change',()=>{
+ const usable=!!form.elements.challenger.value&&!!form.elements.opponent.value;
+ form.querySelector('button[type=submit]').disabled=!usable;
+ if(usable)byId('inviteHint').textContent='Der Gegner muss die Einladung innerhalb von 48 Stunden bestätigen.';
+ syncChoiceState(opponentChoices,form.elements.opponent);
+});
+const durationSelect=form.elements.duration;
+durationSelect.addEventListener('change',()=>syncChoiceState(durationChoices,durationSelect));
+durationChoices.querySelectorAll('.tl-choice-card[data-value]').forEach(button=>{
+ button.addEventListener('click',()=>{
+  durationSelect.value=button.dataset.value;
+  durationSelect.dispatchEvent(new Event('change',{bubbles:true}));
+  syncChoiceState(durationChoices,durationSelect);
+ });
+});
+syncChoiceState(durationChoices,durationSelect);
 form.onsubmit=e=>{e.preventDefault();if(busy||!profile)return;
  const challenger=form.elements.challenger.value,opponent=form.elements.opponent.value;
  const days=Number(form.elements.duration.value);
