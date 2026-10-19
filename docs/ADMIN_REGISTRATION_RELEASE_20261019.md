@@ -60,3 +60,5 @@ Freigabe erscheint er mit bestätigtem Training in Rangliste, Levels und Awards.
 
 **Produktionsreihenfolge ergänzt:** 20261019040000 → 20261019072000 →
 20261019080000. Echte Auth-SignUp-End-to-End-Abnahme bleibt ausdrücklich offen.
+
+**Safe rollback for public coach ranking:** `supabase/production-prep/rollback_20261019080000_coach_public_listed_projection.sql` setzt die fünf Public-RPCs auf Boxer-only zurück, erhält jedoch zwingend `is_listed=true` als Datenschutzfilter. Erfolgreich auf TEST zurück- und wieder ausgerollt; kein Produktiv-Rollback ohne eigene Freigabe.
