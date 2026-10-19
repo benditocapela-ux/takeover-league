@@ -17,6 +17,7 @@
    });
  }
 
+ let choiceSelectObserver=null;
  function enhanceChoiceSelects(){
    const selects=Array.from(document.querySelectorAll('select[data-tl-choice]'));
    selects.forEach(select=>{
@@ -70,6 +71,16 @@
      }
      render();
    });
+   if(!choiceSelectObserver&&typeof MutationObserver!=='undefined'&&document.body){
+     choiceSelectObserver=new MutationObserver(records=>{
+       const addedChoice=records.some(record=>Array.from(record.addedNodes).some(node=>{
+         if(node.nodeType!==1)return false;
+         return node.matches('select[data-tl-choice]')||!!node.querySelector('select[data-tl-choice]');
+       }));
+       if(addedChoice)enhanceChoiceSelects();
+     });
+     choiceSelectObserver.observe(document.body,{childList:true,subtree:true});
+   }
  }
  function start(){
    if(document.getElementById('tl-menu-panel'))return;
