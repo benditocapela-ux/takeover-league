@@ -112,6 +112,7 @@ async function init(){
   const r=await db.from('profiles').select('id,display_name').eq('role','boxer').eq('is_active',true).order('display_name');
   if(r.error){say('Boxerliste nicht verfügbar: '+r.error.message);return}
   for(const member of r.data||[])$('boxers').add(new Option(member.display_name,member.id));
+  $('boxers').dispatchEvent(new Event('change',{bubbles:true}));
   $('adminPanel').hidden=false;
  }
  await load();
