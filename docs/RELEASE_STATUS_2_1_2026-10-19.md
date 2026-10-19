@@ -48,14 +48,22 @@ Folgende Werte sind im produktiven `league_feature_flags` jeweils **`false`** (R
 
 Die entsprechenden **statischen HTML-Seiten** können vom GitHub-Pages-Host trotzdem ausgeliefert werden (Datei erreichbar). Geschützte Operationen und Datenzugriffe unterliegen den bestehenden serverseitigen **RLS-/RPC-Rollen- und Feature-Flag-Prüfungen**; einzelne Webseiten-Buttons oder unsichtbare UI-Bereiche sind keine Berechtigungsinstanz. Eine tatsächlich deaktivierte Funktion wird durch den HTTP-Status 200 der HTML-Datei nicht aktiviert. **Diese Dokumentation schaltet keine Flags ein.**
 
-## 4. Rollenmodell und Registrierung – Ist-Stand vs. Entwurf
+## 4. Rollenmodell und Registrierung – produktiver Ist-Stand
 
 - **`admin`**: genau ein Eigentümer; verwaltet Konten, Rollen, Aktivität und künftige öffentliche Profilfreigaben. `public.is_league_admin()` bleibt die eigentliche Admin-Identitätsgrenze.
-- **`coach`**: ein Boxer **mit** Trainerrechten (eigenes Training plus autorisierte Freigabe, Korrektur und Liga-Arbeit). Am 19.10.2026 sind **null produktive Coach-Profile** vorhanden. Die vollständige Ermächtigung der betroffenen Trainer-RPCs ist **als Entwicklungsänderung in [Draft-PR #13](https://github.com/benditocapela-ux/takeover-league/pull/13)** vorbereitet, **nicht** auf `main`/Produktion angewendet.
+- **`coach`**: ein Boxer **mit** Trainerrechten (eigenes Training plus autorisierte Freigabe, Korrektur und Liga-Arbeit). **[PR #13](https://github.com/benditocapela-ux/takeover-league/pull/13) ist gemergt**, Backend-Rechte installiert; am Kontrollzeitpunkt gibt es weiterhin **0 Coach-Profile**, da Rollen nur der Admin zuweist.
 - **`boxer`**: reicht eigene Trainings ein; genehmigt sich selbst keine Punkte und verwaltet keine Rollen.
-- **Registrierung**: `login.html` enthält schon ein frei zugängliches Registrierungsformular. **In Produktion gibt es am Stichtag keinen `auth.users`-Trigger, der automatisch Profile erzeugt.** Die Eigentümerentscheidung lautet: Registrierung auf `login.html` → automatisches aktives, zunächst **nicht öffentlich gelistetes** Boxerprofil (oder Verknüpfung zum vorbereiteten Bestandsprofil per E-Mail) → ausschliesslich der Admin vergibt `boxer`/`coach`, aktiviert/deaktiviert und schaltet öffentliche Sichtbarkeit frei. Diese neue Logik und `admin.html` liegen **nur in [Draft-PR #14](https://github.com/benditocapela-ux/takeover-league/pull/14)** bzw. im Testprojekt, **noch nicht in Produktion**. Keine voreilige Behauptung einer bereits funktionierenden produktiven Auto-Registrierung.
+- **Registrierung:** [PR #14](https://github.com/benditocapela-ux/takeover-league/pull/14) ist gemergt. `login.html` bietet Anmeldung, und in Produktion ist jetzt der `auth.users`-Registrierungs-Trigger installiert. Bei erfolgreichem Auth-Signup soll er ein aktives, zunächst **nicht öffentlich gelistetes** Boxerprofil erzeugen oder ein per E-Mail vorbereitetes Bestandsprofil verknüpfen. Die Adminseite `admin.html` verwaltet Rolle, Aktivität und Sichtbarkeit ausschliesslich über serverseitige Admin-RPCs. **Wichtig:** Triggerinstallation und SQL-Abnahme wurden geprüft, aber ein echter produktiver Auth-Signup → Login → Trainingsablauf ist weiterhin **NICHT E2E GETESTET**.
 
-Neue PRs #13/#14 sind **separate, zukünftige Releases** und erben keine frühere pauschale Go-Live-Freigabe. Diese Dokumentenkorrektur installiert sie nicht.
+**Release-Nachtrag vom 19.10.2026:** Die vorher getrennten PRs #13/#14 sind aufgrund der aktuellen Eigentümerfreigabe tatsächlich nach `main` gemergt und ihre Migrationen in Produktion installiert. Die offenen Backup-, Real-Login- und vollständigen Security-Definer-Gates bleiben **NICHT ERLEDIGT**. Eine Berechtigung für weitere, zukünftige Produktionsänderungen folgt daraus nicht.
+
+
+## Nachtrag: Veröffentlichung der Rollen- und Registrierungsstufe am 19.10.2026
+- **Coach-Rollenmodell:** [PR #13](https://github.com/benditocapela-ux/takeover-league/pull/13) → `main`-Merge `b86da16b1ec5a9c969f035b9fdd731b8034d8574`. Supabase-Migration `coach_role_permissions_v3_20261019040000`, History-Version `20261019072544`. Rollenprüfungen, Trainer-RPCs, RLS und unnötige `TRUNCATE`-Berechtigungen korrigiert.
+- **Registrierung/Clubverwaltung:** [PR #14](https://github.com/benditocapela-ux/takeover-league/pull/14) → `main`-Merge `b9417cbfd68c7188d11196703f939e3f714fba60`. Supabase-Migration `admin_registration_roles_profiles_20261019072000`, History-Version `20261019073012`; zusätzlich `coach_public_listed_projection_20261019080000`, Version `20261019073023`. Der fünfte anonyme Award-RPC berücksichtigt jetzt ebenfalls `is_listed=true`, und aktive Coaches sind in den fünf öffentlichen Rang-/Award-RPCs weiterhin Boxer.
+- **Pages-Deployment:** [Workflow #39216529162](https://github.com/benditocapela-ux/takeover-league/actions/runs/39216529162) `success` einschliesslich «Verify publicly served release»; [Main-Integration #39216529165](https://github.com/benditocapela-ux/takeover-league/actions/runs/39216529165) `success`.
+- **Produktions-Postflight:** 14 Profile (1 Admin, 13 Boxer, 0 Coaches), 67 Trainings, 72 Punktebuchungen, 0 verliehene Badges und 0 neue Admin-Audit-Ereignisse. Alle 14 vorhandenen Profile bleiben `is_listed=true`; **neue Registrierungen** erhalten initial `is_listed=false`. Keine Trainings-/Punktehistorie zurückgesetzt, keine V2.1-Feature-Flags aktiviert.
+- **Unverändert offene Nachweise:** echtes Produktions-Backup samt Restore; echte signierte Boxer-/Admin-/Coach-Login-Abnahme und **echter Signup-/Login-E2E-Test**; vollständiger SECURITY-DEFINER-Audit. **Die installierte Software ist kein Ersatz für diese Nachweise.** Der Eigentümer hat die aktuelle Freigabe ausdrücklich angeordnet; ob die offenen Punkte nachgeholt oder jeweils als Waiver anerkannt werden, bleibt schriftlich zu entscheiden.
 
 ## 5. Formell offene Release-Gates – **NICHT ERLEDIGT**
 
@@ -76,7 +84,7 @@ Der Eigentümer muss für **jedes** der drei offenen Gates ausdrücklich dokumen
 
 Das Projekt kennt bereits einen expliziten Risiko-Verzicht beim **2.0-Release**, siehe [RELEASE_ABGESCHLOSSEN_2026-10-18.md](RELEASE_ABGESCHLOSSEN_2026-10-18.md). Dort wurde der Verzicht auf echtes Vorab-Backup und signierte Login-E2E-Tests dokumentiert; das waren **keine bestandenen Tests**. **Ein früherer Waiver ersetzt weder die eigenständige 2.1-Gateentscheidung noch eine neue Freigabe für zukünftige Schema-/Frontendänderungen.**
 
-**Aktuelle operative Regel:** Bestehendes 2.1 ist tatsächlich live; keine erneute «Go-Live-Sperre» für bereits geschehene Vorgänge behaupten. Für noch ausstehende Arbeiten, insbesondere Draft-PR #13 und #14, gilt unverändert: **kein Merge, keine produktive SQL-Migration, kein Pages-Deploy und kein Feature-Flag-Wechsel ohne neues ausdrückliches `FREIGEBEN`**.
+**Aktuelle operative Regel:** V2.1 und die separat freigegebenen PRs #13/#14 sind veröffentlicht. **Für alle weiteren, nicht explizit freigegebenen Arbeiten** gilt unverändert: kein Merge, keine produktive SQL-Migration, kein Pages-Deploy und kein Feature-Flag-Wechsel ohne ein neues ausdrückliches `FREIGEBEN`.
 
 ## 7. Dokumentenchronik
 
