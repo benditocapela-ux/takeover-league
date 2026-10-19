@@ -133,6 +133,13 @@ async function main(){
       assert.match(await page.locator('#directDuelsStatus').innerText(),/Boxer Alpha 1 Siege/);
       assert.match(await page.locator('#directDuelsStatus').innerText(),/Boxer Beta 0 Siege/);
       assert.equal(await page.locator('#directDuelsRows .h2h-row').count(),1);
+      const leftValue=await page.locator('#left').inputValue();
+      assert.equal(await page.locator('[data-choice-for="compare-left"] .tl-choice-card[aria-pressed="true"]').getAttribute('data-value'),leftValue,'Comparison card should reflect selected boxer');
+      await page.locator('#swap').click();
+      const swappedLeft=await page.locator('#left').inputValue();
+      const swappedRight=await page.locator('#right').inputValue();
+      assert.equal(await page.locator('[data-choice-for="compare-left"] .tl-choice-card[aria-pressed="true"]').getAttribute('data-value'),swappedLeft,'Swap should synchronize left comparison card');
+      assert.equal(await page.locator('[data-choice-for="compare-right"] .tl-choice-card[aria-pressed="true"]').getAttribute('data-value'),swappedRight,'Swap should synchronize right comparison card');
      }else if(route.startsWith('league-challenges')){
       await page.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('Neue Wettbewerbe'));
      }
