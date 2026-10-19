@@ -53,4 +53,12 @@ assert.doesNotMatch(rollback,/DROP TABLE|DROP COLUMN|DELETE FROM public\.profile
 assert.match(fixture,/SET LOCAL ROLE authenticated/);
 assert.match(fixture,/ROLLBACK;\s*$/);
 assert.match(pages,/for page in arena goals league-manager league-challenges league-history boxer-compare admin/);
+const publicPatch=read('supabase/migrations/20261019080000_coach_public_listed_projection.sql');
+for(const fn of ['get_public_leaderboard','get_public_levels','get_monthly_awards','get_public_boxer_avatars','get_award_leaderboard']){
+ assert.match(publicPatch,new RegExp('CREATE OR REPLACE FUNCTION public\\.'+fn+'\\(','i'));
+}
+assert.ok((publicPatch.match(/p\\.role IN \\('boxer','coach'\\)/g)||[]).length>=5,'coach should remain in public ranking as boxer');
+assert.ok((publicPatch.match(/p\\.is_listed = true/g)||[]).length>=5,'every public projection must filter private boxers');
+const publicFixture=read('tests/coach-public-listed-rollback.sql');
+assert.match(publicFixture,/ROLLBACK;\\s*$/);
 console.log('PASS: Admin registration staging, no production/secret route, safe rollback, private listings and role guards');

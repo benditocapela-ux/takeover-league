@@ -38,3 +38,25 @@ In coach.html wurden die veralteten Client-Aufrufe auf coach_list_unlinked_accou
 5. Rückrollskript: supabase/production-prep/rollback_20261019072000_admin_registration.sql. Es ist bewusst NICHT destruktiv: schaltet neuen Trigger und Admin-RPCs ab, bewahrt E-Mails, Profile, Audit und öffentliche is_listed-Filter. Ein vollständiges Zurücksetzen der öffentlichen RPCs auf die vorherigen ungefilterten Versionen würde private Registrierungen veröffentlichen und wird ausdrücklich NICHT vorgenommen.
 
 **Abnahmeentscheidung: NO-GO für Produktion bis der echte Auth-Registrierungstest bestanden ist und der Eigentümer FREIGEBEN erteilt.**
+
+## Release-Review: Coach bleibt Boxer und öffentliche Privatsphäre
+Vor der Freigabe wurde ein Defekt in den öffentlichen Auswertungen entdeckt:
+die alten Funktionen filterten ausschliesslich `role='boxer'`, wodurch ein zum Coach
+beförderter Boxer aus dem öffentlichen Ranking verschwunden wäre. Die anonyme
+Auswertung `get_award_leaderboard` berücksichtigte ausserdem die neue
+`is_listed`-Freigabe noch nicht.
+
+Nach der Registrierungsmigration folgt deshalb die additive,
+idempotente `supabase/migrations/20261019080000_coach_public_listed_projection.sql`.
+Sie schützt **alle fünf** öffentlich lesbaren Rang-/Award-RPCs mit
+`is_listed=true` und zählt `role in ('boxer','coach')` gleichermassen.
+Die Funktion `public.is_league_admin()` und die Trainings-/Punktebuchungen
+werden nicht geändert.
+
+Transaktionaler Test `tests/coach-public-listed-rollback.sql`: Test-Coach wird
+bei `is_listed=false` in allen fünf RPCs ausgeblendet. Bei aktiver öffentlicher
+Freigabe erscheint er mit bestätigtem Training in Rangliste, Levels und Awards.
+**Im Supabase-Testprojekt bestanden, endet mit ROLLBACK.**
+
+**Produktionsreihenfolge ergänzt:** 20261019040000 → 20261019072000 →
+20261019080000. Echte Auth-SignUp-End-to-End-Abnahme bleibt ausdrücklich offen.
