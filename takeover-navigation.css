@@ -31,3 +31,6 @@ body.tl-menu-visible{overflow:hidden}
 
 .tl-menu-icon .tl-icon{width:22px;height:22px}
 .tl-global-nav-items .tl-icon{width:18px;height:18px}
+
+/* HTML hidden must win over the generic flex link rule (admin-only navigation). */
+.tl-menu-link[hidden]{display:none!important}
