@@ -1,3 +1,5 @@
+> **RELEASE-NACHTRAG 19.10.2026:** Die untenstehende TEST-/STAGING-Dokumentation ist historisch. Die Eigentümerfreigabe wurde danach erteilt: PR #13 (`b86da16`) und PR #14 (`b9417cb`) sind auf `main`, die zugehörigen Migrationen in Produktion angewendet. **Echte Login-/Signup-E2E-, Produktionsbackup/Restore- und vollständige Sicherheitsabnahmen sind weiterhin nicht erledigt.** Verbindlicher aktueller Stand: [RELEASE_STATUS_2_1_2026-10-19.md](RELEASE_STATUS_2_1_2026-10-19.md).
+
 # Takeover League – Coach als Boxer mit Trainerrechten (19.10.2026)
 ## Freigabestatus
 **NUR TEST UND REVIEW. Kein Produktions-Merge und keine Produktionsmigration ohne neues, ausdrückliches FREIGEBEN.**
