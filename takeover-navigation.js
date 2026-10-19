@@ -54,7 +54,7 @@
        ['arena','Mehrgegner-Arena','arena.html','',true]
      ]],
      ['🎯 Herausforderungen',[
-       ['bolt','Liga-Challenges','league-challenges.html','',true],
+       ['bolt','Live Challenges','league-challenges.html','',true],
        ['target','Persönliche Challenges','challenges.html','',true]
      ]],
      ['🏆 Liga & Erfolge',[
