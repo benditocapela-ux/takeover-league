@@ -1,0 +1,56 @@
+'use strict';
+const fs=require('node:fs'),assert=require('node:assert/strict');
+const read=p=>fs.readFileSync(p,'utf8');
+const mig=read('supabase/migrations/20261019072000_admin_registration_profiles.sql');
+const rollback=read('supabase/production-prep/rollback_20261019072000_admin_registration.sql');
+const fixture=read('tests/admin-registration-roles-fixture.sql');
+const login=read('login.html'),admin=read('admin.html'),nav=read('takeover-navigation.js'),coach=read('coach.html'),pages=read('.github/workflows/takeover-pages-deploy.yml');
+assert.match(mig,/alter table public\.profiles add column if not exists email text/i);
+assert.match(mig,/create unique index if not exists profiles_email_lower_unique/i);
+assert.match(mig,/is_listed boolean not null default false/i);
+assert.match(mig,/if fresh then[\s\S]*?is_listed=true/i,'backfill only on first install');
+assert.match(mig,/new\.raw_user_meta_data->>'display_name'/i);
+assert.match(mig,/p\.email=normalized AND p\.auth_user_id IS NULL/i,'prepared profile must win');
+assert.match(mig,/auth_user_id=NEW\.id,is_active=true/i);
+assert.match(mig,/values \(NEW\.id,normalized,chosen_name,'boxer',true,false\)/i);
+assert.match(mig,/AFTER INSERT ON auth\.users/i);
+assert.match(mig,/create table if not exists public\.profile_admin_audit/i);
+assert.match(mig,/enable row level security/i);
+assert.match(mig,/revoke all privileges on public\.profile_admin_audit from public, anon, authenticated/i);
+for(const fn of ['admin_list_profiles','admin_set_profile_role','admin_set_profile_active','admin_set_profile_listed','admin_set_profile_email']){
+ assert.match(mig,new RegExp('CREATE OR REPLACE FUNCTION public\\.'+fn+'\\(','i'));
+ assert.match(mig,new RegExp('REVOKE ALL ON FUNCTION public\\.'+fn+'\\(','i'));
+ assert.match(admin,new RegExp(fn+'\\(').test(admin)?new RegExp(fn+'\\('):new RegExp(fn));
+}
+assert.match(mig,/p_role NOT IN \('boxer','coach'\)/i);
+assert.match(mig,/target\.role='admin'/i);
+assert.match(mig,/count\(\*\) FROM public\.profiles WHERE role='admin' AND is_active/i);
+assert.doesNotMatch(mig,/create or replace function public\.is_league_admin/i);
+assert.doesNotMatch(mig,/UPDATE public\.point_transactions/i);
+assert.match(mig,/IF target\.auth_user_id IS NOT NULL THEN/i);
+for(const fn of ['get_public_leaderboard','get_public_levels','get_monthly_awards','get_public_boxer_avatars']) {
+ assert.match(mig,new RegExp('public\\.'+fn+'\\('));
+}
+assert.ok((mig.match(/AND p\.is_listed = true/g)||[]).length>=4);
+assert.match(mig,/Arena enthält ein nicht öffentlich freigegebenes Boxerprofil/);
+assert.match(mig,/Privates oder inaktives Boxerprofil/);
+assert.match(login,/id="registerName"/);
+assert.match(login,/data:\{display_name\}/);
+assert.match(login,/Kein aktives Profil/);
+assert.doesNotMatch(login,/Dein Trainer verknüpft ihn anschliessend/);
+assert.match(admin,/auth_user_id/,'Admin UI documents protected auth identifier');
+assert.match(admin,/db\.rpc\('admin_list_profiles'\)/);
+assert.match(admin,/role!=='admin'/);
+assert.match(admin,/is_active!==true/);
+assert.match(admin,/navigator\.clipboard\.writeText/);
+assert.match(admin,/banned_until = now\(\) \+ interval '100 years'/);
+assert.doesNotMatch(admin,/service_role|sb_secret_|banUser\(/i);
+assert.match(nav,/data-tl-admin hidden/);
+assert.match(nav,/p\.data\?\.role==='admin'/);
+assert.doesNotMatch(coach,/coach_list_unlinked_accounts|coach_link_boxer_account|loadAccounts\(/);
+assert.match(rollback,/DROP TRIGGER IF EXISTS on_auth_user_created/);
+assert.doesNotMatch(rollback,/DROP TABLE|DROP COLUMN|DELETE FROM public\.profiles/i);
+assert.match(fixture,/SET LOCAL ROLE authenticated/);
+assert.match(fixture,/ROLLBACK;\s*$/);
+assert.match(pages,/for page in arena goals league-manager league-challenges league-history boxer-compare admin/);
+console.log('PASS: Admin registration staging, no production/secret route, safe rollback, private listings and role guards');
