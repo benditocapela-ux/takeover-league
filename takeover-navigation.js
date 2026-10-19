@@ -41,6 +41,22 @@
    addSectionWayfinders();
    // Single shared drawer. The home page supplies its existing four-item footer.
    const entries=[
+     ['👤 Mein Bereich',[
+       ['user','Anmelden / Mein Account','login.html',''],
+       ['dumbbell','Mein Studio','boxer.html',''],
+       ['target','Meine Ziele','goals.html',''],
+       ['medal','Trainer-Dashboard','coach.html',''],
+       ['goal','League Manager 2.1','league-manager.html',''],
+       ['user','Clubverwaltung','admin.html','',false,true]
+     ]],
+     ['🥊 Kämpfe',[
+       ['boxing-glove','Duell starten','duels.html','',true],
+       ['arena','Mehrgegner-Arena','arena.html','',true]
+     ]],
+     ['🎯 Herausforderungen',[
+       ['bolt','Liga-Challenges','league-challenges.html','',true],
+       ['target','Persönliche Challenges','challenges.html','',true]
+     ]],
      ['🏆 Liga & Erfolge',[
        ['trophy','Podium','index.html#podium','podium'],
        ['chart','Monatsranking','index.html#ranking','ranking'],
@@ -49,20 +65,6 @@
        ['medal','Monatsauszeichnungen','awards.html',''],
        ['scale','Boxer-Vergleich','boxer-compare.html',''],
        ['trophy','Saisons & Hall of Fame','league-history.html','']
-     ]],
-     ['🥊 Kämpfe & Herausforderungen',[
-       ['boxing-glove','Duell starten','duels.html','',true],
-       ['arena','Mehrgegner-Arena','arena.html','',true],
-       ['bolt','Liga-Challenges','league-challenges.html','',true],
-       ['target','Persönliche Challenges','challenges.html','',true]
-     ]],
-     ['👤 Mein Bereich',[
-       ['user','Anmelden / Mein Account','login.html',''],
-       ['dumbbell','Mein Studio','boxer.html',''],
-       ['target','Meine Ziele','goals.html',''],
-       ['medal','Trainer-Dashboard','coach.html',''],
-       ['goal','League Manager 2.1','league-manager.html',''],
-       ['user','Clubverwaltung','admin.html','',false,true]
      ]]
    ];
    const contents=entries.map((group,index)=>
