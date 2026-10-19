@@ -1,7 +1,7 @@
 const fs=require('node:fs');
 const assert=require('node:assert/strict');
 const {JSDOM}=require('jsdom');
-const pages=['index.html','login.html','boxer.html','coach.html','challenges.html','duels.html','awards.html','features.html','coming-soon.html','boxer-profile.html','arena.html','goals.html'];
+const pages=['index.html','login.html','boxer.html','coach.html','challenges.html','duels.html','awards.html','features.html','coming-soon.html','boxer-profile.html','arena.html','goals.html','boxer-compare.html','league-manager.html'];
 const navScript=fs.readFileSync('takeover-navigation.js','utf8');
 const navCss=fs.readFileSync('takeover-navigation.css','utf8');
 const deploy=fs.readFileSync('.github/workflows/takeover-pages-deploy.yml','utf8');
@@ -86,6 +86,24 @@ for(const page of pages){
    assert.ok(select&&rail&&rail.querySelectorAll('.tl-choice-card').length===3,'Challenge types should render as choice cards');
    rail.querySelector('button[data-value="competition"]').click();
    assert.equal(select.value,'competition','Challenge type card must update the existing select');
+ }
+ if(page==='boxer-compare.html'){
+   const select=doc.querySelector('select[data-tl-choice="compare-left"]');
+   const rail=doc.querySelector('.tl-choice-rail[data-choice-for="compare-left"]');
+   assert.ok(select&&rail,'Boxer comparison choice-card markup missing');
+   for(const [value,label] of [['alpha','Boxer Alpha'],['beta','Boxer Beta']]){
+     const option=doc.createElement('option');option.value=value;option.textContent=label;select.append(option);
+   }
+   select.dispatchEvent(new win.Event('change',{bubbles:true}));
+   rail.querySelector('button[data-value="beta"]').click();
+   assert.equal(select.value,'beta','Boxer comparison card must update the original select');
+ }
+ if(page==='league-manager.html'){
+   const select=doc.querySelector('select[data-tl-choice="manager-goal-metric"]');
+   const rail=doc.querySelector('.tl-choice-rail[data-choice-for="manager-goal-metric"]');
+   assert.ok(select&&rail&&rail.querySelectorAll('.tl-choice-card').length===4,'Manager goal metrics should render as cards');
+   rail.querySelector('button[data-value="jogging_km"]').click();
+   assert.equal(select.value,'jogging_km','Manager goal metric card must update the original select');
  }
  if(page==='arena.html'){
    const select=doc.querySelector('select[data-tl-choice="arena-boxers"]');
