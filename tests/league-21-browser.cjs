@@ -116,7 +116,7 @@ async function main(){
        '11111111-1111-4111-8111-111111111111',
        '22222222-2222-4222-8222-222222222222',
        '33333333-3333-4333-8333-333333333333']);
-      await page.locator('#create button').click();
+      await page.locator('#create button[type="submit"]').click();
       await page.waitForFunction(()=>window.__testCalls.some(x=>x.name==='league_v21_arena_create'));
      }else if(route.startsWith('league-manager')){
       await page.locator('#dashboard').waitFor({state:'visible'});
