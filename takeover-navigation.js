@@ -35,8 +35,8 @@
        });
        options.forEach(option=>{
          const label=(option.textContent||'').trim()||option.value||'Auswahl';
-         const words=label.split(/\\s+/).filter(Boolean);
-         const initials=String(option.dataset.tlChoiceIcon||(/\\d+/.exec(label)?.[0])||
+         const words=label.split(/\s+/).filter(Boolean);
+         const initials=String(option.dataset.tlChoiceIcon||(/\d+/.exec(label)?.[0])||
            (words.length>1?words[0][0]+words[words.length-1][0]:label.slice(0,2))).toLocaleUpperCase('de-CH').slice(0,3);
          const button=document.createElement('button');
          button.type='button';button.className='tl-choice-card';button.dataset.value=option.value;button.tabIndex=-1;
