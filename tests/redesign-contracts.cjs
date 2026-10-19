@@ -19,7 +19,7 @@ for(const [path,b] of Object.entries(baseline)){
  assert.deepEqual(gotRpc,b.rpc,`${path}: RPC literal list changed`);
  const choiceCardPages=new Set(['arena.html','boxer.html','challenges.html','duels.html','goals.html']);
  const expectedScriptCount=b.scriptCount+(choiceCardPages.has(path)?1:0);
- assert.equal((s.match(/<script\\b/gi)||[]).length,expectedScriptCount,`${path}: unexpected script change`);
+ assert.equal((s.match(/<script\b/gi)||[]).length,expectedScriptCount,`${path}: unexpected script change`);
  assert.match(s,/takeover-redesign\.css/,`${path}: must import production stylesheet`);
  ids+=gotIds.length;rpcCount+=gotRpc.length;
 }
