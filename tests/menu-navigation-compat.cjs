@@ -47,6 +47,22 @@ for(const page of pages){
   './awards.html','./challenges.html','./duels.html','./login.html','./boxer.html','./coach.html'
  ])assert.ok(menuLink(href),'Drawer missing '+href+' on '+page);
 
+ const accordionButtons=Array.from(panel.querySelectorAll('.tl-menu-group-toggle'));
+ assert.equal(accordionButtons.length,3,'Drawer should have three clear accordion categories on '+page);
+ const combatToggle=accordionButtons.find(button=>/Kämpfe & Challenges/.test(button.textContent));
+ const leagueToggle=accordionButtons.find(button=>/Liga & Erfolge/.test(button.textContent));
+ assert.ok(combatToggle&&leagueToggle,'Wettkampf and Liga categories missing on '+page);
+ trigger.click();
+ if(combatToggle.getAttribute('aria-expanded')!=='true')combatToggle.click();
+ assert.equal(combatToggle.getAttribute('aria-expanded'),'true','Combat category should expand on '+page);
+ assert.equal(menuLink('./duels.html').closest('.tl-menu-group-links').hidden,false,'Duel link should be visible when category is expanded on '+page);
+ if(leagueToggle.getAttribute('aria-expanded')!=='true')leagueToggle.click();
+ assert.equal(leagueToggle.getAttribute('aria-expanded'),'true','League category should expand on '+page);
+ assert.equal(combatToggle.getAttribute('aria-expanded'),'false','Accordion should collapse the previous category on '+page);
+ assert.equal(menuLink('./duels.html').closest('.tl-menu-group-links').hidden,true,'Duel links should collapse with their category on '+page);
+ close.click();
+ assert.equal(trigger.getAttribute('aria-expanded'),'false','Accordion test should leave menu closed on '+page);
+
  const footer=page==='index.html'
    ?doc.querySelector('.bottom')
    :doc.querySelector('.tl-global-bottom');
