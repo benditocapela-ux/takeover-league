@@ -1,3 +1,7 @@
+> ⚠️ **ÜBERHOLT – historischer Prüfstand vor dem tatsächlich erfolgten Release.** Alte Aussagen wie «VERÖFFENTLICHUNG GESPERRT», «NO GO LIVE», «PR #11 Draft» und «kein produktives Schema» beschreiben eine vergangene Momentaufnahme, nicht den aktuellen Produktionsstand.
+> **Tatsächlich:** Takeover League 2.1 liegt auf `main` (Release `4aae67e`, Folge `4430bc4` → `0cd262e`); die atomare V2.1-Migration `20261018231319` ist in Produktion angewendet. Die im historischen Text genannten echten Backup-, Login- und Sicherheits-Gates bleiben **NICHT ERLEDIGT**.
+> **Aktueller, verifizierter Stand:** [RELEASE_STATUS_2_1_2026-10-19.md](RELEASE_STATUS_2_1_2026-10-19.md). Der folgende Originaltext bleibt unverändert als historische Gate-Bewertung.
+
 # Takeover League 2.1 – Integrationsstand und Release-Gates
 Stand: 18. Oktober 2026 · Entwicklungsbranch: `develop/takeover-league-2.1-all-features` · PR #11 **Draft**.
 

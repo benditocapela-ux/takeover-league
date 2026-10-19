@@ -1,3 +1,7 @@
+> ⚠️ **ÜBERHOLT – historischer Entwicklungs- oder Release-Zwischenstand.** Frühere Aussagen wie «nicht veröffentlicht», «HOLD», «NICHT AUSGEFÜHRT» und «kein Live-Release» dürfen nicht mehr als aktueller Produktionsstatus gelesen werden.
+> **Tatsächlich:** Takeover League 2.1 ist auf `main` (`4aae67e` → `4430bc4` → `0cd262e`) und mit der atomaren Migration `20261018231319` in Produktion. Echte Backup-/Restore-, Real-Login- und vollständige Security-Definer-Gates sind dadurch **NICHT** bestanden.
+> **Verbindlicher aktueller Überblick:** [RELEASE_STATUS_2_1_2026-10-19.md](RELEASE_STATUS_2_1_2026-10-19.md). Der übrige Text bleibt unverändert als historische Momentaufnahme erhalten.
+
 > **ARCHIVIERTER ZWISCHENSTAND.** Die Zahlen 34/45 und die einzelnen Freigabehinweise unten stammen aus einer früheren UX-Runde und sind nicht mehr aktuell. Massgeblich ist ausschliesslich [die aktualisierte 45-Punkte-Matrix](TAKEOVER_LEAGUE_2_UX_45_MATRIX_2026-10-18.md) mit **39 Code-integrierten, 5 Staging-/Flag-Funktionen und 1 eingeschränkten Rücknahmefunktion**. Kein Live-Release und keine vollständige produktive Abnahme.
 
 # Takeover League 2.0 – UX-Nachverfolgung 1–45

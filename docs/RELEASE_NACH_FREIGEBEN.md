@@ -1,3 +1,7 @@
+> ⚠️ **ÜBERHOLT – historischer Entwicklungs- oder Release-Zwischenstand.** Frühere Aussagen wie «nicht veröffentlicht», «HOLD», «NICHT AUSGEFÜHRT» und «kein Live-Release» dürfen nicht mehr als aktueller Produktionsstatus gelesen werden.
+> **Tatsächlich:** Takeover League 2.1 ist auf `main` (`4aae67e` → `4430bc4` → `0cd262e`) und mit der atomaren Migration `20261018231319` in Produktion. Echte Backup-/Restore-, Real-Login- und vollständige Security-Definer-Gates sind dadurch **NICHT** bestanden.
+> **Verbindlicher aktueller Überblick:** [RELEASE_STATUS_2_1_2026-10-19.md](RELEASE_STATUS_2_1_2026-10-19.md). Der übrige Text bleibt unverändert als historische Momentaufnahme erhalten.
+
 # Takeover League V2 – Vorgehen nach «FREIGEBEN»
 
 **VORBEREITET; nicht ausgeführt.** Dieser Ablauf ist als konkrete Anweisung für die **nächste** ChatGPT-Arbeitssitzung nach einem ausdrücklichen «FREIGEBEN» bestimmt. Nicht automatisch und nicht im Hintergrund ausführen. Die Produktionsdatenbank liegt in Supabase-Projekt `iqarjivcrddcixrvqbfb`; das Testprojekt ist `cfgdvcccsqwfjajuizsr`. GitHub: `benditocapela-ux/takeover-league`, Draft-PR **#3** auf `feature/coach-challenges-v2-ui`.
