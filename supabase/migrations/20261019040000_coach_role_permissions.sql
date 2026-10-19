@@ -1080,8 +1080,8 @@ DO $guard_17$ BEGIN
   EXECUTE $ddl_17$CREATE OR REPLACE FUNCTION public.get_boxer_exp_level_rank(p_boxer_id uuid)
  RETURNS TABLE(boxer_id uuid, lifetime_exp bigint, lifetime_points bigint, level_number integer, level_start_exp bigint, next_level_exp bigint, exp_into_level bigint, exp_to_next_level bigint, rank_letter text)
  LANGUAGE sql
- STABLE
- SET search_path TO 'public', 'pg_temp'
+ STABLE SECURITY DEFINER
+ SET search_path TO ''
 AS $function$
 WITH RECURSIVE allowed AS (
  SELECT p.id FROM public.profiles p
@@ -1127,8 +1127,8 @@ DO $guard_18$ BEGIN
   EXECUTE $ddl_18$CREATE OR REPLACE FUNCTION public.get_boxer_performance_30d(p_boxer_id uuid, p_period_end date DEFAULT CURRENT_DATE)
  RETURNS TABLE(boxer_id uuid, period_start date, period_end date, approved_sessions bigint, active_days bigint, training_equivalents numeric, distinct_training_types bigint, consistency_score numeric, volume_score numeric, variety_score numeric, total_score numeric)
  LANGUAGE sql
- STABLE
- SET search_path TO 'public', 'pg_temp'
+ STABLE SECURITY DEFINER
+ SET search_path TO ''
 AS $function$
  WITH permitted AS (
   SELECT p.id FROM public.profiles p
@@ -1714,4 +1714,18 @@ DO $guardpolicy$ BEGIN
   WHERE ((p.id = training_submissions.boxer_id) AND ((p.auth_user_id = (SELECT auth.uid())) AND p.is_active)))) OR ( SELECT is_league_admin() AS is_league_admin)))$ddl$;
  END IF;
 END $guardpolicy$;
+-- Both viewer-filtered stats RPCs need a RLS-bypassing *function body* to read
+-- a different boxer's ledger/profile; never grant coach SELECT across profiles.
+-- Auth checks are inside the SQL body and both functions have empty search_path.
+DO $statsexec$ BEGIN
+ IF to_regprocedure('public.get_boxer_exp_level_rank(uuid)') IS NOT NULL THEN
+  REVOKE ALL ON FUNCTION public.get_boxer_exp_level_rank(uuid) FROM PUBLIC, anon, authenticated;
+  GRANT EXECUTE ON FUNCTION public.get_boxer_exp_level_rank(uuid) TO authenticated;
+ END IF;
+ IF to_regprocedure('public.get_boxer_performance_30d(uuid,date)') IS NOT NULL THEN
+  REVOKE ALL ON FUNCTION public.get_boxer_performance_30d(uuid,date) FROM PUBLIC, anon, authenticated;
+  GRANT EXECUTE ON FUNCTION public.get_boxer_performance_30d(uuid,date) TO authenticated;
+ END IF;
+END $statsexec$;
+
 COMMIT;

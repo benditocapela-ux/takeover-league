@@ -16,7 +16,9 @@ DO $policy$ BEGIN IF to_regclass('public.training_submissions') IS NOT NULL THEN
 DO $policy$ BEGIN IF to_regclass('public.training_types') IS NOT NULL THEN EXECUTE $ddl$DROP POLICY IF EXISTS "coach_v3_training_types_visible" ON public.training_types;$ddl$; END IF; END $policy$;
 DO $policy$ BEGIN IF to_regclass('public.boxer_coach_feedback') IS NOT NULL THEN EXECUTE $ddl$DROP POLICY IF EXISTS "coach_v3_boxer_coach_feedback_update" ON public.boxer_coach_feedback;$ddl$; END IF; END $policy$;
 DO $policy$ BEGIN IF to_regclass('public.boxer_coach_goals') IS NOT NULL THEN EXECUTE $ddl$DROP POLICY IF EXISTS "coach_v3_boxer_coach_goals_update" ON public.boxer_coach_goals;$ddl$; END IF; END $policy$;
-CREATE OR REPLACE FUNCTION public.admin_edit_training(p_submission_id uuid, p_boxer_id uuid, p_training_type_id bigint, p_training_date date, p_notes text, p_status text)
+DO $rguard_0$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='admin_edit_training') THEN
+  EXECUTE $rddl_0$CREATE OR REPLACE FUNCTION public.admin_edit_training(p_submission_id uuid, p_boxer_id uuid, p_training_type_id bigint, p_training_date date, p_notes text, p_status text)
  RETURNS jsonb
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -98,9 +100,13 @@ BEGIN
   'points',CASE WHEN p_status='approved' THEN v_points ELSE 0 END);
 END;
 $function$
-;
+;$rddl_0$;
+ END IF;
+END $rguard_0$;
 
-CREATE OR REPLACE FUNCTION public.admin_undo_recent_rejection(p_submission_id uuid)
+DO $rguard_1$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='admin_undo_recent_rejection') THEN
+  EXECUTE $rddl_1$CREATE OR REPLACE FUNCTION public.admin_undo_recent_rejection(p_submission_id uuid)
  RETURNS jsonb
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -137,9 +143,13 @@ begin
  return pg_catalog.jsonb_build_object('submission_id',training.id,'status','pending','undo','rejection_only');
 end;
 $function$
-;
+;$rddl_1$;
+ END IF;
+END $rguard_1$;
 
-CREATE OR REPLACE FUNCTION public.coach_add_boxer_palmares(p_boxer_id uuid, p_title text, p_event_name text DEFAULT ''::text, p_achievement_type text DEFAULT 'other'::text, p_result text DEFAULT ''::text, p_achievement_date date DEFAULT NULL::date, p_description text DEFAULT ''::text)
+DO $rguard_2$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='coach_add_boxer_palmares') THEN
+  EXECUTE $rddl_2$CREATE OR REPLACE FUNCTION public.coach_add_boxer_palmares(p_boxer_id uuid, p_title text, p_event_name text DEFAULT ''::text, p_achievement_type text DEFAULT 'other'::text, p_result text DEFAULT ''::text, p_achievement_date date DEFAULT NULL::date, p_description text DEFAULT ''::text)
  RETURNS uuid
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -179,9 +189,13 @@ BEGIN
  RETURN v_entry_id;
 END;
 $function$
-;
+;$rddl_2$;
+ END IF;
+END $rguard_2$;
 
-CREATE OR REPLACE FUNCTION public.coach_add_hall_of_fame_entry(p_boxer_id uuid, p_title text, p_description text DEFAULT ''::text, p_award_category text DEFAULT 'special'::text, p_season_id uuid DEFAULT NULL::uuid, p_awarded_on date DEFAULT CURRENT_DATE)
+DO $rguard_3$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='coach_add_hall_of_fame_entry') THEN
+  EXECUTE $rddl_3$CREATE OR REPLACE FUNCTION public.coach_add_hall_of_fame_entry(p_boxer_id uuid, p_title text, p_description text DEFAULT ''::text, p_award_category text DEFAULT 'special'::text, p_season_id uuid DEFAULT NULL::uuid, p_awarded_on date DEFAULT CURRENT_DATE)
  RETURNS uuid
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -231,9 +245,13 @@ BEGIN
  RETURN v_entry_id;
 END;
 $function$
-;
+;$rddl_3$;
+ END IF;
+END $rguard_3$;
 
-CREATE OR REPLACE FUNCTION public.coach_award_season_hall_of_fame(p_season_id uuid)
+DO $rguard_4$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='coach_award_season_hall_of_fame') THEN
+  EXECUTE $rddl_4$CREATE OR REPLACE FUNCTION public.coach_award_season_hall_of_fame(p_season_id uuid)
  RETURNS TABLE(season_id uuid, winner_count integer, created_entries integer)
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -294,9 +312,13 @@ BEGIN
  RETURN QUERY SELECT v_season.id,v_winners,v_created;
 END;
 $function$
-;
+;$rddl_4$;
+ END IF;
+END $rguard_4$;
 
-CREATE OR REPLACE FUNCTION public.coach_create_boxer_duel(p_challenger_id uuid, p_opponent_id uuid, p_title text, p_description text, p_duel_type text, p_starts_on date, p_ends_on date, p_target_value numeric DEFAULT NULL::numeric)
+DO $rguard_5$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='coach_create_boxer_duel') THEN
+  EXECUTE $rddl_5$CREATE OR REPLACE FUNCTION public.coach_create_boxer_duel(p_challenger_id uuid, p_opponent_id uuid, p_title text, p_description text, p_duel_type text, p_starts_on date, p_ends_on date, p_target_value numeric DEFAULT NULL::numeric)
  RETURNS uuid
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -323,9 +345,13 @@ BEGIN
  RETURN v_id;
 END;
 $function$
-;
+;$rddl_5$;
+ END IF;
+END $rguard_5$;
 
-CREATE OR REPLACE FUNCTION public.coach_create_league_challenge(p_title text, p_description text, p_starts_on date, p_ends_on date, p_challenge_type text, p_target_value numeric DEFAULT NULL::numeric)
+DO $rguard_6$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='coach_create_league_challenge') THEN
+  EXECUTE $rddl_6$CREATE OR REPLACE FUNCTION public.coach_create_league_challenge(p_title text, p_description text, p_starts_on date, p_ends_on date, p_challenge_type text, p_target_value numeric DEFAULT NULL::numeric)
  RETURNS uuid
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -361,9 +387,13 @@ BEGIN
  RETURN v_id;
 END;
 $function$
-;
+;$rddl_6$;
+ END IF;
+END $rguard_6$;
 
-CREATE OR REPLACE FUNCTION public.coach_create_league_season(p_name text, p_starts_on date, p_ends_on date, p_description text DEFAULT ''::text)
+DO $rguard_7$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='coach_create_league_season') THEN
+  EXECUTE $rddl_7$CREATE OR REPLACE FUNCTION public.coach_create_league_season(p_name text, p_starts_on date, p_ends_on date, p_description text DEFAULT ''::text)
  RETURNS uuid
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -397,9 +427,13 @@ BEGIN
  RETURN v_new_id;
 END;
 $function$
-;
+;$rddl_7$;
+ END IF;
+END $rguard_7$;
 
-CREATE OR REPLACE FUNCTION public.coach_finalize_boxer_duel(p_duel_id uuid)
+DO $rguard_8$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='coach_finalize_boxer_duel') THEN
+  EXECUTE $rddl_8$CREATE OR REPLACE FUNCTION public.coach_finalize_boxer_duel(p_duel_id uuid)
  RETURNS TABLE(duel_id uuid, final_status text, winner_id uuid, challenger_score numeric, opponent_score numeric, is_tie boolean)
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -439,9 +473,13 @@ BEGIN
   v_score.challenger_progress,v_score.opponent_progress,v_score.is_tie;
 END;
 $function$
-;
+;$rddl_8$;
+ END IF;
+END $rguard_8$;
 
-CREATE OR REPLACE FUNCTION public.coach_finalize_league_season(p_season_id uuid)
+DO $rguard_9$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='coach_finalize_league_season') THEN
+  EXECUTE $rddl_9$CREATE OR REPLACE FUNCTION public.coach_finalize_league_season(p_season_id uuid)
  RETURNS TABLE(season_id uuid, boxer_count integer, final_status text)
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -517,9 +555,13 @@ BEGIN
  RETURN QUERY SELECT v_season.id,v_count,'completed'::text;
 END;
 $function$
-;
+;$rddl_9$;
+ END IF;
+END $rguard_9$;
 
-CREATE OR REPLACE FUNCTION public.coach_set_boxer_duel_status(p_duel_id uuid, p_new_status text)
+DO $rguard_10$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='coach_set_boxer_duel_status') THEN
+  EXECUTE $rddl_10$CREATE OR REPLACE FUNCTION public.coach_set_boxer_duel_status(p_duel_id uuid, p_new_status text)
  RETURNS text
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -548,9 +590,13 @@ BEGIN
  RETURN p_new_status;
 END;
 $function$
-;
+;$rddl_10$;
+ END IF;
+END $rguard_10$;
 
-CREATE OR REPLACE FUNCTION public.coach_set_goal_status(p_goal_id uuid, p_new_status text)
+DO $rguard_11$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='coach_set_goal_status') THEN
+  EXECUTE $rddl_11$CREATE OR REPLACE FUNCTION public.coach_set_goal_status(p_goal_id uuid, p_new_status text)
  RETURNS TABLE(goal_id uuid, goal_status text, changed_at timestamp with time zone)
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -586,9 +632,13 @@ BEGIN
  RETURN QUERY SELECT p_goal_id,p_new_status,v_updated_at;
 END;
 $function$
-;
+;$rddl_11$;
+ END IF;
+END $rguard_11$;
 
-CREATE OR REPLACE FUNCTION public.coach_set_league_challenge_status(p_challenge_id uuid, p_new_status text)
+DO $rguard_12$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='coach_set_league_challenge_status') THEN
+  EXECUTE $rddl_12$CREATE OR REPLACE FUNCTION public.coach_set_league_challenge_status(p_challenge_id uuid, p_new_status text)
  RETURNS text
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -623,9 +673,13 @@ BEGIN
  RETURN p_new_status;
 END;
 $function$
-;
+;$rddl_12$;
+ END IF;
+END $rguard_12$;
 
-CREATE OR REPLACE FUNCTION public.coach_set_league_season_status(p_season_id uuid, p_new_status text)
+DO $rguard_13$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='coach_set_league_season_status') THEN
+  EXECUTE $rddl_13$CREATE OR REPLACE FUNCTION public.coach_set_league_season_status(p_season_id uuid, p_new_status text)
  RETURNS text
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -658,9 +712,13 @@ BEGIN
  RETURN p_new_status;
 END;
 $function$
-;
+;$rddl_13$;
+ END IF;
+END $rguard_13$;
 
-CREATE OR REPLACE FUNCTION public.coach_training_audit_recent(p_limit integer DEFAULT 50)
+DO $rguard_14$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='coach_training_audit_recent') THEN
+  EXECUTE $rddl_14$CREATE OR REPLACE FUNCTION public.coach_training_audit_recent(p_limit integer DEFAULT 50)
  RETURNS TABLE(audit_id bigint, happened_at timestamp with time zone, boxer_name text, changed_by_name text, old_status text, new_status text, old_points integer, new_points integer)
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
@@ -693,9 +751,13 @@ begin
   limit greatest(1, least(coalesce(p_limit,50),100));
 end;
 $function$
-;
+;$rddl_14$;
+ END IF;
+END $rguard_14$;
 
-CREATE OR REPLACE FUNCTION public.coach_upsert_achievement_definition(p_code text, p_title text, p_description text DEFAULT ''::text, p_category text DEFAULT 'general'::text, p_icon_key text DEFAULT NULL::text, p_is_active boolean DEFAULT false)
+DO $rguard_15$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='coach_upsert_achievement_definition') THEN
+  EXECUTE $rddl_15$CREATE OR REPLACE FUNCTION public.coach_upsert_achievement_definition(p_code text, p_title text, p_description text DEFAULT ''::text, p_category text DEFAULT 'general'::text, p_icon_key text DEFAULT NULL::text, p_is_active boolean DEFAULT false)
  RETURNS uuid
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -725,9 +787,13 @@ BEGIN
  RETURN v_id;
 END;
 $function$
-;
+;$rddl_15$;
+ END IF;
+END $rguard_15$;
 
-CREATE OR REPLACE FUNCTION public.get_boxer_duel_score(p_duel_id uuid)
+DO $rguard_16$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='get_boxer_duel_score') THEN
+  EXECUTE $rddl_16$CREATE OR REPLACE FUNCTION public.get_boxer_duel_score(p_duel_id uuid)
  RETURNS TABLE(duel_id uuid, challenger_id uuid, opponent_id uuid, challenger_progress numeric, opponent_progress numeric, leading_boxer_id uuid, is_tie boolean)
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
@@ -795,9 +861,13 @@ BEGIN
    v_challenger=v_opponent;
 END;
 $function$
-;
+;$rddl_16$;
+ END IF;
+END $rguard_16$;
 
-CREATE OR REPLACE FUNCTION public.get_boxer_exp_level_rank(p_boxer_id uuid)
+DO $rguard_17$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='get_boxer_exp_level_rank') THEN
+  EXECUTE $rddl_17$CREATE OR REPLACE FUNCTION public.get_boxer_exp_level_rank(p_boxer_id uuid)
  RETURNS TABLE(boxer_id uuid, lifetime_exp bigint, lifetime_points bigint, level_number integer, level_start_exp bigint, next_level_exp bigint, exp_into_level bigint, exp_to_next_level bigint, rank_letter text)
  LANGUAGE sql
  STABLE
@@ -837,9 +907,13 @@ SELECT s.id,s.exp,s.points,s.lvl,s.start_exp,
             WHEN s.exp>=4500 THEN 'D' WHEN s.exp>=1500 THEN 'E' ELSE 'F' END
 FROM selected s;
 $function$
-;
+;$rddl_17$;
+ END IF;
+END $rguard_17$;
 
-CREATE OR REPLACE FUNCTION public.get_boxer_performance_30d(p_boxer_id uuid, p_period_end date DEFAULT CURRENT_DATE)
+DO $rguard_18$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='get_boxer_performance_30d') THEN
+  EXECUTE $rddl_18$CREATE OR REPLACE FUNCTION public.get_boxer_performance_30d(p_boxer_id uuid, p_period_end date DEFAULT CURRENT_DATE)
  RETURNS TABLE(boxer_id uuid, period_start date, period_end date, approved_sessions bigint, active_days bigint, training_equivalents numeric, distinct_training_types bigint, consistency_score numeric, volume_score numeric, variety_score numeric, total_score numeric)
  LANGUAGE sql
  STABLE
@@ -882,9 +956,13 @@ AS $function$
   round(LEAST(40::numeric,a.days*40.0/12)+LEAST(40::numeric,a.ve*40.0/20)+LEAST(20::numeric,a.types*20.0/5),2)
  FROM permitted p CROSS JOIN aggregate_values a;
 $function$
-;
+;$rddl_18$;
+ END IF;
+END $rguard_18$;
 
-CREATE OR REPLACE FUNCTION public.get_league_challenge_progress(p_challenge_id uuid, p_boxer_id uuid DEFAULT NULL::uuid)
+DO $rguard_19$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='get_league_challenge_progress') THEN
+  EXECUTE $rddl_19$CREATE OR REPLACE FUNCTION public.get_league_challenge_progress(p_challenge_id uuid, p_boxer_id uuid DEFAULT NULL::uuid)
  RETURNS TABLE(challenge_id uuid, boxer_id uuid, challenge_type text, target_value numeric, progress_value numeric, progress_percent numeric, goal_reached boolean)
  LANGUAGE plpgsql
  STABLE SECURITY DEFINER
@@ -945,9 +1023,13 @@ BEGIN
  LEFT JOIN public.training_types t ON t.id=s.training_type_id;
 END;
 $function$
-;
+;$rddl_19$;
+ END IF;
+END $rguard_19$;
 
-CREATE OR REPLACE FUNCTION public.review_training(p_submission_id uuid, p_decision text)
+DO $rguard_20$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='review_training') THEN
+  EXECUTE $rddl_20$CREATE OR REPLACE FUNCTION public.review_training(p_submission_id uuid, p_decision text)
  RETURNS jsonb
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -1005,14 +1087,18 @@ BEGIN
   );
 END;
 $function$
-;
+;$rddl_20$;
+ END IF;
+END $rguard_20$;
 DROP FUNCTION IF EXISTS public.coach_list_boxers();
 DROP FUNCTION IF EXISTS public.is_league_coach();
 DROP FUNCTION IF EXISTS league_private.coach_training_bonus_refresh(uuid);
 DO $coachrollback$ BEGIN IF to_regclass('public.training_drafts_v2') IS NOT NULL THEN
  DROP POLICY IF EXISTS coach_v3_training_drafts_own ON public.training_drafts_v2;
 END IF; END $coachrollback$;
-CREATE OR REPLACE FUNCTION public._notify_training_decision()
+DO $rguard_21$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='_notify_training_decision') THEN
+  EXECUTE $rddl_21$CREATE OR REPLACE FUNCTION public._notify_training_decision()
  RETURNS trigger
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -1040,9 +1126,13 @@ BEGIN
  RETURN NEW;
 END;
 $function$
-;
+;$rddl_21$;
+ END IF;
+END $rguard_21$;
 
-CREATE OR REPLACE FUNCTION public.mark_my_notification_read(p_notification_id uuid)
+DO $rguard_22$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='mark_my_notification_read') THEN
+  EXECUTE $rddl_22$CREATE OR REPLACE FUNCTION public.mark_my_notification_read(p_notification_id uuid)
  RETURNS boolean
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -1076,9 +1166,13 @@ BEGIN
  RETURN v_changed=1;
 END;
 $function$
-;
+;$rddl_22$;
+ END IF;
+END $rguard_22$;
 
-CREATE OR REPLACE FUNCTION public.update_my_boxer_avatar(p_avatar_key text, p_avatar_url text)
+DO $rguard_23$ BEGIN
+ IF EXISTS (SELECT 1 FROM pg_proc p JOIN pg_namespace n ON n.oid=p.pronamespace WHERE n.nspname='public' AND p.proname='update_my_boxer_avatar') THEN
+  EXECUTE $rddl_23$CREATE OR REPLACE FUNCTION public.update_my_boxer_avatar(p_avatar_key text, p_avatar_url text)
  RETURNS void
  LANGUAGE plpgsql
  SECURITY DEFINER
@@ -1101,7 +1195,9 @@ begin
  where auth_user_id=v_uid and role='boxer' and is_active=true;
  if not found then raise exception 'Aktives Boxerprofil fehlt'; end if;
 end $function$
-;
+;$rddl_23$;
+ END IF;
+END $rguard_23$;
 
 CREATE OR REPLACE FUNCTION public.recalculate_boxer_achievements_v2(p_boxer_id uuid)
  RETURNS void
@@ -1170,7 +1266,7 @@ BEGIN
         ELSE 250 END AS reward
     FROM public.achievement_definitions d
     WHERE d.is_active=true
-      AND d.code ~ '^(training|consistent|road|flash|technician|fighter|engine|complete)_[0-9]+
+      AND d.code ~ '^(training|consistent|road|flash|technician|fighter|engine|complete)_[0-9]+$'
     ORDER BY d.code
   LOOP
     v_earned := v_def.progress >= v_def.threshold;

@@ -442,6 +442,92 @@ AS $function$
   );
 $function$
 ;
+-- Isolated test-only copies; production SQL stays untouched.
+CREATE OR REPLACE FUNCTION public.get_boxer_exp_level_rank(p_boxer_id uuid)
+ RETURNS TABLE(boxer_id uuid, lifetime_exp bigint, lifetime_points bigint, level_number integer, level_start_exp bigint, next_level_exp bigint, exp_into_level bigint, exp_to_next_level bigint, rank_letter text)
+ LANGUAGE sql
+ STABLE
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+WITH RECURSIVE allowed AS (
+ SELECT p.id FROM public.profiles p
+ WHERE p.id=p_boxer_id AND p.role='boxer' AND p.is_active
+  AND EXISTS (SELECT 1 FROM public.league_feature_flags f
+              WHERE f.feature_key='performance_dashboard' AND f.is_enabled)
+  AND EXISTS (SELECT 1 FROM public.profiles viewer
+              WHERE viewer.auth_user_id=(SELECT auth.uid()) AND viewer.is_active
+                AND (viewer.id=p.id OR viewer.role='admin'))
+), totals AS (
+ SELECT a.id, GREATEST(0::bigint,COALESCE(SUM(t.exp),0)::bigint) AS exp,
+        GREATEST(0::bigint,COALESCE(SUM(t.points),0)::bigint) AS points
+ FROM allowed a LEFT JOIN public.point_transactions t ON t.boxer_id=a.id
+ GROUP BY a.id
+), levels AS (
+ SELECT 1::integer AS lvl, 0::bigint AS start_exp, 100::bigint AS step_exp
+ UNION ALL
+ SELECT lvl+1, start_exp+step_exp, CEIL(step_exp::numeric*1.15)::bigint
+ FROM levels WHERE lvl<150
+), selected AS (
+ SELECT t.id,t.exp,t.points,l.lvl,l.start_exp,l.step_exp
+ FROM totals t CROSS JOIN LATERAL (
+  SELECT lvl,start_exp,step_exp FROM levels
+  WHERE start_exp<=t.exp ORDER BY lvl DESC LIMIT 1
+ ) l
+)
+SELECT s.id,s.exp,s.points,s.lvl,s.start_exp,
+       (s.start_exp+s.step_exp)::bigint,
+       (s.exp-s.start_exp)::bigint,
+       GREATEST(0::bigint,s.start_exp+s.step_exp-s.exp)::bigint,
+       CASE WHEN s.exp>=94500 THEN 'S' WHEN s.exp>=46500 THEN 'A'
+            WHEN s.exp>=22500 THEN 'B' WHEN s.exp>=10500 THEN 'C'
+            WHEN s.exp>=4500 THEN 'D' WHEN s.exp>=1500 THEN 'E' ELSE 'F' END
+FROM selected s;
+$function$
+;
+CREATE OR REPLACE FUNCTION public.get_boxer_performance_30d(p_boxer_id uuid, p_period_end date DEFAULT CURRENT_DATE)
+ RETURNS TABLE(boxer_id uuid, period_start date, period_end date, approved_sessions bigint, active_days bigint, training_equivalents numeric, distinct_training_types bigint, consistency_score numeric, volume_score numeric, variety_score numeric, total_score numeric)
+ LANGUAGE sql
+ STABLE
+ SET search_path TO 'public', 'pg_temp'
+AS $function$
+ WITH permitted AS (
+  SELECT p.id FROM public.profiles p
+  WHERE p.id=p_boxer_id AND p.role='boxer' AND p.is_active
+   AND EXISTS (
+    SELECT 1 FROM public.profiles viewer
+    WHERE viewer.auth_user_id=(SELECT auth.uid()) AND viewer.is_active
+     AND (viewer.role='admin' OR viewer.id=p.id)
+   )
+   AND EXISTS (SELECT 1 FROM public.league_feature_flags f
+               WHERE f.feature_key='performance_dashboard' AND f.is_enabled)
+ ), sessions AS (
+  SELECT s.id, s.training_date, s.training_type_id,
+   LEAST(2::numeric, GREATEST(0::numeric,
+    CASE
+     WHEN lower(t.name) ~ '(boxen|boxing)' THEN 1.5::numeric
+     WHEN lower(t.name) ~ '(jogg|lauf|running)' THEN COALESCE(s.jogging_km,0)*0.2
+     WHEN lower(t.name) ~ 'sprint' THEN 1::numeric
+     WHEN lower(t.name) ~ '(technik|technique)' THEN COALESCE(s.technique_minutes,0)/60.0
+     ELSE 1::numeric
+    END)) AS ve
+  FROM public.training_submissions s
+  JOIN public.training_types t ON t.id=s.training_type_id
+  JOIN permitted p ON p.id=s.boxer_id
+  WHERE s.status='approved' AND s.training_date BETWEEN (p_period_end-29) AND p_period_end
+ ), aggregate_values AS (
+  SELECT count(*)::bigint AS n, count(DISTINCT training_date)::bigint AS days,
+   COALESCE(sum(ve),0)::numeric AS ve, count(DISTINCT training_type_id)::bigint AS types
+  FROM sessions
+ )
+ SELECT p.id, (p_period_end-29)::date, p_period_end,
+  a.n, a.days, round(a.ve,2), a.types,
+  round(LEAST(40::numeric,a.days*40.0/12),2),
+  round(LEAST(40::numeric,a.ve*40.0/20),2),
+  round(LEAST(20::numeric,a.types*20.0/5),2),
+  round(LEAST(40::numeric,a.days*40.0/12)+LEAST(40::numeric,a.ve*40.0/20)+LEAST(20::numeric,a.types*20.0/5),2)
+ FROM permitted p CROSS JOIN aggregate_values a;
+$function$
+;
 DO $sentinel$ BEGIN
  IF NOT EXISTS (SELECT 1 FROM pg_trigger WHERE tgname='trg_notify_training_decision' AND tgrelid='public.training_submissions'::regclass) THEN
  CREATE TRIGGER trg_notify_training_decision AFTER UPDATE OF status

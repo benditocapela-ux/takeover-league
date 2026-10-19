@@ -26,6 +26,17 @@
 6. `ROLLBACK` entfernt die temporären Trainings, Ledger-Einträge, Benachrichtigungen und die temporäre Aktivitäts-/Flag-Änderung. Das dauerhaft vorhandene, echte Test-Coach-Profil bleibt bestehen.
 7. *Testgrenze*: SQL-Session emuliert eine authentifizierte Anfrage anhand existierender `auth.users`-IDs; kein echtes Browser-Login mit Coach-Passwort. Statische und Chromium-Checks über GitHub CI separat prüfen.
 
+
+## Vertiefte Abnahme vom 19.10.2026
+- Der Coach kann **ein eigenes pending-Training ohne Ledger-Eintrag** anlegen; eigenes Training bleibt Boxer-Arbeit, keine Selbstfreigabe.
+- Coach darf die anderen Boxer-Stats über `get_boxer_exp_level_rank` und `get_boxer_performance_30d` lesen, während ein Boxer fremde Coach-Stats nicht sehen darf. Beide RPCs nutzen ein fest gepinntes leeres `search_path`, `SECURITY DEFINER`, eine aktive serverseitige Viewer-Prüfung und nur `authenticated` EXECUTE. Es wird **keine breite SELECT-Policy auf profiles** geschaffen.
+- Trainerkorrektur mit `admin_edit_training_details` und Audit ist erfolgreich; jüngste eigene Ablehnung kann ohne Ledger-Buchung zurückgenommen werden.
+- Direkter Aufruf der globalen Bonusberechnung durch Coach wurde aktiv verweigert. Deaktivierte Coaches können weder die Trainerliste lesen noch Trainings genehmigen.
+- Gesamter Rollback der Rollenmigration auf dem **TEST-Projekt** erfolgreich. Die finale Hauptmigration danach erneut eingespielt, Fixture erneut erfolgreich. Zweites Einspielen der Hauptmigration ebenfalls erfolgreich (idempotent).
+- Verifiziert nach dem Transaktions-Test: **0 verbliebene Fixture-Trainings, 0 verbotene Ledger-Einträge und 0 Fixture-Benachrichtigungen**. Das originale Coach-Testprofil bleibt aktiv und auth-verknüpft.
+- Im Testprojekt fehlen weiterhin diverse Legacy-Saison- und Duelldatenbankobjekte. Diese Methoden stammen unverändert aus den **read-only verifizierten Produktionsdefinitionen**, wurden aber **nicht vollständig mit echten Coach-Saison-/Duelltransaktionen getestet**. Vor Produktivfreigabe bestehende Feature-Flags prüfen; keine Flag-Aktivierung ohne separaten Auftrag.
+- Weder Production-Browserlogin mit Coach-Passwort noch eine Live-Session aller 19 Seiten durchgeführt; GitHub-CI liefert gemockte Browser- und SQL-Kompatibilitätsprüfungen.
+
 ## SQL-Editor (nach späterer FREIGABE für PROD)
 1. Im **Testprojekt** vor Änderungen `tests/coach-role-test-bootstrap.sql` (nur dort) und dann die Hauptmigration über den regulären Migrationsweg anwenden. Testbootstrap und finale Migration wurden hier bereits testweise ausgeführt.
 2. `tests/coach-role-transaction.sql` im **TEST** SQL-Editor ausführen. Das Ende ist `ROLLBACK`. Erfolg = keine SQL-Exception; `NOTICE PASS` in der Ausgabe.
