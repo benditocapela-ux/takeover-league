@@ -72,6 +72,7 @@ async function loadRewardGoals(){
   const option=new Option(goal.title+' · '+goal.metric+' · '+goal.reward_exp+' EXP',goal.id);
   select.add(option);
  }
+ select.dispatchEvent(new Event('change',{bubbles:true}));
 }
 $('saveGoalReward').addEventListener('click',async()=>{
  const id=val('rewardGoal'),exp=Number(val('goalRewardExp'));
@@ -200,6 +201,7 @@ async function init(){
  if(r.error){say('Boxerliste nicht verfügbar: '+r.error.message);return}
  const select=$('boxerId');select.replaceChildren(new Option('Boxer auswählen',''));
  for(const boxer of r.data||[])select.add(new Option(boxer.display_name,boxer.id));
+ select.dispatchEvent(new Event('change',{bubbles:true}));
  $('dashboard').hidden=false;say('Admin-Verwaltung bereit.');await Promise.all([listSeasons(),listGlobals()]);
 }
 init().catch(e=>say('Verwaltung nicht verfügbar: '+e.message));
