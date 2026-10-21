@@ -75,6 +75,12 @@ jobs:
       - run: npm install --no-save --no-package-lock jsdom@26.1.0
       - run: node tests/coach-challenges-v2.cjs
       - run: node tests/menu-navigation-compat.cjs
+      - run: node choice-cards-compat.cjs
+      - run: node training-choices-compat.cjs
+      - run: node redesign-contracts.cjs
+      - run: node menu-navigation-compat.cjs
+      - run: node tests/club-profile-archive-contracts.cjs
+      - run: node tests/release-static-contracts.cjs
       - run: node tests/boxer-dashboard-polish.cjs
       - run: node tests/boxer-profile-actions.cjs
       - run: node tests/coach-challenges-v2-browser.cjs
