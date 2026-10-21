@@ -241,6 +241,7 @@
       "list"
     ],
     "rpc": [
+      "coach_challenge_v2_admin_edit",
       "coach_challenge_v2_create_draft",
       "coach_challenge_v2_list",
       "coach_challenge_v2_progress",
@@ -420,6 +421,7 @@
       "challenges"
     ],
     "rpc": [
+      "league_v21_admin_edit_global_challenge",
       "league_v21_join_global_challenge"
     ],
     "scriptCount": 2
