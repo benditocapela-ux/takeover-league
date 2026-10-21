@@ -8,6 +8,13 @@ ALTER TABLE public.profile_admin_audit DROP CONSTRAINT IF EXISTS profile_admin_a
 ALTER TABLE public.profile_admin_audit
   ADD CONSTRAINT profile_admin_audit_action_check
   CHECK (action IN ('role','active','listed','email'));
+DO $rollback_guard$
+BEGIN
+ IF EXISTS(SELECT 1 FROM public.profiles WHERE archived_at IS NOT NULL) THEN
+  RAISE EXCEPTION 'Rollback refused: restore all archived profiles before removing archived_at';
+ END IF;
+END
+$rollback_guard$;
 ALTER TABLE public.profiles DROP COLUMN IF EXISTS archived_at;
 NOTIFY pgrst, 'reload schema';
 COMMIT;
