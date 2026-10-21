@@ -233,11 +233,15 @@ jobs:
   admin-challenge-editing-schema:
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
     permissions:
       contents: read
     services:
       postgres:
-        image: postgres:16
+        image: postgres:${{ matrix.postgres }}
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
@@ -251,7 +255,7 @@ jobs:
           --health-retries 10
     steps:
       - uses: actions/checkout@v4
-      - name: Test admin challenge editing on disposable PostgreSQL
+      - name: Test admin challenge editing on disposable PostgreSQL ${{ matrix.postgres }}
         env:
           PGPASSWORD: postgres
         run: psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f tests/admin-challenge-editing-schema.sql
