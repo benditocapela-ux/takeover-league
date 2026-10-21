@@ -172,7 +172,7 @@ async function loadAudit(){
  if(r.error){root.append(add('p','Änderungshistorie konnte nicht geladen werden: '+r.error.message));return;}
  if(!r.data?.length){root.append(add('p','Noch keine Verwaltungsänderungen.'));return;}
  for(const entry of r.data){
-  const p=add('p',new Date(entry.created_at).toLocaleString('de-CH')+' · '+({role:'Rolle',active:'Aktivierung',listed:'Öffentlichkeit',email:'E-Mail'}[entry.action]||entry.action)+' · Profil '+entry.profile_id);
+  const p=add('p',new Date(entry.created_at).toLocaleString('de-CH')+' · '+({role:'Rolle',active:'Aktivierung',listed:'Öffentlichkeit',email:'E-Mail',archive:'Archivierung',restore:'Wiederherstellung'}[entry.action]||entry.action)+' · Profil '+entry.profile_id);
   root.append(p);
  }
 }
