@@ -26,7 +26,7 @@ const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
  };
  dom.window.createClient=()=>db;
  dom.window.confirm=()=>true;
- const runnable=source.replace(/\ninit\(\);\s*$/,'\nwindow.__ready=init();');
+ const runnable=source.replace(/\n\s*init\(\);\s*$/,'\nwindow.__ready=init();');
  assert.notEqual(runnable,source,'must expose the final initialization promise for the smoke test');
  dom.window.eval(runnable);
  await dom.window.__ready;
