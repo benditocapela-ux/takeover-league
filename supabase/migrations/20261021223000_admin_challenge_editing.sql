@@ -145,7 +145,7 @@ BEGIN
   IF EXISTS(SELECT 1 FROM public.league_global_entries_v21 e WHERE e.challenge_id=c.id) THEN
    RAISE EXCEPTION 'Messwert, Ziel und Zeitraum sind gesperrt, sobald Boxer beigetreten sind' USING ERRCODE='22023';
   END IF;
-  IF p_metric NOT IN ('training_sessions','jogging_km','technique_minutes')
+  IF p_metric IS NULL OR p_metric NOT IN ('training_sessions','jogging_km','technique_minutes')
      OR p_target IS NULL OR p_target<=0 OR p_target>1000000
      OR p_starts IS NULL OR p_ends IS NULL
      OR p_starts<=pg_catalog.now() OR p_ends<=pg_catalog.now()
