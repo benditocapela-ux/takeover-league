@@ -14,7 +14,8 @@ for(const [path,b] of Object.entries(baseline)){
  assert.deepEqual(originalIds,b.ids,`${path}: a pre-existing DOM hook changed`);
  const addedIds=gotIds.filter(id=>!b.ids.includes(id));
  const allowedAdded=path==='guest.html'
-  ? ['guest-tab-overview','guest-tab-ranking','guest-tab-challenges','guest-tab-duels','guest-tab-history'] : [];
+  ? ['guest-tab-overview','guest-tab-ranking','guest-tab-challenges','guest-tab-duels','guest-tab-history']
+  : path==='admin.html' ? ['showArchived'] : [];
  assert.deepEqual(addedIds,allowedAdded,`${path}: unexpected additional DOM ID`);
  assert.deepEqual(gotRpc,b.rpc,`${path}: RPC literal list changed`);
  assert.equal((s.match(/<script\b/gi)||[]).length,b.scriptCount,`${path}: unexpected script change`);
