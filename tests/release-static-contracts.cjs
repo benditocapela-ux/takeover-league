@@ -75,6 +75,8 @@ const cases=[
  assert.ok(require('node:fs').existsSync('supabase/production-prep/20261021223000_admin_challenge_editing_preflight_read_only.sql'));
  assert.ok(require('node:fs').existsSync('supabase/production-prep/20261021223000_admin_challenge_editing_postflight_read_only.sql'));
  assert.ok(require('node:fs').existsSync('tests/admin-challenge-editing-schema.sql'));
+ assert.ok(require('node:fs').existsSync('tests/admin-challenge-editing-browser.cjs'));
+ assert.match(read('.github/workflows/coach-challenges-v2.yml'),/tests\/admin-challenge-editing-browser\.cjs/);
  assert.match(read('.github/workflows/coach-challenges-v2.yml'),/admin-challenge-editing-schema/);
 }]
 ];
