@@ -19,7 +19,8 @@ const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
   auth:{getUser:async()=>({data:{user:{id:'admin-auth'}},error:null})},
   from(name){
    if(name==='profiles')return {select:()=>({eq:()=>({maybeSingle:async()=>({data:{id:'admin-profile',role:'admin',is_active:true},error:null})})})};
-   if(name==='league_global_challenges_v21')return {select:()=>({order:async()=>({data:[{...challenge}],error:null})})};
+   if(name==='league_global_challenges_v21')return {select:()=>({order:()=>({limit:async()=>({data:[{...challenge}],error:null})})})};
+   if(name==='league_global_results_v21')return {select:()=>({order:()=>({limit:async()=>({data:[],error:null})})})};
    throw new Error('Unexpected table query: '+name);
   },
   rpc:async(name,args)=>{calls.push({name,args});return {data:{id:challenge.id,rules_updated:!!args?.p_update_rules},error:null}}
