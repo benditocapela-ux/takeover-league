@@ -197,4 +197,5 @@ REVOKE ALL ON FUNCTION public.league_v21_admin_edit_global_challenge(uuid,text,t
 GRANT EXECUTE ON FUNCTION public.league_v21_admin_edit_global_challenge(uuid,text,text,text,numeric,timestamptz,timestamptz,boolean)
  TO authenticated;
 
+NOTIFY pgrst, 'reload schema';
 COMMIT;
