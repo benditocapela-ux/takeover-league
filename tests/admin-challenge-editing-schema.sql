@@ -2,6 +2,48 @@
 \set ON_ERROR_STOP on
 \i tests/production-v2-schema-smoke.sql
 
+-- The smoke script deliberately rolls its V2 challenge tables back; recreate
+-- only the minimum dependent schema needed to compile and exercise this RPC.
+CREATE SCHEMA IF NOT EXISTS league_private;
+CREATE OR REPLACE FUNCTION league_private.coach_v2_actor()
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path=''
+AS $actor$
+DECLARE v_actor jsonb;
+BEGIN
+ IF auth.uid() IS NULL THEN RAISE EXCEPTION 'Authentication required' USING ERRCODE='28000'; END IF;
+ IF NOT EXISTS(SELECT 1 FROM public.league_feature_flags WHERE feature_key='coach_challenges' AND is_enabled IS TRUE)
+ THEN RAISE EXCEPTION 'Coach Challenges not enabled' USING ERRCODE='42501'; END IF;
+ SELECT pg_catalog.jsonb_build_object('id',p.id,'role',p.role) INTO v_actor
+ FROM public.profiles p WHERE p.auth_user_id=(SELECT auth.uid()) AND p.is_active IS TRUE;
+ IF v_actor IS NULL OR (v_actor->>'role') NOT IN ('boxer','coach','admin')
+ THEN RAISE EXCEPTION 'Active league profile required' USING ERRCODE='42501'; END IF;
+ RETURN v_actor;
+END
+$actor$;
+REVOKE ALL ON FUNCTION league_private.coach_v2_actor() FROM PUBLIC,anon,authenticated;
+
+CREATE TABLE public.league_coach_challenges (
+ id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+ created_by uuid NOT NULL REFERENCES public.profiles(id),
+ title text NOT NULL,
+ description text NOT NULL DEFAULT '',
+ challenge_kind text NOT NULL,
+ duration_days integer NOT NULL,
+ goal_spec jsonb,
+ status text NOT NULL DEFAULT 'draft',
+ starts_at timestamptz,
+ ends_at timestamptz,
+ settled_at timestamptz,
+ updated_at timestamptz NOT NULL DEFAULT now()
+);
+CREATE TABLE public.league_coach_challenge_entries (
+ challenge_id uuid NOT NULL REFERENCES public.league_coach_challenges(id),
+ boxer_id uuid NOT NULL REFERENCES public.profiles(id),
+ joined_at timestamptz NOT NULL DEFAULT now(),
+ status text NOT NULL DEFAULT 'joined',
+ PRIMARY KEY(challenge_id,boxer_id)
+);
+
 CREATE SCHEMA IF NOT EXISTS league_v21_private;
 REVOKE ALL ON SCHEMA league_v21_private FROM PUBLIC,anon,authenticated;
 GRANT USAGE ON SCHEMA league_v21_private TO authenticated;
@@ -26,8 +68,9 @@ CREATE TABLE public.league_global_entries_v21 (
  PRIMARY KEY(challenge_id,boxer_id)
 );
 
-UPDATE public.league_feature_flags SET is_enabled=true
-WHERE feature_key IN ('coach_challenges','league_challenges');
+INSERT INTO public.league_feature_flags(feature_key,display_name,is_enabled)
+VALUES ('coach_challenges','Coach Challenges',true),('league_challenges','Liga-Challenges',true)
+ON CONFLICT(feature_key) DO UPDATE SET is_enabled=true;
 
 INSERT INTO public.profiles(id,auth_user_id,display_name,role,is_active)
 VALUES('77777777-7777-4777-8777-777777777777',
