@@ -160,9 +160,9 @@ if(role==='admin'&&['draft','open','active','awaiting_reviews'].includes(c.statu
  toggle.setAttribute('aria-expanded','false');toggle.onclick=()=>{edit.hidden=!edit.hidden;toggle.setAttribute('aria-expanded',String(!edit.hidden))};
  edit.onsubmit=e=>{e.preventDefault();const nextTitle=title.value.trim(),nextGoal=goal.value.trim();
   if(nextTitle.length<3||nextTitle.length>120||description.value.length>2000){say('Bitte Titel und Beschreibung prüfen.',true);return}
-  if(canEditRules&&nextGoal!==originalGoal&&nextGoal.length<5){say('Das individuelle Ziel muss mindestens 5 Zeichen haben.',true);return}
   const goalChanged=canEditRules&&nextGoal!==originalGoal;
   const rewardChanged=canEditRules&&Number(reward.value)!==originalReward;
+  if(canEditRules&&(goalChanged||rewardChanged)&&nextGoal.length<5){say('Bitte zuerst ein individuelles Ziel mit mindestens 5 Zeichen eintragen.',true);return}
   act('coach_challenge_v2_admin_edit',{p_challenge_id:c.id,p_title:nextTitle,p_description:description.value,p_kind:kind.value,p_duration_days:Number(days.value),p_goal_text:goalChanged?nextGoal:null,p_reward_exp:rewardChanged?Number(reward.value):null});
  };
 }
