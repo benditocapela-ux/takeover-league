@@ -31,7 +31,7 @@ assert.ok(boxer.includes('training_drafts_v2'));
 assert.ok(boxer.includes('trainingSubmitBusy=true'));
 assert.ok(boxer.includes("db.from('training_submissions').insert"));
 assert.ok(boxer.includes('Training eingereicht – wartet auf Bestätigung'));
-assert.ok(boxer.includes("$('joggingKm').value='';$('techniqueMinutes').value='';$('kind').value=String(type.id);updateFields();await load()"));
+assert.ok(boxer.includes("$('joggingKm').value='';$('techniqueMinutes').value='';$('kind').value=String(type.id);$('kind').dispatchEvent(new Event('change',{bubbles:true}));updateFields();await load()"));
 assert.ok(!boxer.includes("$('kind').value='';updateFields();await load()"));
 assert.ok(!boxer.includes('JSON.stringify({...saved,notes:'));
 assert.match(duel,/if\(!confirm\('Duell-Einladung senden\?/);
