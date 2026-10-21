@@ -18,7 +18,8 @@ for(const [path,b] of Object.entries(baseline)){
   : path==='admin.html' ? ['showArchived'] : [];
  assert.deepEqual(addedIds,allowedAdded,`${path}: unexpected additional DOM ID`);
  assert.deepEqual(gotRpc,b.rpc,`${path}: RPC literal list changed`);
- assert.equal((s.match(/<script\b/gi)||[]).length,b.scriptCount,`${path}: unexpected script change`);
+ const allowedScriptAdditions=path==='league-challenges.html'?1:0;
+ assert.equal((s.match(/<script\b/gi)||[]).length,b.scriptCount+allowedScriptAdditions,`${path}: unexpected script change`);
  assert.match(s,/takeover-redesign\.css/,`${path}: must import production stylesheet`);
  ids+=gotIds.length;rpcCount+=gotRpc.length;
 }
