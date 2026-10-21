@@ -90,6 +90,7 @@ const cases=[
  assert.match(archive,/target\.role = 'admin'/i);
  assert.doesNotMatch(archive,/DELETE FROM public\.(profiles|training_submissions|point_transactions)/i);
  assert.match(rollback,/DROP COLUMN IF EXISTS archived_at/i);
+ assert.match(rollback,/Rollback refused: restore all archived profiles/i);
  assert.match(admin,/admin_list_profile_archive_state/);
  assert.match(admin,/admin_archive_profile/);
  assert.match(admin,/admin_restore_profile/);
