@@ -51,8 +51,7 @@ const cases=[
  const sql=read('supabase/migrations/20261018214000_avatar_rpc_permissions.sql');
  assert.match(sql,/REVOKE ALL ON FUNCTION public.update_my_boxer_avatar\(text,text\) FROM PUBLIC,anon/);
  assert.match(sql,/GRANT EXECUTE ON FUNCTION public.update_my_boxer_avatar\(text,text\) TO authenticated/);
-}]
-,
+}],
 ['Admin can edit existing coach challenges through a role-checked RPC',()=>{
  assert.match(challenges,/role==='admin'&&\['draft','open','active','awaiting_reviews'\]\.includes\(c\.status\)/);
  assert.match(challenges,/coach_challenge_v2_admin_edit/);
@@ -75,6 +74,8 @@ const cases=[
  assert.ok(require('node:fs').existsSync('supabase/production-prep/rollback_20261021223000_admin_challenge_editing.sql'));
  assert.ok(require('node:fs').existsSync('supabase/production-prep/20261021223000_admin_challenge_editing_preflight_read_only.sql'));
  assert.ok(require('node:fs').existsSync('supabase/production-prep/20261021223000_admin_challenge_editing_postflight_read_only.sql'));
+ assert.ok(require('node:fs').existsSync('tests/admin-challenge-editing-schema.sql'));
+ assert.match(read('.github/workflows/coach-challenges-v2.yml'),/admin-challenge-editing-schema/);
 }]
 ];
 let n=0;for(const [label,fn] of cases){try{fn();n++;console.log('PASS',label)}catch(e){console.error('FAIL',label,e.message);process.exitCode=1}}
