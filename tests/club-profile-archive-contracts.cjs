@@ -11,6 +11,7 @@ assert.match(sql,/target\.role = 'admin'/i);
 assert.match(sql,/profile_admin_audit/i);
 assert.doesNotMatch(sql,/DELETE FROM public\.profiles|DELETE FROM public\.training_submissions|DELETE FROM public\.point_transactions/i);
 assert.match(rollback,/DROP COLUMN IF EXISTS archived_at/i);
+assert.match(rollback,/Rollback refused: restore all archived profiles/i);
 assert.match(admin,/admin_list_profile_archive_state/);
 assert.match(admin,/admin_archive_profile/);
 assert.match(admin,/admin_restore_profile/);
