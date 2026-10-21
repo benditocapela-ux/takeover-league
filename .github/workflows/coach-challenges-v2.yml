@@ -30,6 +30,7 @@ on:
       - 'tests/production-v2-*.sh'
       - 'tests/production-v2-schema-smoke.sql'
       - 'tests/admin-challenge-editing-schema.sql'
+      - 'tests/admin-challenge-editing-browser.cjs'
       - '.github/workflows/coach-challenges-v2.yml'
   push:
     branches: [main, feature/coach-challenges-v2-ui]
@@ -77,6 +78,7 @@ jobs:
       - run: node tests/boxer-dashboard-polish.cjs
       - run: node tests/boxer-profile-actions.cjs
       - run: node tests/coach-challenges-v2-browser.cjs
+      - run: node tests/admin-challenge-editing-browser.cjs
       - run: node tests/duels-v2-browser.cjs
       - run: node tests/production-v2-migration-bundle.cjs
       - run: node tests/production-v2-release-safety.cjs
