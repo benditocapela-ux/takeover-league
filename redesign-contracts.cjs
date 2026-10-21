@@ -2,7 +2,7 @@
 // Compare real page DOM hooks and known RPC literals with the archived pre-redesign
 // sources. This is source-contract verification, not a login or transaction E2E test.
 const fs=require('node:fs');const assert=require('node:assert/strict');
-const baseline=require('./redesign-preserved-contracts.json');
+const baseline=require('./tests/redesign-preserved-contracts.json');
 let ids=0, rpcCount=0;
 for(const [path,b] of Object.entries(baseline)){
  const s=fs.readFileSync(path,'utf8');
