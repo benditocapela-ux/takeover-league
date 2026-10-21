@@ -75,8 +75,11 @@ WITH checks AS (
 )
 SELECT pg_catalog.jsonb_pretty(pg_catalog.to_jsonb(checks) ||
  pg_catalog.jsonb_build_object('release_integrity_passed',
-  v2_tables=7 AND rls_protected_tables=7 AND challenge_rpcs=17 AND duel_rpcs=6
-  AND protected_authenticated_rpcs=23 AND tables_without_client_dml=7
+  v2_tables=7 AND rls_protected_tables=7
+  AND challenge_rpcs=17 + CASE WHEN pg_catalog.to_regprocedure('public.coach_challenge_v2_admin_edit(uuid,text,text,text,integer,text,integer)') IS NOT NULL THEN 1 ELSE 0 END
+  AND duel_rpcs=6
+  AND protected_authenticated_rpcs=23 + CASE WHEN pg_catalog.to_regprocedure('public.coach_challenge_v2_admin_edit(uuid,text,text,text,integer,text,integer)') IS NOT NULL THEN 1 ELSE 0 END
+  AND tables_without_client_dml=7
   AND v2_flags=2 AND coach_role_allowed AND v2_exp_categories_allowed
   AND achievement_security_fixed AND invalid_challenge_exp_ledgers=0
   AND invalid_duel_exp_ledgers=0
