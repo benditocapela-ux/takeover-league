@@ -30,19 +30,19 @@ UPDATE public.league_feature_flags SET is_enabled=true
 WHERE feature_key IN ('coach_challenges','league_challenges');
 
 INSERT INTO public.profiles(id,auth_user_id,display_name,role,is_active)
-VALUES('cccccccc-cccc-4ccc-8ccc-cccccccccccc',
-       '33333333-3333-4333-8333-333333333333','Test Admin','admin',true);
+VALUES('77777777-7777-4777-8777-777777777777',
+       '77777777-7777-4777-8777-777777777778','Test Admin','admin',true);
 
 \i supabase/migrations/20261021223000_admin_challenge_editing.sql
 
 BEGIN;
-SELECT set_config('request.jwt.claim.sub','33333333-3333-4333-8333-333333333333',true);
+SELECT set_config('request.jwt.claim.sub','77777777-7777-4777-8777-777777777778',true);
 
 INSERT INTO public.league_coach_challenges(id,created_by,title,description,challenge_kind,duration_days,goal_spec,status)
 VALUES
- ('dddddddd-dddd-4ddd-8ddd-dddddddddddd','cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+ ('dddddddd-dddd-4ddd-8ddd-dddddddddddd','77777777-7777-4777-8777-777777777777',
   'Draft Challenge','Before edit','individual',7,NULL,'draft'),
- ('eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee','cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+ ('eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee','77777777-7777-4777-8777-777777777777',
   'Open Challenge','Before edit','individual',7,
   '{"version":1,"goal_text":"Complete five sessions","review_mode":"manual","reward_exp":25,"target_value":null,"metric":null}'::jsonb,'open');
 
@@ -51,9 +51,9 @@ VALUES('eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaa
 
 INSERT INTO public.league_global_challenges_v21(id,title,description,metric,target_value,starts_at,ends_at,status,created_by)
 VALUES
- ('ffffffff-ffff-4fff-8fff-ffffffffffff','Upcoming Challenge','Before edit','training_sessions',10,now()+interval '2 days',now()+interval '9 days','active','cccccccc-cccc-4ccc-8ccc-cccccccccccc'),
- ('99999999-9999-4999-8999-999999999999','Joined Challenge','Before edit','training_sessions',10,now()+interval '2 days',now()+interval '9 days','active','cccccccc-cccc-4ccc-8ccc-cccccccccccc'),
- ('88888888-8888-4888-8888-888888888888','Started Challenge','Before edit','training_sessions',10,now()-interval '1 day',now()+interval '6 days','active','cccccccc-cccc-4ccc-8ccc-cccccccccccc');
+ ('ffffffff-ffff-4fff-8fff-ffffffffffff','Upcoming Challenge','Before edit','training_sessions',10,now()+interval '2 days',now()+interval '9 days','active','77777777-7777-4777-8777-777777777777'),
+ ('99999999-9999-4999-8999-999999999999','Joined Challenge','Before edit','training_sessions',10,now()+interval '2 days',now()+interval '9 days','active','77777777-7777-4777-8777-777777777777'),
+ ('88888888-8888-4888-8888-888888888888','Started Challenge','Before edit','training_sessions',10,now()-interval '1 day',now()+interval '6 days','active','77777777-7777-4777-8777-777777777777');
 INSERT INTO public.league_global_entries_v21(challenge_id,boxer_id)
 VALUES('99999999-9999-4999-8999-999999999999','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
 
