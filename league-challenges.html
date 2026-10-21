@@ -84,8 +84,8 @@ async function init(){
     if(!e.error)entries=e.data||[];if(!t.error)approved=t.data||[];
    }
    if(isAdmin){
-    const adminEntries=await db.from('league_global_entries_v21').select('challenge_id').limit(10000);
-    if(!adminEntries.error&&(adminEntries.data||[]).length<10000){
+    const adminEntries=await db.from('league_global_entries_v21').select('challenge_id').limit(1000);
+    if(!adminEntries.error&&(adminEntries.data||[]).length<1000){
      adminEntryContextReliable=true;
      for(const entry of adminEntries.data||[])adminEntryIds.add(entry.challenge_id);
     }
