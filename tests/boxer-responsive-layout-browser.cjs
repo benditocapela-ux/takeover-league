@@ -31,7 +31,7 @@ async function run(){
     await page.evaluate(()=>document.getElementById('content').classList.remove('hidden'));
     const choiceState=await page.evaluate(async()=>{
      const select=document.querySelector('#kind');
-     const rail=select?.closest('label')?.nextElementSibling?.querySelector('.tl-choice-track');
+     const rail=select?.nextElementSibling?.querySelector('.tl-choice-track');
      if(!select||!rail)throw new Error('Training choice track missing');
      const option=document.createElement('option');option.value='browser-fixture';option.textContent='Sparring';
      select.append(option);
