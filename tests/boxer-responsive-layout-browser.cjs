@@ -29,11 +29,13 @@ async function run(){
     const errors=[];page.on('pageerror',error=>errors.push(error.message));
     await page.goto(origin+'/boxer.html',{waitUntil:'load'});
     await page.evaluate(()=>document.getElementById('content').classList.remove('hidden'));
-    const choiceState=await page.evaluate(()=>{
-     const select=document.querySelector('select[data-tl-choice="training-kind"]');
-     const rail=document.querySelector('.tl-choice-rail[data-choice-for="training-kind"]');
+    const choiceState=await page.evaluate(async()=>{
+     const select=document.querySelector('#kind');
+     const rail=select?.closest('label')?.nextElementSibling?.querySelector('.tl-choice-track');
+     if(!select||!rail)throw new Error('Training choice track missing');
      const option=document.createElement('option');option.value='browser-fixture';option.textContent='Sparring';
-     select.append(option);select.dispatchEvent(new Event('change',{bubbles:true}));
+     select.append(option);
+     await new Promise(resolve=>setTimeout(resolve,0)); // let the native-select MutationObserver render its card
      const card=rail.querySelector('button[data-value="browser-fixture"]');
      if(card)card.click();
      return {cards:rail.querySelectorAll('.tl-choice-card').length,value:select.value,overflow:getComputedStyle(rail).overflowX};
