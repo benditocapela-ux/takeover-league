@@ -48,9 +48,9 @@ button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(
 <h2>Duell herausfordern</h2>
 <p>Wähle zwei aktive Boxer. Ein Duell dauert 7 oder 14 Tage und wird erst nach Annahme aktiv.</p>
 <form id="invite">
-<label>Herausforderer<select name="challenger" required></select></label>
-<label>Gegner<select name="opponent" required></select></label>
-<label>Laufzeit<select name="duration" required><option value="7">7 Tage</option><option value="14">14 Tage</option></select></label>
+<label>Herausforderer<select name="challenger" required data-tl-choice-hint="Wähle, wer die Einladung sendet."></select></label>
+<label>Gegner<select name="opponent" required data-tl-choice-hint="Wähle einen aktiven Gegner. Du kannst dich nicht selbst herausfordern."></select></label>
+<label>Laufzeit<select name="duration" required data-tl-choice-hint="Lege die Laufzeit des Duells fest."><option value="7">7 Tage</option><option value="14">14 Tage</option></select></label>
 <button type="submit">Einladung senden</button>
 </form>
 <p id="inviteHint" class="meta"></p>
@@ -303,5 +303,5 @@ byId('signin').onsubmit=async e=>{e.preventDefault();if(!db)return;const f=new F
 init();
 setInterval(()=>{if(!document.hidden&&profile&&!busy)load().catch(e=>say(message(e),true))},90000);
 </script>
-<script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-quick-actions.js" defer></script><script src="./takeover-navigation.js" defer></script></body>
+<script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-quick-actions.js" defer></script><script src="./takeover-choice-cards.js" defer></script><script src="./takeover-navigation.js" defer></script></body>
 </html>

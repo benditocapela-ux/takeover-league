@@ -90,6 +90,15 @@ async function main(){
     await page.goto(base+'/duels.html',{waitUntil:'domcontentloaded'});
     await page.waitForFunction(()=>document.querySelectorAll('[data-live-duel]').length===2);
     await page.waitForFunction(()=>document.querySelector('[data-live-duel] .live-points')?.textContent.includes('70'));
+    assert.equal(await page.locator('#invite label:has(select[name="challenger"]) + .tl-choice-field .tl-choice-card').count(),1,'Boxer should see their own challenger card');
+    assert.equal(await page.locator('#invite label:has(select[name="opponent"]) + .tl-choice-field .tl-choice-card').count(),1,'Eligible opponent should be rendered as a choice card');
+    assert.equal(await page.locator('#invite label:has(select[name="duration"]) + .tl-choice-field .tl-choice-card').count(),2,'Both supported duel durations should be visible');
+    await page.locator('#invite label:has(select[name="opponent"]) + .tl-choice-field .tl-choice-card').click();
+    assert.equal(await page.locator('#invite select[name="opponent"]').inputValue(),'bbbb2222-2222-4222-8222-222222222222','Opponent card must update the existing select value');
+    await page.locator('#invite label:has(select[name="duration"]) + .tl-choice-field .tl-choice-card[data-value="14"]').click();
+    assert.equal(await page.locator('#invite select[name="duration"]').inputValue(),'14','Duration card must update the existing select value');
+    await page.locator('#invite label:has(select[name="duration"]) + .tl-choice-field .tl-choice-card[data-value="7"]').click();
+    assert.equal(await page.locator('#invite select[name="duration"]').inputValue(),'7','Duration can be changed back using the card');
     assert.equal(await page.locator('[data-live-duel]').count(),2);
     assert.match(await page.locator('[data-live-duel]').first().innerText(),/70 : 40/);
     assert.match(await page.locator('[data-live-duel]').first().innerText(),/1 offene Trainings/);

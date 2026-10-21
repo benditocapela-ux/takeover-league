@@ -41,7 +41,23 @@
    addSectionWayfinders();
    // Single shared drawer. The home page supplies its existing four-item footer.
    const entries=[
-     ['🏆 Die Liga',[
+     {icon:'👤',title:'Mein Bereich',summary:'Profil, Training und persönliche Ziele',items:[
+       ['user','Anmelden / Mein Account','login.html',''],
+       ['dumbbell','Mein Studio','boxer.html',''],
+       ['target','Meine Ziele','goals.html',''],
+       ['medal','Trainer-Dashboard','coach.html',''],
+       ['goal','League Manager 2.1','league-manager.html',''],
+       ['user','Clubverwaltung','admin.html','',false,true]
+     ]},
+     {icon:'🥊',title:'Kämpfe',summary:'Duelle starten und in der Arena antreten',items:[
+       ['boxing-glove','Duell starten','duels.html','',true],
+       ['arena','Mehrgegner-Arena','arena.html','',true]
+     ]},
+     {icon:'🎯',title:'Herausforderungen',summary:'Persönliche und Liga-Challenges entdecken',items:[
+       ['bolt','Live Challenges','league-challenges.html','',true],
+       ['target','Persönliche Challenges','challenges.html','',true]
+     ]},
+     {icon:'🏆',title:'Liga & Erfolge',summary:'Ranglisten, Fortschritt und Auszeichnungen',items:[
        ['trophy','Podium','index.html#podium','podium'],
        ['chart','Monatsranking','index.html#ranking','ranking'],
        ['boxing-glove','Levels & EXP','index.html#levels','levels'],
@@ -49,36 +65,29 @@
        ['medal','Monatsauszeichnungen','awards.html',''],
        ['scale','Boxer-Vergleich','boxer-compare.html',''],
        ['trophy','Saisons & Hall of Fame','league-history.html','']
-     ]],
-     ['🥊 Neue Funktionen',[
-       ['target','Challenges','challenges.html','',true],
-       ['bolt','Liga-Challenges','league-challenges.html','',true],
-       ['boxing-glove','Boxer-Duelle','duels.html','',true],
-       ['arena','Mehrgegner-Arena','arena.html','',true]
-     ]],
-     ['👤 Mein Bereich',[
-       ['user','Anmelden / Mein Account','login.html',''],
-       ['dumbbell','Mein Training','boxer.html',''],
-       ['target','Meine Ziele','goals.html',''],
-       ['medal','Trainer-Dashboard','coach.html',''],
-       ['goal','League Manager 2.1','league-manager.html',''],
-       ['user','Clubverwaltung','admin.html','',false,true]
-     ]]
+     ]}
    ];
-   const contents=entries.map(group=>
-     '<div class="tl-menu-group"><div class="tl-menu-group-title">'+group[0]+'</div>'+
-     group[1].map(item=>
-       '<a class="tl-menu-link" href="./'+item[2]+'"'+(item[3]?' data-tl-section="'+item[3]+'"':'')+(item[5]?' data-tl-admin hidden':'')+(['boxer.html','goals.html','coach.html','league-manager.html'].includes(item[2])?' data-tl-private hidden':'')+'>'+
-         '<span class="tl-menu-icon" aria-hidden="true">'+emoji(item[0])+'</span>'+
-         '<span class="tl-menu-label">'+item[1]+(item[4]?' <span class="tl-menu-pill">2.0</span>':'')+'</span>'+
-         '<span class="tl-menu-arrow" aria-hidden="true">↗</span>'+
-       '</a>').join('')+'</div>').join('');
+   const contents=entries.map((group,index)=>{
+     const groupId='tl-menu-group-'+index;
+     return '<section class="tl-menu-group">'+
+       '<button type="button" class="tl-menu-group-title tl-menu-group-toggle" id="'+groupId+'-toggle" aria-expanded="false" aria-controls="'+groupId+'-links">'+
+         '<span class="tl-menu-group-mark" aria-hidden="true">'+group.icon+'</span>'+
+         '<span class="tl-menu-group-copy"><span class="tl-menu-group-name">'+group.title+'</span><span class="tl-menu-group-summary">'+group.summary+'</span></span>'+
+         '<span class="tl-menu-group-chevron" aria-hidden="true">⌄</span>'+
+       '</button><div class="tl-menu-group-links" id="'+groupId+'-links" hidden>'+
+         group.items.map(item=>
+           '<a class="tl-menu-link" href="./'+item[2]+'"'+(item[3]?' data-tl-section="'+item[3]+'"':'')+(item[5]?' data-tl-admin hidden':'')+(['boxer.html','goals.html','coach.html','league-manager.html'].includes(item[2])?' data-tl-private hidden':'')+'>'+
+             '<span class="tl-menu-icon" aria-hidden="true">'+emoji(item[0])+'</span>'+
+             '<span class="tl-menu-label">'+item[1]+(item[4]?' <span class="tl-menu-pill">2.0</span>':'')+'</span>'+
+             '<span class="tl-menu-arrow" aria-hidden="true">↗</span>'+
+           '</a>').join('')+'</div></section>';
+   }).join('');
    document.body.insertAdjacentHTML('beforeend',
       '<div id="tl-menu-backdrop" class="tl-menu-backdrop" hidden aria-hidden="true"></div>'+
       '<aside id="tl-menu-panel" class="tl-menu-panel" role="dialog" aria-modal="true" aria-label="Alle Takeover League Bereiche" aria-hidden="true" inert>'+
       '<div class="tl-menu-head"><div><div class="tl-menu-overline">TAKEOVER LEAGUE 2.0</div><div class="tl-menu-title">'+emoji('menu')+' Alle Bereiche</div></div>'+
       '<button type="button" class="tl-menu-close" id="tl-menu-close" aria-label="Menü schliessen">×</button></div>'+
-      '<p class="tl-menu-intro">Gleiche Liga. Alle Funktionen an einem Ort.</p>'+
+      '<p class="tl-menu-intro">Tippe auf eine Rubrik, um die passenden Bereiche zu öffnen.</p>'+
       contents+
       '<div class="tl-menu-foot">Deine Punkte, Ranglisten und Trainings bleiben erhalten.</div></aside>');
    const panel=document.getElementById('tl-menu-panel');
@@ -141,6 +150,25 @@
   void resolveRoleLinks();
    let restoreFocus=null;
    let open=false;
+   function setMenuGroupExpanded(group,expanded){
+     if(!group)return;
+     if(expanded){
+       panel.querySelectorAll('.tl-menu-group').forEach(other=>{
+         if(other===group)return;
+         const toggle=other.querySelector('.tl-menu-group-toggle');
+         const links=other.querySelector('.tl-menu-group-links');
+         if(toggle)toggle.setAttribute('aria-expanded','false');
+         if(links)links.hidden=true;
+         other.classList.remove('tl-menu-group--open');
+       });
+     }
+     const toggle=group.querySelector('.tl-menu-group-toggle');
+     const links=group.querySelector('.tl-menu-group-links');
+     if(!toggle||!links)return;
+     toggle.setAttribute('aria-expanded',String(expanded));
+     links.hidden=!expanded;
+     group.classList.toggle('tl-menu-group--open',expanded);
+   }
    function currentTab(){
      const hash=window.location.hash.substring(1);
      if(atHome && sections.has(hash))return hash;
@@ -181,13 +209,22 @@
      trigger.setAttribute('aria-expanded',open?'true':'false');
      document.body.classList.toggle('tl-menu-visible',open);
      syncCurrent(currentTab());
-     if(open)close.focus();
-     else if(focusBack && restoreFocus && typeof restoreFocus.focus==='function')restoreFocus.focus();
+     if(open){
+       const current=menuEntries.find(anchor=>anchor.classList.contains('tl-current')&&!anchor.hidden);
+       if(current)setMenuGroupExpanded(current.closest('.tl-menu-group'),true);
+       close.focus();
+     }else if(focusBack && restoreFocus && typeof restoreFocus.focus==='function')restoreFocus.focus();
    }
    trigger.addEventListener('click',()=>toggleMenu(!open));
    close.addEventListener('click',()=>toggleMenu(false));
    backdrop.addEventListener('click',()=>toggleMenu(false));
    panel.addEventListener('click',event=>{
+     const groupToggle=event.target.closest('button.tl-menu-group-toggle');
+     if(groupToggle){
+       const group=groupToggle.closest('.tl-menu-group');
+       setMenuGroupExpanded(group,groupToggle.getAttribute('aria-expanded')!=='true');
+       return;
+     }
      const anchor=event.target.closest('a.tl-menu-link');
      if(!anchor)return;
      const tab=anchor.dataset.tlSection;
@@ -226,7 +263,7 @@
        event.preventDefault();
        toggleMenu(false);
      }else if(event.key==='Tab'){
-       const elements=Array.from(panel.querySelectorAll('button:not([disabled]), a[href]:not([hidden])'));
+       const elements=Array.from(panel.querySelectorAll('button:not([disabled]), a[href]:not([hidden])')).filter(element=>!element.closest('[hidden]'));
        if(!elements.length)return;
        const first=elements[0],last=elements[elements.length-1];
        if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus()}

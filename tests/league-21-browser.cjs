@@ -116,7 +116,7 @@ async function main(){
        '11111111-1111-4111-8111-111111111111',
        '22222222-2222-4222-8222-222222222222',
        '33333333-3333-4333-8333-333333333333']);
-      await page.locator('#create button').click();
+      await page.locator('#create button[type="submit"]').click();
       await page.waitForFunction(()=>window.__testCalls.some(x=>x.name==='league_v21_arena_create'));
      }else if(route.startsWith('league-manager')){
       await page.locator('#dashboard').waitFor({state:'visible'});
@@ -133,6 +133,13 @@ async function main(){
       assert.match(await page.locator('#directDuelsStatus').innerText(),/Boxer Alpha 1 Siege/);
       assert.match(await page.locator('#directDuelsStatus').innerText(),/Boxer Beta 0 Siege/);
       assert.equal(await page.locator('#directDuelsRows .h2h-row').count(),1);
+      const leftValue=await page.locator('#left').inputValue();
+      assert.equal(await page.locator('[data-choice-for="compare-left"] .tl-choice-card[aria-pressed="true"]').getAttribute('data-value'),leftValue,'Comparison card should reflect selected boxer');
+      await page.locator('#swap').click();
+      const swappedLeft=await page.locator('#left').inputValue();
+      const swappedRight=await page.locator('#right').inputValue();
+      assert.equal(await page.locator('[data-choice-for="compare-left"] .tl-choice-card[aria-pressed="true"]').getAttribute('data-value'),swappedLeft,'Swap should synchronize left comparison card');
+      assert.equal(await page.locator('[data-choice-for="compare-right"] .tl-choice-card[aria-pressed="true"]').getAttribute('data-value'),swappedRight,'Swap should synchronize right comparison card');
      }else if(route.startsWith('league-challenges')){
       await page.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('Neue Wettbewerbe'));
      }

@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),assert=require('node:assert/strict');
 function read(path){return fs.readFileSync(path,'utf8')}
-const boxer=read('boxer.html'),coach=read('coach.html'),duels=read('duels.html'),challenges=read('challenges.html'),sql=read('supabase/migrations/20261018190000_training_drafts_v2.sql');
+const boxer=read('boxer.html'),coach=read('coach.html'),duels=read('duels.html'),challenges=read('challenges.html'),liveChallenges=read('league-challenges.html'),challengeEdit=read('supabase/migrations/20261021223000_admin_challenge_editing.sql'),sql=read('supabase/migrations/20261018190000_training_drafts_v2.sql');
 const cases=[
 ['Boxer uses real authenticated submission table',()=>assert.match(boxer,/db\.from\('training_submissions'\)\.insert/)],
 ['Boxer retains submission lock',()=>assert.match(boxer,/trainingSubmitBusy=true/)],
@@ -51,7 +51,54 @@ const cases=[
  const sql=read('supabase/migrations/20261018214000_avatar_rpc_permissions.sql');
  assert.match(sql,/REVOKE ALL ON FUNCTION public.update_my_boxer_avatar\(text,text\) FROM PUBLIC,anon/);
  assert.match(sql,/GRANT EXECUTE ON FUNCTION public.update_my_boxer_avatar\(text,text\) TO authenticated/);
-}]
+}],
+['Admin can edit existing coach challenges through a role-checked RPC',()=>{
+ assert.match(challenges,/role==='admin'&&\['draft','open','active','awaiting_reviews'\]\.includes\(c\.status\)/);
+ assert.match(challenges,/coach_challenge_v2_admin_edit/);
+ assert.match(challengeEdit,/a->>'role' IS DISTINCT FROM 'admin'/);
+ assert.match(challengeEdit,/c\.status NOT IN \('draft','open','active','awaiting_reviews'\)/);
+ assert.match(challengeEdit,/c\.status IN \('active','awaiting_reviews'\) OR has_entries/);
+}],
+['Live league challenges have an admin editor with server-side fairness guards',()=>{
+ assert.match(liveChallenges,/isAdmin&&c\.status==='active'/);
+ assert.match(liveChallenges,/league_v21_admin_edit_global_challenge/);
+ assert.match(challengeEdit,/create or replace function public\.league_v21_admin_edit_global_challenge\([\s\S]*?security invoker/i);
+ assert.match(challengeEdit,/feature_key='league_challenges' AND f\.is_enabled IS TRUE/);
+ assert.match(challengeEdit,/c\.starts_at<=pg_catalog\.now\(\)/);
+ assert.match(challengeEdit,/EXISTS\(SELECT 1 FROM public\.league_global_entries_v21 e WHERE e\.challenge_id=c\.id\)/i);
+ assert.match(challengeEdit,/REVOKE ALL ON FUNCTION public\.league_v21_admin_edit_global_challenge[\s\S]*?FROM PUBLIC,anon,authenticated/i);
+}],
+['Challenge editing migration leaves feature flags and score ledgers unchanged',()=>{
+ assert.doesNotMatch(challengeEdit,/UPDATE public\.league_feature_flags/i);
+ assert.doesNotMatch(challengeEdit,/DELETE\s+FROM\s+public\.(profiles|point_transactions|league_global_entries_v21|league_coach_challenges)/i);
+ assert.ok(require('node:fs').existsSync('supabase/production-prep/rollback_20261021223000_admin_challenge_editing.sql'));
+ assert.ok(require('node:fs').existsSync('supabase/production-prep/20261021223000_admin_challenge_editing_preflight_read_only.sql'));
+ assert.ok(require('node:fs').existsSync('supabase/production-prep/20261021223000_admin_challenge_editing_postflight_read_only.sql'));
+ assert.ok(require('node:fs').existsSync('tests/admin-challenge-editing-schema.sql'));
+ assert.ok(require('node:fs').existsSync('tests/admin-challenge-editing-browser.cjs'));
+ assert.match(read('.github/workflows/coach-challenges-v2.yml'),/tests\/admin-challenge-editing-browser\.cjs/);
+ assert.match(read('.github/workflows/coach-challenges-v2.yml'),/admin-challenge-editing-schema/);
+}],
+['Clubverwaltung archiviert Profile reversibel ohne Datenlöschung',()=>{
+ const archive=read('supabase/migrations/20261021230000_club_profile_archive.sql');
+ const rollback=read('supabase/production-prep/rollback_20261021230000_club_profile_archive.sql');
+ const admin=read('admin.html');
+ assert.match(archive,/ADD COLUMN IF NOT EXISTS archived_at timestamptz/i);
+ assert.match(archive,/CREATE OR REPLACE FUNCTION public\.admin_archive_profile/i);
+ assert.match(archive,/CREATE OR REPLACE FUNCTION public\.admin_restore_profile/i);
+ assert.match(archive,/role = 'admin' AND p\.is_active IS TRUE/i);
+ assert.match(archive,/target\.role = 'admin'/i);
+ assert.doesNotMatch(archive,/DELETE FROM public\.(profiles|training_submissions|point_transactions)/i);
+ assert.match(rollback,/DROP COLUMN IF EXISTS archived_at/i);
+ assert.match(rollback,/Rollback refused: restore all archived profiles/i);
+ assert.match(admin,/admin_list_profile_archive_state/);
+ assert.match(admin,/admin_archive_profile/);
+ assert.match(admin,/admin_restore_profile/);
+ assert.match(admin,/Archivierte Profile anzeigen/);
+ assert.ok(fs.existsSync('supabase/production-prep/20261021230000_club_profile_archive_preflight_read_only.sql'));
+ assert.ok(fs.existsSync('supabase/production-prep/20261021230000_club_profile_archive_postflight_read_only.sql'));
+ assert.ok(fs.existsSync('tests/club-profile-archive-contracts.cjs'));
+}] 
 ];
 let n=0;for(const [label,fn] of cases){try{fn();n++;console.log('PASS',label)}catch(e){console.error('FAIL',label,e.message);process.exitCode=1}}
 console.log(n+'/'+cases.length+' static source checks passed. No browser/E2E claims.');

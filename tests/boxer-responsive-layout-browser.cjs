@@ -29,6 +29,20 @@ async function run(){
     const errors=[];page.on('pageerror',error=>errors.push(error.message));
     await page.goto(origin+'/boxer.html',{waitUntil:'load'});
     await page.evaluate(()=>document.getElementById('content').classList.remove('hidden'));
+    const choiceState=await page.evaluate(async()=>{
+     const select=document.querySelector('#kind');
+     const rail=select?.nextElementSibling?.querySelector('.tl-choice-track');
+     if(!select||!rail)throw new Error('Training choice track missing');
+     const option=document.createElement('option');option.value='browser-fixture';option.textContent='Sparring';
+     select.append(option);
+     await new Promise(resolve=>setTimeout(resolve,0)); // let the native-select MutationObserver render its card
+     const card=rail.querySelector('button[data-value="browser-fixture"]');
+     if(card)card.click();
+     return {cards:rail.querySelectorAll('.tl-choice-card').length,value:select.value,overflow:getComputedStyle(rail).overflowX};
+    });
+    assert.ok(choiceState.cards>=1,'Training choice card should render in Chromium');
+    assert.equal(choiceState.value,'browser-fixture','Training card click should update the original select');
+    assert.equal(choiceState.overflow,'auto','Training cards should use horizontal scrolling');
     const pairs=[
      ['studioTabOverview','studioPanelOverview'],
      ['studioTabHistory','studioPanelHistory'],

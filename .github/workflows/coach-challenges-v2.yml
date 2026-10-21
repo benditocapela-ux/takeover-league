@@ -7,6 +7,7 @@ on:
       - 'tests/coach-challenges-v2.cjs'
       - 'tests/coach-challenges-v2-browser.cjs'
       - 'challenges.html'
+      - 'league-challenges.html'
       - 'duels.html'
       - 'duels-v2-preview.html'
       - 'tests/duels-v2-browser.cjs'
@@ -28,6 +29,8 @@ on:
       - 'tests/hosted-v2-*.cjs'
       - 'tests/production-v2-*.sh'
       - 'tests/production-v2-schema-smoke.sql'
+      - 'tests/admin-challenge-editing-schema.sql'
+      - 'tests/admin-challenge-editing-browser.cjs'
       - '.github/workflows/coach-challenges-v2.yml'
   push:
     branches: [main, feature/coach-challenges-v2-ui]
@@ -36,6 +39,7 @@ on:
       - 'tests/coach-challenges-v2.cjs'
       - 'tests/coach-challenges-v2-browser.cjs'
       - 'challenges.html'
+      - 'league-challenges.html'
       - 'duels.html'
       - 'duels-v2-preview.html'
       - 'tests/duels-v2-browser.cjs'
@@ -71,9 +75,16 @@ jobs:
       - run: npm install --no-save --no-package-lock jsdom@26.1.0
       - run: node tests/coach-challenges-v2.cjs
       - run: node tests/menu-navigation-compat.cjs
+      - run: node choice-cards-compat.cjs
+      - run: node training-choices-compat.cjs
+      - run: node redesign-contracts.cjs
+      - run: node menu-navigation-compat.cjs
+      - run: node tests/club-profile-archive-contracts.cjs
+      - run: node tests/release-static-contracts.cjs
       - run: node tests/boxer-dashboard-polish.cjs
       - run: node tests/boxer-profile-actions.cjs
       - run: node tests/coach-challenges-v2-browser.cjs
+      - run: node tests/admin-challenge-editing-browser.cjs
       - run: node tests/duels-v2-browser.cjs
       - run: node tests/production-v2-migration-bundle.cjs
       - run: node tests/production-v2-release-safety.cjs
@@ -226,3 +237,67 @@ jobs:
           AFTER="$(psql -X -h localhost -U postgres -d takeover_restore_probe -Atc "$CHECK")"
           test "$BEFORE" = "$AFTER"
           echo "PASS: Disposable staging fixtures restored identically; this does NOT verify a production backup."
+
+  admin-challenge-editing-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Test admin challenge editing on disposable PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f tests/admin-challenge-editing-schema.sql
+
+  club-profile-archive-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated archive fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres club_archive_probe
+      - name: Verify reversible archive/restore and access guards on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d club_archive_probe -v ON_ERROR_STOP=1 -f tests/club-profile-archive-schema.sql

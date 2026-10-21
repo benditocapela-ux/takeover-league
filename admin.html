@@ -17,6 +17,8 @@ header{display:flex;justify-content:space-between;align-items:center;gap:var(--s
 .summary{display:flex;flex-wrap:wrap;gap:10px}.summary strong{color:var(--gold)}
 .table-wrap{overflow-x:auto;width:100%}table{border-collapse:collapse;width:100%;min-width:800px}th,td{text-align:left;padding:12px 10px;vertical-align:top;border-bottom:1px solid var(--line)}th{color:var(--muted);font-size:var(--fs-xs);font-weight:800}
 tr.inactive{opacity:.65;background:color-mix(in srgb,var(--bad) 6%,transparent)}
+tr.archived{opacity:.55;background:color-mix(in srgb,var(--muted) 9%,transparent)}
+.archive-toggle{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:var(--fs-sm)}.archive-toggle input{width:20px;height:20px;accent-color:var(--gold)}
 tr.new-profile{box-shadow:inset 3px 0 var(--gold)}
 td strong{display:block}small{display:block;color:var(--muted);font-size:var(--fs-xs);margin-top:3px}
 td input[type="email"],td select{max-width:240px;width:100%;min-height:42px;background:var(--bg);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:7px;color:var(--text)}
@@ -36,7 +38,7 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:13px;background:var(--bg
 <section id="adminContent" class="hidden">
 <div class="panel"><div class="inline-actions" style="justify-content:space-between;align-items:center">
 <div><h2>Boxerprofile &amp; Zugänge</h2><div id="profileTotals" class="summary" aria-live="polite"></div></div>
-<button type="button" id="adminRefresh">Aktualisieren</button></div>
+<div class="inline-actions" style="align-items:center"><label class="archive-toggle"><input type="checkbox" id="showArchived"> Archivierte Profile anzeigen</label><button type="button" id="adminRefresh">Aktualisieren</button></div></div>
 <p class="warn">Neue Anmeldungen sind sofort aktiv, aber zunächst <strong>nicht öffentlich sichtbar</strong>. Bei vorbereiteten Profilen zuerst die E-Mail hinterlegen. Die Registrierung mit exakt dieser Adresse übernimmt dann das bestehende Profil samt Trainings und Punkten.</p>
 <div class="table-wrap"><table aria-label="Profile verwalten"><thead><tr><th>Profil</th><th>E-Mail / Verknüpfung</th><th>Rolle</th><th>Aktiv</th><th>Öffentlich</th></tr></thead><tbody id="profilesBody"></tbody></table></div>
 </div>
@@ -56,6 +58,7 @@ const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable
 const $=id=>document.getElementById(id);
 const msg=(value,error=false)=>{const el=$('adminStatus');el.textContent=value;el.classList.toggle('error',error)};
 let admin=false;
+let archiveById=new Map();
 const add=(tag,text,cls)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el};
 async function mustBeAdmin(){
  const {data:{user},error}=await db.auth.getUser();
@@ -75,12 +78,14 @@ async function save(rpc,params,question,success){
  msg(success);
 }
 function buildRow(p){
- const tr=add('tr');tr.className=(!p.is_active?'inactive ':'')+(p.is_active&&!p.is_listed?'new-profile':'');
+ const archivedAt=archiveById.get(p.id)||null;
+ const tr=add('tr');tr.className=(archivedAt?'archived ':'')+(!p.is_active?'inactive ':'')+(p.is_active&&!p.is_listed?'new-profile':'');
  const makeCell=(label)=>{const td=add('td');td.dataset.label=label;tr.append(td);return td};
  const name=makeCell('Profil');
  name.append(add('strong',p.display_name));
  name.append(add('small',new Date(p.created_at).toLocaleDateString('de-CH')));
  if(p.role==='admin')name.append(add('span','Eigentümer-Admin','tag'));
+ if(archivedAt)name.append(add('span','Archiviert seit '+new Date(archivedAt).toLocaleDateString('de-CH'),'tag danger'));
  else if(!p.is_active)name.append(add('span','Deaktiviert','tag danger'));
  else if(!p.is_listed)name.append(add('span','Neu / noch nicht öffentlich','tag pending'));
  const account=makeCell('E-Mail / Zugang');
@@ -126,6 +131,17 @@ function buildRow(p){
   (pub.checked?'Öffentliche Ranglisten-Sichtbarkeit einschalten für ':'Öffentliche Sichtbarkeit abschalten für ')+p.display_name+'?',
   'Öffentliche Sichtbarkeit gespeichert.');
  listed.append(pub,listedBtn);
+ const archiveCell=makeCell('Archivierung');
+ const archiveBtn=add('button',archivedAt?'Wiederherstellen':'Archivieren',archivedAt?'':'danger');archiveBtn.type='button';archiveBtn.disabled=p.role==='admin';
+ archiveBtn.onclick=()=>{
+  const restore=Boolean(archivedAt);
+  const question=restore
+   ?'Profil '+p.display_name+' aus dem Archiv wiederherstellen? Trainingshistorie, Punkte und EXP bleiben erhalten.'
+   :'Profil '+p.display_name+' archivieren? Es wird nicht gelöscht. Trainingshistorie, Punkte und EXP bleiben erhalten. Die Archivierung kann rückgängig gemacht werden.';
+  save(restore?'admin_restore_profile':'admin_archive_profile',{p_profile_id:p.id},question,restore?'Profil wiederhergestellt.':'Profil archiviert.');
+ };
+ archiveCell.append(archiveBtn);
+ if(p.role==='admin')archiveCell.append(add('small','Adminprofile sind geschützt.'));
  return tr;
 }
 async function load(silent=false){
@@ -133,14 +149,19 @@ async function load(silent=false){
  const result=await db.rpc('admin_list_profiles');
  if(result.error){msg('Profile konnten nicht geladen werden: '+result.error.message,true);return;}
  const rows=Array.isArray(result.data)?result.data:[];
+ const archiveResult=await db.rpc('admin_list_profile_archive_state');
+ if(archiveResult.error){msg('Archivstatus konnte nicht geladen werden: '+archiveResult.error.message,true);return;}
+ archiveById=new Map((archiveResult.data||[]).filter(x=>x.archived_at).map(x=>[x.profile_id,x.archived_at]));
  rows.sort((a,b)=>(a.has_account===b.has_account?0:a.has_account?1:-1)||((a.is_listed===b.is_listed)?0:a.is_listed?1:-1)||a.display_name.localeCompare(b.display_name,'de-CH'));
  const body=$('profilesBody');body.replaceChildren();
- for(const row of rows)body.append(buildRow(row));
+ const visibleRows=rows.filter(row=>$('showArchived').checked||!archiveById.has(row.id));
+ for(const row of visibleRows)body.append(buildRow(row));
  $('profileTotals').replaceChildren(
   add('span',rows.length+' Profile'),
   add('span',' · '+rows.filter(x=>x.is_active).length+' aktiv'),
   add('span',' · '+rows.filter(x=>!x.has_account).length+' ohne Zugang'),
-  add('span',' · '+rows.filter(x=>!x.is_listed).length+' nicht öffentlich')
+  add('span',' · '+rows.filter(x=>!x.is_listed).length+' nicht öffentlich'),
+  add('span',' · '+archiveById.size+' archiviert')
  );
  $('adminContent').classList.remove('hidden');if(!silent)msg('Verwaltung geladen.');
  await loadAudit();
@@ -151,11 +172,12 @@ async function loadAudit(){
  if(r.error){root.append(add('p','Änderungshistorie konnte nicht geladen werden: '+r.error.message));return;}
  if(!r.data?.length){root.append(add('p','Noch keine Verwaltungsänderungen.'));return;}
  for(const entry of r.data){
-  const p=add('p',new Date(entry.created_at).toLocaleString('de-CH')+' · '+({role:'Rolle',active:'Aktivierung',listed:'Öffentlichkeit',email:'E-Mail'}[entry.action]||entry.action)+' · Profil '+entry.profile_id);
+  const p=add('p',new Date(entry.created_at).toLocaleString('de-CH')+' · '+({role:'Rolle',active:'Aktivierung',listed:'Öffentlichkeit',email:'E-Mail',archive:'Archivierung',restore:'Wiederherstellung'}[entry.action]||entry.action)+' · Profil '+entry.profile_id);
   root.append(p);
  }
 }
 $('adminRefresh').addEventListener('click',()=>load());
+$('showArchived').addEventListener('change',()=>load(true));
 document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{
  try{await navigator.clipboard.writeText($(button.dataset.copy).textContent);msg('SQL-Hinweis kopiert. Er wurde nicht ausgeführt.')}
  catch{msg('Kopieren nicht möglich. SQL-Text oben manuell markieren.',true)}

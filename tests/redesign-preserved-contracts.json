@@ -420,6 +420,7 @@
       "challenges"
     ],
     "rpc": [
+      "league_v21_admin_edit_global_challenge",
       "league_v21_join_global_challenge"
     ],
     "scriptCount": 2
