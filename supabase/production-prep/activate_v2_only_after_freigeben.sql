@@ -4,6 +4,7 @@
 BEGIN;
 DO $release_gate$
 DECLARE rpc_ch integer; rpc_duel integer; protected_rpc integer; protected_tables integer;
+        admin_challenge_edit boolean; expected_challenge_rpcs integer; expected_protected_rpc integer;
 BEGIN
  SELECT count(*) FILTER(WHERE p.proname LIKE 'coach_challenge_v2_%'),
         count(*) FILTER(WHERE p.proname LIKE 'duel_v2_%'),
@@ -15,7 +16,10 @@ BEGIN
  JOIN pg_catalog.pg_namespace n ON n.oid=p.pronamespace
  WHERE n.nspname='public' AND
  (p.proname LIKE 'coach_challenge_v2_%' OR p.proname LIKE 'duel_v2_%');
- IF rpc_ch<>17 OR rpc_duel<>6 OR protected_rpc<>23
+ admin_challenge_edit := pg_catalog.to_regprocedure('public.coach_challenge_v2_admin_edit(uuid,text,text,text,integer,text,integer)') IS NOT NULL;
+ expected_challenge_rpcs := 17 + CASE WHEN admin_challenge_edit THEN 1 ELSE 0 END;
+ expected_protected_rpc := 23 + CASE WHEN admin_challenge_edit THEN 1 ELSE 0 END;
+ IF rpc_ch<>expected_challenge_rpcs OR rpc_duel<>6 OR protected_rpc<>expected_protected_rpc
  THEN RAISE EXCEPTION 'V2 RPCs incomplete or insufficiently protected: %/%/%',
  rpc_ch,rpc_duel,protected_rpc; END IF;
  SELECT count(*) INTO protected_tables
