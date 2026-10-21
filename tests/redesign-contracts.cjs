@@ -17,7 +17,10 @@ for(const [path,b] of Object.entries(baseline)){
   ? ['guest-tab-overview','guest-tab-ranking','guest-tab-challenges','guest-tab-duels','guest-tab-history']
   : path==='admin.html' ? ['showArchived'] : [];
  assert.deepEqual(addedIds,allowedAdded,`${path}: unexpected additional DOM ID`);
- assert.deepEqual(gotRpc,b.rpc,`${path}: RPC literal list changed`);
+ const originalRpc=gotRpc.filter(rpc=>b.rpc.includes(rpc));
+ assert.deepEqual(originalRpc,b.rpc,`${path}: a pre-existing RPC literal changed`);
+ const addedRpc=gotRpc.filter(rpc=>!b.rpc.includes(rpc));
+ assert.deepEqual(addedRpc,path==='admin.html'?['admin_list_profile_archive_state']:[],`${path}: unexpected additional RPC literal`);
  const allowedScriptAdditions=path==='league-challenges.html'?1:0;
  assert.equal((s.match(/<script\b/gi)||[]).length,b.scriptCount+allowedScriptAdditions,`${path}: unexpected script change`);
  assert.match(s,/takeover-redesign\.css/,`${path}: must import production stylesheet`);
