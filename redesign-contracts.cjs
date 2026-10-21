@@ -17,7 +17,10 @@ for(const [path,b] of Object.entries(baseline)){
   ? ['guest-tab-overview','guest-tab-ranking','guest-tab-challenges','guest-tab-duels','guest-tab-history']
   : path==='admin.html' ? ['showArchived'] : [];
  assert.deepEqual(addedIds,allowedAdded,`${path}: unexpected additional DOM ID`);
- assert.deepEqual(gotRpc,b.rpc,`${path}: RPC literal list changed`);
+ const originalRpc=gotRpc.filter(rpc=>b.rpc.includes(rpc));
+ assert.deepEqual(originalRpc,b.rpc,`${path}: a pre-existing RPC literal changed`);
+ const addedRpc=gotRpc.filter(rpc=>!b.rpc.includes(rpc));
+ assert.deepEqual(addedRpc,path==='admin.html'?['admin_list_profile_archive_state']:[],`${path}: unexpected additional RPC literal`);
  const choiceCardPages=new Set(['arena.html','boxer.html','boxer-compare.html','challenges.html','duels.html','goals.html','league-manager.html','league-challenges.html']);
  const expectedScriptCount=b.scriptCount+(choiceCardPages.has(path)?1:0)+(path==='boxer.html'?1:0);
  assert.equal((s.match(/<script\b/gi)||[]).length,expectedScriptCount,`${path}: unexpected script change`);
