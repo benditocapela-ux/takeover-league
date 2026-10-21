@@ -78,7 +78,26 @@ const cases=[
  assert.ok(require('node:fs').existsSync('tests/admin-challenge-editing-browser.cjs'));
  assert.match(read('.github/workflows/coach-challenges-v2.yml'),/tests\/admin-challenge-editing-browser\.cjs/);
  assert.match(read('.github/workflows/coach-challenges-v2.yml'),/admin-challenge-editing-schema/);
-}]
+}],
+['Clubverwaltung archiviert Profile reversibel ohne Datenlöschung',()=>{
+ const archive=read('supabase/migrations/20261021230000_club_profile_archive.sql');
+ const rollback=read('supabase/production-prep/rollback_20261021230000_club_profile_archive.sql');
+ const admin=read('admin.html');
+ assert.match(archive,/ADD COLUMN IF NOT EXISTS archived_at timestamptz/i);
+ assert.match(archive,/CREATE OR REPLACE FUNCTION public\.admin_archive_profile/i);
+ assert.match(archive,/CREATE OR REPLACE FUNCTION public\.admin_restore_profile/i);
+ assert.match(archive,/role = 'admin' AND p\.is_active IS TRUE/i);
+ assert.match(archive,/target\.role = 'admin'/i);
+ assert.doesNotMatch(archive,/DELETE FROM public\.(profiles|training_submissions|point_transactions)/i);
+ assert.match(rollback,/DROP COLUMN IF EXISTS archived_at/i);
+ assert.match(admin,/admin_list_profile_archive_state/);
+ assert.match(admin,/admin_archive_profile/);
+ assert.match(admin,/admin_restore_profile/);
+ assert.match(admin,/Archivierte Profile anzeigen/);
+ assert.ok(fs.existsSync('supabase/production-prep/20261021230000_club_profile_archive_preflight_read_only.sql'));
+ assert.ok(fs.existsSync('supabase/production-prep/20261021230000_club_profile_archive_postflight_read_only.sql'));
+ assert.ok(fs.existsSync('tests/club-profile-archive-contracts.cjs'));
+}] 
 ];
 let n=0;for(const [label,fn] of cases){try{fn();n++;console.log('PASS',label)}catch(e){console.error('FAIL',label,e.message);process.exitCode=1}}
 console.log(n+'/'+cases.length+' static source checks passed. No browser/E2E claims.');
