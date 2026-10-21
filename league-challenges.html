@@ -9,7 +9,7 @@
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
 const $=id=>document.getElementById(id),make=(tag,value)=>{const e=document.createElement(tag);e.textContent=String(value??'');return e};
-let boxer=null,entries=[],approved=[],isAdmin=false,adminEntryIds=new Set(),adminEntryContextReliable=false;
+let boxer=null,entries=[],approved=[],isAdmin=false;
 
 function localDate(value){return new Date(value).toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'})}
 function zurichBoundary(day,endOfDay=false){
@@ -33,7 +33,7 @@ function adminEditor(c){
  const target=document.createElement('input');target.type='number';target.min='1';target.max='1000000';target.step='any';target.value=String(c.target_value);target.required=true;
  const start=document.createElement('input');start.type='date';start.required=true;start.value=localDate(c.starts_at);
  const end=document.createElement('input');end.type='date';end.required=true;end.value=localDate(c.ends_at);
- const canEditRules=Date.parse(c.starts_at)>Date.now()&&adminEntryContextReliable&&!adminEntryIds.has(c.id);
+ const canEditRules=Date.parse(c.starts_at)>Date.now();
  metric.disabled=!canEditRules;target.disabled=!canEditRules;start.disabled=!canEditRules;end.disabled=!canEditRules;
  const hint=make('p',canEditRules?'Kennzahl, Ziel und Zeitraum sind nur änderbar, solange noch niemand beigetreten ist. Der Server prüft dies beim Speichern erneut.':'Nur Titel und Beschreibung sind noch bearbeitbar. Kennzahl, Ziel und Zeitraum bleiben nach dem Start oder bei Teilnahmen gesperrt.');hint.className='muted';
  form.append(field('Titel',title),field('Beschreibung',description),field('Messwert',metric),field('Zielmenge',target),field('Beginn',start),field('Ende',end),hint);
@@ -65,7 +65,7 @@ function adminEditor(c){
  return details;
 }
 async function init(){
- boxer=null;entries=[];approved=[];isAdmin=false;adminEntryIds=new Set();adminEntryContextReliable=false;
+ boxer=null;entries=[];approved=[];isAdmin=false;
  const [{data:{user}},challenges]=await Promise.all([
   db.auth.getUser(),
   db.from('league_global_challenges_v21').select('id,title,description,metric,target_value,starts_at,ends_at,status').order('starts_at',{ascending:false}).limit(80)
@@ -82,13 +82,6 @@ async function init(){
      db.from('training_submissions').select('training_date,created_at,jogging_km,technique_minutes').eq('boxer_id',boxer.id).eq('status','approved').order('created_at',{ascending:false}).limit(3000)
     ]);
     if(!e.error)entries=e.data||[];if(!t.error)approved=t.data||[];
-   }
-   if(isAdmin){
-    const adminEntries=await db.from('league_global_entries_v21').select('challenge_id').limit(1000);
-    if(!adminEntries.error&&(adminEntries.data||[]).length<1000){
-     adminEntryContextReliable=true;
-     for(const entry of adminEntries.data||[])adminEntryIds.add(entry.challenge_id);
-    }
    }
   }
  }
