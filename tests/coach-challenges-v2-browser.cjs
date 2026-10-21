@@ -41,13 +41,26 @@ async function mount({user=null,profile=null,challenges=[],rpcError=null,candida
  enabled.window.createClient=()=>({
  auth:{getUser:async()=>({data:{user:{id:'coach'}},error:null}),signOut:async()=>({error:null})},
  from:()=>({select:()=>({eq:()=>({maybeSingle:async()=>({data:{role:'admin',is_active:true},error:null})})})}),
- rpc:async(name,args)=>{enabledCalls.push({name,args});return {data:name==='coach_challenge_v2_list'?[]:null,error:null}}
+ rpc:async(name,args)=>{enabledCalls.push({name,args});return {data:name==='coach_challenge_v2_list'?[{
+  id:'admin-active-challenge',title:'Admin Challenge',description:'Before edit',status:'active',
+  is_creator:true,joined_count:1,duration_days:7,challenge_kind:'individual',
+  goal_spec:{goal_text:'Complete five sessions',reward_exp:25}
+ }]:null,error:null}}
  });
  enabled.window.eval('window.TAKEOVER_CHALLENGES_V2_ENABLED=true;');
  enabled.window.eval(prodSource.replace('init();','window.__ready=init();'));
  await enabled.window.__ready;
  assert.equal(enabled.window.document.querySelector('#coach').hidden,false);
  assert.equal(enabledCalls.some(c=>c.name==='coach_challenge_v2_list'),true);
+ const adminEditButton=[...enabled.window.document.querySelectorAll('button')].find(b=>b.textContent==='Challenge anpassen');
+ assert.ok(adminEditButton,'admin should see an edit action on an active challenge');
+ adminEditButton.click();
+ const adminEditForm=enabled.window.document.querySelector('.admin-challenge-editor');
+ assert.ok(adminEditForm&&!adminEditForm.hidden,'admin edit form should open');
+ adminEditForm.querySelector('[name=title]').value='Edited Admin Challenge';
+ adminEditForm.dispatchEvent(new enabled.window.Event('submit',{bubbles:true,cancelable:true}));
+ await tick();await tick();await tick();
+ assert.equal(enabledCalls.some(c=>c.name==='coach_challenge_v2_admin_edit'&&c.args.p_title==='Edited Admin Challenge'),true);
  enabled.window.close();
 
  const guest=await mount();

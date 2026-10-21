@@ -1,6 +1,6 @@
 <!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Liga-Challenges · Takeover League 2.1</title>
-<style>:root{font:16px system-ui,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 105px;background:var(--bg);color:var(--text)}main{max-width:940px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--sp-5);margin:var(--sp-4) 0}.muted{color:var(--text)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:var(--sp-4)}.card{padding:var(--sp-4);border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--line-strong)}.card h2{font-size:var(--fs-md);margin:0 0 var(--sp-2)}.card p{overflow-wrap:anywhere}button{padding:var(--sp-3) var(--sp-4);background:var(--gold);color:var(--surface);border:0;border-radius:var(--r-sm);font-weight:800;min-height:44px;cursor:pointer}button:disabled{opacity:.55}.bar{height:12px;background:var(--line);border-radius:var(--r-sm);overflow:hidden}.bar div{height:100%;background:var(--gold)}button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}</style>
+<style>:root{font:16px system-ui,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 105px;background:var(--bg);color:var(--text)}main{max-width:940px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--sp-5);margin:var(--sp-4) 0}.muted{color:var(--text)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:var(--sp-4)}.card{padding:var(--sp-4);border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--line-strong)}.card h2{font-size:var(--fs-md);margin:0 0 var(--sp-2)}.card p{overflow-wrap:anywhere}button{padding:var(--sp-3) var(--sp-4);background:var(--gold);color:var(--surface);border:0;border-radius:var(--r-sm);font-weight:800;min-height:44px;cursor:pointer}button:disabled{opacity:.55}.bar{height:12px;background:var(--line);border-radius:var(--r-sm);overflow:hidden}.bar div{height:100%;background:var(--gold)}button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}.admin-editor{margin-top:var(--sp-4);padding:var(--sp-3);border:1px solid var(--line-strong);border-radius:var(--r-md)}.admin-editor summary{cursor:pointer;color:var(--gold);font-weight:800;padding:var(--sp-2) 0}.admin-editor form{display:grid;gap:var(--sp-3);margin-top:var(--sp-3)}.admin-editor label{display:grid;gap:6px;font-weight:700;font-size:var(--fs-sm)}.admin-editor input,.admin-editor select,.admin-editor textarea{width:100%;min-height:43px;color:var(--text);background:var(--surface);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:var(--sp-3);font:inherit}.admin-editor [disabled]{opacity:.65}</style>
 <link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="league-challenges">
 <main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Liga-Challenges"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🎯</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Gemeinsame Vereinsziele</div><div class="tl-screen-title">Liga-Challenges</div></div></div><div class="tl-screen-links"><a href="./challenges.html" class="tl-screen-primary">Challenges</a><a href="./index.html">Liga</a></div></div><p><a href="./index.html">← Zur Liga</a></p><h1><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-bolt"></use></svg> Liga-Challenges</h1>
 <p class="muted">Gemeinsame Trainingsziele, zu denen sich Boxer freiwillig anmelden können. Nur bestätigte Trainings zählen, und EXP werden erst nach einer gesonderten serverseitigen Freigabe vergeben.</p>
@@ -9,8 +9,63 @@
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
 const $=id=>document.getElementById(id),make=(tag,value)=>{const e=document.createElement(tag);e.textContent=String(value??'');return e};
-let boxer=null,entries=[],approved=[];
+let boxer=null,entries=[],approved=[],isAdmin=false;
+
+function localDate(value){return new Date(value).toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'})}
+function zurichBoundary(day,endOfDay=false){
+ const reference=new Date(day+'T00:00:00Z');
+ if(endOfDay)reference.setUTCDate(reference.getUTCDate()+1);
+ const tz=new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Zurich',timeZoneName:'shortOffset'}).formatToParts(reference).find(p=>p.type==='timeZoneName')?.value||'';
+ const match=/^GMT([+-])(\d{1,2})(?::(\d{2}))?$/.exec(tz);
+ if(!match)throw Error('Zeitzone Europe/Zurich nicht verfügbar.');
+ const offset=match[1]+match[2].padStart(2,'0')+':'+(match[3]||'00');
+ return day+(endOfDay?'T23:59:59':'T00:00:00')+offset;
+}
+function adminEditor(c){
+ const details=document.createElement('details');details.className='admin-editor';details.append(make('summary','Challenge bearbeiten'));
+ const form=document.createElement('form');
+ const field=(caption,node)=>{const label=document.createElement('label');label.append(make('span',caption),node);return label};
+ const title=document.createElement('input');title.value=c.title||'';title.required=true;title.minLength=3;title.maxLength=120;
+ const description=document.createElement('textarea');description.value=c.description||'';description.maxLength=1000;description.rows=3;
+ const metric=document.createElement('select');
+ for(const item of [['training_sessions','Trainings'],['jogging_km','Joggingkilometer'],['technique_minutes','Technikminuten']]){const o=make('option',item[1]);o.value=item[0];metric.append(o)}
+ metric.value=c.metric;
+ const target=document.createElement('input');target.type='number';target.min='1';target.max='1000000';target.step='any';target.value=String(c.target_value);target.required=true;
+ const start=document.createElement('input');start.type='date';start.required=true;start.value=localDate(c.starts_at);
+ const end=document.createElement('input');end.type='date';end.required=true;end.value=localDate(c.ends_at);
+ const canEditRules=Date.parse(c.starts_at)>Date.now();
+ metric.disabled=!canEditRules;target.disabled=!canEditRules;start.disabled=!canEditRules;end.disabled=!canEditRules;
+ const hint=make('p',canEditRules?'Kennzahl, Ziel und Zeitraum sind nur änderbar, solange noch niemand beigetreten ist. Der Server prüft dies beim Speichern erneut.':'Nur Titel und Beschreibung sind noch bearbeitbar. Kennzahl, Ziel und Zeitraum bleiben nach dem Start oder bei Teilnahmen gesperrt.');hint.className='muted';
+ form.append(field('Titel',title),field('Beschreibung',description),field('Messwert',metric),field('Zielmenge',target),field('Beginn',start),field('Ende',end),hint);
+ const save=make('button','Änderungen speichern');save.type='submit';form.append(save);details.append(form);
+ form.addEventListener('submit',async event=>{
+  event.preventDefault();if(save.disabled)return;
+  const nextTitle=title.value.trim(),nextDescription=description.value.trim();
+  if(nextTitle.length<3||nextTitle.length>120||nextDescription.length>1000){$('status').textContent='Bitte Titel und Beschreibung prüfen.';return}
+  const originalStart=localDate(c.starts_at),originalEnd=localDate(c.ends_at);
+  const rulesChanged=metric.value!==c.metric||Number(target.value)!==Number(c.target_value)||start.value!==originalStart||end.value!==originalEnd;
+  if(rulesChanged&&!canEditRules){$('status').textContent='Ziel und Zeitraum sind gesperrt, sobald die Challenge begonnen hat oder Teilnahmen bestehen.';return}
+  if(rulesChanged){
+   const days=(Date.parse(end.value+'T00:00:00Z')-Date.parse(start.value+'T00:00:00Z'))/86400000;
+   if(!Number.isFinite(days)||days<=0||days>90||!Number.isFinite(Number(target.value))||Number(target.value)<=0||Number(target.value)>1000000){$('status').textContent='Bitte Ziel und Zeitraum prüfen (maximal 90 Tage).';return}
+   if(!confirm('Ziel, Messwert oder Zeitraum dieser noch nicht gestarteten Challenge ändern?'))return;
+  }
+  save.disabled=true;$('status').textContent='Challenge wird gespeichert …';
+  try{
+   const result=await db.rpc('league_v21_admin_edit_global_challenge',{
+    p_challenge:c.id,p_title:nextTitle,p_description:nextDescription,
+    p_metric:rulesChanged?metric.value:null,p_target:rulesChanged?Number(target.value):null,
+    p_starts:rulesChanged?zurichBoundary(start.value,false):null,
+    p_ends:rulesChanged?zurichBoundary(end.value,true):null,p_update_rules:rulesChanged
+   });
+   if(result.error)throw result.error;
+   $('status').textContent='Challenge aktualisiert.';await init();
+  }catch(error){$('status').textContent='Änderung fehlgeschlagen: '+error.message;save.disabled=false}
+ });
+ return details;
+}
 async function init(){
+ boxer=null;entries=[];approved=[];isAdmin=false;
  const [{data:{user}},challenges]=await Promise.all([
   db.auth.getUser(),
   db.from('league_global_challenges_v21').select('id,title,description,metric,target_value,starts_at,ends_at,status').order('starts_at',{ascending:false}).limit(80)
@@ -18,13 +73,16 @@ async function init(){
  if(challenges.error){$('status').textContent='Liga-Challenges sind noch nicht verfügbar: '+challenges.error.message;return}
  if(user){
   const p=await db.from('profiles').select('id,role,is_active').eq('auth_user_id',user.id).maybeSingle();
-  if(!p.error&&p.data?.role==='boxer'&&p.data.is_active){
-   boxer=p.data;
-   const [e,t]=await Promise.all([
-    db.from('league_global_entries_v21').select('challenge_id,joined_at').eq('boxer_id',boxer.id),
-    db.from('training_submissions').select('training_date,created_at,jogging_km,technique_minutes').eq('boxer_id',boxer.id).eq('status','approved').order('created_at',{ascending:false}).limit(3000)
-   ]);
-   if(!e.error)entries=e.data||[];if(!t.error)approved=t.data||[];
+  if(!p.error&&p.data?.is_active){
+   isAdmin=p.data.role==='admin';
+   if(p.data.role==='boxer'){
+    boxer=p.data;
+    const [e,t]=await Promise.all([
+     db.from('league_global_entries_v21').select('challenge_id,joined_at').eq('boxer_id',boxer.id),
+     db.from('training_submissions').select('training_date,created_at,jogging_km,technique_minutes').eq('boxer_id',boxer.id).eq('status','approved').order('created_at',{ascending:false}).limit(3000)
+    ]);
+    if(!e.error)entries=e.data||[];if(!t.error)approved=t.data||[];
+   }
   }
  }
  const finalized=await db.from('league_global_results_v21').select('challenge_id,boxer_name,progress,rank_position,completed').order('rank_position',{ascending:true}).limit(1000);
@@ -72,7 +130,8 @@ async function init(){
     $('status').textContent='Erfolgreich angemeldet. Neu laden für deine Fortschritte.';
     btn.textContent='Angemeldet';
    };card.append(btn);
-  }else if(!boxer)card.append(make('p','Für die Teilnahme im Boxer-Dashboard anmelden.'));
+  }else if(!boxer&&!isAdmin)card.append(make('p','Für die Teilnahme im Boxer-Dashboard anmelden.'));
+  if(isAdmin&&c.status==='active')card.append(adminEditor(c));
   root.append(card);
  }
  $('status').textContent=rows.length+' veröffentlichte Liga-Challenges geladen.';
