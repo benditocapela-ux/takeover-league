@@ -241,7 +241,6 @@
       "list"
     ],
     "rpc": [
-      "coach_challenge_v2_admin_edit",
       "coach_challenge_v2_create_draft",
       "coach_challenge_v2_list",
       "coach_challenge_v2_progress",
