@@ -42,6 +42,7 @@ assert.match(read('supabase/production-prep/release_preflight_read_only.sql'),/r
 const post=read('supabase/production-prep/release_postflight_read_only.sql');
 assert.match(post,/release_integrity_passed/);
 assert.match(post,/protected_authenticated_rpcs=23/);
+assert.match(post,/protected_authenticated_rpcs=23 \+ CASE WHEN pg_catalog\.to_regprocedure/);
 assert.match(post,/v2_tables=7 AND rls_protected_tables=7/);
 assert.match(post,/invalid_challenge_exp_ledgers=0/);
 assert.match(post,/invalid_duel_exp_ledgers=0/);
@@ -49,7 +50,7 @@ const activation=read('supabase/production-prep/activate_v2_only_after_freigeben
 const emergency=read('supabase/production-prep/emergency_disable_v2_flags_only.sql');
 assert.match(activation,/BEGIN;/);
 assert.match(activation,/COMMIT;/);
-assert.match(activation,/protected_rpc<>23/);
+assert.match(activation,/expected_protected_rpc := 23 \+ CASE WHEN admin_challenge_edit THEN 1 ELSE 0 END/);
 assert.match(activation,/protected_tables<>7/);
 assert.match(activation,/Achievement EXP security patch has not been applied/);
 assert.match(activation,/UPDATE public\.league_feature_flags/);
