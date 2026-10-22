@@ -53,12 +53,20 @@ function openBoxerQuick(id){
  const boxer=currentPeople.find(x=>x.id===id&&['boxer','coach'].includes(x.role));if(!boxer)return;
  rememberRecentlyViewedBoxer(id);
  const target=$('coachBoxerQuickBody');target.replaceChildren();
- const entries=allTrainings.filter(t=>t.boxer_id===id);
- const pending=entries.filter(t=>t.status==='pending').length,approved=entries.filter(t=>t.status==='approved').length;
- const summary=document.createElement('p');summary.textContent='Bestätigt: '+approved+' · Offen: '+pending+' · Geladene Einträge: '+entries.length;
- const explanation=document.createElement('p');explanation.className='muted small';explanation.textContent='Diese Übersicht berücksichtigt die neuesten maximal 1000 geladenen Trainings.';
- const items=document.createElement('ul');for(const t of entries.slice(0,5)){const li=document.createElement('li');li.textContent=t.training_date+' · '+(currentTypes.find(x=>String(x.id)===String(t.training_type_id))?.name||'Training')+' · '+({pending:'Ausstehend',approved:'Bestätigt',rejected:'Abgelehnt'}[t.status]||t.status);items.append(li)}
- if(!entries.length){const p=document.createElement('p');p.textContent='Keine Trainings in der geladenen Übersicht.';items.append(p)}
+ const entries=allTrainings.filter(t=>String(t.boxer_id)===String(id));
+ const approvedEntries=entries.filter(t=>t.status==='approved').sort((a,b)=>
+  String(b.training_date||'').localeCompare(String(a.training_date||''))||
+  String(b.created_at||'').localeCompare(String(a.created_at||'')));
+ const pending=entries.filter(t=>t.status==='pending').length;
+ const summary=document.createElement('p');summary.textContent='Bestätigt: '+approvedEntries.length+' · Offen: '+pending+' · Geladene Einträge: '+entries.length;
+ const explanation=document.createElement('p');explanation.className='muted small';explanation.textContent='Die letzten fünf bestätigten Trainings, sortiert nach Trainingsdatum. Grundlage sind die neuesten maximal 1000 geladenen Trainings im Trainerbereich.';
+ const items=document.createElement('ul');
+ for(const t of approvedEntries.slice(0,5)){
+  const li=document.createElement('li');
+  li.textContent=(t.training_date||'Datum unbekannt')+' · '+(currentTypes.find(x=>String(x.id)===String(t.training_type_id))?.name||'Training')+' · Bestätigt';
+  items.append(li);
+ }
+ if(!approvedEntries.length){const p=document.createElement('p');p.textContent='Noch keine bestätigten Trainings in der geladenen Übersicht.';items.append(p)}
  const links=document.createElement('div');links.className='actions';
  for(const [title,url] of [['Profil ansehen','./boxer-profile.html?name='+encodeURIComponent(boxer.display_name)],['Challenge zuweisen','./challenges.html?target='+encodeURIComponent(boxer.display_name)]]){const a=document.createElement('a');a.href=url;a.textContent=title;links.append(a)}
  $('coachBoxerQuickTitle').textContent=boxer.display_name;
