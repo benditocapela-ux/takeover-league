@@ -3,7 +3,7 @@ SELECT jsonb_build_object(
  'project_database',current_database(),
  'migration_target',to_regprocedure('public.coach_list_training_history(text,uuid,bigint,date,date,text,integer,integer)') IS NULL,
  'required_columns_present',(
-  SELECT count(*)=12 FROM information_schema.columns
+  SELECT count(*)=11 FROM information_schema.columns
   WHERE table_schema='public' AND table_name='training_submissions'
     AND column_name IN ('id','boxer_id','training_type_id','training_date','notes','status','jogging_km','technique_minutes','created_at','reviewed_at','reviewed_by')
  ) AND EXISTS (
