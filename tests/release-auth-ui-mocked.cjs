@@ -62,6 +62,14 @@ function injected(role){
   rpc:async(name,args)=>{
    if(name==='review_training'){stats.reviewed.push(args);submissions=submissions.map(x=>x.id===args.p_submission_id?{...x,status:args.p_decision}:x);all.training_submissions=submissions;return {data:{status:args.p_decision,points_awarded:50},error:null}}
    if(name==='admin_undo_recent_rejection'){stats.undo++;submissions=submissions.map(x=>x.id===args.p_submission_id?{...x,status:'pending',reviewed_at:null,reviewed_by:null}:x);all.training_submissions=submissions;return {data:{status:'pending'},error:null}}
+   if(name==='coach_list_training_history'){
+    const q=String(args.p_search||'').toLocaleLowerCase('de-CH');
+    let rows=submissions.filter(x=>(!args.p_boxer_id||x.boxer_id===args.p_boxer_id)&&(!args.p_training_type_id||String(x.training_type_id)===String(args.p_training_type_id))&&(!args.p_from||x.training_date>=args.p_from)&&(!args.p_to||x.training_date<=args.p_to)&&(!args.p_status||x.status===args.p_status)&&(!q||[boxer.display_name,trainer.find(t=>String(t.id)===String(x.training_type_id))?.name,x.notes,x.training_date,x.status].join(' ').toLocaleLowerCase('de-CH').includes(q)));
+    rows=rows.slice().sort((a,b)=>String(b.training_date).localeCompare(String(a.training_date))||String(b.created_at).localeCompare(String(a.created_at)));
+    const total_count=rows.length,offset=Number(args.p_offset||0),limit=Math.min(50,Math.max(1,Number(args.p_limit||10)));
+    const items=rows.slice(offset,offset+limit).map(x=>({...x,boxer_name:boxer.display_name,training_type_name:trainer.find(t=>String(t.id)===String(x.training_type_id))?.name||'Training'}));
+    return {data:{items,total_count,limit,offset},error:null};
+   }
    if(name==='coach_list_unlinked_accounts'||name==='coach_training_audit_recent')return {data:[],error:null};
    if(name==='get_boxer_training_audit')return {data:[],error:null};
    if(name==='mark_my_notification_read'){stats.readNotifications.push(args.p_notification_id);const row=all.boxer_notifications.find(x=>x.id===args.p_notification_id);if(row)row.read_at=new Date().toISOString();return {data:!!row,error:null}}
