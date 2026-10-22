@@ -7,7 +7,7 @@ SELECT jsonb_build_object(
  ),
  'authenticated_can_execute',has_function_privilege('authenticated','public.coach_list_training_history(text,uuid,bigint,date,date,text,integer,integer)','EXECUTE'),
  'anon_cannot_execute',NOT has_function_privilege('anon','public.coach_list_training_history(text,uuid,bigint,date,date,text,integer,integer)','EXECUTE'),
- 'public_cannot_execute',NOT has_function_privilege('public','public.coach_list_training_history(text,uuid,bigint,date,date,text,integer,integer)','EXECUTE'),
+ 'public_cannot_execute',NOT EXISTS (SELECT 1 FROM pg_proc p, LATERAL aclexplode(COALESCE(p.proacl,acldefault('f',p.proowner))) acl WHERE p.oid=to_regprocedure('public.coach_list_training_history(text,uuid,bigint,date,date,text,integer,integer)') AND acl.grantee=0 AND acl.privilege_type='EXECUTE'),
  'training_rows', (SELECT count(*) FROM public.training_submissions),
  'point_rows', (SELECT count(*) FROM public.point_transactions),
  'enabled_feature_flags', (SELECT coalesce(jsonb_agg(feature_key ORDER BY feature_key),'[]'::jsonb) FROM public.league_feature_flags WHERE is_enabled)
