@@ -100,6 +100,7 @@ async function main(){
      page.on('pageerror',e=>errors.push(e.message));
      page.on('response',r=>{if(/get_public_(leaderboard|levels)|league_public_duel_history_v21/.test(r.url()))network.push({url:r.url(),status:r.status()})});
      await page.addInitScript({content:'window.__testRole='+JSON.stringify(role)});
+     await page.addInitScript({content:'window.__initialCompareSearch=location.search'});
      await page.goto(base+'/'+route,{waitUntil:'domcontentloaded'});
      if(route.startsWith('goals')) {
       await page.locator('#app').waitFor({state:'visible'});
@@ -130,7 +131,7 @@ async function main(){
       await page.locator('#profileCard').waitFor({state:'visible'});
       assert.ok(await page.locator('#sportRadar svg polygon').count()>0,'Radar not rendered');
      }else if(route.startsWith('boxer-compare')){
-      try{await page.waitForFunction(()=>document.querySelector('#directDuelsStatus')?.textContent.includes('Direkte Duelle: 1'))}catch(e){console.log('DEBUG boxer-compare',JSON.stringify({url:page.url(),left:await page.locator('#left').inputValue(),right:await page.locator('#right').inputValue(),leftOptions:await page.locator('#left option').allTextContents(),rightOptions:await page.locator('#right option').allTextContents(),chooserHidden:await page.locator('#chooser').evaluate(el=>el.hidden),status:await page.locator('#status').innerText(),duelStatus:await page.locator('#directDuelsStatus').innerText(),network,errors}));throw e}
+      try{await page.waitForFunction(()=>document.querySelector('#directDuelsStatus')?.textContent.includes('Direkte Duelle: 1'))}catch(e){console.log('DEBUG boxer-compare',JSON.stringify({url:page.url(),initialSearch:await page.evaluate(()=>window.__initialCompareSearch),left:await page.locator('#left').inputValue(),right:await page.locator('#right').inputValue(),leftOptions:await page.locator('#left option').evaluateAll(es=>es.map(e=>({text:e.textContent,value:e.value}))),rightOptions:await page.locator('#right option').evaluateAll(es=>es.map(e=>({text:e.textContent,value:e.value}))),chooserHidden:await page.locator('#chooser').evaluate(el=>el.hidden),status:await page.locator('#status').innerText(),duelStatus:await page.locator('#directDuelsStatus').innerText(),network,errors}));throw e}
       assert.match(await page.locator('#directDuelsStatus').innerText(),/Boxer Alpha 1 Siege/);
       assert.match(await page.locator('#directDuelsStatus').innerText(),/Boxer Beta 0 Siege/);
       assert.equal(await page.locator('#directDuelsRows .h2h-row').count(),1);
