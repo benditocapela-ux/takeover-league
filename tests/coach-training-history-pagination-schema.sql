@@ -1,7 +1,9 @@
 -- Disposable PostgreSQL fixture only. NEVER run against a Supabase project.
 \set ON_ERROR_STOP on
-CREATE ROLE anon NOLOGIN;
-CREATE ROLE authenticated NOLOGIN;
+DO $roles$ BEGIN
+ IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_roles WHERE rolname='anon') THEN CREATE ROLE anon NOLOGIN; END IF;
+ IF NOT EXISTS (SELECT 1 FROM pg_catalog.pg_roles WHERE rolname='authenticated') THEN CREATE ROLE authenticated NOLOGIN; END IF;
+END $roles$;
 CREATE SCHEMA auth;
 CREATE FUNCTION auth.uid() RETURNS uuid LANGUAGE sql STABLE AS $auth$
  SELECT NULLIF(current_setting('request.jwt.claim.sub',true),'')::uuid;
