@@ -31,6 +31,7 @@ const cases=[
 ['Duel invitation confirms exact opponent and duration',()=>assert.match(duels,/if\(!confirm\('Duell-Einladung senden\?/)],
 ['Training calendar uses confirmed Supabase entries',()=>{assert.match(boxer,/historyRows\.filter\(row=>row\.status==='approved'/);assert.match(boxer,/renderTrainingInsights\(\)/)}],
 ['Coach boxer quick view shows latest five approved trainings',()=>{assert.match(coach,/approvedEntries=entries\.filter\(t=>t\.status==='approved'\)\.sort/);assert.match(coach,/approvedEntries\.slice\(0,5\)/);assert.ok(coach.includes("String(b.training_date||'').localeCompare(String(a.training_date||''))"))}],
+['Coach training editor shows ten entries per batch',()=>{assert.match(coach,/visibleTrainings=10/);assert.match(coach,/filtered\.slice\(0,visibleTrainings\)/);assert.match(coach,/visibleTrainings\+=10/);assert.match(coach,/Weitere 10 Trainings anzeigen/)}],
 ['Server idempotency has a partial unique key',()=>{const idemp=read('supabase/migrations/20261018200000_training_submission_idempotency.sql');assert.match(idemp,/unique index if not exists/i);assert.match(idemp,/client_request_id is not null/);assert.match(boxer,/client_request_id=requestId/)}],
 ['No application uses service role credentials',()=>{for(const file of ['boxer.html','coach.html','duels.html','challenges.html','boxer-compare.html'])assert.doesNotMatch(read(file),/sb_secret_|service_role/i)}],
 ['Undo rejection is admin-only, bounded, audited and has no linked ledger',()=>{
