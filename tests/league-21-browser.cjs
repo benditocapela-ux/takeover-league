@@ -76,7 +76,7 @@ async function main(){
     await context.addInitScript({content:mockSupabase.toString().replace(/^function mockSupabase\(\)/,'function mockSupabase()')+';mockSupabase();'});
     await context.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm',route=>
       route.fulfill({status:200,contentType:'text/javascript',body:'export const createClient=()=>window.__testDb;'}));
-    await context.route('https://iqarjivcrddcixrvqbfb.supabase.co/rest/v1/**',route=>{
+    await context.route('https://iqarjivcrddcixrvqbfb.supabase.co/rest/v1/**',async route=>{
      const url=route.request().url();
      const response=url.includes('/rpc/get_public_levels')?[
        {boxer_name:'Boxer Alpha',lifetime_exp:1200},{boxer_name:'Boxer Beta',lifetime_exp:800}]
@@ -92,7 +92,7 @@ async function main(){
         settled_at:'2026-10-15T18:00:00Z'
        }]
       :url.includes('/rpc/get_public_boxer_avatars')?[{boxer_name:'Boxer Alpha',avatar_key:null,avatar_url:null}]:[];
-     route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(response)});
+     await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(response)});
     });
     for(const [route,role] of [['goals.html','boxer'],['arena.html','admin'],['league-manager.html','admin'],
        ['league-challenges.html','boxer'],['league-history.html','boxer'],['boxer-profile.html?name=Boxer%20Alpha','boxer'],['boxer-compare.html?left=Boxer%20Alpha&right=Boxer%20Beta','boxer']]){
