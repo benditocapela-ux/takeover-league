@@ -96,8 +96,9 @@ async function main(){
     });
     for(const [route,role] of [['goals.html','boxer'],['arena.html','admin'],['league-manager.html','admin'],
        ['league-challenges.html','boxer'],['league-history.html','boxer'],['boxer-profile.html?name=Boxer%20Alpha','boxer'],['boxer-compare.html?left=Boxer%20Alpha&right=Boxer%20Beta','boxer']]){
-     const page=await context.newPage();const errors=[];
+     const page=await context.newPage();const errors=[],network=[];
      page.on('pageerror',e=>errors.push(e.message));
+     page.on('response',r=>{if(/get_public_(leaderboard|levels)|league_public_duel_history_v21/.test(r.url()))network.push({url:r.url(),status:r.status()})});
      await page.addInitScript({content:'window.__testRole='+JSON.stringify(role)});
      await page.goto(base+'/'+route,{waitUntil:'domcontentloaded'});
      if(route.startsWith('goals')) {
@@ -129,7 +130,7 @@ async function main(){
       await page.locator('#profileCard').waitFor({state:'visible'});
       assert.ok(await page.locator('#sportRadar svg polygon').count()>0,'Radar not rendered');
      }else if(route.startsWith('boxer-compare')){
-      await page.waitForFunction(()=>document.querySelector('#directDuelsStatus')?.textContent.includes('Direkte Duelle: 1'));
+      try{await page.waitForFunction(()=>document.querySelector('#directDuelsStatus')?.textContent.includes('Direkte Duelle: 1'))}catch(e){console.log('DEBUG boxer-compare',JSON.stringify({url:page.url(),left:await page.locator('#left').inputValue(),right:await page.locator('#right').inputValue(),status:await page.locator('#status').innerText(),duelStatus:await page.locator('#directDuelsStatus').innerText(),network,errors}));throw e}
       assert.match(await page.locator('#directDuelsStatus').innerText(),/Boxer Alpha 1 Siege/);
       assert.match(await page.locator('#directDuelsStatus').innerText(),/Boxer Beta 0 Siege/);
       assert.equal(await page.locator('#directDuelsRows .h2h-row').count(),1);
