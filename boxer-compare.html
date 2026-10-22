@@ -147,7 +147,9 @@ async function init(){
   for(const id of ['left','right'])clearAndOptions($(id));
   if(members.some(x=>x.name===left))$('left').value=left;
   if(members.some(x=>x.name===right))$('right').value=right;
-  $('chooser').hidden=false;drawFavorites();draw();
+  $('chooser').hidden=false;drawFavorites();
+  // Programmatic URL selections must sync the enhanced choice cards and normal change listeners.
+  for(const id of ['left','right'])$(id).dispatchEvent(new Event('change',{bubbles:true}));
   loadPublicDuelHistory();
  }catch(e){setStatus('Liga-Daten sind im Moment nicht erreichbar: '+String(e.message||e),true)}
 }
