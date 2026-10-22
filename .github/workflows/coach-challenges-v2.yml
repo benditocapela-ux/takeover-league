@@ -30,6 +30,7 @@ on:
       - 'tests/production-v2-*.sh'
       - 'tests/production-v2-schema-smoke.sql'
       - 'tests/admin-challenge-editing-schema.sql'
+      - 'tests/coach-training-history-pagination-schema.sql'
       - 'tests/admin-challenge-editing-browser.cjs'
       - '.github/workflows/coach-challenges-v2.yml'
   push:
@@ -131,6 +132,13 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f tests/production-v2-schema-smoke.sql
+      - name: Test coach training history RPC in isolated disposable database
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          createdb -h localhost -U postgres coach_history_test
+          psql -h localhost -U postgres -d coach_history_test -v ON_ERROR_STOP=1 -f tests/coach-training-history-pagination-schema.sql
       - name: Verify duplicate releases fail atomically without changing fixtures
         env:
           PGPASSWORD: postgres
