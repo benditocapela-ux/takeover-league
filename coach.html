@@ -7,7 +7,7 @@
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
 const $=id=>document.getElementById(id);const fail=m=>{$('error').textContent=m;$('content').classList.add('hidden')};
-function row(s,people,types){const div=document.createElement('div');div.className='entry';const top=document.createElement('div');top.className='line';const name=document.createElement('span');name.className='name';name.textContent=people.get(s.boxer_id)||'Unbekannter Boxer';const pill=document.createElement('span');pill.className='pill';pill.textContent='Pending';top.append(name,pill);const details=document.createElement('p');details.textContent=`${types.get(s.training_type_id)||'Training'} · ${s.training_date||'Kein Datum'}`;const checkLabel=document.createElement('label');checkLabel.className='bulk-select-label';const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.className='pending-checkbox';checkbox.value=s.id;checkbox.setAttribute('aria-label','Training auswählen: '+name.textContent);checkLabel.append(checkbox);const selectText=document.createElement('span');selectText.textContent='Auswählen';checkLabel.append(selectText);div.append(checkLabel);div.append(top,details);const metrics=document.createElement('small');metrics.textContent=`Jogging: ${s.jogging_km ?? '–'} km · Technik: ${s.technique_minutes ?? '–'} Min.`;div.append(metrics);if(s.notes){const note=document.createElement('small');note.textContent=s.notes;div.append(note)}
+function row(s,people,types){const div=document.createElement('div');div.className='entry';const top=document.createElement('div');top.className='line';const name=document.createElement('span');name.className='name';name.textContent=people.get(String(s.boxer_id))||'Unbekannter Boxer';const pill=document.createElement('span');pill.className='pill';pill.textContent='Pending';top.append(name,pill);const details=document.createElement('p');details.textContent=`${types.get(s.training_type_id)||'Training'} · ${s.training_date||'Kein Datum'}`;const checkLabel=document.createElement('label');checkLabel.className='bulk-select-label';const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.className='pending-checkbox';checkbox.value=s.id;checkbox.setAttribute('aria-label','Training auswählen: '+name.textContent);checkLabel.append(checkbox);const selectText=document.createElement('span');selectText.textContent='Auswählen';checkLabel.append(selectText);div.append(checkLabel);div.append(top,details);const metrics=document.createElement('small');metrics.textContent=`Jogging: ${s.jogging_km ?? '–'} km · Technik: ${s.technique_minutes ?? '–'} Min.`;div.append(metrics);if(s.notes){const note=document.createElement('small');note.textContent=s.notes;div.append(note)}
 const profileLink=document.createElement('a');profileLink.textContent='Profil ansehen ↗';profileLink.href='./boxer-profile.html?name='+encodeURIComponent(name.textContent);profileLink.className='coach-profile-link';profileLink.setAttribute('aria-label','Profil von '+name.textContent+' ansehen');profileLink.addEventListener('click',()=>rememberRecentlyViewedBoxer(s.boxer_id));div.append(profileLink);const quick=document.createElement('button');quick.type='button';quick.className='secondary-btn';quick.textContent='Schnellansicht';quick.addEventListener('click',()=>openBoxerQuick(s.boxer_id));div.append(quick);const actions=document.createElement('div');actions.className='actions';
 for(const [decision,label,cls] of [['approved','Bestätigen','approve'],['rejected','Ablehnen','reject']]){
  const btn=document.createElement('button');btn.className=cls;btn.textContent=label;
@@ -48,29 +48,29 @@ async function refreshCoachAudit(){
 }
 $('refreshCoachAudit').addEventListener('click',refreshCoachAudit);
 
-let currentPeople=[],currentTypes=[],allTrainings=[],visibleTrainings=10,currentAdminId=null,currentRole=null;
-function openBoxerQuick(id){
+let currentPeople=[],currentTypes=[],allTrainings=[],currentAdminId=null,currentRole=null;
+async function openBoxerQuick(id){
  const boxer=currentPeople.find(x=>x.id===id&&['boxer','coach'].includes(x.role));if(!boxer)return;
  rememberRecentlyViewedBoxer(id);
  const target=$('coachBoxerQuickBody');target.replaceChildren();
- const entries=allTrainings.filter(t=>String(t.boxer_id)===String(id));
- const approvedEntries=entries.filter(t=>t.status==='approved').sort((a,b)=>
-  String(b.training_date||'').localeCompare(String(a.training_date||''))||
-  String(b.created_at||'').localeCompare(String(a.created_at||'')));
- const pending=entries.filter(t=>t.status==='pending').length;
- const summary=document.createElement('p');summary.textContent='Bestätigt: '+approvedEntries.length+' · Offen: '+pending+' · Geladene Einträge: '+entries.length;
- const explanation=document.createElement('p');explanation.className='muted small';explanation.textContent='Die letzten fünf bestätigten Trainings, sortiert nach Trainingsdatum. Grundlage sind die neuesten maximal 1000 geladenen Trainings im Trainerbereich.';
- const items=document.createElement('ul');
- for(const t of approvedEntries.slice(0,5)){
-  const li=document.createElement('li');
-  li.textContent=(t.training_date||'Datum unbekannt')+' · '+(currentTypes.find(x=>String(x.id)===String(t.training_type_id))?.name||'Training')+' · Bestätigt';
-  items.append(li);
- }
- if(!approvedEntries.length){const p=document.createElement('p');p.textContent='Noch keine bestätigten Trainings in der geladenen Übersicht.';items.append(p)}
- const links=document.createElement('div');links.className='actions';
- for(const [title,url] of [['Profil ansehen','./boxer-profile.html?name='+encodeURIComponent(boxer.display_name)],['Challenge zuweisen','./challenges.html?target='+encodeURIComponent(boxer.display_name)]]){const a=document.createElement('a');a.href=url;a.textContent=title;links.append(a)}
- $('coachBoxerQuickTitle').textContent=boxer.display_name;
- target.append(summary,explanation,items,links);$('coachBoxerQuick').showModal();
+ const loading=document.createElement('p');loading.className='muted';loading.textContent='Lade Trainingshistorie …';target.append(loading);
+ $('coachBoxerQuickTitle').textContent=boxer.display_name;$('coachBoxerQuick').showModal();
+ try{
+  const [approvedResult,pendingResult]=await Promise.all([
+   db.rpc('coach_list_training_history',{p_boxer_id:id,p_status:'approved',p_limit:5,p_offset:0}),
+   db.rpc('coach_list_training_history',{p_boxer_id:id,p_status:'pending',p_limit:1,p_offset:0})
+  ]);
+  if(approvedResult.error)throw approvedResult.error;if(pendingResult.error)throw pendingResult.error;
+  const approved=Array.isArray(approvedResult.data?.items)?approvedResult.data.items:[];
+  const summary=document.createElement('p');summary.textContent='Bestätigt: '+Number(approvedResult.data?.total_count||0)+' · Offen: '+Number(pendingResult.data?.total_count||0);
+  const explanation=document.createElement('p');explanation.className='muted small';explanation.textContent='Die letzten fünf bestätigten Trainings, direkt aus der serverseitig gefilterten Historie.';
+  const items=document.createElement('ul');
+  for(const t of approved){const li=document.createElement('li');li.textContent=(t.training_date||'Datum unbekannt')+' · '+(t.training_type_name||'Training')+' · Bestätigt';items.append(li)}
+  if(!approved.length){const p=document.createElement('p');p.textContent='Noch keine bestätigten Trainings.';items.append(p)}
+  const links=document.createElement('div');links.className='actions';
+  for(const [title,url] of [['Profil ansehen','./boxer-profile.html?name='+encodeURIComponent(boxer.display_name)],['Challenge zuweisen','./challenges.html?target='+encodeURIComponent(boxer.display_name)]]){const a=document.createElement('a');a.href=url;a.textContent=title;links.append(a)}
+  target.replaceChildren(summary,explanation,items,links);
+ }catch(err){target.replaceChildren();const p=document.createElement('p');p.className='error';p.textContent='Trainingshistorie konnte nicht geladen werden: '+String(err.message||err);target.append(p)}
 }
 $('closeCoachQuick').addEventListener('click',()=>$('coachBoxerQuick').close());
 
@@ -130,23 +130,42 @@ $('bulkReject').addEventListener('click',()=>reviewBatch('rejected'));
 
 const normalize=v=>String(v??'').toLocaleLowerCase('de-CH');
 function fillFilter(id,rows,label){const select=$(id),previous=select.value;select.replaceChildren(new Option(label,''));rows.forEach(x=>select.add(new Option(x.display_name??x.name,String(x.id))));select.value=previous;}
-function renderFilteredTrainings(){
- const people=new Map(currentPeople.map(p=>[String(p.id),p.display_name]));
- const types=new Map(currentTypes.map(t=>[String(t.id),t.name]));
- const q=normalize($('trainingSearch').value.trim()),boxer=$('filterBoxer').value,type=$('filterType').value,from=$('filterFrom').value,to=$('filterTo').value,status=$('filterStatus').value;
- const filtered=allTrainings.filter(s=>(!boxer||String(s.boxer_id)===boxer)&&(!type||String(s.training_type_id)===type)&&(!from||s.training_date>=from)&&(!to||s.training_date<=to)&&(!status||s.status===status)&&(!q||normalize([people.get(String(s.boxer_id)),types.get(String(s.training_type_id)),s.notes,s.training_date,s.status].join(' ')).includes(q)));
- $('allEntries').replaceChildren();
- if(!filtered.length){const p=document.createElement('p');p.className='muted';p.textContent='Keine passenden Trainings gefunden.';$('allEntries').append(p)}
- else filtered.slice(0,visibleTrainings).forEach(s=>$('allEntries').append(editorRow(s,people,types)));
- $('resultCount').textContent=`${Math.min(visibleTrainings,filtered.length)} von ${filtered.length} Einträgen`+(allTrainings.length>=1000?' (Suche innerhalb der neuesten 1000)':'');
- $('showMore').classList.toggle('hidden',visibleTrainings>=filtered.length);
+let historyOffset=0,historyTotal=0,historyLoading=false;
+async function renderFilteredTrainings(reset=true){
+ if(historyLoading)return;
+ historyLoading=true;
+ const button=$('showMore');button.disabled=true;
+ if(reset){historyOffset=0;allTrainings=[];$('allEntries').replaceChildren();$('resultCount').textContent='Lade Trainings …'}
+ try{
+  const {data,error}=await db.rpc('coach_list_training_history',{
+   p_search:$('trainingSearch').value.trim()||null,p_boxer_id:$('filterBoxer').value||null,
+   p_training_type_id:$('filterType').value?Number($('filterType').value):null,
+   p_from:$('filterFrom').value||null,p_to:$('filterTo').value||null,p_status:$('filterStatus').value||null,
+   p_limit:10,p_offset:historyOffset
+  });
+  if(error)throw error;
+  const items=Array.isArray(data?.items)?data.items:[];
+  if(reset)allTrainings=items;else allTrainings.push(...items);
+  historyTotal=Number(data?.total_count||0);historyOffset=allTrainings.length;
+  const people=new Map(currentPeople.map(p=>[String(p.id),p.display_name]));
+  const types=new Map(currentTypes.map(t=>[String(t.id),t.name]));
+  $('allEntries').replaceChildren();
+  if(!allTrainings.length){const p=document.createElement('p');p.className='muted';p.textContent='Keine passenden Trainings gefunden.';$('allEntries').append(p)}
+  else allTrainings.forEach(item=>$('allEntries').append(editorRow(item,people,types)));
+  $('resultCount').textContent=allTrainings.length+' von '+historyTotal+' Einträgen';
+  button.classList.toggle('hidden',historyOffset>=historyTotal);
+ }catch(err){
+  if(reset)$('allEntries').replaceChildren();
+  const p=document.createElement('p');p.className='error';p.textContent='Trainingshistorie konnte nicht geladen werden: '+String(err.message||err);$('allEntries').append(p);
+  $('resultCount').textContent='Laden fehlgeschlagen';button.classList.add('hidden');
+ }finally{historyLoading=false;button.disabled=false}
 }
 
 function editorRow(s,people,types){
  const div=document.createElement('div');div.className='entry';
  const line=document.createElement('div');line.className='line';
  const name=document.createElement('strong');name.textContent=people.get(s.boxer_id)||'Unbekannt';
- const detail=document.createElement('span');detail.className='muted';detail.textContent=`${types.get(s.training_type_id)||'?'} · ${s.training_date} · ${s.status}`;
+ const detail=document.createElement('span');detail.className='muted';detail.textContent=`${types.get(String(s.training_type_id))||'?'} · ${s.training_date} · ${s.status}`;
  const edit=document.createElement('button');edit.textContent='Bearbeiten';
  const quick=document.createElement('button');quick.type='button';quick.textContent='Schnellansicht';quick.onclick=()=>openBoxerQuick(s.boxer_id);line.append(name,detail,quick,edit);div.append(line);
  const reviewedAt=s.reviewed_at?new Date(s.reviewed_at).getTime():0;
@@ -237,13 +256,11 @@ $('coachFeedbackForm').addEventListener('submit',async e=>{
  status.textContent='Feedback gesendet.';$('coachFeedbackForm').reset();await loadCoachFeedbackHistory();
 });
 
-async function load(clearStatus=true){ if(clearStatus)$('status').textContent='';$('error').textContent='';const {data:{user},error:authError}=await db.auth.getUser();if(authError||!user){fail('Bitte zuerst unter login.html anmelden.');return}const {data:p,error:pe}=await db.from('profiles').select('id,display_name,role,is_active').eq('auth_user_id',user.id).maybeSingle();if(pe||!p||!['admin','coach'].includes(p.role)||!p.is_active){fail('Zugriff verweigert: Nur aktive Trainer-Accounts dürfen dieses Dashboard öffnen.');return}currentAdminId=p.id;currentRole=p.role;$('welcome').textContent=`Willkommen, ${p.display_name}.`;const [pr,tr,sr,ar]=await Promise.all([db.rpc('coach_list_boxers'),db.from('training_types').select('id,name,points'),db.from('training_submissions').select('id,boxer_id,training_type_id,training_date,notes,status,jogging_km,technique_minutes,created_at').eq('status','pending').order('created_at',{ascending:false}).limit(100),db.from('training_submissions').select('id',{count:'exact',head:true}).eq('status','approved')]);for(const r of [pr,tr,sr,ar])if(r.error){fail('Daten konnten nicht geladen werden: '+r.error.message);return}currentPeople=pr.data;currentTypes=tr.data;renderRecentBoxers();const people=new Map(pr.data.map(x=>[x.id,x.display_name]));const types=new Map(tr.data.map(x=>[x.id,x.name]));$('pendingCount').textContent=sr.data.length===100?'100+':String(sr.data.length);$('boxerCount').textContent=pr.data.filter(x=>['boxer','coach'].includes(x.role)&&x.is_active).length;$('approvedCount').textContent=ar.count??'–';pendingBatchRows=sr.data;renderPending();const {data:all,error:allError}=await db.from('training_submissions').select('id,boxer_id,training_type_id,training_date,notes,status,jogging_km,technique_minutes,created_at,reviewed_at,reviewed_by').order('created_at',{ascending:false}).limit(1000);
-if(allError){$('allEntries').textContent='Fehler beim Laden: '+allError.message}
-else{allTrainings=all;visibleTrainings=10;fillFilter('filterBoxer',pr.data.filter(x=>['boxer','coach'].includes(x.role)),'Alle Boxer');fillFilter('filterType',tr.data,'Alle Trainingsarten');renderFilteredTrainings()}
+async function load(clearStatus=true){ if(clearStatus)$('status').textContent='';$('error').textContent='';const {data:{user},error:authError}=await db.auth.getUser();if(authError||!user){fail('Bitte zuerst unter login.html anmelden.');return}const {data:p,error:pe}=await db.from('profiles').select('id,display_name,role,is_active').eq('auth_user_id',user.id).maybeSingle();if(pe||!p||!['admin','coach'].includes(p.role)||!p.is_active){fail('Zugriff verweigert: Nur aktive Trainer-Accounts dürfen dieses Dashboard öffnen.');return}currentAdminId=p.id;currentRole=p.role;$('welcome').textContent=`Willkommen, ${p.display_name}.`;const [pr,tr,sr,ar]=await Promise.all([db.rpc('coach_list_boxers'),db.from('training_types').select('id,name,points'),db.from('training_submissions').select('id,boxer_id,training_type_id,training_date,notes,status,jogging_km,technique_minutes,created_at').eq('status','pending').order('created_at',{ascending:false}).limit(100),db.from('training_submissions').select('id',{count:'exact',head:true}).eq('status','approved')]);for(const r of [pr,tr,sr,ar])if(r.error){fail('Daten konnten nicht geladen werden: '+r.error.message);return}currentPeople=pr.data;currentTypes=tr.data;renderRecentBoxers();const people=new Map(pr.data.map(x=>[x.id,x.display_name]));const types=new Map(tr.data.map(x=>[x.id,x.name]));$('pendingCount').textContent=sr.data.length===100?'100+':String(sr.data.length);$('boxerCount').textContent=pr.data.filter(x=>['boxer','coach'].includes(x.role)&&x.is_active).length;$('approvedCount').textContent=ar.count??'–';pendingBatchRows=sr.data;renderPending();fillFilter('filterBoxer',pr.data.filter(x=>['boxer','coach'].includes(x.role)),'Alle Boxer');fillFilter('filterType',tr.data,'Alle Trainingsarten');await renderFilteredTrainings(true);
 $('content').classList.remove('hidden');await setupCoachFeedback();await refreshCoachAudit()}
-for(const id of ['trainingSearch','filterBoxer','filterType','filterFrom','filterTo','filterStatus'])$(id).addEventListener('input',()=>{visibleTrainings=10;renderFilteredTrainings()});
-$('showMore').addEventListener('click',()=>{visibleTrainings+=10;renderFilteredTrainings()});
-$('clearFilters').addEventListener('click',()=>{for(const id of ['trainingSearch','filterBoxer','filterType','filterFrom','filterTo','filterStatus'])$(id).value='';visibleTrainings=10;renderFilteredTrainings()});
+for(const id of ['trainingSearch','filterBoxer','filterType','filterFrom','filterTo','filterStatus'])$(id).addEventListener('input',()=>renderFilteredTrainings(true));
+$('showMore').addEventListener('click',()=>renderFilteredTrainings(false));
+$('clearFilters').addEventListener('click',()=>{for(const id of ['trainingSearch','filterBoxer','filterType','filterFrom','filterTo','filterStatus'])$(id).value='';renderFilteredTrainings(true)});
 $('refresh').addEventListener('click',()=>load());$('refreshAll').addEventListener('click',()=>load());$('logout').addEventListener('click',async()=>{await db.auth.signOut();location.href='./login.html'});await load();
 let coachLastInteraction=Date.now();
 for(const eventName of ['pointerdown','keydown'])document.addEventListener(eventName,()=>{coachLastInteraction=Date.now()},{passive:true});
