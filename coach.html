@@ -159,6 +159,7 @@ async function renderFilteredTrainings(reset=true){
   const p=document.createElement('p');p.className='error';p.textContent='Trainingshistorie konnte nicht geladen werden: '+String(err.message||err);$('allEntries').append(p);
   $('resultCount').textContent='Laden fehlgeschlagen';button.classList.add('hidden');
  }finally{historyLoading=false;button.disabled=false;if(historyReloadRequested){historyReloadRequested=false;renderFilteredTrainings(true)}}
+}
 
 function editorRow(s,people,types){
  const div=document.createElement('div');div.className='entry';
