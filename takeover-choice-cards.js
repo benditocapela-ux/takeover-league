@@ -44,6 +44,7 @@
   select.dataset.tlChoiceEnhanced='true';
   select.classList.add('tl-choice-native');
   const wrapper=document.createElement('div');wrapper.className='tl-choice-field';
+  if(select.dataset.tlChoice)wrapper.dataset.choiceFor=select.dataset.tlChoice;
   const track=document.createElement('div');track.className='tl-choice-track';
   track.setAttribute('role','group');track.setAttribute('aria-label',directLabel(select));
   const note=document.createElement('p');note.className='tl-choice-note';note.setAttribute('aria-live','polite');
