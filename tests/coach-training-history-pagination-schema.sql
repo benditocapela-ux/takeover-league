@@ -40,7 +40,7 @@ SELECT ('00000000-0000-4000-8000-'||lpad(g::text,12,'0'))::uuid,
        'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',1,current_date-g,
        'history row '||g,CASE WHEN g=12 THEN 'pending' ELSE 'approved' END,
        now()-g*interval '1 minute'
-FROM generate_series(1,12) AS g;
+FROM generate_series(1,12) AS series(g);
 
 \i supabase/migrations/20261022210000_coach_training_history_pagination.sql
 
