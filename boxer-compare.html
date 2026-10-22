@@ -138,12 +138,13 @@ function drawFavorites(){
 $('compare').onclick=draw;$('swap').onclick=()=>{const a=$('left').value;$('left').value=$('right').value;$('right').value=a;$('left').dispatchEvent(new Event('change',{bubbles:true}));$('right').dispatchEvent(new Event('change',{bubbles:true}))};
 for(const id of ['left','right'])$(id).onchange=draw;
 async function init(){
+ // Capture share-link parameters before asynchronous API requests; another UI script may update history meanwhile.
+ const params=new URLSearchParams(location.search);
+ const left=params.get('left'),right=params.get('right');
  try{const [leaders,levels]=await Promise.all([rpc('get_public_leaderboard'),rpc('get_public_levels')]);
   members=uniqueProfiles(levels);if(!members.length){setStatus('Keine eindeutigen Boxerprofile gefunden.',true);return}
   rankMap=new Map(leaders.map(x=>[String(x.boxer_name||'').trim(),x]));
   for(const id of ['left','right'])clearAndOptions($(id));
-  const params=new URLSearchParams(location.search);
-  const left=params.get('left'),right=params.get('right');
   if(members.some(x=>x.name===left))$('left').value=left;
   if(members.some(x=>x.name===right))$('right').value=right;
   $('chooser').hidden=false;drawFavorites();draw();
