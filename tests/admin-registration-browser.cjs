@@ -24,6 +24,7 @@ export function createClient(){
    rpc:async(fn,params)=>{
      if(role!=='admin')return {error:{message:'Nicht erlaubt'},data:null};
      if(fn==='admin_list_profiles')return {data:profiles,error:null};
+     if(fn==='admin_list_profile_archive_state')return {data:[],error:null};
      const id=params?.p_profile_id,target=profiles.find(x=>x.id===id);
      if(!target)return {error:{message:'Profil nicht gefunden'},data:null};
      if(fn==='admin_set_profile_role')target.role=params.p_role;
