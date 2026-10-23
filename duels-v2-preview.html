@@ -109,6 +109,14 @@ function render(){
    }
    card.append(actions);
   }
+  if(duel.status==='pending'&&!expired&&(
+    ['coach','admin'].includes(profile.role)||
+    (profile.role==='boxer'&&duel.challenger_id===profile.id)
+  )){
+   const withdraw=el('button','Einladung zurückziehen');withdraw.type='button';
+   withdraw.onclick=()=>{if(confirm('Diese offene Duell-Einladung zurückziehen? Sie wird als zurückgezogen protokolliert.'))mutate('duel_v2_withdraw_invite',{p_duel_id:duel.id})};
+   card.append(withdraw);
+  }
   if(['coach','admin'].includes(profile.role)&&duel.ends_at&&new Date(duel.ends_at)<=new Date()&&['active','awaiting_reviews'].includes(duel.status)){
    const button=el('button','Ergebnis prüfen');button.type='button';button.onclick=()=>mutate('duel_v2_reconcile',{p_duel_id:duel.id});card.append(button);
   }
