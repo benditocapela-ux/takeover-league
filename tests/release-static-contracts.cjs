@@ -101,7 +101,7 @@ const cases=[
  assert.ok(fs.existsSync('supabase/production-prep/20261021230000_club_profile_archive_preflight_read_only.sql'));
  assert.ok(fs.existsSync('supabase/production-prep/20261021230000_club_profile_archive_postflight_read_only.sql'));
  assert.ok(fs.existsSync('tests/club-profile-archive-contracts.cjs'));
-},
+}],
 ['Unused coach challenge drafts can be deleted only through a guarded RPC',()=>{
  const deletion=read('supabase/migrations/20261023200000_coach_challenge_delete_unused_draft.sql');
  const rollback=read('supabase/production-prep/rollback_20261023200000_coach_challenge_delete_unused_draft.sql');
