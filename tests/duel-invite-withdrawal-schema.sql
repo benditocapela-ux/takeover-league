@@ -6,7 +6,7 @@ ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS profiles_role_check;
 ALTER TABLE public.profiles ADD CONSTRAINT profiles_role_check CHECK (role IN ('boxer','coach','admin'));
 
 INSERT INTO public.profiles(id,auth_user_id,display_name,role,is_active)
-VALUES('cccccccc-cccc-4ccc-8ccc-cccccccccccc',
+VALUES('12121212-1212-4212-8212-121212121212',
        '33333333-3333-4333-8333-333333333333','Test Boxer Two','boxer',true);
 
 CREATE TABLE public.league_duels (
@@ -35,10 +35,10 @@ ON CONFLICT(feature_key) DO UPDATE SET is_enabled=true;
 
 INSERT INTO public.league_duels(id,challenger_id,opponent_id,created_by,initiated_by_coach,status,expires_at)
 VALUES
- ('dddddddd-dddd-4ddd-8ddd-dddddddddddd','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','cccccccc-cccc-4ccc-8ccc-cccccccccccc','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',false,'pending',now()+interval '24 hours'),
- ('eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','cccccccc-cccc-4ccc-8ccc-cccccccccccc','bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',true,'pending',now()+interval '24 hours'),
- ('ffffffff-ffff-4fff-8fff-ffffffffffff','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','cccccccc-cccc-4ccc-8ccc-cccccccccccc','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',false,'active',now()+interval '24 hours'),
- ('99999999-9999-4999-8999-999999999999','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','cccccccc-cccc-4ccc-8ccc-cccccccccccc','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',false,'pending',now()-interval '1 minute');
+ ('dddddddd-dddd-4ddd-8ddd-dddddddddddd','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','12121212-1212-4212-8212-121212121212','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',false,'pending',now()+interval '24 hours'),
+ ('eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','12121212-1212-4212-8212-121212121212','bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',true,'pending',now()+interval '24 hours'),
+ ('ffffffff-ffff-4fff-8fff-ffffffffffff','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','12121212-1212-4212-8212-121212121212','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',false,'active',now()+interval '24 hours'),
+ ('99999999-9999-4999-8999-999999999999','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','12121212-1212-4212-8212-121212121212','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',false,'pending',now()-interval '1 minute');
 
 BEGIN;
 SELECT set_config('request.jwt.claim.sub','11111111-1111-4111-8111-111111111111',true);
