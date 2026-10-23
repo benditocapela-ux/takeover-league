@@ -142,6 +142,6 @@ const cases=[
  assert.ok(fs.existsSync('supabase/production-prep/preflight_20261023210000_duel_invite_withdrawal_read_only.sql'));
  assert.ok(fs.existsSync('supabase/production-prep/postflight_20261023210000_duel_invite_withdrawal_read_only.sql'));
 }]
-;
+];
 let n=0;for(const [label,fn] of cases){try{fn();n++;console.log('PASS',label)}catch(e){console.error('FAIL',label,e.message);process.exitCode=1}}
 console.log(n+'/'+cases.length+' static source checks passed. No browser/E2E claims.');
