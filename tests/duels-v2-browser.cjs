@@ -169,7 +169,7 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  const coachReview=await mount({profile:{id:'coach-1',role:'coach',is_active:true},duels:[finished]});
  const reconcileButton=[...coachReview.document.querySelectorAll('#duelList button')].find(x=>x.textContent==='Ergebnis prüfen');
  assert.ok(reconcileButton,'coach can reconcile ended duels');
- assert.match(coachReview.document.querySelector('#duelList').textContent,/Die Trainingspunkte werden nach Ablauf/,'active duel should not present stale scores');
+ assert.match(coachReview.document.querySelector('#duelList').textContent,/Zwischenstand hat ein ungültiges Datenformat/,'invalid live-score payload must not fall back to stale stored scores');
  assert.doesNotMatch(coachReview.document.querySelector('#duelList').textContent,/Trainingspunkte: 70 : 40/,'active score must not appear finalized');
  reconcileButton.click();await tick();await tick();
  assert.ok(coachReview.calls.some(x=>x.name==='duel_v2_reconcile'&&x.args.p_duel_id==='duel-1'));
