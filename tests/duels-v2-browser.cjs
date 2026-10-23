@@ -70,6 +70,9 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  assert.equal(boxer.document.querySelector('#auth').hidden,true);
  assert.equal(boxerForm.elements.challenger.disabled,true);
  assert.equal(boxerForm.elements.challenger.value,'boxer-1');
+ // Opponent selection intentionally starts blank; choose explicitly to avoid accidental challenges.
+ boxerForm.elements.opponent.value='boxer-2';
+ boxerForm.elements.opponent.dispatchEvent(new boxer.dom.window.Event('change',{bubbles:true}));
  assert.equal(boxerForm.elements.opponent.value,'boxer-2');
  boxerForm.dispatchEvent(new boxer.dom.window.Event('submit',{bubbles:true,cancelable:true}));
  await tick();await tick();
@@ -194,4 +197,4 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  denied.dom.window.close();
  console.log('Duels V2: production guard, invitation, acceptance, expiry, coach selection, scoring and XSS tests passed');
  clearTimeout(watchdog);process.exit(0);
-})().catch(err=>{clearTimeout(watchdog);console.error(err);process.exitCode=1});
+})().catch(err=>{clearTimeout(watchdog);console.error(err);process.exit(1)});
