@@ -13,7 +13,7 @@ SET auth_user_id='22222222-2222-4222-8222-222222222222',
 WHERE id='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
 DO $assert_coach$
 BEGIN
- IF NOT FOUND THEN RAISE EXCEPTION 'Coach fixture profile missing from base V2 fixture'; END IF;
+ IF NOT EXISTS (SELECT 1 FROM public.profiles WHERE id='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb' AND auth_user_id='22222222-2222-4222-8222-222222222222' AND role='coach' AND is_active IS TRUE) THEN RAISE EXCEPTION 'Coach fixture profile missing from base V2 fixture'; END IF;
 END
 $assert_coach$;
 
