@@ -30,7 +30,7 @@ for(const [path,b] of Object.entries(baseline)){
 const nav=fs.readFileSync('takeover-navigation.js','utf8');
 assert.match(nav,/role==='admin'/);assert.match(nav,/ROLE_NAV/);assert.match(nav,/adminEntry\.hidden=true/);
 const css=fs.readFileSync('takeover-redesign.css','utf8');
-assert.match(css,/--gold:#c9a86b/);assert.match(css,/--ok:#558f6a/);
+assert.match(css,/--gold:#f2c14e/);assert.match(css,/--ok:#5fb27f/);
 assert.match(css,/prefers-reduced-motion:reduce/);assert.match(css,/safe-area-inset-bottom/);
 assert.match(css,/min-height:44px/);
 console.log(`PASS: ${Object.keys(baseline).length} pages, ${ids-5} preserved DOM hooks + 5 guest accessibility IDs, ${rpcCount} RPC literals, role-navigation contract intact`);
