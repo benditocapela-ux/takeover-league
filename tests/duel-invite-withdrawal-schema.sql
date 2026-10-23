@@ -7,6 +7,9 @@ ALTER TABLE public.profiles ADD CONSTRAINT profiles_role_check CHECK (role IN ('
 
 INSERT INTO public.profiles(id,display_name,role,is_active)
 VALUES('12121212-1212-4212-8212-121212121212','Duel Withdrawal Fixture Boxer','boxer',true);
+INSERT INTO public.profiles(id,auth_user_id,display_name,role,is_active)
+VALUES('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb',
+       '22222222-2222-4222-8222-222222222222','Duel Withdrawal Fixture Coach','coach',true);
 
 CREATE TABLE public.league_duels (
  id uuid PRIMARY KEY,
