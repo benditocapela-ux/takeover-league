@@ -149,6 +149,20 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  assert.match(expired.document.querySelector('#duelList').textContent,/Einladung abgelaufen/);
  expired.dom.window.close();
 
+ const withdrawing=await mount({profile:{id:'boxer-1',role:'boxer',is_active:true},duels:[incoming]});
+ const withdrawButton=[...withdrawing.document.querySelectorAll('#duelList button')].find(x=>x.textContent==='Einladung zurückziehen');
+ assert.ok(withdrawButton,'inviting boxer can withdraw a pending invitation');
+ withdrawButton.click();await tick();await tick();
+ assert.ok(withdrawing.calls.some(x=>x.name==='duel_v2_withdraw_invite'&&x.args.p_duel_id==='duel-1'));
+ withdrawing.dom.window.close();
+
+ const coachWithdraw=await mount({profile:{id:'coach-1',role:'coach',is_active:true},duels:[incoming]});
+ const coachWithdrawButton=[...coachWithdraw.document.querySelectorAll('#duelList button')].find(x=>x.textContent==='Einladung zurückziehen');
+ assert.ok(coachWithdrawButton,'coach can withdraw a pending duel invitation');
+ coachWithdrawButton.click();await tick();await tick();
+ assert.ok(coachWithdraw.calls.some(x=>x.name==='duel_v2_withdraw_invite'&&x.args.p_duel_id==='duel-1'));
+ coachWithdraw.dom.window.close();
+
  const finished={
   ...incoming,status:'active',ends_at:'2020-10-20T12:00:00Z',
   challenger_score:70,opponent_score:40
