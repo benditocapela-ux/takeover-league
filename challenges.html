@@ -182,6 +182,12 @@ const save=el('button','Ziel und EXP speichern');save.type='submit';goal.append(
 goal.onsubmit=e=>{e.preventDefault();act('coach_challenge_v2_save_goal_reward',{p_challenge_id:c.id,p_goal_text:description.value,p_review_mode:'manual',p_reward_exp:Number(reward.value),p_target_value:null,p_metric:null})};a.append(goal);
 }
 if(mayManage(c)&&c.status==='draft'){const open=el('button','Öffnen');open.type='button';open.onclick=()=>{if(confirm('Challenge für Boxer öffnen? Ziel und EXP müssen gespeichert sein.'))act('coach_challenge_v2_manage',{p_challenge_id:c.id,p_action:'open'})};a.append(open);}
+if(mayManage(c)&&c.status==='draft'){
+ const remove=el('button','Entwurf löschen');remove.type='button';
+ remove.setAttribute('aria-label','Unbenutzten Entwurf löschen: '+c.title);
+ remove.onclick=()=>{if(confirm('Entwurf „'+c.title+'“ endgültig löschen? Das ist nur möglich, wenn keine Teilnahmen, Bewertungen, Zielzuweisungen oder EXP-Historie existieren. Veröffentlichte Challenges bleiben erhalten.'))act('coach_challenge_v2_delete_draft',{p_challenge_id:c.id})};
+ a.append(remove);
+}
 if(mayManage(c)&&['draft','open'].includes(c.status)){
   const cancel=el('button','Challenge abbrechen');
   cancel.type='button';

@@ -21,8 +21,10 @@ const eligible=[
  {id:'boxer-3',display_name:'Boxer Drei'}
 ];
 const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
+const watchdog=setTimeout(()=>{console.error('Duels V2 browser smoke timed out after 30 seconds');process.exit(1)},30000);
 async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_active:true},boxers=eligible,duels=[],rpcError=null}={}){
- const dom=new JSDOM(preview,{url:'https://example.test/duels-v2-preview.html',runScripts:'outside-only'});
+ // Exercise production JavaScript against its matching production DOM, with all network calls mocked.
+ const dom=new JSDOM(production,{url:'https://example.test/duels.html',runScripts:'outside-only'});
  const calls=[];let onAuthEvent=null;
  const db={
   auth:{
@@ -41,7 +43,7 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  };
  dom.window.createClient=()=>db;dom.window.confirm=()=>true;
  dom.window.eval('window.TAKEOVER_DUELS_V2_ENABLED=true;');
- dom.window.eval(source.replace('init();','window.__ready=init();'));
+ dom.window.eval(prodSource.replace('init();','window.__ready=init();'));
  await dom.window.__ready;
  return {dom,document:dom.window.document,calls,db,emitAuth:event=>onAuthEvent?.(event,null)};
 }
@@ -69,6 +71,9 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  assert.equal(boxer.document.querySelector('#auth').hidden,true);
  assert.equal(boxerForm.elements.challenger.disabled,true);
  assert.equal(boxerForm.elements.challenger.value,'boxer-1');
+ // Opponent selection intentionally starts blank; choose explicitly to avoid accidental challenges.
+ boxerForm.elements.opponent.value='boxer-2';
+ boxerForm.elements.opponent.dispatchEvent(new boxer.dom.window.Event('change',{bubbles:true}));
  assert.equal(boxerForm.elements.opponent.value,'boxer-2');
  boxerForm.dispatchEvent(new boxer.dom.window.Event('submit',{bubbles:true,cancelable:true}));
  await tick();await tick();
@@ -114,11 +119,15 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  form.elements.challenger.dispatchEvent(new coach.dom.window.Event('change',{bubbles:true}));
  assert.equal(form.elements.challenger.value,'boxer-2','coach challenger must survive rerender');
  assert.equal([...form.elements.opponent.options].some(x=>x.value==='boxer-2'),false,'no self duel');
+ // Changing the challenger clears the opponent intentionally; select a different boxer explicitly.
+ form.elements.opponent.value='boxer-1';
+ form.elements.opponent.dispatchEvent(new coach.dom.window.Event('change',{bubbles:true}));
  form.elements.duration.value='14';
  form.dispatchEvent(new coach.dom.window.Event('submit',{bubbles:true,cancelable:true}));
  await tick();await tick();
  assert.ok(coach.calls.some(x=>x.name==='duel_v2_invite'&&x.args.p_challenger==='boxer-2'&&x.args.p_duration_days===14));
  coach.dom.window.close();
+ console.log('CHECKPOINT: coach invitation form');
 
  const incoming={
   id:'duel-1',challenger_id:'boxer-1',challenger_name:'Boxer Eins',
@@ -133,21 +142,25 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  accept.click();await tick();await tick();
  assert.ok(invited.calls.some(x=>x.name==='duel_v2_respond'&&x.args.p_duel_id==='duel-1'&&x.args.p_accept===true));
  invited.dom.window.close();
+ console.log('CHECKPOINT: accept invitation');
  const declining=await mount({profile:{id:'boxer-2',role:'boxer',is_active:true},duels:[incoming]});
  const reject=[...declining.document.querySelectorAll('#duelList button')].find(x=>x.textContent==='Ablehnen');
  reject.click();await tick();await tick();
  assert.ok(declining.calls.some(x=>x.name==='duel_v2_respond'&&x.args.p_duel_id==='duel-1'&&x.args.p_accept===false));
  declining.dom.window.close();
+ console.log('CHECKPOINT: decline invitation');
 
 
  const nonRecipient=await mount({profile:{id:'boxer-1',role:'boxer',is_active:true},duels:[incoming]});
- assert.equal(nonRecipient.document.querySelectorAll('#duelList button').length,0,'inviting boxer cannot accept own invitation');
+ const ownInviteButtons=[...nonRecipient.document.querySelectorAll('#duelList button')];
+ assert.equal(ownInviteButtons.some(x=>['Annehmen','Ablehnen'].includes(x.textContent)),false,'inviting boxer cannot accept or decline own invitation');
  nonRecipient.dom.window.close();
 
  const expired=await mount({profile:{id:'boxer-2',role:'boxer',is_active:true},duels:[{...incoming,expires_at:'2020-01-01T00:00:00Z'}]});
  assert.equal(expired.document.querySelectorAll('#duelList button').length,0,'expired invitation no actions');
  assert.match(expired.document.querySelector('#duelList').textContent,/Einladung abgelaufen/);
  expired.dom.window.close();
+ console.log('CHECKPOINT: expired invitation');
 
  const finished={
   ...incoming,status:'active',ends_at:'2020-10-20T12:00:00Z',
@@ -156,7 +169,7 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  const coachReview=await mount({profile:{id:'coach-1',role:'coach',is_active:true},duels:[finished]});
  const reconcileButton=[...coachReview.document.querySelectorAll('#duelList button')].find(x=>x.textContent==='Ergebnis prüfen');
  assert.ok(reconcileButton,'coach can reconcile ended duels');
- assert.match(coachReview.document.querySelector('#duelList').textContent,/Die Trainingspunkte werden nach Ablauf/,'active duel should not present stale scores');
+ assert.match(coachReview.document.querySelector('#duelList').textContent,/Zwischenstand hat ein ungültiges Datenformat/,'invalid live-score payload must not fall back to stale stored scores');
  assert.doesNotMatch(coachReview.document.querySelector('#duelList').textContent,/Trainingspunkte: 70 : 40/,'active score must not appear finalized');
  reconcileButton.click();await tick();await tick();
  assert.ok(coachReview.calls.some(x=>x.name==='duel_v2_reconcile'&&x.args.p_duel_id==='duel-1'));
@@ -164,6 +177,7 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  const boxerReview=await mount({profile:{id:'boxer-1',role:'boxer',is_active:true},duels:[finished]});
  assert.equal([...boxerReview.document.querySelectorAll('#duelList button')].some(x=>x.textContent==='Ergebnis prüfen'),false,'boxer cannot manually reconcile a duel');
  boxerReview.dom.window.close();
+ console.log('CHECKPOINT: ended duel review');
  const completed=await mount({duels:[{
   ...incoming,status:'settled',challenger_score:120,opponent_score:95,winner_id:'boxer-1',
   ends_at:'2026-10-25T12:00:00Z'
@@ -186,4 +200,5 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  assert.match(denied.document.querySelector('#status').textContent,/permission denied/);
  denied.dom.window.close();
  console.log('Duels V2: production guard, invitation, acceptance, expiry, coach selection, scoring and XSS tests passed');
-})().catch(err=>{console.error(err);process.exitCode=1});
+ clearTimeout(watchdog);process.exit(0);
+})().catch(err=>{clearTimeout(watchdog);console.error(err);process.exit(1)});

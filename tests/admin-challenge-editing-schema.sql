@@ -44,6 +44,24 @@ CREATE TABLE public.league_coach_challenge_entries (
  PRIMARY KEY(challenge_id,boxer_id)
 );
 
+CREATE TABLE public.league_coach_challenge_reviews (
+ challenge_id uuid NOT NULL REFERENCES public.league_coach_challenges(id),
+ boxer_id uuid NOT NULL REFERENCES public.profiles(id),
+ PRIMARY KEY(challenge_id,boxer_id)
+);
+CREATE TABLE public.league_coach_challenge_exp_ledger (
+ challenge_id uuid NOT NULL REFERENCES public.league_coach_challenges(id),
+ boxer_id uuid NOT NULL REFERENCES public.profiles(id),
+ transaction_id uuid,
+ awarded_exp integer NOT NULL DEFAULT 0,
+ PRIMARY KEY(challenge_id,boxer_id)
+);
+CREATE TABLE public.league_coach_challenge_targets (
+ challenge_id uuid NOT NULL REFERENCES public.league_coach_challenges(id) ON DELETE RESTRICT,
+ boxer_id uuid NOT NULL REFERENCES public.profiles(id),
+ PRIMARY KEY(challenge_id,boxer_id)
+);
+
 CREATE SCHEMA IF NOT EXISTS league_v21_private;
 REVOKE ALL ON SCHEMA league_v21_private FROM PUBLIC,anon,authenticated;
 GRANT USAGE ON SCHEMA league_v21_private TO authenticated;
@@ -77,6 +95,7 @@ VALUES('77777777-7777-4777-8777-777777777777',
        '77777777-7777-4777-8777-777777777778','Test Admin','admin',true);
 
 \i supabase/migrations/20261021223000_admin_challenge_editing.sql
+\i supabase/migrations/20261023200000_coach_challenge_delete_unused_draft.sql
 
 BEGIN;
 SELECT set_config('request.jwt.claim.sub','77777777-7777-4777-8777-777777777778',true);
@@ -91,6 +110,12 @@ VALUES
 
 INSERT INTO public.league_coach_challenge_entries(challenge_id,boxer_id,status)
 VALUES('eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','joined');
+INSERT INTO public.league_coach_challenges(id,created_by,title,description,challenge_kind,duration_days,status)
+VALUES
+ ('cccccccc-cccc-4ccc-8ccc-cccccccccccc','77777777-7777-4777-8777-777777777777','Unused Draft','Safe to delete','individual',7,'draft'),
+ ('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb','77777777-7777-4777-8777-777777777777','Historical Draft','Has a withdrawn participant','individual',7,'draft');
+INSERT INTO public.league_coach_challenge_entries(challenge_id,boxer_id,status)
+VALUES('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb','aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa','withdrawn');
 
 INSERT INTO public.league_global_challenges_v21(id,title,description,metric,target_value,starts_at,ends_at,status,created_by)
 VALUES
@@ -164,6 +189,28 @@ BEGIN
  EXCEPTION WHEN SQLSTATE '22023' THEN blocked:=true;
  END;
  IF NOT blocked THEN RAISE EXCEPTION 'Global challenge rules changed after start'; END IF;
+
+ IF public.coach_challenge_v2_delete_draft('cccccccc-cccc-4ccc-8ccc-cccccccccccc') <> 'deleted'
+ THEN RAISE EXCEPTION 'Unused draft deletion did not return deleted'; END IF;
+ IF EXISTS(SELECT 1 FROM public.league_coach_challenges WHERE id='cccccccc-cccc-4ccc-8ccc-cccccccccccc')
+ THEN RAISE EXCEPTION 'Unused draft still exists after deletion'; END IF;
+
+ blocked:=false;
+ BEGIN
+  PERFORM public.coach_challenge_v2_delete_draft('bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb');
+ EXCEPTION WHEN SQLSTATE '23503' THEN blocked:=true;
+ END;
+ IF NOT blocked OR NOT EXISTS(SELECT 1 FROM public.league_coach_challenges WHERE id='bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb')
+ THEN RAISE EXCEPTION 'Draft with withdrawn participation was not safely retained'; END IF;
+
+ blocked:=false;
+ BEGIN
+  PERFORM public.coach_challenge_v2_delete_draft('eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee');
+ EXCEPTION WHEN SQLSTATE '22023' THEN blocked:=true;
+ END;
+ IF NOT blocked OR NOT EXISTS(SELECT 1 FROM public.league_coach_challenges WHERE id='eeeeeeee-eeee-4eee-8eee-eeeeeeeeeeee')
+ THEN RAISE EXCEPTION 'Published challenge was not protected from deletion'; END IF;
+
 
  UPDATE public.league_feature_flags SET is_enabled=false WHERE feature_key='league_challenges';
  blocked:=false;

@@ -76,7 +76,7 @@ async function main(){
     await context.addInitScript({content:mockSupabase.toString().replace(/^function mockSupabase\(\)/,'function mockSupabase()')+';mockSupabase();'});
     await context.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm',route=>
       route.fulfill({status:200,contentType:'text/javascript',body:'export const createClient=()=>window.__testDb;'}));
-    await context.route('https://iqarjivcrddcixrvqbfb.supabase.co/rest/v1/**',route=>{
+    await context.route('https://iqarjivcrddcixrvqbfb.supabase.co/rest/v1/**',async route=>{
      const url=route.request().url();
      const response=url.includes('/rpc/get_public_levels')?[
        {boxer_name:'Boxer Alpha',lifetime_exp:1200},{boxer_name:'Boxer Beta',lifetime_exp:800}]
@@ -92,13 +92,15 @@ async function main(){
         settled_at:'2026-10-15T18:00:00Z'
        }]
       :url.includes('/rpc/get_public_boxer_avatars')?[{boxer_name:'Boxer Alpha',avatar_key:null,avatar_url:null}]:[];
-     route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(response)});
+     await route.fulfill({status:200,contentType:'application/json',body:JSON.stringify(response)});
     });
     for(const [route,role] of [['goals.html','boxer'],['arena.html','admin'],['league-manager.html','admin'],
        ['league-challenges.html','boxer'],['league-history.html','boxer'],['boxer-profile.html?name=Boxer%20Alpha','boxer'],['boxer-compare.html?left=Boxer%20Alpha&right=Boxer%20Beta','boxer']]){
-     const page=await context.newPage();const errors=[];
+     const page=await context.newPage();const errors=[],network=[];
      page.on('pageerror',e=>errors.push(e.message));
+     page.on('response',r=>{if(/get_public_(leaderboard|levels)|league_public_duel_history_v21/.test(r.url()))network.push({url:r.url(),status:r.status()})});
      await page.addInitScript({content:'window.__testRole='+JSON.stringify(role)});
+     await page.addInitScript({content:'window.__initialCompareSearch=location.search'});
      await page.goto(base+'/'+route,{waitUntil:'domcontentloaded'});
      if(route.startsWith('goals')) {
       await page.locator('#app').waitFor({state:'visible'});
@@ -129,7 +131,7 @@ async function main(){
       await page.locator('#profileCard').waitFor({state:'visible'});
       assert.ok(await page.locator('#sportRadar svg polygon').count()>0,'Radar not rendered');
      }else if(route.startsWith('boxer-compare')){
-      await page.waitForFunction(()=>document.querySelector('#directDuelsStatus')?.textContent.includes('Direkte Duelle: 1'));
+      try{await page.waitForFunction(()=>document.querySelector('#directDuelsStatus')?.textContent.includes('Direkte Duelle: 1'))}catch(e){console.log('DEBUG boxer-compare',JSON.stringify({url:page.url(),initialSearch:await page.evaluate(()=>window.__initialCompareSearch),left:await page.locator('#left').inputValue(),right:await page.locator('#right').inputValue(),leftOptions:await page.locator('#left option').evaluateAll(es=>es.map(e=>({text:e.textContent,value:e.value}))),rightOptions:await page.locator('#right option').evaluateAll(es=>es.map(e=>({text:e.textContent,value:e.value}))),chooserHidden:await page.locator('#chooser').evaluate(el=>el.hidden),status:await page.locator('#status').innerText(),duelStatus:await page.locator('#directDuelsStatus').innerText(),network,errors}));throw e}
       assert.match(await page.locator('#directDuelsStatus').innerText(),/Boxer Alpha 1 Siege/);
       assert.match(await page.locator('#directDuelsStatus').innerText(),/Boxer Beta 0 Siege/);
       assert.equal(await page.locator('#directDuelsRows .h2h-row').count(),1);

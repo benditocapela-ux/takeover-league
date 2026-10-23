@@ -30,6 +30,7 @@ on:
       - 'tests/production-v2-*.sh'
       - 'tests/production-v2-schema-smoke.sql'
       - 'tests/admin-challenge-editing-schema.sql'
+      - 'tests/coach-training-history-pagination-schema.sql'
       - 'tests/admin-challenge-editing-browser.cjs'
       - '.github/workflows/coach-challenges-v2.yml'
   push:
@@ -131,6 +132,13 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -h localhost -U postgres -d postgres -v ON_ERROR_STOP=1 -f tests/production-v2-schema-smoke.sql
+      - name: Test coach training history RPC in isolated disposable database
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -euo pipefail
+          createdb -h localhost -U postgres coach_history_test
+          psql -h localhost -U postgres -d coach_history_test -v ON_ERROR_STOP=1 -f tests/coach-training-history-pagination-schema.sql
       - name: Verify duplicate releases fail atomically without changing fixtures
         env:
           PGPASSWORD: postgres
@@ -301,3 +309,37 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -X -h localhost -U postgres -d club_archive_probe -v ON_ERROR_STOP=1 -f tests/club-profile-archive-schema.sql
+
+  duel-invite-withdrawal-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated duel withdrawal fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres duel_withdrawal_probe
+      - name: Verify invitation withdrawal authorization and history on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d duel_withdrawal_probe -v ON_ERROR_STOP=1 -f tests/duel-invite-withdrawal-schema.sql

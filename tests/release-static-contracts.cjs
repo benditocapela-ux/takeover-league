@@ -30,6 +30,9 @@ const cases=[
 ['Live duel scores enforce participant authorization',()=>{const duel=read('supabase/migrations/20261018211000_duel_v2_live_scores.sql');assert.match(duel,/actor\.id not in \(duel\.challenger_id,duel\.opponent_id\)/);assert.match(duel,/s\.status='approved'/);assert.match(duel,/s\.created_at<=least\(now\(\),duel\.ends_at\)/);assert.match(duel,/revoke all on function public\.duel_v2_live_scores\(uuid\) from public,anon,authenticated/i);assert.match(duels,/duel_v2_live_scores/)}],
 ['Duel invitation confirms exact opponent and duration',()=>assert.match(duels,/if\(!confirm\('Duell-Einladung senden\?/)],
 ['Training calendar uses confirmed Supabase entries',()=>{assert.match(boxer,/historyRows\.filter\(row=>row\.status==='approved'/);assert.match(boxer,/renderTrainingInsights\(\)/)}],
+['Coach boxer quick view loads latest five approved trainings through RPC',()=>{assert.match(coach,/async function openBoxerQuick\(id\)/);assert.match(coach,/db\.rpc\('coach_list_training_history'/);assert.match(coach,/p_status:'approved',p_limit:5/);assert.match(coach,/p_status:'pending',p_limit:1/)}],
+['Coach training history uses server-side ten-entry pagination and filters',()=>{assert.match(coach,/async function renderFilteredTrainings\(reset=true\)/);assert.match(coach,/db\.rpc\('coach_list_training_history'/);assert.match(coach,/p_limit:10,p_offset:historyOffset/);assert.match(coach,/allTrainings\.push\(\.\.\.items\)/);assert.match(coach,/Weitere 10 Trainings anzeigen/);assert.doesNotMatch(coach,/\.limit\(1000\)/)}],
+['Coach history pagination RPC enforces active trainer roles and bounded pages',()=>{const sql=read('supabase/migrations/20261022210000_coach_training_history_pagination.sql');assert.match(sql,/SECURITY DEFINER/);assert.match(sql,/actor\.role IN \('admin','coach'\)/);assert.match(sql,/actor\.is_active IS TRUE/);assert.match(sql,/LEAST\(GREATEST\(COALESCE\(p_limit,10\),1\),50\)/);assert.match(sql,/REVOKE ALL ON FUNCTION public\.coach_list_training_history/);assert.match(sql,/GRANT EXECUTE ON FUNCTION public\.coach_list_training_history[^;]*TO authenticated/)}],
 ['Server idempotency has a partial unique key',()=>{const idemp=read('supabase/migrations/20261018200000_training_submission_idempotency.sql');assert.match(idemp,/unique index if not exists/i);assert.match(idemp,/client_request_id is not null/);assert.match(boxer,/client_request_id=requestId/)}],
 ['No application uses service role credentials',()=>{for(const file of ['boxer.html','coach.html','duels.html','challenges.html','boxer-compare.html'])assert.doesNotMatch(read(file),/sb_secret_|service_role/i)}],
 ['Undo rejection is admin-only, bounded, audited and has no linked ledger',()=>{
@@ -98,7 +101,46 @@ const cases=[
  assert.ok(fs.existsSync('supabase/production-prep/20261021230000_club_profile_archive_preflight_read_only.sql'));
  assert.ok(fs.existsSync('supabase/production-prep/20261021230000_club_profile_archive_postflight_read_only.sql'));
  assert.ok(fs.existsSync('tests/club-profile-archive-contracts.cjs'));
-}] 
+}],
+['Unused coach challenge drafts can be deleted only through a guarded RPC',()=>{
+ const deletion=read('supabase/migrations/20261023200000_coach_challenge_delete_unused_draft.sql');
+ const rollback=read('supabase/production-prep/rollback_20261023200000_coach_challenge_delete_unused_draft.sql');
+ assert.match(challenges,/coach_challenge_v2_delete_draft/);
+ assert.match(deletion,/role IN \('coach','admin'\)/);
+ assert.match(deletion,/is_active IS TRUE/);
+ assert.match(deletion,/feature_key = 'coach_challenges' AND is_enabled IS TRUE/);
+ assert.match(deletion,/challenge\.status <> 'draft'/);
+ assert.match(deletion,/league_coach_challenge_entries/);
+ assert.match(deletion,/league_coach_challenge_reviews/);
+ assert.match(deletion,/league_coach_challenge_exp_ledger/);
+ assert.match(deletion,/league_coach_challenge_targets/);
+ assert.match(deletion,/point_transactions/);
+ assert.match(deletion,/REVOKE ALL ON FUNCTION public\.coach_challenge_v2_delete_draft\(uuid\)/);
+ assert.match(deletion,/GRANT EXECUTE ON FUNCTION public\.coach_challenge_v2_delete_draft\(uuid\)[\s\S]*TO authenticated/);
+ assert.match(rollback,/DROP FUNCTION IF EXISTS public\.coach_challenge_v2_delete_draft\(uuid\)/);
+ assert.ok(fs.existsSync('supabase/production-prep/preflight_20261023200000_coach_challenge_delete_unused_draft_read_only.sql'));
+ assert.ok(fs.existsSync('supabase/production-prep/postflight_20261023200000_coach_challenge_delete_unused_draft_read_only.sql'));
+ assert.match(read('tests/admin-challenge-editing-schema.sql'),/coach_challenge_v2_delete_draft/);
+}],
+['Pending duel invitations can be withdrawn without touching settled scoring',()=>{
+ const withdrawal=read('supabase/migrations/20261023210000_duel_invite_withdrawal.sql');
+ const rollback=read('supabase/production-prep/rollback_20261023210000_duel_invite_withdrawal.sql');
+ assert.match(duels,/duel_v2_withdraw_invite/);
+ assert.match(withdrawal,/SECURITY DEFINER/);
+ assert.match(withdrawal,/role IN \('boxer','coach','admin'\)/);
+ assert.match(withdrawal,/duel\.status <> 'pending'/);
+ assert.match(withdrawal,/duel\.challenger_id <> actor\.id/);
+ assert.match(withdrawal,/SET status = 'cancelled'/);
+ assert.match(withdrawal,/INSERT INTO public\.league_duel_events/);
+ assert.doesNotMatch(withdrawal,/point_transactions|league_duel_exp_ledger/);
+ assert.match(withdrawal,/REVOKE ALL ON FUNCTION public\.duel_v2_withdraw_invite\(uuid\)/);
+ assert.match(withdrawal,/GRANT EXECUTE ON FUNCTION public\.duel_v2_withdraw_invite\(uuid\)[\s\S]*TO authenticated/);
+ assert.match(rollback,/DROP FUNCTION IF EXISTS public\.duel_v2_withdraw_invite\(uuid\)/);
+ assert.match(read('.github/workflows/coach-challenges-v2.yml'),/duel-invite-withdrawal-schema/);
+ assert.ok(fs.existsSync('tests/duel-invite-withdrawal-schema.sql'));
+ assert.ok(fs.existsSync('supabase/production-prep/preflight_20261023210000_duel_invite_withdrawal_read_only.sql'));
+ assert.ok(fs.existsSync('supabase/production-prep/postflight_20261023210000_duel_invite_withdrawal_read_only.sql'));
+}]
 ];
 let n=0;for(const [label,fn] of cases){try{fn();n++;console.log('PASS',label)}catch(e){console.error('FAIL',label,e.message);process.exitCode=1}}
 console.log(n+'/'+cases.length+' static source checks passed. No browser/E2E claims.');
