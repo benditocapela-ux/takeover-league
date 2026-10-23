@@ -5,9 +5,8 @@
 ALTER TABLE public.profiles DROP CONSTRAINT IF EXISTS profiles_role_check;
 ALTER TABLE public.profiles ADD CONSTRAINT profiles_role_check CHECK (role IN ('boxer','coach','admin'));
 
-INSERT INTO public.profiles(id,auth_user_id,display_name,role,is_active)
-VALUES('12121212-1212-4212-8212-121212121212',
-       '33333333-3333-4333-8333-333333333333','Test Boxer Two','boxer',true);
+INSERT INTO public.profiles(id,display_name,role,is_active)
+VALUES('12121212-1212-4212-8212-121212121212','Test Boxer Two','boxer',true);
 
 CREATE TABLE public.league_duels (
  id uuid PRIMARY KEY,
