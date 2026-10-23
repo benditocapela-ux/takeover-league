@@ -58,7 +58,7 @@ for(const page of pages){
  if(page==='index.html'){
    assert.ok(html.includes('href="./takeover-theme.css"'),'Central design foundation missing from index');
    const theme=fs.readFileSync('takeover-theme.css','utf8');
-   for(const token of ['--bg:#070d1a','--surface:#0e1c32','--gold:#c9a86b','--ok:#558f6a'])assert.ok(theme.includes(token),'Central token missing: '+token);
+   for(const token of ['--bg:#070b16','--surface:#0f1830','--gold:#f2c14e','--ok:#5fb27f'])assert.ok(theme.includes(token),'Central token missing: '+token);
    for(const id of ['podium','ranking','levels','history','podium-content','ranking-content','levels-content','history-content'])
      assert.ok(doc.getElementById(id),'Original league section missing: '+id);
    assert.equal(doc.querySelectorAll('.tl-global-bottom').length,0,'Home must not have duplicate footer');

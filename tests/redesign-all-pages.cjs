@@ -4,7 +4,7 @@ const excluded=new Set(['challenges-v2-preview.html','duels-v2-preview.html','le
 const pages=fs.readdirSync('.').filter(n=>n.endsWith('.html')&&!excluded.has(n)).sort();
 assert.equal(pages.length,18,'all 18 app entrypoints (including locally added guest.html)');
 const stylesheet=fs.readFileSync('takeover-redesign.css','utf8');
-assert.match(stylesheet,/--gold:#c9a86b/);assert.match(stylesheet,/--ok:#558f6a/);
+assert.match(stylesheet,/--gold:#f2c14e/);assert.match(stylesheet,/--ok:#5fb27f/);
 for(const page of pages){const s=fs.readFileSync(page,'utf8');const n=page.slice(0,-5);
  assert.match(s,/takeover-redesign\.css/,'missing redesign stylesheet: '+page);
  assert.ok(s.includes(`data-tl-screen="${n}"`),'missing page-specific design marker: '+page);

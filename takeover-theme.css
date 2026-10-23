@@ -1,39 +1,23 @@
 /* Takeover League Design Foundation · Studio / de-CH · 4px raster */
 :root{
   color-scheme:dark;
-  --font:system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
-  --bg:#070d1a;
-  --surface:#0e1c32;
-  --surface-2:#0a1528;
-  --surface-3:#132642;
-  --bg-deep:#040a15;
-  --line:#212f49;
-  --line-strong:#2f435e;
-  --line-soft:#1b2f4b;
-  --text:#e8ecf3;
-  --text-2:#cbd6e7;
-  --muted:#9aabbf;
-  --muted-2:#7588a3;
-  --gold:#c9a86b;
-  --gold-soft:color-mix(in srgb,var(--gold) 14%,transparent);
-  --gold-2:#d0ad68;
-  --gold-deep:#9e7d3e;
-  --gold-glow:rgba(201,168,107,.14);
-  --ok:#558f6a;
-  --pending:#d4b16a;
-  --bad:#ce8689;
-  --info:#6fb3d9;
+  --font:'Inter',system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --font-display:'Barlow Condensed','Arial Narrow',system-ui,sans-serif;
+  --bg:#070b16;--surface:#0f1830;--surface-2:#0b1327;--surface-3:#172440;--bg-deep:#050812;
+  --line:#1f2c4a;--line-strong:#33456d;--line-soft:#1b2945;
+  --text:#f4f6fb;--text-2:#d3dced;--muted:#9fb0c8;--muted-2:#8496b1;
+  --gold:#f2c14e;--gold-soft:color-mix(in srgb,var(--gold) 14%,transparent);--gold-2:#ffd66f;--gold-deep:#b78922;--gold-glow:rgba(242,193,78,.13);
+  --ok:#5fb27f;--pending:#f2c14e;--bad:#ff7a7f;--info:#79bfe6;--live:#ff5a5f;--text-on-gold:#1a1305;
   --r-sm:8px;--r-md:12px;--r-lg:16px;--r-xl:24px;
-  --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;
-  --sp-5:20px;--sp-6:24px;--sp-7:28px;--sp-8:32px;
-  --fs-xs:12px;--fs-sm:14px;--fs-base:16px;--fs-md:18px;
-  --fs-lg:20px;--fs-xl:24px;--fs-2xl:30px;--fs-3xl:36px;
+  --sp-1:4px;--sp-2:8px;--sp-3:12px;--sp-4:16px;--sp-5:20px;--sp-6:24px;--sp-7:28px;--sp-8:32px;
+  --fs-xs:12px;--fs-sm:14px;--fs-base:16px;--fs-md:18px;--fs-lg:20px;--fs-xl:24px;--fs-2xl:30px;--fs-3xl:36px;
   --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
-  --shadow-card:0 12px 32px color-mix(in srgb,var(--bg) 65%,transparent);
-  --focus-ring:0 0 0 3px var(--gold);
+  --shadow-card:0 12px 32px color-mix(in srgb,var(--bg) 65%,transparent);--focus-ring:0 0 0 3px var(--gold);
 }
-html{font-family:var(--font)}
-body{font-family:var(--font)}
+html{font-family:var(--font);background:var(--bg)}
+body{font-family:var(--font);background-color:var(--bg)}
+:where(h1,h2,h3,.tl-screen-title,.tl-menu-title){font-family:var(--font-display);font-weight:800;letter-spacing:.01em;line-height:1.02;text-transform:uppercase}
+:where(.rank,.rank-number,.points,.total-points,.exp,.level-number){font-family:var(--font-display);font-weight:800;font-variant-numeric:tabular-nums}
 :where(a,button,input,select,textarea,summary,[role="tab"]):focus-visible{
   outline:3px solid var(--gold);outline-offset:3px;
 }
