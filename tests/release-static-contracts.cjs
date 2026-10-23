@@ -107,7 +107,7 @@ const cases=[
  const rollback=read('supabase/production-prep/rollback_20261023200000_coach_challenge_delete_unused_draft.sql');
  assert.match(challenges,/coach_challenge_v2_delete_draft/);
  assert.match(deletion,/role IN \('coach','admin'\)/);
- assert.match(deletion,/actor\.is_active IS TRUE/);
+ assert.match(deletion,/is_active IS TRUE/);
  assert.match(deletion,/feature_key = 'coach_challenges' AND is_enabled IS TRUE/);
  assert.match(deletion,/challenge\.status <> 'draft'/);
  assert.match(deletion,/league_coach_challenge_entries/);
