@@ -101,6 +101,26 @@ const cases=[
  assert.ok(fs.existsSync('supabase/production-prep/20261021230000_club_profile_archive_preflight_read_only.sql'));
  assert.ok(fs.existsSync('supabase/production-prep/20261021230000_club_profile_archive_postflight_read_only.sql'));
  assert.ok(fs.existsSync('tests/club-profile-archive-contracts.cjs'));
+},
+['Unused coach challenge drafts can be deleted only through a guarded RPC',()=>{
+ const deletion=read('supabase/migrations/20261023200000_coach_challenge_delete_unused_draft.sql');
+ const rollback=read('supabase/production-prep/rollback_20261023200000_coach_challenge_delete_unused_draft.sql');
+ assert.match(challenges,/coach_challenge_v2_delete_draft/);
+ assert.match(deletion,/actor\.role IN \('coach','admin'\)/);
+ assert.match(deletion,/actor\.is_active IS TRUE/);
+ assert.match(deletion,/feature_key = 'coach_challenges' AND is_enabled IS TRUE/);
+ assert.match(deletion,/challenge\.status <> 'draft'/);
+ assert.match(deletion,/league_coach_challenge_entries/);
+ assert.match(deletion,/league_coach_challenge_reviews/);
+ assert.match(deletion,/league_coach_challenge_exp_ledger/);
+ assert.match(deletion,/league_coach_challenge_targets/);
+ assert.match(deletion,/point_transactions/);
+ assert.match(deletion,/REVOKE ALL ON FUNCTION public\.coach_challenge_v2_delete_draft\(uuid\)/);
+ assert.match(deletion,/GRANT EXECUTE ON FUNCTION public\.coach_challenge_v2_delete_draft\(uuid\)[\s\S]*TO authenticated/);
+ assert.match(rollback,/DROP FUNCTION IF EXISTS public\.coach_challenge_v2_delete_draft\(uuid\)/);
+ assert.ok(fs.existsSync('supabase/production-prep/preflight_20261023200000_coach_challenge_delete_unused_draft_read_only.sql'));
+ assert.ok(fs.existsSync('supabase/production-prep/postflight_20261023200000_coach_challenge_delete_unused_draft_read_only.sql'));
+ assert.match(read('tests/admin-challenge-editing-schema.sql'),/coach_challenge_v2_delete_draft/);
 }] 
 ];
 let n=0;for(const [label,fn] of cases){try{fn();n++;console.log('PASS',label)}catch(e){console.error('FAIL',label,e.message);process.exitCode=1}}
