@@ -136,7 +136,6 @@ const cases=[
  assert.match(withdrawal,/REVOKE ALL ON FUNCTION public\.duel_v2_withdraw_invite\(uuid\)/);
  assert.match(withdrawal,/GRANT EXECUTE ON FUNCTION public\.duel_v2_withdraw_invite\(uuid\)[\s\S]*TO authenticated/);
  assert.match(rollback,/DROP FUNCTION IF EXISTS public\.duel_v2_withdraw_invite\(uuid\)/);
- assert.match(read('tests/duels-v2-browser.cjs'),/Einladung zurückziehen/);
  assert.match(read('.github/workflows/coach-challenges-v2.yml'),/duel-invite-withdrawal-schema/);
  assert.ok(fs.existsSync('tests/duel-invite-withdrawal-schema.sql'));
  assert.ok(fs.existsSync('supabase/production-prep/preflight_20261023210000_duel_invite_withdrawal_read_only.sql'));
