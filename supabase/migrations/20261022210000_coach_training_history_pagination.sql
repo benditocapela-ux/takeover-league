@@ -133,4 +133,6 @@ GRANT EXECUTE ON FUNCTION public.coach_list_training_history(text,uuid,bigint,da
 COMMENT ON FUNCTION public.coach_list_training_history(text,uuid,bigint,date,date,text,integer,integer)
  IS 'Server-filtered, paginated training history for active admin/coach accounts. Read-only; returns at most 50 rows and never changes points or EXP.';
 
+-- Ensure PostgREST can discover the newly installed RPC without waiting for a cache refresh.
+NOTIFY pgrst, 'reload schema';
 COMMIT;
