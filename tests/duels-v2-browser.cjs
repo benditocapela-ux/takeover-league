@@ -41,7 +41,7 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  };
  dom.window.createClient=()=>db;dom.window.confirm=()=>true;
  dom.window.eval('window.TAKEOVER_DUELS_V2_ENABLED=true;');
- dom.window.eval(source.replace('init();','window.__ready=init();'));
+ dom.window.eval(prodSource.replace('init();','window.__ready=init();'));
  await dom.window.__ready;
  return {dom,document:dom.window.document,calls,db,emitAuth:event=>onAuthEvent?.(event,null)};
 }
