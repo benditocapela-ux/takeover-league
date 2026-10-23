@@ -141,7 +141,9 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
 
 
  const nonRecipient=await mount({profile:{id:'boxer-1',role:'boxer',is_active:true},duels:[incoming]});
- assert.equal(nonRecipient.document.querySelectorAll('#duelList button').length,0,'inviting boxer cannot accept own invitation');
+ const ownInviteButtons=[...nonRecipient.document.querySelectorAll('#duelList button')];
+ assert.ok(ownInviteButtons.some(x=>x.textContent==='Einladung zurückziehen'),'inviting boxer can withdraw own invitation');
+ assert.equal(ownInviteButtons.some(x=>['Annehmen','Ablehnen'].includes(x.textContent)),false,'inviting boxer cannot accept or decline own invitation');
  nonRecipient.dom.window.close();
 
  const expired=await mount({profile:{id:'boxer-2',role:'boxer',is_active:true},duels:[{...incoming,expires_at:'2020-01-01T00:00:00Z'}]});
