@@ -119,6 +119,9 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  form.elements.challenger.dispatchEvent(new coach.dom.window.Event('change',{bubbles:true}));
  assert.equal(form.elements.challenger.value,'boxer-2','coach challenger must survive rerender');
  assert.equal([...form.elements.opponent.options].some(x=>x.value==='boxer-2'),false,'no self duel');
+ // Changing the challenger clears the opponent intentionally; select a different boxer explicitly.
+ form.elements.opponent.value='boxer-1';
+ form.elements.opponent.dispatchEvent(new coach.dom.window.Event('change',{bubbles:true}));
  form.elements.duration.value='14';
  form.dispatchEvent(new coach.dom.window.Event('submit',{bubbles:true,cancelable:true}));
  await tick();await tick();
