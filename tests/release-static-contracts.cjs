@@ -121,7 +121,27 @@ const cases=[
  assert.ok(fs.existsSync('supabase/production-prep/preflight_20261023200000_coach_challenge_delete_unused_draft_read_only.sql'));
  assert.ok(fs.existsSync('supabase/production-prep/postflight_20261023200000_coach_challenge_delete_unused_draft_read_only.sql'));
  assert.match(read('tests/admin-challenge-editing-schema.sql'),/coach_challenge_v2_delete_draft/);
-}] 
-];
+}],
+['Pending duel invitations can be withdrawn without touching settled scoring',()=>{
+ const withdrawal=read('supabase/migrations/20261023210000_duel_invite_withdrawal.sql');
+ const rollback=read('supabase/production-prep/rollback_20261023210000_duel_invite_withdrawal.sql');
+ assert.match(duels,/duel_v2_withdraw_invite/);
+ assert.match(withdrawal,/SECURITY DEFINER/);
+ assert.match(withdrawal,/role IN \('boxer','coach','admin'\)/);
+ assert.match(withdrawal,/duel\.status <> 'pending'/);
+ assert.match(withdrawal,/duel\.challenger_id <> actor\.id/);
+ assert.match(withdrawal,/SET status = 'cancelled'/);
+ assert.match(withdrawal,/INSERT INTO public\.league_duel_events/);
+ assert.doesNotMatch(withdrawal,/point_transactions|league_duel_exp_ledger/);
+ assert.match(withdrawal,/REVOKE ALL ON FUNCTION public\.duel_v2_withdraw_invite\(uuid\)/);
+ assert.match(withdrawal,/GRANT EXECUTE ON FUNCTION public\.duel_v2_withdraw_invite\(uuid\)[\s\S]*TO authenticated/);
+ assert.match(rollback,/DROP FUNCTION IF EXISTS public\.duel_v2_withdraw_invite\(uuid\)/);
+ assert.match(read('tests/duels-v2-browser.cjs'),/duel_v2_withdraw_invite/);
+ assert.match(read('.github/workflows/coach-challenges-v2.yml'),/duel-invite-withdrawal-schema/);
+ assert.ok(fs.existsSync('tests/duel-invite-withdrawal-schema.sql'));
+ assert.ok(fs.existsSync('supabase/production-prep/preflight_20261023210000_duel_invite_withdrawal_read_only.sql'));
+ assert.ok(fs.existsSync('supabase/production-prep/postflight_20261023210000_duel_invite_withdrawal_read_only.sql'));
+}]
+;
 let n=0;for(const [label,fn] of cases){try{fn();n++;console.log('PASS',label)}catch(e){console.error('FAIL',label,e.message);process.exitCode=1}}
 console.log(n+'/'+cases.length+' static source checks passed. No browser/E2E claims.');
