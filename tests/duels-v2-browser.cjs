@@ -23,7 +23,8 @@ const eligible=[
 const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
 const watchdog=setTimeout(()=>{console.error('Duels V2 browser smoke timed out after 30 seconds');process.exit(1)},30000);
 async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_active:true},boxers=eligible,duels=[],rpcError=null}={}){
- const dom=new JSDOM(preview,{url:'https://example.test/duels-v2-preview.html',runScripts:'outside-only'});
+ // Exercise production JavaScript against its matching production DOM, with all network calls mocked.
+ const dom=new JSDOM(production,{url:'https://example.test/duels.html',runScripts:'outside-only'});
  const calls=[];let onAuthEvent=null;
  const db={
   auth:{
