@@ -230,3 +230,56 @@ body[data-tl-screen] :where(a,button){-webkit-tap-highlight-color:transparent}
  .tl-choice-card{flex-basis:158px;min-height:112px}
 }
 @media(prefers-reduced-motion:reduce){.tl-choice-card{transition:none}.tl-choice-card:hover{transform:none}}
+
+/* Start page · Fight Night home (champion card, podium, awards, ranking). Visual only. */
+body[data-tl-screen="index"] .tl-champion{position:relative;overflow:hidden;background:linear-gradient(160deg,#18233f,#0b1222 78%);border:1px solid var(--line-strong);border-top:2px solid var(--gold)}
+body[data-tl-screen="index"] .tl-champion::before{content:"";position:absolute;right:-60px;top:22px;width:230px;height:62px;transform:rotate(-8deg);pointer-events:none;
+ background:linear-gradient(var(--gold),var(--gold)) 0 0/100% 1px no-repeat,linear-gradient(var(--gold),var(--gold)) 0 50%/100% 1px no-repeat,linear-gradient(var(--gold),var(--gold)) 0 100%/100% 1px no-repeat;opacity:.22}
+body[data-tl-screen="index"] .tl-champion .medal-title{font-size:var(--fs-xs);font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--gold)}
+body[data-tl-screen="index"] .tl-champion .row{flex-direction:column;align-items:flex-start;gap:var(--sp-3)}
+body[data-tl-screen="index"] .tl-champion .league-champion{display:flex;flex-direction:column;align-items:flex-start;gap:var(--sp-3);min-width:0;max-width:100%}
+body[data-tl-screen="index"] .tl-champion .champion{font-family:var(--font-display);font-weight:800;text-transform:uppercase;font-size:clamp(40px,12.5vw,72px);line-height:.92;letter-spacing:.005em;overflow-wrap:anywhere}
+body[data-tl-screen="index"] .tl-champion-score{display:flex;align-items:baseline;gap:10px}
+body[data-tl-screen="index"] .tl-champion .points{font-family:var(--font-display);font-weight:800;font-size:clamp(40px,11vw,52px);line-height:1;color:var(--gold);text-align:left}
+body[data-tl-screen="index"] .tl-champion-score .small{font-size:var(--fs-sm);font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+body[data-tl-screen="index"] .tl-champion-lead{margin-top:var(--sp-2);font-weight:700;color:var(--text-2)}
+body[data-tl-screen="index"] .tl-champion > .small:last-child{margin-top:4px;color:var(--muted)}
+
+body[data-tl-screen="index"] .tl-podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;grid-template-areas:"p2 p1 p3";align-items:end;gap:10px;margin:var(--sp-6) 0 var(--sp-2)}
+body[data-tl-screen="index"] .tl-podium-1{grid-area:p1}
+body[data-tl-screen="index"] .tl-podium-2{grid-area:p2}
+body[data-tl-screen="index"] .tl-podium-3{grid-area:p3}
+body[data-tl-screen="index"] .tl-podium-step{display:flex;flex-direction:column;align-items:center;min-width:0;text-align:center;color:inherit;text-decoration:none;border-radius:14px 14px 0 0}
+body[data-tl-screen="index"] .tl-podium-name{display:block;max-width:100%;margin:6px 0 8px;font-size:var(--fs-sm);font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+body[data-tl-screen="index"] .tl-podium-block{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;width:100%;border-radius:14px 14px 0 0;border:1px solid var(--line);border-bottom:0;background:linear-gradient(180deg,var(--surface-3),var(--surface-2))}
+body[data-tl-screen="index"] .tl-podium-1 .tl-podium-block{height:128px;border-top:2px solid var(--gold);background:linear-gradient(180deg,color-mix(in srgb,var(--gold) 22%,var(--surface-2)),var(--surface-2) 85%)}
+body[data-tl-screen="index"] .tl-podium-2 .tl-podium-block{height:100px}
+body[data-tl-screen="index"] .tl-podium-3 .tl-podium-block{height:80px}
+body[data-tl-screen="index"] .tl-podium-rank{font-family:var(--font-display);font-weight:800;font-size:34px;line-height:1;color:#c3cbd8}
+body[data-tl-screen="index"] .tl-podium-1 .tl-podium-rank{font-size:46px;color:var(--gold)}
+body[data-tl-screen="index"] .tl-podium-3 .tl-podium-rank{color:#d9a374}
+body[data-tl-screen="index"] .tl-podium-pts{font-size:var(--fs-sm);font-weight:700;color:var(--text-2);font-variant-numeric:tabular-nums}
+body[data-tl-screen="index"] a.tl-podium-step:hover .tl-podium-block{border-color:var(--line-strong)}
+
+body[data-tl-screen="index"] .award{background:var(--fight-panel);color:var(--text);border:1px solid var(--line);border-top:2px solid var(--award-accent,var(--gold))}
+body[data-tl-screen="index"] .award:nth-child(1){--award-accent:var(--gold)}
+body[data-tl-screen="index"] .award:nth-child(2){--award-accent:var(--ok)}
+body[data-tl-screen="index"] .award:nth-child(3){--award-accent:var(--info,#79bfe6)}
+body[data-tl-screen="index"] .award:nth-child(4){--award-accent:var(--bad)}
+body[data-tl-screen="index"] .award-title{color:var(--award-accent,var(--gold));letter-spacing:.02em}
+body[data-tl-screen="index"] .award-name{font-family:var(--font-display);font-weight:800;text-transform:uppercase;font-size:var(--fs-xl);line-height:1}
+body[data-tl-screen="index"] .award-meta{color:var(--muted);opacity:1}
+body[data-tl-screen="index"] .award-open{color:var(--text-2)}
+
+body[data-tl-screen="index"] .rank-row{grid-template-columns:40px 1fr auto}
+body[data-tl-screen="index"] .rank-no{font-family:var(--font-display);font-weight:800;font-size:24px;text-align:center;color:var(--muted);font-variant-numeric:tabular-nums}
+body[data-tl-screen="index"] .rank-row[data-top] .rank-no{color:var(--gold)}
+body[data-tl-screen="index"] .rank-points{font-family:var(--font-display);font-weight:800;font-size:26px;line-height:1}
+body[data-tl-screen="index"] .rank-row .league-name > div{min-width:0;flex:1}
+body[data-tl-screen="index"] .tl-rank-bar{display:block;height:4px;margin-top:7px;border-radius:2px;background:var(--line);overflow:hidden}
+body[data-tl-screen="index"] .tl-rank-bar i{display:block;height:100%;border-radius:inherit;background:color-mix(in srgb,var(--gold) 45%,var(--line-strong))}
+body[data-tl-screen="index"] .rank-row[data-top] .tl-rank-bar i{background:var(--gold)}
+body[data-tl-screen="index"] .rank-row.is-me{border:1px solid var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+body[data-tl-screen="index"] .rank-row.is-me .rank-name::after{content:"Du";margin-left:8px;padding:2px 8px;border-radius:999px;background:var(--gold);color:var(--text-on-gold);font-size:11px;font-weight:800;vertical-align:2px}
+body[data-tl-screen="index"] #ranking > div > button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--gold);border-radius:12px;background:transparent;color:var(--gold);font-weight:700;cursor:pointer}
+body[data-tl-screen="index"] #ranking > div > a[href="./boxer-compare.html"]{color:var(--text-2);font-weight:600;text-underline-offset:3px}
