@@ -318,3 +318,18 @@ body[data-tl-screen="boxer"] .studio-recent-row strong{font-weight:700}
 
 /* Shared quick-actions button: current palette instead of legacy gold. */
 body .tl-quick-open{background:var(--gold);border-color:var(--gold);color:var(--text-on-gold);min-height:44px;padding:8px 14px;font-weight:700}
+
+/* Shared page chrome: one compact sub-navigation row on every page (visual only). */
+body[data-tl-screen] .tl-subnav{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:8px;margin:var(--sp-3) 0 var(--sp-2);padding:0;border:0;background:none;box-shadow:none;font-size:0}
+body[data-tl-screen] .tl-subnav > *{font-size:var(--fs-sm)}
+body[data-tl-screen] .tl-subnav .brand{display:none}
+body[data-tl-screen] .tl-subnav .bar{display:contents}
+body[data-tl-screen] .tl-subnav :where(a,button){display:inline-flex;align-items:center;min-height:40px;padding:8px 14px;border:1px solid var(--line-strong);border-radius:999px;background:transparent;color:var(--text-2);font-weight:600;font-size:var(--fs-sm);text-decoration:none;box-shadow:none;cursor:pointer}
+body[data-tl-screen] .tl-subnav :where(a,button):hover{border-color:var(--gold);color:var(--text)}
+/* Logout is never the primary action. */
+body[data-tl-screen] :is(#logout,#logoutBtn){background:transparent!important;border:1px solid var(--line-strong)!important;color:var(--muted)!important;font-weight:600;box-shadow:none!important;min-height:40px;padding:8px 14px;border-radius:999px}
+body[data-tl-screen] .tl-subnav #logout{margin-left:auto}
+body[data-tl-screen] :is(#logout,#logoutBtn):hover{color:var(--text)!important;border-color:var(--bad)!important}
+/* Quick actions: compact and never covering the end of the page. */
+body .tl-quick-open{min-height:44px;padding:8px 14px;font-size:var(--fs-sm);box-shadow:0 6px 18px #0009}
+body.tl-global-nav-page:has(.tl-quick-open){padding-bottom:calc(150px + env(safe-area-inset-bottom))!important}

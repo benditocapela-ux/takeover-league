@@ -457,7 +457,7 @@ async function loadHistory(){
     const rec=await table('league_public_records_v21','select=boxer_name,approved_sessions,active_days,max_jogging_km,max_technique_minutes');
     $('records').innerHTML=rec.length?rec.map(r=>
       '<div class="row" style="grid-template-columns:1fr auto"><div><div class="nm">'+safe(r.boxer_name)+'</div>'+
-      '<div class="meta">'+fmt(r.approved_sessions)+' Sessions · '+fmt(r.active_days)+' aktive Tage · '+fmt(r.max_jogging_km)+' km · '+fmt(r.max_technique_minutes)+' Min.</div></div>'+
+      '<div class="meta">'+fmt(r.approved_sessions)+' Einheiten · '+fmt(r.active_days)+' aktive Tage · '+fmt(r.max_jogging_km)+' km · '+fmt(r.max_technique_minutes)+' Min.</div></div>'+
       '<div class="val" style="font-size:var(--fs-md)">🏆</div></div>').join(''):'';
     if(!rec.length)empty('records','Noch keine Rekorde.');
   }catch(e){fail('records','Rekorde konnten nicht geladen werden.');}
