@@ -10,8 +10,9 @@
    document.querySelectorAll('h1,h2,h3').forEach(el=>{
      if(el.dataset.tlWayfinder)return;
      const text=(el.textContent||'').trim();
-     // One symbol per heading: an existing SVG icon or leading emoji wins over an added one.
-     if(el.querySelector('svg.tl-icon')){el.dataset.tlWayfinder='icon';return;}
+     // One symbol per heading: the emoji wayfinder replaces a decorative SVG icon
+     // instead of being added next to it; an existing leading emoji is reused.
+     const icon=el.querySelector('svg.tl-icon[aria-hidden="true"]');
      const lead=text.match(/^(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic})*)/u);
      if(lead){
        const node=[...el.childNodes].find(n=>n.nodeType===3&&n.textContent.trim());
@@ -19,11 +20,13 @@
          node.textContent=node.textContent.trimStart().slice(lead[1].length).replace(/^\s+/,'');
          const mark=document.createElement('span');mark.className='tl-section-emoji';mark.setAttribute('aria-hidden','true');mark.textContent=lead[1]+' ';
          el.insertBefore(mark,node);el.dataset.tlWayfinder='true';
+         if(icon)icon.remove();
        }
        return;
      }
      const match=rules.find(([pattern])=>pattern.test(text));
      if(!match)return;
+     if(icon)icon.remove();
      const mark=document.createElement('span');mark.className='tl-section-emoji';mark.setAttribute('aria-hidden','true');mark.textContent=match[1]+' ';
      el.prepend(mark);el.dataset.tlWayfinder='true';
    });
