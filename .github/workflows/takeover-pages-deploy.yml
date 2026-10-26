@@ -74,6 +74,13 @@ jobs:
           grep -Fq 'TAKEOVER_DUELS_V2_ENABLED=true' _site/duels.html
           grep -Fq 'iqarjivcrddcixrvqbfb' _site/challenges.html
           grep -Fq 'iqarjivcrddcixrvqbfb' _site/duels.html
+          # Cache busting: GitHub Pages lets browsers cache files for ~10 minutes.
+          # Version every local stylesheet/script link with the commit so new HTML
+          # never renders with an old cached CSS/JS file after a deploy.
+          release="${GITHUB_SHA:0:8}"
+          sed -i -E "s#((href|src)=\"\./[A-Za-z0-9._-]+\.(css|js))\"#\1?v=${release}\"#g" _site/*.html
+          test "$(grep -c "takeover-redesign.css?v=${release}" _site/index.html)" -ge 1
+          if grep -lE '(href|src)="\./[A-Za-z0-9._-]+\.(css|js)"' _site/*.html; then echo 'Unversioned local asset link left'; exit 1; fi
       - uses: actions/upload-pages-artifact@v4
         with:
           path: _site
