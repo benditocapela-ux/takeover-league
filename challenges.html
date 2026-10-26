@@ -38,7 +38,7 @@ const targetedSection=document.querySelector('#targetedAssignment');
 const targetedHint=document.querySelector('#targetedHint');
 async function rpc(name,args={}){const r=await db.rpc(name,args);if(r.error)throw r.error;return r.data}
 async function act(name,args){if(busy)return;busy=true;const epoch=sessionEpoch;try{say('Wird verarbeitet …');await rpc(name,args);if(epoch!==sessionEpoch||!role)return;await load()}catch(e){if(epoch===sessionEpoch)say(friendlyError(e),true)}finally{busy=false}}
-function action(parent,label,name,id){const b=el('button',label);b.type='button';b.onclick=()=>act(name,{p_challenge_id:id});parent.append(b)}
+function action(parent,label,name,id){const b=el('button',label);b.type='button';if(/_(join|activate|begin_reviews|publish)$/.test(name))b.classList.add('tl-primary');b.onclick=()=>act(name,{p_challenge_id:id});parent.append(b)}
 
 function safePercent(n){return Math.max(0,Math.min(100,Math.round(n)))}
 async function myAutomaticGoalProgress(c,spec){
@@ -120,14 +120,14 @@ const data=allChallenges.filter(c=>(filter==='all'||c.status===filter)&&(!search
 list.replaceChildren();
 if(!allChallenges.length)list.append(el('p','Noch keine Challenges vorhanden.'));
 else if(!data.length)list.append(el('p','Keine Challenges entsprechen der Suche.'));
-for(const c of data){const a=document.createElement('article');a.append(el('h2',c.title),el('p',c.description||''),el('small',(statusLabel[c.status]||c.status)+' · '+c.joined_count+' Teilnehmende · '+c.duration_days+' Tage'));
+for(const c of data){const a=document.createElement('article');a.className='tl-challenge-card';a.dataset.status=c.status||'';const meta=el('small',(statusLabel[c.status]||c.status)+' · '+c.joined_count+' Teilnehmende · '+c.duration_days+' Tage');meta.className='tl-challenge-meta';a.append(el('h2',c.title),el('p',c.description||''),meta);
 const starts=dateLabel(c.starts_at),ends=dateLabel(c.ends_at);
 if(starts||ends)a.append(el('p',[starts?'Start: '+starts:'',ends?'Ende: '+ends:''].filter(Boolean).join(' · ')));
 if(c.is_personal_assignment&&c.target_boxer_name)a.append(el('p','🎯 Persönlich vergeben an: '+c.target_boxer_name));
 if(c.goal_spec&&typeof c.goal_spec.goal_text==='string'&&c.goal_spec.goal_text.trim()){
   a.append(el('p','Ziel: '+c.goal_spec.goal_text.trim()));
   const exp=Number(c.goal_spec.reward_exp);
-  if([25,50,100,150,200].includes(exp))a.append(el('p','Belohnung bei Bestehen: '+exp+' EXP'));
+  if([25,50,100,150,200].includes(exp)){const reward=el('p','Belohnung bei Bestehen: '+exp+' EXP');reward.className='tl-challenge-reward';a.append(reward);}
 }
 if(['active','awaiting_reviews','settled'].includes(c.status)&&(!['boxer','coach'].includes(role)||!!c.my_enrollment_status))a.append(challengeProgressCard(c));
 const enrollmentLabels={joined:'Angemeldet',withdrawn:'Zurückgezogen',completed:'Abgeschlossen'};
