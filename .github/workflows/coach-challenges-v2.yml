@@ -81,6 +81,7 @@ jobs:
       - run: node redesign-contracts.cjs
       - run: node menu-navigation-compat.cjs
       - run: node tests/club-profile-archive-contracts.cjs
+      - run: node tests/profile-archive-hides-locks-contracts.cjs
       - run: node tests/release-static-contracts.cjs
       - run: node tests/boxer-dashboard-polish.cjs
       - run: node tests/boxer-profile-actions.cjs
@@ -309,6 +310,47 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -X -h localhost -U postgres -d club_archive_probe -v ON_ERROR_STOP=1 -f tests/club-profile-archive-schema.sql
+
+  profile-archive-hides-locks-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated archive hide/lock fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres archive_lock_probe
+      - name: Verify archive hides and locks, restore and signup backstop on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d archive_lock_probe -v ON_ERROR_STOP=1 -f tests/profile-archive-hides-locks-schema.sql
+      - name: Verify guarded rollback and re-apply on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -o pipefail
+          psql -X -h localhost -U postgres -d archive_lock_probe -v ON_ERROR_STOP=1 -f tests/profile-archive-hides-locks-rollback.sql | tee rollback.log
+          grep -q "PASS: rollback refuses while archived" rollback.log
 
   duel-invite-withdrawal-schema:
     runs-on: ubuntu-latest

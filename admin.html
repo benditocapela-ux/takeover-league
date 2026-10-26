@@ -110,9 +110,9 @@ function buildRow(p){
  role.append(roleSelect,roleBtn);
  if(p.role==='admin')role.append(add('small','Die Adminrolle ist geschützt.'));
  const active=makeCell('Aktiv / inaktiv');
- const check=add('input');check.type='checkbox';check.checked=!!p.is_active;check.disabled=p.role==='admin';
+ const check=add('input');check.type='checkbox';check.checked=!!p.is_active;check.disabled=p.role==='admin'||Boolean(archivedAt);
  check.setAttribute('aria-label','Aktivitätsstatus '+p.display_name);
- const activeBtn=add('button',p.is_active?'Deaktivieren':'Aktivieren',p.is_active?'danger':'');activeBtn.type='button';activeBtn.disabled=p.role==='admin';
+ const activeBtn=add('button',p.is_active?'Deaktivieren':'Aktivieren',p.is_active?'danger':'');activeBtn.type='button';activeBtn.disabled=p.role==='admin'||Boolean(archivedAt);
  activeBtn.onclick=()=>{
   const next=check.checked;
   const target=next!==p.is_active?next:!p.is_active;
@@ -122,21 +122,23 @@ function buildRow(p){
    target?'Profil aktiviert.':'Profil deaktiviert – Login weiterhin möglich.');
  };
  active.append(check,activeBtn);
+ if(archivedAt)active.append(add('small','Archiviert: zuerst wiederherstellen.'));
  const listed=makeCell('Öffentlich sichtbar');
  const pub=add('input');pub.type='checkbox';pub.checked=!!p.is_listed;pub.setAttribute('aria-label','Öffentlich sichtbar: '+p.display_name);
- pub.disabled=p.role==='admin';
- const listedBtn=add('button','Sichtbarkeit speichern');listedBtn.type='button';listedBtn.disabled=p.role==='admin';
+ pub.disabled=p.role==='admin'||Boolean(archivedAt);
+ const listedBtn=add('button','Sichtbarkeit speichern');listedBtn.type='button';listedBtn.disabled=p.role==='admin'||Boolean(archivedAt);
  listedBtn.onclick=()=>save('admin_set_profile_listed',{p_profile_id:p.id,p_listed:pub.checked},
   (pub.checked?'Öffentliche Ranglisten-Sichtbarkeit einschalten für ':'Öffentliche Sichtbarkeit abschalten für ')+p.display_name+'?',
   'Öffentliche Sichtbarkeit gespeichert.');
  listed.append(pub,listedBtn);
+ if(archivedAt)listed.append(add('small','Archiviert: zuerst wiederherstellen.'));
  const archiveCell=makeCell('Archivierung');
  const archiveBtn=add('button',archivedAt?'Wiederherstellen':'Archivieren',archivedAt?'':'danger');archiveBtn.type='button';archiveBtn.disabled=p.role==='admin';
  archiveBtn.onclick=()=>{
   const restore=Boolean(archivedAt);
   const question=restore
-   ?'Profil '+p.display_name+' aus dem Archiv wiederherstellen? Trainingshistorie, Punkte und EXP bleiben erhalten.'
-   :'Profil '+p.display_name+' archivieren? Es wird nicht gelöscht. Trainingshistorie, Punkte und EXP bleiben erhalten. Die Archivierung kann rückgängig gemacht werden.';
+   ?'Profil '+p.display_name+' aus dem Archiv wiederherstellen? Aktiv-Status und öffentliche Sichtbarkeit werden wie vor der Archivierung gesetzt. Trainingshistorie, Punkte und EXP bleiben erhalten.'
+   :'Profil '+p.display_name+' archivieren? Es verschwindet aus Ranglisten, Awards und allen Auswahllisten und kann keine Trainings mehr einreichen. Es wird nicht gelöscht: Trainingshistorie, Punkte, EXP und vergangene Saisons bleiben erhalten. Wiederherstellen ist jederzeit möglich.';
   save(restore?'admin_restore_profile':'admin_archive_profile',{p_profile_id:p.id},question,restore?'Profil wiederhergestellt.':'Profil archiviert.');
  };
  archiveCell.append(archiveBtn);
