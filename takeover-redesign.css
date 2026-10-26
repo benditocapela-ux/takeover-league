@@ -283,3 +283,38 @@ body[data-tl-screen="index"] .rank-row.is-me{border:1px solid var(--gold);box-sh
 body[data-tl-screen="index"] .rank-row.is-me .rank-name::after{content:"Du";margin-left:8px;padding:2px 8px;border-radius:999px;background:var(--gold);color:var(--text-on-gold);font-size:11px;font-weight:800;vertical-align:2px}
 body[data-tl-screen="index"] #ranking > div > button{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--gold);border-radius:12px;background:transparent;color:var(--gold);font-weight:700;cursor:pointer}
 body[data-tl-screen="index"] #ranking > div > a[href="./boxer-compare.html"]{color:var(--text-2);font-weight:600;text-underline-offset:3px}
+
+/* Mein Studio (boxer.html) · Fight Night. Visual only. */
+body[data-tl-screen="boxer"] > main > header,body[data-tl-screen="boxer"] main > header{justify-content:flex-end;margin:var(--sp-2) 0}
+body[data-tl-screen="boxer"] main > header .brand{display:none}
+body[data-tl-screen="boxer"] main > header .bar :where(a,button){min-height:40px;padding:8px 14px;border-radius:999px;font-size:var(--fs-sm)}
+body[data-tl-screen="boxer"] .boxer-hero{background:linear-gradient(160deg,#18233f,#0b1222 78%);border:1px solid var(--line-strong);border-top:2px solid var(--gold);overflow:hidden}
+body[data-tl-screen="boxer"] .boxer-hero::before{display:none}
+body[data-tl-screen="boxer"] .boxer-hero::after{content:"";position:absolute;right:-60px;top:26px;width:230px;height:62px;transform:rotate(-8deg);pointer-events:none;opacity:.2;
+ background:linear-gradient(var(--gold),var(--gold)) 0 0/100% 1px no-repeat,linear-gradient(var(--gold),var(--gold)) 0 50%/100% 1px no-repeat,linear-gradient(var(--gold),var(--gold)) 0 100%/100% 1px no-repeat}
+body[data-tl-screen="boxer"] .boxer-hero-label{display:none}
+body[data-tl-screen="boxer"] .boxer-hero h1{font-size:var(--fs-sm);font-family:var(--font);font-weight:700;letter-spacing:.2em;color:var(--gold);margin:0}
+body[data-tl-screen="boxer"] .boxer-hero h1 span{color:inherit}
+body[data-tl-screen="boxer"] #welcome{margin:4px 0 0;font-size:var(--fs-sm)}
+body[data-tl-screen="boxer"] .studio-identity{margin-top:var(--sp-3)}
+body[data-tl-screen="boxer"] #studioBoxerName{display:block;font-family:var(--font-display);font-weight:800;text-transform:uppercase;font-size:clamp(40px,12.5vw,64px);line-height:.92;overflow-wrap:anywhere}
+body[data-tl-screen="boxer"] .studio-identity-meta{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:var(--sp-4)}
+body[data-tl-screen="boxer"] .studio-identity-meta > span{display:flex;flex-direction:column-reverse;gap:2px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:var(--surface-2);font-size:var(--fs-xs);color:var(--muted);text-transform:uppercase;letter-spacing:.08em}
+body[data-tl-screen="boxer"] .studio-identity-meta b{font-family:var(--font-display);font-weight:800;font-size:28px;line-height:1;color:var(--text);letter-spacing:0;text-transform:none}
+body[data-tl-screen="boxer"] #studioHeroRank{color:var(--gold)}
+body[data-tl-screen="boxer"] .boxer-quick-links a.primary{background:var(--gold);color:var(--text-on-gold);border-color:var(--gold);min-height:52px;border-radius:14px;font-weight:700}
+body[data-tl-screen="boxer"] .studio-ring-progress{stroke:var(--gold)}
+body[data-tl-screen="boxer"] #studioRingPercent{font-family:var(--font-display);font-weight:800;font-size:26px}
+body[data-tl-screen="boxer"] .boxer-hero-stat strong{font-family:var(--font-display);font-weight:800;font-size:30px;line-height:1}
+body[data-tl-screen="boxer"] #heroPending{color:var(--pending)}
+body[data-tl-screen="boxer"] .boxer-hero-stat span{font-size:var(--fs-xs);color:var(--muted)}
+body[data-tl-screen="boxer"] .studio-summary-metrics strong{font-family:var(--font-display);font-weight:800}
+body[data-tl-screen="boxer"] #studioStreakValue{color:var(--live)}
+body[data-tl-screen="boxer"] .studio-week-strip{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin:var(--sp-4) 0 var(--sp-2)}
+body[data-tl-screen="boxer"] .studio-week-day{display:flex;align-items:center;justify-content:center;height:42px;border-radius:10px;border:1px dashed var(--line-strong);color:var(--muted);font-size:var(--fs-sm);font-weight:700}
+body[data-tl-screen="boxer"] .studio-week-day.done{border:1px solid var(--gold);background:var(--gold);color:var(--text-on-gold)}
+body[data-tl-screen="boxer"] .studio-week-day.today{box-shadow:0 0 0 2px var(--bg),0 0 0 4px color-mix(in srgb,var(--gold) 55%,transparent)}
+body[data-tl-screen="boxer"] .studio-recent-row strong{font-weight:700}
+
+/* Shared quick-actions button: current palette instead of legacy gold. */
+body .tl-quick-open{background:var(--gold);border-color:var(--gold);color:var(--text-on-gold);min-height:44px;padding:8px 14px;font-weight:700}

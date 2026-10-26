@@ -40,6 +40,7 @@ jobs:
           find . -maxdepth 1 -type f \( -name '*.html' -o -name '*.js' -o -name '*.css' -o -name '*.svg' -o -name '*.png' -o -name '*.woff' -o -name '*.webmanifest' \) -exec cp '{}' _site/ \;
           # Broken CSS (e.g. a missing "}") must never be published.
           node tests/css-structure.cjs
+          node tests/js-regex-guard.cjs
           # Self-hosted fonts referenced by takeover-theme.css must ship with the release.
           for font in takeover-inter takeover-barlow-condensed-700 takeover-barlow-condensed-800; do
             test -s "_site/${font}.woff"
