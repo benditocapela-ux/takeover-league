@@ -399,3 +399,10 @@ body[data-tl-screen="coach"] .coach-entry-note{font-style:italic}
 body[data-tl-screen="coach"] .coach-profile-link{align-self:flex-start;font-size:var(--fs-sm);color:var(--text-2);text-underline-offset:3px}
 body[data-tl-screen="coach"] #entries .entry .secondary-btn{align-self:flex-start;min-height:40px;background:transparent;border:1px solid var(--line-strong);color:var(--text-2)}
 body[data-tl-screen="coach"] .bulk-select-label{display:inline-flex;align-items:center;gap:8px;font-size:var(--fs-sm);color:var(--muted)}
+
+/* Gastansicht (guest.html). Visual only. */
+body[data-tl-screen="guest"] header.top{padding-left:max(var(--sp-4),env(safe-area-inset-left));padding-right:max(var(--sp-4),env(safe-area-inset-right));padding-top:var(--sp-5)}
+body[data-tl-screen="guest"] :is(.podium .pts,.row .no,.row .val,.vs .p span){font-family:var(--font-display);font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:0}
+body[data-tl-screen="guest"] .podium .pts{font-size:clamp(30px,9vw,40px)}
+body[data-tl-screen="guest"] .row .val{font-size:26px}
+body[data-tl-screen="guest"] .val :where(small,span){font-family:var(--font);font-size:var(--fs-xs);font-weight:600;color:var(--muted)}
