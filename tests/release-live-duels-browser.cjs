@@ -101,7 +101,7 @@ async function main(){
     assert.equal(await page.locator('#invite select[name="duration"]').inputValue(),'7','Duration can be changed back using the card');
     assert.equal(await page.locator('[data-live-duel]').count(),2);
     assert.match(await page.locator('[data-live-duel]').first().innerText(),/70 : 40/);
-    assert.match(await page.locator('[data-live-duel]').first().innerText(),/1 offene Trainings/);
+    assert.match(await page.locator('[data-live-duel]').first().innerText(),/1 offenes Training kann/);
     assert.match(await page.locator('[data-live-duel]').nth(1).innerText(),/100 : 110/);
     assert.match(await page.locator('[data-live-duel]').nth(1).innerText(),/Auswertung läuft/);
     assert.match(await page.locator('#duelList').innerText(),/Endstand \(Trainingspunkte\): 80 : 40/);
