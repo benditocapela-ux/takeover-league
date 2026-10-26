@@ -56,9 +56,9 @@ const SUPABASE_URL='https://iqarjivcrddcixrvqbfb.supabase.co';
 const SUPABASE_PUBLIC_KEY='sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R';
 async function fetchLeaderboard(){
  const response=await fetch(SUPABASE_URL+'/rest/v1/rpc/get_public_leaderboard',{method:'POST',headers:{'apikey':SUPABASE_PUBLIC_KEY,'Content-Type':'application/json'},body:'{}',cache:'no-store'});
- if(!response.ok)throw new Error('Supabase-Rangliste: HTTP '+response.status+' – '+(await response.text()).slice(0,300));
+ if(!response.ok)throw new Error('Rangliste: HTTP '+response.status+' – '+(await response.text()).slice(0,300));
  const rows=await response.json();
- if(!Array.isArray(rows))throw new Error('Unerwartete Antwort von Supabase');
+ if(!Array.isArray(rows))throw new Error('Unerwartete Antwort vom Server');
  return rows;
 }
 const SHEET_ID='1PyefpY8Fg0bHyAgxQLH1U2pw_FEGbUYes-cLt8YHWog';
@@ -103,9 +103,9 @@ async function fetchMonthlyAwards(){
   body:JSON.stringify({p_month:new Date().toLocaleDateString('en-CA',{timeZone:'Europe/Zurich'})}),
   cache:'no-store'
  });
- if(!response.ok)throw new Error('Supabase-Awards: HTTP '+response.status+' – '+(await response.text()).slice(0,300));
+ if(!response.ok)throw new Error('Awards: HTTP '+response.status+' – '+(await response.text()).slice(0,300));
  const rows=await response.json();
- if(!Array.isArray(rows))throw new Error('Unerwartete Antwort für Monthly Awards');
+ if(!Array.isArray(rows))throw new Error('Unerwartete Antwort für die Monats-Awards');
  return MONTHLY_AWARDS.map(a=>{
   const winners=rows.filter(r=>r.award_code===a.code);
   const value=winners.length?Number(winners[0].award_value):null;
@@ -125,7 +125,7 @@ async function load(){
   d.entries=boxers.map(b=>({rank:b.rank_position,name:b.boxer_name,points:b.monthly_points,sessions:'–',trainingPoints:'–',bonusPoints:'–'}));
   render(d);
   // Diese Kennzahlen liefert die Ranglisten-RPC nicht: keine falschen Werte anzeigen.
-  document.querySelectorAll('#podium-content .hero .small').forEach(el=>{if(el.textContent.includes('confirmed training sessions'))el.textContent='Monatspunkte aus Supabase';});
+  document.querySelectorAll('#podium-content .hero .small').forEach(el=>{if(el.textContent.includes('confirmed training sessions'))el.textContent='Bestätigte Monatspunkte';});
   document.querySelectorAll('#ranking-content .rank-row .sub').forEach(el=>{if(el.textContent.includes('Einheiten'))el.textContent='Lifetime EXP: '+Number(boxers.find(b=>b.boxer_name===el.parentElement.querySelector('.rank-name')?.textContent)?.lifetime_exp||0).toLocaleString('de-CH');});
  }catch(e){$('status').innerHTML='Daten konnten nicht geladen werden. <button class="retry" onclick="load()">Erneut versuchen</button><div class="sub">'+safe(e.message)+'</div>';}
 }
@@ -150,9 +150,9 @@ async function loadLevels(){
     body:'{}',
     cache:'no-store'
   });
-  if(!response.ok)throw new Error('Supabase-Leveldaten: HTTP '+response.status+' – '+(await response.text()).slice(0,300));
+  if(!response.ok)throw new Error('Leveldaten: HTTP '+response.status+' – '+(await response.text()).slice(0,300));
   const boxers=await response.json();
-  if(!Array.isArray(boxers))throw new Error('Unerwartete Antwort von Supabase');
+  if(!Array.isArray(boxers))throw new Error('Unerwartete Antwort vom Server');
   const rows=[['Boxer','Total EXP'],...boxers.map(b=>[b.boxer_name,b.lifetime_exp])];
   await loadPublicAvatars().catch(e=>console.warn(e.message));
   renderLevels(rows);

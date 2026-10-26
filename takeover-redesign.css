@@ -318,3 +318,95 @@ body[data-tl-screen="boxer"] .studio-recent-row strong{font-weight:700}
 
 /* Shared quick-actions button: current palette instead of legacy gold. */
 body .tl-quick-open{background:var(--gold);border-color:var(--gold);color:var(--text-on-gold);min-height:44px;padding:8px 14px;font-weight:700}
+
+/* Shared page chrome: one compact sub-navigation row on every page (visual only). */
+body[data-tl-screen] .tl-subnav{display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:8px;margin:var(--sp-3) 0 var(--sp-2);padding:0;border:0;background:none;box-shadow:none;font-size:0}
+body[data-tl-screen] .tl-subnav > *{font-size:var(--fs-sm)}
+body[data-tl-screen] .tl-subnav .brand{display:none}
+body[data-tl-screen] .tl-subnav .bar{display:contents}
+body[data-tl-screen] .tl-subnav :where(a,button){display:inline-flex;align-items:center;min-height:40px;padding:8px 14px;border:1px solid var(--line-strong);border-radius:999px;background:transparent;color:var(--text-2);font-weight:600;font-size:var(--fs-sm);text-decoration:none;box-shadow:none;cursor:pointer}
+body[data-tl-screen] .tl-subnav :where(a,button):hover{border-color:var(--gold);color:var(--text)}
+/* Logout is never the primary action. */
+body[data-tl-screen] :is(#logout,#logoutBtn){background:transparent!important;border:1px solid var(--line-strong)!important;color:var(--muted)!important;font-weight:600;box-shadow:none!important;min-height:40px;padding:8px 14px;border-radius:999px}
+body[data-tl-screen] .tl-subnav #logout{margin-left:auto}
+body[data-tl-screen] :is(#logout,#logoutBtn):hover{color:var(--text)!important;border-color:var(--bad)!important}
+/* Quick actions: compact and never covering the end of the page. */
+body .tl-quick-open{min-height:44px;padding:8px 14px;font-size:var(--fs-sm);box-shadow:0 6px 18px #0009}
+body.tl-global-nav-page:has(.tl-quick-open){padding-bottom:calc(150px + env(safe-area-inset-bottom))!important}
+
+/* Challenges (challenges.html) · Fight Night cards. Visual only. */
+body[data-tl-screen="challenges"] #list{background:none;border:0;padding:0;box-shadow:none;display:grid;gap:var(--sp-4);margin-top:var(--sp-4)}
+body[data-tl-screen="challenges"] #filters:not([hidden]){display:grid;gap:6px;margin-top:var(--sp-4)}
+body[data-tl-screen="challenges"] #filters input{width:100%}
+body[data-tl-screen="challenges"] #filters label{margin-top:6px}
+body[data-tl-screen="challenges"] .tl-challenge-card{position:relative;margin:0;padding:var(--sp-5);border-radius:var(--r-lg);background:var(--fight-panel);border:1px solid var(--line);border-top:2px solid var(--line-strong);display:flex;flex-direction:column;gap:6px}
+body[data-tl-screen="challenges"] .tl-challenge-card[data-status="active"]{border-top-color:var(--gold)}
+body[data-tl-screen="challenges"] .tl-challenge-card[data-status="open"]{border-top-color:var(--ok)}
+body[data-tl-screen="challenges"] .tl-challenge-card[data-status="awaiting_reviews"]{border-top-color:var(--pending)}
+body[data-tl-screen="challenges"] .tl-challenge-card :where(p,small){margin:0}
+body[data-tl-screen="challenges"] .tl-challenge-card h2{margin:0 0 2px;font-size:clamp(24px,7vw,30px);line-height:1}
+body[data-tl-screen="challenges"] .tl-challenge-meta{order:-1;align-self:flex-start;font-size:var(--fs-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+body[data-tl-screen="challenges"] .tl-challenge-card[data-status="active"] .tl-challenge-meta{color:var(--gold)}
+body[data-tl-screen="challenges"] .tl-challenge-card[data-status="open"] .tl-challenge-meta{color:var(--ok)}
+body[data-tl-screen="challenges"] .tl-challenge-card > p{color:var(--text-2)}
+body[data-tl-screen="challenges"] .tl-challenge-reward{align-self:flex-start;margin-top:4px!important;padding:4px 12px;border:1px solid var(--gold);border-radius:999px;color:var(--gold)!important;font-weight:700;font-size:var(--fs-sm)}
+body[data-tl-screen="challenges"] .tl-challenge-progress{margin:var(--sp-2) 0;padding:var(--sp-3);border-radius:var(--r-md);background:var(--surface-2);border:1px solid var(--line)}
+body[data-tl-screen="challenges"] .tl-challenge-track{height:8px;border-radius:4px;background:var(--line);overflow:hidden;margin:8px 0}
+body[data-tl-screen="challenges"] .tl-challenge-fill{height:100%;border-radius:inherit;background:var(--gold)}
+body[data-tl-screen="challenges"] .tl-challenge-card button:not(.tl-primary){background:transparent;border:1px solid var(--line-strong);color:var(--text-2);box-shadow:none;align-self:flex-start;min-height:44px}
+body[data-tl-screen="challenges"] .tl-challenge-card button.tl-primary{align-self:stretch;min-height:48px;background:var(--gold);color:var(--text-on-gold);border-color:var(--gold)}
+body[data-tl-screen="challenges"] #signin:has(#logout:not([hidden])){display:flex;justify-content:flex-end;background:none;border:0;padding:0;margin:var(--sp-2) 0;box-shadow:none}
+body[data-tl-screen="challenges"] #signin:has(#logout:not([hidden])) > :not(#logout){display:none}
+
+/* Duelle (duels.html) · live scoreboard and duel cards. Visual only. */
+body[data-tl-screen="duels"] .live-card{padding:var(--sp-5);border-radius:var(--r-lg);background:linear-gradient(160deg,#18233f,#0b1222 78%);border:1px solid var(--line-strong);border-top:2px solid var(--live)}
+body[data-tl-screen="duels"] .live-names{font-family:var(--font-display);font-weight:800;text-transform:uppercase;font-size:clamp(20px,6vw,26px);line-height:1}
+body[data-tl-screen="duels"] .live-points{margin:var(--sp-2) 0;font-family:var(--font-display);font-weight:800;font-size:clamp(52px,16vw,72px);line-height:1;color:var(--gold);font-variant-numeric:tabular-nums}
+body[data-tl-screen="duels"] .live-track{height:8px;border-radius:4px;background:var(--line-strong);overflow:hidden}
+body[data-tl-screen="duels"] .live-fill{height:100%;background:var(--gold)}
+body[data-tl-screen="duels"] .live-hint{display:block;margin-top:6px;color:var(--muted)}
+body[data-tl-screen="duels"] .live-hint.warning{color:var(--pending)}
+body[data-tl-screen="duels"] .tl-duel-card{display:flex;flex-direction:column;gap:6px;padding:var(--sp-5);border-radius:var(--r-lg);background:var(--fight-panel);border:1px solid var(--line);border-top:2px solid var(--line-strong)}
+body[data-tl-screen="duels"] .tl-duel-card[data-status="active"]{border-top-color:var(--live)}
+body[data-tl-screen="duels"] .tl-duel-card[data-status="pending"]{border-top-color:var(--gold)}
+body[data-tl-screen="duels"] .tl-duel-card[data-status="settled"]{border-top-color:var(--ok)}
+body[data-tl-screen="duels"] .tl-duel-card :where(p,small,h3){margin:0}
+body[data-tl-screen="duels"] .tl-duel-card h3{font-family:var(--font-display);font-weight:800;text-transform:uppercase;font-size:clamp(22px,6.5vw,28px);line-height:1}
+body[data-tl-screen="duels"] .tl-duel-status{order:-1;font-size:var(--fs-xs);font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+body[data-tl-screen="duels"] .tl-duel-card[data-status="active"] .tl-duel-status{color:var(--live)}
+body[data-tl-screen="duels"] .tl-duel-card[data-status="pending"] .tl-duel-status{color:var(--gold)}
+body[data-tl-screen="duels"] .tl-duel-card[data-status="settled"] .tl-duel-status{color:var(--ok)}
+body[data-tl-screen="duels"] .tl-duel-card > p:not(.tl-duel-status):not(.tl-duel-verdict){color:var(--text-2)}
+body[data-tl-screen="duels"] .tl-duel-verdict{align-self:flex-start;margin-top:4px!important;padding:4px 12px;border:1px solid var(--gold);border-radius:999px;color:var(--gold);font-weight:700}
+body[data-tl-screen="duels"] .tl-duel-card .actions{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:var(--sp-2)}
+body[data-tl-screen="duels"] .tl-duel-card button:not(.tl-primary){background:transparent;border:1px solid var(--line-strong);color:var(--text-2);box-shadow:none;min-height:46px}
+body[data-tl-screen="duels"] .tl-duel-card button.tl-primary{background:var(--gold);border-color:var(--gold);color:var(--text-on-gold);min-height:46px}
+
+/* Trainerbereich (coach.html). Visual only. */
+body[data-tl-screen="coach"] #content > .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+body[data-tl-screen="coach"] #content > .grid > .card{padding:12px;min-height:0;display:flex;flex-direction:column-reverse;justify-content:flex-end;gap:4px}
+body[data-tl-screen="coach"] #content > .grid .value{font-family:var(--font-display);font-weight:800;font-size:clamp(30px,9vw,40px);line-height:1}
+body[data-tl-screen="coach"] #pendingCount{color:var(--gold)}
+body[data-tl-screen="coach"] #content > .grid .muted{font-size:var(--fs-xs);line-height:1.25}
+body[data-tl-screen="coach"] .notice{font-size:var(--fs-sm);color:var(--muted)}
+body[data-tl-screen="coach"] #entries .entry{display:flex;flex-direction:column;gap:6px;padding:var(--sp-4);border-radius:var(--r-lg);background:var(--fight-panel);border:1px solid var(--line);border-left:3px solid var(--gold)}
+body[data-tl-screen="coach"] #entries .entry .line{display:flex;justify-content:space-between;align-items:center;gap:8px}
+body[data-tl-screen="coach"] #entries .entry .name{font-family:var(--font-display);font-weight:800;text-transform:uppercase;font-size:22px;line-height:1}
+body[data-tl-screen="coach"] #entries .entry :where(p,small){margin:0}
+body[data-tl-screen="coach"] .coach-entry-detail{font-weight:600;color:var(--text)}
+body[data-tl-screen="coach"] :where(.coach-entry-metrics,.coach-entry-note){display:block;color:var(--muted)}
+body[data-tl-screen="coach"] .coach-entry-note{font-style:italic}
+body[data-tl-screen="coach"] .coach-profile-link{align-self:flex-start;font-size:var(--fs-sm);color:var(--text-2);text-underline-offset:3px}
+body[data-tl-screen="coach"] #entries .entry .secondary-btn{align-self:flex-start;min-height:40px;background:transparent;border:1px solid var(--line-strong);color:var(--text-2)}
+body[data-tl-screen="coach"] .bulk-select-label{display:inline-flex;align-items:center;gap:8px;font-size:var(--fs-sm);color:var(--muted)}
+
+/* Gastansicht (guest.html). Visual only. */
+body[data-tl-screen="guest"] header.top{padding-left:max(var(--sp-4),env(safe-area-inset-left));padding-right:max(var(--sp-4),env(safe-area-inset-right));padding-top:var(--sp-5)}
+body[data-tl-screen="guest"] :is(.podium .pts,.row .no,.row .val,.vs .p span){font-family:var(--font-display);font-weight:800;font-variant-numeric:tabular-nums;letter-spacing:0}
+body[data-tl-screen="guest"] .podium .pts{font-size:clamp(30px,9vw,40px)}
+body[data-tl-screen="guest"] .row .val{font-size:26px}
+body[data-tl-screen="guest"] .val :where(small,span){font-family:var(--font);font-size:var(--fs-xs);font-weight:600;color:var(--muted)}
+
+/* Clubverwaltung (admin.html): profile name as the row anchor. Visual only. */
+body[data-tl-screen="admin"] td[data-label="Profil"] > strong{display:block;font-family:var(--font-display);font-weight:800;text-transform:uppercase;font-size:22px;line-height:1.05}
+body[data-tl-screen="boxer-profile"] #profileName{font-size:clamp(34px,10vw,48px);line-height:.95}

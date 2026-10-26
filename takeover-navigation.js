@@ -10,8 +10,23 @@
    document.querySelectorAll('h1,h2,h3').forEach(el=>{
      if(el.dataset.tlWayfinder)return;
      const text=(el.textContent||'').trim();
+     // One symbol per heading: the emoji wayfinder replaces a decorative SVG icon
+     // instead of being added next to it; an existing leading emoji is reused.
+     const icon=el.querySelector('svg.tl-icon[aria-hidden="true"]');
+     const lead=text.match(/^(\p{Extended_Pictographic}(?:️|‍\p{Extended_Pictographic})*)/u);
+     if(lead){
+       const node=[...el.childNodes].find(n=>n.nodeType===3&&n.textContent.trim());
+       if(node&&node.textContent.trimStart().startsWith(lead[1])){
+         node.textContent=node.textContent.trimStart().slice(lead[1].length).replace(/^\s+/,'');
+         const mark=document.createElement('span');mark.className='tl-section-emoji';mark.setAttribute('aria-hidden','true');mark.textContent=lead[1]+' ';
+         el.insertBefore(mark,node);el.dataset.tlWayfinder='true';
+         if(icon)icon.remove();
+       }
+       return;
+     }
      const match=rules.find(([pattern])=>pattern.test(text));
      if(!match)return;
+     if(icon)icon.remove();
      const mark=document.createElement('span');mark.className='tl-section-emoji';mark.setAttribute('aria-hidden','true');mark.textContent=match[1]+' ';
      el.prepend(mark);el.dataset.tlWayfinder='true';
    });
@@ -46,7 +61,7 @@
        ['dumbbell','Mein Studio','boxer.html',''],
        ['target','Meine Ziele','goals.html',''],
        ['medal','Trainer-Dashboard','coach.html',''],
-       ['goal','League Manager 2.1','league-manager.html',''],
+       ['goal','League Manager','league-manager.html',''],
        ['user','Clubverwaltung','admin.html','',false,true]
      ]},
      {icon:'🥊',title:'Kämpfe',summary:'Duelle starten und in der Arena antreten',items:[
@@ -78,14 +93,14 @@
          group.items.map(item=>
            '<a class="tl-menu-link" href="./'+item[2]+'"'+(item[3]?' data-tl-section="'+item[3]+'"':'')+(item[5]?' data-tl-admin hidden':'')+(['boxer.html','goals.html','coach.html','league-manager.html'].includes(item[2])?' data-tl-private hidden':'')+'>'+
              '<span class="tl-menu-icon" aria-hidden="true">'+emoji(item[0])+'</span>'+
-             '<span class="tl-menu-label">'+item[1]+(item[4]?' <span class="tl-menu-pill">2.0</span>':'')+'</span>'+
+             '<span class="tl-menu-label">'+item[1]+(item[4]?' <span class="tl-menu-pill">Neu</span>':'')+'</span>'+
              '<span class="tl-menu-arrow" aria-hidden="true">↗</span>'+
            '</a>').join('')+'</div></section>';
    }).join('');
    document.body.insertAdjacentHTML('beforeend',
       '<div id="tl-menu-backdrop" class="tl-menu-backdrop" hidden aria-hidden="true"></div>'+
       '<aside id="tl-menu-panel" class="tl-menu-panel" role="dialog" aria-modal="true" aria-label="Alle Takeover League Bereiche" aria-hidden="true" inert>'+
-      '<div class="tl-menu-head"><div><div class="tl-menu-overline">TAKEOVER LEAGUE 2.0</div><div class="tl-menu-title">'+emoji('menu')+' Alle Bereiche</div></div>'+
+      '<div class="tl-menu-head"><div><div class="tl-menu-overline">TAKEOVER LEAGUE</div><div class="tl-menu-title">'+emoji('menu')+' Alle Bereiche</div></div>'+
       '<button type="button" class="tl-menu-close" id="tl-menu-close" aria-label="Menü schliessen">×</button></div>'+
       '<p class="tl-menu-intro">Tippe auf eine Rubrik, um die passenden Bereiche zu öffnen.</p>'+
       contents+

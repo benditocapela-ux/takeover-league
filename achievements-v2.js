@@ -5,7 +5,7 @@ export async function mountAchievements(db, boxerId) {
   const section=document.createElement('section');
   section.className='card';
   section.id='achievementsV2';
-  section.innerHTML='<h2>Achievements <span class="pill">2.0</span></h2><p class="muted" id="achievementStatus">Wird geladen …</p><div id="achievementGrid" class="achievement-grid"></div>';
+  section.innerHTML='<h2>Achievements</h2><p class="muted" id="achievementStatus">Wird geladen …</p><div id="achievementGrid" class="achievement-grid"></div>';
   anchor.insertAdjacentElement('afterend',section);
   const css=document.createElement('style');
   css.textContent='.achievement-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px}.achievement-tile{background:#101d30;border:1px solid #34465f;border-radius:12px;padding:15px}.achievement-tile.earned{border-color:#dfbd77}.achievement-title{font-weight:750}.achievement-meta{color:#b6c2d0;font-size:13px;margin-top:6px}.achievement-tier{font-size:12px;color:#dfbd77;margin-bottom:6px}.achievement-locked{opacity:.65}';
@@ -18,7 +18,7 @@ export async function mountAchievements(db, boxerId) {
       db.from('boxer_achievements').select('achievement_id').eq('boxer_id',boxerId)
     ]);
     if(flag.error) throw flag.error;
-    if(flag.data?.is_enabled!==true){status.textContent='Coming Soon – Achievements werden demnächst freigeschaltet.';return;}
+    if(flag.data?.is_enabled!==true){status.textContent='Bald verfügbar: Achievements werden demnächst freigeschaltet.';return;}
     if(definitions.error) throw definitions.error;
     if(earned.error) throw earned.error;
     const owned=new Set((earned.data||[]).map(x=>x.achievement_id));

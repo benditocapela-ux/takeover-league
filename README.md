@@ -1,18 +1,39 @@
-# Takeover League — GitHub Pages
+# Takeover League
 
-Mobile öffentliche Rangliste. Nur Daten aus dem **öffentlichen** Google-Sheets-Leaderboard, keine private Trainerdatei.
+Boxing Performance League: öffentliche Monatsrangliste, Mein Studio für Boxer, Trainerbereich, Challenges, Duelle, Arena, Awards und Saisonhistorie. Mobile first, als Web-App auf dem iPhone-Home-Bildschirm nutzbar.
 
-## Installation
+## Aufbau
 
-1. Die Dateien aus dem ZIP **entpacken**.
-2. Auf GitHub im Repository `takeover-league` auf **Add file → Upload files** klicken.
-3. Alle Dateien aus diesem Paket auswählen, dann **Commit changes**.
-4. Unter **Settings → Pages**: `Deploy from a branch`, Branch `main`, Folder `/ (root)`, **Save**.
-5. Auf die Veröffentlichung warten und die dort angezeigte URL auf dem iPhone in Safari öffnen.
-6. **Teilen → Zum Home-Bildschirm**.
+- **Frontend:** statische Seiten im Hauptverzeichnis (`*.html`, `*.css`, `*.js`), ohne Build-Schritt.
+  - Gemeinsames Design: `takeover-theme.css` (Farben, Schriften, Abstände) und `takeover-redesign.css` (Fight-Night-Gestaltung aller Seiten).
+  - Gemeinsames Menü: `takeover-navigation.js` / `takeover-navigation.css`.
+  - Schriften (Barlow Condensed, Inter) liegen selbst gehostet im Repo, Lizenzen in `docs/fonts/`.
+- **Backend:** Supabase (Auth, Postgres, RLS, RPC-Funktionen).
+  - Produktion: **Takeover Project** `iqarjivcrddcixrvqbfb`
+  - Test: **Takeover league test** `cfgdvcccsqwfjajuizsr`. Die `*-preview.html`-Seiten zeigen auf das Testprojekt und werden nie veröffentlicht.
+- **Datenbank-Änderungen:** `supabase/migrations/`. Pre-/Postflight- und Rollback-Skripte je Migration in `supabase/production-prep/`.
 
-## Datenquelle
+## Veröffentlichung
 
-Die Website fragt die drei öffentlichen Sheets-Tabs über den Google-Visualization-Endpunkt ab. Falls die Daten nicht geladen werden, kann es nötig sein, die **öffentliche Ranglisten-Arbeitsmappe** unter **Datei → Freigeben → Im Web veröffentlichen** zu veröffentlichen. **Niemals die private Trainerdatei veröffentlichen.** Bei Veröffentlichung im Web prüfen, dass keine privaten Daten in der öffentlichen Arbeitsmappe stehen.
+Jeder Push auf `main` veröffentlicht die Seite automatisch über GitHub Pages (`.github/workflows/takeover-pages-deploy.yml`). Der Deploy:
 
-Google-Sheets-Zugriff und GitHub-Pages-Hosting müssen nach Upload auf dem Handy getestet werden; eine erfolgreiche Live-Anbindung ist vorab nicht bestätigt.
+1. kopiert nur die Seiten-Dateien und lässt die Vorschauseiten weg,
+2. prüft CSS-Syntax (`tests/css-structure.cjs`) und fehlerhafte Regex-Muster (`tests/js-regex-guard.cjs`),
+3. versioniert alle CSS-/JS-Links mit dem Commit (`?v=…`), damit Browser nach einem Deploy keine veralteten Dateien aus dem Cache verwenden,
+4. prüft nach der Veröffentlichung die Live-Seite nur lesend.
+
+Änderungen deshalb immer über einen Pull Request, nie direkt auf `main`.
+
+## Datenbank-Migrationen
+
+Migrationen laufen **zuerst im Testprojekt** und erst nach ausdrücklicher Freigabe in Produktion. Ablauf und Prüfskripte: `docs/PRODUKTIV_RELEASE_SQL_EDITOR_ANLEITUNG.md` und `supabase/production-prep/`. Produktionsdaten (Punkte, EXP, Trainings) werden nie zurückgesetzt.
+
+## Tests
+
+- Statische Node-Tests: `node tests/<name>.cjs` (einige brauchen `jsdom`, Browser-Tests `playwright`).
+- Schema-Tests laufen in GitHub Actions auf frischen PostgreSQL-16/17-Datenbanken.
+- `redesign-contracts.cjs` stellt sicher, dass Designänderungen keine DOM-IDs oder RPC-Aufrufe verändern.
+
+## Offene Punkte
+
+Siehe `docs/RELEASE_STATUS_2_1_2026-10-19.md`: echtes Produktions-Backup mit Restore, echte Login-Abnahme mit Boxer-/Coach-/Admin-Konto und vollständiger Sicherheits-Audit der SECURITY-DEFINER-Funktionen sind noch nicht erledigt.
