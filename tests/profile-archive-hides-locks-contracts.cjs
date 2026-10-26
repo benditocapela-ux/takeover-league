@@ -1,0 +1,21 @@
+'use strict';
+// Static contract for 20261027090000_profile_archive_hides_and_locks.sql and the admin UI.
+const fs=require('node:fs'),assert=require('node:assert/strict');
+const sql=fs.readFileSync('supabase/migrations/20261027090000_profile_archive_hides_and_locks.sql','utf8');
+const rollback=fs.readFileSync('supabase/production-prep/rollback_20261027090000_profile_archive_hides_and_locks.sql','utf8');
+const admin=fs.readFileSync('admin.html','utf8');
+assert.match(sql,/ADD COLUMN IF NOT EXISTS archived_prev_active boolean/);
+assert.match(sql,/ADD COLUMN IF NOT EXISTS archived_prev_listed boolean/);
+assert.match(sql,/CREATE TRIGGER profiles_archive_guard\s+BEFORE INSERT OR UPDATE ON public\.profiles/);
+assert.match(sql,/NEW\.is_active := false;\s+NEW\.is_listed := false;/);
+assert.match(sql,/archived_prev_active = target\.is_active/);
+assert.match(sql,/COALESCE\(target\.archived_prev_active, target\.is_active\)/);
+assert.equal((sql.match(/Archivierte Profile zuerst wiederherstellen/g)||[]).length,2,'active and listed switches must be locked while archived');
+assert.doesNotMatch(sql,/DELETE FROM|TRUNCATE|DROP TABLE/i,'migration must not delete data');
+assert.doesNotMatch(sql,/GRANT EXECUTE[^;]*TO anon/i,'no anonymous execution');
+assert.match(rollback,/Rollback refused: restore all archived profiles first/);
+assert.match(rollback,/DROP TRIGGER IF EXISTS profiles_archive_guard/);
+assert.match(admin,/check\.disabled=p\.role==='admin'\|\|Boolean\(archivedAt\)/);
+assert.match(admin,/pub\.disabled=p\.role==='admin'\|\|Boolean\(archivedAt\)/);
+assert.match(admin,/Archiviert: zuerst wiederherstellen\./);
+console.log('Profile archive hide-and-lock contracts: passed');
