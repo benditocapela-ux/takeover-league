@@ -7,6 +7,7 @@ on:
       - '*.js'
       - '*.css'
       - '*.png'
+      - '*.woff'
       - 'manifest.webmanifest'
       - 'avatars/**'
       - '.github/workflows/takeover-pages-deploy.yml'
@@ -36,7 +37,13 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p _site
-          find . -maxdepth 1 -type f \( -name '*.html' -o -name '*.js' -o -name '*.css' -o -name '*.svg' -o -name '*.png' -o -name '*.webmanifest' \) -exec cp '{}' _site/ \;
+          find . -maxdepth 1 -type f \( -name '*.html' -o -name '*.js' -o -name '*.css' -o -name '*.svg' -o -name '*.png' -o -name '*.woff' -o -name '*.webmanifest' \) -exec cp '{}' _site/ \;
+          # Broken CSS (e.g. a missing "}") must never be published.
+          node tests/css-structure.cjs
+          # Self-hosted fonts referenced by takeover-theme.css must ship with the release.
+          for font in takeover-inter takeover-barlow-condensed-700 takeover-barlow-condensed-800; do
+            test -s "_site/${font}.woff"
+          done
           cp -R avatars _site/avatars
           rm -f _site/challenges-v2-preview.html _site/duels-v2-preview.html _site/league2-preview.html
           touch _site/.nojekyll
