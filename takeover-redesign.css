@@ -406,3 +406,7 @@ body[data-tl-screen="guest"] :is(.podium .pts,.row .no,.row .val,.vs .p span){fo
 body[data-tl-screen="guest"] .podium .pts{font-size:clamp(30px,9vw,40px)}
 body[data-tl-screen="guest"] .row .val{font-size:26px}
 body[data-tl-screen="guest"] .val :where(small,span){font-family:var(--font);font-size:var(--fs-xs);font-weight:600;color:var(--muted)}
+
+/* Clubverwaltung (admin.html): profile name as the row anchor. Visual only. */
+body[data-tl-screen="admin"] td[data-label="Profil"] > strong{display:block;font-family:var(--font-display);font-weight:800;text-transform:uppercase;font-size:22px;line-height:1.05}
+body[data-tl-screen="boxer-profile"] #profileName{font-size:clamp(34px,10vw,48px);line-height:.95}
