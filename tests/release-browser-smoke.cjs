@@ -19,6 +19,7 @@ async function main(){
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const base='http://127.0.0.1:'+server.address().port+'/';
  const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+ try{
  const leader=[
   {boxer_name:'Boxer Alpha',rank_position:1,monthly_points:140,lifetime_exp:420,approved_sessions:3,points_training:140,points_bonus:0},
   {boxer_name:'Boxer Beta',rank_position:2,monthly_points:60,lifetime_exp:240,approved_sessions:2,points_training:60,points_bonus:0}
@@ -44,7 +45,8 @@ async function main(){
   assert.ok(overflow<=4,'Unexpected horizontal overflow in compare at '+width+': '+overflow);
   await page.goto(base+'boxer-profile.html?name=Boxer%20Alpha',{waitUntil:'domcontentloaded'});
   await page.waitForFunction(()=>document.getElementById('profileCard')?.hidden===false);
-  assert.match(await page.locator('#profileName').innerText(),/Boxer Alpha/);
+  // The Fight-Night design shows names in capitals (CSS text-transform); compare the real text.
+  assert.match(await page.locator('#profileName').textContent(),/Boxer Alpha/);
   assert.match(await page.locator('#compareAction').getAttribute('href'),/boxer-compare.html/);
   await page.locator('#takeover-menu-open').click();
   assert.equal(await page.locator('#tl-menu-panel').getAttribute('aria-hidden'),'false');
@@ -55,6 +57,7 @@ async function main(){
   await context.close();
   console.log('PASS public profile/compare/menu/mobile viewport '+width);
  }
- await browser.close();
+ }finally{await browser.close()}
 }
-main().then(()=>server.close()).catch(e=>{console.error(e);server.close();process.exitCode=1});
+// Always close the browser and exit: a failed assertion must fail fast instead of hanging the CI job.
+main().then(()=>server.close()).catch(e=>{console.error('BROWSER SMOKE FAILED',e);server.close();process.exit(1)});
