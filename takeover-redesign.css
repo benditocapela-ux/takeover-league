@@ -612,3 +612,16 @@ body[data-tl-screen="checkin"] #app,body[data-tl-screen="praesenz"] #app,body[da
 .tlp-seg button[aria-pressed="true"]{background:var(--gold);color:var(--text-on-gold)}
 .tlp-num-in{width:72px;min-height:44px;text-align:center;background:var(--surface-2);color:var(--text);border:1px solid var(--line-strong);border-radius:var(--r-sm);font:inherit;font-weight:800}
 .tlp-session{display:flex;flex-direction:column;gap:var(--sp-2)}
+
+/* ---- Etappe 3: Wochen-Quests ---- */
+body[data-tl-screen="quests"] main,body[data-tl-screen="quests"] #app{display:flex;flex-direction:column;gap:var(--sp-4)}
+body[data-tl-screen="quests"] .gold{color:var(--gold)}
+.tlp-quest{display:flex;flex-direction:column;gap:6px;border-color:color-mix(in srgb,#4fc3ff 45%,var(--line))}
+.tlp-quest.done{border-color:var(--gold);box-shadow:0 0 18px color-mix(in srgb,var(--gold) 20%,transparent)}
+.tlp-quest.claimed{opacity:.62}
+.tlp-qtitle{font-size:var(--fs-md);overflow-wrap:anywhere}
+.tlp-qreward{display:inline-flex;gap:6px;align-items:baseline;font-size:var(--fs-sm);white-space:nowrap}.tlp-qreward b{color:var(--gold)}.tlp-qreward span{color:var(--muted)}
+.tlp-chest{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center}.tlp-chest.claimed{opacity:.7}
+.tlp-grid3{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,120px),1fr));gap:var(--sp-2)}
+.tlp-check{display:inline-flex;gap:8px;align-items:center;min-height:44px;font-weight:700}.tlp-check input{width:22px;height:22px;accent-color:var(--gold)}
+.tlp-qadmin details summary{cursor:pointer;min-height:36px;display:flex;align-items:center}

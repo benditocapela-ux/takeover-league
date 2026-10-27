@@ -63,6 +63,7 @@
        ['medal','Bewertung','bewertung.html','',true],
        ['chart','Boxstil-Test','stil-test.html','',true],
        ['season','Wochenplan','wochenplan.html','',true],
+       ['target','Wochen-Quests','quests.html','',true],
        ['run','Präsenz','praesenz.html','',true],
        ['bolt','Gym-Check-in','checkin.html','',true],
        ['medal','Trainer-Dashboard','coach.html',''],
@@ -96,7 +97,7 @@
          '<span class="tl-menu-group-chevron" aria-hidden="true">⌄</span>'+
        '</button><div class="tl-menu-group-links" id="'+groupId+'-links" hidden>'+
          group.items.map(item=>
-           '<a class="tl-menu-link" href="./'+item[2]+'"'+(item[3]?' data-tl-section="'+item[3]+'"':'')+(item[5]?' data-tl-admin hidden':'')+(['boxer.html','goals.html','bewertung.html','stil-test.html','wochenplan.html','praesenz.html','checkin.html','coach.html','league-manager.html'].includes(item[2])?' data-tl-private hidden':'')+'>'+
+           '<a class="tl-menu-link" href="./'+item[2]+'"'+(item[3]?' data-tl-section="'+item[3]+'"':'')+(item[5]?' data-tl-admin hidden':'')+(['boxer.html','goals.html','bewertung.html','stil-test.html','wochenplan.html','quests.html','praesenz.html','checkin.html','coach.html','league-manager.html'].includes(item[2])?' data-tl-private hidden':'')+'>'+
              '<span class="tl-menu-icon" aria-hidden="true">'+emoji(item[0])+'</span>'+
              '<span class="tl-menu-label">'+item[1]+(item[4]?' <span class="tl-menu-pill">Neu</span>':'')+'</span>'+
              '<span class="tl-menu-arrow" aria-hidden="true">↗</span>'+
@@ -218,7 +219,7 @@
       if(role==='admin'&&adminEntry) adminEntry.hidden=false;
       privateEntries.forEach(anchor=>{
         const href=anchor.getAttribute('href');
-        anchor.hidden=!(['./boxer.html','./goals.html','./bewertung.html','./stil-test.html','./wochenplan.html','./praesenz.html','./checkin.html'].includes(href) ||
+        anchor.hidden=!(['./boxer.html','./goals.html','./bewertung.html','./stil-test.html','./wochenplan.html','./quests.html','./praesenz.html','./checkin.html'].includes(href) ||
           ((role==='admin'||role==='coach')&&['./coach.html','./league-manager.html'].includes(href)));
       });
       // static check sentinel: p.data?.role==='admin'

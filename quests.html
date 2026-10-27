@@ -1,0 +1,128 @@
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Wochen-Quests · Takeover League</title>
+<style>:root{color-scheme:dark;font:16px system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 110px;background:var(--bg);color:var(--text)}main{max-width:820px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:3px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="quests">
+<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Wochen-Quests"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">◆</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Training im Gym</div><div class="tl-screen-title">Wochen-Quests</div></div></div><div class="tl-screen-links"><a href="./quests.html" class="tl-screen-primary">Quests</a><a href="./wochenplan.html">Wochenplan</a><a href="./praesenz.html">Präsenz</a></div></div>
+<p class="tl-subnav"><a href="./boxer.html">← Mein Studio</a></p>
+<h1 id="pageTitle">Wochen-Quests</h1>
+<p id="status" class="tlp-status" role="status">Wird geladen …</p>
+<div id="app"></div>
+</main>
+<script src="./takeover-performance.js" defer></script>
+<script type="module">
+const P=window.TLPerf,$=id=>document.getElementById(id),app=$('app'),status=$('status');
+const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
+const UNIT={technique_minutes:' Min.',home_minutes:' Min.',recovery_minutes:' Min.',plan_pct:' %',jogging_km:' km'};
+const METRIC={sessions:'Trainings',box_sessions:'Boxeinheiten',technique_minutes:'Technik-Minuten',recovery_sessions:'Mobilitätseinheiten',recovery_minutes:'Mobilitäts-Minuten',
+ home_minutes:'Heimtraining-Minuten',jogging_km:'Joggen (km)',duels:'Angenommene Duelle',plan_pct:'Wochenplan (%)',weekly_all:'Alle Wochenquests'};
+const WD=['SO','MO','DI','MI','DO','FR','SA'];
+let db,role='boxer',tab='quests',mine=null,week=null,overview=[],admin=null,groups=[],flash='';
+const addDays=(d,n)=>{const x=new Date(d+'T12:00:00Z');x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10)};
+const kw=d=>{const x=new Date(d+'T12:00:00Z'),t=new Date(Date.UTC(x.getUTCFullYear(),x.getUTCMonth(),x.getUTCDate()+3-((x.getUTCDay()+6)%7)));const y=new Date(Date.UTC(t.getUTCFullYear(),0,4));return 1+Math.round(((t-y)/864e5-3+((y.getUTCDay()+6)%7))/7)};
+const num=v=>{const n=Number(v)||0;return Number.isInteger(n)?String(n):n.toFixed(1).replace('.',',')};
+const daysLeft=d=>{const n=Math.round((new Date(addDays(d.current_week,7)+'T00:00:00Z')-new Date(d.today+'T00:00:00Z'))/864e5);return n<=1?'heute um Mitternacht':'in '+n+' Tagen'};
+function reward(q){return `<span class="tlp-qreward"><b>+${q.exp} EXP</b><span>· ${q.coins} Coins</span></span>`}
+function questCard(q,d,label){
+ const unit=UNIT[q.metric]||'',pct=q.target?Math.min(100,(Number(q.progress)||0)/q.target*100):0,canClaim=d.can_claim&&q.done&&!q.claimed&&q.period_start>=d.claim_from;
+ const state=q.claimed?'<span class="tlp-pill ok">Abgeholt</span>':!q.available?'<span class="tlp-pill">nicht verfügbar</span>':q.done?'<span class="tlp-pill gold">Erfüllt</span>':'';
+ const hint=!q.available?(q.metric==='plan_pct'?'Diese Woche gibt es für deine Gruppe keinen veröffentlichten Wochenplan.':q.metric==='duels'?'Duelle sind gerade nicht aktiv.':''):q.description;
+ return `<div class="tlp-panel tlp-quest${q.claimed?' claimed':q.done&&q.available?' done':''}">
+  <div class="tlp-row spread"><span class="tlp-eyebrow ${q.done&&!q.claimed?'gold':''}">◆ ${label}</span>${state}</div>
+  <b class="tlp-qtitle">${P.esc(q.title)}</b>${hint?`<span class="tlp-note">${P.esc(hint)}</span>`:''}
+  ${q.available?`<div class="tlp-bar mid${q.done?' ok':''}"><i style="width:${pct}%"></i></div>`:''}
+  <div class="tlp-row spread"><span class="tlp-note">${q.available?`<b>${num(Math.min(Number(q.progress)||0,q.target))}${unit}</b> von ${num(q.target)}${unit}`:'–'}</span>${reward(q)}</div>
+  ${canClaim?`<button type="button" class="tlp-btn" data-claim="${P.esc(q.key)}" data-period="${q.period_start}">Belohnung abholen</button>`:''}
+ </div>`;
+}
+function boxerView(d){
+ if(!d.enabled)return '<div class="tlp-panel">Die Wochen-Quests sind noch nicht freigeschaltet.</div>';
+ const cur=d.week_start===d.current_week,today=(d.daily||[]).find(x=>x.period_start===d.today),past=(d.daily||[]).filter(x=>x.period_start!==d.today&&x.key);
+ const open=[...(d.weekly||[]),...(d.chest?[d.chest]:[]),...(d.daily||[]).filter(x=>x.key)].filter(q=>q.done&&!q.claimed&&q.available&&q.period_start>=d.claim_from).length;
+ const nav=`<div class="tlp-row spread tlp-weeknav"><button type="button" class="tlp-btn ghost small" data-week="-7" aria-label="Vorherige Woche" ${d.week_start<=addDays(d.current_week,-56)?'disabled':''}>‹</button><b>KW ${kw(d.week_start)} · ${P.fmtDate(d.week_start)} – ${P.fmtDate(addDays(d.week_start,6))}</b><button type="button" class="tlp-btn ghost small" data-week="7" aria-label="Nächste Woche" ${cur?'disabled':''}>›</button></div>`;
+ const chest=d.chest?`<div class="tlp-panel tlp-sys tlp-chest${d.chest.claimed?' claimed':''}"><span class="tlp-eyebrow gold">◆ Wochentruhe</span>
+   <svg width="64" height="54" viewBox="0 0 64 54" aria-hidden="true"><rect x="4" y="20" width="56" height="30" rx="4" fill="${d.chest.done?'var(--gold)':'var(--surface-3)'}"/><path d="M4 22C4 8 14 4 32 4s28 4 28 18Z" fill="${d.chest.done?'#ffd66f':'var(--surface-2)'}"/><rect x="28" y="16" width="8" height="12" rx="2" fill="var(--bg)"/></svg>
+   <b>${d.chest.claimed?'Diese Woche schon geöffnet':d.chest.done?'Alle Wochenquests geschafft!':`${d.chest.progress} von ${d.chest.target} Wochenquests abgeholt`}</b>
+   <span class="tlp-note">Hol alle verfügbaren Wochenquests ab, dann öffnet sich die Truhe.</span>${reward(d.chest)}
+   ${d.can_claim&&d.chest.done&&!d.chest.claimed?`<button type="button" class="tlp-btn" data-claim="${P.esc(d.chest.key)}" data-period="${d.chest.period_start}">Truhe öffnen</button>`:''}</div>`:'';
+ return `${d.preview?'<div class="tlp-panel tlp-callout">Vorschau: Die Quests sind für Boxer noch nicht freigeschaltet. Abholen ist erst nach dem Einschalten möglich.</div>':''}
+  ${flash}
+  ${nav}
+  <div class="tlp-kpis"><div class="tlp-kpi"><b>${d.exp_week}</b><span>EXP aus Quests in dieser Woche</span></div><div class="tlp-kpi"><b>${d.coins_pending}</b><span>Coins gesammelt · werden gutgeschrieben, sobald der Shop startet</span></div></div>
+  ${cur?`<p class="tlp-note">Quests füllen sich automatisch, sobald dein Coach deine Trainings bestätigt. Neue Wochenquests ${daysLeft(d)}.${open?` <b class="gold">${open} Belohnung${open>1?'en':''} bereit.</b>`:''}</p>`:d.week_start>=d.claim_from?'<p class="tlp-note">Letzte Woche: Was erfüllt ist, kannst du bis Sonntag noch abholen.</p>':'<p class="tlp-note">Ältere Woche – nur zur Ansicht.</p>'}
+  ${cur&&today&&today.key?questCard(today,d,'Tagesquest · heute'):''}
+  ${(d.weekly||[]).map(q=>questCard(q,d,'Wochenquest')).join('')}
+  ${chest}
+  ${past.length?`<div class="tlp-panel"><b>Tagesquests dieser Woche</b>${past.map(q=>{const w=WD[new Date(q.period_start+'T12:00:00Z').getUTCDay()],can=d.can_claim&&q.done&&!q.claimed&&q.period_start>=d.claim_from;
+    return `<div class="tlp-li static"><span class="tlp-grow"><b>${w} ${P.fmtDate(q.period_start)} · ${P.esc(q.title)}</b><span class="tlp-note">${num(Math.min(Number(q.progress)||0,q.target))}${UNIT[q.metric]||''} von ${num(q.target)}${UNIT[q.metric]||''} · +${q.exp} EXP · ${q.coins} Coins</span></span>${q.claimed?'<span class="tlp-pill ok">Abgeholt</span>':can?`<button type="button" class="tlp-btn small" data-claim="${P.esc(q.key)}" data-period="${q.period_start}">Abholen</button>`:q.done?'<span class="tlp-pill gold">Erfüllt</span>':'<span class="tlp-pill">offen</span>'}</div>`}).join('')}</div>`:''}`;
+}
+function staffView(){
+ return `<div class="tlp-panel"><p class="tlp-note">Stand diese Woche. «Erfüllt» heisst: Ziel erreicht, auch wenn die Belohnung noch nicht abgeholt ist.</p>
+  <div class="tlp-list">${overview.map(x=>`<div class="tlp-li static"><span class="tlp-grow"><b>${P.esc(x.display_name)}</b><span class="tlp-note">${x.group?P.esc(x.group.name):'ohne Gruppe'} · erfüllt ${x.done}/${x.available} · abgeholt ${x.claimed} · +${x.exp_week} EXP</span></span>${x.chest?'<span class="tlp-pill gold">Truhe</span>':`<span class="tlp-pill${x.done>=x.available&&x.available?' ok':''}">${x.done}/${x.available}</span>`}</div>`).join('')||'<p class="tlp-note">Noch keine Boxer.</p>'}</div></div>`;
+}
+function adminView(){
+ const kinds={weekly:'Wochenquests',chest:'Wochentruhe',daily:'Tagesquests (wechseln täglich, gleiche für alle)'};
+ const today=admin.today_daily;
+ return `<div class="tlp-panel"><p class="tlp-note">Änderungen gelten ab sofort für offene Quests. Bereits abgeholte Belohnungen bleiben unverändert. Grenzen: Wochenquest höchstens 100 EXP, Truhe 200, Tagesquest 50.</p>
+  <p class="tlp-note">Max. EXP pro Woche aktuell: <b id="maxExp">${maxExp()}</b></p></div>
+  ${['weekly','chest','daily'].map(k=>`<h2 class="tlp-h">${kinds[k]}</h2>${admin.quests.filter(q=>q.kind===k).map(q=>`<form class="tlp-panel tlp-form tlp-qadmin" data-key="${P.esc(q.key)}">
+   <div class="tlp-row spread"><b>${P.esc(q.title.replace('{n}',q.target))}</b>${q.key===today?'<span class="tlp-pill gold">heute</span>':''}</div>
+   <span class="tlp-note">${P.esc(METRIC[q.metric]||q.metric)} · ${q.claims} mal abgeholt</span>
+   <div class="tlp-grid3">
+    ${q.kind==='chest'?'':`<label class="tlp-field">Ziel<input type="number" name="target" min="1" max="${q.metric==='plan_pct'?100:1000}" value="${q.target}" required></label>`}
+    <label class="tlp-field">EXP<input type="number" name="exp" min="0" max="${q.kind==='weekly'?100:q.kind==='chest'?200:50}" value="${q.exp}" required></label>
+    <label class="tlp-field">Coins<input type="number" name="coins" min="0" max="1000" value="${q.coins}" required></label>
+   </div>
+   ${q.kind==='weekly'?`<details${Object.keys(q.group_targets||{}).length?' open':''}><summary class="tlp-note">Ziel je Trainingsgruppe (leer = Standard)</summary><div class="tlp-grid3">${groups.map(g=>`<label class="tlp-field">${P.esc(g.name)}<input type="number" name="g_${P.esc(g.key)}" min="1" max="${q.metric==='plan_pct'?100:1000}" value="${(q.group_targets||{})[g.key]??''}"></label>`).join('')}</div></details>`:''}
+   <div class="tlp-row spread"><label class="tlp-check"><input type="checkbox" name="active" ${q.is_active?'checked':''}> aktiv</label><button type="submit" class="tlp-btn small">Speichern</button></div>
+  </form>`).join('')}`).join('')}`;
+}
+function maxExp(){const a=admin.quests.filter(q=>q.is_active);return a.filter(q=>q.kind!=='daily').reduce((t,q)=>t+q.exp,0)+7*Math.max(0,...a.filter(q=>q.kind==='daily').map(q=>q.exp))}
+function render(){
+ const staff=role==='admin'||role==='coach';
+ const tabs=staff?[['quests',role==='admin'?'Vorschau':'Meine Quests'],['overview','Übersicht']].concat(role==='admin'?[['admin','Einstellungen']]:[]):[];
+ const seg=tabs.length?`<div class="tlp-seg" role="tablist">${tabs.map(([k,l])=>`<button type="button" role="tab" aria-pressed="${tab===k}" data-tab="${k}">${l}</button>`).join('')}</div>`:'';
+ app.innerHTML=seg+(tab==='overview'?staffView():tab==='admin'?adminView():boxerView(mine));
+}
+async function loadMine(){const r=await db.rpc('get_my_quests',week?{p_week_start:week}:{});if(r.error)throw r.error;mine=r.data;if(mine.enabled&&!week)week=mine.week_start}
+async function load(){
+ const me=await db.rpc('get_my_performance');if(me.error)throw me.error;
+ role=me.data.profile.role;
+ if(role==='admin'||role==='coach'){$('pageTitle').textContent='Wochen-Quests';if(tab==='quests'&&role==='admin')tab='overview'}
+ const jobs=[loadMine()];
+ if(role==='admin'||role==='coach')jobs.push(db.rpc('staff_quest_overview').then(r=>{if(r.error)throw r.error;overview=r.data||[]}));
+ if(role==='admin')jobs.push(db.rpc('admin_list_quests').then(r=>{if(r.error)throw r.error;admin=r.data}),db.rpc('list_training_groups').then(r=>{if(r.error)throw r.error;groups=r.data||[]}));
+ await Promise.all(jobs);say('');render();
+}
+app.addEventListener('click',async ev=>{
+ const b=ev.target.closest('button');if(!b||b.type==='submit')return;
+ if(b.dataset.tab){tab=b.dataset.tab;flash='';render();return}
+ if(b.dataset.week){week=addDays(week,Number(b.dataset.week));flash='';try{await loadMine();render()}catch(e){say(e.message,true)}return}
+ if(b.dataset.claim){
+  b.disabled=true;const r=await db.rpc('claim_quest',{p_quest_key:b.dataset.claim,p_period:b.dataset.period});
+  if(r.error){say(r.error.message,true);b.disabled=false;return}
+  flash=`<div class="tlp-panel tlp-sys tlp-quest done" role="status"><span class="tlp-eyebrow gold">◆ Quest abgeschlossen</span><b class="tlp-qtitle">${P.esc(r.data.title||'')}</b><div class="tlp-row spread"><span>EXP</span><b class="gold">+${r.data.exp}</b></div><div class="tlp-row spread"><span>Coins (ab Shop-Start)</span><b class="gold">+${r.data.coins}</b></div></div>`;
+  try{await loadMine();if(role!=='boxer'){const o=await db.rpc('staff_quest_overview');if(!o.error)overview=o.data||[]}say('');render();app.querySelector('[role="status"]')?.scrollIntoView({block:'nearest'})}catch(e){say(e.message,true)}
+ }
+});
+app.addEventListener('submit',async ev=>{
+ const f=ev.target.closest('form.tlp-qadmin');if(!f)return;ev.preventDefault();
+ const q=admin.quests.find(x=>x.key===f.dataset.key),fd=new FormData(f),gt={};
+ for(const g of groups){const v=fd.get('g_'+g.key);if(v!==null&&String(v).trim()!=='')gt[g.key]=Number(v)}
+ const btn=f.querySelector('button[type="submit"]');btn.disabled=true;
+ const r=await db.rpc('admin_update_quest',{p_quest_key:q.key,p_target:q.kind==='chest'?1:Number(fd.get('target')),p_exp:Number(fd.get('exp')),p_coins:Number(fd.get('coins')),p_is_active:fd.get('active')==='on',p_group_targets:gt});
+ btn.disabled=false;
+ if(r.error){say(r.error.message,true);return}
+ Object.assign(q,r.data);say('Gespeichert: '+q.title.replace('{n}',q.target));
+ const m=$('maxExp');if(m)m.textContent=maxExp();
+ try{await loadMine()}catch(e){}
+});
+(async()=>{
+ try{
+  db=await P.client();
+  const s=await db.auth.getSession();
+  if(!s.data||!s.data.session){say('');app.innerHTML='<div class="tlp-panel">Bitte <a href="./login.html">anmelden</a>.</div>';return}
+  await load();
+ }catch(e){say('Quests konnten nicht geladen werden: '+(e.message||e),true)}
+})();
+</script>
+<script src="./takeover-navigation.js" defer></script></body></html>
