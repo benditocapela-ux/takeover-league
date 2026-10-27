@@ -22,6 +22,7 @@ on:
       - 'boxer.html'
       - 'takeover-gamification.js'
       - 'tests/gamification-*'
+      - 'tests/admin-change-log-*'
       - 'tests/league-challenges-arena-*'
       - 'tests/goals-coach-archive-*'
       - 'tests/season-single-active-*'
@@ -63,6 +64,7 @@ on:
       - 'boxer.html'
       - 'takeover-gamification.js'
       - 'tests/gamification-*'
+      - 'tests/admin-change-log-*'
       - 'tests/league-challenges-arena-*'
       - 'tests/goals-coach-archive-*'
       - 'tests/season-single-active-*'
@@ -410,6 +412,39 @@ jobs:
           psql -X -h localhost -U postgres -d gamification_probe -v ON_ERROR_STOP=1 -f tests/gamification-fairness-notifications-rollback.sql | tee rollback.log
           grep -q "PASS: rollback restores previous definitions" rollback.log
 
+  admin-change-log-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated change log fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres change_log_probe
+      - name: Verify admin change log and rollback on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d change_log_probe -v ON_ERROR_STOP=1 -f tests/admin-change-log-schema.sql
   league-challenges-arena-admin-schema:
     runs-on: ubuntu-latest
     timeout-minutes: 10
