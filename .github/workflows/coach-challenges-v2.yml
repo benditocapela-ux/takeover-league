@@ -25,6 +25,7 @@ on:
       - 'tests/revoke-unused-legacy-*'
       - 'tests/duel-notifications-*'
       - 'tests/training-types-duration-notes-*'
+      - 'tests/admin-set-profile-display-name-*'
       - 'tests/training-form-contracts.cjs'
       - 'boxer-dashboard-polish.css'
       - 'tests/boxer-dashboard-polish.cjs'
@@ -71,6 +72,7 @@ on:
       - 'tests/revoke-unused-legacy-*'
       - 'tests/duel-notifications-*'
       - 'tests/training-types-duration-notes-*'
+      - 'tests/admin-set-profile-display-name-*'
       - 'tests/training-form-contracts.cjs'
       - 'boxer-dashboard-polish.css'
       - 'tests/boxer-dashboard-polish.cjs'
@@ -709,3 +711,36 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -X -h localhost -U postgres -d training_types_probe -v ON_ERROR_STOP=1 -f tests/training-types-duration-notes-schema.sql
+  admin-set-profile-display-name-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated profile rename fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres profile_rename_probe
+      - name: Verify admin profile rename and rollback on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d profile_rename_probe -v ON_ERROR_STOP=1 -f tests/admin-set-profile-display-name-schema.sql
