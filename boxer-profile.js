@@ -101,6 +101,53 @@ async function renderPublicBadges(name){
   }
  }catch(e){status.textContent='Öffentliche Auszeichnungen sind noch nicht verfügbar.'}
 }
+// Palmarès: nur belegte, öffentliche Erfolge aus bestehenden Projektionen (keine erfundenen Titel).
+// Quellen: Hall of Fame und Saisonplatzierungen abgeschlossener Saisons, abgeschlossene Liga-Challenges,
+// öffentliche Duell-Historie. Nicht öffentliche Boxer erscheinen dort nicht (bzw. als «Privates Profil»).
+async function publicTable(table,params){
+ const query=new URL(PUBLIC_URL+'/rest/v1/'+table);
+ for(const [k,v] of Object.entries(params))query.searchParams.set(k,v);
+ const response=await fetch(query.href,{headers:{apikey:PUBLIC_KEY},cache:'no-store'});
+ if(!response.ok)throw new Error('HTTP '+response.status);
+ const rows=await response.json();if(!Array.isArray(rows))throw Error('Ungültige Antwort');return rows;
+}
+async function renderPalmares(name){
+ const anchor=$('publicBadges');if(!anchor)return;
+ const section=document.createElement('section');section.className='public-badges palmares';
+ const h=document.createElement('h2');h.textContent='🥇 Palmarès';
+ const status=document.createElement('p');status.className='role';status.textContent='Erfolge werden geladen …';
+ const list=document.createElement('ul');list.className='palmares-list';
+ section.append(h,status,list);anchor.after(section);
+ try{
+  const [hof,seasons,seasonMeta,globals,duels]=await Promise.all([
+   publicTable('league_hall_of_fame_v21',{select:'title,description,awarded_at,season_id',boxer_name:'eq.'+name,order:'awarded_at.desc',limit:'50'}),
+   publicTable('league_season_results_v21',{select:'season_id,rank_position,points',boxer_name:'eq.'+name,limit:'50'}),
+   publicTable('league_seasons_v21',{select:'id,title,ends_on',status:'eq.closed',limit:'100'}),
+   publicTable('league_global_results_v21',{select:'challenge_id,rank_position,completed,closed_at',boxer_name:'eq.'+name,order:'closed_at.desc',limit:'50'}),
+   publicTable('league_public_duel_history_v21',{select:'challenger_id,opponent_id,challenger_name,opponent_name,winner_id',or:'(challenger_name.eq.'+JSON.stringify(name)+',opponent_name.eq.'+JSON.stringify(name)+')',limit:'200'})
+  ]);
+  const challengeIds=[...new Set(globals.map(g=>g.challenge_id))];
+  const challenges=challengeIds.length?await publicTable('league_global_challenges_v21',{select:'id,title',id:'in.('+challengeIds.join(',')+')'}):[];
+  const seasonTitle=new Map(seasonMeta.map(x=>[x.id,x.title])),challengeTitle=new Map(challenges.map(x=>[x.id,x.title]));
+  const items=[];
+  for(const x of hof)items.push(['🏆',x.title,seasonTitle.get(x.season_id)||x.description||'Saison']);
+  for(const x of seasons)if(!hof.some(hx=>hx.season_id===x.season_id))
+   items.push(['📅','Saison '+(seasonTitle.get(x.season_id)||''),'Platz '+fmt(x.rank_position)+' · '+fmt(x.points)+' Punkte']);
+  for(const x of globals)if(x.completed||x.rank_position===1)
+   items.push([x.rank_position===1?'⚡':'✅','Liga-Challenge «'+(challengeTitle.get(x.challenge_id)||'Challenge')+'»',(x.rank_position===1?'Platz 1':'Platz '+fmt(x.rank_position))+(x.completed?' · Ziel erreicht':'')]);
+  const mine=duels.filter(d=>d.challenger_name===name||d.opponent_name===name);
+  if(mine.length){
+   const wins=mine.filter(d=>d.winner_id&&((d.challenger_name===name&&d.winner_id===d.challenger_id)||(d.opponent_name===name&&d.winner_id===d.opponent_id))).length;
+   const draws=mine.filter(d=>!d.winner_id).length;
+   items.push(['🥊','Duellbilanz',fmt(wins)+(wins===1?' Sieg':' Siege')+' · '+fmt(mine.length-wins-draws)+(mine.length-wins-draws===1?' Niederlage':' Niederlagen')+(draws?' · '+fmt(draws)+' Unentschieden':'')]);
+  }
+  for(const [icon,title,detail] of items){
+   const li=document.createElement('li');const strong=document.createElement('strong');strong.textContent=icon+' '+title;
+   const small=document.createElement('small');small.textContent=detail;li.append(strong,small);list.append(li);
+  }
+  status.textContent=items.length?'Belegte Erfolge aus Saisons, Liga-Challenges und Duellen.':'Noch keine Titel. Abgeschlossene Saisons, Liga-Challenges und Duelle füllen das Palmarès.';
+ }catch(e){status.textContent='Palmarès derzeit nicht verfügbar.'}
+}
 function photoUrl(a){
  if(a?.avatar_url){
   try{const u=new URL(a.avatar_url);if(u.protocol==='https:'&&u.hostname==='iqarjivcrddcixrvqbfb.supabase.co'&&u.pathname.startsWith('/storage/v1/object/public/boxer-avatars/'))return u.href}catch(_){}
@@ -146,6 +193,7 @@ async function init(){
   renderPublicRadar(boxer,leader[0]||{},levels,leaders);
   renderPublicBadges(name);
   renderPublicRecords(name);
+  renderPalmares(name);
   $('levelStatus').textContent='Rang '+level.rank+' · Level '+level.level;
   $('nextLevel').textContent='Noch '+fmt(level.remaining)+' EXP bis zum nächsten Level';
   const img=photoUrl(avatar[0]);
