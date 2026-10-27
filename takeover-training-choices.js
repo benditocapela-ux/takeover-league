@@ -62,9 +62,9 @@
  }
  if(techniqueInput){
   const group=buildGroup(techniqueInput,{
-   title:'Technikdauer – Schnellwahl',hint:'Optional eine häufige Dauer antippen oder die Minuten frei eingeben.',
-   ariaLabel:'Schnellauswahl für Technikminuten',
-   choices:[30,45,60,90].map(value=>({value:String(value),label:value+' Min.',icon:'⏱️'}))
+   title:'Trainingsdauer – Schnellwahl',hint:'Pflichtangabe: eine häufige Dauer antippen oder die Minuten frei eingeben.',
+   ariaLabel:'Schnellauswahl für die Trainingsdauer',
+   choices:[30,45,60,90,120].map(value=>({value:String(value),label:value+' Min.',icon:'⏱️'}))
   });
   const sync=()=>group.buttons.forEach(button=>{
    const active=techniqueInput.value===button.dataset.preset;
