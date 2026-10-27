@@ -41,7 +41,7 @@ const rpcOf=t=>[...new Set([...t.matchAll(/\brpc\(\s*'([a-z_]+)'/g)].map(m=>m[1]
 const bew=fs.readFileSync('bewertung.html','utf8'),stil=fs.readFileSync('stil-test.html','utf8');
 assert.deepEqual(rpcOf(bew),['get_my_performance','staff_get_rating','staff_list_performance','staff_rate_boxer']);
 assert.deepEqual(rpcOf(stil),['get_my_performance','staff_list_performance','staff_unlock_style_test','submit_style_test']);
-assert.deepEqual(rpcOf(js),['get_my_performance','get_my_quests','get_my_week_plan','get_performance_card']);
+assert.deepEqual(rpcOf(js),['get_kg_look','get_my_kampfgeist','get_my_performance','get_my_quests','get_my_week_plan','get_performance_card']);
 for(const [n,t] of [['bewertung.html',bew],['stil-test.html',stil],['takeover-performance.js',js]]){
  assert.doesNotMatch(t,/service_role|sb_secret_/i,n+' must not contain privileged keys');
  assert.doesNotMatch(t,/\.from\(\s*'(boxer_ratings|style_tests|style_test_unlocks)'/,n+' must use RPCs, not tables');

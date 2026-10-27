@@ -47,7 +47,7 @@ function boxerView(d){
  return `${d.preview?'<div class="tlp-panel tlp-callout">Vorschau: Die Quests sind für Boxer noch nicht freigeschaltet. Abholen ist erst nach dem Einschalten möglich.</div>':''}
   ${flash}
   ${nav}
-  <div class="tlp-kpis"><div class="tlp-kpi"><b>${d.exp_week}</b><span>EXP aus Quests in dieser Woche</span></div><div class="tlp-kpi"><b>${d.coins_pending}</b><span>Coins gesammelt · werden gutgeschrieben, sobald der Shop startet</span></div></div>
+  <div class="tlp-kpis"><div class="tlp-kpi"><b>${d.exp_week}</b><span>EXP aus Quests in dieser Woche</span></div><div class="tlp-kpi"><b>${d.coins_pending}</b><span>Quest-Coins, die beim nächsten <a href="./shop.html">Shop</a>-Besuch gutgeschrieben werden</span></div></div>
   ${cur?`<p class="tlp-note">Quests füllen sich automatisch, sobald dein Coach deine Trainings bestätigt. Neue Wochenquests ${daysLeft(d)}.${open?` <b class="gold">${open} Belohnung${open>1?'en':''} bereit.</b>`:''}</p>`:d.week_start>=d.claim_from?'<p class="tlp-note">Letzte Woche: Was erfüllt ist, kannst du bis Sonntag noch abholen.</p>':'<p class="tlp-note">Ältere Woche – nur zur Ansicht.</p>'}
   ${cur&&today&&today.key?questCard(today,d,'Tagesquest · heute'):''}
   ${(d.weekly||[]).map(q=>questCard(q,d,'Wochenquest')).join('')}
@@ -100,7 +100,7 @@ app.addEventListener('click',async ev=>{
  if(b.dataset.claim){
   b.disabled=true;const r=await db.rpc('claim_quest',{p_quest_key:b.dataset.claim,p_period:b.dataset.period});
   if(r.error){say(r.error.message,true);b.disabled=false;return}
-  flash=`<div class="tlp-panel tlp-sys tlp-quest done" role="status"><span class="tlp-eyebrow gold">◆ Quest abgeschlossen</span><b class="tlp-qtitle">${P.esc(r.data.title||'')}</b><div class="tlp-row spread"><span>EXP</span><b class="gold">+${r.data.exp}</b></div><div class="tlp-row spread"><span>Coins (ab Shop-Start)</span><b class="gold">+${r.data.coins}</b></div></div>`;
+  flash=`<div class="tlp-panel tlp-sys tlp-quest done" role="status"><span class="tlp-eyebrow gold">◆ Quest abgeschlossen</span><b class="tlp-qtitle">${P.esc(r.data.title||'')}</b><div class="tlp-row spread"><span>EXP</span><b class="gold">+${r.data.exp}</b></div><div class="tlp-row spread"><span>Coins (im Shop)</span><b class="gold">+${r.data.coins}</b></div></div>`;
   try{await loadMine();if(role!=='boxer'){const o=await db.rpc('staff_quest_overview');if(!o.error)overview=o.data||[]}say('');render();app.querySelector('[role="status"]')?.scrollIntoView({block:'nearest'})}catch(e){say(e.message,true)}
  }
 });

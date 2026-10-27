@@ -18,7 +18,7 @@ let members=[],rankMap=new Map(),duelHistory=[],duelHistoryAvailable=false;
 const fmt=n=>Number(n||0).toLocaleString('de-CH',{maximumFractionDigits:0});
 const setStatus=(v,err=false)=>{$('status').textContent=v;$('status').style.color=err?'#ffb0b0':'#b6c2d0'};
 const progress=raw=>{
- const xp=Math.max(0,Number(raw)||0),n=Math.max(0,Math.floor((Math.sqrt(49+0.32*xp)-7)/2));
+ const xp=Math.max(0,Number(raw)||0),n=Math.min(98,Math.max(0,Math.floor((Math.sqrt(49+0.32*xp)-7)/2))); // Maximum Level 99
  const first=100*n+25*n*(n-1)/2,next=100+25*n;
  return {level:n+1,rank:['F','E','D','C','B','A','S'][Math.min(6,Math.floor(n/10))],percent:Math.min(100,Math.max(0,(xp-first)/next*100))};
 };

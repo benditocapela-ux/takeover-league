@@ -19,10 +19,12 @@ async function publicRpc(fn){
  return rows;
 }
 function progress(xp){
- const n=Math.max(0,Math.floor((Math.sqrt(49+0.32*xp)-7)/2));
+ // Maximum Level 99 (Owner-Entscheid 28.10.2026); EXP zählen danach weiter.
+ const n=Math.min(98,Math.max(0,Math.floor((Math.sqrt(49+0.32*xp)-7)/2)));
  const used=100*n+25*n*(n-1)/2;
  const needed=100+25*n;
  const ranks=['F','E','D','C','B','A','S'];
+ if(n>=98)return {level:99,rank:'S',pct:100,remaining:0};
  return {level:n+1,rank:ranks[Math.min(Math.floor(n/10),ranks.length-1)],pct:Math.max(0,Math.min(100,(xp-used)/needed*100)),remaining:Math.max(0,needed-(xp-used))};
 }
 function renderPublicRadar(boxer,leader,levels,leaders){

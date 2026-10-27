@@ -30,7 +30,7 @@ const store={
 
 export function levelFromExp(total){
  const xp=Math.max(0,Number(total)||0);
- const n=Math.max(0,Math.floor((Math.sqrt(49+0.32*xp)-7)/2));
+ const n=Math.min(98,Math.max(0,Math.floor((Math.sqrt(49+0.32*xp)-7)/2)));  // Maximum Level 99
  const level=n+1;
  const [letter,name]=LEVEL_RANKS[Math.min(Math.floor((level-1)/10),LEVEL_RANKS.length-1)];
  return {level,letter,name};

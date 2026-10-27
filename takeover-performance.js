@@ -88,6 +88,20 @@ function card(o){
 }
 
 /* ---- automatische Bausteine im Boxerprofil und in Mein Studio ---- */
+// Kampfgeist-Zeichnungen erst laden, wenn der Shop für diese Person sichtbar ist.
+let kgPromise=null;
+function kampfgeist(){
+ if(window.TLKG)return Promise.resolve(window.TLKG);
+ if(!kgPromise)kgPromise=new Promise((ok,fail)=>{const sc=document.createElement('script');sc.src='./takeover-kampfgeist.js';sc.onload=()=>ok(window.TLKG);sc.onerror=fail;document.head.appendChild(sc)});
+ return kgPromise;
+}
+async function mountProfileLook(db,name,anchor){
+ const {data,error}=await db.rpc('get_kg_look',{p_display_name:name});
+ if(error||!data||!data.avatar)return;
+ const K=await kampfgeist();
+ const box=document.createElement('section');box.className='tlp-profile';box.setAttribute('aria-label','Kampfgeist-Karte');
+ box.innerHTML=`<div class="tlp-block">${K.card(data,{name:data.name,size:104})}</div>`;anchor.after(box);
+}
 async function mountProfile(){
  const name=(new URLSearchParams(location.search).get('name')||'').trim();
  const anchor=document.getElementById('sportProfile');
@@ -95,6 +109,7 @@ async function mountProfile(){
  const db=await client();
  const s=await db.auth.getSession();if(!s.data||!s.data.session)return;
  const {data,error}=await db.rpc('get_performance_card',{p_display_name:name});
+ await mountProfileLook(db,name,anchor).catch(e=>console.warn('Kampfgeist-Karte nicht verfügbar:',e));
  if(error||!data||(!data.rating&&!data.style))return;
  const box=document.createElement('section');box.className='tlp-profile';box.setAttribute('aria-label','Coach-Bewertung und Boxstil');
  let html='';
@@ -115,10 +130,15 @@ async function mountStudio(){
  const host=document.getElementById('studioPanelOverview');if(!host)return;
  const db=await client();
  const s=await db.auth.getSession();if(!s.data||!s.data.session)return;
- const [perf,wk,qs]=await Promise.all([db.rpc('get_my_performance'),db.rpc('get_my_week_plan'),db.rpc('get_my_quests')]);
+ const [perf,wk,qs,kg]=await Promise.all([db.rpc('get_my_performance'),db.rpc('get_my_week_plan'),db.rpc('get_my_quests'),db.rpc('get_my_kampfgeist',{p_full:false})]);
  const data=perf.data,error=perf.error,gym=!wk.error&&wk.data&&wk.data.enabled?wk.data:null,quest=!qs.error&&qs.data&&qs.data.enabled?qs.data:null;
- if(error||!data||(!data.ratings_enabled&&!data.style_enabled&&!gym&&!quest))return;
+ const shop=!kg.error&&kg.data&&kg.data.enabled?kg.data:null;
+ if(error||!data||(!data.ratings_enabled&&!data.style_enabled&&!gym&&!quest&&!shop))return;
  const tiles=[];
+ if(shop){
+  const K=await kampfgeist(),rk=K.RANKS[shop.level.rank_idx];
+  tiles.push(`<a class="tlp-tile" href="./shop.html">${K.avatarBox(shop.look,52)}<span><span class="tlp-eyebrow">Kampfgeist-Shop</span><strong><span class="kg-price">${K.COIN}${K.fmt(shop.wallet.balance)}</span> Coins</strong><span class="tlp-note">Rang ${rk.r} · ${esc(rk.n)} · Level ${shop.level.level} · <span style="color:var(--gold)">Roadmap</span></span></span></a>`);
+ }
  if(quest){
   const weekly=(quest.weekly||[]).filter(q=>q.available),done=weekly.filter(q=>q.done).length;
   const ready=[...weekly,...(quest.chest?[quest.chest]:[]),...(quest.daily||[]).filter(q=>q.key)].filter(q=>quest.can_claim&&q.done&&!q.claimed&&q.available&&q.period_start>=quest.claim_from).length;
