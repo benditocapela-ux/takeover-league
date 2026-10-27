@@ -65,6 +65,9 @@
   const label=directLabel(select);
   const FAVORITES='Häufig';
   let activeTab=null;
+  // Nur eine geänderte Auswahl (Entwurf, letzte Art, Karte) darf den Bereich wechseln – ein Klick auf
+  // eine Bereichs-Taste ändert die Auswahl nicht und muss deshalb stehen bleiben.
+  let followedValue=select.value;
   const groupOf=option=>option.parentElement&&option.parentElement.tagName==='OPTGROUP'?option.parentElement.label:'';
   function favoriteValues(){return String(select.dataset.tlFavorites||'').split(',').map(x=>x.trim()).filter(Boolean)}
   function tabFor(value,groups,favorites){
@@ -90,7 +93,8 @@
     note.classList.toggle('is-valid',valid);
    }
    wrapper.classList.toggle('is-disabled',select.disabled);
-   if(wrapper.classList.contains('is-grouped')&&!select.multiple&&select.value&&!track.querySelector('button[data-value="'+CSS.escape(select.value)+'"]')){
+   const valueChanged=select.value!==followedValue;followedValue=select.value;
+   if(valueChanged&&wrapper.classList.contains('is-grouped')&&!select.multiple&&select.value&&!track.querySelector('button[data-value="'+CSS.escape(select.value)+'"]')){
     const groups=Array.from(tabs.querySelectorAll('[data-tab]')).map(b=>b.dataset.tab);
     const next=tabFor(select.value,groups,favoriteValues());
     if(next&&next!==activeTab){activeTab=next;render()}
