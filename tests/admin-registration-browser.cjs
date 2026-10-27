@@ -31,6 +31,7 @@ export function createClient(){
      if(fn==='admin_set_profile_active')target.is_active=params.p_active;
      if(fn==='admin_set_profile_listed')target.is_listed=params.p_listed;
      if(fn==='admin_set_profile_email')target.email=params.p_email;
+     if(fn==='admin_set_profile_display_name'){window.__renamed=params;target.display_name=params.p_display_name}
      return {data:null,error:null};
    }
  };
@@ -68,6 +69,15 @@ export function createClient(){
     await menu.waitFor({state:'visible'});
     const checkbox=page.locator('#profilesBody tr').filter({hasText:'Neu angemeldeter Boxer'}).locator('input[type=checkbox]').first();
     assert.equal(await checkbox.isVisible(),true);
+    await page.keyboard.press('Escape');
+    const row=page.locator('#profilesBody tr').filter({hasText:'Neu angemeldeter Boxer'});
+    await row.locator('details.rename summary').click();
+    assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=390),true,'rename field must not overflow at 390px');
+    await row.locator('details.rename input').fill('  Max   Muster ');
+    await row.getByRole('button',{name:'Name speichern'}).click();
+    await page.waitForFunction(()=>[...document.querySelectorAll('#profilesBody tr strong')].some(x=>x.textContent==='Max Muster'));
+    const renamed=await page.evaluate(()=>window.__renamed);
+    assert.deepEqual(renamed,{p_profile_id:'2',p_display_name:'Max Muster'},'rename RPC gets the trimmed name');
    }else{
     await page.waitForFunction(()=>document.getElementById('adminStatus').textContent.includes('Zugriff verweigert'));
     assert.equal(await page.locator('#adminContent').isVisible(),false);
@@ -76,6 +86,6 @@ export function createClient(){
    }
    await page.close();
   }
-  console.log('PASS: Admin UI at 390px, no overflow, admin-only navigation and access');
+  console.log('PASS: Admin UI at 390px, no overflow, admin-only navigation and access, admin renames a boxer');
  } finally {await browser.close();server.close()}
 })().catch(e=>{console.error(e);process.exitCode=1});

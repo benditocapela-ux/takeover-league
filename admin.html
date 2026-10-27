@@ -23,7 +23,7 @@ tr.new-profile{box-shadow:inset 3px 0 var(--gold)}
 td strong{display:block}small{display:block;color:var(--muted);font-size:var(--fs-xs);margin-top:3px}
 td input[type="email"],td select{max-width:240px;width:100%;min-height:42px;background:var(--bg);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:7px;color:var(--text)}
 td input[type="checkbox"]{width:22px;height:22px;accent-color:var(--gold)}
-.field{display:grid;gap:7px;align-items:start}.inline-actions{display:flex;gap:6px;flex-wrap:wrap}
+.field{display:grid;gap:7px;align-items:start}.rename{margin-top:6px}.rename summary{display:inline-flex;align-items:center;min-height:32px;cursor:pointer;color:var(--gold);font-size:var(--fs-sm);font-weight:700}.rename .field{margin-top:6px}.inline-actions{display:flex;gap:6px;flex-wrap:wrap}
 .tag{display:inline-block;font-size:11px;line-height:1.4;background:var(--surface-2);border:1px solid var(--line-strong);padding:2px 7px;border-radius:50px;color:var(--muted)}
 .tag.pending{color:var(--gold)}.tag.danger{color:var(--bad)}
 pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:13px;background:var(--bg);border-radius:var(--r-sm);border:1px solid var(--line-strong);font-size:var(--fs-xs)}
@@ -83,10 +83,26 @@ function buildRow(p){
  const name=makeCell('Profil');
  name.append(add('strong',p.display_name));
  name.append(add('small',new Date(p.created_at).toLocaleDateString('de-CH')));
+ const rename=add('details',undefined,'rename');rename.append(add('summary','Name ändern'));
+ const renameField=add('div',undefined,'field'),renameInput=add('input');
+ renameInput.type='text';renameInput.maxLength=40;renameInput.minLength=2;renameInput.autocomplete='off';renameInput.value=p.display_name;
+ renameInput.setAttribute('aria-label','Neuer Name für '+p.display_name);
+ const renameBtn=add('button','Name speichern');renameBtn.type='button';
+ renameBtn.onclick=()=>{
+  const next=renameInput.value.replace(/\s+/g,' ').trim();
+  if(next.length<2||next.length>40){msg('Der Name muss 2 bis 40 Zeichen lang sein.',true);renameInput.focus();return}
+  if(next===p.display_name){msg('Der Name ist unverändert.');return}
+  save('admin_set_profile_display_name',{p_profile_id:p.id,p_display_name:next},
+   'Name von «'+p.display_name+'» zu «'+next+'» ändern? Ranglisten, Profil und künftige Einträge zeigen den neuen Namen. Abgeschlossene Saisons und die Hall of Fame behalten den Namen von damals.',
+   'Name gespeichert.');
+ };
+ renameInput.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();renameBtn.click()}});
+ renameField.append(renameInput,renameBtn);rename.append(renameField);
  if(p.role==='admin')name.append(add('span','Eigentümer-Admin','tag'));
  if(archivedAt)name.append(add('span','Archiviert seit '+new Date(archivedAt).toLocaleDateString('de-CH'),'tag danger'));
  else if(!p.is_active)name.append(add('span','Deaktiviert','tag danger'));
  else if(!p.is_listed)name.append(add('span','Neu / noch nicht öffentlich','tag pending'));
+ name.append(rename);
  const account=makeCell('E-Mail / Zugang');
  if(p.has_account){account.append(add('strong',p.email||'Verknüpft (E-Mail unbekannt)'));account.append(add('small','Account verknüpft · E-Mail nicht bearbeitbar'))}
  else{
