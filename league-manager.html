@@ -181,6 +181,7 @@ function seasonError(message){
  if(/Pending season trainings require coach review/.test(text))return 'Es gibt noch offene Trainings aus dieser Saison. Bitte zuerst im Trainerbereich bestätigen oder ablehnen.';
  if(/Overlapping season exists/.test(text))return 'Der Zeitraum überschneidet sich mit einer bestehenden Saison.';
  if(/Only draft seasons may be activated/.test(text))return 'Nur Entwürfe können aktiviert werden.';
+ if(/Another season is already active/.test(text))return 'Es läuft bereits eine Saison. Bitte zuerst die laufende Saison abschliessen.';
  if(/Invalid season window/.test(text))return 'Ungültiger Zeitraum (Titel 3–100 Zeichen, Ende nach Start, höchstens 366 Tage).';
  if(/Only active admin/.test(text))return 'Nur der aktive Admin darf Saisons verwalten.';
  return text;
@@ -222,7 +223,9 @@ async function listSeasons(){
     button.disabled=true;
     const r=await db.rpc('league_v21_admin_season_action',{p_season:s.id,p_action:s.status==='draft'?'activate':'close'});
     if(r.error){say('Saisonänderung fehlgeschlagen: '+seasonError(r.error.message));button.disabled=false;return}
-    say(s.status==='draft'?'Saison aktiviert.':'Saison abgeschlossen: '+(r.data?.ranked_boxers??0)+' Boxer in der Rangliste, Hall of Fame gespeichert.');await listSeasons();
+    const next=r.data?.next_draft;
+    say(s.status==='draft'?'Saison aktiviert.':'Saison abgeschlossen: '+(r.data?.ranked_boxers??0)+' Boxer in der Rangliste, Hall of Fame gespeichert.'+
+     (next?' Folgesaison «'+next.title+'» ('+chDate(next.starts_on)+' bis '+chDate(next.ends_on)+') ist als Entwurf vorbereitet.':''));await listSeasons();
    };card.append(button);
   }
   root.append(card);
