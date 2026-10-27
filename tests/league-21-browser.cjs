@@ -14,9 +14,9 @@ function mockSupabase(){
  const id='11111111-1111-4111-8111-111111111111';
  const prof={id,auth_user_id:'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',display_name:'Boxer Alpha',role:window.__testRole||'boxer',is_active:true};
  const boxers=[
-  {id,display_name:'Boxer Alpha',role:'boxer',is_active:true},
-  {id:'22222222-2222-4222-8222-222222222222',display_name:'Boxer Beta',role:'boxer',is_active:true},
-  {id:'33333333-3333-4333-8333-333333333333',display_name:'Boxer Gamma',role:'boxer',is_active:true}
+  {id,display_name:'Boxer Alpha',role:'boxer',is_active:true,is_listed:true,archived_at:null},
+  {id:'22222222-2222-4222-8222-222222222222',display_name:'Boxer Beta',role:'boxer',is_active:true,is_listed:true,archived_at:null},
+  {id:'33333333-3333-4333-8333-333333333333',display_name:'Boxer Gamma',role:'boxer',is_active:true,is_listed:true,archived_at:null}
  ];
  const goals=[],progress=[];
  window.__testCalls=[];
@@ -30,6 +30,7 @@ function mockSupabase(){
   const builder={
    select(){return builder},
    eq(key,value){constraints.push([key,value]);return builder},
+   is(key,value){constraints.push([key,value]);return builder},
    neq(){return builder},
    order(){return builder},
    limit(){return builder},

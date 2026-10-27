@@ -40,7 +40,7 @@ const src=fs.readFileSync('takeover-gamification.js','utf8');
  const boxer=fs.readFileSync('boxer.html','utf8');
  assert.match(boxer,/import\('\.\/takeover-gamification\.js'\+version\)/);
  assert.match(boxer,/document\.dispatchEvent\(new Event\('takeover:history-loaded'\)\)/);
- assert.match(boxer,/'league-challenges\.html','league-history\.html','goals\.html'\]/);
+ assert.match(boxer,/'league-challenges\.html','league-history\.html','goals\.html','arena\.html'\]/);
  assert.doesNotMatch(src,/\.(insert|update|upsert|delete)\(/,'Gamification layer must stay read-only');
  const duels=fs.readFileSync('duels.html','utf8');
  assert.match(duels,/Revanche fordern/);assert.match(duels,/appendRivalry\(card,duel\)/);

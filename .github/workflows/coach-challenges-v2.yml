@@ -36,6 +36,9 @@ on:
       - 'tests/admin-challenge-editing-schema.sql'
       - 'tests/coach-training-history-pagination-schema.sql'
       - 'tests/admin-challenge-editing-browser.cjs'
+      - 'tests/league-challenges-arena-*'
+      - 'arena.html'
+      - 'league-manager.html'
       - '.github/workflows/coach-challenges-v2.yml'
   push:
     branches: [main, feature/coach-challenges-v2-ui]
@@ -69,6 +72,9 @@ on:
       - 'tests/production-v2-*.cjs'
       - 'tests/hosted-v2-*.cjs'
       - 'tests/production-v2-*.sh'
+      - 'tests/league-challenges-arena-*'
+      - 'arena.html'
+      - 'league-manager.html'
       - '.github/workflows/coach-challenges-v2.yml'
 jobs:
   static-checks:
@@ -501,3 +507,44 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -X -h localhost -U postgres -d duel_withdrawal_probe -v ON_ERROR_STOP=1 -f tests/duel-invite-withdrawal-schema.sql
+  league-challenges-arena-admin-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated challenge/arena admin fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres arena_admin_probe
+      - name: Verify draft edit/publish/delete and arena cancel on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d arena_admin_probe -v ON_ERROR_STOP=1 -f tests/league-challenges-arena-admin-schema.sql
+      - name: Verify rollback keeps rows and re-apply works on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: |
+          set -o pipefail
+          psql -X -h localhost -U postgres -d arena_admin_probe -v ON_ERROR_STOP=1 -f tests/league-challenges-arena-admin-rollback.sql | tee rollback.log
+          grep -q "PASS: rollback removes the new RPCs" rollback.log
+
