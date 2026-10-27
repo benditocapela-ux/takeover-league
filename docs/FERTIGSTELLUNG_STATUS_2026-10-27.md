@@ -33,12 +33,12 @@ Mock-Tests gelten **nicht** als Produktionsnachweis.
 - Saisonabschluss-Bedienung im League Manager (#33). Das Ende-Datum wird geprüft, ein Entwurf ist nicht aktivierbar, solange eine Saison läuft. «Winter 2026» liegt als Entwurf bereit.
 - CI-Smoke-Test hängt nicht mehr (#34).
 
-**Teilweise abgeschlossen (Code und DB-Tests fertig, Nachweis im Testprojekt und in Prod fehlt):**
+**Teilweise abgeschlossen (im Testprojekt über die echten Funktionen nachgewiesen, Produktionsnachweis fehlt):**
 - Liga-Challenge-Entwürfe bearbeiten, veröffentlichen und löschen; Arena absagen, nur öffentliche Boxer, Einladungs-Mitteilungen (#35)
 - Ziele: Trainerrechte, Schutz vor Selbstbestätigung, Archiv, Verlauf, Reparatur der Belohnungsregel (#36)
 - Saison: nur eine aktive Saison auf dem Server, Folgesaison automatisch als Entwurf (#37)
-- Palmarès im Boxerprofil (#38, nur Frontend, Mock-geprüft)
-- Sperre von 16 ungenutzten 2.0-RPCs (#39)
+- Palmarès im Boxerprofil (#38, nur Frontend, nur mit simulierten Daten geprüft)
+- Sperre von 16 ungenutzten 2.0-RPCs (#39; im Testprojekt gibt es diese Funktionen nicht, nachgewiesen nur in der Wegwerf-Datenbank)
 - Duell-Mitteilungen (#40)
 - Änderungsprotokoll der Verwaltung (#41)
 
@@ -74,7 +74,15 @@ Jede Migration hat in `supabase/production-prep/` einen Preflight (nur lesend, m
 - **DB-Test:** Jede Migration hat einen eigenen Wegwerf-PostgreSQL-Test mit Rollback und erneutem Anwenden. Lokal auf PG 16 sind alle grün, in der CI laufen sie auf PG 16 und 17.
 - **Mock:** `tests/league-21-browser.cjs` (alle 2.1-Seiten, 375 und 1240 px) und `tests/release-browser-smoke.cjs` sind lokal grün. Dazu kommen Screenshots aller neuen Ansichten ohne JS-Fehler und ohne horizontalen Scroll.
 - **Prod:** Live geprüft sind nur #32 und #33 (Pre- und Postflight, md5 identisch, Zahlen unverändert).
-- **Testprojekt:** Die Anwendung von #35 bis #41 wartet auf deine Bestätigung der Supabase-Abfrage. Danach folgen die Abläufe über die echten RPCs mit Rücknahme.
+- **Testprojekt (27.10.2026):** Alle sechs Migrationen eingespielt. Vorher stimmten die md5-Werte aller sieben ersetzten Funktionen mit der Produktion überein. Danach liefen zwei Szenariotests über die echten Funktionen, als Admin, Trainer und Boxer mit echter Rollenprüfung (`authenticated`). Beide endeten absichtlich mit `TESTERGEBNIS`, alles wurde zurückgenommen; die Nachkontrolle zeigt keinen Rest. Ergebnisse, alle **OK**:
+  - Arena: Erstellen mit 3 öffentlichen Boxern plus 3 Einladungs-Mitteilungen; privater Boxer abgelehnt; Boxer darf nicht absagen; Admin sagt ab, zweiter Aufruf unverändert, 3 Absage-Mitteilungen.
+  - Liga-Challenges: Boxer darf Entwurf nicht bearbeiten; Admin bearbeitet und veröffentlicht, zweites Veröffentlichen unverändert; veröffentlichte Challenge weder löschbar noch vollständig bearbeitbar; unbenutzter Entwurf löschbar; abgelaufener Entwurf nicht veröffentlichbar.
+  - Ziele: Trainer weist Ziel zu und liest es (RLS); Boxer kann zugewiesenes Ziel weder selbst bestätigen noch umschreiben noch archivieren; Trainer bestätigt, Abschluss genau einmal mit genau einer Mitteilung; Archiv idempotent, Verlauf bleibt; kein Fortschritt auf archiviertem Ziel; eigenes Boxerziel wie bisher; automatisches Ziel ohne bestätigte Trainings zahlt 0 EXP.
+  - Saison: zweite aktive Saison abgelehnt; Abschluss erstellt genau einen Folge-Entwurf (gleiche Länge, direkt anschliessend); zweiter Abschluss unverändert.
+  - Duelle: Einladungs-Mitteilung an Gegner, Ablehnungs-Mitteilung an Herausforderer.
+  - Änderungsprotokoll: Einträge für Arena, Challenge, Ziel und Saison; Boxer sieht 0 Zeilen, Admin alle; Löschen verweigert (42501).
+  - Invariante: Punkte- und EXP-Buchungen vorher und nachher identisch.
+  - Supabase-Sicherheitsprüfung: keine Warnung zu den neuen Funktionen.
 
 ## 6. Nicht umgesetzt (mit Grund)
 
@@ -83,7 +91,8 @@ Jede Migration hat in `supabase/production-prep/` einen Preflight (nur lesend, m
 - **Erstes echtes Backup mit Restore:** Dafür braucht es das DB-Passwort und die CLI auf dem Computer des Owners (siehe Runbook).
 - **«Leaked password protection»:** Das ist eine Einstellung im Supabase Dashboard, Owner-Aufgabe.
 - **Arena-Ergebnisse im Palmarès:** Die Arena-Ergebnistabelle ist absichtlich nicht öffentlich. Für eine Anzeige bräuchte es eine öffentliche Projektion, also eine neue Entscheidung.
-- **Testprojekt angleichen** (Trainingsarten-IDs, fehlende Tabellen): Es fehlt die Bestätigung für Schreibvorgänge.
+- **Testprojekt angleichen** (Trainingsarten-IDs, fehlende Tabellen und 2.0-Funktionen): offen. Für die Tests von #35 bis #41 war das nicht nötig.
+- **Duell-Wertung (settled) im Testprojekt:** nicht durchgespielt, um keine Duell-EXP-Abrechnung anzustossen. Geprüft nur in der Wegwerf-Datenbank.
 
 ## 7. Verbleibende Risiken
 
@@ -93,7 +102,7 @@ Jede Migration hat in `supabase/production-prep/` einen Preflight (nur lesend, m
 
 ## 8. Schritte zur Freigabe
 
-1. Testprojekt freigeben: Ich wende die sechs Migrationen an. Du bestätigst dabei die Supabase-Abfragen. Danach spiele ich die Abläufe mit Rücknahme durch.
+1. ~~Testprojekt~~ erledigt am 27.10.2026 (siehe Abschnitt 5).
 2. Backup nach dem Runbook erstellen.
 3. Pro Migration in der Reihenfolge von Abschnitt 4: deine Freigabe, Preflight, Migration, Postflight. Danach den zugehörigen PR mergen.
 4. #38 (Palmarès) kann jederzeit gemergt werden.
