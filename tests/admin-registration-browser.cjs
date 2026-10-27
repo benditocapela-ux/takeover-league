@@ -9,7 +9,8 @@ export function createClient(){
  {id:'1',display_name:'Eigentümer',role:'admin',is_active:true,is_listed:true,has_account:true,email:'admin@test.invalid',created_at:'2026-01-01'},
  {id:'2',display_name:'Neu angemeldeter Boxer',role:'boxer',is_active:true,is_listed:false,has_account:true,email:'new@test.invalid',created_at:'2026-10-19'},
  {id:'3',display_name:'Coach mit Zugang',role:'coach',is_active:true,is_listed:true,has_account:true,email:'coach@test.invalid',created_at:'2026-10-19'},
- {id:'4',display_name:'Vorbereitetes Profil',role:'boxer',is_active:false,is_listed:true,has_account:false,email:null,created_at:'2026-10-19'}
+ {id:'4',display_name:'Vorbereitetes Profil',role:'boxer',is_active:false,is_listed:true,has_account:false,email:null,created_at:'2026-10-19'},
+ {id:'5',display_name:'Altes Profil',role:'boxer',is_active:false,is_listed:false,has_account:false,email:null,created_at:'2026-09-01'}
  ];
  const from=table=>({
    select:()=>({
@@ -24,7 +25,7 @@ export function createClient(){
    rpc:async(fn,params)=>{
      if(role!=='admin')return {error:{message:'Nicht erlaubt'},data:null};
      if(fn==='admin_list_profiles')return {data:profiles,error:null};
-     if(fn==='admin_list_profile_archive_state')return {data:[],error:null};
+     if(fn==='admin_list_profile_archive_state')return {data:[{profile_id:'5',archived_at:'2026-10-01T00:00:00Z'}],error:null};
      const id=params?.p_profile_id,target=profiles.find(x=>x.id===id);
      if(!target)return {error:{message:'Profil nicht gefunden'},data:null};
      if(fn==='admin_set_profile_role')target.role=params.p_role;
@@ -73,6 +74,13 @@ export function createClient(){
     const row=page.locator('#profilesBody tr').filter({hasText:'Neu angemeldeter Boxer'});
     await row.locator('details.rename summary').click();
     assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=390),true,'rename field must not overflow at 390px');
+    await row.locator('details.rename input').fill('altes PROFIL');
+    await row.getByRole('button',{name:'Name speichern'}).click();
+    await page.waitForFunction(()=>/archivierten Profil/.test(document.getElementById('adminStatus').textContent));
+    await row.locator('details.rename input').fill('Coach mit Zugang');
+    await row.getByRole('button',{name:'Name speichern'}).click();
+    await page.waitForFunction(()=>/bereits vom Profil «Coach mit Zugang»/.test(document.getElementById('adminStatus').textContent));
+    assert.equal(await page.evaluate(()=>window.__renamed===undefined),true,'Konfliktnamen dürfen nicht gesendet werden');
     await row.locator('details.rename input').fill('  Max   Muster ');
     await row.getByRole('button',{name:'Name speichern'}).click();
     await page.waitForFunction(()=>[...document.querySelectorAll('#profilesBody tr strong')].some(x=>x.textContent==='Max Muster'));
