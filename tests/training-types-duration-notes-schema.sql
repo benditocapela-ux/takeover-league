@@ -6,7 +6,8 @@ CREATE ROLE authenticated;
 CREATE SCHEMA league_v21_private;
 CREATE SCHEMA league_private;
 CREATE TABLE public.profiles(id uuid PRIMARY KEY, display_name text NOT NULL);
-CREATE TABLE public.training_types(id bigint PRIMARY KEY, name text NOT NULL UNIQUE, points integer NOT NULL CHECK (points>=0), is_active boolean NOT NULL DEFAULT true);
+-- Wie in der Produktion: id als GENERATED ALWAYS AS IDENTITY.
+CREATE TABLE public.training_types(id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, name text NOT NULL UNIQUE, points integer NOT NULL CHECK (points>=0), is_active boolean NOT NULL DEFAULT true);
 CREATE TABLE public.training_submissions(id uuid PRIMARY KEY DEFAULT gen_random_uuid(), boxer_id uuid NOT NULL REFERENCES public.profiles(id),
  training_type_id bigint NOT NULL REFERENCES public.training_types(id), training_date date NOT NULL DEFAULT current_date,
  notes text NOT NULL DEFAULT '', status text NOT NULL DEFAULT 'pending', jogging_km numeric, technique_minutes integer);
@@ -20,8 +21,9 @@ CREATE FUNCTION league_private.coach_training_bonus_refresh(p_boxer uuid) RETURN
 AS $fn$ SELECT count(distinct t.name)::integer FROM public.training_submissions s JOIN public.training_types t ON t.id=s.training_type_id
  WHERE s.boxer_id=p_boxer AND s.status='approved' AND t.name in ('Reguläres Boxtraining','Sparring','Krafttraining','Sprint-Intervalle') $fn$;
 
-INSERT INTO public.training_types VALUES (1,'Reguläres Boxtraining',50,true),(2,'Sparring',70,true),(3,'Techniktraining',40,true),
+INSERT INTO public.training_types OVERRIDING SYSTEM VALUE VALUES (1,'Reguläres Boxtraining',50,true),(2,'Sparring',70,true),(3,'Techniktraining',40,true),
  (4,'Krafttraining',30,true),(5,'Sprint-Intervalle',40,true),(6,'Joggen',20,true);
+SELECT setval(pg_get_serial_sequence('public.training_types','id'),6);
 INSERT INTO public.profiles VALUES ('00000000-0000-0000-0000-000000000001','Anna');
 -- Altbestand ohne Bemerkung und ohne Dauer (muss unverändert bleiben)
 INSERT INTO public.training_submissions(id,boxer_id,training_type_id,status) VALUES

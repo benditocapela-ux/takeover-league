@@ -42,16 +42,22 @@ $bonus$;
 -- Neue Trainingsarten (IDs fortlaufend; bestehende Namen werden nicht verändert)
 -- ---------------------------------------------------------------------------
 DO $types$
-DECLARE r record;
+DECLARE r record; generated boolean;
 BEGIN
+ -- Produktion: id ist GENERATED ALWAYS AS IDENTITY; Testprojekt: einfache Spalte ohne Standardwert.
+ generated := (SELECT attidentity IN ('a','d') FROM pg_attribute WHERE attrelid='public.training_types'::regclass AND attname='id');
  FOR r IN SELECT * FROM (VALUES
    ('Wettkampf',100),('Trainingslager / Camp-Tag',80),('Pratzentraining',35),('Sandsack / Rundenarbeit',30),
    ('Schattenboxen / Heimtraining',20),('Seilspringen / Konditionszirkel',20),
    ('Alternative Ausdauer (Rad, Schwimmen, Rudern)',20),('Trainingsassistenz',30),('Mobilität / Regeneration',15)
   ) v(name,points) LOOP
   IF NOT EXISTS (SELECT 1 FROM public.training_types t WHERE t.name=r.name) THEN
-   INSERT INTO public.training_types(id,name,points,is_active)
-   VALUES ((SELECT coalesce(max(id),0)+1 FROM public.training_types), r.name, r.points, true);
+   IF generated THEN
+    INSERT INTO public.training_types(name,points,is_active) VALUES (r.name, r.points, true);
+   ELSE
+    INSERT INTO public.training_types(id,name,points,is_active)
+    VALUES ((SELECT coalesce(max(id),0)+1 FROM public.training_types), r.name, r.points, true);
+   END IF;
   ELSE
    -- Nach einem Rollback deaktivierte (weil schon genutzte) Arten wieder freischalten.
    UPDATE public.training_types t SET is_active=true WHERE t.name=r.name AND NOT t.is_active;
