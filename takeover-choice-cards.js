@@ -13,6 +13,8 @@
   return found;
  }
  const icons=[
+  [/trainingslager|camp-tag/i,'🏕️'],[/pratzen|sandsack|schattenbox/i,'🥊'],[/seilspring|konditionszirkel/i,'⚡'],
+  [/mobilität|regeneration/i,'🧘'],[/alternative ausdauer|\bradfahr|schwimm|rudern/i,'🚴'],[/trainingsassistenz/i,'🧑‍🏫'],
   [/sparring|duell|boxer|boxing/i,'🥊'],[/technik|ziel|challenge|target/i,'🎯'],
   [/kraft|strength/i,'💪'],[/sprint|intervall|tempo/i,'⚡'],[/jogg|lauf|km/i,'🏃'],
   [/wettkampf|arena|liga/i,'🏆'],[/exp|belohnung|punkte/i,'✨'],[/7 tage|woche/i,'⏱️'],
@@ -96,6 +98,8 @@
     const mark=document.createElement('span');mark.className='tl-choice-mark';mark.setAttribute('aria-hidden','true');mark.textContent=symbol(option.textContent);
     const copy=document.createElement('span');copy.className='tl-choice-copy';copy.textContent=option.textContent.trim();
     const check=document.createElement('span');check.className='tl-choice-check';check.setAttribute('aria-hidden','true');check.textContent=option.selected?'✓':(select.multiple?'+':'');
+    const group=option.parentElement&&option.parentElement.tagName==='OPTGROUP'?option.parentElement.label:'';
+    if(group){const tag=document.createElement('small');tag.className='tl-choice-tag';tag.textContent=group;copy.append(tag)}
     button.append(mark,copy,check);
     button.addEventListener('click',()=>{
      if(select.disabled||option.disabled)return;

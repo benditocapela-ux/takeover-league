@@ -223,6 +223,7 @@ body[data-tl-screen] :where(a,button){-webkit-tap-highlight-color:transparent}
 .tl-choice-hint{margin:0 2px 8px;color:var(--muted);font-size:var(--fs-sm);line-height:1.4}
 .tl-choice-note{margin:0;padding:0 2px;color:var(--muted);font-size:var(--fs-sm)}
 .tl-choice-note.is-valid{color:var(--gold)}
+.tl-choice-tag{display:block;margin-top:4px;font-size:var(--fs-xs);font-weight:600;letter-spacing:.02em;color:var(--muted)}
 .tl-choice-empty{display:block;padding:13px 3px;color:var(--muted);font-size:var(--fs-sm)}
 .tl-choice-native:focus-visible+.tl-choice-field .tl-choice-track,label:focus-within+.tl-choice-field .tl-choice-track{outline:2px solid var(--gold);outline-offset:2px;border-radius:12px}
 .tl-choice-field.is-disabled .tl-choice-card{cursor:default}

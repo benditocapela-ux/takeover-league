@@ -105,6 +105,7 @@ async function main(){
    await page.waitForFunction(()=>!document.querySelector('#content').classList.contains('hidden'));
    await page.selectOption('#kind','1');
    await page.fill('#notes','Smoke-Test-Notiz');
+   await page.fill('#techniqueMinutes','60');
    await page.waitForFunction(()=>window.__mockStats.drafts.some(x=>x.notes==='Smoke-Test-Notiz'),{timeout:6000});
    assert.equal(await page.locator('#boxerTaskCenter').count(),1);
    await page.evaluate(()=>{const form=document.querySelector('#form');form.requestSubmit();form.requestSubmit()});
@@ -113,6 +114,9 @@ async function main(){
    const submitted=await page.evaluate(()=>window.__mockStats.submitted);
    assert.equal(submitted.length,1,'Double submit should create just one training');
    assert.equal(submitted[0].status,'pending');
+   assert.equal(submitted[0].duration_minutes,60,'Trainingsdauer muss mitgeschickt werden');
+   assert.equal(submitted[0].technique_minutes,null,'Boxtraining zählt nicht als Technik-Minuten');
+   assert.equal(submitted[0].notes,'Smoke-Test-Notiz');
    console.log('PASS boxer form submission; cloud autosave; task center; duplicate click suppressed, mobile Chromium');
    assert.equal(new URL(await page.locator('#boxerNotificationList a').first().getAttribute('href')).pathname,'/boxer.html');
    await page.getByRole('button',{name:'Mitteilung als gelesen markieren: Training bewertet'}).click();

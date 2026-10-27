@@ -9,14 +9,14 @@ const ACH_FAMILIES={
  road:{label:'Lauf-Kilometer',unit:()=>'km',thresholds:[25,75,150,300]},
  flash:{label:'Sprint-Intervalle',unit:n=>n===1?'Sprint-Einheit':'Sprint-Einheiten',thresholds:[5,15,30,60]},
  technician:{label:'Technik-Minuten',unit:()=>'Technik-Minuten',thresholds:[300,900,1800,3600]},
- fighter:{label:'Sparring',unit:n=>n===1?'Sparring':'Sparrings',thresholds:[5,15,30,60]},
+ fighter:{label:'Wettkampfsparring',unit:n=>n===1?'Sparring':'Sparrings',thresholds:[5,15,30,60]},
  engine:{label:'Krafttraining',unit:n=>n===1?'Krafttraining':'Krafttrainings',thresholds:[10,25,50,100]},
  complete:{label:'Komplette Runden',unit:n=>n===1?'komplette Runde':'komplette Runden',thresholds:[1,3,7,15]}
 };
 const TIER_NAMES=['Bronze','Silber','Gold','Platin'];
 const TIER_REWARD=[25,60,125,250];
 // Same six training types the database uses for achievements and "Complete Boxer".
-const TYPE_KEYS={'reguläres boxtraining':'boxing','sparring':'sparring','techniktraining':'technique',
+const TYPE_KEYS={'reguläres boxtraining':'boxing','sparring':'sparring','wettkampfsparring':'sparring','techniktraining':'technique',
  'krafttraining':'strength','sprint-intervalle':'sprint','joggen':'jogging'};
 const LEVEL_RANKS=[['F','Rookie'],['E','Prospect'],['D','Contender'],['C','Challenger'],['B','Elite Fighter'],['A','Champion'],['S','Legend']];
 const WEEK_GOAL=2;
