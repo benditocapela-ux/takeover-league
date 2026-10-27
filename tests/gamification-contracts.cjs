@@ -44,5 +44,11 @@ const src=fs.readFileSync('takeover-gamification.js','utf8');
  assert.doesNotMatch(src,/\.(insert|update|upsert|delete)\(/,'Gamification layer must stay read-only');
  const duels=fs.readFileSync('duels.html','utf8');
  assert.match(duels,/Revanche fordern/);assert.match(duels,/appendRivalry\(card,duel\)/);
+ // Season close in the League Manager: German errors, button only after the last season day.
+ const manager=fs.readFileSync('league-manager.html','utf8');
+ assert.match(manager,/if\(s\.status==='active'&&s\.ends_on>=today\)button\.disabled=true/);
+ assert.match(manager,/Pending season trainings require coach review/);
+ assert.match(manager,/seasonError\(r\.error\.message\)/);
+ assert.match(manager,/if\(s\.status==='draft'&&running\)\{\n    button\.disabled=true;/);
  console.log('PASS: weekly quests, week streak, achievement progress, rival hint, level curve and read-only wiring');
 })().catch(e=>{console.error(e);process.exitCode=1});

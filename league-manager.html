@@ -129,27 +129,65 @@ async function listGlobals(){
  }
  if(!r.data?.length)root.textContent='Noch keine Liga-Challenges angelegt.';
 }
+// Season close: German states and errors, close only once the season has ended (server checks the same).
+const SEASON_STATUS={draft:'Entwurf',active:'Läuft',closed:'Abgeschlossen'};
+const chDate=d=>{const [y,m,day]=String(d).split('-');return day+'.'+m+'.'+y};
+function seasonError(message){
+ const text=String(message||'');
+ if(/Only elapsed active seasons may close/.test(text))return 'Die Saison kann erst nach ihrem letzten Tag abgeschlossen werden.';
+ if(/Pending season trainings require coach review/.test(text))return 'Es gibt noch offene Trainings aus dieser Saison. Bitte zuerst im Trainerbereich bestätigen oder ablehnen.';
+ if(/Overlapping season exists/.test(text))return 'Der Zeitraum überschneidet sich mit einer bestehenden Saison.';
+ if(/Only draft seasons may be activated/.test(text))return 'Nur Entwürfe können aktiviert werden.';
+ if(/Invalid season window/.test(text))return 'Ungültiger Zeitraum (Titel 3–100 Zeichen, Ende nach Start, höchstens 366 Tage).';
+ if(/Only active admin/.test(text))return 'Nur der aktive Admin darf Saisons verwalten.';
+ return text;
+}
 async function listSeasons(){
  const r=await db.from('league_seasons_v21').select('id,title,starts_on,ends_on,status').order('starts_on',{ascending:false}).limit(80);
  const root=$('seasonList');root.replaceChildren();
  if(r.error){root.textContent='Saisons konnten nicht geladen werden: '+r.error.message;return}
+ const today=localDate(0);
+ const running=(r.data||[]).find(x=>x.status==='active');
  for(const s of r.data||[]){
-  const card=row(s.title,s.starts_on+' bis '+s.ends_on+' · '+s.status);
+  const card=row(s.title,chDate(s.starts_on)+' bis '+chDate(s.ends_on)+' · '+(SEASON_STATUS[s.status]||s.status));
+  if(s.status==='active'){
+   const pending=await db.from('training_submissions').select('id',{count:'exact',head:true})
+    .eq('status','pending').gte('training_date',s.starts_on).lte('training_date',s.ends_on);
+   const open=pending.error?null:(pending.count||0);
+   const hint=document.createElement('p');hint.className='muted';
+   const ended=s.ends_on<today;
+   hint.textContent=(ended?'Bereit zum Abschluss.':'Abschluss ab '+chDate(localDateAfter(s.ends_on))+' möglich.')+
+    (open===null?'':open===0?' Keine offenen Trainings in dieser Saison.':' '+open+(open===1?' Training wartet':' Trainings warten')+' noch auf Bestätigung.');
+   card.append(hint);
+  }
+  if(s.status==='closed'){
+   const link=document.createElement('a');link.href='./league-history.html';link.textContent='Rangliste und Hall of Fame ansehen';card.append(link);
+  }
   if(s.status!=='closed'){
    const button=document.createElement('button');button.textContent=s.status==='draft'?'Aktivieren':'Saison abschliessen';
    button.type='button';button.className=s.status==='active'?'danger':'';
+   if(s.status==='active'&&s.ends_on>=today)button.disabled=true;
+   // A prepared next season waits until the running one is closed (no two active seasons).
+   if(s.status==='draft'&&running){
+    button.disabled=true;
+    const wait=document.createElement('p');wait.className='muted';
+    wait.textContent='Vorbereitet. Aktivieren ist möglich, sobald «'+running.title+'» abgeschlossen ist.';
+    card.append(wait);
+   }
    button.onclick=async()=>{
     if(!confirm('Saison '+s.title+' wirklich '+(s.status==='draft'?'aktivieren':'abschliessen und Rangliste endgültig speichern')+'?'))return;
     button.disabled=true;
     const r=await db.rpc('league_v21_admin_season_action',{p_season:s.id,p_action:s.status==='draft'?'activate':'close'});
-    if(r.error){say('Saisonänderung fehlgeschlagen: '+r.error.message);button.disabled=false;return}
-    say('Saisonstatus aktualisiert.');await listSeasons();
+    if(r.error){say('Saisonänderung fehlgeschlagen: '+seasonError(r.error.message));button.disabled=false;return}
+    say(s.status==='draft'?'Saison aktiviert.':'Saison abgeschlossen: '+(r.data?.ranked_boxers??0)+' Boxer in der Rangliste, Hall of Fame gespeichert.');await listSeasons();
    };card.append(button);
   }
   root.append(card);
  }
  if(!r.data?.length)root.textContent='Noch keine Saison angelegt.';
 }
+function localDateAfter(day){const [y,m,d]=String(day).split('-').map(Number);const x=new Date(y,m-1,d+1);
+ return x.getFullYear()+'-'+String(x.getMonth()+1).padStart(2,'0')+'-'+String(x.getDate()).padStart(2,'0')}
 async function submit(form,action){
  if(busy)return;
  busy=true;const btn=form.querySelector('button[type=submit]');btn.disabled=true;say('Speichere …');
@@ -159,7 +197,7 @@ async function submit(form,action){
 }
 $('seasonForm').addEventListener('submit',e=>{e.preventDefault();submit(e.currentTarget,async()=>{
  const r=await db.rpc('league_v21_admin_create_season',{p_title:val('seasonTitle'),p_start:val('seasonStart'),p_end:val('seasonEnd')});
- if(r.error)throw r.error;
+ if(r.error)throw Error(seasonError(r.error.message));
 })});
 $('goalForm').addEventListener('submit',e=>{e.preventDefault();submit(e.currentTarget,async()=>{
  const r=await db.rpc('league_v21_save_goal',{p_goal_id:null,p_boxer_id:val('boxerId'),p_title:val('goalTitle'),p_metric:val('goalMetric'),p_target:Number(val('goalTarget')),p_end_date:val('goalEnd')});
