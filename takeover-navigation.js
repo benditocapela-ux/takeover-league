@@ -138,15 +138,76 @@
       if(boxerLink) boxerLink.classList.add('tl-current');
     }
   }
+  // Konto-Umschalter (27.10.2026): mehrere eigene Konten in diesem Browser merken und per Tipp wechseln,
+  // ohne Ummelden. Es wird nur die Supabase-Sitzung getauscht – Rollen und Rechte bleiben serverseitig geprüft.
+  const TL_SESSION_KEY='sb-iqarjivcrddcixrvqbfb-auth-token',TL_ACCOUNTS_KEY='takeover_accounts_v1';
+  const TL_ROLE_LABEL={admin:'Admin',coach:'Coach',boxer:'Boxer'};
+  function tlReadAccounts(){try{const list=JSON.parse(localStorage.getItem(TL_ACCOUNTS_KEY)||'[]');return Array.isArray(list)?list.filter(a=>a&&a.id&&a.session):[]}catch{return []}}
+  function tlWriteAccounts(list){try{localStorage.setItem(TL_ACCOUNTS_KEY,JSON.stringify(list.slice(0,5)))}catch{}}
+  function tlSessionUser(raw){try{const s=JSON.parse(raw||'null');return s&&s.user&&s.user.id?s.user:null}catch{return null}}
+  function tlRememberCurrent(profile){
+    let raw=null;try{raw=localStorage.getItem(TL_SESSION_KEY)}catch{}
+    const user=tlSessionUser(raw);if(!user)return null;
+    const list=tlReadAccounts(),old=list.find(a=>a.id===user.id)||{};
+    const entry={id:user.id,email:user.email||old.email||'',name:(profile&&profile.display_name)||old.name||user.email||'Konto',
+      role:(profile&&profile.role)||old.role||'',session:raw,savedAt:Date.now()};
+    tlWriteAccounts([entry,...list.filter(a=>a.id!==user.id)]);
+    return user.id;
+  }
+  // Abmelden (Supabase löscht die Sitzung) entfernt das Konto auch aus dem Umschalter.
+  try{
+    if(!Storage.prototype.__tlAccountPatch){
+      const original=Storage.prototype.removeItem;
+      Storage.prototype.removeItem=function(key){
+        if(this===window.localStorage&&key===TL_SESSION_KEY&&!window.__tlAddingAccount){
+          try{const user=tlSessionUser(original===undefined?null:this.getItem(key));if(user)tlWriteAccounts(tlReadAccounts().filter(a=>a.id!==user.id))}catch{}
+        }
+        return original.call(this,key);
+      };
+      Storage.prototype.__tlAccountPatch=true;
+    }
+  }catch{}
+  function tlHomeFor(role){return role==='admin'?'./admin.html':role==='coach'?'./coach.html':role==='boxer'?'./boxer.html':'./index.html'}
+  function tlSwitchTo(id){
+    let raw=null;try{raw=localStorage.getItem(TL_SESSION_KEY)}catch{}
+    const current=tlSessionUser(raw),list=tlReadAccounts(),target=list.find(a=>a.id===id);if(!target)return;
+    if(current){const mine=list.find(a=>a.id===current.id);if(mine){mine.session=raw;mine.savedAt=Date.now()}}
+    tlWriteAccounts(list);
+    try{localStorage.setItem(TL_SESSION_KEY,target.session)}catch{return}
+    location.replace(tlHomeFor(target.role));
+  }
+  function tlRenderAccounts(currentId){
+    const list=tlReadAccounts();
+    let box=panel.querySelector('.tl-account-switch');
+    if(!list.length&&!currentId){if(box)box.remove();return}
+    if(!box){box=document.createElement('div');box.className='tl-account-switch';const intro=panel.querySelector('.tl-menu-intro');panel.insertBefore(box,intro?intro.nextSibling:panel.querySelector('.tl-menu-foot'))}
+    box.replaceChildren();
+    const title=document.createElement('div');title.className='tl-account-title';title.textContent='Konto';box.append(title);
+    const current=list.find(a=>a.id===currentId);
+    if(current){const now=document.createElement('p');now.className='tl-account-current';now.textContent='Angemeldet als '+current.name+(TL_ROLE_LABEL[current.role]?' ('+TL_ROLE_LABEL[current.role]+')':'');box.append(now)}
+    for(const acc of list.filter(a=>a.id!==currentId)){
+      const row=document.createElement('div');row.className='tl-account-row';
+      const go=document.createElement('button');go.type='button';go.className='tl-menu-link tl-account-switch-btn';
+      go.textContent='⇄ Wechseln zu '+acc.name+(TL_ROLE_LABEL[acc.role]?' ('+TL_ROLE_LABEL[acc.role]+')':'');
+      go.addEventListener('click',()=>tlSwitchTo(acc.id));
+      const forget=document.createElement('button');forget.type='button';forget.className='tl-account-forget';forget.textContent='Entfernen';
+      forget.setAttribute('aria-label','Konto '+acc.name+' aus dem Umschalter entfernen');
+      forget.addEventListener('click',()=>{tlWriteAccounts(tlReadAccounts().filter(a=>a.id!==acc.id));tlRenderAccounts(currentId)});
+      row.append(go,forget);box.append(row);
+    }
+    const add=document.createElement('a');add.className='tl-menu-link tl-account-add';add.href='./login.html?add=1';add.textContent='＋ Weiteres Konto hinzufügen';box.append(add);
+    const note=document.createElement('p');note.className='tl-account-note';note.textContent='Nur auf deinem eigenen Gerät verwenden. Abmelden entfernt das Konto aus dem Umschalter.';box.append(note);
+  }
   async function resolveRoleLinks(){
     if(adminEntry) adminEntry.hidden=true;
     privateEntries.forEach(a=>a.hidden=true);
     try{
       const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
       const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
-      const sess=await db.auth.getSession();if(!sess.data.session)return;
+      const sess=await db.auth.getSession();if(!sess.data.session){tlRenderAccounts(null);return}
       const {data:{user},error}=await db.auth.getUser();if(error||!user)return;
-      const p=await db.from('profiles').select('role,is_active').eq('auth_user_id',user.id).maybeSingle();
+      const p=await db.from('profiles').select('role,is_active,display_name').eq('auth_user_id',user.id).maybeSingle();
+      tlRenderAccounts(tlRememberCurrent(p.data||null));
       if(p.error||!p.data||p.data.is_active!==true) return;
       const role=p.data.role; // p.data?.role==='admin' pattern kept for static compatibility
       if(role==='admin'&&adminEntry) adminEntry.hidden=false;
