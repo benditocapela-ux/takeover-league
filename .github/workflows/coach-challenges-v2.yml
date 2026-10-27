@@ -22,12 +22,8 @@ on:
       - 'boxer.html'
       - 'takeover-gamification.js'
       - 'tests/gamification-*'
-      - 'tests/league-challenges-arena-*'
-      - 'tests/goals-coach-archive-*'
-      - 'tests/season-single-active-*'
-      - 'goals.html'
-      - 'arena.html'
-      - 'league-manager.html'
+      - 'tests/revoke-unused-legacy-*'
+      - 'tests/duel-notifications-*'
       - 'boxer-dashboard-polish.css'
       - 'tests/boxer-dashboard-polish.cjs'
       - 'supabase/production-prep/**'
@@ -40,6 +36,12 @@ on:
       - 'tests/admin-challenge-editing-schema.sql'
       - 'tests/coach-training-history-pagination-schema.sql'
       - 'tests/admin-challenge-editing-browser.cjs'
+      - 'tests/league-challenges-arena-*'
+      - 'arena.html'
+      - 'league-manager.html'
+      - 'tests/goals-coach-archive-*'
+      - 'goals.html'
+      - 'tests/season-single-active-*'
       - '.github/workflows/coach-challenges-v2.yml'
   push:
     branches: [main, feature/coach-challenges-v2-ui]
@@ -63,12 +65,8 @@ on:
       - 'boxer.html'
       - 'takeover-gamification.js'
       - 'tests/gamification-*'
-      - 'tests/league-challenges-arena-*'
-      - 'tests/goals-coach-archive-*'
-      - 'tests/season-single-active-*'
-      - 'goals.html'
-      - 'arena.html'
-      - 'league-manager.html'
+      - 'tests/revoke-unused-legacy-*'
+      - 'tests/duel-notifications-*'
       - 'boxer-dashboard-polish.css'
       - 'tests/boxer-dashboard-polish.cjs'
       - 'supabase/production-prep/**'
@@ -77,6 +75,12 @@ on:
       - 'tests/production-v2-*.cjs'
       - 'tests/hosted-v2-*.cjs'
       - 'tests/production-v2-*.sh'
+      - 'tests/league-challenges-arena-*'
+      - 'arena.html'
+      - 'league-manager.html'
+      - 'tests/goals-coach-archive-*'
+      - 'goals.html'
+      - 'tests/season-single-active-*'
       - '.github/workflows/coach-challenges-v2.yml'
 jobs:
   static-checks:
@@ -410,6 +414,105 @@ jobs:
           psql -X -h localhost -U postgres -d gamification_probe -v ON_ERROR_STOP=1 -f tests/gamification-fairness-notifications-rollback.sql | tee rollback.log
           grep -q "PASS: rollback restores previous definitions" rollback.log
 
+  revoke-unused-legacy-rpcs-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated legacy RPC fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres revoke_probe
+      - name: Verify legacy RPC revoke and rollback on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d revoke_probe -v ON_ERROR_STOP=1 -f tests/revoke-unused-legacy-rpcs-schema.sql
+  duel-notifications-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated duel notification fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres duel_notify_probe
+      - name: Verify duel notifications and rollback on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d duel_notify_probe -v ON_ERROR_STOP=1 -f tests/duel-notifications-schema.sql
+  duel-invite-withdrawal-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated duel withdrawal fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres duel_withdrawal_probe
+      - name: Verify invitation withdrawal authorization and history on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d duel_withdrawal_probe -v ON_ERROR_STOP=1 -f tests/duel-invite-withdrawal-schema.sql
   league-challenges-arena-admin-schema:
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -533,36 +636,3 @@ jobs:
           psql -X -h localhost -U postgres -d season_probe -v ON_ERROR_STOP=1 -f tests/season-single-active-next-draft-rollback.sql | tee rollback.log
           grep -q "PASS: rollback restores season_transition_core" rollback.log
 
-  duel-invite-withdrawal-schema:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    strategy:
-      fail-fast: false
-      matrix:
-        postgres: ['16','17']
-    permissions:
-      contents: read
-    services:
-      postgres:
-        image: postgres:${{ matrix.postgres }}
-        env:
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
-          POSTGRES_DB: postgres
-        ports:
-          - 5432:5432
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 5s
-          --health-timeout 5s
-          --health-retries 10
-    steps:
-      - uses: actions/checkout@v4
-      - name: Create isolated duel withdrawal fixture database
-        env:
-          PGPASSWORD: postgres
-        run: createdb -h localhost -U postgres duel_withdrawal_probe
-      - name: Verify invitation withdrawal authorization and history on PostgreSQL ${{ matrix.postgres }}
-        env:
-          PGPASSWORD: postgres
-        run: psql -X -h localhost -U postgres -d duel_withdrawal_probe -v ON_ERROR_STOP=1 -f tests/duel-invite-withdrawal-schema.sql
