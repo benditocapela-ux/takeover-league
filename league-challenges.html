@@ -126,7 +126,7 @@ async function init(){
    const btn=make('button','Challenge beitreten');btn.type='button';btn.onclick=async()=>{
     btn.disabled=true;btn.textContent='Anmeldung läuft …';
     const r=await db.rpc('league_v21_join_global_challenge',{p_challenge:c.id});
-    if(r.error){$('status').textContent='Teilnahme nicht möglich: '+r.error.message;btn.disabled=false;btn.textContent='Erneut versuchen';return}
+    if(r.error){$('status').textContent='Teilnahme nicht möglich: '+(/Global challenge is not open/.test(r.error.message)?'Diese Challenge ist gerade nicht offen (noch nicht gestartet oder bereits beendet).':/Active boxer required/.test(r.error.message)?'Nur aktive Boxer können teilnehmen.':r.error.message);btn.disabled=false;btn.textContent='Erneut versuchen';return}
     $('status').textContent='Erfolgreich angemeldet. Neu laden für deine Fortschritte.';
     btn.textContent='Angemeldet';
    };card.append(btn);
