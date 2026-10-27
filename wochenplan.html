@@ -1,0 +1,134 @@
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Wochenplan · Takeover League</title>
+<style>:root{color-scheme:dark;font:16px system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 110px;background:var(--bg);color:var(--text)}main{max-width:820px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:3px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="wochenplan">
+<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Wochenplan"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🗓️</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Training im Gym</div><div class="tl-screen-title">Wochenplan</div></div></div><div class="tl-screen-links"><a href="./wochenplan.html" class="tl-screen-primary">Wochenplan</a><a href="./praesenz.html">Präsenz</a><a href="./checkin.html">Check-in</a></div></div>
+<p class="tl-subnav"><a href="./boxer.html">← Mein Studio</a></p>
+<h1 id="pageTitle">Wochenplan</h1>
+<p id="status" class="tlp-status" role="status">Wird geladen …</p>
+<div id="app"></div>
+</main>
+<script src="./takeover-performance.js" defer></script>
+<script type="module">
+const P=window.TLPerf,$=id=>document.getElementById(id),app=$('app'),status=$('status');
+const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
+const DAYN=['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'];
+const TEMPLATES={
+ 'Wettkampf-Woche':[[0,'Reguläres Boxtraining',90],[1,'Pratzentraining',60],[1,'Joggen',30],[2,'Sprint-Intervalle',45],[3,'Wettkampfsparring',60],[4,'Mobilität / Regeneration',30],[5,'Techniktraining',60],[5,'Krafttraining',45]],
+ 'Fight Camp · Aufbau':[[0,'Reguläres Boxtraining',90],[0,'Krafttraining',45],[1,'Joggen',45],[2,'Pratzentraining',60],[2,'Sprint-Intervalle',30],[3,'Wettkampfsparring',60],[4,'Techniktraining',60],[5,'Trainingslager / Camp-Tag',180],[6,'Mobilität / Regeneration',30]],
+ 'Fight Camp · Taper':[[0,'Pratzentraining',45],[1,'Mobilität / Regeneration',30],[2,'Wettkampfsparring',30],[4,'Schattenboxen / Heimtraining',20],[5,'Joggen',25]],
+ 'Fortgeschrittene-Woche':[[0,'Reguläres Boxtraining',90],[1,'Joggen',40],[2,'Techniktraining',60],[3,'Sandsack / Rundenarbeit',45],[5,'Reguläres Boxtraining',90]],
+ 'Newcomer-Woche':[[0,'Reguläres Boxtraining',60],[2,'Schattenboxen / Heimtraining',20],[3,'Reguläres Boxtraining',60],[5,'Seilspringen / Konditionszirkel',30]],
+ 'Ferien / Heimtraining':[[0,'Schattenboxen / Heimtraining',30],[1,'Joggen',40],[3,'Seilspringen / Konditionszirkel',30],[4,'Krafttraining',40],[5,'Alternative Ausdauer',60]]
+};
+let db,role,types=[],groups=[],members=[],group=null,week=null,plan=null,dirty=false,busy=false,addDay=null,tab='plan';
+const iso=d=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich'}).format(d);
+function monday(s){const d=new Date(s+'T12:00:00Z');const k=(d.getUTCDay()+6)%7;d.setUTCDate(d.getUTCDate()-k);return d.toISOString().slice(0,10)}
+function addDays(s,n){const d=new Date(s+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)}
+function kw(s){const d=new Date(s+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+3-((d.getUTCDay()+6)%7));const y=new Date(Date.UTC(d.getUTCFullYear(),0,4));return 1+Math.round(((d-y)/864e5-3+((y.getUTCDay()+6)%7))/7)}
+const typeName=id=>(types.find(t=>String(t.id)===String(id))||{}).name||'Training';
+const typePts=id=>(types.find(t=>String(t.id)===String(id))||{}).points;
+const weekNav=()=>`<div class="tlp-row spread tlp-weeknav"><button type="button" class="tlp-btn ghost small" data-week="-7" aria-label="Vorherige Woche">‹</button><b>KW ${kw(week)} · ${P.fmtDate(week)} – ${P.fmtDate(addDays(week,6))}</b><button type="button" class="tlp-btn ghost small" data-week="7" aria-label="Nächste Woche">›</button></div>`;
+const LBL={done:['Erledigt','ok'],pending:['Wartet','gold'],missed:['Verpasst','bad'],today:['Heute','gold'],open:['Geplant','']};
+function boxerView(d){
+ if(!d.enabled)return '<div class="tlp-panel">Der Wochenplan ist noch nicht freigeschaltet.</div>';
+ const g=d.group,target=g?g.weekly_target:2,items=d.plan?d.plan.items:[];
+ let html=weekNav()+`<div class="tlp-panel"><div class="tlp-row spread"><div><div class="tlp-eyebrow">Deine Gruppe</div><b class="tlp-catname">${g?P.esc(g.name):'Noch keine Gruppe'}</b></div><div class="tlp-right"><div class="tlp-eyebrow">Diese Woche</div><b class="tlp-catname">${d.trainings} / ${target}</b></div></div><div class="tlp-bar mid big"><i style="width:${Math.min(100,d.trainings/target*100)}%"></i></div><span class="tlp-note">Bestätigte Trainings dieser Woche gegenüber dem Wochenziel deiner Gruppe.</span></div>`;
+ if(!g)return html+'<div class="tlp-panel">Dein Coach teilt dich bald einer Trainingsgruppe zu. Dann siehst du hier euren Wochenplan.</div>';
+ if(!d.plan)return html+'<div class="tlp-panel">Für diese Woche gibt es noch keinen Plan von deinem Coach.</div>';
+ html+=`<div class="tlp-panel tlp-sys"><div class="tlp-eyebrow gold">Fokus der Woche${d.plan.updated_by?' · '+P.esc(d.plan.updated_by):''}</div><p>${P.esc(d.plan.focus||'Kein besonderer Fokus.')}</p></div>`;
+ for(let i=0;i<7;i++){
+  const day=addDays(week,i),list=items.filter(x=>Number(x.day)===i);
+  html+=`<div class="tlp-panel tlp-dayrow${day===d.today?' today':''}"><div class="tlp-daylbl"><span>${DAYN[i].slice(0,2).toUpperCase()}</span><b>${day.slice(8,10)}</b></div><div class="tlp-grow">${list.length?list.map(x=>`<div class="tlp-row spread tlp-unitrow"><span><b>${P.esc(x.training_type)}</b><span class="tlp-note">${x.minutes} Min.</span></span><span class="tlp-pill ${LBL[x.status][1]}">${LBL[x.status][0]}</span></div>`).join(''):'<span class="tlp-note">Ruhetag · bewusst erholen</span>'}</div></div>`;
+ }
+ return html+'<p class="tlp-note">«Erledigt» zählt, sobald ein Training dieser Art an diesem Tag bestätigt ist. Eintragen kannst du wie immer in <a href="./boxer.html">Mein Studio</a>.</p>';
+}
+function staffPlanView(){
+ const items=plan.items,mins=items.reduce((t,x)=>t+Number(x.minutes),0);
+ let html=`<div class="tlp-chips" role="group" aria-label="Gruppe">${groups.map(g=>`<button type="button" class="tlp-chipbtn" aria-pressed="${g.key===group}" data-group="${g.key}">${P.esc(g.name)} · ${g.weekly_target}×</button>`).join('')}</div>${weekNav()}
+  <div class="tlp-panel tlp-row spread"><span class="tlp-note">${plan.published_at?'Veröffentlicht am '+P.fmtDate(plan.published_at):plan.saved?'Entwurf gespeichert':'Noch nicht gespeichert'}${dirty?' · ungespeicherte Änderungen':''}</span><span class="tlp-note">${items.length} Einheiten · ${mins} Min.</span></div>
+  <label class="tlp-field" for="plFocus">Technik-Fokus der Woche <span class="tlp-note">sehen alle Boxer der Gruppe oben im Wochenplan</span><input id="plFocus" maxlength="200" value="${P.esc(plan.focus||'')}" placeholder="z. B. Konter nach dem Jab"></label>
+  <div class="tlp-row"><select id="plTpl" aria-label="Vorlage">${Object.keys(TEMPLATES).map(k=>`<option>${P.esc(k)}</option>`).join('')}</select><button type="button" class="tlp-btn ghost small" data-act="tpl">Vorlage laden</button><button type="button" class="tlp-btn ghost small" data-act="prev">Vorwoche übernehmen</button></div>`;
+ for(let i=0;i<7;i++){
+  const list=items.map((x,j)=>[x,j]).filter(([x])=>Number(x.day)===i);
+  html+=`<div class="tlp-panel tlp-dayrow"><div class="tlp-daylbl"><span>${DAYN[i].slice(0,2).toUpperCase()}</span><b>${addDays(week,i).slice(8,10)}</b></div><div class="tlp-grow">
+   ${list.map(([x,j])=>`<div class="tlp-unit"><span><b>${P.esc(typeName(x.type_id))}</b><span class="tlp-note">${x.minutes} Min.${typePts(x.type_id)!=null?' · +'+typePts(x.type_id)+' P.':''}</span></span><button type="button" class="tlp-x" data-del="${j}" aria-label="${P.esc(typeName(x.type_id))} entfernen">×</button></div>`).join('')||'<span class="tlp-note">Ruhetag</span>'}
+   ${addDay===i?`<div class="tlp-unit add"><select id="paType" aria-label="Trainingsart">${types.map(t=>`<option value="${t.id}">${P.esc(t.name)}</option>`).join('')}</select><input id="paMin" type="number" min="5" max="600" value="60" aria-label="Minuten"><button type="button" class="tlp-btn small" data-add="${i}">Hinzufügen</button></div>`:`<button type="button" class="tlp-chipbtn dashed" data-open="${i}">+ Einheit</button>`}
+  </div></div>`;
+ }
+ return html+`<div class="tlp-row"><button type="button" class="tlp-btn ghost grow" data-act="draft" ${busy?'disabled':''}>Als Entwurf speichern</button><button type="button" class="tlp-btn grow" data-act="publish" ${busy?'disabled':''}>Veröffentlichen</button></div>
+  <p class="tlp-note">Erst nach «Veröffentlichen» sehen die Boxer den Plan. Speichern als Entwurf nimmt ihn wieder zurück.</p>`;
+}
+function staffGroupsView(){
+ const targets=role==='admin'?`<div class="tlp-panel"><b>Wochenziele</b><p class="tlp-note">Wie viele bestätigte Trainings pro Woche jede Gruppe erreichen soll. Nur der Admin ändert diese Werte.</p>${groups.map(g=>`<div class="tlp-li static"><span class="tlp-grow"><b>${P.esc(g.name)}</b><span class="tlp-note">${P.esc(g.description||'')} · ${g.members} Boxer</span></span><input class="tlp-num-in" type="number" min="1" max="14" value="${g.weekly_target}" data-target="${g.key}" aria-label="Wochenziel ${P.esc(g.name)}"></div>`).join('')}</div>`:'';
+ return targets+`<div class="tlp-panel"><b>Boxer zuteilen</b><p class="tlp-note">Jeder Boxer gehört zu einer Gruppe. Danach sieht er den Plan und das Wochenziel seiner Gruppe.</p>${members.map(m=>`<div class="tlp-li static"><span class="tlp-grow"><b>${P.esc(m.display_name)}</b><span class="tlp-note">${m.role==='coach'?'Trainer':'Boxer'}</span></span><select data-member="${m.id}" aria-label="Gruppe von ${P.esc(m.display_name)}"><option value="">ohne Gruppe</option>${groups.map(g=>`<option value="${g.key}" ${m.group===g.key?'selected':''}>${P.esc(g.name)}</option>`).join('')}</select></div>`).join('')}</div>`;
+}
+function renderStaff(){
+ app.innerHTML=`<div class="tlp-seg" role="tablist"><button type="button" role="tab" aria-pressed="${tab==='plan'}" data-tab="plan">Wochenplan</button><button type="button" role="tab" aria-pressed="${tab==='groups'}" data-tab="groups">Gruppen</button></div>`+(tab==='plan'?staffPlanView():staffGroupsView());
+}
+async function loadPlan(){
+ const r=await db.rpc('staff_get_training_plan',{p_group_key:group,p_week_start:week});
+ if(r.error){say(r.error.message,true);return}
+ const pl=r.data.plan;plan=pl?{focus:pl.focus,items:pl.items||[],published_at:pl.published_at,saved:true}:{focus:'',items:[],published_at:null,saved:false};dirty=false;renderStaff();
+}
+async function loadBoxer(){
+ const r=await db.rpc('get_my_week_plan',{p_week_start:week});
+ if(r.error){say(r.error.message,true);return}
+ say('');app.innerHTML=boxerView(r.data);
+}
+async function save(publish){
+ plan.focus=$('plFocus').value;busy=true;renderStaff();
+ const r=await db.rpc('staff_save_training_plan',{p_group_key:group,p_week_start:week,p_focus:plan.focus,p_items:plan.items.map(x=>({day:Number(x.day),type_id:Number(x.type_id),minutes:Number(x.minutes)})),p_publish:publish});
+ busy=false;if(r.error){say(r.error.message,true);renderStaff();return}
+ say(publish?'Plan veröffentlicht: '+(groups.find(g=>g.key===group)||{}).name+', KW '+kw(week):'Als Entwurf gespeichert.');await loadPlan();
+}
+app.addEventListener('click',async ev=>{
+ const b=ev.target.closest('button');if(!b)return;
+ if(b.dataset.week){if(dirty&&!confirmLeave(b))return;week=addDays(week,Number(b.dataset.week));say('');if(role==='admin'||role==='coach')await loadPlan();else await loadBoxer();return}
+ if(b.dataset.tab){tab=b.dataset.tab;if(tab==='groups')await loadMembers();renderStaff();return}
+ if(b.dataset.group){if(dirty&&!confirmLeave(b))return;group=b.dataset.group;addDay=null;await loadPlan();return}
+ if(b.dataset.open){plan.focus=$('plFocus').value;addDay=Number(b.dataset.open);renderStaff();return}
+ if(b.dataset.add){plan.focus=$('plFocus').value;const m=Number($('paMin').value);if(!(m>=5&&m<=600)){say('Dauer zwischen 5 und 600 Minuten',true);return}
+  plan.items.push({day:Number(b.dataset.add),type_id:Number($('paType').value),minutes:m});addDay=null;dirty=true;renderStaff();return}
+ if(b.dataset.del){plan.focus=$('plFocus').value;plan.items.splice(Number(b.dataset.del),1);dirty=true;renderStaff();return}
+ const a=b.dataset.act;
+ if(a==='tpl'){plan.focus=$('plFocus').value;const t=TEMPLATES[$('plTpl').value];const miss=[];
+  plan.items=t.map(([d,n,m])=>{const ty=types.find(x=>x.name===n);if(!ty){miss.push(n);return null}return {day:d,type_id:ty.id,minutes:m}}).filter(Boolean);dirty=true;
+  say(miss.length?'Vorlage geladen. Nicht aktive Trainingsarten weggelassen: '+miss.join(', '):'Vorlage geladen. Noch nicht gespeichert.');renderStaff();return}
+ if(a==='prev'){plan.focus=$('plFocus').value;const r=await db.rpc('staff_get_training_plan',{p_group_key:group,p_week_start:addDays(week,-7)});
+  if(r.error){say(r.error.message,true);return}if(!r.data.plan){say('In der Vorwoche gibt es keinen Plan.',true);return}
+  plan.items=(r.data.plan.items||[]).slice();if(!plan.focus)plan.focus=r.data.plan.focus||'';dirty=true;say('Vorwoche übernommen. Noch nicht gespeichert.');renderStaff();return}
+ if(a==='draft'&&!busy){await save(false);return}
+ if(a==='publish'&&!busy){await save(true);return}
+});
+let leaveArmed=null;
+function confirmLeave(b){if(leaveArmed===b.dataset.week+b.dataset.group){leaveArmed=null;return true}leaveArmed=b.dataset.week+b.dataset.group;say('Ungespeicherte Änderungen. Nochmal tippen, um sie zu verwerfen.',true);return false}
+app.addEventListener('input',ev=>{if(ev.target.id==='plFocus')dirty=true});
+app.addEventListener('change',async ev=>{
+ const t=ev.target;
+ if(t.dataset.member){const r=await db.rpc('staff_set_training_group',{p_profile_id:t.dataset.member,p_group_key:t.value||null});
+  if(r.error){say(r.error.message,true);return}say(r.data.profile+': '+(r.data.group?(groups.find(g=>g.key===r.data.group)||{}).name:'ohne Gruppe'));await loadGroups();return}
+ if(t.dataset.target){const r=await db.rpc('admin_set_group_target',{p_group_key:t.dataset.target,p_weekly_target:Number(t.value)});
+  if(r.error){say(r.error.message,true);return}say('Wochenziel '+r.data.name+': '+r.data.weekly_target+' Trainings');await loadGroups();renderStaff()}
+});
+async function loadGroups(){const g=await db.rpc('list_training_groups');if(!g.error)groups=g.data||[]}
+async function loadMembers(){const m=await db.rpc('staff_list_group_members');if(m.error){say(m.error.message,true);return}members=m.data||[]}
+(async()=>{
+ try{
+  db=await P.client();
+  const s=await db.auth.getSession();
+  if(!s.data||!s.data.session){say('');app.innerHTML='<div class="tlp-panel">Bitte <a href="./login.html">anmelden</a>.</div>';return}
+  week=monday(iso(new Date()));
+  const me=await db.rpc('get_my_performance');if(me.error){say(me.error.message,true);return}
+  role=me.data.profile.role;
+  if(role==='admin'||role==='coach'){
+   $('pageTitle').textContent='Trainingsplan';
+   const t=await db.from('training_types').select('id,name,points,is_active').eq('is_active',true);
+   if(t.error){say(t.error.message,true);return}
+   types=(t.data||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'de'));
+   await loadGroups();group=(groups.find(g=>g.key==='wettkampf')||groups[0]||{}).key;say('');await loadPlan();
+  }else await loadBoxer();
+ }catch(e){say('Wochenplan konnte nicht geladen werden: '+(e.message||e),true)}
+})();
+</script>
+<script src="./takeover-navigation.js" defer></script></body></html>

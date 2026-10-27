@@ -115,9 +115,15 @@ async function mountStudio(){
  const host=document.getElementById('studioPanelOverview');if(!host)return;
  const db=await client();
  const s=await db.auth.getSession();if(!s.data||!s.data.session)return;
- const {data,error}=await db.rpc('get_my_performance');
- if(error||!data||(!data.ratings_enabled&&!data.style_enabled))return;
+ const [perf,wk]=await Promise.all([db.rpc('get_my_performance'),db.rpc('get_my_week_plan')]);
+ const data=perf.data,error=perf.error,gym=!wk.error&&wk.data&&wk.data.enabled?wk.data:null;
+ if(error||!data||(!data.ratings_enabled&&!data.style_enabled&&!gym))return;
  const tiles=[];
+ if(gym){
+  const target=gym.group?gym.group.weekly_target:2;
+  tiles.push(`<a class="tlp-tile" href="./wochenplan.html"><span class="tlp-chip t-gold">${gym.trainings}/${target}</span><span><span class="tlp-eyebrow">Wochenplan${gym.group?' · '+esc(gym.group.name):''}</span><strong>${gym.plan&&gym.plan.focus?esc(gym.plan.focus):gym.plan?'Plan dieser Woche':'Noch kein Plan diese Woche'}</strong><span class="tlp-note">${gym.trainings>=target?'Wochenziel erreicht!':'noch '+(target-gym.trainings)+' Training'+(target-gym.trainings===1?'':'s')+' bis zum Wochenziel'}</span></span></a>`);
+  tiles.push(`<a class="tlp-tile" href="./praesenz.html"><span class="tlp-chip t-silber">✓</span><span><span class="tlp-eyebrow">Präsenz</span><strong>Anwesenheit und Serie</strong><span class="tlp-note">Gym-Check-in und die letzten 4 Wochen</span></span></a>`);
+ }
  if(data.ratings_enabled){
   const r=data.rating;
   if(r&&r.current){const o=r.current.summary.overall,d=r.previous?o-r.previous.summary.overall:null;
