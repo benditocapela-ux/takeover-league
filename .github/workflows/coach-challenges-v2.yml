@@ -23,6 +23,7 @@ on:
       - 'takeover-gamification.js'
       - 'tests/gamification-*'
       - 'tests/revoke-unused-legacy-*'
+      - 'tests/duel-notifications-*'
       - 'boxer-dashboard-polish.css'
       - 'tests/boxer-dashboard-polish.cjs'
       - 'supabase/production-prep/**'
@@ -59,6 +60,7 @@ on:
       - 'takeover-gamification.js'
       - 'tests/gamification-*'
       - 'tests/revoke-unused-legacy-*'
+      - 'tests/duel-notifications-*'
       - 'boxer-dashboard-polish.css'
       - 'tests/boxer-dashboard-polish.cjs'
       - 'supabase/production-prep/**'
@@ -433,6 +435,39 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -X -h localhost -U postgres -d revoke_probe -v ON_ERROR_STOP=1 -f tests/revoke-unused-legacy-rpcs-schema.sql
+  duel-notifications-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated duel notification fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres duel_notify_probe
+      - name: Verify duel notifications and rollback on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d duel_notify_probe -v ON_ERROR_STOP=1 -f tests/duel-notifications-schema.sql
   duel-invite-withdrawal-schema:
     runs-on: ubuntu-latest
     timeout-minutes: 10
