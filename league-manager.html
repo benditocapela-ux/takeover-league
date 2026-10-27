@@ -2,7 +2,7 @@
 <title>League Manager · Takeover League</title><style>:root{font:16px system-ui,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 100px;background:var(--bg);color:var(--text)}main{max-width:1020px;margin:auto}h1{color:var(--gold)}.muted{color:var(--text)}a{color:var(--gold)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:var(--sp-4)}.panel{background:var(--surface);border:1px solid var(--line);padding:var(--sp-5);border-radius:var(--r-lg);margin:var(--sp-3) 0;min-width:0}.panel h2{font-size:var(--fs-lg);margin-top:0}label{display:grid;gap:7px;margin-top:var(--sp-3);font-weight:600}input,select,textarea{width:100%;min-height:43px;color:var(--text);background:var(--surface-2);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:var(--sp-3);font:inherit}button{border:0;border-radius:var(--r-sm);background:var(--gold);color:var(--surface);padding:var(--sp-3) var(--sp-4);min-height:44px;font-weight:800;cursor:pointer}button:disabled{opacity:.55}.item{border:1px solid var(--line-strong);background:var(--surface-2);padding:var(--sp-3);border-radius:var(--r-md);margin:9px 0}.actions{display:flex;flex-wrap:wrap;gap:var(--sp-2)}.danger{background:var(--line);color:var(--text)}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:2px}</style>
 <link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="league-manager">
 <main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: League Manager"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🛡️</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Trainerwerkzeuge für die Saison</div><div class="tl-screen-title">League Manager</div></div></div><div class="tl-screen-links"><a href="./coach.html" class="tl-screen-primary">Trainerbereich</a><a href="./league-history.html">Saisonhistorie</a></div></div><p class="tl-subnav"><a href="./coach.html">← Trainerbereich</a></p><h1><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-medal"></use></svg> League Manager</h1>
-<p class="muted">Saisons, individuelle Boxerziele, Liga-Challenges und Achievement-Nachberechnung. Aktionen sind nur mit einem aktiven Admin-Account möglich.</p>
+<p class="muted">Saisons, individuelle Boxerziele, Liga-Challenges und Achievement-Nachberechnung. Aktionen sind nur mit einem aktiven Admin-Account möglich; Trainer verwalten hier die Boxerziele.</p>
 <p id="status" role="status">Prüfe Admin-Zugang …</p>
 <div id="dashboard" hidden class="grid">
 <section class="panel"><h2><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-season"></use></svg> Saisonverwaltung</h2><form id="seasonForm">
@@ -69,18 +69,17 @@ async function loadRewardGoals(){
  const select=$('rewardGoal');select.replaceChildren(new Option('Ziel auswählen',''));
  if(r.error){say('Ziele konnten nicht geladen werden: '+r.error.message);return}
  for(const goal of r.data||[]){
-  const option=new Option(goal.title+' · '+goal.metric+' · '+goal.reward_exp+' EXP',goal.id);
+  const option=new Option(goal.title+' · '+(GOAL_METRIC[goal.metric]||goal.metric)+' · '+goal.reward_exp+' EXP',goal.id);
   select.add(option);
  }
 }
 $('saveGoalReward').addEventListener('click',async()=>{
- select.dispatchEvent(new Event('change',{bubbles:true}));
  const id=val('rewardGoal'),exp=Number(val('goalRewardExp'));
  if(!id||!Number.isSafeInteger(exp)||exp<0||exp>250){say('Gültiges Ziel und 0–250 EXP auswählen.');return}
  if(!confirm('EXP-Belohnung '+exp+' für dieses automatisch geprüfte Boxerziel festlegen?'))return;
  const button=$('saveGoalReward');button.disabled=true;
  const r=await db.rpc('league_v21_admin_set_goal_reward',{p_goal:id,p_exp:exp});
- if(r.error){say('EXP-Regel nicht gespeichert: '+r.error.message)}
+ if(r.error){say('EXP-Regel nicht gespeichert: '+goalError(r.error.message))}
  else {say('Belohnungsregel gespeichert.');await loadRewardGoals()}
  button.disabled=false;
 });
@@ -245,7 +244,8 @@ $('seasonForm').addEventListener('submit',e=>{e.preventDefault();submit(e.curren
 })});
 $('goalForm').addEventListener('submit',e=>{e.preventDefault();submit(e.currentTarget,async()=>{
  const r=await db.rpc('league_v21_save_goal',{p_goal_id:null,p_boxer_id:val('boxerId'),p_title:val('goalTitle'),p_metric:val('goalMetric'),p_target:Number(val('goalTarget')),p_end_date:val('goalEnd')});
- if(r.error)throw r.error;
+ if(r.error)throw Error(goalError(r.error.message));
+ await listGoals();
 })});
 $('challengeForm').addEventListener('submit',e=>{e.preventDefault();submit(e.currentTarget,async()=>{
  const start=val('challengeStart'),end=val('challengeEnd');const publish=$('publishChallenge').checked;
@@ -274,17 +274,81 @@ $('refreshRecords').addEventListener('click',async()=>{
  $('recordsStatus').textContent=(d.processed||0)+' Boxerrekorde aktualisiert. '+(d.has_more?'Weitere verfügbar.':'Aktualisierung abgeschlossen.');
  btn.disabled=!d.has_more;
 });
+// Aktive und erreichte Boxerziele: Abschluss prüfen, manuellen Fortschritt bestätigen, archivieren (10 pro Seite).
+let boxerNames=new Map(),goalOffset=0,goalHost=null;
+const GOAL_STATUS={active:'Aktiv',completed:'Erreicht',archived:'Archiviert'};
+const GOAL_METRIC={training_sessions:'Trainings',jogging_km:'Joggingkilometer',technique_minutes:'Technikminuten',custom:'Manuell'};
+function goalError(message){
+ const text=String(message||'');
+ if(/Invalid goal fields/.test(text))return 'Ungültige Angaben: Titel 3–120 Zeichen, Ziel grösser als 0, Frist heute bis in 2 Jahren.';
+ if(/Active boxer target required/.test(text))return 'Bitte einen aktiven Boxer auswählen.';
+ if(/Invalid progress amount/.test(text))return 'Bitte eine Menge grösser als 0 eingeben.';
+ if(/Goal not active/.test(text))return 'Dieses Ziel ist nicht mehr aktiv.';
+ if(/Only active automatic goals may earn EXP/.test(text))return 'EXP gibt es nur für aktive, automatisch gemessene Ziele.';
+ if(/Reward already reconciled/.test(text))return 'Für dieses Ziel wurde bereits abgerechnet; die EXP-Regel ist gesperrt.';
+ return text;
+}
+async function listGoals(more=false){
+ if(!goalHost){goalHost=document.createElement('div');goalHost.className='goal-admin-list';
+  const h=document.createElement('h3');h.textContent='Aktive und erreichte Ziele';$('goalForm').after(h,goalHost)}
+ if(!more){goalOffset=0;goalHost.replaceChildren()}
+ const r=await db.from('league_boxer_goals_v21').select('id,boxer_id,title,metric,target_value,ends_on,status,reward_exp')
+  .in('status',['active','completed']).order('created_at',{ascending:false}).range(goalOffset,goalOffset+9);
+ goalHost.querySelector('.goal-more')?.remove();
+ if(r.error){goalHost.append(Object.assign(document.createElement('p'),{textContent:'Ziele konnten nicht geladen werden: '+r.error.message}));return}
+ const rows=r.data||[];
+ if(!rows.length&&!goalOffset){goalHost.append(Object.assign(document.createElement('p'),{className:'muted',textContent:'Noch keine aktiven Ziele.'}));return}
+ for(const g of rows){
+  const card=row(g.title,(boxerNames.get(g.boxer_id)||'Boxer')+' · '+GOAL_METRIC[g.metric]+' '+g.target_value+' · bis '+g.ends_on.split('-').reverse().join('.')+' · '+(GOAL_STATUS[g.status]||g.status)+(g.reward_exp>0?' · '+g.reward_exp+' EXP':''));
+  const actions=document.createElement('div');actions.className='actions';
+  if(g.status==='active'&&g.metric==='custom'){
+   const amount=Object.assign(document.createElement('input'),{type:'number',min:'0.01',step:'0.01',placeholder:'Menge'});amount.setAttribute('aria-label','Bestätigter Fortschritt für '+g.title);
+   const add=Object.assign(document.createElement('button'),{type:'button',textContent:'Fortschritt bestätigen'});
+   add.onclick=async()=>{const v=Number(amount.value);if(!(v>0)){say('Bitte eine Menge grösser als 0 eingeben.');return}
+    add.disabled=true;const x=await db.rpc('league_v21_record_goal_progress',{p_goal:g.id,p_delta:v,p_note:'Vom Trainer bestätigt'});
+    if(x.error){say('Fortschritt nicht gespeichert: '+goalError(x.error.message));add.disabled=false;return}
+    say('Fortschritt bestätigt.');add.disabled=false;amount.value=''};
+   actions.append(amount,add);
+  }
+  if(g.status==='active'){
+   const check=Object.assign(document.createElement('button'),{type:'button',textContent:'Abschluss prüfen'});
+   check.onclick=async()=>{check.disabled=true;const x=await db.rpc('league_v21_complete_goal',{p_goal:g.id});
+    if(x.error){say('Prüfung fehlgeschlagen: '+goalError(x.error.message));check.disabled=false;return}
+    say(x.data?.status==='completed'?'Ziel erreicht'+(Number(x.data?.exp_awarded||0)>0?' – '+x.data.exp_awarded+' EXP gutgeschrieben.':'.'):'Ziel noch nicht erfüllt ('+x.data?.progress+' / '+x.data?.target+').');
+    await listGoals()};
+   actions.append(check);
+  }
+  const arch=Object.assign(document.createElement('button'),{type:'button',textContent:'Archivieren',className:'secondary'});
+  arch.onclick=async()=>{if(!confirm('Ziel «'+g.title+'» archivieren? Bereits gebuchte EXP bleiben erhalten.'))return;
+   arch.disabled=true;const x=await db.rpc('league_v21_archive_goal',{p_goal:g.id});
+   if(x.error){say('Archivieren nicht möglich: '+goalError(x.error.message));arch.disabled=false;return}
+   say('Ziel archiviert.');await listGoals()};
+  actions.append(arch);card.append(actions);goalHost.append(card);
+ }
+ if(rows.length===10){const more=Object.assign(document.createElement('button'),{type:'button',textContent:'Weitere Ziele laden',className:'goal-more secondary'});
+  more.onclick=async()=>{goalOffset+=10;await listGoals(true)};goalHost.append(more)}
+}
 async function init(){
  const {data:{user},error}=await db.auth.getUser();
- if(error||!user){say('Bitte als Admin anmelden.');return}
+ if(error||!user){say('Bitte als Admin oder Trainer anmelden.');return}
  const p=await db.from('profiles').select('role,is_active').eq('auth_user_id',user.id).maybeSingle();
- if(p.error||!p.data?.is_active||p.data.role!=='admin'){say('Kein aktiver Admin-Zugang.');return}
+ // Admin: volle Verwaltung. Trainer: nur Boxerziele (Saisons, Challenges, EXP-Regeln bleiben Admin-only).
+ const coach=!p.error&&p.data?.is_active&&p.data.role==='coach';
+ if(!coach&&(p.error||!p.data?.is_active||p.data.role!=='admin')){say('Kein aktiver Admin- oder Trainerzugang.');return}
  const r=await db.from('profiles').select('id,display_name').eq('role','boxer').eq('is_active',true).order('display_name');
  if(r.error){say('Boxerliste nicht verfügbar: '+r.error.message);return}
+ boxerNames=new Map((r.data||[]).map(b=>[b.id,b.display_name]));
  const select=$('boxerId');select.replaceChildren(new Option('Boxer auswählen',''));
  for(const boxer of r.data||[])select.add(new Option(boxer.display_name,boxer.id));
  select.dispatchEvent(new Event('change',{bubbles:true}));
- $('dashboard').hidden=false;say('Admin-Verwaltung bereit.');await Promise.all([listSeasons(),listGlobals()]);
+ if(coach){
+  for(const panel of document.querySelectorAll('#dashboard > section.panel'))if(!panel.contains($('goalForm')))panel.hidden=true;
+  for(const el of [$('rewardGoal').closest('label'),$('goalRewardExp').closest('label'),$('saveGoalReward')])if(el)el.hidden=true;
+  const goalPanel=$('goalForm').closest('section');
+  for(const el of goalPanel.querySelectorAll('h3,p.muted'))el.hidden=true;
+ }
+ $('dashboard').hidden=false;say(coach?'Trainer-Verwaltung bereit: Boxerziele.':'Admin-Verwaltung bereit.');
+ await Promise.all(coach?[listGoals()]:[listSeasons(),listGlobals(),listGoals(),loadRewardGoals()]);
 }
 init().catch(e=>say('Verwaltung nicht verfügbar: '+e.message));
 </script><script src="./takeover-choice-cards.js" defer></script><script src="./takeover-navigation.js" defer></script></body></html>

@@ -31,6 +31,8 @@ function mockSupabase(){
    select(){return builder},
    eq(key,value){constraints.push([key,value]);return builder},
    is(key,value){constraints.push([key,value]);return builder},
+   in(key,values){constraints.push([key,{in:values}]);return builder},
+   range(){return builder},
    neq(){return builder},
    order(){return builder},
    limit(){return builder},
@@ -41,7 +43,7 @@ function mockSupabase(){
     if(table==='league_boxer_goals_v21')data=goals;
     if(table==='league_goal_progress_v21')data=progress;
     if(table==='training_submissions')data=[];
-    data=data.filter(row=>constraints.every(([key,value])=>row[key]===value));
+    data=data.filter(row=>constraints.every(([key,value])=>value&&value.in?value.in.includes(row[key]):row[key]===value));
     return Promise.resolve({data,error:null}).then(resolve,reject)
    }
   };
