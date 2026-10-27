@@ -57,7 +57,7 @@ const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable
 const $=id=>document.getElementById(id);
 const msg=(value,error=false)=>{const el=$('adminStatus');el.textContent=value;el.classList.toggle('error',error)};
 let admin=false;
-let archiveById=new Map();
+let archiveById=new Map(),allProfiles=[];
 const add=(tag,text,cls)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el};
 async function mustBeAdmin(){
  const {data:{user},error}=await db.auth.getUser();
@@ -92,6 +92,10 @@ function buildRow(p){
   const next=renameInput.value.replace(/\s+/g,' ').trim();
   if(next.length<2||next.length>40){msg('Der Name muss 2 bis 40 Zeichen lang sein.',true);renameInput.focus();return}
   if(next===p.display_name){msg('Der Name ist unverändert.');return}
+  const clash=allProfiles.find(x=>x.id!==p.id&&String(x.display_name||'').toLocaleLowerCase('de-CH')===next.toLocaleLowerCase('de-CH'));
+  if(clash){msg(archiveById.has(clash.id)
+   ?'Der Name «'+next+'» gehört einem archivierten Profil. Benenne zuerst das archivierte Profil um (Häkchen «Archivierte Profile anzeigen»), danach ist der Name frei.'
+   :'Der Name «'+next+'» wird bereits vom Profil «'+clash.display_name+'» verwendet. Bitte einen anderen Namen wählen.',true);renameInput.focus();return}
   save('admin_set_profile_display_name',{p_profile_id:p.id,p_display_name:next},
    'Name von «'+p.display_name+'» zu «'+next+'» ändern? Ranglisten, Profil und künftige Einträge zeigen den neuen Namen. Abgeschlossene Saisons und die Hall of Fame behalten den Namen von damals.',
    'Name gespeichert.');
@@ -165,7 +169,7 @@ async function load(silent=false){
  if(!admin)return;if(!silent)msg('Profile werden geladen …');
  const result=await db.rpc('admin_list_profiles');
  if(result.error){msg('Profile konnten nicht geladen werden: '+result.error.message,true);return;}
- const rows=Array.isArray(result.data)?result.data:[];
+ const rows=Array.isArray(result.data)?result.data:[];allProfiles=rows;
  const archiveResult=await db.rpc('admin_list_profile_archive_state');
  if(archiveResult.error){msg('Archivstatus konnte nicht geladen werden: '+archiveResult.error.message,true);return;}
  archiveById=new Map((archiveResult.data||[]).filter(x=>x.archived_at).map(x=>[x.profile_id,x.archived_at]));
