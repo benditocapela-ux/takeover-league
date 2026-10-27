@@ -24,16 +24,19 @@ async function checkFixture(enabled,shouldFail=false){
   assert.equal(hits[0].options.credentials,'omit');
   const badges=cards.map(c=>c.querySelector('.badge').textContent);
   if(shouldFail){
-   assert.ok(badges.every(x=>x==='STATUS NICHT VERFÜGBAR'));
+   // League 2.1 pages need no flag and stay reachable while the flag API is offline.
+   for(const index of [4,5,9,10])assert.equal(badges[index],'LIVE','2.1 page must stay live offline');
+   assert.ok(badges.filter((_,i)=>![4,5,9,10].includes(i)).every(x=>x==='STATUS NICHT VERFÜGBAR'));
    assert.match(dom.window.document.querySelector('#featureStatus').textContent,/nicht abrufbar/);
    return;
   }
-  assert.equal(badges.filter(x=>x==='LIVE').length,enabled.length);
+  assert.equal(badges.filter(x=>x==='LIVE').length,enabled.length+4);
   for(const [index,path] of [
    [0,'boxer.html#achievementsV2'],[1,'duels.html'],[2,'boxer.html#boxerFeedbackSection'],
-   [3,'challenges.html'],[6,'boxer.html#boxerNotificationSection'],[8,'boxer.html#performance30Section']
+   [3,'challenges.html'],[4,'league-history.html'],[5,'league-challenges.html'],[6,'boxer.html#boxerNotificationSection'],
+   [8,'boxer.html#performance30Section'],[9,'index.html#ranking'],[10,'league-history.html']
   ])assert.ok(cards[index].href.endsWith(path),'Live feature route mismatch '+path);
-  for(const index of [4,5,7,9,10])
+  for(const index of [7])
    assert.match(cards[index].href,/coming-soon.html\?feature=/,'Disabled feature should remain gated');
  }finally{dom.window.close()}
 }

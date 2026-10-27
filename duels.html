@@ -190,6 +190,38 @@ function renderLiveOverview(){
  }
 }
 
+// Rivalry: head-to-head record between the two boxers and a prepared revenge invitation.
+function appendRivalry(card,duel){
+ const pair=[duel.challenger_id,duel.opponent_id].sort().join('|');
+ const settled=duels.filter(d=>d.status==='settled'&&[d.challenger_id,d.opponent_id].sort().join('|')===pair);
+ const mine=profile.role==='boxer'&&(duel.challenger_id===profile.id||duel.opponent_id===profile.id);
+ const otherId=mine?(duel.challenger_id===profile.id?duel.opponent_id:duel.challenger_id):null;
+ const otherName=mine?(duel.challenger_id===profile.id?duel.opponent_name:duel.challenger_name)||'Gegner':null;
+ if(settled.length>1){
+  const wins=id=>settled.filter(d=>d.winner_id===id).length,draws=settled.filter(d=>!d.winner_id).length;
+  const text=mine
+   ?'Deine Bilanz gegen '+otherName+': '+wins(profile.id)+(wins(profile.id)===1?' Sieg':' Siege')+' · '+wins(otherId)+(wins(otherId)===1?' Niederlage':' Niederlagen')+(draws?' · '+draws+' Unentschieden':'')
+   :'Bilanz: '+(duel.challenger_name||'Boxer')+' '+wins(duel.challenger_id)+' · '+(duel.opponent_name||'Boxer')+' '+wins(duel.opponent_id)+(draws?' · '+draws+' Unentschieden':'');
+  const line=el('p',text);line.className='tl-duel-h2h';card.append(line);
+ }
+ // Only the newest settled duel of a pair offers the revenge button.
+ const newest=settled.slice().sort((a,b)=>String(b.settled_at||'').localeCompare(String(a.settled_at||'')))[0];
+ if(!mine||newest!==duel)return;
+ const lost=!!duel.winner_id&&duel.winner_id!==profile.id;
+ const button=el('button',lost?'Revanche fordern':'Erneut herausfordern');button.type='button';
+ button.className='tl-duel-revenge'+(lost?' tl-primary':'');
+ button.onclick=()=>{
+  const hint=byId('inviteHint');
+  if(!eligible.some(x=>x.id===otherId)){hint.textContent=otherName+' kann gerade nicht herausgefordert werden.';return}
+  form.elements.opponent.value=otherId;
+  form.elements.opponent.dispatchEvent(new Event('change'));
+  hint.textContent=(lost?'Revanche gegen ':'Neues Duell gegen ')+otherName+' vorbereitet. Wähle die Laufzeit und sende die Einladung.';
+  byId('invitePanel').scrollIntoView({behavior:'smooth',block:'start'});
+  form.elements.duration.focus({preventScroll:true});
+ };
+ card.append(button);
+}
+
 function render(){
  renderLiveOverview();
  list.replaceChildren();
@@ -216,6 +248,7 @@ function render(){
   if(duel.status==='settled'){
    const verdict=!duel.winner_id?'Unentschieden':duel.winner_id===duel.challenger_id?'Gewinner: '+duel.challenger_name:'Gewinner: '+duel.opponent_name;
    const verdictLine=el('p',verdict);verdictLine.className='tl-duel-verdict';card.append(verdictLine);
+   appendRivalry(card,duel);
   }
   if(duel.status==='pending'&&!expired&&profile.role==='boxer'&&duel.opponent_id===profile.id){
    const actions=document.createElement('div');actions.className='actions';

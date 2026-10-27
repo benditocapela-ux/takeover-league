@@ -1,29 +1,30 @@
 <!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0b1220"><title>Funktionen – Takeover League</title><style>*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:16px system-ui,-apple-system,Segoe UI,sans-serif}main{max-width:880px;margin:auto;padding:var(--sp-7) var(--sp-5) 90px}a{color:inherit;text-decoration:none}.back{display:inline-block;margin-bottom:var(--sp-8);color:var(--text)}.eyebrow{font-size:var(--fs-xs);letter-spacing:2px;color:var(--gold);font-weight:800}h1{font-size:clamp(28px,6vw,46px);margin:var(--sp-2) 0}p{color:var(--muted);line-height:1.55}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:var(--sp-3);margin-top:var(--sp-7)}.card{display:block;border:1px solid var(--surface);border-radius:var(--r-lg);background:var(--surface-2);padding:var(--sp-5);transition:border-color .15s,transform .15s}.card:hover,.card:focus-visible{border-color:var(--gold);transform:translateY(-2px)}.ico{font-size:var(--fs-xl)}.title{font-weight:750;margin:var(--sp-3) 0 var(--sp-2)}.badge{display:inline-block;font-size:var(--fs-xs);font-weight:750;letter-spacing:.6px;color:var(--gold);background:var(--surface);border-radius:50px;padding:5px 9px}.desc{font-size:var(--fs-sm);margin-top:var(--sp-3)}.badge.online{background:var(--ok);color:var(--ok)}.card[aria-disabled="true"]{opacity:.8}.footer{margin-top:var(--sp-8);font-size:var(--fs-sm)}</style><link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="features"><main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Alle Funktionen"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🧭</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Entdecke deine Liga</div><div class="tl-screen-title">Alle Funktionen</div></div></div><div class="tl-screen-links"><a href="./index.html" class="tl-screen-primary">Zur Liga</a><a href="./login.html">Mein Account</a></div></div><p class="tl-subnav"><a class="back" href="./index.html">← Zurück zur Liga</a></p><div class="eyebrow">TAKEOVER LEAGUE</div><h1>Die nächste Runde beginnt.</h1><p>Entdecke die Funktionen der Liga. Bereits freigeschaltete Bereiche kannst du direkt öffnen.</p><p id="featureStatus" role="status" aria-live="polite">Prüfe verfügbare Funktionen …</p><div class="grid" id="features"></div><p class="footer">Die bisherigen Liga-Funktionen bleiben weiterhin verfügbar.</p></main><script>
 'use strict';
 // The existing legacy feature names map to their tested V2 flags without
-// mutating flags or relying on authenticated sessions.
+// mutating flags or relying on authenticated sessions. Entries without a flag
+// (null) are League 2.1 pages that are always live and need no switch.
 const features=[
  ['achievements','🏅','Achievements','Sammle Auszeichnungen in mehreren Stufen.','achievements','./boxer.html#achievementsV2'],
  ['boxer_duels','🥊','Boxer-Duelle','Fordere andere Boxer heraus.','duels','./duels.html'],
  ['coach_feedback','📝','Coach-Feedback','Erhalte persönliches Feedback.','coach_feedback','./boxer.html#boxerFeedbackSection'],
  ['coach_goals','🎯','Coach-Ziele','Arbeite an deinen Trainingszielen.','coach_challenges','./challenges.html'],
- ['hall_of_fame','🏆','Hall of Fame','Entdecke die Besten der Liga.','hall_of_fame',null],
- ['league_challenges','⚡','Liga-Challenges','Stelle dich gemeinsamen Challenges.','league_challenges',null],
+ ['hall_of_fame','🏆','Hall of Fame','Entdecke die Besten der Liga.',null,'./league-history.html'],
+ ['league_challenges','⚡','Liga-Challenges','Stelle dich gemeinsamen Challenges.',null,'./league-challenges.html'],
  ['notifications','🔔','Benachrichtigungen','Bleibe über Fortschritte informiert.','notifications','./boxer.html#boxerNotificationSection'],
  ['palmares','🥇','Palmarès','Deine sportlichen Erfolge im Überblick.','palmares',null],
  ['performance_dashboard','📈','Performance-Dashboard','Analysiere deine Trainingsleistung.','performance_dashboard','./boxer.html#performance30Section'],
- ['public_boxer_profiles','👤','Boxerprofile','Entdecke die Profile der Liga.','public_boxer_profiles','./index.html#ranking'],
- ['seasons','📅','Saisons','Neue Wettkämpfe in jeder Saison.','seasons',null]
+ ['public_boxer_profiles','👤','Boxerprofile','Entdecke die Profile der Liga.',null,'./index.html#ranking'],
+ ['seasons','📅','Saisons','Neue Wettkämpfe in jeder Saison.',null,'./league-history.html']
 ];
 const API='https://iqarjivcrddcixrvqbfb.supabase.co';
 const KEY='sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R';
 const root=document.getElementById('features'),status=document.getElementById('featureStatus'),tiles=[];
 for(const [key,icon,title,desc,flag,href] of features){
  const a=document.createElement('a');a.className='card';
- a.href='./coming-soon.html?feature='+encodeURIComponent(key);
+ a.href=flag===null?href:'./coming-soon.html?feature='+encodeURIComponent(key);
  const ico=document.createElement('div');ico.className='ico';ico.textContent=icon;
  const h=document.createElement('div');h.className='title';h.textContent=title;
- const b=document.createElement('span');b.className='badge';b.textContent='PRÜFE STATUS';
+ const b=document.createElement('span');b.className='badge'+(flag===null?' online':'');b.textContent=flag===null?'LIVE':'PRÜFE STATUS';
  const p=document.createElement('p');p.className='desc';p.textContent=desc;
  a.append(ico,h,b,p);root.append(a);tiles.push({a,b,key,flag,href});
 }
@@ -38,7 +39,7 @@ async function refreshFeatureDirectory(){
   const enabled=new Set(data.filter(x=>x.is_enabled===true).map(x=>x.feature_key));
   let count=0;
   for(const {a,b,key,flag,href} of tiles){
-   const live=!!href&&enabled.has(flag);
+   const live=!!href&&(flag===null||enabled.has(flag));
    a.href=live?href:'./coming-soon.html?feature='+encodeURIComponent(key);
    a.removeAttribute('aria-disabled');
    b.textContent=live?'LIVE':'BALD';
@@ -47,7 +48,8 @@ async function refreshFeatureDirectory(){
   }
   status.textContent=count+' Funktionen sind freigeschaltet. Weitere folgen schrittweise.';
  }catch(err){
-  for(const {a,b,key} of tiles){
+  for(const {a,b,key,flag} of tiles){
+   if(flag===null)continue;
    a.href='./coming-soon.html?feature='+encodeURIComponent(key);
    b.textContent='STATUS NICHT VERFÜGBAR';
    b.classList.remove('online');
