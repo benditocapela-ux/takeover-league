@@ -283,7 +283,7 @@ function avatar(name,size){
 const LEVEL_RANKS=[{letter:'F',name:'Rookie'},{letter:'E',name:'Prospect'},{letter:'D',name:'Contender'},{letter:'C',name:'Challenger'},{letter:'B',name:'Elite Fighter'},{letter:'A',name:'Champion'},{letter:'S',name:'Legend'}];
 function levelFor(total){
   const xp=Math.max(0,num(total));
-  const n=Math.floor((Math.sqrt(49+0.32*xp)-7)/2);
+  const n=Math.min(98,Math.floor((Math.sqrt(49+0.32*xp)-7)/2)); // Maximum Level 99
   const level=n+1;
   const start=100*n+25*n*(n-1)/2;
   const cost=100+25*n;

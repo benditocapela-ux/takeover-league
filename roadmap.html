@@ -1,0 +1,49 @@
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Level-Roadmap · Takeover League</title>
+<style>:root{color-scheme:dark;font:16px system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 110px;background:var(--bg);color:var(--text)}main{max-width:820px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="roadmap">
+<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Level-Roadmap"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">◆</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Kampfgeist</div><div class="tl-screen-title">Level-Roadmap</div></div></div><div class="tl-screen-links"><a href="./roadmap.html" class="tl-screen-primary">Roadmap</a><a href="./shop.html">Shop</a><a href="./quests.html">Quests</a></div></div>
+<p class="tl-subnav"><a href="./boxer.html">← Mein Studio</a></p>
+<h1>Level-Roadmap</h1>
+<p id="status" class="tlp-status" role="status">Wird geladen …</p>
+<div id="app"></div>
+</main>
+<script src="./takeover-performance.js" defer></script>
+<script src="./takeover-kampfgeist.js" defer></script>
+<script type="module">
+const P=window.TLPerf,K=window.TLKG,app=document.getElementById('app'),status=document.getElementById('status');
+const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
+function render(d){
+ if(!d.enabled){app.innerHTML='<div class="tlp-panel">Die Level-Roadmap kommt zusammen mit dem Kampfgeist-Shop. Noch ein bisschen Geduld!</div>';return}
+ const lv=d.level,xp=Number(lv.exp)||0,max=lv.level>=K.MAX_LEVEL;
+ const from=K.expForLevel(lv.level),to=K.expForLevel(lv.level+1),pct=max?100:Math.min(100,(xp-from)/(to-from)*100);
+ const items=d.items||[];
+ const steps=K.RANKS.map((rk,i)=>{
+  const first=K.rankFirstLevel(i),last=K.rankLastLevel(i),now=lv.rank_idx===i,done=lv.rank_idx>i;
+  const rewards=items.filter(x=>x.unlock==='rank'&&x.min_rank===rk.r),shop=items.filter(x=>x.unlock==='shop'&&x.min_rank===rk.r).length;
+  const squares=Array.from({length:last-first+1},(_,j)=>`<i class="${lv.level>=first+j?'on':''}" title="Level ${first+j}"></i>`).join('');
+  return `<div class="kg-step${now?' now':done?' done':''}" style="--rk:${rk.c}">${K.rankBadge(rk.r,44)}<div>
+   <h3>Rang ${rk.r} · ${K.esc(rk.n)}${now?' <span class="tlp-pill gold">Du bist hier</span>':done?' <span class="tlp-pill ok">geschafft</span>':''}</h3>
+   <span class="tlp-note">Level ${first}–${last} · ab ${K.fmt(K.expForLevel(first))} EXP${i<6?` · bis ${K.fmt(K.expForLevel(last+1)-1)} EXP`:` · Level 99 ab ${K.fmt(K.expForLevel(99))} EXP`}</span>
+   <div class="kg-levels" aria-hidden="true">${squares}</div>
+   <span class="tlp-note">${rewards.length?'Belohnung: '+rewards.map(x=>K.esc(x.name)).join(' + ')+' · ':''}${shop} Shop-Items ab diesem Rang</span></div></div>`;
+ }).join('');
+ app.innerHTML=`${d.preview?'<div class="tlp-panel tlp-callout">Vorschau: Für die Boxer erscheint die Roadmap, sobald der Shop freigeschaltet ist.</div>':''}
+  <div class="tlp-panel" style="--rk:${K.RANKS[lv.rank_idx].c}"><div class="tlp-row spread"><div><div class="tlp-eyebrow">Dein Stand</div><b class="kg-name">Level ${lv.level} <span class="tlp-note">von ${K.MAX_LEVEL}</span></b></div>${K.rankBadge(lv.rank,48)}</div>
+   <div class="tlp-bar big"><i style="width:${pct}%"></i></div>
+   <span class="tlp-note">${K.fmt(xp)} EXP · ${max?'Maximales Level erreicht!':`noch ${K.fmt(Math.ceil(to-xp))} EXP bis Level ${lv.level+1}`}</span></div>
+  <div class="tlp-panel"><b>So funktioniert es</b><p class="tlp-note">Es gibt <b>99 Levels</b> und <b>7 Ränge</b>. Jeder Rang von F bis A hat 10 Levels, Rang S geht von Level 61 bis 99. Jedes Level braucht etwas mehr EXP als das letzte (+25 EXP pro Level).</p>
+   <p class="tlp-note">EXP bekommst du für bestätigte Trainings, Achievements, Challenges und Quests. Mit jedem neuen Rang gibt es einen Titel und einen Rahmen geschenkt, und im Shop werden neue Items freigeschaltet.</p></div>
+  <div class="kg-road">${steps}</div>`;
+}
+(async()=>{
+ try{
+  const db=await P.client();
+  const s=await db.auth.getSession();
+  if(!s.data||!s.data.session){say('');app.innerHTML='<div class="tlp-panel">Bitte <a href="./login.html">anmelden</a>.</div>';return}
+  const r=await db.rpc('get_my_kampfgeist',{p_full:true});if(r.error)throw r.error;
+  say('');render(r.data);
+ }catch(e){say('Roadmap konnte nicht geladen werden: '+(e.message||e),true)}
+})();
+</script>
+<script src="./takeover-navigation.js" defer></script></body></html>

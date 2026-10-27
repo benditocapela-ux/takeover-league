@@ -1,0 +1,148 @@
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kampfgeist-Shop · Takeover League</title>
+<style>:root{color-scheme:dark;font:16px system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 110px;background:var(--bg);color:var(--text)}main{max-width:900px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:3px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="shop">
+<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Kampfgeist-Shop"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">◆</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Kampfgeist</div><div class="tl-screen-title">Shop</div></div></div><div class="tl-screen-links"><a href="./shop.html" class="tl-screen-primary">Shop</a><a href="./roadmap.html">Level-Roadmap</a><a href="./quests.html">Quests</a></div></div>
+<p class="tl-subnav"><a href="./boxer.html">← Mein Studio</a></p>
+<h1 id="pageTitle">Kampfgeist-Shop</h1>
+<p id="status" class="tlp-status" role="status">Wird geladen …</p>
+<div id="app"></div>
+<div id="layer"></div>
+</main>
+<script src="./takeover-performance.js" defer></script>
+<script src="./takeover-kampfgeist.js" defer></script>
+<script type="module">
+const P=window.TLPerf,K=window.TLKG,$=id=>document.getElementById(id),app=$('app'),status=$('status'),layer=$('layer');
+const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
+const REASON={start:'Startguthaben',training:'Bestätigtes Training',training_fix:'Korrektur Training',quest:'Quest',purchase:'Kauf',admin:'Vom Admin'};
+const SLOT_HELP={avatar:'Deine Kämpferfigur',aura:'Leuchtet um deinen Avatar',banner:'Hintergrund deiner Karte',rahmen:'Rand um deinen Avatar',titel:'Steht über deinem Namen',handschuhe:'Siehst du an deinem Avatar'};
+let db,role='boxer',myName='',data=null,tab='shop',cat='alle',admin=null,atab='konten',acat='avatar',busy=false;
+const byKey=k=>data.items.find(i=>i.key===k);
+const coins=n=>`<span class="kg-price">${K.COIN}${K.fmt(n)}</span>`;
+function itemTile(it,mode){
+ const eq=data.look[it.category]&&data.look[it.category].key===it.key;
+ const tag=it.owned?(eq?'<span class="kg-tag" style="color:var(--gold)">Ausgerüstet</span>':'<span class="kg-tag" style="color:var(--ok)">Gehört dir</span>')
+  :it.unlock==='rank'?`<span class="kg-tag">${K.LOCK} Belohnung Rang ${it.min_rank}</span>`
+  :!it.rank_ok?`<span class="kg-tag">${K.LOCK} ab Rang ${it.min_rank}</span>`:coins(it.price);
+ return `<button type="button" class="kg-item${it.owned?' owned':''}${eq?' equipped':''}${!it.owned&&!it.rank_ok?' locked':''}" style="--rc:${K.RAR[it.rarity][1]}" data-item="${K.esc(it.key)}" aria-label="${K.esc(it.name)}">
+  <span class="kg-pv">${K.preview(it,data.look)}</span><b>${K.esc(it.name)}</b><span class="kg-rar">${K.RAR[it.rarity][0]}</span>${tag}</button>`;
+}
+function head(){
+ const w=data.wallet,lv=data.level,rk=K.RANKS[lv.rank_idx],nxt=K.RANKS[lv.rank_idx+1];
+ const toNext=nxt?Math.max(0,K.expForLevel(K.rankFirstLevel(lv.rank_idx+1))-lv.exp):0;
+ return `${data.preview?'<div class="tlp-panel tlp-callout">Vorschau: Der Shop ist für die Boxer noch nicht freigeschaltet. Coins werden erst nach dem Einschalten gutgeschrieben, Kaufen ist erst dann möglich.</div>':''}
+  ${K.card(data.look,{name:myName,size:104})}
+  <div class="tlp-panel kg-wallet"><div><div class="tlp-eyebrow">Deine Coins</div><span class="kg-bal">${K.COIN}${K.fmt(w.balance)}</span></div>
+   <div class="tlp-note">${K.rankBadge(rk.r,22)} Rang ${rk.r} · Level ${lv.level}<br>${nxt?`noch ${K.fmt(Math.ceil(toNext))} EXP bis Rang ${nxt.r}`:'Höchster Rang erreicht'} · <a href="./roadmap.html">Roadmap</a></div></div>`;
+}
+function shopView(){
+ const chips=`<div class="kg-chips" role="group" aria-label="Kategorie">${[['alle','Alle']].concat(K.CATS.map(c=>[c[0],c[1]])).map(([k,l])=>`<button type="button" data-cat="${k}" aria-pressed="${cat===k}">${l}</button>`).join('')}</div>`;
+ const list=data.items.filter(i=>i.unlock==='shop'&&i.is_active&&(cat==='alle'||i.category===cat));
+ const sections=K.RANKS.map((rk,i)=>{
+  const its=list.filter(x=>x.min_rank===rk.r).sort((a,b)=>a.price-b.price);if(!its.length)return '';
+  const reached=data.level.rank_idx>=i;
+  return `<div class="kg-rankhead">${K.rankBadge(rk.r,34)}<div><b>Rang ${rk.r} · ${K.esc(rk.n)}</b><span class="tlp-note">${reached?'freigeschaltet':`ab Level ${K.rankFirstLevel(i)} · noch ${K.fmt(Math.ceil(K.expForLevel(K.rankFirstLevel(i))-data.level.exp))} EXP`} · ${its.length} Items</span></div></div>
+   <div class="kg-grid">${its.map(x=>itemTile(x)).join('')}</div>`;
+ }).join('');
+ return chips+(sections||'<p class="tlp-note">In dieser Kategorie gibt es gerade nichts.</p>');
+}
+function invView(){
+ return K.CATS.map(([k,,one])=>{
+  const its=data.items.filter(i=>i.category===k&&(i.owned||i.unlock==='rank'));
+  return `<div class="kg-slot"><div class="kg-rankhead"><div><b>${one}</b><span class="tlp-note">${SLOT_HELP[k]} · ausgerüstet: ${K.esc(data.look[k]?data.look[k].name:'–')}</span></div></div><div class="kg-grid">${its.map(x=>itemTile(x)).join('')}</div></div>`;
+ }).join('');
+}
+function coinView(){
+ const s=data.settings,w=data.wallet;
+ return `<div class="tlp-panel"><b>So verdienst du Coins</b><div class="tlp-list">
+  <div class="tlp-li static"><span class="tlp-grow">Startguthaben (einmalig)</span>${coins(s.start_coins)}</div>
+  <div class="tlp-li static"><span class="tlp-grow">Jedes Training, das dein Coach bestätigt (auch alle bisherigen)</span>${coins(s.coins_per_training)}</div>
+  <div class="tlp-li static"><span class="tlp-grow">Wochen- und Tagesquests abholen</span><a href="./quests.html">Quests ›</a></div></div>
+  <p class="tlp-note">Coins gibt es nur fürs Trainieren. Man kann sie nicht kaufen, und im Shop gibt es keine Zufallsboxen: Du siehst immer genau, was du bekommst.</p></div>
+  <div class="tlp-kpis"><div class="tlp-kpi"><b>${K.fmt(w.earned)}</b><span>Coins verdient</span></div><div class="tlp-kpi"><b>${K.fmt(w.spent)}</b><span>Coins ausgegeben</span></div></div>
+  <div class="tlp-panel"><b>Verlauf</b><div class="tlp-list">${data.history.map(h=>`<div class="tlp-li static"><span class="tlp-grow"><b>${REASON[h.reason]||K.esc(h.reason)}</b><span class="tlp-note">${K.esc(h.note||'')} · ${P.fmtDate(h.created_at)}</span></span><b style="color:${h.amount>0?'var(--ok)':'var(--bad)'}">${h.amount>0?'+':''}${K.fmt(h.amount)}</b></div>`).join('')||'<p class="tlp-note">Noch keine Buchungen.</p>'}</div></div>`;
+}
+function adminView(){
+ if(!admin)return '<p class="tlp-note">Wird geladen …</p>';
+ const sub=`<div class="kg-chips">${[['konten','Konten'],['regeln','Coin-Regeln'],['items','Items']].map(([k,l])=>`<button type="button" data-atab="${k}" aria-pressed="${atab===k}">${l}</button>`).join('')}</div>`;
+ if(atab==='regeln')return sub+`<form class="tlp-panel tlp-form" id="rulesForm"><div class="tlp-grid3"><label class="tlp-field">Startguthaben<input type="number" name="start" min="0" max="5000" value="${admin.settings.start_coins}" required></label><label class="tlp-field">Coins pro bestätigtem Training<input type="number" name="per" min="0" max="500" value="${admin.settings.coins_per_training}" required></label></div><p class="tlp-note">Gilt für neue Gutschriften. Schon gutgeschriebene Coins bleiben, wie sie sind.</p><button type="submit" class="tlp-btn small">Speichern</button></form>`;
+ if(atab==='items'){
+  const chips=`<div class="kg-chips">${K.CATS.map(c=>`<button type="button" data-acat="${c[0]}" aria-pressed="${acat===c[0]}">${c[1]}</button>`).join('')}</div>`;
+  return sub+chips+`<div class="tlp-panel"><p class="tlp-note">Preis, Mindestrang und Sichtbarkeit pro Item. Gekaufte Items bleiben bei den Boxern, auch wenn du ein Item ausblendest.</p><div class="tlp-list">${admin.items.filter(i=>i.category===acat).map(i=>`<form class="tlp-li static kg-aitem" data-key="${K.esc(i.key)}" style="flex-wrap:wrap"><span style="width:56px;height:56px;display:grid;place-items:center;position:relative;overflow:hidden;border-radius:8px;flex:none">${K.preview(i,{})}</span><span class="tlp-grow" style="min-width:140px"><b>${K.esc(i.name)}</b><span class="tlp-note">${K.RAR[i.rarity][0]} · ${i.unlock==='start'?'Startitem':i.unlock==='rank'?'Rang-Belohnung':'Shop'} · ${i.owners} gekauft</span></span>
+   <select name="rank" aria-label="Mindestrang ${K.esc(i.name)}" ${i.unlock==='start'?'disabled':''}>${K.RANKS.map(r=>`<option ${r.r===i.min_rank?'selected':''}>${r.r}</option>`).join('')}</select>
+   ${i.unlock==='shop'?`<input class="tlp-num-in" type="number" name="price" min="10" max="20000" step="10" value="${i.price}" aria-label="Preis ${K.esc(i.name)}">`:''}
+   <label class="tlp-check"><input type="checkbox" name="active" ${i.is_active?'checked':''} ${i.unlock==='start'?'disabled':''}> sichtbar</label><button type="submit" class="tlp-btn small ghost">Speichern</button></form>`).join('')}</div></div>`;
+ }
+ return sub+`<div class="tlp-panel">${admin.enabled?'':'<p class="tlp-note"><b>Vorschau:</b> Der Shop ist noch aus. «Start» zeigt, wie viele Coins jemand beim Einschalten bekommt (Startguthaben + bisherige Trainings + abgeholte Quests).</p>'}
+  <div class="tlp-list">${admin.wallets.map(w=>`<div class="tlp-li static" style="flex-wrap:wrap"><span class="tlp-grow" style="min-width:150px"><b>${K.esc(w.display_name)}</b><span class="tlp-note">${w.role} · Level ${w.level} · ${w.items} Items · verdient ${K.fmt(w.earned)} · ausgegeben ${K.fmt(w.spent)}</span></span>${admin.enabled?coins(w.balance):`<span class="tlp-note">Start ${coins(w.preview_coins)}</span>`}
+   ${admin.enabled&&w.role!=='admin'?`<form class="kg-adjust tlp-row" data-id="${w.id}" style="gap:6px;width:100%"><input class="tlp-num-in" type="number" name="amount" min="-5000" max="5000" placeholder="±" aria-label="Coins für ${K.esc(w.display_name)}" required><input name="note" maxlength="200" placeholder="Grund, z. B. Turnier-Helfer" aria-label="Grund" style="flex:1;min-width:120px;min-height:44px;background:var(--surface-2);color:var(--text);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:0 10px;font:inherit" required><button type="submit" class="tlp-btn small ghost">Buchen</button></form>`:''}</div>`).join('')}</div></div>`;
+}
+function render(){
+ if(!data||!data.enabled){app.innerHTML='<div class="tlp-panel">Der Kampfgeist-Shop ist noch nicht freigeschaltet.</div>';return}
+ const tabs=[['shop','Shop'],['inv','Inventar'],['coins','Coins']].concat(role==='admin'?[['admin','Verwaltung']]:[]);
+ app.innerHTML=head()+`<div class="tlp-seg" role="tablist">${tabs.map(([k,l])=>`<button type="button" role="tab" aria-pressed="${tab===k}" data-tab="${k}">${l}</button>`).join('')}</div>`+
+  (tab==='inv'?invView():tab==='coins'?coinView():tab==='admin'?adminView():shopView());
+}
+function sheet(it){
+ const eq=data.look[it.category]&&data.look[it.category].key===it.key,bal=data.wallet.balance;
+ let action='';
+ if(it.owned)action=eq?'<p class="tlp-note">Ist gerade ausgerüstet.</p>':(data.can_buy?`<button type="button" class="tlp-btn big" data-equip="${K.esc(it.key)}" style="width:100%">Ausrüsten</button>`:'<p class="tlp-note">Ausrüsten geht nach dem Freischalten.</p>');
+ else if(it.unlock==='rank')action=`<p class="tlp-note">Bekommst du automatisch, sobald du Rang ${it.min_rank} erreichst.</p>`;
+ else if(!it.rank_ok)action=`<p class="tlp-note">${K.LOCK} Erst ab Rang ${it.min_rank} (Level ${K.rankFirstLevel(K.RANKS.findIndex(r=>r.r===it.min_rank))}).</p>`;
+ else if(!data.can_buy)action='<p class="tlp-note">Kaufen geht nach dem Freischalten.</p>';
+ else if(bal<it.price)action=`<p class="tlp-note">Dir fehlen noch ${coins(it.price-bal)}. Trainiere weiter, dann klappt es!</p>`;
+ else action=`<button type="button" class="tlp-btn big" data-buy="${K.esc(it.key)}" style="width:100%">Kaufen für ${K.fmt(it.price)} Coins</button><span class="tlp-note">Danach hast du noch ${K.fmt(bal-it.price)} Coins.</span>`;
+ layer.innerHTML=`<div class="kg-sheet" data-close="1"><div role="dialog" aria-modal="true" aria-label="${K.esc(it.name)}">
+  <span class="kg-pv" style="--rc:${K.RAR[it.rarity][1]}">${K.preview(it,data.look)}</span>
+  <span class="tlp-eyebrow" style="color:${K.RAR[it.rarity][1]}">${K.RAR[it.rarity][0]} · ${K.CATS.find(c=>c[0]===it.category)[2]}</span>
+  <b class="tlp-qtitle">${K.esc(it.name)}</b>${it.description?`<span class="tlp-note">${K.esc(it.description)}</span>`:''}
+  ${it.unlock==='shop'?coins(it.price):''}${action}
+  <button type="button" class="tlp-btn ghost" data-close="1" style="width:100%">Schliessen</button></div></div>`;
+ const b=layer.querySelector('[data-buy],[data-equip]')||layer.querySelector('button');if(b)b.focus();
+}
+async function loadMine(){const r=await db.rpc('get_my_kampfgeist',{p_full:true});if(r.error)throw r.error;data=r.data}
+async function loadAdmin(){const r=await db.rpc('admin_kg_overview');if(r.error)throw r.error;admin=r.data}
+app.addEventListener('click',async ev=>{
+ const b=ev.target.closest('button');if(!b||b.type==='submit')return;
+ if(b.dataset.tab){tab=b.dataset.tab;render();if(tab==='admin'&&!admin){try{await loadAdmin();render()}catch(e){say(e.message,true)}}return}
+ if(b.dataset.cat){cat=b.dataset.cat;render();return}
+ if(b.dataset.atab){atab=b.dataset.atab;render();return}
+ if(b.dataset.acat){acat=b.dataset.acat;render();return}
+ if(b.dataset.item){const it=byKey(b.dataset.item);if(it)sheet(it)}
+});
+layer.addEventListener('click',async ev=>{
+ const b=ev.target.closest('[data-buy],[data-equip],[data-close]');if(!b)return;
+ if(b.dataset.close&&(ev.target===b||b.tagName==='BUTTON')){layer.innerHTML='';return}
+ if(busy||(!b.dataset.buy&&!b.dataset.equip))return;busy=true;b.disabled=true;
+ const r=b.dataset.buy?await db.rpc('buy_kg_item',{p_item_key:b.dataset.buy}):await db.rpc('equip_kg_item',{p_slot:byKey(b.dataset.equip).category,p_item_key:b.dataset.equip});
+ busy=false;
+ if(r.error){layer.innerHTML='';say(r.error.message,true);return}
+ const name=byKey(b.dataset.buy||b.dataset.equip).name;
+ try{await loadMine();layer.innerHTML='';render();
+  if(b.dataset.buy){say('Gekauft: '+name+'. Du hast noch '+K.fmt(r.data.balance)+' Coins.');const it=byKey(b.dataset.buy);if(it)sheet(it)}else say('Ausgerüstet: '+name);
+ }catch(e){say(e.message,true)}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&layer.innerHTML)layer.innerHTML=''});
+app.addEventListener('submit',async ev=>{
+ ev.preventDefault();const f=ev.target,btn=f.querySelector('button[type="submit"]');btn.disabled=true;let r;
+ if(f.id==='rulesForm')r=await db.rpc('admin_update_kg_settings',{p_start_coins:Number(f.start.value),p_coins_per_training:Number(f.per.value)});
+ else if(f.classList.contains('kg-adjust'))r=await db.rpc('admin_adjust_coins',{p_profile_id:f.dataset.id,p_amount:Number(f.amount.value),p_note:f.note.value});
+ else if(f.classList.contains('kg-aitem')){const it=admin.items.find(i=>i.key===f.dataset.key);
+  r=await db.rpc('admin_update_kg_item',{p_item_key:it.key,p_price:it.unlock==='shop'?Number(f.price.value):null,p_min_rank:f.rank.value,p_is_active:it.unlock==='start'?true:f.active.checked})}
+ btn.disabled=false;
+ if(!r||r.error){say(r?r.error.message:'Fehler',true);return}
+ say(f.id==='rulesForm'?'Coin-Regeln gespeichert.':f.classList.contains('kg-adjust')?'Gebucht: '+r.data.amount+' Coins für '+r.data.profile+' (neuer Stand '+K.fmt(r.data.balance)+').':'Gespeichert: '+r.data.name);
+ try{await loadAdmin();await loadMine();render()}catch(e){say(e.message,true)}
+});
+(async()=>{
+ try{
+  db=await P.client();
+  const s=await db.auth.getSession();
+  if(!s.data||!s.data.session){say('');app.innerHTML='<div class="tlp-panel">Bitte <a href="./login.html">anmelden</a>.</div>';return}
+  const me=await db.rpc('get_my_performance');if(me.error)throw me.error;
+  role=me.data.profile.role;myName=me.data.profile.display_name||'';
+  await loadMine();say('');render();
+ }catch(e){say('Shop konnte nicht geladen werden: '+(e.message||e),true)}
+})();
+</script>
+<script src="./takeover-navigation.js" defer></script></body></html>
