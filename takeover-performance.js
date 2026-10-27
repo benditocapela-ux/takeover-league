@@ -115,10 +115,16 @@ async function mountStudio(){
  const host=document.getElementById('studioPanelOverview');if(!host)return;
  const db=await client();
  const s=await db.auth.getSession();if(!s.data||!s.data.session)return;
- const [perf,wk]=await Promise.all([db.rpc('get_my_performance'),db.rpc('get_my_week_plan')]);
- const data=perf.data,error=perf.error,gym=!wk.error&&wk.data&&wk.data.enabled?wk.data:null;
- if(error||!data||(!data.ratings_enabled&&!data.style_enabled&&!gym))return;
+ const [perf,wk,qs]=await Promise.all([db.rpc('get_my_performance'),db.rpc('get_my_week_plan'),db.rpc('get_my_quests')]);
+ const data=perf.data,error=perf.error,gym=!wk.error&&wk.data&&wk.data.enabled?wk.data:null,quest=!qs.error&&qs.data&&qs.data.enabled?qs.data:null;
+ if(error||!data||(!data.ratings_enabled&&!data.style_enabled&&!gym&&!quest))return;
  const tiles=[];
+ if(quest){
+  const weekly=(quest.weekly||[]).filter(q=>q.available),done=weekly.filter(q=>q.done).length;
+  const ready=[...weekly,...(quest.chest?[quest.chest]:[]),...(quest.daily||[]).filter(q=>q.key)].filter(q=>quest.can_claim&&q.done&&!q.claimed&&q.available&&q.period_start>=quest.claim_from).length;
+  const today=(quest.daily||[]).find(q=>q.period_start===quest.today&&q.key);
+  tiles.push(`<a class="tlp-tile" href="./quests.html"><span class="tlp-chip t-gold">${done}/${weekly.length}</span><span><span class="tlp-eyebrow">Wochen-Quests</span><strong>${ready?ready+' Belohnung'+(ready>1?'en':'')+' bereit':today?esc(today.title):'Quests dieser Woche'}</strong><span class="tlp-note">${today?(today.claimed?'Tagesquest abgeholt':today.done?'Tagesquest erfüllt':'Tagesquest offen'):'Wochenquests'} · +${quest.exp_week} EXP diese Woche</span></span></a>`);
+ }
  if(gym){
   const target=gym.group?gym.group.weekly_target:2;
   tiles.push(`<a class="tlp-tile" href="./wochenplan.html"><span class="tlp-chip t-gold">${gym.trainings}/${target}</span><span><span class="tlp-eyebrow">Wochenplan${gym.group?' · '+esc(gym.group.name):''}</span><strong>${gym.plan&&gym.plan.focus?esc(gym.plan.focus):gym.plan?'Plan dieser Woche':'Noch kein Plan diese Woche'}</strong><span class="tlp-note">${gym.trainings>=target?'Wochenziel erreicht!':'noch '+(target-gym.trainings)+' Training'+(target-gym.trainings===1?'':'s')+' bis zum Wochenziel'}</span></span></a>`);

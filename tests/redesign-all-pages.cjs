@@ -2,7 +2,7 @@
 const fs=require('node:fs');const assert=require('node:assert/strict');
 const excluded=new Set(['challenges-v2-preview.html','duels-v2-preview.html','league2-preview.html']);
 const pages=fs.readdirSync('.').filter(n=>n.endsWith('.html')&&!excluded.has(n)).sort();
-assert.equal(pages.length,23,'all 23 app entrypoints (including guest.html, bewertung.html, stil-test.html, checkin.html, praesenz.html and wochenplan.html)');
+assert.equal(pages.length,24,'all 24 app entrypoints (including guest.html, bewertung.html, stil-test.html, checkin.html, praesenz.html, wochenplan.html and quests.html)');
 const stylesheet=fs.readFileSync('takeover-redesign.css','utf8');
 assert.match(stylesheet,/--gold:#f2c14e/);assert.match(stylesheet,/--ok:#5fb27f/);
 for(const page of pages){const s=fs.readFileSync(page,'utf8');const n=page.slice(0,-5);
