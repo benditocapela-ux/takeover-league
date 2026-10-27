@@ -19,6 +19,22 @@ const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable
 const $=id=>document.getElementById(id),text=(tag,value)=>{const e=document.createElement(tag);e.textContent=String(value??'');return e};
 let profile=null,loading=false,request=0;
 const say=m=>$('status').textContent=m;
+// Arena: deutsche Status- und Fehlertexte (Server-Meldungen bleiben unverändert).
+const ARENA_STATUS={invited:'Einladungen offen',active:'Läuft',awaiting_reviews:'Wartet auf Trainingsprüfung',settled:'Gewertet',cancelled:'Abgesagt'};
+const MEMBER_STATUS={invited:'eingeladen',accepted:'dabei',declined:'abgelehnt'};
+function arenaError(e){
+ const text=String(e?.message||e||'');
+ if(/All invitees must be active boxers/.test(text))return 'Alle Eingeladenen müssen aktive, öffentlich freigegebene Boxer sein.';
+ if(/Arena requires 3-8 boxers/.test(text))return 'Eine Arena braucht 3 bis 8 Boxer und einen Titel mit 3–120 Zeichen.';
+ if(/Duplicate boxer invitation/.test(text))return 'Jeder Boxer darf nur einmal eingeladen werden.';
+ if(/At least three accepted boxers required/.test(text))return 'Zum Start müssen mindestens drei Boxer zugesagt haben.';
+ if(/Arena not due/.test(text))return 'Die Arena läuft noch und kann erst nach ihrem Ende gewertet werden.';
+ if(/Arena invitation closed|No open invitation/.test(text))return 'Diese Einladung ist nicht mehr offen.';
+ if(/Arena cannot start/.test(text))return 'Diese Arena kann nicht mehr gestartet werden.';
+ if(/nicht öffentlich freigegebenes Boxerprofil/.test(text))return 'Die Live-Wertung ist gesperrt, weil ein Teilnehmer nicht öffentlich freigegeben ist.';
+ if(/Duplicate|missing or invalid scoring ledger|Existing result ledger/.test(text))return 'Die Wertung ist aus Sicherheitsgründen gesperrt (Punktebuchung unvollständig). Bitte den Admin informieren.';
+ return text;
+}
 async function rpc(name,args){const r=await db.rpc(name,args);if(r.error)throw r.error;return r.data}
 async function load(){
  if(loading)return;loading=true;const epoch=++request;
@@ -29,10 +45,10 @@ async function load(){
   if(!Array.isArray(rows)){say('Ungültige Antwort der Arena-Liste.');return}
   for(const duel of rows){
    const card=text('article','');card.className='card';
-   card.append(text('h2',duel.title),text('p','Status: '+duel.status+' · '+duel.duration_days+' Tage'));
+   card.append(text('h2',duel.title),text('p',(ARENA_STATUS[duel.status]||duel.status)+' · '+duel.duration_days+' Tage'));
    const members=Array.isArray(duel.participants)?duel.participants:[];
    for(const member of members){
-    const row=text('div','');row.className='row';row.append(text('span',member.name),text('small',member.status));card.append(row);
+    const row=text('div','');row.className='row';row.append(text('span',member.name),text('small',MEMBER_STATUS[member.status]||member.status));card.append(row);
    }
    const own=members.find(x=>x.boxer_id===profile?.id);
    const actions=text('div','');actions.className='actions';
@@ -43,7 +59,7 @@ async function load(){
       if(!confirm('Arena-Einladung '+label.toLowerCase()+'?'))return;
       button.disabled=true;
       try{await rpc('league_v21_arena_respond',{p_arena:duel.id,p_accept:accepted});say('Einladung beantwortet.');await load()}
-      catch(e){say(e.message);button.disabled=false}
+      catch(e){say(arenaError(e));button.disabled=false}
      };actions.append(button)
     }
    }
@@ -52,7 +68,7 @@ async function load(){
     start.onclick=async()=>{
      if(!confirm('Arena mit mindestens drei bestätigten Boxern starten?'))return;
      start.disabled=true;try{await rpc('league_v21_arena_start',{p_arena:duel.id});say('Arena gestartet.');await load()}
-     catch(e){say('Start fehlgeschlagen: '+e.message);start.disabled=false}
+     catch(e){say('Start fehlgeschlagen: '+arenaError(e));start.disabled=false}
     };actions.append(start)
    }
    if(duel.status==='active'||duel.status==='awaiting_reviews'){
@@ -67,7 +83,7 @@ async function load(){
       live.append(line);
      }
      live.append(text('small','Vorläufig – keine endgültige Wertung.'));
-    }).catch(e=>{if(epoch===request)live.textContent='Zwischenstand nicht verfügbar: '+e.message});
+    }).catch(e=>{if(epoch===request)live.textContent='Zwischenstand nicht verfügbar: '+arenaError(e)});
    }
    if(duel.status==='settled'&&Array.isArray(duel.results)){
     card.append(text('h3','Endresultat'));
@@ -80,8 +96,16 @@ async function load(){
      if(!confirm('Wertungen endgültig nach Trainingsfreigaben abschliessen? Keine EXP auszahlen.'))return;
      button.disabled=true;try{const result=await rpc('league_v21_arena_finish',{p_arena:duel.id});
       say(result.status==='awaiting_reviews'?'Noch '+result.pending+' ungeprüfte Trainings.':'Arena abgeschlossen.');await load()}
-     catch(e){say('Abschluss gesperrt: '+e.message);button.disabled=false}
+     catch(e){say('Abschluss gesperrt: '+arenaError(e));button.disabled=false}
     };actions.append(button)
+   }
+   if(profile?.role==='admin'&&['invited','active','awaiting_reviews'].includes(duel.status)){
+    const cancel=text('button','Arena absagen');cancel.type='button';cancel.className='secondary';
+    cancel.onclick=async()=>{
+     if(!confirm('Arena «'+duel.title+'» absagen? Es werden keine Punkte oder EXP vergeben oder abgezogen. Teilnehmer erhalten eine Mitteilung.'))return;
+     cancel.disabled=true;try{await rpc('league_v21_arena_cancel',{p_arena:duel.id});say('Arena abgesagt.');await load()}
+     catch(e){say('Absagen nicht möglich: '+arenaError(e));cancel.disabled=false}
+    };actions.append(cancel)
    }
    card.append(actions);list.append(card);
   }
@@ -98,7 +122,7 @@ $('create').addEventListener('submit',async e=>{
  const button=e.currentTarget.querySelector('button[type="submit"]');button.disabled=true;
  try{await rpc('league_v21_arena_create',{p_title:$('title').value,p_duration:Number($('duration').value),p_boxers:ids});
   say('Arena-Einladungen erstellt.');$('create').reset();await load()}
- catch(e){say('Arena konnte nicht erstellt werden: '+e.message)}
+ catch(e){say('Arena konnte nicht erstellt werden: '+arenaError(e))}
  finally{button.disabled=false}
 });
 async function init(){
@@ -107,7 +131,8 @@ async function init(){
  if(p.error||!p.data?.is_active||!['boxer','admin'].includes(p.data.role)){say('Kein aktiver Zugang.');return}
  profile=p.data;
  if(profile.role==='admin'){
-  const r=await db.from('profiles').select('id,display_name').eq('role','boxer').eq('is_active',true).order('display_name');
+  // Nur öffentliche Boxer: die Live-Wertung zeigt Namen aller Teilnehmer.
+  const r=await db.from('profiles').select('id,display_name').eq('role','boxer').eq('is_active',true).eq('is_listed',true).is('archived_at',null).order('display_name');
   if(r.error){say('Boxerliste nicht verfügbar: '+r.error.message);return}
   for(const member of r.data||[])$('boxers').add(new Option(member.display_name,member.id));
   $('boxers').dispatchEvent(new Event('change',{bubbles:true}));

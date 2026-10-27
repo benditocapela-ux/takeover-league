@@ -31,7 +31,7 @@
 <label>Beginn<input id="challengeStart" type="date" required></label>
 <label>Ende<input id="challengeEnd" type="date" required></label>
 <label><input id="publishChallenge" type="checkbox" style="width:auto;min-height:auto"> Sofort veröffentlichen</label>
-<p><button type="submit">Liga-Challenge erstellen</button></p></form><h3>Veröffentlichte Challenges</h3><div id="globalList"></div></section>
+<p><button type="submit">Liga-Challenge erstellen</button></p></form><h3>Entwürfe und Challenges</h3><div id="globalList"></div></section>
 <section class="panel"><h2><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-medal"></use></svg> Achievement-Nachberechnung</h2>
 <p class="muted">Bestehende Achievement-Ledger werden in begrenzten Gruppen abgeglichen. Die serverseitige Routine verhindert doppelte Buchungen. Vor dem Start aktuelle Punkte/EXP kontrollieren.</p>
 <p id="backfillStatus">Noch nicht gestartet.</p><button id="backfill" type="button">Nächste 10 Boxer prüfen</button>
@@ -84,13 +84,57 @@ $('saveGoalReward').addEventListener('click',async()=>{
  else {say('Belohnungsregel gespeichert.');await loadRewardGoals()}
  button.disabled=false;
 });
+// Liga-Challenge-Entwürfe: bearbeiten, veröffentlichen, unbenutzt löschen (serverseitig geprüft).
+const CHALLENGE_STATUS={draft:'Entwurf',active:'Läuft',closed:'Abgeschlossen'};
+const METRIC_LABEL={training_sessions:'Trainings',jogging_km:'Joggingkilometer',technique_minutes:'Technikminuten'};
+const zurichDay=iso=>new Date(iso).toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'});
+function challengeError(message){
+ const text=String(message||'');
+ if(/Invalid challenge fields/.test(text))return 'Ungültige Angaben: Titel 3–120 Zeichen, Ziel grösser als 0, Zeitraum höchstens 90 Tage.';
+ if(/Cannot publish expired challenge/.test(text))return 'Der Zeitraum ist bereits vorbei. Bitte Beginn und Ende anpassen.';
+ if(/Only elapsed active challenge may close/.test(text))return 'Die Challenge läuft noch und kann erst nach ihrem Ende abgeschlossen werden.';
+ if(/Pending trainings must be reviewed/.test(text))return 'Es gibt noch offene Trainings der Teilnehmer. Bitte zuerst im Trainerbereich prüfen.';
+ if(/Only open active challenges may set rewards/.test(text))return 'EXP-Regeln können nur für laufende Challenges geändert werden.';
+ if(/Invalid EXP award/.test(text))return 'EXP-Regeln müssen zwischen 0 und 250 liegen.';
+ if(/Only active admin|Admin only/.test(text))return 'Nur der aktive Admin darf Liga-Challenges verwalten.';
+ return text;
+}
+function appendDraftTools(card,c){
+ const box=document.createElement('details');const sum=document.createElement('summary');sum.textContent='Entwurf bearbeiten';box.append(sum);
+ const form=document.createElement('form');form.className='draft-edit';
+ const field=(label,input)=>{const l=document.createElement('label');l.textContent=label;l.append(input);form.append(l);return input};
+ const title=field('Name',Object.assign(document.createElement('input'),{value:c.title,required:true,minLength:3,maxLength:120}));
+ const desc=field('Beschreibung',Object.assign(document.createElement('textarea'),{value:c.description||'',maxLength:1000,rows:2}));
+ const metric=document.createElement('select');for(const [k,v] of Object.entries(METRIC_LABEL))metric.add(new Option(v,k,false,k===c.metric));field('Messwert',metric);
+ const target=field('Zielmenge',Object.assign(document.createElement('input'),{type:'number',min:'1',max:'1000000',step:'1',value:String(c.target_value),required:true}));
+ const start=field('Beginn',Object.assign(document.createElement('input'),{type:'date',value:zurichDay(c.starts_at),required:true}));
+ const end=field('Ende',Object.assign(document.createElement('input'),{type:'date',value:zurichDay(c.ends_at),required:true}));
+ const save=document.createElement('button');save.type='submit';save.textContent='Entwurf speichern';form.append(save);
+ form.addEventListener('submit',async ev=>{ev.preventDefault();if(busy)return;busy=true;save.disabled=true;
+  try{const r=await db.rpc('league_v21_admin_update_global_draft',{p_challenge:c.id,p_title:title.value,p_description:desc.value,p_metric:metric.value,
+     p_target:Number(target.value),p_starts:zurichBoundary(start.value),p_ends:zurichBoundary(end.value,true)});
+   if(r.error)throw r.error;say('Entwurf gespeichert.');await listGlobals()}
+  catch(e){say('Entwurf nicht gespeichert: '+challengeError(e.message))}finally{busy=false;save.disabled=false}});
+ box.append(form);card.append(box);
+ const actions=document.createElement('div');actions.className='actions';
+ const publish=document.createElement('button');publish.type='button';publish.textContent='Veröffentlichen';
+ publish.onclick=async()=>{if(busy||!confirm('Liga-Challenge «'+c.title+'» jetzt für alle Boxer veröffentlichen?'))return;busy=true;publish.disabled=true;
+  try{const r=await db.rpc('league_v21_admin_publish_global_challenge',{p_challenge:c.id});if(r.error)throw r.error;say('Liga-Challenge veröffentlicht.');await listGlobals()}
+  catch(e){say('Veröffentlichen nicht möglich: '+challengeError(e.message))}finally{busy=false;publish.disabled=false}};
+ const del=document.createElement('button');del.type='button';del.className='danger';del.textContent='Entwurf löschen';
+ del.onclick=async()=>{if(busy||!confirm('Entwurf «'+c.title+'» endgültig löschen? Das geht nur, solange niemand teilgenommen hat.'))return;busy=true;del.disabled=true;
+  try{const r=await db.rpc('league_v21_admin_delete_global_draft',{p_challenge:c.id});if(r.error)throw r.error;say('Entwurf gelöscht.');await listGlobals()}
+  catch(e){say('Löschen nicht möglich: '+challengeError(e.message))}finally{busy=false;del.disabled=false}};
+ actions.append(publish,del);card.append(actions);
+}
 async function listGlobals(){
  const r=await db.from('league_global_challenges_v21')
-  .select('id,title,status,ends_at,completion_exp,winner_exp').order('ends_at',{ascending:false}).limit(60);
+  .select('id,title,description,metric,target_value,status,starts_at,ends_at,completion_exp,winner_exp').order('ends_at',{ascending:false}).limit(60);
  const root=$('globalList');root.replaceChildren();
  if(r.error){root.textContent='Challenges derzeit nicht verfügbar.';return}
  for(const c of r.data||[]){
-  const card=row(c.title,'Status: '+c.status+' · Ende: '+new Date(c.ends_at).toLocaleDateString('de-CH'));
+  const card=row(c.title,(CHALLENGE_STATUS[c.status]||c.status)+' · '+new Date(c.starts_at).toLocaleDateString('de-CH')+' bis '+new Date(c.ends_at).toLocaleDateString('de-CH'));
+  if(c.status==='draft')appendDraftTools(card,c);
   if(c.status==='active'&&new Date(c.ends_at).getTime()>Date.now()){
    const label=document.createElement('p');label.className='muted';
    label.textContent='EXP: '+c.completion_exp+' bei Zielabschluss, +'+c.winner_exp+' für den geteilten ersten Platz.';
@@ -106,7 +150,7 @@ async function listGlobals(){
     if(!confirm('EXP bei Abschluss festlegen: '+a+' pro Zielerfüllung und +'+b+' für Sieger?'))return;
     btn.disabled=true;
     const result=await db.rpc('league_v21_admin_set_global_rewards',{p_challenge:c.id,p_completion:a,p_winner:b});
-    if(result.error){say('EXP-Regeln nicht gespeichert: '+result.error.message);btn.disabled=false;return}
+    if(result.error){say('EXP-Regeln nicht gespeichert: '+challengeError(result.error.message));btn.disabled=false;return}
     say('EXP-Regeln gespeichert.');await listGlobals();
    };
    const row=document.createElement('div');row.className='actions';row.append(completion,winner,btn);card.append(row);
@@ -121,7 +165,7 @@ async function listGlobals(){
     if(!confirm(notice))return;
     button.disabled=true;
     const r=await db.rpc('league_v21_admin_close_global_challenge',{p_challenge:c.id});
-    if(r.error){say('Abschluss fehlgeschlagen: '+r.error.message);button.disabled=false;return}
+    if(r.error){say('Abschluss fehlgeschlagen: '+challengeError(r.error.message));button.disabled=false;return}
     say('Challenge geschlossen – '+(r.data?.participants||0)+' Platzierungen gespeichert. '+(r.data?.rewards_paid?'EXP-Belohnungen wurden serverseitig vergeben.':'Keine EXP-Belohnungen konfiguriert.'));
     await listGlobals();
    };card.append(button)
@@ -207,7 +251,7 @@ $('challengeForm').addEventListener('submit',e=>{e.preventDefault();submit(e.cur
  const start=val('challengeStart'),end=val('challengeEnd');const publish=$('publishChallenge').checked;
  if(publish&&!confirm('Diese Liga-Challenge jetzt für alle Boxer veröffentlichen?'))throw Error('Veröffentlichung abgebrochen.');
  const r=await db.rpc('league_v21_admin_create_global_challenge',{p_title:val('challengeTitle'),p_description:val('challengeDescription'),p_metric:val('challengeMetric'),p_target:Number(val('challengeTarget')),p_starts:zurichBoundary(start),p_ends:zurichBoundary(end,true),p_publish:publish});
- if(r.error)throw r.error;
+ if(r.error)throw Error(challengeError(r.error.message));
 })});
 $('backfill').addEventListener('click',async()=>{
  if(!confirm('Bis zu 10 Boxer-Achievements abgleichen? Dadurch können EXP gutgeschrieben oder korrigiert werden.'))return;
