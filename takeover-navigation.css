@@ -125,3 +125,12 @@ body.tl-menu-visible{overflow:hidden}
 @media(prefers-reduced-motion:reduce){
   .tl-menu-group-chevron{transition:none}
 }
+
+/* Konto-Umschalter */
+.tl-account-switch{margin:0 0 var(--sp-4);padding:var(--sp-3) 0 var(--sp-4);border-bottom:1px solid color-mix(in srgb,var(--text) 11%,transparent);display:grid;gap:6px}
+.tl-account-title{font:800 12px/1.2 var(--font,system-ui,sans-serif);letter-spacing:.12em;text-transform:uppercase;color:var(--tl-nav-gold,var(--gold));padding:0 var(--sp-3)}
+.tl-account-current{margin:0;padding:0 var(--sp-3);color:var(--tl-nav-muted);font-size:var(--fs-sm)}
+.tl-account-row{display:flex;align-items:center;gap:6px}
+.tl-account-row .tl-account-switch-btn{flex:1;min-width:0;border-color:color-mix(in srgb,var(--gold) 40%,transparent)}
+.tl-account-forget{min-height:44px;padding:0 10px;border:1px solid color-mix(in srgb,var(--text) 14%,transparent);border-radius:var(--r-md);background:transparent;color:var(--tl-nav-muted);font:600 12px/1 var(--font,system-ui,sans-serif);cursor:pointer}
+.tl-account-note{margin:0;padding:0 var(--sp-3);color:var(--tl-nav-muted);font-size:var(--fs-xs);line-height:1.4}

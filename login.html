@@ -27,9 +27,13 @@ const supabase = createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_pub
 const el=id=>document.getElementById(id);
 let authMode='login';
 let redirectAfterLogin=false;
+const addingAccount=new URLSearchParams(location.search).get('add')==='1';
+// Konto-Umschalter: aktuelle Sitzung sichern, bevor ein weiteres Konto angemeldet wird.
+function rememberCurrentSession(){try{const key='sb-iqarjivcrddcixrvqbfb-auth-token',raw=localStorage.getItem(key);const s=JSON.parse(raw||'null');if(!s||!s.user||!s.user.id)return;const list=JSON.parse(localStorage.getItem('takeover_accounts_v1')||'[]');const all=Array.isArray(list)?list:[];const old=all.find(a=>a&&a.id===s.user.id)||{};const entry={...old,id:s.user.id,email:s.user.email||old.email||'',name:old.name||s.user.email||'Konto',role:old.role||'',session:raw,savedAt:Date.now()};localStorage.setItem('takeover_accounts_v1',JSON.stringify([entry,...all.filter(a=>a&&a.id!==s.user.id)].slice(0,5)))}catch{}}
 function showAuth(mode){authMode=mode;el('loginView').classList.toggle('hide',mode!=='login');el('registerView').classList.toggle('hide',mode!=='register');el('accountView').classList.add('hide');message('');}
 const message=(txt,error=false)=>{el('message').textContent=txt;el('message').className='message'+(error?' error':'');};
 async function render(){const {data:{user},error}=await supabase.auth.getUser();if(error||!user){showAuth(authMode);return;}
+if(addingAccount&&!redirectAfterLogin){showAuth('login');message('Weiteres Konto hinzufügen: Melde dich mit dem zweiten Konto an. Das aktuelle Konto bleibt im Menü unter «Konto» gespeichert.');return;}
 const {data:profile,error:profileError}=await supabase.from('profiles').select('display_name,role,is_active').eq('auth_user_id',user.id).maybeSingle();
 el('loginView').classList.add('hide');el('registerView').classList.add('hide');el('accountView').classList.remove('hide');el('displayName').textContent=profile?.display_name||'Account';el('emailText').textContent=user.email||'';
 el('dashboardLink').href=profile?.role==='admin'&&profile?.is_active?'./coach.html':profile?.role==='boxer'&&profile?.is_active?'./boxer.html':profile?.role==='coach'&&profile?.is_active?'./coach.html':'./index.html';
@@ -67,7 +71,7 @@ el('registerForm').addEventListener('submit',async e=>{
  }catch(error){message('Registrierung fehlgeschlagen: '+error.message,true)}
  finally{btn.disabled=false;}
 });
-el('loginForm').addEventListener('submit',async e=>{e.preventDefault();message('');el('loginBtn').disabled=true;const {error}=await supabase.auth.signInWithPassword({email:el('email').value.trim(),password:el('password').value});el('loginBtn').disabled=false;if(error){message('Anmeldung fehlgeschlagen: '+error.message,true);return;}el('password').value='';redirectAfterLogin=true;await render();});
+el('loginForm').addEventListener('submit',async e=>{e.preventDefault();message('');el('loginBtn').disabled=true;if(addingAccount){rememberCurrentSession();window.__tlAddingAccount=true;}const {error}=await supabase.auth.signInWithPassword({email:el('email').value.trim(),password:el('password').value});window.__tlAddingAccount=false;el('loginBtn').disabled=false;if(error){message('Anmeldung fehlgeschlagen: '+error.message,true);return;}el('password').value='';redirectAfterLogin=true;await render();});
 el('logoutBtn').addEventListener('click',async()=>{const {error}=await supabase.auth.signOut();if(error)message(error.message,true);else{message('Du bist abgemeldet.');await render();}});
 el('forgotBtn').addEventListener('click',async()=>{const email=el('email').value.trim();if(!email){message('Bitte zuerst deine E-Mail-Adresse eingeben.',true);return;}const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:new URL('./login.html',location.href).href});message(error?'Anfrage fehlgeschlagen: '+error.message:'Falls ein Konto existiert, erhältst du eine E-Mail zum Zurücksetzen.',!!error);});
 // Gastmodus: oeffnet die oeffentliche Schaufenster-Seite. Es wird keine Session
