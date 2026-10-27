@@ -1,0 +1,21 @@
+// Statische Verträge: Trainer/Admin tragen Trainings für Boxer ein (sofort bestätigt), 27.10.2026.
+const fs = require('fs');
+const path = require('path');
+const assert = require('assert');
+const root = path.join(__dirname, '..');
+const read = f => fs.readFileSync(path.join(root, f), 'utf8');
+const coach = read('coach.html');
+assert.match(coach, /db\.rpc\('staff_record_training',\{p_boxer_id:boxer\.value,p_training_type_id:Number\(type\.value\),p_training_date:date\.value,\s*p_duration_minutes:mins,p_notes:note,p_jogging_km:isJogging\(\)\?Number\(km\.value\):null,p_client_request_id:staffRequestId\}\)/, 'Eintragen über die geschützte RPC mit Doppelklick-Schutz');
+assert.match(coach, /x\.id!==currentAdminId/, 'Trainer sehen sich nicht selbst in der Boxerauswahl');
+assert.match(coach, /\['boxer','coach'\]\.includes\(x\.role\)&&x\.is_active/, 'nur aktive Boxer');
+assert.match(coach, /notes\.minLength=3;notes\.required=true/, 'Bemerkung Pflicht');
+assert.match(coach, /minutes\.required=true/, 'Dauer Pflicht');
+assert.match(coach, /if\(staffBusy\)return;/, 'kein doppeltes Senden');
+assert.match(coach, /Eintragen und bestätigen/, 'klare Aktion');
+const boxer = read('boxer.html');
+assert.match(boxer, /s\.recorded_by\?' · vom Trainer eingetragen':''/, 'Boxer sieht, dass der Trainer eingetragen hat');
+const migration = read('supabase/migrations/20261028170000_staff_record_training.sql');
+assert.match(migration, /review := public\.review_training\(new_id,'approved'\);/, 'Bestätigung über den bestehenden Weg');
+assert.match(migration, /IF target\.id=actor\.id THEN/, 'keine Selbstbestätigung');
+assert.match(migration, /s\.status='closed' AND p_training_date BETWEEN s\.starts_on AND s\.ends_on/, 'keine abgeschlossene Saison');
+console.log('PASS staff training entry contracts: geschützte RPC, keine Selbstbestätigung, Pflichtangaben, Doppelklick-Schutz, Hinweis für Boxer');

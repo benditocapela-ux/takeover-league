@@ -26,6 +26,7 @@ on:
       - 'tests/duel-notifications-*'
       - 'tests/training-types-duration-notes-*'
       - 'tests/admin-set-profile-display-name-*'
+      - 'tests/staff-record-training-*'
       - 'tests/training-form-contracts.cjs'
       - 'boxer-dashboard-polish.css'
       - 'tests/boxer-dashboard-polish.cjs'
@@ -73,6 +74,7 @@ on:
       - 'tests/duel-notifications-*'
       - 'tests/training-types-duration-notes-*'
       - 'tests/admin-set-profile-display-name-*'
+      - 'tests/staff-record-training-*'
       - 'tests/training-form-contracts.cjs'
       - 'boxer-dashboard-polish.css'
       - 'tests/boxer-dashboard-polish.cjs'
@@ -112,6 +114,7 @@ jobs:
       - run: node tests/profile-archive-hides-locks-contracts.cjs
       - run: node tests/gamification-contracts.cjs
       - run: node tests/training-form-contracts.cjs
+      - run: node tests/staff-record-training-contracts.cjs
       - run: node tests/release-static-contracts.cjs
       - run: node tests/boxer-dashboard-polish.cjs
       - run: node tests/boxer-profile-actions.cjs
@@ -744,3 +747,36 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -X -h localhost -U postgres -d profile_rename_probe -v ON_ERROR_STOP=1 -f tests/admin-set-profile-display-name-schema.sql
+  staff-record-training-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated staff training fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres staff_training_probe
+      - name: Verify staff training entry and rollback on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d staff_training_probe -v ON_ERROR_STOP=1 -f tests/staff-record-training-schema.sql
