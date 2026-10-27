@@ -456,3 +456,8 @@ body[data-tl-screen="boxer"] .achievement-tile .tl-goal-bar{margin-top:4px}
 /* Duels: head-to-head record and revenge action. */
 body[data-tl-screen="duels"] .tl-duel-h2h{color:var(--muted);font-size:var(--fs-sm)}
 body[data-tl-screen="duels"] .tl-duel-revenge{margin-top:var(--sp-2)}
+
+/* Boxerprofil: Palmarès (belegte Erfolge). */
+.palmares-list{list-style:none;margin:var(--sp-3) 0 0;padding:0;display:grid;gap:var(--sp-2)}
+.palmares-list li{display:grid;gap:2px;padding:var(--sp-3);border:1px solid var(--line);border-radius:12px;background:var(--surface-2)}
+.palmares-list small{color:var(--muted)}
