@@ -223,6 +223,26 @@ body[data-tl-screen] :where(a,button){-webkit-tap-highlight-color:transparent}
 .tl-choice-hint{margin:0 2px 8px;color:var(--muted);font-size:var(--fs-sm);line-height:1.4}
 .tl-choice-note{margin:0;padding:0 2px;color:var(--muted);font-size:var(--fs-sm)}
 .tl-choice-note.is-valid{color:var(--gold)}
+/* Gruppierte Auswahl (z. B. Trainingsarten): Bereichs-Tasten statt langer Kartenreihe */
+.tl-choice-tabs{display:flex;flex-wrap:wrap;gap:6px;margin:2px 0 10px}
+.tl-choice-tab{min-height:36px;padding:6px 12px;border:1px solid var(--line-strong);border-radius:999px;background:var(--surface-2);color:var(--text);font:inherit;font-size:var(--fs-xs);font-weight:700;cursor:pointer}
+.tl-choice-tab.is-active{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 16%,var(--surface));color:var(--gold)}
+.tl-choice-tab:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.tl-choice-field.is-grouped .tl-choice-track{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;overflow:visible;scroll-snap-type:none;padding:2px 0 4px}
+.tl-choice-field.is-grouped .tl-choice-card{flex:none;min-height:54px;flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;padding:8px 40px 8px 10px;border-radius:12px}
+.tl-choice-field.is-grouped .tl-choice-card:hover{transform:none}
+.tl-choice-field.is-grouped .tl-choice-mark{width:30px;height:30px;flex-basis:30px;font-size:17px}
+.tl-choice-field.is-grouped .tl-choice-copy{overflow-wrap:normal;hyphens:auto}
+.tl-choice-field.is-grouped .tl-choice-tag{display:inline-block;margin:0 0 0 6px;white-space:nowrap}
+.tl-choice-field.is-grouped .tl-choice-check{top:50%;transform:translateY(-50%)}
+@media(min-width:700px){.tl-choice-field.is-grouped .tl-choice-track{grid-template-columns:repeat(2,minmax(0,1fr))}.tl-choice-field.is-grouped .tl-choice-card{flex-basis:auto;min-height:54px}}
+/* Schnellwahl (Dauer, Datum) als kompakte Chips ohne seitliches Scrollen */
+.tl-choice-presets .tl-choice-heading>small{display:none}
+.tl-choice-presets .tl-choice-track{flex-wrap:wrap;overflow:visible;scroll-snap-type:none;gap:8px;padding:2px 0 4px}
+.tl-choice-presets .tl-choice-card{flex:0 0 auto;min-height:40px;flex-direction:row;align-items:center;gap:6px;padding:6px 12px;border-radius:999px;font-size:var(--fs-sm)}
+.tl-choice-presets .tl-choice-mark{width:auto;height:auto;flex-basis:auto;background:none;font-size:16px}
+.tl-choice-presets .tl-choice-check{display:none}
+.tl-choice-presets .tl-choice-copy{white-space:nowrap;width:auto}
 .tl-choice-tag{display:block;margin-top:4px;font-size:var(--fs-xs);font-weight:600;letter-spacing:.02em;color:var(--muted)}
 .tl-choice-empty{display:block;padding:13px 3px;color:var(--muted);font-size:var(--fs-sm)}
 .tl-choice-native:focus-visible+.tl-choice-field .tl-choice-track,label:focus-within+.tl-choice-field .tl-choice-track{outline:2px solid var(--gold);outline-offset:2px;border-radius:12px}

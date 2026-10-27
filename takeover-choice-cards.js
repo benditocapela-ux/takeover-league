@@ -58,9 +58,22 @@
   const containingLabel=select.closest('label');
   if(containingLabel)containingLabel.insertAdjacentElement('afterend',wrapper);
   else select.insertAdjacentElement('afterend',wrapper);
-  wrapper.append(track);
+  const tabs=document.createElement('div');tabs.className='tl-choice-tabs';tabs.setAttribute('role','tablist');
+  tabs.setAttribute('aria-label',directLabel(select)+' · Bereiche');tabs.hidden=true;
+  wrapper.append(tabs,track);
   if(select.multiple)wrapper.append(note);
   const label=directLabel(select);
+  const FAVORITES='Häufig';
+  let activeTab=null;
+  const groupOf=option=>option.parentElement&&option.parentElement.tagName==='OPTGROUP'?option.parentElement.label:'';
+  function favoriteValues(){return String(select.dataset.tlFavorites||'').split(',').map(x=>x.trim()).filter(Boolean)}
+  function tabFor(value,groups,favorites){
+   if(!value)return null;
+   if(favorites.includes(value)&&activeTab===FAVORITES)return FAVORITES;
+   const option=Array.from(select.options).find(o=>o.value===value);
+   const group=option?groupOf(option):'';
+   return groups.includes(group)?group:null;
+  }
   function sync(){
    const selected=new Set(Array.from(select.selectedOptions).map(option=>option.value));
    track.querySelectorAll('button[data-value]').forEach(button=>{
@@ -77,6 +90,11 @@
     note.classList.toggle('is-valid',valid);
    }
    wrapper.classList.toggle('is-disabled',select.disabled);
+   if(wrapper.classList.contains('is-grouped')&&!select.multiple&&select.value&&!track.querySelector('button[data-value="'+CSS.escape(select.value)+'"]')){
+    const groups=Array.from(tabs.querySelectorAll('[data-tab]')).map(b=>b.dataset.tab);
+    const next=tabFor(select.value,groups,favoriteValues());
+    if(next&&next!==activeTab){activeTab=next;render()}
+   }
   }
   function render(){
    const options=Array.from(select.options).filter(option=>{
@@ -85,12 +103,31 @@
     const placeholder=/^(bitte wählen|bitte auswählen|auswählen|gegner wählen|ziel auswählen|boxer auswählen)$/i.test(label);
     return !(option.value===''&&(select.required||placeholder));
    });
+   const groups=[...new Set(options.map(groupOf).filter(Boolean))];
+   const grouped=!select.multiple&&groups.length>1;
+   wrapper.classList.toggle('is-grouped',grouped);
+   tabs.hidden=!grouped;tabs.replaceChildren();
+   let shown=options;
+   if(grouped){
+    const favorites=favoriteValues().filter(v=>options.some(o=>o.value===v));
+    const tabNames=(favorites.length?[FAVORITES]:[]).concat(groups);
+    if(!activeTab||!tabNames.includes(activeTab))activeTab=tabFor(select.value,groups,favorites)||tabNames[0];
+    if(select.value&&activeTab===FAVORITES&&!favorites.includes(select.value))activeTab=tabFor(select.value,groups,favorites)||activeTab;
+    for(const name of tabNames){
+     const tab=document.createElement('button');tab.type='button';tab.className='tl-choice-tab';tab.dataset.tab=name;
+     tab.setAttribute('role','tab');tab.setAttribute('aria-selected',String(name===activeTab));tab.textContent=name;
+     tab.classList.toggle('is-active',name===activeTab);
+     tab.addEventListener('click',()=>{activeTab=name;render()});
+     tabs.append(tab);
+    }
+    shown=activeTab===FAVORITES?favorites.map(v=>options.find(o=>o.value===v)):options.filter(o=>groupOf(o)===activeTab);
+   }
    track.replaceChildren();
-   if(!options.length){
+   if(!shown.length){
     const empty=document.createElement('span');empty.className='tl-choice-empty';
     empty.textContent='Auswahl wird geladen …';track.append(empty);
    }
-   for(const option of options){
+   for(const option of shown){
     const button=document.createElement('button');button.type='button';button.className='tl-choice-card';
     button.dataset.value=option.value;button.disabled=select.disabled;
     button.setAttribute('aria-label',option.textContent.trim());
@@ -98,8 +135,8 @@
     const mark=document.createElement('span');mark.className='tl-choice-mark';mark.setAttribute('aria-hidden','true');mark.textContent=symbol(option.textContent);
     const copy=document.createElement('span');copy.className='tl-choice-copy';copy.textContent=option.textContent.trim();
     const check=document.createElement('span');check.className='tl-choice-check';check.setAttribute('aria-hidden','true');check.textContent=option.selected?'✓':(select.multiple?'+':'');
-    const group=option.parentElement&&option.parentElement.tagName==='OPTGROUP'?option.parentElement.label:'';
-    if(group){const tag=document.createElement('small');tag.className='tl-choice-tag';tag.textContent=group;copy.append(tag)}
+    const extra=[grouped&&activeTab===FAVORITES?groupOf(option):'',option.dataset.points?'+'+option.dataset.points+' Punkte':''].filter(Boolean).join(' · ');
+    if(extra){const tag=document.createElement('small');tag.className='tl-choice-tag';tag.textContent=extra;copy.append(tag)}
     button.append(mark,copy,check);
     button.addEventListener('click',()=>{
      if(select.disabled||option.disabled)return;
@@ -116,7 +153,7 @@
   const form=select.form;
   if(form)form.addEventListener('reset',()=>Promise.resolve().then(sync));
   const observer=new MutationObserver(render);
-  observer.observe(select,{childList:true,subtree:true,attributes:true,attributeFilter:['disabled','label','value']});
+  observer.observe(select,{childList:true,subtree:true,attributes:true,attributeFilter:['disabled','label','value','data-tl-favorites']});
   render();
  }
  findTargets().forEach(enhance);

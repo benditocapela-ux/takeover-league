@@ -20,6 +20,17 @@ assert.match(boxer, /TRAINING_CATEGORY_ORDER=\['Wettkampf','Boxen','Athletik','A
 assert.equal((boxer.match(/duration_minutes:mins\?Number\(mins\):null/g) || []).length, 2, 'beide Entwurfs-Speicherwege sichern die Dauer');
 assert.match(boxer, /techniqueMinutes:r\.data\.duration_minutes\?\?r\.data\.technique_minutes/, 'Entwurf stellt die Dauer wieder her');
 
+assert.match(boxer, /o\.dataset\.points=String\(type\.points\)/, 'Karten zeigen die Punkte');
+assert.match(boxer, /function updateTrainingFavorites\(\)\{/, 'Häufig-Bereich aus dem eigenen Verlauf');
+assert.match(boxer, /historyRows=r\.data\|\|\[\];updateTrainingFavorites\(\);/, 'Häufig wird nach dem Laden aktualisiert');
+const cards = read('takeover-choice-cards.js');
+assert.match(cards, /const FAVORITES='Häufig'/, 'Bereichs-Tasten mit Häufig');
+assert.match(cards, /tab\.setAttribute\('role','tab'\)/, 'Bereichs-Tasten sind Tabs');
+assert.match(cards, /attributeFilter:\['disabled','label','value','data-tl-favorites'\]/, 'Häufig reagiert auf neue Favoriten');
+const css = read('takeover-redesign.css');
+assert.match(css, /\.tl-choice-field\.is-grouped \.tl-choice-track\{display:grid;grid-template-columns:minmax\(0,1fr\)/, 'Gruppierte Auswahl als Liste ohne seitliches Scrollen');
+assert.match(css, /\.tl-choice-presets \.tl-choice-track\{flex-wrap:wrap;overflow:visible/, 'Schnellwahl ohne seitliches Scrollen');
+
 const coach = read('coach.html');
 assert.match(coach, /Dauer: \$\{s\.duration_minutes\} Min\./, 'Trainer sieht die Trainingsdauer');
 
