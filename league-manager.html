@@ -147,6 +147,7 @@ async function listSeasons(){
  const root=$('seasonList');root.replaceChildren();
  if(r.error){root.textContent='Saisons konnten nicht geladen werden: '+r.error.message;return}
  const today=localDate(0);
+ const running=(r.data||[]).find(x=>x.status==='active');
  for(const s of r.data||[]){
   const card=row(s.title,chDate(s.starts_on)+' bis '+chDate(s.ends_on)+' · '+(SEASON_STATUS[s.status]||s.status));
   if(s.status==='active'){
@@ -166,6 +167,13 @@ async function listSeasons(){
    const button=document.createElement('button');button.textContent=s.status==='draft'?'Aktivieren':'Saison abschliessen';
    button.type='button';button.className=s.status==='active'?'danger':'';
    if(s.status==='active'&&s.ends_on>=today)button.disabled=true;
+   // A prepared next season waits until the running one is closed (no two active seasons).
+   if(s.status==='draft'&&running){
+    button.disabled=true;
+    const wait=document.createElement('p');wait.className='muted';
+    wait.textContent='Vorbereitet. Aktivieren ist möglich, sobald «'+running.title+'» abgeschlossen ist.';
+    card.append(wait);
+   }
    button.onclick=async()=>{
     if(!confirm('Saison '+s.title+' wirklich '+(s.status==='draft'?'aktivieren':'abschliessen und Rangliste endgültig speichern')+'?'))return;
     button.disabled=true;
