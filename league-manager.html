@@ -331,6 +331,25 @@ async function listGoals(more=false){
  if(rows.length===10){const more=Object.assign(document.createElement('button'),{type:'button',textContent:'Weitere Ziele laden',className:'goal-more secondary'});
   more.onclick=async()=>{goalOffset+=10;await listGoals(true)};goalHost.append(more)}
 }
+// Änderungsprotokoll (nur Admin): letzte 20 Verwaltungsänderungen an Saisons, Liga-Challenges, Arenen und Zielen.
+const AUDIT_ENTITY={season:'Saison',league_challenge:'Liga-Challenge',arena:'Arena',goal:'Ziel'};
+const AUDIT_ACTION={insert:'angelegt',update:'geändert',delete:'gelöscht'};
+async function listAudit(){
+ const section=document.createElement('section');section.className='panel audit-log';
+ const h=document.createElement('h2');h.textContent='🧾 Änderungsprotokoll';
+ const note=document.createElement('p');note.className='muted';note.textContent='Letzte 20 Änderungen an Saisons, Liga-Challenges, Arenen und Zielen. Profile und Trainings haben ihr eigenes Protokoll in der Clubverwaltung bzw. im Trainerbereich.';
+ const list=document.createElement('div');section.append(h,note,list);$('dashboard').append(section);
+ const r=await db.from('league_admin_audit_v21').select('created_at,actor_role,entity,action,old_value,new_value').order('created_at',{ascending:false}).limit(20);
+ if(r.error){list.textContent='Protokoll noch nicht verfügbar.';return}
+ if(!r.data?.length){list.textContent='Noch keine Einträge.';return}
+ for(const e of r.data){
+  const title=(e.new_value||e.old_value||{}).title||'';
+  const changed=e.action==='update'?Object.keys(e.new_value||{}).filter(k=>JSON.stringify((e.old_value||{})[k])!==JSON.stringify(e.new_value[k])):[];
+  const detail=changed.length?' · '+changed.map(k=>k+': '+String((e.old_value||{})[k]??'–')+' → '+String(e.new_value[k]??'–')).join(', '):'';
+  list.append(row((AUDIT_ENTITY[e.entity]||e.entity)+' «'+title+'» '+(AUDIT_ACTION[e.action]||e.action),
+   new Date(e.created_at).toLocaleString('de-CH',{dateStyle:'short',timeStyle:'short'})+' · '+(e.actor_role==='admin'?'Admin':e.actor_role==='coach'?'Trainer':e.actor_role==='boxer'?'Boxer':'System')+detail));
+ }
+}
 async function init(){
  const {data:{user},error}=await db.auth.getUser();
  if(error||!user){say('Bitte als Admin oder Trainer anmelden.');return}
@@ -351,7 +370,7 @@ async function init(){
   for(const el of goalPanel.querySelectorAll('h3,p.muted'))el.hidden=true;
  }
  $('dashboard').hidden=false;say(coach?'Trainer-Verwaltung bereit: Boxerziele.':'Admin-Verwaltung bereit.');
- await Promise.all(coach?[listGoals()]:[listSeasons(),listGlobals(),listGoals(),loadRewardGoals()]);
+ await Promise.all(coach?[listGoals()]:[listSeasons(),listGlobals(),listGoals(),loadRewardGoals(),listAudit()]);
 }
 init().catch(e=>say('Verwaltung nicht verfügbar: '+e.message));
 </script><script src="./takeover-choice-cards.js" defer></script><script src="./takeover-navigation.js" defer></script></body></html>
