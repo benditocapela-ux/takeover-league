@@ -6,7 +6,7 @@ Grundlage: Supabase Security Advisor (Produktion), Funktionsdefinitionen in `pub
 
 | Befund | Bewertung | Massnahme |
 |---|---|---|
-| 75 SECURITY-DEFINER-Funktionen sind für angemeldete Nutzer aufrufbar (Advisor-Warnung 0029) | **Beabsichtigt.** Jede prüft die Rolle über `auth.uid()`, `league_private.coach_v2_actor()` oder `is_league_admin/coach()`. Eine Funktion delegiert an die geprüfte `admin_edit_training`. **Keine Funktion ohne Prüfung gefunden.** | 16 ungenutzte 2.0-Funktionen werden gesperrt (Migration `20261028120000`). |
+| 75 SECURITY-DEFINER-Funktionen sind für angemeldete Nutzer aufrufbar (Advisor-Warnung 0029) | **Beabsichtigt.** Jede prüft die Rolle über `auth.uid()`, `league_private.coach_v2_actor()` oder `is_league_admin/coach()`. Eine Funktion delegiert an die geprüfte `admin_edit_training`. **Keine Funktion ohne Prüfung gefunden.** | 16 ungenutzte 2.0-Funktionen sind seit 27.10.2026 gesperrt (Migration `20261028120000`, Prod-Postflight: 0 aufrufbar). |
 | 6 Funktionen für `anon` aufrufbar (Warnung 0028) | **Beabsichtigt:** öffentliche Rangliste, Levels, Avatare, Monats-Awards, Award-Rangliste (alle nur `is_active AND is_listed`), dazu `is_league_admin()`. Diese liefert nur «bin ich Admin?» für den eigenen Login und ist für Anonyme immer `false`. | keine |
 | 17 Tabellen mit RLS ohne Policy (Info 0008) | **Beabsichtigt:** private Ledger und interne Tabellen (EXP-Ledger, Duelle, Arena, Coach-Challenges, Training-Audit). Direkter Zugriff ist komplett gesperrt, gelesen und geschrieben wird nur über geprüfte Funktionen. | keine |
 | Schutz vor geleakten Passwörtern ist ausgeschaltet (Auth) | **Empfohlen einzuschalten.** | Owner: Supabase Dashboard → *Authentication → Policies/Passwords* → «Leaked password protection» aktivieren. |
@@ -36,6 +36,8 @@ Grundlage: Supabase Security Advisor (Produktion), Funktionsdefinitionen in `pub
 
 ## Offene Sicherheits-Gates
 
+- [x] Ungenutzte 2.0-Funktionen gesperrt (27.10.2026, Migration `20261028120000`).
+- [x] Neue Funktionen aus #35 bis #41 ohne Anmeldung nicht aufrufbar (Prod-Postflight 27.10.2026).
 - [ ] Echter Login-Test mit Boxer-, Trainer- und Admin-Konto in der Produktion. Dafür braucht es Testkonten vom Owner.
-- [ ] Echtes Backup mit getestetem Restore (siehe `docs/BACKUP_RESTORE_RUNBOOK.md`).
+- [ ] Echtes Backup mit getestetem Restore (siehe `docs/BACKUP_RESTORE_RUNBOOK.md`). Vor der Migration vom 27.10.2026 auf Owner-Entscheid übersprungen.
 - [ ] «Leaked password protection» aktivieren.
