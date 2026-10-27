@@ -21,7 +21,9 @@ for(const [path,b] of Object.entries(baseline)){
  assert.deepEqual(originalRpc,b.rpc,`${path}: a pre-existing RPC literal changed`);
  const addedRpc=gotRpc.filter(rpc=>!b.rpc.includes(rpc));
  const allowedRpc={'admin.html':['admin_list_profile_archive_state'],'coach.html':['coach_list_training_history'],
-  'league-manager.html':['league_v21_admin_delete_global_draft','league_v21_admin_publish_global_challenge','league_v21_admin_update_global_draft'],
+  'league-manager.html':['league_v21_admin_delete_global_draft','league_v21_admin_publish_global_challenge','league_v21_admin_update_global_draft',
+   'league_v21_archive_goal','league_v21_complete_goal','league_v21_record_goal_progress'],
+  'goals.html':['league_v21_archive_goal'],
   'arena.html':['league_v21_arena_cancel']};
  assert.deepEqual(addedRpc,allowedRpc[path]||[],`${path}: unexpected additional RPC literal`);
  const choiceCardPages=new Set(['arena.html','boxer.html','boxer-compare.html','challenges.html','duels.html','goals.html','league-manager.html','league-challenges.html']);

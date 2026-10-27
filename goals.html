@@ -23,62 +23,100 @@ const tomorrow=new Date(Date.now()+30*86400000);$('endsOn').value=tomorrow.toLoc
 const say=t=>status.textContent=t;
 const format=n=>Number(n).toLocaleString('de-CH',{maximumFractionDigits:2});
 function node(tag,value){const e=document.createElement(tag);e.textContent=String(value||'');return e}
+const GOAL_STATUS={active:'Aktiv',completed:'Erreicht',archived:'Archiviert'};
+const METRIC_UNIT={training_sessions:'Trainings',jogging_km:'km',technique_minutes:'Technikminuten',custom:''};
+const chDate=d=>{const [y,m,day]=String(d||'').split('-');return day?day+'.'+m+'.'+y:''};
+function goalError(e){
+ const text=String(e?.message||e||'');
+ if(/Invalid goal fields/.test(text))return 'Ungültige Angaben: Titel 3–120 Zeichen, Ziel grösser als 0, Frist heute bis in 2 Jahren.';
+ if(/Assigned manual goals are confirmed by the coach/.test(text))return 'Dieses Ziel hat dein Trainer zugewiesen. Den Fortschritt bestätigt der Trainer.';
+ if(/Automatic goals use confirmed submissions/.test(text))return 'Dieses Ziel zählt automatisch deine bestätigten Trainings.';
+ if(/Invalid progress amount/.test(text))return 'Bitte eine Menge grösser als 0 eingeben (Notiz höchstens 500 Zeichen).';
+ if(/Goal not active|Goal not found or archived/.test(text))return 'Dieses Ziel ist nicht mehr aktiv.';
+ if(/Vom Trainer zugewiesene Ziele archiviert der Trainer/.test(text))return 'Vom Trainer zugewiesene Ziele kann nur der Trainer archivieren.';
+ return text;
+}
 async function load(){
  if(!profile)return;
  const [goals,progress,trainings]=await Promise.all([
-  db.from('league_boxer_goals_v21').select('id,title,metric,target_value,starts_on,ends_on,status,reward_exp').eq('boxer_id',profile.id).order('created_at',{ascending:false}),
-  db.from('league_goal_progress_v21').select('goal_id,progress_delta'),
+  db.from('league_boxer_goals_v21').select('id,title,metric,target_value,starts_on,ends_on,status,reward_exp,created_by').eq('boxer_id',profile.id).order('created_at',{ascending:false}),
+  db.from('league_goal_progress_v21').select('goal_id,progress_delta,note,created_at').order('created_at',{ascending:false}),
   db.from('training_submissions').select('training_date,status,jogging_km,technique_minutes').eq('boxer_id',profile.id).eq('status','approved').order('training_date',{ascending:false}).limit(3000)
  ]);
  if(goals.error||progress.error||trainings.error){say('Ziele konnten nicht geladen werden. '+(goals.error||progress.error||trainings.error).message);return}
  const root=$('goals');root.replaceChildren();
  const rows=goals.data||[];const manual=progress.data||[];
+ const archive=document.createElement('details');archive.className='goal-archive';const archiveSum=node('summary','');archive.append(archiveSum);let archived=0;
  for(const g of rows){
+  const own=g.created_by===profile.id;
   const card=node('article','');card.className='goal';const title=node('strong',g.title);card.append(title);
+  if(!own)card.append(node('p','Vom Trainer zugewiesen'));
   const items=(trainings.data||[]).filter(t=>t.training_date>=g.starts_on&&t.training_date<=g.ends_on);
+  const entries=manual.filter(x=>x.goal_id===g.id);
   const value=g.metric==='custom'
-   ?manual.filter(x=>x.goal_id===g.id).reduce((a,x)=>a+Number(x.progress_delta||0),0)
+   ?entries.reduce((a,x)=>a+Number(x.progress_delta||0),0)
    :g.metric==='training_sessions'?items.length
    :items.reduce((a,x)=>a+Number(x[g.metric]||0),0);
   const max=Number(g.target_value),pct=Math.max(0,Math.min(100,Math.round(value/max*100)));
-  const summary=node('p',format(value)+' / '+format(max)+' · '+pct+'% · '+(g.reward_exp>0?g.reward_exp+' EXP nach serverseitiger Freigabe':'Ohne EXP-Belohnung'));summary.className='meta';card.append(summary);
+  const unit=METRIC_UNIT[g.metric]?' '+METRIC_UNIT[g.metric]:'';
+  const summary=node('p',format(value)+' / '+format(max)+unit+' · '+pct+'% · '+(g.reward_exp>0?g.reward_exp+' EXP bei Zielerreichung':'Ohne EXP-Belohnung'));summary.className='meta';card.append(summary);
   const track=document.createElement('div');track.className='track';track.setAttribute('role','progressbar');
   track.setAttribute('aria-label','Zielerreichung');track.setAttribute('aria-valuemin','0');track.setAttribute('aria-valuemax','100');track.setAttribute('aria-valuenow',String(pct));
   const fill=document.createElement('div');fill.style.width=pct+'%';track.append(fill);card.append(track);
-  card.append(node('p','Frist: '+g.ends_on+' · '+(g.status==='active'?'Aktiv':g.status)));
+  card.append(node('p','Frist: '+chDate(g.ends_on)+' · '+(GOAL_STATUS[g.status]||g.status)));
   if(g.status==='active'&&pct>=100){
    const complete=node('button','Zielabschluss serverseitig prüfen');complete.type='button';
    complete.addEventListener('click',async()=>{
     complete.disabled=true;
     const result=await db.rpc('league_v21_complete_goal',{p_goal:g.id});
-    if(result.error){say('Prüfung fehlgeschlagen: '+result.error.message);complete.disabled=false;return}
+    if(result.error){say('Prüfung fehlgeschlagen: '+goalError(result.error));complete.disabled=false;return}
     const completed=result.data?.status==='completed',fresh=result.data?.changed===true,reward=Number(result.data?.exp_awarded||0);
     say(completed?(fresh?(reward>0?'Ziel abgeschlossen – '+reward+' EXP gutgeschrieben.':'Ziel abgeschlossen – ohne EXP-Belohnung.'):'Ziel war bereits abgeschlossen. EXP wurden nicht erneut vergeben.'):'Ziel noch nicht erfüllt.');
     await load();
    });
    card.append(complete);
   }
-  if(g.metric==='custom'&&g.status==='active'){
+  if(g.metric==='custom'&&g.status==='active'&&own){
    const form=document.createElement('form');const label=node('label','Manuellen Fortschritt hinzufügen');
    const amount=document.createElement('input');amount.type='number';amount.min='0.01';amount.max='1000000';amount.step='0.01';amount.required=true;amount.placeholder='Zusätzlicher Fortschritt';
-   label.append(amount);const submit=node('button','Fortschritt erfassen');submit.type='submit';form.append(label,submit);
+   const noteLabel=node('label','Notiz (optional)');const note=document.createElement('input');note.maxLength=500;note.placeholder='z. B. 3 Runden Seilspringen';noteLabel.append(note);
+   label.append(amount);const submit=node('button','Fortschritt erfassen');submit.type='submit';form.append(label,noteLabel,submit);
    form.addEventListener('submit',async ev=>{
-    ev.preventDefault();submit.disabled=true;
-    const r=await db.rpc('league_v21_record_goal_progress',{p_goal:g.id,p_delta:Number(amount.value),p_note:null});
-    if(r.error){say('Fortschritt nicht gespeichert: '+r.error.message);submit.disabled=false;return}
+    ev.preventDefault();if(submit.disabled)return;submit.disabled=true;
+    const r=await db.rpc('league_v21_record_goal_progress',{p_goal:g.id,p_delta:Number(amount.value),p_note:note.value||null});
+    if(r.error){say('Fortschritt nicht gespeichert: '+goalError(r.error));submit.disabled=false;return}
     say('Fortschritt erfasst.');await load();
    });card.append(form);
+  }else if(g.metric==='custom'&&g.status==='active'){
+   card.append(node('p','Den Fortschritt dieses Ziels bestätigt dein Trainer.'));
   }
-  root.append(card);
+  if(g.metric==='custom'&&entries.length){
+   const hist=document.createElement('details');hist.append(node('summary','Verlauf ('+entries.length+')'));
+   const list=document.createElement('ul');list.className='goal-history';
+   for(const x of entries.slice(0,10))list.append(node('li',new Date(x.created_at).toLocaleDateString('de-CH')+' · +'+format(x.progress_delta)+(x.note?' · '+x.note:'')));
+   hist.append(list);card.append(hist);
+  }
+  if(own&&g.status!=='archived'){
+   const arch=node('button','Archivieren');arch.type='button';arch.className='secondary';
+   arch.addEventListener('click',async()=>{
+    if(!confirm('Ziel «'+g.title+'» archivieren? Bereits gutgeschriebene EXP bleiben erhalten.'))return;
+    arch.disabled=true;const r=await db.rpc('league_v21_archive_goal',{p_goal:g.id});
+    if(r.error){say('Archivieren nicht möglich: '+goalError(r.error));arch.disabled=false;return}
+    say('Ziel archiviert.');await load();
+   });card.append(arch);
+  }
+  if(g.status==='archived'){archive.append(card);archived++}else root.append(card);
  }
+ if(archived){archiveSum.textContent='Archiv ('+archived+')';root.append(archive)}
  if(!rows.length)root.append(node('p','Noch keine Ziele. Erstelle dein erstes Ziel.'));
- say(rows.length+' persönliche Ziele geladen.');
+ const activeCount=rows.filter(g=>g.status!=='archived').length;
+ say(activeCount===1?'1 Ziel geladen.':activeCount+' Ziele geladen.');
 }
 $('goalForm').addEventListener('submit',async ev=>{
- ev.preventDefault();if(!profile)return;
+ ev.preventDefault();if(!profile||$('save').disabled)return;
  $('save').disabled=true;say('Ziel wird gespeichert …');
  const r=await db.rpc('league_v21_save_goal',{p_goal_id:null,p_boxer_id:profile.id,p_title:$('title').value,p_metric:$('metric').value,p_target:Number($('target').value),p_end_date:$('endsOn').value});
- $('save').disabled=false;if(r.error){say('Speichern fehlgeschlagen: '+r.error.message);return}
+ $('save').disabled=false;if(r.error){say('Speichern fehlgeschlagen: '+goalError(r.error));return}
  $('goalForm').reset();say('Ziel gespeichert.');await load();
 });
 $('refresh').addEventListener('click',load);
