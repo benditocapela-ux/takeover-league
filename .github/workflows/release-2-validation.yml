@@ -58,4 +58,5 @@ jobs:
       - run: node tests/account-switch-browser.cjs
       - run: node tests/training-tabs-browser.cjs
       - run: node tests/performance-browser.cjs
+      - run: node tests/gym-browser.cjs
         timeout-minutes: 4
