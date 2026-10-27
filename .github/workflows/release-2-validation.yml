@@ -55,4 +55,5 @@ jobs:
       - run: node tests/league-21-browser.cjs
         timeout-minutes: 4
       - run: node tests/admin-registration-browser.cjs
+      - run: node tests/training-tabs-browser.cjs
         timeout-minutes: 4
