@@ -1,0 +1,104 @@
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Boxstil-Test · Takeover League</title>
+<style>:root{color-scheme:dark;font:16px system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 110px;background:var(--bg);color:var(--text)}main{max-width:760px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="stil-test">
+<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Boxstil-Test"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🧭</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Welcher Boxer-Typ bist du?</div><div class="tl-screen-title">Boxstil-Test</div></div></div><div class="tl-screen-links"><a href="./stil-test.html" class="tl-screen-primary">Boxstil-Test</a><a href="./bewertung.html">Bewertung</a><a href="./boxer.html">Mein Studio</a></div></div>
+<p class="tl-subnav"><a href="./boxer.html">← Mein Studio</a></p>
+<h1 id="pageTitle">Boxstil-Test</h1>
+<p id="status" class="tlp-status" role="status">Wird geladen …</p>
+<div id="app"></div>
+</main>
+<script src="./takeover-performance.js" defer></script>
+<script type="module">
+const P=window.TLPerf,$=id=>document.getElementById(id),app=$('app'),status=$('status');
+const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
+let db,me,step=-1,answers=[],busy=false,showLast=false,staff=[];
+const Q=P.QUESTIONS;
+function resultView(cur,prev,fresh){
+ const t=P.styleType(cur.scores),state=me.style.state||{};
+ return `<div class="tlp-eyebrow">${fresh?'Dein Ergebnis · gespeichert':'Letzter Test vom '+P.fmtDate(cur.created_at)}</div><h2 class="tlp-h2 big">${P.esc(t.title)}</h2>
+  <div class="tlp-panel tlp-center">${P.radarSVG(cur.scores,prev?prev.scores:null,330)}${prev?'<span class="tlp-note"><b class="gold">━</b> jetzt · <b>┅</b> letzter Test</span>':''}</div>
+  <div class="tlp-panel tlp-sys"><div class="tlp-eyebrow gold">Dein Boxstil</div><b>${P.esc(t.kind)}</b><p>${P.esc(t.text)}</p></div>
+  <div class="tlp-panel"><b>Trainingstipp</b><p class="tlp-note">${P.esc(t.tip)}</p></div>
+  <div class="tlp-panel"><b>Was bedeuten die Ecken?</b>${P.AX.map(a=>`<div class="tlp-li static"><b class="tlp-num">${cur.scores[a.k]}</b><span class="tlp-grow"><b>${a.n}</b><span class="tlp-note">Du ${a.p}.</span></span></div>`).join('')}</div>
+  ${state.can_take?`<button type="button" class="tlp-btn" data-act="start">Test neu machen</button>`:`<div class="tlp-panel tlp-callout">Nächster Test ab ${P.fmtDate(state.next_allowed_on)}. Dein Coach kann ihn früher freigeben.</div>`}`;
+}
+function introView(){
+ const st=me.style,state=st.state||{};
+ return `<div class="tlp-panel tlp-center">${P.radarSVG({o:60,v:45,c:70,p:35,s:80,a:40},null,260)}</div>
+  <div class="tlp-panel"><b>So funktioniert der Test</b>
+   <p class="tlp-note">8 kurze Fragen zu deinem Boxen. Wähle jeweils die Antwort, die am besten zu dir passt. Es gibt <b>keine falschen Antworten</b>.</p>
+   <p class="tlp-note">Am Schluss siehst du dein Stil-Diagramm: Je weiter eine Ecke nach aussen geht, desto mehr passt dieser Stil zu dir.</p>
+   <p class="tlp-note">Dauer: etwa 2 Minuten · einmal pro Monat</p></div>
+  ${state.can_take?`<button type="button" class="tlp-btn" data-act="start">Test starten</button>${state.unlocked?'<p class="tlp-note gold">Dein Coach hat den Test für dich wieder freigegeben.</p>':''}`:`<div class="tlp-panel tlp-callout">Du hast den Test diesen Monat schon gemacht. Nächster Test ab ${P.fmtDate(state.next_allowed_on)}.</div>`}
+  ${st.current?`<button type="button" class="tlp-btn ghost" data-act="last">Letztes Ergebnis ansehen</button>`:''}`;
+}
+function questionView(){
+ const q=Q[step],sel=answers[step],last=step===Q.length-1;
+ return `<div class="tlp-row spread"><span class="tlp-eyebrow">Frage ${step+1} von ${Q.length}</span><button type="button" class="tlp-btn ghost small" data-act="quit">Abbrechen</button></div>
+  <div class="tlp-bar mid"><i style="width:${(step+1)/Q.length*100}%"></i></div>
+  <h2 class="tlp-h2 big">${P.esc(q.q)}</h2>
+  <div class="tlp-panel tlp-callout"><b class="gold">Tipp</b> ${P.esc(q.tip)}</div>
+  <div class="tlp-opts" role="radiogroup" aria-label="Antworten">${q.o.map((o,i)=>`<button type="button" class="tlp-opt" role="radio" aria-checked="${sel===i}" data-pick="${i}"><span class="tlp-key">${'ABC'[i]}</span><span><b>${P.esc(o[0])}</b><span class="tlp-note">${P.esc(o[1])}</span></span></button>`).join('')}</div>
+  ${last?`<p class="tlp-note">Mit «Auswerten» wird dein Ergebnis gespeichert. Danach geht der Test erst nächsten Monat wieder, ausser dein Coach gibt ihn früher frei.</p>`:''}
+  <div class="tlp-row">${step?'<button type="button" class="tlp-btn ghost" data-act="prev" aria-label="Zurück">‹</button>':''}<button type="button" class="tlp-btn grow" data-act="next" ${sel===undefined||busy?'disabled':''}>${last?'Auswerten':'Weiter'}</button></div>`;
+}
+function staffView(){
+ return `<div class="tlp-panel"><p class="tlp-note">Jeder Boxer kann den Test einmal pro Monat machen. Wer ihn diesen Monat schon gemacht hat, ist bis zum nächsten Monat gesperrt. Mit «Freigeben» darf er ihn sofort nochmal machen.</p>
+  <div class="tlp-list">${staff.map(b=>{const s=b.style||{},t=b.style_scores?P.styleType(b.style_scores).title:'noch kein Ergebnis';
+   return `<div class="tlp-li static"><span class="tlp-grow"><b>${P.esc(b.display_name)}</b><span class="tlp-note">${P.esc(t)} · ${s.last_at?P.fmtDate(s.last_at):'noch nie'}</span></span>${s.locked?`<button type="button" class="tlp-btn small" data-unlock="${P.esc(b.id)}">Freigeben</button>`:`<span class="tlp-pill ${s.unlocked?'gold':'ok'}">${s.unlocked?'freigegeben':'offen'}</span>`}</div>`}).join('')||'<p class="tlp-note">Keine aktiven Boxer.</p>'}</div></div>`;
+}
+function render(){
+ if(me.role==='admin'||me.role==='coach'){$('pageTitle').textContent='Boxstil-Test freigeben';app.innerHTML=staffView();return}
+ if(!me.style_enabled){app.innerHTML='<div class="tlp-panel">Der Boxstil-Test ist noch nicht freigeschaltet.</div>';return}
+ const st=me.style;
+ if(step>=0){app.innerHTML=questionView();return}
+ if(st.current&&(showLast||!(st.state||{}).can_take)){app.innerHTML=resultView(st.current,st.previous,false);return}
+ app.innerHTML=introView();
+}
+app.addEventListener('click',async ev=>{
+ const b=ev.target.closest('button');if(!b)return;
+ if(b.dataset.pick!==undefined){answers[step]=Number(b.dataset.pick);const y=window.scrollY;render();window.scrollTo(0,y);return}
+ if(b.dataset.unlock){
+  b.disabled=true;const {data,error}=await db.rpc('staff_unlock_style_test',{p_boxer_id:b.dataset.unlock});
+  if(error){say(error.message,true);b.disabled=false;return}
+  say(data.status==='unlocked'?'Test für '+data.boxer+' freigegeben.':'Der Test war bereits offen.');await load();return}
+ const a=b.dataset.act;
+ if(a==='start'){step=0;answers=[];showLast=false;render();window.scrollTo(0,0);return}
+ if(a==='quit'){step=-1;answers=[];render();return}
+ if(a==='prev'){step=Math.max(0,step-1);render();return}
+ if(a==='last'){showLast=true;render();return}
+ if(a==='next'){
+  if(answers[step]===undefined)return;
+  if(step<Q.length-1){step++;render();window.scrollTo(0,0);return}
+  busy=true;render();
+  const {data,error}=await db.rpc('submit_style_test',{p_answers:answers});
+  busy=false;
+  if(error){say(error.message,true);render();return}
+  const prev=me.style.current||null;
+  me.style={current:{scores:data.scores,created_at:new Date().toISOString()},previous:prev,state:{can_take:false,next_allowed_on:data.next_allowed_on}};
+  step=-1;answers=[];say('');app.innerHTML=resultView(me.style.current,prev,true);window.scrollTo(0,0);
+ }
+});
+async function load(){
+ const p=await db.rpc('get_my_performance');
+ if(p.error){say(p.error.message,true);return}
+ me={role:p.data.profile.role,style_enabled:p.data.style_enabled,style:p.data.style||{}};
+ if(me.role==='admin'||me.role==='coach'){
+  const l=await db.rpc('staff_list_performance');
+  if(l.error){say(l.error.message,true);return}
+  staff=l.data||[];
+ }
+ if(!status.classList.contains('error')&&!/freigegeben|offen/.test(status.textContent))say('');
+ render();
+}
+(async()=>{
+ try{
+  db=await P.client();
+  const s=await db.auth.getSession();
+  if(!s.data||!s.data.session){say('');app.innerHTML='<div class="tlp-panel">Bitte <a href="./login.html">anmelden</a>, um den Test zu machen.</div>';return}
+  await load();
+ }catch(e){say('Boxstil-Test konnte nicht geladen werden: '+(e.message||e),true)}
+})();
+</script>
+<script src="./takeover-navigation.js" defer></script></body></html>

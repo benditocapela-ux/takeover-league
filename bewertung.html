@@ -1,0 +1,108 @@
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Bewertung · Takeover League</title>
+<style>:root{color-scheme:dark;font:16px system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 110px;background:var(--bg);color:var(--text)}main{max-width:760px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}button:focus-visible,a:focus-visible,textarea:focus-visible{outline:3px solid var(--gold);outline-offset:3px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="bewertung">
+<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Bewertung"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🃏</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Coach-Bewertung</div><div class="tl-screen-title">Bewertung</div></div></div><div class="tl-screen-links"><a href="./bewertung.html" class="tl-screen-primary">Bewertung</a><a href="./stil-test.html">Boxstil-Test</a><a href="./boxer.html">Mein Studio</a></div></div>
+<p class="tl-subnav"><a href="./boxer.html">← Mein Studio</a></p>
+<h1 id="pageTitle">Bewertung</h1>
+<p id="status" class="tlp-status" role="status">Wird geladen …</p>
+<div id="app"></div>
+</main>
+<script src="./takeover-performance.js" defer></script>
+<script type="module">
+const P=window.TLPerf,$=id=>document.getElementById(id),app=$('app'),status=$('status');
+const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
+let db,me,staffList=[],edit=null,busy=false;
+function catBlock(cur,prev,open){
+ return P.CATS.map(c=>{const cv=cur.summary.categories[c.k],cd=prev?cv-prev.summary.categories[c.k]:null;
+  return `<details class="tlp-panel tlp-cat" ${open||c.k==='OFF'||c.k==='DEF'?'open':''}><summary><span><b class="tlp-catname">${c.n}</b> <span class="tlp-note">${c.k}</span></span><span class="tlp-catval"><b>${cv}</b>${cd!==null?P.deltaTag(cd):''}</span></summary>
+   ${c.s.map(([k,n,h])=>{const x=Number(cur.scores[k]),d=prev?x-Number(prev.scores[k]):0,cls=x>=8?'ok':x<=5?'bad':'mid';
+    return `<div class="tlp-skill"><div class="tlp-skillhead"><b>${P.esc(n)}</b><span><b>${x}</b><span class="tlp-note">/10</span> ${d?P.deltaTag(d):''}</span></div><div class="tlp-bar ${cls}"><i style="width:${x*10}%"></i></div><span class="tlp-note">${P.esc(h)}</span></div>`}).join('')}
+  </details>`}).join('');
+}
+function ownView(data){
+ const r=data.rating;
+ if(!data.ratings_enabled){return `<div class="tlp-panel">Die Coach-Bewertung ist noch nicht freigeschaltet.</div>`}
+ if(!r||!r.current){return `<div class="tlp-panel"><b>Noch keine Bewertung.</b><p class="tlp-note">Dein Coach bewertet bald deine Offense, Defense, Beinarbeit, Kondition, Taktik und Mentalität. Dann siehst du hier deine Spielerkarte.</p></div>`}
+ const cur=r.current,prev=r.previous,o=cur.summary.overall,d=prev?o-prev.summary.overall:null;
+ const pos=data.style&&data.style.current?P.styleType(data.style.current.scores).pos:'BOX';
+ return `<div class="tlp-center">${P.card({name:data.profile.display_name,overall:o,categories:cur.summary.categories,pos,delta:d,width:230})}</div>
+  <div class="tlp-panel tlp-row spread"><div><div class="tlp-eyebrow">Gesamt</div><div class="tlp-big">${o} ${P.deltaTag(d,true)}</div></div><div class="tlp-right"><span class="tlp-note">aktualisiert am</span><br><b>${P.fmtDate(cur.created_at)}</b>${prev?`<br><span class="tlp-note">vorher ${P.fmtDate(prev.created_at)}</span>`:''}</div></div>
+  ${cur.note?`<div class="tlp-panel"><b>${P.esc(cur.rated_by||'Coach')}</b><p class="tlp-quote">«${P.esc(cur.note)}»</p></div>`:''}
+  <div class="tlp-grid2"><div class="tlp-panel"><div class="tlp-eyebrow ok">Deine Stärken</div>${(cur.summary.top||[]).map(x=>`<div>${P.esc(P.SKILL[x.k].n)} <b class="ok">${x.v}</b></div>`).join('')}</div>
+   <div class="tlp-panel"><div class="tlp-eyebrow bad">Daran arbeiten</div>${(cur.summary.low||[]).map(x=>`<div>${P.esc(P.SKILL[x.k].n)} <b class="bad">${x.v}</b></div>`).join('')}</div></div>
+  ${catBlock(cur,prev)}
+  <p class="tlp-note">Die Bewertung macht dein Coach. Sie zeigt, wo du schon stark bist und woran ihr als Nächstes arbeitet. Andere Liga-Mitglieder sehen nur deine Karte, nicht die Einzelnoten und nicht den Kommentar.</p>`;
+}
+function staffListView(){
+ return `<div class="tlp-panel"><p class="tlp-note">Tippe auf einen Boxer und passe seine Noten von 1 bis 10 an. Er sieht danach, was rauf- oder runterging und seit wann.</p>
+  <div class="tlp-list">${staffList.map(b=>`<button type="button" class="tlp-li" data-open="${P.esc(b.id)}" ${b.is_self?'disabled':''}><span class="tlp-chip t-${b.overall!=null?P.tier(b.overall)[0]:'bronze'}">${b.overall??'–'}</span><span class="tlp-grow"><b>${P.esc(b.display_name)}</b><span class="tlp-note">${b.is_self?'Deine Bewertung macht ein anderer Trainer':b.rated_at?'zuletzt '+P.fmtDate(b.rated_at):'noch nicht bewertet'}</span></span><span aria-hidden="true">›</span></button>`).join('')||'<p class="tlp-note">Keine aktiven Boxer.</p>'}</div></div>`;
+}
+function editorView(){
+ const v=edit.draft,base=edit.base,s=P.summary(v),bs=base?P.summary(base):null,d=bs?s.overall-bs.overall:null;
+ return `<div class="tlp-row spread"><div><div class="tlp-eyebrow">${base?'zuletzt bewertet am '+P.fmtDate(edit.ratedAt):'erste Bewertung'}</div><h2 class="tlp-h2">${P.esc(edit.name)}</h2></div><button type="button" class="tlp-btn ghost" data-act="back">Zurück</button></div>
+  <div class="tlp-row">${P.card({name:edit.name,overall:s.overall,categories:s.categories,pos:edit.pos,delta:d,width:150})}<div><div class="tlp-eyebrow">Neue Gesamtwertung</div><div class="tlp-big">${s.overall} ${P.deltaTag(d,true)}</div><span class="tlp-note">${base?'«war» zeigt die bisherige Note.':'Alle Noten starten bei 5.'} Mit − und + änderst du sie.</span></div></div>
+  ${P.CATS.map(c=>`<div class="tlp-panel"><div class="tlp-row spread"><b class="tlp-catname">${c.n}</b><span class="tlp-catval"><b>${s.categories[c.k]}</b>${bs?P.deltaTag(s.categories[c.k]-bs.categories[c.k]):''}</span></div>
+   ${c.s.map(([k,n,h])=>{const x=v[k],was=base?base[k]:null;return `<div class="tlp-rate"><div class="tlp-grow"><b>${P.esc(n)}</b><span class="tlp-note">${P.esc(h)}</span></div><span class="tlp-was">${was!==null&&was!==x?'war '+was:''}</span><button type="button" class="tlp-step" data-step="${k}" data-d="-1" aria-label="${P.esc(n)} senken" ${x<=1?'disabled':''}>−</button><b class="tlp-val ${was===null||was===x?'':x>was?'ok':'bad'}" aria-live="polite">${x}</b><button type="button" class="tlp-step" data-step="${k}" data-d="1" aria-label="${P.esc(n)} erhöhen" ${x>=10?'disabled':''}>+</button></div>`}).join('')}</div>`).join('')}
+  <label class="tlp-field" for="rateNote">Kommentar für ${P.esc(edit.name)} <span class="tlp-note">sieht nur der Boxer (und die Trainer), höchstens 600 Zeichen</span><textarea id="rateNote" maxlength="600" rows="3" placeholder="z. B. Jab viel besser, jetzt Fokus auf Winkel">${P.esc(edit.note)}</textarea></label>
+  <button type="button" class="tlp-btn" data-act="save" ${busy?'disabled':''}>Bewertung speichern</button>`;
+}
+async function render(){
+ if(edit){app.innerHTML=editorView();return}
+ if(me.role==='admin'||me.role==='coach'){
+  $('pageTitle').textContent='Boxer bewerten';
+  app.innerHTML=staffListView()+(me.role==='coach'&&me.own?'<h2 class="tlp-h2">Meine eigene Bewertung</h2>'+ownView(me.own):'');
+ }else{
+  $('pageTitle').textContent='Meine Bewertung';
+  app.innerHTML=ownView(me.own);
+ }
+}
+async function openEditor(id){
+ const b=staffList.find(x=>x.id===id);if(!b||b.is_self)return;
+ say('Bewertung wird geladen …');
+ const {data,error}=await db.rpc('staff_get_rating',{p_boxer_id:id});
+ if(error){say(error.message,true);return}
+ const base=data&&data.current?data.current.scores:null;
+ const draft={};P.SKILL_KEYS.forEach(k=>{draft[k]=base?Number(base[k]):5});
+ edit={id,name:b.display_name,base,draft,note:'',ratedAt:data&&data.current?data.current.created_at:null,pos:b.style_scores?P.styleType(b.style_scores).pos:'BOX'};
+ say('');render();window.scrollTo(0,0);
+}
+app.addEventListener('click',async ev=>{
+ const t=ev.target.closest('button');if(!t)return;
+ if(t.dataset.open){openEditor(t.dataset.open);return}
+ if(t.dataset.step){const n=$('rateNote');if(n)edit.note=n.value;const k=t.dataset.step;edit.draft[k]=Math.max(1,Math.min(10,edit.draft[k]+Number(t.dataset.d)));
+  const y=window.scrollY;render();window.scrollTo(0,y);return}
+ if(t.dataset.act==='back'){edit=null;render();return}
+ if(t.dataset.act==='save'&&!busy){
+  busy=true;t.disabled=true;edit.note=($('rateNote').value||'').trim();
+  const {data,error}=await db.rpc('staff_rate_boxer',{p_boxer_id:edit.id,p_scores:edit.draft,p_note:edit.note||null});
+  busy=false;
+  if(error){say(error.message,true);t.disabled=false;return}
+  say(`Gespeichert: ${edit.name} ${data.previous_overall!=null?data.previous_overall+' → ':''}${data.overall}`);
+  edit=null;await load();
+ }
+});
+async function load(){
+ const p=await db.rpc('get_my_performance');
+ if(p.error){say(p.error.message,true);return}
+ me={role:p.data.profile.role,own:p.data};
+ if(me.role==='admin'||me.role==='coach'){
+  const l=await db.rpc('staff_list_performance');
+  if(l.error){say(l.error.message,true);return}
+  staffList=l.data||[];
+  const want=new URLSearchParams(location.search).get('boxer');
+  if(want&&!edit){render();await openEditor(want);return}
+ }
+ if(!status.classList.contains('error')&&!/Gespeichert/.test(status.textContent))say('');
+ render();
+}
+(async()=>{
+ try{
+  db=await P.client();
+  const s=await db.auth.getSession();
+  if(!s.data||!s.data.session){say('');app.innerHTML='<div class="tlp-panel">Bitte <a href="./login.html">anmelden</a>, um deine Bewertung zu sehen.</div>';return}
+  await load();
+ }catch(e){say('Bewertung konnte nicht geladen werden: '+(e.message||e),true)}
+})();
+</script>
+<script src="./takeover-navigation.js" defer></script></body></html>
