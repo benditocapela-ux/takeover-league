@@ -125,6 +125,7 @@ jobs:
       - run: node tests/gamification-contracts.cjs
       - run: node tests/training-form-contracts.cjs
       - run: node tests/staff-record-training-contracts.cjs
+      - run: node tests/performance-contracts.cjs
       - run: node tests/release-static-contracts.cjs
       - run: node tests/boxer-dashboard-polish.cjs
       - run: node tests/boxer-profile-actions.cjs
