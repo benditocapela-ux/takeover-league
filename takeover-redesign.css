@@ -596,6 +596,7 @@ body[data-tl-screen="checkin"] #app,body[data-tl-screen="praesenz"] #app,body[da
 .tlp-heat .hc{aspect-ratio:1;max-width:100%;border-radius:6px;background:var(--surface-3)}
 .tlp-heat .hc.on{background:var(--ok)}.tlp-heat .hc.pend{background:color-mix(in srgb,var(--gold) 45%,var(--surface-3))}
 .tlp-heat .hc.now{outline:2px solid var(--gold);outline-offset:1px}.tlp-heat .hc.future{opacity:.35}
+.tlp-heat .hc.on.pfl{box-shadow:inset 0 0 0 3px var(--gold)}
 .tlp-dots{display:flex;gap:4px}.tlp-dots i{width:12px;height:12px;border-radius:50%;background:var(--surface-3);border:1px solid var(--line-strong)}
 .tlp-dots i.ok{background:var(--ok);border-color:var(--ok)}.tlp-dots i.cur{border-color:var(--gold)}
 .tlp-weeknav{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-md);padding:6px}
@@ -773,3 +774,5 @@ body[data-tl-screen] .kg-intro,.kg-intro{position:fixed;inset:0;z-index:21474830
 .kg-tier.reached{border-color:var(--gold)}.kg-tier.claimed{opacity:.6}.kg-tier.milestone{background:linear-gradient(180deg,color-mix(in srgb,var(--gold) 12%,var(--surface)),var(--surface))}
 .kg-tier .tlp-note{font-size:11px}
 @media (prefers-reduced-motion:reduce){.kg-intro *,.kg-intro{animation:none!important}}
+.tlp-pill.inl{align-self:flex-start;width:fit-content;max-width:100%}
+.tlp-check{align-items:center;gap:var(--sp-2);margin:var(--sp-2) 0}.tlp-check input{width:22px;height:22px;flex:none;margin:0}

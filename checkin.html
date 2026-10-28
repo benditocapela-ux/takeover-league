@@ -12,17 +12,33 @@
 <script type="module">
 const P=window.TLPerf,$=id=>document.getElementById(id),app=$('app'),status=$('status');
 const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
-let db,role,types=[],groups=[],sessions=[],current=null,filter='alle',busy=false,cancelArmed=false,form={type:null,min:90,note:'',group:''};
+let db,role,types=[],groups=[],sessions=[],current=null,filter='alle',busy=false,cancelArmed=false,form={type:null,min:90,note:'',group:''},sched=null;
+const tierPill=s=>s&&s.club_tier?`<span class="tlp-pill inl ${s.club_tier==='pflicht'?'gold':'ok'}">${P.esc(s.tier_label||'')}</span>`:'';
 const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich'}).format(new Date());
 function boxerView(list,enabled){
  if(!enabled)return '<div class="tlp-panel">Der Gym-Check-in ist noch nicht freigeschaltet.</div>';
  if(!list.length)return `<div class="tlp-panel"><b>Gerade läuft keine Einheit.</b><p class="tlp-note">Sobald dein Coach das Training im Gym startet, kannst du dich hier einchecken.</p></div>`;
- return list.map(s=>`<div class="tlp-panel tlp-session"><div class="tlp-eyebrow">Heute${s.group?' · '+P.esc(s.group):''}</div><h2 class="tlp-h2">${P.esc(s.training_type)}</h2><p class="tlp-note">${s.duration_minutes} Min. · ${P.esc(s.note)}</p>
+ return list.map(s=>`<div class="tlp-panel tlp-session"><div class="tlp-eyebrow">Heute${s.group?' · '+P.esc(s.group):''}</div><h2 class="tlp-h2">${P.esc(s.training_type)} ${tierPill(s)}</h2><p class="tlp-note">${s.duration_minutes} Min. · ${P.esc(s.note)}</p>
   ${s.checked_in?'<div class="tlp-pill ok big">Eingecheckt ✓</div><p class="tlp-note">Dein Coach bestätigt nach dem Training alle Anwesenden auf einmal.</p>':`<button type="button" class="tlp-btn" data-checkin="${s.id}">Jetzt einchecken</button>`}</div>`).join('');
+}
+function todaySlots(){
+ if(!sched||!sched.enabled)return '';
+ const list=(sched.slots||[]).filter(x=>x.is_active&&x.dow===sched.today_dow);
+ if(!list.length)return `<div class="tlp-panel"><b>Heute steht keine Vereinseinheit im Stundenplan.</b><p class="tlp-note">Du kannst unten trotzdem eine Einheit starten.</p></div>`;
+ return `<div class="tlp-panel"><div class="tlp-eyebrow">Heute laut Stundenplan</div>${list.map(x=>`<div class="tlp-row spread"><span class="tlp-grow"><b>${P.esc(x.label)}</b> ${tierPill({club_tier:x.tier,tier_label:x.tier_label})}<span class="tlp-note">${P.esc(x.training_type)} · ${x.duration_minutes} Min.</span></span>${x.today_session?`<button type="button" class="tlp-btn small" data-show="${x.today_session.id}">${x.today_session.status==='open'?'Öffnen':'Ansehen'}</button>`:`<button type="button" class="tlp-btn" data-slot="${x.id}" ${busy?'disabled':''}>Starten</button>`}</div>`).join('')}</div>`;
+}
+function editPanel(s){
+ if(!s.editable)return '';
+ const opts=types.filter(t=>t.name!=='Joggen').map(t=>`<option value="${t.id}" ${String(t.id)===String(s.training_type_id)?'selected':''}>${P.esc(t.name)}</option>`).join('');
+ const tiers=[['none','Keine Stufe (Wert der Trainingsart)']].concat(((sched&&sched.tiers)||[]).map(t=>[t.tier,t.label+' · '+t.exp+' EXP']));
+ return `<details class="tlp-panel tlp-form"><summary><b>Einheit ändern</b> <span class="tlp-note">Trainingsart oder Stufe${s.status==='confirmed'?' – Punkte, EXP, Coins und Kampfpfad aller Anwesenden werden nachgeführt':''}</span></summary>
+  <label class="tlp-field" for="edType">Trainingsart<select id="edType">${opts}</select></label>
+  <label class="tlp-field" for="edTier">Stufe<select id="edTier">${tiers.map(([k,l])=>`<option value="${k}" ${(s.club_tier||'none')===k?'selected':''}>${P.esc(l)}</option>`).join('')}</select></label>
+  <button type="button" class="tlp-btn" data-act="edit" ${busy?'disabled':''}>Änderung speichern</button></details>`;
 }
 function openForm(){
  const opts=types.filter(t=>t.name!=='Joggen').map(t=>`<option value="${t.id}" ${String(t.id)===String(form.type)?'selected':''}>${P.esc(t.name)}</option>`).join('');
- return `<div class="tlp-panel tlp-form"><h2 class="tlp-h2">Einheit starten</h2>
+ return todaySlots()+`<div class="tlp-panel tlp-form"><h2 class="tlp-h2">${sched&&sched.enabled&&(sched.slots||[]).some(x=>x.is_active&&x.dow===sched.today_dow)?'Andere Einheit starten':'Einheit starten'}</h2>
   <label class="tlp-field" for="ciType">Trainingsart<select id="ciType">${opts}</select></label>
   <div class="tlp-field">Dauer (Minuten)<div class="tlp-chips">${[60,75,90,120].map(m=>`<button type="button" class="tlp-chipbtn" aria-pressed="${form.min===m}" data-min="${m}">${m}</button>`).join('')}</div><input id="ciMin" type="number" min="1" max="1440" value="${form.min}" aria-label="Minuten"></div>
   <label class="tlp-field" for="ciNote">Bemerkung für alle <span class="tlp-note">Pflicht, mindestens 3 Zeichen</span><textarea id="ciNote" rows="2" maxlength="500" placeholder="z. B. Konter nach Jab, 4 Runden Sparring">${P.esc(form.note)}</textarea></label>
@@ -31,26 +47,27 @@ function openForm(){
 }
 function sessionView(s){
  const people=s.people.filter(p=>filter==='alle'||p.group===filter||p.present),n=s.people.filter(p=>p.present).length,open=s.status==='open';
- return `<div class="tlp-panel tlp-row spread"><div><div class="tlp-eyebrow">${open?'Läuft · heute':s.status==='confirmed'?'Bestätigt':'Abgebrochen'}${s.group?' · '+P.esc((groups.find(g=>g.key===s.group)||{}).name||s.group):''}</div><h2 class="tlp-h2">${P.esc(s.training_type)}</h2><span class="tlp-note">${s.duration_minutes} Min. · ${P.esc(s.note)}</span></div><div class="tlp-count"><b>${n}</b><span>da</span></div></div>
+ return `<div class="tlp-panel tlp-row spread"><div><div class="tlp-eyebrow">${open?'Läuft · heute':s.status==='confirmed'?'Bestätigt':'Abgebrochen'}${s.group?' · '+P.esc((groups.find(g=>g.key===s.group)||{}).name||s.group):''}</div><h2 class="tlp-h2">${P.esc(s.training_type)} ${tierPill(s)}</h2><span class="tlp-note">${s.duration_minutes} Min. · ${P.esc(s.note)}</span></div><div class="tlp-count"><b>${n}</b><span>da</span></div></div>
   <div class="tlp-chips" role="group" aria-label="Gruppe">${[['alle','Alle']].concat(groups.map(g=>[g.key,g.name])).map(([k,l])=>`<button type="button" class="tlp-chipbtn" aria-pressed="${filter===k}" data-filter="${k}">${P.esc(l)}</button>`).join('')}</div>
   <p class="tlp-note">${open?'Tippe an, wer da ist. Wer sich selbst eingecheckt hat, ist schon markiert.':'Diese Einheit ist abgeschlossen.'}</p>
-  <div class="tlp-cigrid">${people.map(p=>`<button type="button" class="tlp-cicell${p.present?' on':''}${p.confirmed?' ok':''}" aria-pressed="${p.present}" data-person="${p.id}" ${open?'':'disabled'}><span class="tlp-face sm">${P.esc(P.initials(p.display_name))}</span><b>${P.esc(p.display_name)}</b><span>${p.confirmed?'bestätigt':p.skipped_reason?P.esc(p.skipped_reason):p.present?(p.source==='self'?'selbst eingecheckt':'anwesend'):'nicht da'}</span></button>`).join('')}</div>
+  <div class="tlp-cigrid">${people.map(p=>`<button type="button" class="tlp-cicell${p.present?' on':''}${p.confirmed?' ok':''}" aria-pressed="${p.present}" data-person="${p.id}" ${open?'':'disabled'}><span class="tlp-face sm">${P.esc(P.initials(p.display_name))}</span><b>${P.esc(p.display_name)}</b><span>${p.confirmed?'bestätigt'+(p.points!=null?' · '+p.points+' EXP':''):p.skipped_reason?P.esc(p.skipped_reason):p.present?(p.source==='self'?'selbst eingecheckt':'anwesend'):'nicht da'}</span></button>`).join('')}</div>
   ${open?`<button type="button" class="tlp-btn big" data-act="confirm" ${n&&!busy?'':'disabled'}>Alle ${n} Anwesenden bestätigen</button>
    <p class="tlp-note">Jeder Eintrag gilt als «vom Trainer eingetragen» und ist sofort bestätigt, mit Punkten und EXP wie immer. Dein eigenes Training und Trainings, die jemand schon selbst eingereicht hat, werden übersprungen.</p>
    <button type="button" class="tlp-btn ghost" data-act="cancel">${cancelArmed?'Nochmal tippen: Einheit abbrechen':'Einheit abbrechen'}</button>`:'<button type="button" class="tlp-btn" data-act="new">Neue Einheit starten</button>'}`;
 }
 function recentView(){
  if(!sessions.length)return '';
- return `<div class="tlp-panel"><b>Letzte Einheiten</b><div class="tlp-list">${sessions.map(s=>`<button type="button" class="tlp-li" data-show="${s.id}"><span class="tlp-grow"><b>${P.esc(s.training_type)} · ${P.fmtDate(s.session_date)}</b><span class="tlp-note">${s.status==='open'?'läuft':s.status==='confirmed'?s.confirmed+' bestätigt':'abgebrochen'} · ${s.present} anwesend · ${P.esc(s.opened_by||'')}</span></span><span aria-hidden="true">›</span></button>`).join('')}</div></div>`;
+ return `<div class="tlp-panel"><b>Letzte Einheiten</b><div class="tlp-list">${sessions.map(s=>`<button type="button" class="tlp-li" data-show="${s.id}"><span class="tlp-grow"><b>${P.esc(s.training_type)} · ${P.fmtDate(s.session_date)}${s.tier_label?' · '+P.esc(s.tier_label):''}</b><span class="tlp-note">${s.status==='open'?'läuft':s.status==='confirmed'?s.confirmed+' bestätigt':'abgebrochen'} · ${s.present} anwesend · ${P.esc(s.opened_by||'')}</span></span><span aria-hidden="true">›</span></button>`).join('')}</div></div>`;
 }
 async function render(){
  if(role==='admin'||role==='coach'){
-  app.innerHTML=(current?sessionView(current):openForm())+recentView();
+  app.innerHTML=(current?sessionView(current)+editPanel(current):openForm())+recentView();
  }
 }
 async function loadStaff(keepCurrent){
- const [s,t,g]=await Promise.all([db.rpc('staff_list_gym_sessions',{p_days:14}),types.length?{data:types}:db.from('training_types').select('id,name,is_active').eq('is_active',true),groups.length?{data:groups}:db.rpc('list_training_groups')]);
+ const [s,t,g,c]=await Promise.all([db.rpc('staff_list_gym_sessions',{p_days:14}),types.length?{data:types}:db.from('training_types').select('id,name,is_active').eq('is_active',true),groups.length?{data:groups}:db.rpc('list_training_groups'),db.rpc('get_club_schedule')]);
  if(s.error||t.error||g.error){say((s.error||t.error||g.error).message,true);return}
+ sched=c.error?null:c.data;
  sessions=s.data||[];types=(t.data||[]).slice().sort((a,b)=>a.name.localeCompare(b.name,'de'));groups=g.data||[];
  if(form.type===null){const reg=types.find(x=>x.name==='Reguläres Boxtraining')||types[0];form.type=reg?reg.id:null}
  let id=keepCurrent&&current?current.id:null;
@@ -68,6 +85,10 @@ app.addEventListener('click',async ev=>{
  if(b.dataset.checkin){b.disabled=true;const r=await db.rpc('gym_check_in',{p_session_id:Number(b.dataset.checkin)});if(r.error){say(r.error.message,true);b.disabled=false;return}say('Eingecheckt!');await loadBoxer();return}
  if(b.dataset.min){form.min=Number(b.dataset.min);form.note=$('ciNote').value;form.type=$('ciType').value;form.group=$('ciGroup').value;render();return}
  if(b.dataset.filter){filter=b.dataset.filter;render();return}
+ if(b.dataset.slot&&!busy){busy=true;b.disabled=true;
+  const r=await db.rpc('staff_open_club_session',{p_slot_id:Number(b.dataset.slot)});busy=false;
+  if(r.error){say(r.error.message,true);b.disabled=false;return}
+  say(r.data.existing?'Diese Einheit läuft schon.':'Einheit gestartet'+(r.data.tier_label?' ('+r.data.tier_label+')':'')+'. Boxer können sich jetzt einchecken.');current={id:r.data.id};await loadStaff(true);return}
  if(b.dataset.show){const r=await db.rpc('staff_get_gym_session',{p_session_id:Number(b.dataset.show)});if(r.error){say(r.error.message,true);return}current=r.data;render();window.scrollTo(0,0);return}
  if(b.dataset.person&&current&&current.status==='open'){
   const p=current.people.find(x=>x.id===b.dataset.person);if(!p)return;
@@ -83,12 +104,18 @@ app.addEventListener('click',async ev=>{
   const r=await db.rpc('staff_open_gym_session',{p_training_type_id:Number(form.type),p_duration_minutes:form.min,p_note:form.note,p_group_key:form.group||null});
   busy=false;if(r.error){say(r.error.message,true);b.disabled=false;return}
   say('Einheit gestartet. Boxer können sich jetzt einchecken.');current={id:r.data.id};await loadStaff(true);return}
+ if(a==='edit'&&!busy&&current){
+  busy=true;b.disabled=true;
+  const r=await db.rpc('staff_update_gym_session',{p_session_id:current.id,p_training_type_id:Number($('edType').value),p_tier:$('edTier').value});
+  busy=false;if(r.error){say(r.error.message,true);b.disabled=false;return}
+  say(r.data.updated_trainings?`Geändert: ${r.data.updated_trainings} Trainings nachgeführt · Punkte ${r.data.points_before} → ${r.data.points_after}`:'Einheit geändert.');
+  await loadStaff(true);return}
  if(a==='confirm'&&!busy){
   busy=true;b.disabled=true;
   const r=await db.rpc('staff_confirm_gym_session',{p_session_id:current.id});
   busy=false;if(r.error){say(r.error.message,true);b.disabled=false;return}
   const sk=(r.data.skipped||[]).map(x=>x.name+' ('+x.reason+')').join(', ');
-  say(`${r.data.confirmed} Trainings bestätigt · ${r.data.points_awarded} Punkte vergeben${sk?' · übersprungen: '+sk:''}`);
+  say(`${r.data.confirmed} Trainings bestätigt${current&&current.tier_label?' als '+current.tier_label:''} · ${r.data.points_awarded} Punkte vergeben${sk?' · übersprungen: '+sk:''}`);
   await loadStaff(true);return}
  if(a==='cancel'){
   if(!cancelArmed){cancelArmed=true;render();setTimeout(()=>{cancelArmed=false;render()},4000);return}
