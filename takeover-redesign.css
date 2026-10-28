@@ -717,3 +717,59 @@ body[data-tl-screen="shop"] main,body[data-tl-screen="shop"] #app,body[data-tl-s
 .kg-step h3{margin:0;font-size:var(--fs-md)}
 .kg-levels{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}.kg-levels i{width:10px;height:10px;border-radius:2px;background:var(--surface-3)}.kg-levels i.on{background:var(--rk)}
 @media (prefers-reduced-motion:reduce){.kg-spin,.kg-pulse,.kg-spark,.kg-petal,.kg-bn::after,.kg-fr-blitz .kg-disc,.kg-fr-abgrund .kg-disc,.kg-fr-srang .kg-disc{animation:none!important}}
+
+/* ---- Etappe 5: Emotes, Einlauf, Kampfpfad ---- */
+body[data-tl-screen="kampfpfad"] main,body[data-tl-screen="kampfpfad"] #app{display:flex;flex-direction:column;gap:var(--sp-4)}
+.kg-emote{position:relative;display:inline-grid;place-items:center;flex:none}.kg-emote svg{position:absolute;inset:0;width:100%;height:100%}
+.kg-emote b{position:relative;font-family:var(--font-display);font-size:var(--es);line-height:1.05;color:#0c0a13;text-align:center;max-width:78%;overflow-wrap:anywhere;transform:rotate(-4deg)}
+.kg-einlauf-pv{position:relative;display:grid;place-items:center;width:100%;height:100%;border-radius:var(--r-sm);overflow:hidden;background:repeating-conic-gradient(from 0deg at 50% 50%,color-mix(in srgb,var(--ic) 55%,transparent) 0 2deg,transparent 2deg 12deg),#0c0a13}
+.kg-einlauf-pv.dark{background:radial-gradient(circle,color-mix(in srgb,var(--ic) 40%,transparent),#05040a 70%)}
+.kg-einlauf-pv b{font-family:var(--font-display);color:var(--ic);text-shadow:2px 2px 0 #0c0a13;transform:rotate(-8deg);text-align:center;line-height:1;padding:0 4px}
+.kg-bn-pass{background:conic-gradient(from 90deg at 50% 120%,#ff5a1f,#ffcc33,#4fa3ff,#b874ff,#ff5a1f)}.kg-bn-pass::after{background:repeating-linear-gradient(120deg,transparent 0 18px,rgba(12,10,19,.35) 18px 22px)}
+.kg-fr-pass .kg-disc{border-color:#ffcc33;box-shadow:0 0 0 3px #ff5a1f,0 0 0 6px #4fa3ff,0 0 20px rgba(255,204,51,.5)}
+/* Einlauf (Vollbild) */
+body[data-tl-screen] .kg-intro,.kg-intro{position:fixed;inset:0;z-index:2147483000;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;transform:none;display:flex;align-items:stretch;background:#05040a;overflow:hidden;animation:kg-intro-in .25s ease-out}
+.kg-intro-side{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:var(--sp-4);overflow:hidden;
+ background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--ic) 30%,transparent),transparent 60%)}
+.kg-intro-side.dark{background:radial-gradient(circle at 50% 45%,color-mix(in srgb,var(--ic) 22%,#000),#000 70%)}
+.kg-intro-lines{position:absolute;inset:-20%;background:repeating-conic-gradient(from 0deg at 50% 50%,color-mix(in srgb,var(--ic) 45%,transparent) 0 1.5deg,transparent 1.5deg 9deg);animation:kg-spin 9s linear infinite;opacity:.55}
+.kg-intro-side .kg-ava{animation:kg-zoom .7s cubic-bezier(.2,1.4,.4,1) both}
+.kg-intro-side.s1 .kg-ava{animation-delay:.35s}
+.kg-intro-word{position:relative;font-family:var(--font-display);font-size:clamp(26px,9vw,56px);color:var(--ic);text-shadow:3px 3px 0 #0c0a13,0 0 24px var(--ic);transform:rotate(-6deg);text-align:center;line-height:1;animation:kg-slam .5s .45s cubic-bezier(.2,1.6,.4,1) both}
+.kg-intro-side.s1 .kg-intro-word{animation-delay:.8s}
+.kg-intro-side.flash::before{content:"";position:absolute;inset:0;background:#fff;opacity:0;animation:kg-flash-once .6s .4s ease-out}
+.kg-intro-name{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:clamp(16px,5vw,22px)}
+.kg-intro-vs{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:3;font-family:var(--font-display);font-size:clamp(34px,12vw,72px);color:#f6f0e4;text-shadow:3px 3px 0 #d8282f;animation:kg-slam .5s .6s both}
+.kg-intro-close{position:absolute;top:12px;right:12px;z-index:4;width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,.4);background:rgba(12,10,19,.6);color:#fff;font-size:24px;cursor:pointer}
+.kg-intro.still *,.kg-intro.still{animation:none!important}
+@media (max-width:560px){.kg-intro.vs{flex-direction:column}}
+@keyframes kg-intro-in{from{opacity:0}}@keyframes kg-zoom{from{transform:scale(.2);opacity:0}}
+@keyframes kg-slam{from{transform:scale(3) rotate(-6deg);opacity:0}to{transform:scale(1) rotate(-6deg);opacity:1}}
+@keyframes kg-flash-once{0%{opacity:.9}100%{opacity:0}}
+/* Emotes in Duell und Podium */
+.kg-social{display:flex;flex-direction:column;gap:var(--sp-2);margin-top:var(--sp-3);padding-top:var(--sp-3);border-top:1px solid var(--line)}
+.kg-vsrow{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);align-items:center;gap:var(--sp-2)}
+.kg-vsrow .kg-fighter{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0;text-align:center}.kg-vsrow .kg-fighter>span{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:0}
+.kg-vsrow .kg-fighter b{overflow-wrap:anywhere;font-size:14px}.kg-vsrow .kg-title{font-size:10px;padding:2px 8px;max-width:100%}
+.kg-feed{display:flex;gap:8px;overflow-x:auto;padding:4px 0;min-height:24px}
+.kg-feed .kg-ev{display:flex;flex-direction:column;align-items:center;gap:2px;flex:none;font-size:11px;color:var(--muted);position:relative}
+.kg-feed .kg-ev.hidden{opacity:.4}
+.kg-picker{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px}
+.kg-picker button,.kg-react button{flex:none;border:1px solid var(--line-strong);background:var(--surface-2);border-radius:var(--r-md);padding:4px;cursor:pointer;min-height:44px}
+.kg-picker button:disabled,.kg-react button:disabled{opacity:.45;cursor:not-allowed}
+.kg-mini-btn{min-height:32px;padding:0 10px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;color:var(--text);font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.kg-podium{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:var(--sp-3)}
+.kg-podium-place{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:var(--sp-3);border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface);text-align:center}
+.kg-podium-place.p1{border-color:var(--gold);box-shadow:0 0 22px color-mix(in srgb,var(--gold) 25%,transparent)}
+.kg-podium-place .kg-place{position:absolute;top:8px;left:12px;font-family:var(--font-display);font-size:22px;color:var(--gold)}
+.kg-podium-place .kg-bubble{position:absolute;top:6px;right:6px}
+.kg-reactions{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.kg-reactions span{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800;padding:2px 8px 2px 2px;border-radius:999px;background:var(--surface-2)}
+.kg-react{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+/* Kampfpfad */
+.kg-track{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(30%,104px),1fr));gap:var(--sp-2)}
+.kg-tier{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:var(--sp-2);border-radius:var(--r-md);border:1px solid var(--line);background:var(--surface);text-align:center;min-height:132px}
+.kg-tier .kg-tnum{font-family:var(--font-display);font-size:18px}.kg-tier .kg-pv{width:100%;height:64px;display:grid;place-items:center;position:relative;overflow:hidden;border-radius:var(--r-sm)}
+.kg-tier.reached{border-color:var(--gold)}.kg-tier.claimed{opacity:.6}.kg-tier.milestone{background:linear-gradient(180deg,color-mix(in srgb,var(--gold) 12%,var(--surface)),var(--surface))}
+.kg-tier .tlp-note{font-size:11px}
+@media (prefers-reduced-motion:reduce){.kg-intro *,.kg-intro{animation:none!important}}

@@ -227,7 +227,7 @@ function render(){
  list.replaceChildren();
  if(!duels.length){list.append(el('p','Noch keine Duelle vorhanden.'));return}
  for(const duel of duels){
-  const card=document.createElement('article');card.className='tl-duel-card';card.dataset.status=duel.status||'';
+  const card=document.createElement('article');card.className='tl-duel-card';card.dataset.status=duel.status||'';card.dataset.duelId=duel.id||'';
   card.append(el('h3',String(duel.challenger_name||'Boxer')+' vs. '+String(duel.opponent_name||'Boxer')));
   const expired=duel.status==='pending'&&duel.expires_at&&new Date(duel.expires_at)<=new Date();
   const statusLine=el('p',expired?'Einladung abgelaufen':(statuses[duel.status]||duel.status));statusLine.className='tl-duel-status';card.append(statusLine);
@@ -344,5 +344,5 @@ byId('signin').onsubmit=async e=>{e.preventDefault();if(!db)return;const f=new F
 init();
 setInterval(()=>{if(!document.hidden&&profile&&!busy)load().catch(e=>say(message(e),true))},90000);
 </script>
-<script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-quick-actions.js" defer></script><script src="./takeover-choice-cards.js" defer></script><script src="./takeover-navigation.js" defer></script></body>
+<script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-quick-actions.js" defer></script><script src="./takeover-choice-cards.js" defer></script><script src="./takeover-performance.js" defer></script><script src="./takeover-navigation.js" defer></script></body>
 </html>

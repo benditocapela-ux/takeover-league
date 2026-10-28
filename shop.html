@@ -15,14 +15,15 @@
 const P=window.TLPerf,K=window.TLKG,$=id=>document.getElementById(id),app=$('app'),status=$('status'),layer=$('layer');
 const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
 const REASON={start:'Startguthaben',training:'Bestätigtes Training',training_fix:'Korrektur Training',quest:'Quest',purchase:'Kauf',admin:'Vom Admin'};
-const SLOT_HELP={avatar:'Deine Kämpferfigur',aura:'Leuchtet um deinen Avatar',banner:'Hintergrund deiner Karte',rahmen:'Rand um deinen Avatar',titel:'Steht über deinem Namen',handschuhe:'Siehst du an deinem Avatar'};
-let db,role='boxer',myName='',data=null,tab='shop',cat='alle',admin=null,atab='konten',acat='avatar',busy=false;
+const SLOT_HELP={avatar:'Deine Kämpferfigur',aura:'Leuchtet um deinen Avatar',banner:'Hintergrund deiner Karte',rahmen:'Rand um deinen Avatar',titel:'Steht über deinem Namen',handschuhe:'Siehst du an deinem Avatar',emote:'Zeigst du auf dem Podium; alle eigenen Emotes kannst du im Duell senden',einlauf:'Dein Auftritt vor einem Duell'};
+let db,role='boxer',myName='',data=null,tab='shop',cat='alle',admin=null,social=null,atab='konten',acat='avatar',busy=false;
 const byKey=k=>data.items.find(i=>i.key===k);
 const coins=n=>`<span class="kg-price">${K.COIN}${K.fmt(n)}</span>`;
 function itemTile(it,mode){
  const eq=data.look[it.category]&&data.look[it.category].key===it.key;
  const tag=it.owned?(eq?'<span class="kg-tag" style="color:var(--gold)">Ausgerüstet</span>':'<span class="kg-tag" style="color:var(--ok)">Gehört dir</span>')
   :it.unlock==='rank'?`<span class="kg-tag">${K.LOCK} Belohnung Rang ${it.min_rank}</span>`
+  :it.unlock==='pass'?`<span class="kg-tag">${K.LOCK} Kampfpfad</span>`
   :!it.rank_ok?`<span class="kg-tag">${K.LOCK} ab Rang ${it.min_rank}</span>`:coins(it.price);
  return `<button type="button" class="kg-item${it.owned?' owned':''}${eq?' equipped':''}${!it.owned&&!it.rank_ok?' locked':''}" style="--rc:${K.RAR[it.rarity][1]}" data-item="${K.esc(it.key)}" aria-label="${K.esc(it.name)}">
   <span class="kg-pv">${K.preview(it,data.look)}</span><b>${K.esc(it.name)}</b><span class="kg-rar">${K.RAR[it.rarity][0]}</span>${tag}</button>`;
@@ -48,7 +49,7 @@ function shopView(){
 }
 function invView(){
  return K.CATS.map(([k,,one])=>{
-  const its=data.items.filter(i=>i.category===k&&(i.owned||i.unlock==='rank'));
+  const its=data.items.filter(i=>i.category===k&&(i.owned||i.unlock==='rank'||i.unlock==='pass'));
   return `<div class="kg-slot"><div class="kg-rankhead"><div><b>${one}</b><span class="tlp-note">${SLOT_HELP[k]} · ausgerüstet: ${K.esc(data.look[k]?data.look[k].name:'–')}</span></div></div><div class="kg-grid">${its.map(x=>itemTile(x)).join('')}</div></div>`;
  }).join('');
 }
@@ -64,7 +65,14 @@ function coinView(){
 }
 function adminView(){
  if(!admin)return '<p class="tlp-note">Wird geladen …</p>';
- const sub=`<div class="kg-chips">${[['konten','Konten'],['regeln','Coin-Regeln'],['items','Items']].map(([k,l])=>`<button type="button" data-atab="${k}" aria-pressed="${atab===k}">${l}</button>`).join('')}</div>`;
+ const sub=`<div class="kg-chips">${[['konten','Konten'],['regeln','Coin-Regeln'],['items','Items'],['kampfpfad','Kampfpfad'],['emotes','Emotes']].map(([k,l])=>`<button type="button" data-atab="${k}" aria-pressed="${atab===k}">${l}</button>`).join('')}</div>`;
+ if(atab==='kampfpfad'||atab==='emotes'){
+  if(!social)return sub+'<p class="tlp-note">Wird geladen …</p>';
+  if(atab==='kampfpfad'){const k=social.pass,f=[['kp_training','Bestätigtes Training'],['kp_quest_weekly','Wochenquest'],['kp_quest_daily','Tagesquest'],['kp_quest_chest','Wochentruhe'],['kp_duel_played','Duell angenommen'],['kp_duel_won','Duell gewonnen'],['kp_per_tier','Punkte pro Stufe']];
+   return sub+`<form class="tlp-panel tlp-form" id="passForm"><p class="tlp-note">Kampfpfad-Punkte pro Aktivität. Der Kampfpfad hat 30 Stufen und startet jeden Monat neu. Änderungen gelten sofort, auch für den laufenden Monat; abgeholte Belohnungen bleiben.</p><div class="tlp-grid3">${f.map(([n,l])=>`<label class="tlp-field">${l}<input type="number" name="${n}" min="${n==='kp_per_tier'?5:0}" max="${n==='kp_per_tier'?500:100}" value="${k[n]}" required></label>`).join('')}</div><button type="submit" class="tlp-btn small">Speichern</button></form>`}
+  return sub+`<div class="tlp-panel"><b>Emotes pausieren</b><p class="tlp-note">Pausierte Konten können keine Emotes senden oder aufs Podium reagieren.</p><div class="tlp-list">${social.profiles.map(p=>`<div class="tlp-li static"><span class="tlp-grow">${K.esc(p.display_name)}</span><button type="button" class="kg-mini-btn" data-mute="${p.id}" data-on="${p.muted?0:1}">${p.muted?'Pause aufheben':'Pausieren'}</button></div>`).join('')}</div></div>
+   <div class="tlp-panel"><b>Letzte Emotes</b><div class="tlp-list">${social.events.map(e=>`<div class="tlp-li static${e.hidden?' hidden':''}" style="${e.hidden?'opacity:.5':''}">${K.emoteHTML(e.emote&&e.emote.design,44)}<span class="tlp-grow"><b>${K.esc(e.sender)}</b><span class="tlp-note">${e.context==='duel'?'Duell '+K.esc(e.duel||''):'Podium → '+K.esc(e.target||'')} · ${P.fmtDate(e.created_at)}${e.hidden?' · ausgeblendet':''}</span></span>${e.hidden?'':`<button type="button" class="kg-mini-btn" data-hide="${e.id}">Ausblenden</button>`}</div>`).join('')||'<p class="tlp-note">Noch keine Emotes.</p>'}</div></div>`;
+ }
  if(atab==='regeln')return sub+`<form class="tlp-panel tlp-form" id="rulesForm"><div class="tlp-grid3"><label class="tlp-field">Startguthaben<input type="number" name="start" min="0" max="5000" value="${admin.settings.start_coins}" required></label><label class="tlp-field">Coins pro bestätigtem Training<input type="number" name="per" min="0" max="500" value="${admin.settings.coins_per_training}" required></label></div><p class="tlp-note">Gilt für neue Gutschriften. Schon gutgeschriebene Coins bleiben, wie sie sind.</p><button type="submit" class="tlp-btn small">Speichern</button></form>`;
  if(atab==='items'){
   const chips=`<div class="kg-chips">${K.CATS.map(c=>`<button type="button" data-acat="${c[0]}" aria-pressed="${acat===c[0]}">${c[1]}</button>`).join('')}</div>`;
@@ -88,6 +96,7 @@ function sheet(it){
  let action='';
  if(it.owned)action=eq?'<p class="tlp-note">Ist gerade ausgerüstet.</p>':(data.can_buy?`<button type="button" class="tlp-btn big" data-equip="${K.esc(it.key)}" style="width:100%">Ausrüsten</button>`:'<p class="tlp-note">Ausrüsten geht nach dem Freischalten.</p>');
  else if(it.unlock==='rank')action=`<p class="tlp-note">Bekommst du automatisch, sobald du Rang ${it.min_rank} erreichst.</p>`;
+ else if(it.unlock==='pass')action=`<p class="tlp-note">Gibt es nur im <a href="./kampfpfad.html">Kampfpfad</a>.</p>`;
  else if(!it.rank_ok)action=`<p class="tlp-note">${K.LOCK} Erst ab Rang ${it.min_rank} (Level ${K.rankFirstLevel(K.RANKS.findIndex(r=>r.r===it.min_rank))}).</p>`;
  else if(!data.can_buy)action='<p class="tlp-note">Kaufen geht nach dem Freischalten.</p>';
  else if(bal<it.price)action=`<p class="tlp-note">Dir fehlen noch ${coins(it.price-bal)}. Trainiere weiter, dann klappt es!</p>`;
@@ -96,21 +105,25 @@ function sheet(it){
   <span class="kg-pv" style="--rc:${K.RAR[it.rarity][1]}">${K.preview(it,data.look)}</span>
   <span class="tlp-eyebrow" style="color:${K.RAR[it.rarity][1]}">${K.RAR[it.rarity][0]} · ${K.CATS.find(c=>c[0]===it.category)[2]}</span>
   <b class="tlp-qtitle">${K.esc(it.name)}</b>${it.description?`<span class="tlp-note">${K.esc(it.description)}</span>`:''}
-  ${it.unlock==='shop'?coins(it.price):''}${action}
+  ${it.unlock==='shop'?coins(it.price):''}${it.category==='einlauf'?`<button type="button" class="tlp-btn ghost small" data-play="${K.esc(it.key)}">Einlauf ansehen</button>`:''}${action}
   <button type="button" class="tlp-btn ghost" data-close="1" style="width:100%">Schliessen</button></div></div>`;
  const b=layer.querySelector('[data-buy],[data-equip]')||layer.querySelector('button');if(b)b.focus();
 }
 async function loadMine(){const r=await db.rpc('get_my_kampfgeist',{p_full:true});if(r.error)throw r.error;data=r.data}
 async function loadAdmin(){const r=await db.rpc('admin_kg_overview');if(r.error)throw r.error;admin=r.data}
+async function loadSocial(){const r=await db.rpc('admin_kg_social');if(r.error)throw r.error;social=r.data}
 app.addEventListener('click',async ev=>{
  const b=ev.target.closest('button');if(!b||b.type==='submit')return;
  if(b.dataset.tab){tab=b.dataset.tab;render();if(tab==='admin'&&!admin){try{await loadAdmin();render()}catch(e){say(e.message,true)}}return}
  if(b.dataset.cat){cat=b.dataset.cat;render();return}
- if(b.dataset.atab){atab=b.dataset.atab;render();return}
+ if(b.dataset.atab){atab=b.dataset.atab;render();if((atab==='kampfpfad'||atab==='emotes')&&!social){try{await loadSocial();render()}catch(e){say(e.message,true)}}return}
+ if(b.dataset.mute||b.dataset.hide){b.disabled=true;const r=b.dataset.mute?await db.rpc('admin_set_emote_mute',{p_profile_id:b.dataset.mute,p_muted:b.dataset.on==='1'}):await db.rpc('hide_kg_emote',{p_event_id:Number(b.dataset.hide)});
+  if(r.error){say(r.error.message,true);b.disabled=false;return}say(b.dataset.mute?(r.data.muted?'Emotes pausiert: ':'Pause aufgehoben: ')+r.data.profile:'Emote ausgeblendet.');try{await loadSocial();render()}catch(e){say(e.message,true)}return}
  if(b.dataset.acat){acat=b.dataset.acat;render();return}
  if(b.dataset.item){const it=byKey(b.dataset.item);if(it)sheet(it)}
 });
 layer.addEventListener('click',async ev=>{
+ const pl=ev.target.closest('[data-play]');if(pl){const it=byKey(pl.dataset.play);K.playEinlauf([{look:Object.assign({},data.look,{einlauf:it}),name:myName}]);return}
  const b=ev.target.closest('[data-buy],[data-equip],[data-close]');if(!b)return;
  if(b.dataset.close&&(ev.target===b||b.tagName==='BUTTON')){layer.innerHTML='';return}
  if(busy||(!b.dataset.buy&&!b.dataset.equip))return;busy=true;b.disabled=true;
@@ -126,11 +139,13 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&layer.innerHTML)lay
 app.addEventListener('submit',async ev=>{
  ev.preventDefault();const f=ev.target,btn=f.querySelector('button[type="submit"]');btn.disabled=true;let r;
  if(f.id==='rulesForm')r=await db.rpc('admin_update_kg_settings',{p_start_coins:Number(f.start.value),p_coins_per_training:Number(f.per.value)});
+ else if(f.id==='passForm')r=await db.rpc('admin_update_kg_pass',{p_kp_training:Number(f.kp_training.value),p_kp_quest_weekly:Number(f.kp_quest_weekly.value),p_kp_quest_daily:Number(f.kp_quest_daily.value),p_kp_quest_chest:Number(f.kp_quest_chest.value),p_kp_duel_played:Number(f.kp_duel_played.value),p_kp_duel_won:Number(f.kp_duel_won.value),p_kp_per_tier:Number(f.kp_per_tier.value)});
  else if(f.classList.contains('kg-adjust'))r=await db.rpc('admin_adjust_coins',{p_profile_id:f.dataset.id,p_amount:Number(f.amount.value),p_note:f.note.value});
  else if(f.classList.contains('kg-aitem')){const it=admin.items.find(i=>i.key===f.dataset.key);
   r=await db.rpc('admin_update_kg_item',{p_item_key:it.key,p_price:it.unlock==='shop'?Number(f.price.value):null,p_min_rank:f.rank.value,p_is_active:it.unlock==='start'?true:f.active.checked})}
  btn.disabled=false;
  if(!r||r.error){say(r?r.error.message:'Fehler',true);return}
+ if(f.id==='passForm'){say('Kampfpfad-Punkte gespeichert.');try{await loadSocial();render()}catch(e){say(e.message,true)}return}
  say(f.id==='rulesForm'?'Coin-Regeln gespeichert.':f.classList.contains('kg-adjust')?'Gebucht: '+r.data.amount+' Coins für '+r.data.profile+' (neuer Stand '+K.fmt(r.data.balance)+').':'Gespeichert: '+r.data.name);
  try{await loadAdmin();await loadMine();render()}catch(e){say(e.message,true)}
 });

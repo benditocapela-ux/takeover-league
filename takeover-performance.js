@@ -130,13 +130,16 @@ async function mountStudio(){
  const host=document.getElementById('studioPanelOverview');if(!host)return;
  const db=await client();
  const s=await db.auth.getSession();if(!s.data||!s.data.session)return;
- const [perf,wk,qs,kg]=await Promise.all([db.rpc('get_my_performance'),db.rpc('get_my_week_plan'),db.rpc('get_my_quests'),db.rpc('get_my_kampfgeist',{p_full:false})]);
+ const [perf,wk,qs,kg,kp]=await Promise.all([db.rpc('get_my_performance'),db.rpc('get_my_week_plan'),db.rpc('get_my_quests'),db.rpc('get_my_kampfgeist',{p_full:false}),db.rpc('get_my_kampfpfad')]);
  const data=perf.data,error=perf.error,gym=!wk.error&&wk.data&&wk.data.enabled?wk.data:null,quest=!qs.error&&qs.data&&qs.data.enabled?qs.data:null;
  const shop=!kg.error&&kg.data&&kg.data.enabled?kg.data:null;
  if(error||!data||(!data.ratings_enabled&&!data.style_enabled&&!gym&&!quest&&!shop))return;
  const tiles=[];
  if(shop){
   const K=await kampfgeist(),rk=K.RANKS[shop.level.rank_idx];
+  const pass=!kp.error&&kp.data&&kp.data.enabled?kp.data:null;
+  if(pass){const open=pass.tiers.filter(t=>t.reached&&!t.claimed).length+(pass.previous_open||0);
+   tiles.push(`<a class="tlp-tile" href="./kampfpfad.html"><span class="tlp-chip t-gold">${pass.points.tier}</span><span><span class="tlp-eyebrow">Kampfpfad</span><strong>${open?open+' Belohnung'+(open>1?'en':'')+' bereit':'Stufe '+pass.points.tier+' von 30'}</strong><span class="tlp-note">${K.fmt(pass.points.total)} Punkte · noch ${pass.days_left} Tage in diesem Monat</span></span></a>`)}
   tiles.push(`<a class="tlp-tile" href="./shop.html">${K.avatarBox(shop.look,52)}<span><span class="tlp-eyebrow">Kampfgeist-Shop</span><strong><span class="kg-price">${K.COIN}${K.fmt(shop.wallet.balance)}</span> Coins</strong><span class="tlp-note">Rang ${rk.r} · ${esc(rk.n)} · Level ${shop.level.level} · <span style="color:var(--gold)">Roadmap</span></span></span></a>`);
  }
  if(quest){
@@ -163,11 +166,79 @@ async function mountStudio(){
  const box=document.createElement('div');box.className='tlp-tiles';box.innerHTML=tiles.join('');
  host.prepend(box);
 }
+/* ---- Etappe 5: Emotes und Einlauf im Duell, Kampfgeist-Podium ---- */
+let duelState=null,duelTimer=null;
+async function mountDuels(){
+ const list=document.getElementById('duelList');if(!list)return;
+ const db=await client();
+ const decorate=async()=>{
+  const s=await db.auth.getSession();if(!s.data||!s.data.session)return;
+  const cards=[...list.querySelectorAll('article.tl-duel-card[data-duel-id]')];if(!cards.length)return;
+  const ids=[...new Set(cards.map(c=>c.dataset.duelId))].slice(0,60);
+  const {data,error}=await db.rpc('get_duel_kampfgeist',{p_duel_ids:ids});
+  if(error||!data||!data.enabled)return;
+  duelState=data;const K=await kampfgeist();
+  for(const card of cards){
+   const d=data.duels.find(x=>x.id===card.dataset.duelId);card.querySelector('.kg-social')?.remove();if(!d)continue;
+   const box=document.createElement('div');box.className='kg-social';
+   const fighter=f=>`<span class="kg-fighter">${K.avatarBox(f,52)}<span><b>${esc(f.name||'')}</b>${K.titleTag(f.titel)}</span></span>`;
+   const ev=d.events.map(e=>`<span class="kg-ev${e.hidden?' hidden':''}">${K.emoteHTML(e.emote&&e.emote.design,52)}<span>${esc(e.sender||'')}</span>${data.can_moderate&&!e.hidden?`<button type="button" class="kg-mini-btn" data-kg-hide="${e.id}" aria-label="Emote ausblenden">Ausblenden</button>`:''}</span>`).join('');
+   box.innerHTML=`<div class="kg-vsrow">${fighter(d.challenger)}<button type="button" class="kg-mini-btn" data-kg-intro="${esc(d.id)}">Einlauf ansehen</button>${fighter(d.opponent)}</div>
+    <div class="kg-feed" aria-label="Emotes in diesem Duell">${ev||'<span class="tlp-note">Noch keine Emotes.</span>'}</div>
+    ${d.can_send?`<div class="kg-picker" role="group" aria-label="Emote senden">${data.my_emotes.map(m=>`<button type="button" data-kg-send="${esc(d.id)}" data-kg-emote="${esc(m.key)}" aria-label="${esc(m.name)} senden">${K.emoteHTML(m.design,48)}</button>`).join('')}</div>`
+     :data.muted?'<span class="tlp-note">Deine Emotes sind gerade pausiert.</span>':''}`;
+   card.append(box);
+  }
+ };
+ const schedule=()=>{clearTimeout(duelTimer);duelTimer=setTimeout(()=>decorate().catch(e=>console.warn('Duell-Emotes nicht verfügbar:',e)),150)};
+ new MutationObserver(m=>{if(m.some(x=>[...x.addedNodes].some(n=>n.nodeType===1&&!n.classList.contains('kg-social'))))schedule()}).observe(list,{childList:true});
+ list.addEventListener('click',async ev=>{
+  const b=ev.target.closest('[data-kg-send],[data-kg-hide],[data-kg-intro]');if(!b||!duelState)return;
+  if(b.dataset.kgIntro){const d=duelState.duels.find(x=>x.id===b.dataset.kgIntro),K=await kampfgeist();K.playEinlauf([{look:d.challenger,name:d.challenger.name},{look:d.opponent,name:d.opponent.name}]);return}
+  b.disabled=true;
+  const r=b.dataset.kgSend?await db.rpc('send_duel_emote',{p_duel_id:b.dataset.kgSend,p_emote_key:b.dataset.kgEmote}):await db.rpc('hide_kg_emote',{p_event_id:Number(b.dataset.kgHide)});
+  const st=document.getElementById('status');
+  if(r.error){if(st)st.textContent=r.error.message;b.disabled=false;return}
+  if(st)st.textContent=b.dataset.kgSend?'Emote gesendet.':'Emote ausgeblendet.';
+  decorate().catch(()=>{});
+ });
+ schedule();
+}
+async function mountPodium(){
+ const anchor=document.getElementById('podium-content');if(!anchor)return;
+ const db=await client();
+ const s=await db.auth.getSession();if(!s.data||!s.data.session)return;
+ const box=document.createElement('section');box.className='tlp-profile';box.setAttribute('aria-label','Kampfgeist-Podium');anchor.after(box);
+ const render=async()=>{
+  const {data,error}=await db.rpc('get_podium_kampfgeist');
+  if(error||!data||!data.enabled||!data.places.length){box.hidden=true;return}
+  const K=await kampfgeist();box.hidden=false;
+  box.innerHTML=`<div class="tlp-block"><h2>Kampfgeist-Podium</h2>${data.preview?'<p class="tlp-note">Vorschau – für die Boxer sichtbar, sobald der Shop freigeschaltet ist.</p>':''}
+   <div class="kg-podium">${data.places.map(p=>`<div class="kg-podium-place p${p.rank}"><span class="kg-place">${p.rank}.</span><span class="kg-bubble">${K.emoteHTML(p.look.emote&&p.look.emote.design,64)}</span>
+    ${K.avatarBox(p.look,104)}${K.titleTag(p.look.titel)}<b>${esc(p.name)}</b>
+    <div class="kg-reactions">${p.reactions.map(r=>`<span title="${esc(r.emote.name)}">${K.emoteHTML(r.emote.design,30)}${r.count}</span>`).join('')||'<span class="tlp-note" style="background:none">Noch keine Reaktionen</span>'}</div>
+    ${p.can_react?`<div class="kg-react" role="group" aria-label="Auf ${esc(p.name)} reagieren">${data.my_emotes.slice(0,6).map(m=>`<button type="button" data-kg-react="${esc(p.name)}" data-kg-emote="${esc(m.key)}" aria-label="${esc(m.name)}">${K.emoteHTML(m.design,40)}</button>`).join('')}</div>`
+     :p.is_me?'<span class="tlp-note">Das bist du!</span>':p.reacted_today?'<span class="tlp-note">Heute schon reagiert.</span>':''}
+    <button type="button" class="kg-mini-btn" data-kg-solo="${p.rank}">Einlauf ansehen</button></div>`).join('')}</div>
+   <p class="tlp-note">Einmal pro Tag kannst du jedem Podiumsplatz ein Emote schenken. Namen der Absender werden nicht angezeigt.</p></div>`;
+  box.onclick=async ev=>{
+   const b=ev.target.closest('[data-kg-react],[data-kg-solo]');if(!b)return;
+   if(b.dataset.kgSolo){const p=data.places.find(x=>String(x.rank)===b.dataset.kgSolo);K.playEinlauf([{look:p.look,name:p.name}]);return}
+   b.disabled=true;const r=await db.rpc('react_podium',{p_display_name:b.dataset.kgReact,p_emote_key:b.dataset.kgEmote});
+   if(r.error){alertBox(box,r.error.message);b.disabled=false;return}
+   render().catch(()=>{});
+  };
+ };
+ await render();
+}
+function alertBox(box,msg){let n=box.querySelector('.tlp-status');if(!n){n=document.createElement('p');n.className='tlp-status error';n.setAttribute('role','status');box.prepend(n)}n.textContent=msg}
 function boot(){
  const screen=document.body&&document.body.dataset.tlScreen;
  const run=fn=>fn().catch(e=>console.warn('Bewertung/Boxstil nicht verfügbar:',e));
  if(screen==='boxer-profile')run(mountProfile);
  if(screen==='boxer')run(mountStudio);
+ if(screen==='duels')run(mountDuels);
+ if(screen==='index')run(mountPodium);
 }
 window.TLPerf={client,CATS,SKILL,SKILL_KEYS,AX,QUESTIONS,esc,summary,tier,styleType,radarSVG,deltaTag,fmtDate,card,initials};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
