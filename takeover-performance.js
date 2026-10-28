@@ -172,39 +172,45 @@ function kampfgeist(){
  if(!kgPromise)kgPromise=new Promise((ok,fail)=>{const sc=document.createElement('script');sc.src='./takeover-kampfgeist.js';sc.onload=()=>ok(window.TLKG);sc.onerror=fail;document.head.appendChild(sc)});
  return kgPromise;
 }
-async function mountProfileLook(db,name,anchor){
- const {data,error}=await db.rpc('get_kg_look',{p_display_name:name});
- if(error||!data||!data.avatar)return;
- const K=await kampfgeist();
- const box=document.createElement('section');box.className='tlp-profile';box.setAttribute('aria-label','Kampfgeist-Karte');
- box.innerHTML=`<div class="tlp-block">${K.card(data,{name:data.name,size:104})}</div>`;anchor.after(box);
-}
+// Etappe 11: Boxerprofil übersichtlich – eine Spielerkarte-Box: FUT-Karte (mit Holo), daneben die Figur (Holo-Pose oder
+// Kampfgeist-Avatar mit Aura und Rahmen), Gesamt/Stärken/Schwächen kurz, Boxstil aufklappbar, Vergleichen-Knopf.
 async function mountProfile(){
  const name=(new URLSearchParams(location.search).get('name')||'').trim();
  const anchor=document.getElementById('sportProfile');
  if(!name||!anchor)return;
  const db=await client();
  const s=await db.auth.getSession();if(!s.data||!s.data.session)return;
- const {data,error}=await db.rpc('get_performance_card',{p_display_name:name});
- const hl=(await looks(db,[name]).catch(()=>({})));const hk=Object.keys(hl).find(k=>k.toLowerCase()===name.toLowerCase()&&hl[k].holo);
- if(hk){const cfg=hl[hk].holo,hb=document.createElement('section');hb.className='tlp-profile';hb.setAttribute('aria-label','Boxer-Holo');
-  hb.innerHTML=`<div class="tlp-block"><div class="tlh-stage">${window.TLHolo.svg(cfg,{pose:cfg.pose_profile,label:'Boxer-Holo von '+hk})}</div></div>`;anchor.after(hb)}
- else await mountProfileLook(db,name,anchor).catch(e=>console.warn('Kampfgeist-Karte nicht verfügbar:',e));
- if(error||!data||(!data.rating&&!data.style))return;
- const box=document.createElement('section');box.className='tlp-profile';box.setAttribute('aria-label','Coach-Bewertung und Boxstil');
- let html='';
- if(data.rating){
-  const r=data.rating,pos=data.style&&data.style.scores?styleType(data.style.scores).pos:'BOX',lk=(await looks(db,[data.display_name]))[data.display_name];
-  html+=`<div class="tlp-block"><h2>Coach-Bewertung</h2><div class="tlp-row">${card({name:data.display_name,overall:r.overall,categories:r.categories,pos,delta:r.delta,width:150,look:lk})}
-   <div class="tlp-side"><div class="tlp-eyebrow">Gesamt</div><div class="tlp-big">${r.overall} ${deltaTag(r.delta,true)}</div><div class="tlp-note">aktualisiert am ${fmtDate(r.rated_at)}</div>
-   <div class="tlp-eyebrow ok">Stärken</div>${(r.top||[]).map(x=>`<div class="tlp-note">${esc(SKILL[x.k]?SKILL[x.k].n:x.k)} <b class="ok">${to20(x.v,r.scale)}</b></div>`).join('')}
-   <div class="tlp-eyebrow bad">Daran arbeiten</div>${(r.low||[]).map(x=>`<div class="tlp-note">${esc(SKILL[x.k]?SKILL[x.k].n:x.k)} <b class="bad">${to20(x.v,r.scale)}</b></div>`).join('')}</div></div></div>`;
+ const [pc,mine,hl]=await Promise.all([db.rpc('get_performance_card',{p_display_name:name}),db.rpc('get_my_performance').catch(()=>({error:true})),looks(db,[name]).catch(()=>({}))]);
+ const data=pc.error?null:pc.data;
+ const myName=!mine||mine.error||!mine.data||!mine.data.profile?null:mine.data.profile.display_name;
+ const shown=data&&data.display_name?data.display_name:name;
+ const lkKey=Object.keys(hl).find(k=>k.toLowerCase()===name.toLowerCase()),look=lkKey?hl[lkKey]:null;
+ const isMe=!!(data&&data.is_me)||(!!myName&&lowerName(myName)===lowerName(name));
+ const enc=encodeURIComponent;
+ const cmpHref=myName?(isMe?'./boxer-compare.html?left='+enc(myName):'./boxer-compare.html?left='+enc(myName)+'&right='+enc(shown)):'./boxer-compare.html?left='+enc(shown);
+ const ca=document.getElementById('compareAction');if(ca&&myName){ca.dataset.tlMine='1';ca.href=cmpHref}
+ let figure='';
+ if(look&&look.holo&&window.TLHolo)figure=`<div class="tlh-stage tlp-figure">${window.TLHolo.svg(look.holo,{pose:look.holo.pose_profile,label:'Boxer-Holo von '+shown})}</div>`;
+ else{
+  const kg=await db.rpc('get_kg_look',{p_display_name:name}).catch(()=>({error:true}));
+  if(kg&&!kg.error&&kg.data&&kg.data.avatar){const K=await kampfgeist();figure=`<div class="tlp-figure">${K.avatarBox(kg.data,132)}</div>`}
  }
- if(data.style&&data.style.scores){
-  const t=styleType(data.style.scores);
-  html+=`<div class="tlp-block"><h2>Boxstil</h2><div class="tlp-center">${radarSVG(data.style.scores,null,280)}<strong class="tlp-type">${esc(t.title)}</strong><p class="tlp-note">${esc(t.text)} · Test vom ${fmtDate(data.style.created_at)}</p></div></div>`;
- }
- box.innerHTML=html;(document.querySelector('.tlp-profile[aria-label="Boxer-Holo"]')||anchor).after(box);
+ if(!data&&!figure)return;
+ const r=data&&data.rating,st=data&&data.style&&data.style.scores?styleType(data.style.scores):null;
+ const skills=(list,c)=>(list||[]).map(x=>`<span>${esc(SKILL[x.k]?SKILL[x.k].n:x.k)} <b class="${c}">${to20(x.v,r.scale)}</b></span>`).join('');
+ const box=document.createElement('section');box.className='tlp-profile';box.setAttribute('aria-label','Spielerkarte und Boxstil');
+ box.innerHTML=`<div class="tlp-block tlp-player"><h2>Spielerkarte</h2>
+  <div class="tlp-player-row">${r?card({name:shown,overall:r.overall,categories:r.categories,pos:st?st.pos:'BOX',delta:r.delta,width:150,look})
+   :`<div class="tlp-card-empty"><b>${esc(shown)}</b><span class="tlp-note">${isMe?'Noch keine Spielerkarte – starte mit deiner <a href="./bewertung.html">Selbsteinschätzung</a>.':'Noch keine Spielerkarte.'}</span></div>`}${figure}</div>
+  ${r?`<div class="tlp-player-facts"><div><span class="tlp-eyebrow">Gesamt</span><span class="tlp-big">${r.overall} ${deltaTag(r.delta,true)}</span><span class="tlp-note">aktualisiert am ${fmtDate(r.rated_at)}</span></div>
+   <div><span class="tlp-eyebrow ok">Stärken</span><span class="tlp-skills">${skills(r.top,'ok')}</span></div>
+   <div><span class="tlp-eyebrow bad">Daran arbeiten</span><span class="tlp-skills">${skills(r.low,'bad')}</span></div></div>`:''}
+  ${st?`<details class="tlp-style-det"><summary><span class="tlp-chip t-gold">${esc(st.pos)}</span><span><b>${esc(st.title)}</b><span class="tlp-note">Boxstil · Test vom ${fmtDate(data.style.created_at)}</span></span></summary>
+   <div class="tlp-center">${radarSVG(data.style.scores,null,240)}<p class="tlp-note">${esc(st.text)}</p></div></details>`:''}
+  <a class="tlp-btn tlp-compare-btn" href="${esc(cmpHref)}">${isMe?'Meine Karte & Boxstil vergleichen':'Karten & Boxstil vergleichen'}</a></div>`;
+ anchor.after(box);
+ // Der grosse Vergleichen-Knopf ersetzt den kleinen in der Aktionsleiste (übersichtlicher).
+ if(ca){ca.hidden=true;const duel=document.getElementById('duelAction');if(duel)duel.style.gridColumn='1 / -1'}
 }
 async function mountStudio(){
  const host=document.getElementById('studioPanelOverview');if(!host)return;
@@ -213,6 +219,9 @@ async function mountStudio(){
  const [perf,wk,qs,kg,kp]=await Promise.all([db.rpc('get_my_performance'),db.rpc('get_my_week_plan'),db.rpc('get_my_quests'),db.rpc('get_my_kampfgeist',{p_full:false}),db.rpc('get_my_kampfpfad')]);
  const data=perf.data,error=perf.error,gym=!wk.error&&wk.data&&wk.data.enabled?wk.data:null,quest=!qs.error&&qs.data&&qs.data.enabled?qs.data:null;
  const myName=data&&data.profile&&data.profile.display_name;
+ // Etappe 11: eigenes Profilbild im Studio mit Rahmen, Titel beim Namen
+ { const av=document.getElementById('avatarPreview'),pn=document.getElementById('profileName');
+  if(av&&myName){if(pn)pn.setAttribute('data-tl-name','');av.dataset.tlBoxer=myName} }
  const holo=myName?(await looks(db,[myName]).catch(()=>({})))[myName]:null;
  const holoOn=!!(holo&&holo.holo)||await (async()=>{try{const r=await db.from('league_feature_flags').select('is_enabled').eq('feature_key','boxer_holo').maybeSingle();return !!(r&&r.data&&r.data.is_enabled===true)}catch(_){return false}})();
  const shop=!kg.error&&kg.data&&kg.data.enabled?kg.data:null;
@@ -402,6 +411,83 @@ async function mountAwards(){
   <p class="tlp-note"><a href="./karten.html">Alle Auszeichnungen und Karten-Designs</a></p></div>`;
  anchor.after(box);
 }
+/* ---- Etappe 11: Rahmen und Titel überall, wo ein Boxer mit Profilbild erscheint ---- */
+// Ziel: jedes runde Profilbild mit data-tl-boxer="Name". Der Rahmen legt sich um das Bild; der Titel kommt direkt hinter
+// das Namenselement im selben Block ([data-tl-name], .rank-name, .champion, .tl-podium-name). Daten: get_public_boxer_looks
+// (auch für Gäste, nur sichtbare Profile, nur Design-Daten).
+let pubLooksPromise=null;
+const lowerName=v=>String(v||'').trim().toLowerCase();
+function publicLooks(){
+ if(!pubLooksPromise)pubLooksPromise=client().then(db=>db.rpc('get_public_boxer_looks')).then(r=>{
+  const m=new Map();if(r&&!r.error&&Array.isArray(r.data))for(const x of r.data)if(x&&x.name)m.set(lowerName(x.name),x);return m}).catch(()=>new Map());
+ return pubLooksPromise;
+}
+// Rang-Emblem: kleines Abzeichen am Rand; kommt zurück, falls die Seite das Bild später austauscht.
+function rankBadge(el){if(el.dataset.tlRk&&!el.querySelector(':scope>.kg-rkbadge')){const b=document.createElement('span');b.className='kg-rkbadge';b.textContent=el.dataset.tlRk;el.append(b)}}
+function applyLook(el,lk,K){
+ el.dataset.tlLook='1';
+ if(!lk)return;
+ const fr=lk.rahmen&&lk.rahmen.design;
+ if(fr&&/^[a-z]{2,12}$/.test(fr.fr||'')&&fr.fr!=='none'){
+  el.classList.add('tl-framed','kg-fr-'+fr.fr);
+  if(fr.fr==='rank'){
+   const rk=K.RANKS.find(x=>x.r===fr.rk);
+   if(rk){el.style.setProperty('--rk',rk.c);el.dataset.tlRk=rk.r;rankBadge(el)}
+  }
+ }
+ if(lk.titel&&lk.titel.name){
+  const host=el.closest('[data-tl-look-scope]')||el.parentElement;
+  const nameEl=host&&host.querySelector('[data-tl-name],.rank-name,.champion,.tl-podium-name');
+  if(nameEl&&!(nameEl.nextElementSibling&&nameEl.nextElementSibling.classList.contains('tl-look-title'))){
+   const t=document.createElement('span');t.className='tl-look-title';t.innerHTML=K.titleTag(lk.titel);nameEl.after(t);
+  }
+ }
+}
+async function mountLooks(){
+ const pending=()=>[...document.querySelectorAll('[data-tl-boxer]:not([data-tl-look])')];
+ let busy=false,again=false;
+ const run=async()=>{
+  if(busy){again=true;return}
+  busy=true;
+  try{
+   if(pending().length){
+    const map=await publicLooks();
+    const K=map.size?await kampfgeist():null;
+    for(const el of pending()){const lk=map.get(lowerName(el.dataset.tlBoxer));if(K)applyLook(el,lk,K);else el.dataset.tlLook='1'}
+   }
+  }catch(e){console.warn('Rahmen nicht verfügbar:',e)}
+  finally{busy=false;if(again){again=false;run()}}
+ };
+ new MutationObserver(()=>{document.querySelectorAll('[data-tl-rk]').forEach(rankBadge);if(document.querySelector('[data-tl-boxer]:not([data-tl-look])'))run()})
+  .observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-tl-boxer']});
+ await run();
+}
+/* ---- Etappe 11: Die Top 3 als FUT-Karten auf dem Podium (für angemeldete Boxer) ---- */
+async function mountPodiumCards(){
+ const anchor=document.getElementById('podium-content');if(!anchor)return;
+ const db=await client();
+ const s=await db.auth.getSession();if(!s.data||!s.data.session)return;
+ const cache=new Map();let seq=0;
+ const cardFor=async n=>{const k=lowerName(n);if(!cache.has(k))cache.set(k,db.rpc('get_performance_card',{p_display_name:n}).then(r=>r.error?null:r.data).catch(()=>null));return cache.get(k)};
+ const render=async()=>{
+  const pod=anchor.querySelector('.tl-podium');if(!pod||pod.dataset.tlpCards)return;
+  pod.dataset.tlpCards='1';const my=++seq;
+  const names=[...pod.querySelectorAll('.tl-podium-step')].map(st=>{const n=st.querySelector('.tl-podium-name');return n?n.textContent.trim():''}).filter(n=>n&&n!=='–').slice(0,3);
+  if(!names.length)return;
+  const data=await Promise.all(names.map(cardFor));
+  const rated=names.map((n,i)=>({n,d:data[i],place:i+1})).filter(x=>x.d&&x.d.rating);
+  if(my!==seq||!rated.length||!anchor.contains(pod))return;
+  const lks=await looks(db,rated.map(x=>x.d.display_name)).catch(()=>({}));
+  if(my!==seq||!anchor.contains(pod))return;
+  anchor.querySelectorAll('.tlp-podium-cards').forEach(x=>x.remove());
+  const box=document.createElement('div');box.className='tlp-podium-cards';box.setAttribute('role','list');box.setAttribute('aria-label','Spielerkarten der Top 3');
+  box.innerHTML=rated.map(x=>{const r=x.d.rating,pos=x.d.style&&x.d.style.scores?styleType(x.d.style.scores).pos:'BOX';
+   return `<a role="listitem" class="tlp-podium-card p${x.place}" href="./boxer-profile.html?name=${encodeURIComponent(x.d.display_name)}"><span class="tlp-eyebrow">Platz ${x.place}</span>${card({name:x.d.display_name,overall:r.overall,categories:r.categories,pos,delta:r.delta,width:104,look:lks[x.d.display_name]})}</a>`}).join('');
+  const pick=anchor.querySelector('.tl-podium-emote-pick');(pick&&pick.previousElementSibling===pod?pick:pod).after(box);
+ };
+ new MutationObserver(()=>{const pod=anchor.querySelector('.tl-podium');if(pod&&!pod.dataset.tlpCards)render().catch(e=>console.warn('Podium-Karten nicht verfügbar:',e))}).observe(anchor,{childList:true});
+ await render();
+}
 function alertBox(box,msg){let n=box.querySelector('.tlp-status');if(!n){n=document.createElement('p');n.className='tlp-status error';n.setAttribute('role','status');box.prepend(n)}n.textContent=msg}
 function boot(){
  const screen=document.body&&document.body.dataset.tlScreen;
@@ -409,7 +495,8 @@ function boot(){
  if(screen==='boxer-profile')run(mountProfile);
  if(screen==='boxer')run(mountStudio);
  if(screen==='duels')run(mountDuels);
- if(screen==='index'){run(mountPodium);run(mountAwards)}
+ if(screen==='index'){run(mountPodium);run(mountAwards);run(mountPodiumCards)}
+ run(mountLooks);
  if(screen==='boxer-compare')run(mountCompare);
 }
 window.TLPerf={client,looks,holoLib,AWARD_LABEL,CATS,SKILL,SKILL_KEYS,AX,QUESTIONS,BANDS,BAND_NAMES,band,to20,esc,summary,tier,styleType,radarSVG,radarCompare,similarity,deltaTag,fmtDate,card,initials};

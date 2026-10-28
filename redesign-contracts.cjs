@@ -25,6 +25,7 @@ for(const [path,b] of Object.entries(baseline)){
   'league-manager.html':['league_v21_admin_delete_global_draft','league_v21_admin_publish_global_challenge','league_v21_admin_update_global_draft',
    'league_v21_archive_goal','league_v21_complete_goal','league_v21_record_goal_progress'],
   'goals.html':['league_v21_archive_goal'],
+  'guest.html':['get_public_boxer_looks'], // Etappe 11: Rahmen und Titel für Gäste (nur Design-Daten)
   'arena.html':['league_v21_arena_cancel']};
  assert.deepEqual(addedRpc,allowedRpc[path]||[],`${path}: unexpected additional RPC literal`);
  const choiceCardPages=new Set(['arena.html','boxer.html','boxer-compare.html','challenges.html','duels.html','goals.html','league-manager.html','league-challenges.html']);

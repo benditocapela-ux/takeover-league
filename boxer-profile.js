@@ -95,11 +95,17 @@ async function renderPublicBadges(name){
   if(!response.ok)throw new Error('HTTP '+response.status);
   const badges=await response.json();if(!Array.isArray(badges))throw Error('Badgedaten ungültig');
   status.textContent=badges.length?badges.length+' verdiente Abzeichen':'Noch keine Auszeichnungen erhalten.';
+  let shown=0;
   for(const badge of badges){
-   const card=document.createElement('article');card.className='badge-tile';
+   const card=document.createElement('article');card.className='badge-tile';if(++shown>6)card.hidden=true;
    const title=document.createElement('strong');title.textContent=String(badge.title||'Achievement');
    const earned=document.createElement('small');earned.textContent=badge.earned_at?'Verliehen '+new Date(badge.earned_at).toLocaleDateString('de-CH'):'';
    card.append(title,earned);grid.append(card);
+  }
+  if(badges.length>6){
+   const more=document.createElement('button');more.type='button';more.className='badge-more';more.textContent='Alle '+badges.length+' Abzeichen anzeigen';
+   more.addEventListener('click',()=>{grid.querySelectorAll('.badge-tile[hidden]').forEach(x=>{x.hidden=false});more.remove()});
+   grid.after(more);
   }
  }catch(e){status.textContent='Öffentliche Auszeichnungen sind noch nicht verfügbar.'}
 }
@@ -192,15 +198,17 @@ async function init(){
   $('totalXp').textContent=fmt(xp);
   $('level').textContent=level.rank+' · '+level.level;
   $('levelFill').style.width=level.pct+'%';
-  renderPublicRadar(boxer,leader[0]||{},levels,leaders);
+  // Owner-Entscheid 28.10.2026: Leistungsprofil-Diagramm vorerst ausgeblendet (renderPublicRadar bleibt für später erhalten).
+  $('sportProfile').hidden=true;
   renderPublicBadges(name);
   renderPublicRecords(name);
   renderPalmares(name);
   $('levelStatus').textContent='Rang '+level.rank+' · Level '+level.level;
   $('nextLevel').textContent='Noch '+fmt(level.remaining)+' EXP bis zum nächsten Level';
+  $('profilePhoto').dataset.tlBoxer=name; // Etappe 11: Rahmen und Titel (takeover-performance.js)
   const img=photoUrl(avatar[0]);
   if(img){const picture=document.createElement('img');picture.src=img;picture.alt='';picture.addEventListener('error',()=>picture.remove());$('profilePhoto').replaceChildren(picture)}
-  $('duelAction').href='./duels.html?opponent='+encodeURIComponent(name);const cmp=$('compareAction');if(cmp)cmp.href='./boxer-compare.html?left='+encodeURIComponent(name);
+  $('duelAction').href='./duels.html?opponent='+encodeURIComponent(name);const cmp=$('compareAction');if(cmp&&!cmp.dataset.tlMine)cmp.href='./boxer-compare.html?left='+encodeURIComponent(name); // angemeldet: takeover-performance.js richtet auf den eigenen Boxer aus
   status.hidden=true;$('profileCard').hidden=false;
   showCoachAction(name);
  }catch(e){fail('Boxerprofil konnte nicht geladen werden: '+String(e.message||e))}

@@ -27,6 +27,7 @@ function ownView(data){
  const cur=r.current,prev=r.previous,o=cur.summary.overall,d=prev?o-prev.summary.overall:null;
  const pos=data.style&&data.style.current?P.styleType(data.style.current.scores).pos:'BOX';
  return `<div class="tlp-center">${P.card({name:data.profile.display_name,overall:o,categories:cur.summary.categories,pos,delta:d,width:230,look:me&&me.look})}</div>${me&&me.look?'<p class="tlp-note tlp-center"><a href="./karten.html">Karten-Design ändern</a></p>':''}
+  <a class="tlp-btn ghost tlp-compare-btn" href="./boxer-compare.html?left=${encodeURIComponent(data.profile.display_name)}">Karte & Boxstil vergleichen</a>
   <div class="tlp-panel tlp-row spread"><div><div class="tlp-eyebrow">Gesamt</div><div class="tlp-big">${o} ${P.deltaTag(d,true)}</div></div><div class="tlp-right"><span class="tlp-note">aktualisiert am</span><br><b>${P.fmtDate(cur.created_at)}</b>${prev?`<br><span class="tlp-note">vorher ${P.fmtDate(prev.created_at)}</span>`:''}</div></div>
   ${cur.note?`<div class="tlp-panel"><b>${P.esc(cur.rated_by||'Coach')}</b><p class="tlp-quote">«${P.esc(cur.note)}»</p></div>`:''}
   ${selfPanel()}

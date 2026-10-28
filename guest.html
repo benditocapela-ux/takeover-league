@@ -276,7 +276,8 @@ function avatar(name,size){
   }
   if(!url&&rec&&/^avatar-(0[1-9]|1[0-4])$/.test(rec.avatar_key||''))url='./avatars/'+rec.avatar_key+'.webp';
   const cls=size?' '+size:'';
-  return '<span class="avatar'+cls+'" aria-hidden="true">'+(url?'<img src="'+safe(url)+'" alt="" loading="lazy" onerror="this.remove()">':'🥊')+'</span>';
+  const who=String(name||'').trim();
+  return '<span class="avatar'+cls+'" aria-hidden="true"'+(who?' data-tl-boxer="'+safe(who)+'"':'')+'>'+(url?'<img src="'+safe(url)+'" alt="" loading="lazy" onerror="this.remove()">':'🥊')+'</span>';
 }
 
 /* Level-Formel identisch zu boxer.html / index.html */
@@ -505,9 +506,37 @@ guestTabs.forEach((button,index)=>{
   });
 });
 
+/* Rahmen und Titel (Etappe 11): öffentliche Design-Daten der sichtbaren Boxer, nur Rahmen, Rang und Titel. */
+const lookMap=new Map();
+const RANK_COLORS={F:'#8a94a8',E:'#5fb27f',D:'#4fa3ff',C:'#b874ff',B:'#ff8a3c',A:'#ff5a5f',S:'#f2c14e'};
+async function loadLooks(){
+  try{
+    const rows=await rpc('get_public_boxer_looks',{});
+    rows.forEach(r=>{if(r&&r.name)lookMap.set(String(r.name).trim().toLocaleLowerCase('de-CH'),r)});
+  }catch(e){/* ohne Rahmen weiter */}
+}
+function decorateLooks(){
+  document.querySelectorAll('[data-tl-boxer]:not([data-tl-look])').forEach(el=>{
+    el.dataset.tlLook='1';
+    const lk=lookMap.get(String(el.dataset.tlBoxer||'').trim().toLocaleLowerCase('de-CH'));if(!lk)return;
+    const fr=lk.rahmen&&lk.rahmen.design;
+    if(fr&&/^[a-z]{2,12}$/.test(fr.fr||'')&&fr.fr!=='none'){
+      el.classList.add('tl-framed','kg-fr-'+fr.fr);
+      if(fr.fr==='rank'&&RANK_COLORS[fr.rk]){el.style.setProperty('--rk',RANK_COLORS[fr.rk]);const b=document.createElement('span');b.className='kg-rkbadge';b.textContent=fr.rk;el.append(b)}
+    }
+    const nameEl=el.parentElement&&el.parentElement.querySelector('.name,.nm');
+    if(lk.titel&&lk.titel.name&&nameEl){
+      const t=document.createElement('span');t.className='tl-look-title';
+      const tag=document.createElement('span');tag.className='kg-title r-'+String(lk.titel.rarity||'common').replace(/[^a-z]/g,'');tag.textContent=lk.titel.name;
+      t.append(tag);nameEl.after(t);
+    }
+  });
+}
+new MutationObserver(()=>{if(lookMap.size&&document.querySelector('[data-tl-boxer]:not([data-tl-look])'))decorateLooks()}).observe(document.body,{childList:true,subtree:true});
+
 /* Start */
 (async function start(){
-  await loadAvatars();
+  await Promise.all([loadAvatars(),loadLooks()]);
   const jobs=[
     [loadPodium,'podium'],[loadAwards,'awards'],[loadRanking,'ranking'],[loadLevels,'levels'],
     [loadChallenges,'global-challenges'],[loadDuels,'live-duels'],[loadHistory,'hall-of-fame']

@@ -19,7 +19,9 @@ for(const table of ['league_seasons_v21','league_season_results_v21','league_hal
 assert.match(history,/textContent=/,'No unsafe public data markup');
 const p=read('boxer-profile.js');
 assert.match(p,/function renderPublicRadar\(/);
-assert.match(p,/renderPublicRadar\(boxer,leader\[0\]/);
+// Owner-Entscheid 28.10.2026: Leistungsprofil-Diagramm vorerst ausgeblendet; Funktion bleibt für später.
+assert.match(p,/\$\('sportProfile'\)\.hidden=true/);
+assert.match(read('boxer-profile.html'),/id="sportProfile"[^>]*hidden/);
 assert.match(p,/get_public_leaderboard/);
 assert.doesNotMatch(p,/training_submissions/,'Public radar must not access private training details');
 const sql=read('supabase/migrations/20261019010000_league_21_seasons_goals_history_foundation.sql');

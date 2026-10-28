@@ -17,6 +17,7 @@ const ALLOWED_RPCS=new Set([
   'get_public_levels',
   'get_monthly_awards',
   'get_public_boxer_avatars',
+  'get_public_boxer_looks',        // Etappe 11: nur Rahmen, Rang und Titel sichtbarer Boxer
   'league_v21_public_live_duels'   // optionale, sanitisierte Projektion (nur nach Freigabe)
 ]);
 const ALLOWED_TABLES=new Set([
@@ -65,6 +66,7 @@ function respond(url,init){
     if(name==='get_public_levels')return {ok:true,json:async()=>LEVELS};
     if(name==='get_monthly_awards')return {ok:true,json:async()=>AWARDS};
     if(name==='get_public_boxer_avatars')return {ok:true,json:async()=>[]};
+    if(name==='get_public_boxer_looks')return {ok:true,json:async()=>[{name:'Royce',rank:'D',rahmen:{key:'f_rang_d',name:'Emblem Rang D',design:{fr:'rank',rk:'D'}},titel:{key:'t_contender',name:'Contender',rarity:'rare'}}]};
     if(name==='league_v21_public_live_duels')return {ok:false,status:404,text:async()=>'not found'};
     throw new Error('Unerwarteter RPC-Aufruf im Gastmodus: '+name);
   }
@@ -116,6 +118,13 @@ const doc=dom.window.document;
   assert.ok(doc.querySelector('#levels').textContent.includes('Royce'),'Level-Rangliste ist leer');
   assert.ok(doc.querySelectorAll('#awards .row').length===4,'Awards werden nicht vollstaendig gerendert');
   assert.ok(doc.querySelector('#awards').textContent.includes('Road King'),'Awards fehlen');
+
+  /* ---------- 2b) Etappe 11: Rahmen und Titel auch für Gäste (nur Design-Daten) ---------- */
+  const royce=doc.querySelector('#ranking [data-tl-boxer="Royce"]');
+  assert.ok(royce&&royce.classList.contains('tl-framed')&&royce.classList.contains('kg-fr-rank'),'Rang-Rahmen fehlt in der Rangliste');
+  assert.equal(royce.querySelector('.kg-rkbadge').textContent,'D');
+  assert.ok(doc.querySelector('#podium .tl-look-title .kg-title.r-rare').textContent==='Contender','Titel fehlt beim Namen');
+  assert.ok(!doc.querySelector('[data-tl-boxer="Jona"]').classList.contains('tl-framed'),'Rahmen nur bei Boxern mit Rahmen');
 
   /* ---------- 3) Keine Fehlermeldung sichtbar ---------- */
   const visibleErrors=[...doc.querySelectorAll('.err')].filter(n=>n.textContent.trim());
