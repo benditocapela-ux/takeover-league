@@ -74,7 +74,8 @@ for(const page of pages){
    assert.equal(backdrop.hidden,false);
    assert.ok(doc.body.classList.contains('tl-menu-visible'));
    const groups=Array.from(panel.querySelectorAll('.tl-menu-group'));
-   assert.equal(groups.length,4,'All four navigation sections should remain present');
+   assert.equal(groups.length,5,'All five navigation sections should remain present');
+   assert.ok(groups[groups.length-1].querySelector('a[href$="news.html"]'),'Help section should link the news feed');
    const expanded=panel.querySelectorAll('.tl-menu-group-toggle[aria-expanded="true"]');
    assert.ok(expanded.length<=1,'Opening the drawer must never expand more than one section');
    if(expanded.length)assert.ok(expanded[0].nextElementSibling&&!expanded[0].nextElementSibling.hidden,'Expanded section links should be visible');
