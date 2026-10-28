@@ -35,7 +35,8 @@ const REGISTERS=[
   'Einmal pro Monat möglich; dein Coach kann ihn früher freigeben.']},
  {key:'karten',page:'karten.html',group:'mein',icon:'🎴',title:'Karten & Auszeichnungen',flag:'card_designs',summary:'Kartendesign wählen, Card of the Week & Co.',points:[
   'Wähle ein Design für deine Spielerkarte – andere sehen deine Karte so.','Neue Designs gibt es mit dem Rang, im Shop (Coins) oder nur als Auszeichnung.',
-  'Card of the Week, Card of the Month und Player of the Year: wer die meisten EXP sammelt, wird vorgeschlagen, ein Trainer bestätigt.']},
+  'Card of the Week, Card of the Month und Player of the Year: wer die meisten EXP sammelt, wird vorgeschlagen, ein Trainer bestätigt.',
+  'Eigenes Design: Schaltet der Admin es für dich frei, gestaltest du Farben, Muster und Abzeichen deiner Karte selbst.']},
  {key:'wochenplan',page:'wochenplan.html',group:'mein',icon:'🗓️',title:'Wochenplan',flag:'gym_training',summary:'Welche Trainings diese Woche anstehen.',points:[
   'Montag, Mittwoch und Samstag sind Pflichttrainings, Dienstag und Donnerstag Ergänzung.','«Erledigt» erscheint, sobald dein Training an dem Tag bestätigt ist.',
   'Im Register «Stundenplan» siehst du alle Vereinseinheiten.']},

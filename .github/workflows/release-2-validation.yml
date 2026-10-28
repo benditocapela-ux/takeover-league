@@ -65,6 +65,7 @@ jobs:
       - run: node tests/boxer-holo-browser.cjs
       - run: node tests/self-rating-browser.cjs
       - run: node tests/looks-everywhere-browser.cjs
+      - run: node tests/card-designs-personal-browser.cjs
         timeout-minutes: 4
       - run: node tests/gym-browser.cjs
         timeout-minutes: 4
