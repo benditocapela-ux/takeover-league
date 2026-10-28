@@ -12,5 +12,7 @@ const adminPage=fs.readFileSync('coach.html','utf8');
 assert.match(landing,/profile\.role==='coach'\?'\.\/coach\.html'/,'coach dashboard shortcut must point to coach');
 assert.match(loginPage,/profile\.role==='coach'\)\{location\.replace\('\.\/coach\.html'\)/,'coach login must route to coach dashboard');
 assert.match(loginPage,/profile\?\.role==='coach'\?'Coach \/ Boxer'/,'coach role must be displayed correctly');
-assert.match(adminPage,/!\['admin','coach'\]\.includes\(me\.role\)/,'active coach/admin required for feedback');
+// Etappe 6b: Feedback wird über staff_send_feedback gesendet; die Rolle (aktiver Coach/Admin) prüft der Server (require_staff).
+assert.match(adminPage,/db\.rpc\('staff_send_feedback'/,'feedback is sent through the staff RPC');
+assert.match(fs.readFileSync('supabase/migrations/20261028240000_feedback_visibility.sql','utf8'),/FUNCTION public\.staff_send_feedback[\s\S]*?league_private\.require_staff\(\)/,'active coach/admin required for feedback (server)');
 console.log('Coach Challenges V2: static safety and syntax checks passed');
