@@ -113,8 +113,32 @@ BEGIN
 END;
 $fn$;
 
-REVOKE ALL ON FUNCTION public.get_my_feedback(), public.staff_list_feedback(uuid,integer), public.staff_update_feedback(uuid,date,boolean) FROM PUBLIC, anon;
-GRANT EXECUTE ON FUNCTION public.get_my_feedback(), public.staff_list_feedback(uuid,integer), public.staff_update_feedback(uuid,date,boolean) TO authenticated;
+-- Coach oder Admin sendet Feedback. Über die Tabelle scheitert das für Coaches an der Insert-Policy: sie verlangt einen aktiven
+-- Boxer in profiles, Coaches dürfen dort aber nur ihr eigenes Profil lesen (nur der Admin sieht alle). Die RPC prüft dasselbe
+-- serverseitig; Datumsprüfung und Benachrichtigung laufen weiter über die Trigger der Tabelle.
+CREATE OR REPLACE FUNCTION public.staff_send_feedback(p_boxer_id uuid, p_title text, p_message text, p_visible_until date DEFAULT NULL)
+RETURNS jsonb LANGUAGE plpgsql SECURITY DEFINER SET search_path='' AS $fn$
+DECLARE me public.profiles := league_private.require_staff(); f public.boxer_coach_feedback;
+BEGIN
+ IF NOT EXISTS (SELECT 1 FROM public.league_feature_flags x WHERE x.feature_key='coach_feedback' AND x.is_enabled) THEN
+  RAISE EXCEPTION 'Coach-Feedback ist nicht freigeschaltet' USING ERRCODE='42501';
+ END IF;
+ IF NOT EXISTS (SELECT 1 FROM public.profiles p WHERE p.id=p_boxer_id AND p.role='boxer' AND p.is_active) THEN
+  RAISE EXCEPTION 'Boxer nicht gefunden oder nicht aktiv' USING ERRCODE='22023';
+ END IF;
+ IF char_length(btrim(coalesce(p_title,''))) NOT BETWEEN 1 AND 120 OR char_length(btrim(coalesce(p_message,''))) NOT BETWEEN 1 AND 4000 THEN
+  RAISE EXCEPTION 'Titel (1–120 Zeichen) und Nachricht (1–4000 Zeichen) angeben' USING ERRCODE='22023';
+ END IF;
+ INSERT INTO public.boxer_coach_feedback(boxer_id,coach_id,title,message,visible_until)
+ VALUES (p_boxer_id, me.id, btrim(p_title), btrim(p_message), p_visible_until) RETURNING * INTO f;
+ RETURN league_private.feedback_json(f, league_private.zurich_today()) || pg_catalog.jsonb_build_object('boxer_id',f.boxer_id);
+END;
+$fn$;
+
+REVOKE ALL ON FUNCTION public.get_my_feedback(), public.staff_list_feedback(uuid,integer), public.staff_update_feedback(uuid,date,boolean),
+ public.staff_send_feedback(uuid,text,text,date) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.get_my_feedback(), public.staff_list_feedback(uuid,integer), public.staff_update_feedback(uuid,date,boolean),
+ public.staff_send_feedback(uuid,text,text,date) TO authenticated;
 
 NOTIFY pgrst, 'reload schema';
 COMMIT;

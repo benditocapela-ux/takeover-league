@@ -5,6 +5,7 @@ BEGIN;
 DROP FUNCTION IF EXISTS public.get_my_feedback();
 DROP FUNCTION IF EXISTS public.staff_list_feedback(uuid,integer);
 DROP FUNCTION IF EXISTS public.staff_update_feedback(uuid,date,boolean);
+DROP FUNCTION IF EXISTS public.staff_send_feedback(uuid,text,text,date);
 DROP TRIGGER IF EXISTS league_feedback_insert_guard ON public.boxer_coach_feedback;
 DROP FUNCTION IF EXISTS league_private.feedback_insert_guard();
 DROP FUNCTION IF EXISTS league_private.feedback_json(public.boxer_coach_feedback,date);

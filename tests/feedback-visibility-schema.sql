@@ -104,6 +104,9 @@ CREATE POLICY coach_v3_feedback_insert_admin_enabled ON public.boxer_coach_feedb
  AND EXISTS (SELECT 1 FROM public.profiles p WHERE p.id=boxer_coach_feedback.coach_id AND p.auth_user_id=(SELECT auth.uid()) AND p.role IN ('admin','coach') AND p.is_active)
  AND EXISTS (SELECT 1 FROM public.profiles p WHERE p.id=boxer_coach_feedback.boxer_id AND p.role='boxer' AND p.is_active));
 GRANT SELECT ON public.profiles TO authenticated;
+-- Wie Produktion: Profile liest man nur selbst (Admin alle) – Coaches sehen fremde Boxer nicht
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "profiles own or admin read" ON public.profiles FOR SELECT TO authenticated USING (((auth_user_id = (SELECT auth.uid())) AND is_active) OR (SELECT public.is_league_admin()));
 INSERT INTO public.league_feature_flags(feature_key,display_name,is_enabled) VALUES ('coach_feedback','Coach-Feedback',true) ON CONFLICT (feature_key) DO UPDATE SET is_enabled=true;
 -- Bestehende Feedbacks: eines vom 18.10. (älter als 7 Tage), eines von heute
 INSERT INTO public.boxer_coach_feedback(boxer_id,coach_id,title,message,created_at) VALUES
@@ -114,7 +117,7 @@ GRANT SELECT ON fb_before TO authenticated;
 \ir ../supabase/migrations/20261028240000_feedback_visibility.sql
 \ir ../supabase/migrations/20261028240000_feedback_visibility.sql
 
-DO $t$ DECLARE r jsonb; today date := (now() AT TIME ZONE 'Europe/Zurich')::date; f1 uuid; f2 uuid; n int;
+DO $t$ DECLARE r jsonb; today date := (now() AT TIME ZONE 'Europe/Zurich')::date; f1 uuid; f2 uuid; f3 uuid; n int;
  owner text := '10000000-0000-0000-0000-00000000000a'; coach text := '10000000-0000-0000-0000-00000000000c';
  anna text := '10000000-0000-0000-0000-000000000001'; ben text := '10000000-0000-0000-0000-000000000002';
  ownerP uuid := '00000000-0000-0000-0000-00000000000a'; coachP uuid := '00000000-0000-0000-0000-00000000000c';
@@ -124,7 +127,7 @@ BEGIN
  -- Bestehende Inhalte unverändert, sichtbar bis = Versand + 7
  IF EXISTS (SELECT 1 FROM fb_before b JOIN public.boxer_coach_feedback f USING (id) WHERE (b.title,b.message,b.boxer_id,b.coach_id,b.created_at) IS DISTINCT FROM (f.title,f.message,f.boxer_id,f.coach_id,f.created_at)) THEN RAISE EXCEPTION 'content changed'; END IF;
  IF (SELECT visible_until FROM public.boxer_coach_feedback WHERE title='Alt')<>DATE '2026-10-25' THEN RAISE EXCEPTION 'old visible_until'; END IF;
- IF has_function_privilege('anon','public.get_my_feedback()','EXECUTE') OR has_function_privilege('authenticated','league_private.feedback_json(public.boxer_coach_feedback,date)','EXECUTE') THEN RAISE EXCEPTION 'rights'; END IF;
+ IF has_function_privilege('anon','public.get_my_feedback()','EXECUTE') OR has_function_privilege('anon','public.staff_send_feedback(uuid,text,text,date)','EXECUTE') OR has_function_privilege('authenticated','league_private.feedback_json(public.boxer_coach_feedback,date)','EXECUTE') THEN RAISE EXCEPTION 'rights'; END IF;
 
  -- Boxerin Anna: altes Feedback liegt im Archiv
  PERFORM pg_temp.act(anna);
@@ -133,11 +136,23 @@ BEGIN
 
  -- Coach sendet mit Vorgabe (heute+7) und mit eigenem Datum; ungültige Daten werden abgelehnt; Zurückziehen nicht beim Senden
  PERFORM pg_temp.act(coach);
- INSERT INTO public.boxer_coach_feedback(boxer_id,coach_id,title,message) VALUES (annaP,coachP,'Woche','Jab doppeln') RETURNING id INTO f1;
- INSERT INTO public.boxer_coach_feedback(boxer_id,coach_id,title,message,visible_until,withdrawn_at) VALUES (annaP,coachP,'Monat','Kondition',today+30,now()) RETURNING id INTO f2;
- BEGIN INSERT INTO public.boxer_coach_feedback(boxer_id,coach_id,title,message,visible_until) VALUES (annaP,coachP,'x','y',today-1); RAISE EXCEPTION 'past'; EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
- BEGIN INSERT INTO public.boxer_coach_feedback(boxer_id,coach_id,title,message,visible_until) VALUES (annaP,coachP,'x','y',today+91); RAISE EXCEPTION 'far'; EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
+ -- Direkt über die Tabelle scheitert es für Coaches (Profile-RLS wie Produktion) → Senden über staff_send_feedback
+ BEGIN INSERT INTO public.boxer_coach_feedback(boxer_id,coach_id,title,message) VALUES (annaP,coachP,'x','y'); RAISE EXCEPTION 'coach direct insert should fail (prod RLS)'; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+ r := public.staff_send_feedback(annaP,' Woche ','Jab doppeln'); f1 := (r->>'id')::uuid;
+ IF r->>'status'<>'active' OR r->>'title'<>'Woche' OR r->>'coach'<>'Marco' THEN RAISE EXCEPTION 'send %', r; END IF;
+ r := public.staff_send_feedback(annaP,'Monat','Kondition',today+30); f2 := (r->>'id')::uuid;
+ BEGIN PERFORM public.staff_send_feedback(annaP,'x','y',today-1); RAISE EXCEPTION 'past'; EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
+ BEGIN PERFORM public.staff_send_feedback(annaP,'x','y',today+91); RAISE EXCEPTION 'far'; EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
+ BEGIN PERFORM public.staff_send_feedback(annaP,'  ','y'); RAISE EXCEPTION 'empty title'; EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
+ BEGIN PERFORM public.staff_send_feedback(coachP,'x','y'); RAISE EXCEPTION 'not a boxer'; EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
  PERFORM set_config('role','postgres',true);
+ IF (SELECT coach_id FROM public.boxer_coach_feedback WHERE id=f1)<>coachP THEN RAISE EXCEPTION 'author = caller'; END IF;
+ -- Admin kann weiterhin direkt einfügen (bisheriger Weg); Zurückziehen beim Einfügen wird ignoriert
+ PERFORM pg_temp.act(owner);
+ INSERT INTO public.boxer_coach_feedback(boxer_id,coach_id,title,message,withdrawn_at) VALUES (benP,ownerP,'Admin','Direkt',now()) RETURNING id INTO f3;
+ PERFORM set_config('role','postgres',true);
+ IF (SELECT withdrawn_at FROM public.boxer_coach_feedback WHERE id=f3) IS NOT NULL THEN RAISE EXCEPTION 'withdrawn on insert'; END IF;
+ DELETE FROM public.boxer_coach_feedback WHERE id=f3;
  IF (SELECT visible_until FROM public.boxer_coach_feedback WHERE id=f1)<>today+7 OR (SELECT withdrawn_at FROM public.boxer_coach_feedback WHERE id=f2) IS NOT NULL THEN RAISE EXCEPTION 'insert defaults'; END IF;
  PERFORM pg_temp.act(anna);
  r := public.get_my_feedback();
@@ -186,7 +201,7 @@ END $t$;
 
 \ir ../supabase/production-prep/rollback_20261028240000_feedback_visibility.sql
 DO $r$ BEGIN
- IF to_regprocedure('public.get_my_feedback()') IS NOT NULL OR EXISTS (SELECT 1 FROM pg_trigger WHERE tgname='league_feedback_insert_guard') THEN RAISE EXCEPTION 'rollback left objects'; END IF;
+ IF to_regprocedure('public.get_my_feedback()') IS NOT NULL OR to_regprocedure('public.staff_send_feedback(uuid,text,text,date)') IS NOT NULL OR EXISTS (SELECT 1 FROM pg_trigger WHERE tgname='league_feedback_insert_guard') THEN RAISE EXCEPTION 'rollback left objects'; END IF;
  IF (SELECT count(*) FROM public.boxer_coach_feedback)<>4 THEN RAISE EXCEPTION 'rollback kept data'; END IF;
  IF NOT EXISTS (SELECT 1 FROM pg_policies WHERE policyname='feedback_select_enabled' AND qual NOT LIKE '%withdrawn%') THEN RAISE EXCEPTION 'policy restored'; END IF;
  RAISE NOTICE 'PASS: Rollback 6b Feedback stellt Policy her und behält Daten';

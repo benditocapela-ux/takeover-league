@@ -287,11 +287,9 @@ $('coachFeedbackForm').addEventListener('submit',async e=>{
  const boxer_id=$('coachFeedbackBoxer').value,title=$('coachFeedbackTitle').value.trim(),message=$('coachFeedbackMessage').value.trim();
  if(!boxer_id||!title||!message)return;
  const visible_until=feedbackUntil?.value||addDaysIso(swissToday(),7);
- const {data:{user},error:authError}=await db.auth.getUser();if(authError||!user){status.textContent='Bitte erneut anmelden.';return}
- const {data:me,error:profileError}=await db.from('profiles').select('id,role,is_active').eq('auth_user_id',user.id).maybeSingle();
- if(profileError||!me||!['admin','coach'].includes(me.role)||!me.is_active){status.textContent='Keine Coach-Berechtigung.';return}
  button.disabled=true;status.textContent='Feedback wird gesendet …';
- const result=await db.from('boxer_coach_feedback').insert({boxer_id,coach_id:me.id,title,message,visible_until});
+ // Über die RPC: Coaches sehen fremde Profile nicht, darum scheitert ein direktes Einfügen an der Tabellen-Policy.
+ const result=await db.rpc('staff_send_feedback',{p_boxer_id:boxer_id,p_title:title,p_message:message,p_visible_until:visible_until});
  button.disabled=false;if(result.error){status.textContent='Senden fehlgeschlagen: '+result.error.message;return}
  status.textContent='Feedback gesendet · sichtbar bis '+new Date(visible_until+'T12:00:00Z').toLocaleDateString('de-CH')+'.';$('coachFeedbackForm').reset();if(feedbackUntil)feedbackUntil.value=addDaysIso(swissToday(),7);await loadCoachFeedbackHistory();
 });

@@ -26,12 +26,14 @@ function extra(){
  const fb=[{id:'f1',title:'Deckung hoch',message:'Linke Hand oben lassen.',created_at:add(today,-2)+'T18:00:00Z',visible_until:add(today,5),coach:'Test Admin',status:'active',boxer_id:'b1',boxer:'Test Boxer',can_edit:true},
   {id:'f2',title:'Alt',message:'Älteres Feedback',created_at:'2026-10-18T18:00:00Z',visible_until:'2026-10-25',coach:'Marco',status:'archived',boxer_id:'b1',boxer:'Test Boxer',can_edit:false}];
  window.__extraRpc=(name,args)=>{
-  if(!['get_my_feedback','staff_list_feedback','staff_update_feedback','get_club_schedule','coach_training_audit_recent','coach_list_training_history','coach_list_boxers'].includes(name))return null;
+  if(!['get_my_feedback','staff_list_feedback','staff_update_feedback','staff_send_feedback','get_club_schedule','coach_training_audit_recent','coach_list_training_history','coach_list_boxers'].includes(name))return null;
   calls.push([name,args]);
   if(name==='coach_list_training_history'||name==='coach_training_audit_recent')return null; // Basis-Mock antwortet, Aufruf wird nur protokolliert
   if(name==='coach_list_boxers')return Promise.resolve({data:[{id:'11111111-1111-4111-8111-111111111111',display_name:'Test Boxer',role:'boxer',is_active:true},{id:'22222222-2222-4222-8222-222222222222',display_name:'Test Admin',role:'admin',is_active:true}],error:null});
   if(name==='get_my_feedback')return Promise.resolve({data:{enabled:true,today,active:fb.filter(x=>x.status==='active'),archived:fb.filter(x=>x.status==='archived')},error:null});
   if(name==='staff_list_feedback')return Promise.resolve({data:fb.map(x=>({...x})),error:null});
+  if(name==='staff_send_feedback'){const x={id:'f'+(fb.length+1),title:args.p_title,message:args.p_message,created_at:new Date().toISOString(),visible_until:args.p_visible_until,coach:'Test Admin',status:'active',boxer_id:args.p_boxer_id,boxer:'Test Boxer',can_edit:true};
+   fb.unshift(x);return Promise.resolve({data:{...x},error:null})}
   if(name==='staff_update_feedback'){const x=fb.find(f=>f.id===args.p_feedback_id);if(args.p_visible_until)x.visible_until=args.p_visible_until;
    if(args.p_withdrawn===true)x.status='withdrawn';else if(args.p_withdrawn===false)x.status=x.visible_until>=today?'active':'archived';else x.status=x.visible_until>=today?'active':'archived';
    return Promise.resolve({data:{...x},error:null})}
@@ -90,8 +92,8 @@ function extra(){
  await vis.fill(await page.evaluate(()=>{const d=new Date();d.setUTCDate(d.getUTCDate()+14);return d.toISOString().slice(0,10)}));
  await page.click('#coachFeedbackSend');
  await page.waitForFunction(()=>/Feedback gesendet · sichtbar bis/.test(document.getElementById('coachFeedbackStatus').textContent));
- const sent=await page.evaluate(()=>window.__mockStats.submitted.at(-1));
- assert.equal(sent.title,'Fokus');assert.match(sent.visible_until,/^\d{4}-\d{2}-\d{2}$/);
+ const sent=(await page.evaluate(()=>window.__extraCalls)).filter(c=>c[0]==='staff_send_feedback').at(-1)[1];
+ assert.equal(sent.p_title,'Fokus');assert.equal(sent.p_message,'Jab doppeln');assert.match(sent.p_visible_until,/^\d{4}-\d{2}-\d{2}$/);
  assert.equal(await vis.inputValue(),def,'reset to +7 after sending');
  await shot(page,'6b-coach-feedback');
  await page.locator('.fb-row').first().getByRole('button',{name:'Jetzt archivieren'}).click();

@@ -10,6 +10,11 @@ assert.match(sql,/SET DEFAULT \(\(now\(\) AT TIME ZONE 'Europe\/Zurich'\)::date 
 assert.match(sql,/NEW\.visible_until < today OR NEW\.visible_until > today \+ 90/);
 assert.match(sql,/p_visible_until < today - 1 OR p_visible_until > today \+ 90/);
 assert.match(sql,/SET visible_until=\(created_at AT TIME ZONE 'Europe\/Zurich'\)::date \+ 7 WHERE visible_until IS NULL/);
+// Senden über RPC (Coaches sehen fremde Profile nicht): Verfasser = Aufrufer, nur aktive Boxer, Rollback entfernt sie
+assert.match(sql,/FUNCTION public\.staff_send_feedback\(p_boxer_id uuid, p_title text, p_message text, p_visible_until date DEFAULT NULL\)/);
+assert.match(sql,/VALUES \(p_boxer_id, me\.id, btrim\(p_title\), btrim\(p_message\), p_visible_until\)/);
+assert.match(sql,/p\.id=p_boxer_id AND p\.role='boxer' AND p\.is_active/);
+assert.match(rollback,/DROP FUNCTION IF EXISTS public\.staff_send_feedback\(uuid,text,text,date\)/);
 // Inhalte der bestehenden Feedbacks werden nicht verändert, nichts gelöscht
 assert.doesNotMatch(sql.replace(/\$fn\$[\s\S]*?\$fn\$/g,''),/SET (title|message|boxer_id|coach_id|created_at)|DELETE FROM|TRUNCATE/i);
 assert.doesNotMatch(sql,/DELETE FROM public\.boxer_coach_feedback/);
@@ -21,7 +26,8 @@ assert.match(rollback,/CREATE POLICY feedback_select_enabled/);assert.doesNotMat
 // Frontend: Boxer liest über die RPC (aktiv/archiviert), Coach sendet mit «sichtbar bis» und ändert über die RPC
 assert.match(boxer,/db\.rpc\('get_my_feedback'\)/);assert.doesNotMatch(boxer,/from\('boxer_coach_feedback'\)\.select/);
 assert.match(boxer,/Archivierte Feedbacks \('/);
-assert.match(coach,/insert\(\{boxer_id,coach_id:me\.id,title,message,visible_until\}\)/);
+assert.match(coach,/db\.rpc\('staff_send_feedback',\{p_boxer_id:boxer_id,p_title:title,p_message:message,p_visible_until:visible_until\}\)/);
+assert.doesNotMatch(coach,/from\('boxer_coach_feedback'\)\.insert/,'coaches cannot insert directly (profiles RLS)');
 assert.match(coach,/db\.rpc\('staff_list_feedback'/);assert.match(coach,/db\.rpc\('staff_update_feedback'/);
 assert.match(coach,/p_visible_until:addDaysIso\(swissToday\(\),-1\)/,'archive now = yesterday');
 assert.doesNotMatch(coach,/innerHTML\s*=\s*[^;]*item\.(title|message)/,'feedback text never as HTML');
