@@ -1,0 +1,95 @@
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Hilfe & Tutorial · Takeover League</title>
+<style>:root{color-scheme:dark;font:16px system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 110px;background:var(--bg);color:var(--text)}main{max-width:760px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}button:focus-visible,a:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible,summary:focus-visible{outline:3px solid var(--gold);outline-offset:3px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="hilfe">
+<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Hilfe & Tutorial"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">❓</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Wo finde ich was?</div><div class="tl-screen-title">Hilfe & Tutorial</div></div></div><div class="tl-screen-links"><a href="./hilfe.html" class="tl-screen-primary">Hilfe</a><a href="./news.html">Neuigkeiten</a><a href="./feedback.html?from=hilfe.html">Feedback</a></div></div>
+<h1>Hilfe & Tutorial</h1>
+<p class="tlp-note">Alle Bereiche kurz erklärt – nach Rubriken wie im Menü. Suche nach einem Stichwort oder öffne eine Seite.</p>
+<div class="tlp-panel help-top"><label class="tlp-field" for="helpSearch">Suchen<input id="helpSearch" type="search" placeholder="z. B. Training eintragen, Coins, Duell" autocomplete="off"></label>
+ <div class="help-actions"><button type="button" class="tlp-btn" data-act="tour" hidden>Tour nochmal ansehen</button></div></div>
+<p id="status" class="tlp-status" role="status" aria-live="polite"></p>
+<div id="app"></div>
+</main>
+<script src="./takeover-help.js" defer></script>
+<script type="module">
+const $=id=>document.getElementById(id),app=$('app'),status=$('status');
+let H,db,role=null,flags=new Set(),faq={items:[],can_edit:false},editing=null;
+const CATS={start:'Erste Schritte',training:'Training',punkte:'Punkte & Level',kaempfe:'Duelle & Challenges',kampfgeist:'Kampfgeist',coach:'Coach & Bewertung',konto:'Konto & Hilfe'};
+const norm=s=>String(s||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/ß/g,'ss');
+function visible(r){return (!r.flag||flags.has(r.flag)||role==='admin')&&(!r.staff||role==='admin'||role==='coach')}
+function registersHTML(){
+ const esc=H.esc;
+ return H.GROUPS.map(([g,icon,name])=>{
+  const regs=H.REGISTERS.filter(r=>r.group===g&&visible(r));if(!regs.length)return '';
+  return `<section class="help-group" data-group="${g}"><h2>${icon} ${esc(name)}</h2>${regs.map(r=>`<details class="tlp-panel help-reg" data-key="${r.key}" data-text="${esc(norm(r.title+' '+r.summary+' '+r.points.join(' ')))}">
+   <summary><span class="help-icon" aria-hidden="true">${r.icon}</span><span class="tlp-grow"><b>${esc(r.title)}</b><span class="tlp-note">${esc(r.summary)}</span></span></summary>
+   <ol class="help-points">${r.points.map(p=>`<li>${esc(p)}</li>`).join('')}</ol><a class="help-go" href="./${r.page}">Zur Seite «${esc(r.title)}» ›</a></details>`).join('')}</section>`;
+ }).join('');
+}
+function faqHTML(){
+ const esc=H.esc;
+ const cats=Object.keys(CATS).filter(c=>faq.items.some(x=>x.category===c));
+ const editor=f=>`<form class="help-faq-edit" data-edit="${f?f.id:'new'}"><label class="tlp-field">Kategorie<select name="cat">${Object.entries(CATS).map(([k,l])=>`<option value="${k}" ${f&&f.category===k?'selected':''}>${l}</option>`).join('')}</select></label>
+  <label class="tlp-field">Frage<input name="q" maxlength="200" value="${f?esc(f.question):''}" required></label>
+  <label class="tlp-field">Antwort<textarea name="a" rows="4" maxlength="2000" required>${f?esc(f.answer):''}</textarea></label>
+  <div class="tlp-row"><label class="tlp-field">Reihenfolge<input name="o" type="number" min="0" max="10000" value="${f?f.sort_order:100}"></label>
+  <label class="help-pub"><input type="checkbox" name="p" ${!f||f.is_published?'checked':''}> veröffentlicht</label></div>
+  <div class="tlp-row"><button type="submit" class="tlp-btn">Speichern</button><button type="button" class="tlp-btn ghost" data-act="cancel">Abbrechen</button></div></form>`;
+ return `<section class="help-group help-faq"><h2>💡 Häufige Fragen</h2>
+  ${faq.can_edit?(editing==='new'?editor(null):'<button type="button" class="tlp-btn ghost" data-act="new">+ Neue Frage</button>'):''}
+  ${cats.map(c=>`<h3 class="help-cat">${esc(CATS[c])}</h3>${faq.items.filter(x=>x.category===c).map(x=>editing===x.id?editor(x):`<details class="tlp-panel help-qa${x.is_published?'':' draft'}" data-text="${esc(norm(x.question+' '+x.answer))}">
+   <summary><b>${esc(x.question)}</b>${x.is_published?'':' <span class="tlp-note">(Entwurf)</span>'}</summary><p>${esc(x.answer)}</p>
+   ${faq.can_edit?`<button type="button" class="kg-mini-btn" data-faq="${x.id}">Bearbeiten</button>`:''}</details>`).join('')}`).join('')||'<p class="tlp-note">Noch keine Fragen.</p>'}</section>`;
+}
+function render(){
+ app.innerHTML=registersHTML()+faqHTML()+'<p class="tlp-note help-none" hidden>Keine Treffer. <a href="./feedback.html?from=hilfe.html">Frag uns direkt</a>.</p>';
+ applySearch();openHash();
+}
+function applySearch(){
+ const q=norm($('helpSearch').value).trim(),words=q.split(/\s+/).filter(Boolean);let hits=0;
+ app.querySelectorAll('[data-text]').forEach(el=>{
+  const ok=!words.length||words.every(w=>el.dataset.text.includes(w));
+  el.hidden=!ok;if(ok)hits++;
+  if(words.length&&ok&&el.tagName==='DETAILS')el.open=true;
+ });
+ app.querySelectorAll('.help-group').forEach(g=>{g.hidden=!!words.length&&!g.querySelector('[data-text]:not([hidden])')&&!g.querySelector('form')});
+ const none=app.querySelector('.help-none');if(none)none.hidden=!words.length||hits>0;
+}
+function openHash(){
+ const key=decodeURIComponent(location.hash.slice(1));if(!key)return;
+ const el=app.querySelector('[data-key="'+CSS.escape(key)+'"]');
+ if(el){el.open=true;el.classList.add('help-hit');setTimeout(()=>el.scrollIntoView({block:'start'}),50)}
+}
+async function loadFlags(){
+ try{const r=await fetch('https://iqarjivcrddcixrvqbfb.supabase.co/rest/v1/league_feature_flags?select=feature_key,is_enabled',{headers:{apikey:'sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R'},credentials:'omit',cache:'no-store'});
+  const d=r.ok?await r.json():[];flags=new Set((Array.isArray(d)?d:[]).filter(x=>x.is_enabled===true).map(x=>x.feature_key))}catch(_){}
+}
+async function loadFaq(){const {data,error}=await db.rpc('get_faq');if(!error&&data)faq=data}
+$('helpSearch').addEventListener('input',applySearch);
+window.addEventListener('hashchange',openHash);
+document.querySelector('[data-act="tour"]').addEventListener('click',()=>H.runTour({role,onDone:()=>{db.rpc('mark_tour_seen',{p_version:H.TOUR_VERSION})}}));
+app.addEventListener('click',e=>{
+ const b=e.target.closest('button');if(!b)return;
+ if(b.dataset.act==='new'){editing='new';render()}
+ else if(b.dataset.act==='cancel'){editing=null;render()}
+ else if(b.dataset.faq){editing=Number(b.dataset.faq);render()}
+});
+app.addEventListener('submit',async e=>{
+ const f=e.target.closest('[data-edit]');if(!f)return;e.preventDefault();
+ const {error}=await db.rpc('admin_save_faq',{p_id:f.dataset.edit==='new'?null:Number(f.dataset.edit),p_category:f.cat.value,p_question:f.q.value.trim(),p_answer:f.a.value.trim(),p_sort_order:Number(f.o.value)||0,p_published:f.p.checked});
+ if(error){status.textContent=error.message;status.classList.add('error');return}
+ status.textContent='Gespeichert.';status.classList.remove('error');editing=null;await loadFaq();render();
+});
+(async()=>{
+ await new Promise(ok=>{if(window.TLHelp)ok();else document.querySelector('script[src="./takeover-help.js"]').addEventListener('load',ok,{once:true})});
+ H=window.TLHelp;
+ try{
+  db=await H.client();
+  const s=await db.auth.getSession();
+  if(s.data&&s.data.session){const o=await db.rpc('get_my_onboarding');if(!o.error&&o.data){role=o.data.role||null;if(o.data.enabled)document.querySelector('[data-act="tour"]').hidden=false}}
+  await Promise.all([loadFlags(),loadFaq()]);
+ }catch(e){status.textContent='Einige Inhalte konnten nicht geladen werden.'}
+ render();
+})();
+</script>
+<script src="./takeover-navigation.js" defer></script></body></html>
