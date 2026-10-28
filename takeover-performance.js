@@ -137,18 +137,31 @@ function card(o){
  const vars=d?['a','b','ink','edge'].map(k=>hex(d[k])?`--c${k}:${d[k]};`:'').join(''):'';
  const pat=d&&/^[a-z]{2,12}$/.test(d.pattern||'')?d.pattern:'';
  const awards=o.look&&Array.isArray(o.look.awards)?o.look.awards:[];
+ const ho=o.look&&o.look.holo&&window.TLHolo?o.look.holo:null;
  const count=k=>awards.filter(a=>a.kind===k).length;
  const stars=['poty','cotm','cotw'].filter(k=>count(k)).map(k=>`<span title="${AWARD_LABEL[k]}">${k==='poty'?'👑':k==='cotm'?'🏆':'⭐'}${count(k)>1?count(k):''}</span>`).join('');
  return `<div class="tlp-card t-${tc}${d?' d-design':''}${d&&d.glow?' d-glow':''}"${pat?` data-pattern="${pat}"`:''} style="--fw:${o.width||170}px;${vars}" role="img" aria-label="Spielerkarte ${esc(o.name)}: Gesamt ${o.overall}, ${CATS.map(c=>c.n+' '+o.categories[c.k]).join(', ')}${lk?', Design '+esc(lk.name):''}${awards.length?', '+awards.length+' Auszeichnung'+(awards.length>1?'en':''):''}">
   ${d&&/^[A-Z]{3,5}$/.test(d.badge||'')?`<span class="tlp-badge">${d.badge}</span>`:''}
-  <div class="tlp-top"><div><div class="tlp-ov">${o.overall}</div><div class="tlp-pos">${esc(o.pos||'BOX')}</div>${o.delta?`<div class="tlp-d ${o.delta>0?'up':'down'}">${o.delta>0?'▲':'▼'}${Math.abs(o.delta)}</div>`:''}</div><div class="tlp-face">${esc(initials(o.name))}</div></div>
+  <div class="tlp-top"><div><div class="tlp-ov">${o.overall}</div><div class="tlp-pos">${esc(o.pos||'BOX')}</div>${o.delta?`<div class="tlp-d ${o.delta>0?'up':'down'}">${o.delta>0?'▲':'▼'}${Math.abs(o.delta)}</div>`:''}</div>${ho?`<div class="tlp-holo">${window.TLHolo.svg(ho,{pose:ho.pose_card,scene:'none',holo:false})}</div>`:`<div class="tlp-face">${esc(initials(o.name))}</div>`}</div>
   <div class="tlp-name">${esc(String(o.name||'').toUpperCase())}</div>
   <div class="tlp-stats">${CATS.map(c=>`<span><b>${o.categories[c.k]}</b> ${c.k}</span>`).join('')}</div>
   <div class="tlp-foot">${stars?`<span class="tlp-stars">${stars}</span> `:''}TKL · ${lk?esc(lk.name):tl}</div></div>`;
 }
 // Karten-Looks (Design, Auszeichnungen) für mehrere Namen; leer, solange Karten-Designs nicht freigeschaltet sind.
 async function looks(db,names){
- try{const {data,error}=await db.rpc('get_card_looks',{p_display_names:names.filter(Boolean).slice(0,50)});return error||!data?{}:data}catch(_){return {}}
+ const list=names.filter(Boolean).slice(0,50);
+ const safe=pr=>pr.then(r=>r.error||!r.data?{}:r.data).catch(()=>({}));
+ const [c,h]=await Promise.all([safe(db.rpc('get_card_looks',{p_display_names:list})),safe(db.rpc('get_holo_looks',{p_display_names:list}))]);
+ const out=Object.assign({},c);
+ if(Object.keys(h).length){try{await holoLib()}catch(_){return out}for(const n of Object.keys(h))out[n]=Object.assign({},out[n]||{},{holo:h[n]})}
+ return out;
+}
+// Etappe 9: Boxer-Holo-Zeichnungen erst laden, wenn jemand einen Holo hat.
+let holoPromise=null;
+function holoLib(){
+ if(window.TLHolo)return Promise.resolve(window.TLHolo);
+ if(!holoPromise)holoPromise=new Promise((ok,fail)=>{const sc=document.createElement('script');sc.src='./takeover-holo.js';sc.onload=()=>ok(window.TLHolo);sc.onerror=fail;document.head.appendChild(sc)});
+ return holoPromise;
 }
 
 /* ---- automatische Bausteine im Boxerprofil und in Mein Studio ---- */
@@ -173,7 +186,10 @@ async function mountProfile(){
  const db=await client();
  const s=await db.auth.getSession();if(!s.data||!s.data.session)return;
  const {data,error}=await db.rpc('get_performance_card',{p_display_name:name});
- await mountProfileLook(db,name,anchor).catch(e=>console.warn('Kampfgeist-Karte nicht verfügbar:',e));
+ const hl=(await looks(db,[name]).catch(()=>({})));const hk=Object.keys(hl).find(k=>k.toLowerCase()===name.toLowerCase()&&hl[k].holo);
+ if(hk){const cfg=hl[hk].holo,hb=document.createElement('section');hb.className='tlp-profile';hb.setAttribute('aria-label','Boxer-Holo');
+  hb.innerHTML=`<div class="tlp-block"><div class="tlh-stage">${window.TLHolo.svg(cfg,{pose:cfg.pose_profile,label:'Boxer-Holo von '+hk})}</div></div>`;anchor.after(hb)}
+ else await mountProfileLook(db,name,anchor).catch(e=>console.warn('Kampfgeist-Karte nicht verfügbar:',e));
  if(error||!data||(!data.rating&&!data.style))return;
  const box=document.createElement('section');box.className='tlp-profile';box.setAttribute('aria-label','Coach-Bewertung und Boxstil');
  let html='';
@@ -188,7 +204,7 @@ async function mountProfile(){
   const t=styleType(data.style.scores);
   html+=`<div class="tlp-block"><h2>Boxstil</h2><div class="tlp-center">${radarSVG(data.style.scores,null,280)}<strong class="tlp-type">${esc(t.title)}</strong><p class="tlp-note">${esc(t.text)} · Test vom ${fmtDate(data.style.created_at)}</p></div></div>`;
  }
- box.innerHTML=html;anchor.after(box);
+ box.innerHTML=html;(document.querySelector('.tlp-profile[aria-label="Boxer-Holo"]')||anchor).after(box);
 }
 async function mountStudio(){
  const host=document.getElementById('studioPanelOverview');if(!host)return;
@@ -196,9 +212,13 @@ async function mountStudio(){
  const s=await db.auth.getSession();if(!s.data||!s.data.session)return;
  const [perf,wk,qs,kg,kp]=await Promise.all([db.rpc('get_my_performance'),db.rpc('get_my_week_plan'),db.rpc('get_my_quests'),db.rpc('get_my_kampfgeist',{p_full:false}),db.rpc('get_my_kampfpfad')]);
  const data=perf.data,error=perf.error,gym=!wk.error&&wk.data&&wk.data.enabled?wk.data:null,quest=!qs.error&&qs.data&&qs.data.enabled?qs.data:null;
+ const myName=data&&data.profile&&data.profile.display_name;
+ const holo=myName?(await looks(db,[myName]).catch(()=>({})))[myName]:null;
+ const holoOn=!!(holo&&holo.holo)||await (async()=>{try{const r=await db.from('league_feature_flags').select('is_enabled').eq('feature_key','boxer_holo').maybeSingle();return !!(r&&r.data&&r.data.is_enabled===true)}catch(_){return false}})();
  const shop=!kg.error&&kg.data&&kg.data.enabled?kg.data:null;
- if(error||!data||(!data.ratings_enabled&&!data.style_enabled&&!gym&&!quest&&!shop))return;
+ if(error||!data||(!data.ratings_enabled&&!data.style_enabled&&!gym&&!quest&&!shop&&!holoOn))return;
  const tiles=[];
+ if(holoOn)tiles.push(`<a class="tlp-tile" href="./mein-boxer.html">${holo&&holo.holo?`<span class="tlh-mini">${window.TLHolo.svg(holo.holo,{pose:holo.holo.pose_profile,scene:'none',holo:false})}</span>`:'<span class="tlp-chip t-gold">🥊</span>'}<span><span class="tlp-eyebrow">Mein Boxer</span><strong>${holo&&holo.holo?'Outfit und Pose ändern':'Gestalte deinen Boxer'}</strong><span class="tlp-note">Haare, Kleidung, Mäntel, Auren und Posen</span></span></a>`);
  if(shop){
   const K=await kampfgeist(),rk=K.RANKS[shop.level.rank_idx];
   const pass=!kp.error&&kp.data&&kp.data.enabled?kp.data:null;
@@ -392,6 +412,6 @@ function boot(){
  if(screen==='index'){run(mountPodium);run(mountAwards)}
  if(screen==='boxer-compare')run(mountCompare);
 }
-window.TLPerf={client,looks,AWARD_LABEL,CATS,SKILL,SKILL_KEYS,AX,QUESTIONS,BANDS,BAND_NAMES,band,to20,esc,summary,tier,styleType,radarSVG,radarCompare,similarity,deltaTag,fmtDate,card,initials};
+window.TLPerf={client,looks,holoLib,AWARD_LABEL,CATS,SKILL,SKILL_KEYS,AX,QUESTIONS,BANDS,BAND_NAMES,band,to20,esc,summary,tier,styleType,radarSVG,radarCompare,similarity,deltaTag,fmtDate,card,initials};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();

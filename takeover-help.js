@@ -46,6 +46,9 @@ const REGISTERS=[
  {key:'checkin',page:'checkin.html',group:'mein',icon:'⚡',title:'Gym-Check-in',flag:'gym_training',summary:'Im Gym einchecken statt selbst eintragen.',points:[
   'Startet dein Coach das Training, tippst du hier auf «Einchecken».','Nach dem Training bestätigt der Coach alle Anwesenden – du musst nichts mehr eintragen.',
   'Vereinstrainings (z. B. Technik, Sparring) laufen nur noch über den Check-in.']},
+ {key:'meinboxer',page:'mein-boxer.html',group:'mein',icon:'🥊',title:'Mein Boxer',flag:'boxer_holo',summary:'Deinen eigenen Boxer-Holo gestalten.',points:[
+  'Wähle Hautfarbe, Frisur, Haar- und Augenfarbe. Alles ist gratis und jederzeit änderbar.','Ziehe deinen Boxer an: Kappe, Hoodie mit Kapuze auf oder ab, Trainingsanzug, Hosen, Bandagen oder Handschuhe, Mantel an oder aus.',
+  'Mäntel, Auren, Spezial-Augen, Hintergründe und Posen gibt es im Shop, in Bundles oder als Belohnung. Gesperrtes kannst du vorher anprobieren.','Wähle eine Pose für dein Profil und eine für deine FUT-Karte und tippe auf «Speichern».']},
  {key:'shop',page:'shop.html',group:'mein',icon:'🛍️',title:'Kampfgeist-Shop',flag:'kampfgeist_shop',summary:'Coins sammeln und deinen Look gestalten.',points:[
   'Für bestätigte Trainings und abgeholte Quests bekommst du Kampfgeist-Coins.','Damit kaufst du Avatare, Auren, Banner, Rahmen, Titel und Handschuhe.',
   'Manche Items gibt es erst ab einem bestimmten Rang.']},
@@ -94,7 +97,7 @@ const REGISTERS=[
 ];
 // Seite → Register für den «?»-Knopf
 const PAGE_KEY={'boxer.html':'studio','goals.html':'ziele','bewertung.html':'bewertung','stil-test.html':'stil','wochenplan.html':'wochenplan','quests.html':'quests',
- 'praesenz.html':'praesenz','checkin.html':'checkin','shop.html':'shop','kampfpfad.html':'kampfpfad','roadmap.html':'roadmap','duels.html':'duelle','arena.html':'arena',
+ 'praesenz.html':'praesenz','checkin.html':'checkin','shop.html':'shop','mein-boxer.html':'meinboxer','kampfpfad.html':'kampfpfad','roadmap.html':'roadmap','duels.html':'duelle','arena.html':'arena',
  'league-challenges.html':'challenges','challenges.html':'challenges','index.html':'ranking','boxer-compare.html':'vergleich','awards.html':'awards',
  'league-history.html':'awards','boxer-profile.html':'profil','news.html':'news','feedback.html':'feedback','karten.html':'karten','coach.html':'coach','league-manager.html':'manager','admin.html':'manager'};
 const TOUR=[
