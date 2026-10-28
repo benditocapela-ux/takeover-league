@@ -1,0 +1,107 @@
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Karten & Auszeichnungen · Takeover League</title>
+<style>:root{color-scheme:dark;font:16px system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 110px;background:var(--bg);color:var(--text)}main{max-width:820px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:3px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="karten">
+<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Karten & Auszeichnungen"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🎴</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Spielerkarte gestalten</div><div class="tl-screen-title">Karten & Auszeichnungen</div></div></div><div class="tl-screen-links"><a href="./karten.html" class="tl-screen-primary">Karten</a><a href="./bewertung.html">Bewertung</a><a href="./boxer.html">Mein Studio</a></div></div>
+<p class="tl-subnav"><a href="./boxer.html">← Mein Studio</a></p>
+<h1 id="pageTitle">Karten & Auszeichnungen</h1>
+<p id="status" class="tlp-status" role="status" aria-live="polite">Wird geladen …</p>
+<div id="app"></div>
+</main>
+<script src="./takeover-performance.js" defer></script>
+<script type="module">
+const P=window.TLPerf,$=id=>document.getElementById(id),app=$('app'),status=$('status');
+const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
+const RANKS=['F','E','D','C','B','A','S'];
+let db,mine=null,awards=null,staff=null,perf=null,view='designs',busy=false;
+const fmtP=(k,a,b)=>k==='cotw'?P.fmtDate(a)+' – '+P.fmtDate(b):k==='cotm'?new Intl.DateTimeFormat('de-CH',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(a+'T12:00:00Z')):String(a).slice(0,4);
+function previewCard(look,w){
+ const r=perf&&perf.rating&&perf.rating.current?perf.rating.current.summary:null;
+ const pos=perf&&perf.style&&perf.style.current?P.styleType(perf.style.current.scores).pos:'BOX';
+ return P.card({name:mine.display_name,overall:r?r.overall:70,categories:r?r.categories:{OFF:70,DEF:70,BEI:70,KON:70,TAK:70,MEN:70},pos,width:w||120,look});
+}
+function lockText(d){
+ if(d.available)return '';
+ if(d.unlock==='rank')return 'ab Rang '+d.min_rank+' (du: '+mine.rank+')';
+ if(d.unlock==='shop')return d.price+' Coins';
+ if(d.unlock==='award')return 'nur als '+P.AWARD_LABEL[d.award_kind];
+ return 'gesperrt';
+}
+function designsView(){
+ const cur=mine.look.key;
+ const groups=[['start','Standard'],['rank','Mit dem Rang freigeschaltet'],['shop','Im Shop (Kampfgeist-Coins)'],['award','Nur als Auszeichnung']];
+ return `<div class="tlp-panel tlp-row"><div>${previewCard(mine.look,170)}</div><div><div class="tlp-eyebrow">Aktuelles Design</div><div class="tlp-big">${P.esc(mine.look.name)}</div>
+   <p class="tlp-note">Rang ${P.esc(mine.rank)}${mine.shop?' · '+(mine.coins??0)+' Coins':''}. Andere Mitglieder sehen deine Karte in diesem Design.</p></div></div>
+  ${groups.map(([u,l])=>{const ds=mine.designs.filter(d=>d.unlock===u);if(!ds.length)return '';
+   return `<h2>${P.esc(l)}</h2><div class="kd-grid">${ds.map(d=>`<article class="kd-item${d.available?'':' locked'}${d.key===cur?' on':''}">
+    ${previewCard({key:d.key,name:d.name,design:d.design,awards:[]},110)}
+    <b>${P.esc(d.name)}</b><span class="tlp-note">${P.esc(d.description||'')}</span>
+    ${d.key===cur?'<span class="kd-state">✓ ausgewählt</span>':d.available?`<button type="button" class="tlp-btn" data-equip="${P.esc(d.key)}">Auswählen</button>`
+     :d.unlock==='shop'&&mine.shop?`<button type="button" class="tlp-btn ghost" data-buy="${P.esc(d.key)}" ${(mine.coins??0)<d.price?'disabled':''}>Kaufen · ${d.price} Coins</button>`
+     :`<span class="kd-state">🔒 ${P.esc(lockText(d))}</span>`}</article>`).join('')}</div>`}).join('')}`;
+}
+function awardsView(){
+ if(!awards||!awards.enabled)return '<div class="tlp-panel"><p class="tlp-note">Noch keine Auszeichnungen.</p></div>';
+ const latest=['cotw','cotm','poty'].map(k=>[k,awards.latest&&awards.latest[k]]);
+ return `<div class="kd-awards">${latest.map(([k,a])=>`<article class="tlp-panel kd-award"><div class="tlp-eyebrow">${P.esc(P.AWARD_LABEL[k])}</div>
+   ${a?`<b>${P.esc(a.display_name)}</b><span class="tlp-note">${P.esc(fmtP(k,a.period_start,a.period_end))} · ${a.exp} EXP</span>${a.note?`<p class="tlp-quote">«${P.esc(a.note)}»</p>`:''}`:'<span class="tlp-note">Noch nicht vergeben.</span>'}</article>`).join('')}</div>
+  <h2>Verlauf</h2>${(awards.history||[]).length?`<div class="tlp-panel"><ul class="kd-hist">${awards.history.map(a=>`<li><span>${a.kind==='poty'?'👑':a.kind==='cotm'?'🏆':'⭐'} <b>${P.esc(a.display_name)}</b> · ${P.esc(P.AWARD_LABEL[a.kind])}</span><span class="tlp-note">${P.esc(fmtP(a.kind,a.period_start,a.period_end))}</span></li>`).join('')}</ul></div>`:'<p class="tlp-note">Noch keine Auszeichnungen vergeben.</p>'}
+  <p class="tlp-note">Wer die meisten EXP aus bestätigten Trainings sammelt, wird vorgeschlagen. Ein Trainer bestätigt die Auszeichnung. Das Spezial-Design bleibt dir für immer.</p>`;
+}
+function staffView(){
+ if(!staff)return '<p class="tlp-note">Wird geladen …</p>';
+ return staff.kinds.map(k=>`<section class="tlp-panel"><h2>${P.esc(P.AWARD_LABEL[k.kind])}</h2>${k.periods.map(p=>`<div class="kd-period"><div class="tlp-row spread"><b>${P.esc(fmtP(k.kind,p.start,p.end))}</b><span class="tlp-note">${p.completed?'abgeschlossen':'läuft noch'}</span></div>
+   ${p.award?`<p>✓ <b>${P.esc(p.award.display_name)}</b> · vergeben von ${P.esc(p.award.awarded_by||'')}${p.award.note?' · «'+P.esc(p.award.note)+'»':''} </p><form class="kd-revoke" data-id="${p.award.id}"><label class="tlp-field">Zurücknehmen – Grund<input name="reason" maxlength="300" required placeholder="z. B. falsche Woche"></label><button type="submit" class="tlp-btn ghost">Zurücknehmen</button></form>`
+    :`<ol class="kd-cands">${p.candidates.map((c,i)=>`<li><b>${P.esc(c.display_name)}</b> · ${c.exp} EXP · ${c.trainings} Trainings${i===0?' <span class="kd-state">Vorschlag</span>':''}</li>`).join('')||'<li class="tlp-note">Noch keine bestätigten Trainings.</li>'}</ol>
+     ${p.completed?`<form class="kd-confirm" data-kind="${k.kind}" data-start="${p.start}"><label class="tlp-field">Boxer<select name="who">${staff.boxers.map(b=>`<option value="${P.esc(b.id)}" ${p.candidates[0]&&p.candidates[0].profile_id===b.id?'selected':''}>${P.esc(b.display_name)}</option>`).join('')}</select></label>
+      <label class="tlp-field">Begründung (optional)<input name="note" maxlength="300" placeholder="z. B. drei starke Pflichttrainings"></label><button type="submit" class="tlp-btn">Auszeichnen</button></form>`
+     :'<p class="tlp-note">Vergeben kannst du nach Ende des Zeitraums.</p>'}`}</div>`).join('')}</section>`).join('');
+}
+function tabs(){
+ const t=[['designs','Meine Designs'],['awards','Auszeichnungen']];if(mine.staff)t.push(['staff','Vergeben']);
+ return `<div class="fb-tabs" role="tablist">${t.map(([k,l])=>`<button type="button" role="tab" aria-selected="${view===k}" class="fb-tab${view===k?' on':''}" data-view="${k}">${l}</button>`).join('')}</div>`;
+}
+function render(){const y=scrollY;app.innerHTML=(mine.preview?'<p class="tlp-note">Vorschau – für die Boxer sichtbar, sobald Karten-Designs freigeschaltet sind.</p>':'')+tabs()+(view==='designs'?designsView():view==='awards'?awardsView():staffView());scrollTo(0,y)}
+async function load(){
+ const [m,a,pf]=await Promise.all([db.rpc('get_my_card_designs'),db.rpc('get_card_awards'),db.rpc('get_my_performance')]);
+ if(m.error)throw m.error;mine=m.data;awards=a.error?null:a.data;perf=pf.error?null:pf.data;
+ if(mine.enabled)mine.staff=perf&&perf.profile&&['admin','coach'].includes(perf.profile.role);
+}
+async function loadStaff(){const {data,error}=await db.rpc('staff_card_award_overview');if(error)throw error;staff=data}
+app.addEventListener('click',async e=>{
+ const b=e.target.closest('button');if(!b||busy)return;
+ if(b.dataset.view){view=b.dataset.view;say('');if(view==='staff'&&!staff)await loadStaff().catch(x=>say(x.message,true));render();return}
+ if(b.dataset.equip||b.dataset.buy){
+  busy=true;b.disabled=true;
+  const r=b.dataset.buy?await db.rpc('buy_card_design',{p_key:b.dataset.buy}):await db.rpc('equip_card_design',{p_key:b.dataset.equip});
+  if(!r.error&&b.dataset.buy){const q=await db.rpc('equip_card_design',{p_key:b.dataset.buy});if(q.error)r.error=q.error}
+  busy=false;
+  if(r.error){say(r.error.message,true);b.disabled=false;return}
+  say(b.dataset.buy?'Gekauft und ausgewählt.':'Design ausgewählt.');await load();render();return;
+ }
+});
+app.addEventListener('submit',async e=>{
+ const rv=e.target.closest('.kd-revoke');
+ if(rv){e.preventDefault();const reason=rv.reason.value.trim();if(!reason){say('Bitte einen Grund angeben.',true);return}
+  const {error}=await db.rpc('staff_revoke_card_award',{p_award_id:Number(rv.dataset.id),p_reason:reason});
+  if(error){say(error.message,true);return}
+  say('Auszeichnung zurückgenommen.');await Promise.all([loadStaff(),load()]);render();return}
+ const f=e.target.closest('.kd-confirm');if(!f)return;e.preventDefault();if(busy)return;busy=true;
+ const {data,error}=await db.rpc('staff_confirm_card_award',{p_kind:f.dataset.kind,p_period_start:f.dataset.start,p_profile_id:f.who.value,p_note:f.note.value.trim()||null});
+ busy=false;
+ if(error){say(error.message,true);return}
+ say(P.AWARD_LABEL[data.kind]+': '+data.display_name+' ist ausgezeichnet. Die Benachrichtigung ist unterwegs.');await Promise.all([loadStaff(),load()]);render();
+});
+(async()=>{
+ try{
+  db=await P.client();
+  const s=await db.auth.getSession();
+  if(!s.data||!s.data.session){say('');app.innerHTML='<div class="tlp-panel">Bitte <a href="./login.html">anmelden</a>, um deine Karten zu sehen.</div>';return}
+  await load();
+  if(!mine.enabled){say('');app.innerHTML='<div class="tlp-panel">Karten-Designs und Auszeichnungen sind noch nicht freigeschaltet.</div>';return}
+  const want=new URLSearchParams(location.search).get('view');if(['awards','staff'].includes(want)&&(want!=='staff'||mine.staff)){view=want;if(want==='staff')await loadStaff()}
+  say('');render();
+ }catch(e){say('Karten konnten nicht geladen werden: '+(e.message||e),true)}
+})();
+</script>
+<script src="./takeover-navigation.js" defer></script></body></html>

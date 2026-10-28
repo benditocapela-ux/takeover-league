@@ -31,8 +31,8 @@ for(const f of ['x.title','x.message','x.reply','x.author','x.device','x.page'])
 assert.match(fb,/\^\[a-z0-9-\]\+\\\.html/,'from= parameter restricted to simple page names');
 // Navigation: neue Gruppe, Feedback nur für Angemeldete, Ungelesen-Punkt
 assert.match(nav,/\['scroll','Neuigkeiten','news\.html',''\]/);assert.match(nav,/\['bolt','Feedback & Fehler melden','feedback\.html','',true\]/);
-assert.match(nav,/'league-manager\.html','feedback\.html'\]\.includes\(item\[2\]\)\?' data-tl-private hidden'/);
-assert.match(nav,/'\.\/checkin\.html','\.\/feedback\.html'\]\.includes\(href\.split\('\?'\)\[0\]\)/);
+assert.match(nav,/'league-manager\.html','feedback\.html'(,'[a-z-]+\.html')*\]\.includes\(item\[2\]\)\?' data-tl-private hidden'/);
+assert.match(nav,/'\.\/checkin\.html','\.\/feedback\.html'(,'\.\/[a-z-]+\.html')*\]\.includes\(href\.split\('\?'\)\[0\]\)/);
 assert.match(nav,/trigger\.classList\.add\('tl-has-news'\)/);
 
 // SQL: Flag aus, privater Speicher, nur eigener Ordner, Admin liest, keine Änderung/Löschung, Tageslimit, Antwort als Benachrichtigung
