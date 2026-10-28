@@ -40,6 +40,8 @@ on:
       - 'tests/kampfgeist5-*'
       - 'tests/club-tiers-*'
       - 'tests/club-schedule-tiers-*'
+      - 'tests/coach-feedback-*'
+      - 'tests/feedback-visibility-*'
       - 'kampfpfad.html'
       - 'duels.html'
       - 'index.html'
@@ -111,6 +113,8 @@ on:
       - 'tests/kampfgeist5-*'
       - 'tests/club-tiers-*'
       - 'tests/club-schedule-tiers-*'
+      - 'tests/coach-feedback-*'
+      - 'tests/feedback-visibility-*'
       - 'kampfpfad.html'
       - 'duels.html'
       - 'index.html'
@@ -167,6 +171,7 @@ jobs:
       - run: node tests/kampfgeist-contracts.cjs
       - run: node tests/kampfgeist5-contracts.cjs
       - run: node tests/club-tiers-contracts.cjs
+      - run: node tests/coach-feedback-contracts.cjs
       - run: node tests/release-static-contracts.cjs
       - run: node tests/boxer-dashboard-polish.cjs
       - run: node tests/boxer-profile-actions.cjs
@@ -1036,3 +1041,37 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -X -h localhost -U postgres -d etappe6a_probe -v ON_ERROR_STOP=1 -f tests/club-schedule-tiers-schema.sql
+
+  feedback-visibility-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated Etappe 6b fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres etappe6b_probe
+      - name: Verify feedback visibility, archive, withdraw and rollback on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d etappe6b_probe -v ON_ERROR_STOP=1 -f tests/feedback-visibility-schema.sql

@@ -129,13 +129,18 @@ async function loadPerformance30(){
 }
 async function loadBoxerFeedback(){
  const status=$('boxerFeedbackStatus'),root=$('boxerFeedbackList');
- const flag=await db.from('league_feature_flags').select('is_enabled').eq('feature_key','coach_feedback').maybeSingle();
- if(flag.error||flag.data?.is_enabled!==true){root.classList.add('hidden');status.textContent='Bald verfügbar: Coach-Feedback ist noch nicht freigeschaltet.';return}
- root.classList.remove('hidden');status.textContent='Deine persönlichen Coach-Rückmeldungen';root.textContent='Wird geladen …';
- const result=await db.from('boxer_coach_feedback').select('id,title,message,created_at').eq('boxer_id',profile.id).order('created_at',{ascending:false}).limit(50);
- if(result.error){root.textContent='Feedback konnte nicht geladen werden: '+result.error.message;return}
- root.replaceChildren();if(!result.data?.length){root.textContent='Du hast noch keine Rückmeldungen erhalten.';return}
- for(const item of result.data){const card=document.createElement('div');card.className='feedback-note';const title=document.createElement('strong');title.textContent=item.title;const date=document.createElement('small');date.textContent=new Date(item.created_at).toLocaleDateString('de-CH');const msg=document.createElement('p');msg.textContent=item.message;card.append(title,date,msg);root.append(card)}
+ const r=await db.rpc('get_my_feedback');
+ if(r.error||!r.data||r.data.enabled!==true){root.classList.add('hidden');status.textContent=r.error?'Feedback konnte nicht geladen werden: '+r.error.message:'Bald verfügbar: Coach-Feedback ist noch nicht freigeschaltet.';return}
+ root.classList.remove('hidden');root.replaceChildren();
+ const active=r.data.active||[],archived=r.data.archived||[];
+ status.textContent=active.length?'Aktuelle Rückmeldungen deines Coaches':'Gerade kein aktuelles Feedback.';
+ const fmt=d=>new Date(d+(String(d).length===10?'T12:00:00Z':'')).toLocaleDateString('de-CH');
+ const card=(item,arch)=>{const c=document.createElement('div');c.className='feedback-note'+(arch?' archived':'');const t=document.createElement('strong');t.textContent=item.title;
+  const m=document.createElement('small');m.textContent=(item.coach?item.coach+' · ':'')+fmt(item.created_at)+(arch?'':' · sichtbar bis '+fmt(item.visible_until));
+  const p=document.createElement('p');p.textContent=item.message;c.append(t,m,p);return c};
+ for(const item of active)root.append(card(item,false));
+ if(archived.length){const d=document.createElement('details');d.className='feedback-archive';const s=document.createElement('summary');s.textContent='Archivierte Feedbacks ('+archived.length+')';d.append(s);for(const item of archived)d.append(card(item,true));root.append(d)}
+ else if(!active.length){const p=document.createElement('p');p.className='muted';p.textContent='Du hast noch keine Rückmeldungen erhalten.';root.append(p)}
 }
 
 async function init(){const {data:{user},error}=await db.auth.getUser();if(error||!user){location.replace('./login.html?next=boxer.html');return}const p=await db.from('profiles').select('id,display_name,role,is_active,avatar_key,avatar_url').eq('auth_user_id',user.id).maybeSingle();if(p.error||!p.data||!p.data.is_active){show('Kein aktives Boxerprofil gefunden.','error');return}profile=p.data;if(!['boxer','coach'].includes(profile.role)){show('Diese Eingabeseite ist für aktive Boxer und Coaches.','error');return}$('welcome').textContent=`Willkommen, ${profile.display_name}.`;$('profileName').textContent=profile.display_name;await initProfile();const t=await db.from('training_types').select('*').eq('is_active',true).order('name');if(t.error){show('Trainingsarten konnten nicht geladen werden: '+t.error.message,'error');return}types=sortTrainingTypes(t.data||[]);try{const gf=await db.from('league_feature_flags').select('is_enabled').eq('feature_key','gym_training').maybeSingle();if(gf.data&&gf.data.is_enabled&&types.some(x=>x.club_only)){const club=types.filter(x=>x.club_only).map(x=>x.name);types=types.filter(x=>!x.club_only);const h=document.createElement('p');h.className='muted small club-types-hint';h.textContent='Vereinstrainings ('+club.join(', ')+') werden im Gym per Check-in erfasst und vom Coach bestätigt. Hier trägst du Heimtraining ein.';$('points').before(h)}}catch{}renderTrainingTypeOptions($('kind'),types);updateTrainingFavorites();if(!types.length){show('Es sind noch keine Trainingsarten hinterlegt. Bitte den Trainer informieren.','error');$('submit').disabled=true}restoreTrainingDraft();await detectRequestId();await loadCloudDraft();$('content').classList.remove('hidden');await load();await refreshBoxerAudit();await refreshBoxerNotifications();await loadBoxerFeedback();await loadPerformance30();await loadExpRank();await loadGamification()}
