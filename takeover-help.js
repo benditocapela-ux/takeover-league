@@ -63,7 +63,8 @@ const REGISTERS=[
   'Es zählen nur bestätigte Trainings.']},
  {key:'ranking',page:'index.html',group:'liga',icon:'📊',title:'Podium & Ranking',summary:'Wer liegt diesen Monat vorne?',points:[
   'Das Monatsranking zählt die Punkte des Monats und startet jeden Monat neu.','Die Level-Rangliste zeigt die EXP über alle Zeit.',
-  'Im Punkteverlauf siehst du, woher die Punkte kommen.']},
+  'Im Punkteverlauf siehst du, woher die Punkte kommen.',
+  'Stehst du auf dem Podium, kannst du direkt darunter ein eigenes Emote neben deinem Platz einschalten – oder «Kein Emote» wählen.']},
  {key:'vergleich',page:'boxer-compare.html',group:'liga',icon:'⚖️',title:'Boxervergleich',summary:'Zwei Boxer direkt nebeneinander.',points:[
   'Wähle zwei Boxer und vergleiche Punkte, EXP und Level.','Angemeldet siehst du auch die Spielerkarten und eure Boxstile übereinander – dein Stil in Gold.',
   'Mit «Merken» speicherst du Favoriten auf diesem Gerät.']},

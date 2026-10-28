@@ -1,6 +1,6 @@
 'use strict';
 // Chromium test with mocked Supabase SDK (no real account, no server writes) for Etappe 5:
-// Kampfpfad page, emotes + Einlauf on the duel page, Kampfgeist-Podium on index.html, emote/Einlauf items in the shop.
+// Kampfpfad page, emotes + Einlauf on the duel page, Podium-Emote on index.html (Etappe 8), emote/Einlauf items in the shop.
 const assert=require('node:assert/strict'),fs=require('node:fs'),http=require('node:http'),path=require('node:path');
 const {chromium}=require('playwright');
 const root=process.cwd();
@@ -42,11 +42,12 @@ function injected(cfg){
       can_send:cfg.role==='boxer',events:events.slice()}]},error:null};
    case 'send_duel_emote':{const e={id:events.length+1,sender_id:profile.id,sender:profile.display_name,emote:find(args.p_emote_key),created_at:new Date().toISOString(),hidden:false};events.push(e);return {data:e,error:null}}
    case 'hide_kg_emote':events.forEach(e=>{if(e.id===args.p_event_id)e.hidden=true});return {data:{id:args.p_event_id,hidden:true},error:null};
-   case 'get_podium_kampfgeist':return {data:{enabled:true,preview:false,can_moderate:false,muted:false,month,my_emotes:myEmotes,places:[
-     {rank:1,name:'Ben',is_me:false,look:look('a_malik','m_kg','e_limit','t_konter'),reactions:[{emote:find('m_gg'),count:3}],reacted_today:!!cfg.reacted,can_react:!cfg.reacted},
-     {rank:2,name:'Anna',is_me:true,look:look('a_nia','m_stark','e_glut'),reactions:[],reacted_today:false,can_react:false},
-     {rank:3,name:'Bob',is_me:false,look:look('a_sora','m_respekt','e_slam'),reactions:[],reacted_today:false,can_react:true}]},error:null};
-   case 'react_podium':cfg.reacted=true;return {data:{name:args.p_display_name,emote:find(args.p_emote_key)},error:null};
+   case 'get_podium_kampfgeist':{const mine=cfg.podium||{show:false,key:'m_respekt'};
+     return {data:{enabled:true,preview:false,my_show:mine.show,my_emote:find(mine.key),my_emotes:myEmotes,places:[
+     {rank:1,name:'Ben',is_me:false,show_emote:true,emote:find('m_kg')},
+     {rank:2,name:'Anna',is_me:cfg.role==='boxer',show_emote:mine.show,emote:mine.show?find(mine.key):null},
+     {rank:3,name:'Bob',is_me:false,show_emote:false,emote:null}]},error:null}}
+   case 'set_podium_emote':cfg.podium={show:args.p_show,key:args.p_emote_key||(cfg.podium&&cfg.podium.key)||'m_respekt'};return {data:{show:args.p_show,emote:find(cfg.podium.key)},error:null};
    case 'get_my_kampfgeist':return {data:{enabled:true,preview:false,can_buy:true,settings:{start_coins:100,coins_per_training:10},wallet:{balance:600,earned:700,spent:100,quest_pending:0},
      level:{exp:1010,level:7,rank:'F',rank_idx:0},look:look('a_kenji','m_respekt','e_slam'),
      items:cfg.items.map(i=>Object.assign({},i,{owned:i.unlock==='start',rank_ok:i.min_rank==='F',is_active:true})),history:[]},error:null};
@@ -123,17 +124,31 @@ function injected(cfg){
  await x.p.waitForFunction(()=>window.__calls.some(c=>c[0]==='hide_kg_emote'&&c[1].p_event_id===1));
  await done(x);
 
- // Podium: Top 3 mit Sieger-Emote, Reaktionen
+ // Podium (Etappe 8): kein eigenes Kampfgeist-Podium; Emote nur bei Boxern, die es eingeschaltet haben; eigene Auswahl unter dem Podium
  x=await open({role:'boxer'},'index.html');
- await x.p.waitForSelector('.kg-podium-place');
- assert.equal(await x.p.locator('.kg-podium-place').count(),3);
- t=await x.p.textContent('.kg-podium');assert.match(t,/Kontermeister/);assert.match(t,/KAMPF-GEIST!!/);assert.match(t,/Das bist du!/);assert.match(t,/3/);
- assert.equal(await x.p.locator('[data-kg-react="Anna"]').count(),0,'no self reaction');
- assert.ok(await x.p.locator('[data-kg-react="Ben"]').count()>0);
- await x.p.locator('.kg-podium').scrollIntoViewIfNeeded();await shot(x.p,'kg5-podium');
- await x.p.click('[data-kg-react="Ben"][data-kg-emote="m_respekt"]');
- await x.p.waitForFunction(()=>window.__calls.some(c=>c[0]==='react_podium'&&c[1].p_display_name==='Ben'&&c[1].p_emote_key==='m_respekt'));
- await x.p.waitForFunction(()=>/Heute schon reagiert/.test(document.querySelector('.kg-podium').textContent));
+ await x.p.waitForSelector('.tl-podium-emote-pick');
+ assert.equal(await x.p.locator('.kg-podium,.kg-podium-place,[data-kg-react]').count(),0,'no separate Kampfgeist podium');
+ assert.equal(await x.p.locator('.tl-podium .tl-podium-emote').count(),1,'only Ben shows an emote');
+ assert.match(await x.p.textContent('.tl-podium-1'),/KAMPF-GEIST!!/);
+ assert.equal(await x.p.locator('.tl-podium-2 .tl-podium-emote').count(),0,'Anna off by default');
+ assert.equal(await x.p.getAttribute('[data-podium-emote=""]','aria-pressed'),'true','Kein Emote selected');
+ assert.equal(await x.p.locator('[data-podium-emote]').count(),6,'Kein Emote + 5 own emotes');
+ await x.p.click('[data-podium-emote="m_stark"]');
+ await x.p.waitForFunction(()=>window.__calls.some(c=>c[0]==='set_podium_emote'&&c[1].p_show===true&&c[1].p_emote_key==='m_stark'));
+ await x.p.waitForSelector('.tl-podium-2 .tl-podium-emote');
+ assert.equal(await x.p.getAttribute('[data-podium-emote="m_stark"]','aria-pressed'),'true');
+ await x.p.locator('.tl-podium').scrollIntoViewIfNeeded();await shot(x.p,'kg8-podium');
+ // Neu laden der Rangliste (Tab-Wechsel) behält die Emotes
+ await x.p.evaluate(()=>load());
+ await x.p.waitForFunction(()=>document.querySelectorAll('.tl-podium .tl-podium-emote').length===2&&document.querySelectorAll('.tl-podium-emote-pick').length===1);
+ await x.p.click('[data-podium-emote=""]');
+ await x.p.waitForFunction(()=>window.__calls.some(c=>c[0]==='set_podium_emote'&&c[1].p_show===false));
+ await x.p.waitForFunction(()=>!document.querySelector('.tl-podium-2 .tl-podium-emote'));
+ await done(x);
+ // Wer nicht auf dem Podium steht, bekommt keine Auswahl
+ x=await open({role:'coach'},'index.html');
+ await x.p.waitForSelector('.tl-podium .tl-podium-emote');
+ assert.equal(await x.p.locator('.tl-podium-emote-pick').count(),0,'no picker when not on podium');
  await done(x);
 
  // Shop: Emotes und Einläufe, Kampfpfad-Items nicht käuflich, Einlauf-Vorschau
@@ -151,5 +166,5 @@ function injected(cfg){
  await done(x);
 
  await browser.close();server.close();
- console.log('PASS: Etappe 5 im Browser – Kampfpfad (30 Stufen, abholen, Flag aus), Duell (Kämpfer, Emote-Feed, senden, Einlauf VS, Coach blendet aus), Podium (Sieger-Emote, Reaktionen, keine Selbstreaktion), Shop (13 Emotes, 8 Einläufe, Vorschau, Kampfpfad-Items)');
+ console.log('PASS: Etappe 5 im Browser – Kampfpfad (30 Stufen, abholen, Flag aus), Duell (Kämpfer, Emote-Feed, senden, Einlauf VS, Coach blendet aus), Podium (Emote nur wer es einschaltet, eigene Auswahl, kein separates Podium), Shop (13 Emotes, 8 Einläufe, Vorschau, Kampfpfad-Items)');
 })().catch(e=>{console.error(e);process.exit(1)});
