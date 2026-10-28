@@ -157,10 +157,10 @@ function injected(cfg){
 
  // Boxerprofil: Kampfgeist-Karte (nur angemeldet), Mein Studio: Shop-Kachel
  x=await open({role:'boxer'},'boxer-profile.html?name=Anna');
- await x.p.waitForSelector('.tlp-profile .kg-card');
- t=await x.p.textContent('.tlp-profile .kg-card');assert.match(t,/Anna/);assert.match(t,/Der Unermüdliche/);assert.match(t,/Rang F/);
+ // Etappe 11: Kampfgeist-Figur (Avatar mit Aura und Rahmen) neben der Spielerkarte; Titel steht beim Namen oben im Profil
+ await x.p.waitForSelector('.tlp-profile .tlp-figure .kg-ava');
  assert.ok((await calls(x.p)).some(c=>c[0]==='get_kg_look'&&c[1].p_display_name==='Anna'));
- await x.p.locator('.tlp-profile .kg-card').scrollIntoViewIfNeeded();await shot(x.p,'kg-profile');
+ await x.p.locator('.tlp-profile .tlp-figure').scrollIntoViewIfNeeded();await shot(x.p,'kg-profile');
  assert.ok(await x.p.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'no horizontal scroll on profile');
  await x.context.close();
  x=await open({role:'boxer'},'boxer.html');

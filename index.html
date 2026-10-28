@@ -40,7 +40,9 @@ function boxerAvatar(name,size=''){
  const url=avatarUrl(name);
  const sizeClass=size?' '+size:'';
  const img=url?'<img src="'+safe(url)+'" alt="" loading="lazy" onerror="this.remove()">':'';
- return '<span class="league-avatar'+sizeClass+'" aria-hidden="true">'+(url?img:'🥊')+'</span>';
+ const who=String(name||'').trim();
+ // Etappe 11: data-tl-boxer → Rahmen und Titel (takeover-performance.js)
+ return '<span class="league-avatar'+sizeClass+'" aria-hidden="true"'+(who?' data-tl-boxer="'+safe(who)+'"':'')+'>'+(url?img:'🥊')+'</span>';
 }
 async function loadPublicAvatars(){
  const response=await fetch(SUPABASE_URL+'/rest/v1/rpc/get_public_boxer_avatars',{

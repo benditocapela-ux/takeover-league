@@ -660,19 +660,19 @@ body[data-tl-screen="shop"] main,body[data-tl-screen="shop"] #app,body[data-tl-s
 @keyframes kg-fall{0%{transform:translateY(-10px) rotate(0);opacity:0}20%{opacity:1}100%{transform:translateY(60px) rotate(220deg);opacity:0}}
 .kg-rkbadge{position:absolute;bottom:2%;right:6%;z-index:4;width:28%;height:28%;min-width:20px;min-height:20px;border-radius:50%;display:grid;place-items:center;background:#0c0a13;border:2px solid var(--rk);color:var(--rk);font-family:var(--font-display);font-size:calc(var(--s) * .14);box-shadow:0 0 10px var(--rk)}
 /* Rahmen */
-.kg-fr-linie .kg-disc{border-color:#f2c14e;box-shadow:0 0 0 3px rgba(242,193,78,.25)}
-.kg-fr-glut .kg-disc{border-color:#ff8a3c;box-shadow:0 0 14px rgba(255,90,31,.55)}
-.kg-fr-frost .kg-disc{border-color:#c9f6ff;box-shadow:0 0 0 3px rgba(85,230,255,.35),0 0 16px rgba(85,230,255,.4)}
-.kg-fr-kirsch .kg-disc{border-color:#ff9cc0;box-shadow:0 0 0 4px rgba(255,156,192,.35),0 0 14px rgba(255,95,158,.35)}
-.kg-fr-kalt .kg-disc{border-color:#4fc3ff;box-shadow:0 0 18px rgba(79,195,255,.55)}
-.kg-fr-system .kg-disc{border-color:#4fc3ff;box-shadow:0 0 0 3px #0c0a13,0 0 0 5px #4fc3ff,0 0 22px rgba(79,195,255,.5)}
-.kg-fr-blitz .kg-disc{border-color:#e6f4ff;animation:kg-blitz 2.4s steps(1) infinite}
+.kg-fr-linie .kg-disc,.kg-fr-linie.tl-framed{border-color:#f2c14e;box-shadow:0 0 0 3px rgba(242,193,78,.25)}
+.kg-fr-glut .kg-disc,.kg-fr-glut.tl-framed{border-color:#ff8a3c;box-shadow:0 0 14px rgba(255,90,31,.55)}
+.kg-fr-frost .kg-disc,.kg-fr-frost.tl-framed{border-color:#c9f6ff;box-shadow:0 0 0 3px rgba(85,230,255,.35),0 0 16px rgba(85,230,255,.4)}
+.kg-fr-kirsch .kg-disc,.kg-fr-kirsch.tl-framed{border-color:#ff9cc0;box-shadow:0 0 0 4px rgba(255,156,192,.35),0 0 14px rgba(255,95,158,.35)}
+.kg-fr-kalt .kg-disc,.kg-fr-kalt.tl-framed{border-color:#4fc3ff;box-shadow:0 0 18px rgba(79,195,255,.55)}
+.kg-fr-system .kg-disc,.kg-fr-system.tl-framed{border-color:#4fc3ff;box-shadow:0 0 0 3px #0c0a13,0 0 0 5px #4fc3ff,0 0 22px rgba(79,195,255,.5)}
+.kg-fr-blitz .kg-disc,.kg-fr-blitz.tl-framed{border-color:#e6f4ff;animation:kg-blitz 2.4s steps(1) infinite}
 @keyframes kg-blitz{0%,100%{box-shadow:0 0 10px rgba(79,163,255,.5)}40%{box-shadow:0 0 26px #bfe3ff,0 0 4px #fff}44%{box-shadow:0 0 10px rgba(79,163,255,.5)}}
-.kg-fr-abgrund .kg-disc{border-color:#b874ff;animation:kg-abg 2.4s ease-in-out infinite}
+.kg-fr-abgrund .kg-disc,.kg-fr-abgrund.tl-framed{border-color:#b874ff;animation:kg-abg 2.4s ease-in-out infinite}
 @keyframes kg-abg{50%{box-shadow:0 0 26px rgba(184,116,255,.75)}}
-.kg-fr-srang .kg-disc{border-color:#f2c14e;animation:kg-sgl 2s ease-in-out infinite}
+.kg-fr-srang .kg-disc,.kg-fr-srang.tl-framed{border-color:#f2c14e;animation:kg-sgl 2s ease-in-out infinite}
 @keyframes kg-sgl{0%,100%{box-shadow:0 0 12px rgba(242,193,78,.5)}50%{box-shadow:0 0 30px rgba(242,193,78,.9)}}
-.kg-fr-rank .kg-disc{border-color:var(--rk);box-shadow:0 0 14px var(--rk)}
+.kg-fr-rank .kg-disc,.kg-fr-rank.tl-framed{border-color:var(--rk);box-shadow:0 0 14px var(--rk)}
 /* Banner */
 .kg-bn{position:absolute;inset:0;overflow:hidden;background:#14111d}.kg-bn::after{content:"";position:absolute;inset:0}
 .kg-bn-dojo{background:repeating-linear-gradient(90deg,#1d1828 0 38px,#231d31 38px 42px),linear-gradient(#2a1f3a,#0c0a13)}.kg-bn-dojo::after{background:radial-gradient(60% 50% at 50% 20%,rgba(255,180,90,.28),transparent 70%)}
@@ -734,7 +734,7 @@ body[data-tl-screen="shop"] main,body[data-tl-screen="shop"] #app,body[data-tl-s
 .kg-step .kg-rank{margin:6px}
 .kg-step h3{margin:0;font-size:var(--fs-md)}
 .kg-levels{display:flex;flex-wrap:wrap;gap:3px;margin-top:6px}.kg-levels i{width:10px;height:10px;border-radius:2px;background:var(--surface-3)}.kg-levels i.on{background:var(--rk)}
-@media (prefers-reduced-motion:reduce){.kg-spin,.kg-pulse,.kg-spark,.kg-petal,.kg-bn::after,.kg-fr-blitz .kg-disc,.kg-fr-abgrund .kg-disc,.kg-fr-srang .kg-disc{animation:none!important}}
+@media (prefers-reduced-motion:reduce){.kg-spin,.kg-pulse,.kg-spark,.kg-petal,.kg-bn::after,.kg-fr-blitz .kg-disc,.kg-fr-abgrund .kg-disc,.kg-fr-srang .kg-disc,.kg-fr-blitz.tl-framed,.kg-fr-abgrund.tl-framed,.kg-fr-srang.tl-framed{animation:none!important}}
 
 /* ---- Etappe 5: Emotes, Einlauf, Kampfpfad ---- */
 body[data-tl-screen="kampfpfad"] main,body[data-tl-screen="kampfpfad"] #app{display:flex;flex-direction:column;gap:var(--sp-4)}
@@ -744,7 +744,7 @@ body[data-tl-screen="kampfpfad"] main,body[data-tl-screen="kampfpfad"] #app{disp
 .kg-einlauf-pv.dark{background:radial-gradient(circle,color-mix(in srgb,var(--ic) 40%,transparent),#05040a 70%)}
 .kg-einlauf-pv b{font-family:var(--font-display);color:var(--ic);text-shadow:2px 2px 0 #0c0a13;transform:rotate(-8deg);text-align:center;line-height:1;padding:0 4px}
 .kg-bn-pass{background:conic-gradient(from 90deg at 50% 120%,#ff5a1f,#ffcc33,#4fa3ff,#b874ff,#ff5a1f)}.kg-bn-pass::after{background:repeating-linear-gradient(120deg,transparent 0 18px,rgba(12,10,19,.35) 18px 22px)}
-.kg-fr-pass .kg-disc{border-color:#ffcc33;box-shadow:0 0 0 3px #ff5a1f,0 0 0 6px #4fa3ff,0 0 20px rgba(255,204,51,.5)}
+.kg-fr-pass .kg-disc,.kg-fr-pass.tl-framed{border-color:#ffcc33;box-shadow:0 0 0 3px #ff5a1f,0 0 0 6px #4fa3ff,0 0 20px rgba(255,204,51,.5)}
 /* Einlauf (Vollbild) */
 body[data-tl-screen] .kg-intro,.kg-intro{position:fixed;inset:0;z-index:2147483000;width:100vw;height:100dvh;max-width:none;max-height:none;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;transform:none;display:flex;align-items:stretch;background:#05040a;overflow:hidden;animation:kg-intro-in .25s ease-out}
 .kg-intro-side{position:relative;flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:var(--sp-4);overflow:hidden;
@@ -1014,3 +1014,34 @@ body[data-tl-screen="mein-boxer"] .mb-cardprev{display:flex;justify-content:cent
 .self-rating-notice{display:block;margin:var(--sp-3) 0;padding:var(--sp-3) var(--sp-4);border:1px solid var(--gold);border-radius:var(--r-md);background:var(--surface-2);color:var(--gold);font-weight:700;text-decoration:none;line-height:1.45}
 .self-rating-notice[hidden]{display:none}
 .self-rating-notice:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+
+/* Etappe 11: Rahmen um jedes Profilbild (Rangliste, Podium, Profil, Studio, Gäste) und Titel beim Namen */
+.tl-framed{position:relative;overflow:visible!important;border-style:solid}
+.tl-framed>img{border-radius:50%}
+.tl-framed .kg-rkbadge{bottom:-8%;right:-10%;width:32%;height:32%;min-width:18px;min-height:18px;font-size:12px;line-height:1;border-width:2px}
+.tl-podium-step .tl-look-title,.league-champion .tl-look-title{max-width:100%}
+.tl-podium-step .tl-look-title .kg-title{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;vertical-align:middle}
+.tl-look-title{display:block;line-height:1.2;margin:2px 0 1px}
+.tl-look-title .kg-title{font-size:10px;padding:1px 7px;letter-spacing:.05em}
+.tl-podium-step .tl-look-title,.league-champion .tl-look-title{text-align:center}
+.tlp-podium-cards{display:flex;justify-content:center;gap:var(--sp-3);flex-wrap:wrap;margin:var(--sp-4) 0 var(--sp-2)}
+.tlp-podium-card{display:flex;flex-direction:column;align-items:center;gap:4px;text-decoration:none;color:inherit}
+.tlp-podium-card:focus-visible{outline:3px solid var(--gold);outline-offset:3px;border-radius:var(--r-md)}
+.tlp-podium-card.p1{order:2}.tlp-podium-card.p2{order:1}.tlp-podium-card.p3{order:3}
+/* Etappe 11: Boxerprofil – Spielerkarte kompakt mit Figur, Fakten, Boxstil aufklappbar, Vergleichen */
+.tlp-player h2{margin-top:0}
+.tlp-player-row{display:flex;align-items:center;justify-content:center;gap:var(--sp-4);flex-wrap:wrap}
+.tlp-figure{width:min(46%,170px);display:grid;place-items:center}
+.tlp-figure.tlh-stage{margin:0}
+.tlp-player-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--sp-3);margin-top:var(--sp-4)}
+.tlp-player-facts>div{display:grid;gap:3px;align-content:start;padding:var(--sp-3);border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2);min-width:0}
+.tlp-player-facts .tlp-big{font-size:var(--fs-xl)}
+.tlp-skills{display:grid;gap:2px;font-size:var(--fs-sm)}
+.tlp-skills span{overflow-wrap:anywhere}
+.tlp-style-det{margin-top:var(--sp-3);border:1px solid var(--line);border-radius:var(--r-md);background:var(--surface-2)}
+.tlp-style-det>summary{display:flex;align-items:center;gap:var(--sp-3);padding:var(--sp-3);cursor:pointer;min-height:48px}
+.tlp-style-det>summary>span:last-child{display:grid;gap:2px}
+.tlp-style-det>summary:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.tlp-compare-btn{display:flex;align-items:center;justify-content:center;margin-top:var(--sp-4);text-decoration:none;text-align:center}
+.tlp-compare-btn:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+@media(max-width:520px){.tlp-player-facts{grid-template-columns:1fr 1fr}.tlp-player-facts>div:first-child{grid-column:1/-1}}

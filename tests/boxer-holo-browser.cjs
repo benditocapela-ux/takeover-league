@@ -140,7 +140,7 @@ function injected(cfg){
  // Profil: Holo statt Kampfgeist-Karte, Karte mit Holo
  x=await page({});
  await x.p.goto(base+'boxer-profile.html?name=Anna');
- await x.p.waitForSelector('[aria-label="Boxer-Holo"] svg.tlh');
+ await x.p.waitForSelector('.tlp-player .tlp-figure svg.tlh'); // Etappe 11: Holo-Pose neben der Karte
  await x.p.waitForSelector('.tlp-profile .tlp-card .tlp-holo svg.tlh');
  await shot(x.p,'holo-profil');
  await done(x);

@@ -38,6 +38,13 @@ a{color:var(--gold)}.topbar{display:flex;align-items:center;justify-content:spac
 #status{margin:var(--sp-4) 0;color:var(--muted);font-size:var(--fs-sm)}
 .error{color:var(--bad)!important}
 [hidden]{display:none!important}
+/* Etappe 11: übersichtliche Reihenfolge – Kopf, Spielerkarte, Aktionen, dann Rekorde, Auszeichnungen und Palmarès */
+#profileCard{display:flex;flex-direction:column}
+#profileCard>.eyebrow{order:1}#profileCard>.hero{order:2}#profileCard>.stats{order:3}#profileCard>.bar{order:4}#profileCard>.levelText{order:5}
+#profileCard>.tlp-profile{order:6;margin-top:var(--sp-5)}#profileCard>.actions{order:7}#profileCard>#publicRecords{order:8}#profileCard>#publicBadges{order:9}
+#profileCard>.palmares{order:10}#profileCard>.note{order:11}#profileCard>#sportProfile{order:12}
+.badge-more{margin-top:var(--sp-3);background:none;border:1px solid var(--line-strong);color:var(--gold);border-radius:var(--r-sm);padding:8px var(--sp-3);font-weight:750;cursor:pointer;min-height:40px}
+.badge-more:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 @media(max-width:420px){.photo{width:75px;height:75px;flex-basis:75px}.stats{gap:6px}.stat{padding:var(--sp-3) 5px}.action{padding:var(--sp-3) 7px;font-size:var(--fs-xs)}}
 </style>
 <link rel="stylesheet" href="./takeover-navigation.css">
@@ -50,7 +57,7 @@ a{color:var(--gold)}.topbar{display:flex;align-items:center;justify-content:spac
  <div class="eyebrow"><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-boxing-glove"></use></svg> Boxerprofil · Takeover League</div>
  <div class="hero">
    <div id="profilePhoto" class="photo" aria-hidden="true"><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-boxing-glove"></use></svg></div>
-   <div><h1 id="profileName">–</h1><div id="profileRank" class="role">Liga-Boxer</div></div>
+   <div><h1 id="profileName" data-tl-name>–</h1><div id="profileRank" class="role">Liga-Boxer</div></div>
  </div>
  <div class="stats" aria-label="Öffentliche Boxerstatistik">
   <div class="stat"><strong id="monthlyPoints">–</strong><span>Monatspunkte</span></div>
@@ -59,7 +66,7 @@ a{color:var(--gold)}.topbar{display:flex;align-items:center;justify-content:spac
  </div>
  <div class="bar"><div id="levelFill"></div></div>
  <div class="levelText"><span id="levelStatus">Fortschritt</span><span id="nextLevel">–</span></div>
- <section id="sportProfile" class="public-sport-profile" aria-label="Öffentliches Leistungsprofil">
+ <section id="sportProfile" class="public-sport-profile" aria-label="Öffentliches Leistungsprofil" hidden><!-- Owner-Entscheid 28.10.2026: Diagramm vorerst ausgeblendet -->
   <h2>Leistungsprofil</h2>
   <p class="role">Relative Ligawerte aus öffentlichen Trainings- und EXP-Daten – keine medizinische oder sportwissenschaftliche Leistungsdiagnose.</p>
   <div class="radar-wrap"><div id="sportRadar" role="img" aria-label="Vergleich des Boxers mit den höchsten öffentlichen Liga-Werten"></div><div id="sportMetrics"></div></div>

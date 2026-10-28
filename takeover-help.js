@@ -52,7 +52,8 @@ const REGISTERS=[
   'Mäntel, Auren, Spezial-Augen, Hintergründe und Posen gibt es im Shop, in Bundles oder als Belohnung. Gesperrtes kannst du vorher anprobieren.','Wähle eine Pose für dein Profil und eine für deine FUT-Karte und tippe auf «Speichern».']},
  {key:'shop',page:'shop.html',group:'mein',icon:'🛍️',title:'Kampfgeist-Shop',flag:'kampfgeist_shop',summary:'Coins sammeln und deinen Look gestalten.',points:[
   'Für bestätigte Trainings und abgeholte Quests bekommst du Kampfgeist-Coins.','Damit kaufst du Avatare, Auren, Banner, Rahmen, Titel und Handschuhe.',
-  'Manche Items gibt es erst ab einem bestimmten Rang.']},
+  'Manche Items gibt es erst ab einem bestimmten Rang.',
+  'Dein Rahmen und dein Titel erscheinen überall bei deinem Profilbild. Ohne Auswahl trägst du das Emblem deines Rangs.']},
  {key:'kampfpfad',page:'kampfpfad.html',group:'mein',icon:'🛤️',title:'Kampfpfad',flag:'kampfgeist_shop',summary:'Jeden Monat neue Stufen und Belohnungen.',points:[
   'Trainings, Quests und Duelle bringen Kampfpfad-Punkte.','Erreichte Stufen holst du ab. Jeden Monat startet der Pfad wieder bei 0.']},
  {key:'roadmap',page:'roadmap.html',group:'mein',icon:'📈',title:'Level-Roadmap',flag:'kampfgeist_shop',summary:'Was dich bei welchem Level erwartet.',points:[

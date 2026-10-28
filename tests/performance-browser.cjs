@@ -116,7 +116,9 @@ function injected(cfg){
  // E: Profil – angemeldet mit Karte, Gast ohne
  ({p,errors,context}=await page({role:'boxer',signedIn:true}));
  await p.goto(base+'boxer-profile.html?name=Anna');await p.waitForSelector('.tlp-profile .tlp-card');
- const prof=await p.textContent('.tlp-profile');assert.match(prof,/Coach-Bewertung/);assert.match(prof,/Boxstil/);assert.doesNotMatch(prof,/Slip üben/);
+ const prof=await p.textContent('.tlp-profile');assert.match(prof,/Spielerkarte/);assert.match(prof,/Boxstil/);assert.doesNotMatch(prof,/Slip üben/);
+ // Etappe 11: Vergleichen-Knopf auf den eigenen Boxer ausgerichtet
+ assert.equal(await p.getAttribute('.tlp-compare-btn','href'),'./boxer-compare.html?left=Anna');
  await noOverflow(p);await context.close();
  ({p,errors,context}=await page({role:'boxer',signedIn:false}));
  await p.goto(base+'boxer-profile.html?name=Anna');await p.waitForSelector('#profileCard:not([hidden])');await p.waitForTimeout(400);
