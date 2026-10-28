@@ -290,7 +290,7 @@ async function refreshBoxerNotifications(){
  if(response.error){label.textContent='Mitteilungen konnten nicht geladen werden: '+response.error.message;return}
  const rows=response.data||[];
  label.textContent=rows.length?rows.filter(x=>!x.read_at).length+' ungelesene von '+rows.length+' Mitteilungen':'Du hast aktuell keine Mitteilungen.';
- const allowed=new Set(['boxer.html','duels.html','challenges.html','index.html','awards.html','boxer-profile.html','league-challenges.html','league-history.html','goals.html','arena.html']);
+ const allowed=new Set(['boxer.html','duels.html','challenges.html','index.html','awards.html','boxer-profile.html','league-challenges.html','league-history.html','goals.html','arena.html','bewertung.html']);
  for(const note of rows){
   const item=document.createElement('article');item.className='ux-notice';
   const title=document.createElement('strong');title.textContent=note.title||'Mitteilung';

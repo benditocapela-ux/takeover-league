@@ -1007,3 +1007,10 @@ body[data-tl-screen="mein-boxer"] .mb-owned{font-size:13px;font-weight:800;color
 body[data-tl-screen="mein-boxer"] .mb-lockedtxt{font-size:13px;font-weight:700;color:var(--muted)}
 body[data-tl-screen="mein-boxer"] .mb-confirm{display:flex;flex-wrap:wrap;gap:6px}
 body[data-tl-screen="mein-boxer"] .mb-cardprev{display:flex;justify-content:center}
+
+/* Etappe 10: Selbsteinschätzung */
+.tlp-self{border-left:3px solid var(--gold)}
+.tlp-self .tlp-btn{margin-top:var(--sp-2)}
+.self-rating-notice{display:block;margin:var(--sp-3) 0;padding:var(--sp-3) var(--sp-4);border:1px solid var(--gold);border-radius:var(--r-md);background:var(--surface-2);color:var(--gold);font-weight:700;text-decoration:none;line-height:1.45}
+.self-rating-notice[hidden]{display:none}
+.self-rating-notice:focus-visible{outline:3px solid var(--gold);outline-offset:2px}

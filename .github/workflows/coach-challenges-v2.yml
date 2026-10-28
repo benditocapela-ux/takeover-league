@@ -39,6 +39,7 @@ on:
       - 'takeover-kampfgeist.js'
       - 'tests/kampfgeist5-*'
       - 'tests/boxer-holo-*'
+      - 'tests/self-rating-*'
       - 'takeover-holo.js'
       - 'mein-boxer.html'
       - 'tests/club-tiers-*'
@@ -115,6 +116,7 @@ on:
       - 'takeover-kampfgeist.js'
       - 'tests/kampfgeist5-*'
       - 'tests/boxer-holo-*'
+      - 'tests/self-rating-*'
       - 'takeover-holo.js'
       - 'mein-boxer.html'
       - 'tests/club-tiers-*'
@@ -177,6 +179,7 @@ jobs:
       - run: node tests/help-tutorial-contracts.cjs
       - run: node tests/card-designs-contracts.cjs
       - run: node tests/boxer-holo-contracts.cjs
+      - run: node tests/self-rating-contracts.cjs
       - run: node tests/gym-contracts.cjs
       - run: node tests/quests-contracts.cjs
       - run: node tests/kampfgeist-contracts.cjs
@@ -1290,3 +1293,37 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -X -h localhost -U postgres -d boxer_holo_probe -v ON_ERROR_STOP=1 -f tests/boxer-holo-schema.sql
+
+  self-rating-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated Etappe 10 fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres self_rating_probe
+      - name: Verify Selbsteinschätzung (14 Tage, Freigabe) and rollback on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d self_rating_probe -v ON_ERROR_STOP=1 -f tests/self-rating-schema.sql
