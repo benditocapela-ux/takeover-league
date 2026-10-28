@@ -444,6 +444,7 @@ function applyLook(el,lk,K){
  }
 }
 async function mountLooks(){
+ if(typeof MutationObserver!=='function'||!document.querySelectorAll)return;
  const pending=()=>[...document.querySelectorAll('[data-tl-boxer]:not([data-tl-look])')];
  let busy=false,again=false;
  const run=async()=>{

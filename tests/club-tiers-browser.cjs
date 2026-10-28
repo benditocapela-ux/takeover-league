@@ -26,7 +26,9 @@ function injected(cfg){
  let slots=[[1,9,'pflicht','Technisches Sparring'],[2,10,'ergaenzung','Sandsack'],[3,2,'pflicht','Technik / Pratzen'],[4,8,'ergaenzung','Athletik / Kraft'],[6,9,'pflicht','Technisches Sparring']]
   .map(([dow,t,tier,label],i)=>({id:i+1,dow,day:dow-1,day_name:['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][dow-1],training_type_id:t,training_type:types.find(x=>x.id===t).name,tier,tier_label:TL[tier],label,duration_minutes:90,is_active:true,today_session:null}));
  // Für den Test hat heute immer eine Einheit: den heutigen Tag als Pflicht-Einheit ergänzen, falls keiner existiert.
- if(!slots.some(x=>x.dow===todayDow))slots.push({id:9,dow:todayDow,day:todayDow-1,day_name:'Heute',training_type_id:2,training_type:'Techniktraining',tier:'pflicht',tier_label:'Pflichttraining',label:'Technik / Pratzen',duration_minutes:90,is_active:true,today_session:null});
+ // Wochentag-unabhängig: die heutige Einheit ist immer Pflicht (vorher scheiterte der Test dienstags und donnerstags).
+ slots=slots.filter(x=>x.dow!==todayDow);
+ slots.push({id:9,dow:todayDow,day:todayDow-1,day_name:'Heute',training_type_id:2,training_type:'Techniktraining',tier:'pflicht',tier_label:'Pflichttraining',label:'Technik / Pratzen',duration_minutes:90,is_active:true,today_session:null});
  let session=null;
  const people=()=>[{id:'p-anna',display_name:'Anna',group:'wettkampf',present:true,source:'self',confirmed:false,points:null},{id:'p-ben',display_name:'Ben',group:'newcomer',present:true,source:'coach',confirmed:false,points:null}];
  const sched=()=>({enabled:true,preview:false,today,today_dow:todayDow,can_edit:profile.role==='admin',tiers,home:{coins:10,pass_points:10},

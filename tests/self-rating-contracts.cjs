@@ -34,7 +34,7 @@ assert.match(bew,/rpc\('submit_self_rating',\{p_scores:edit\.draft,p_note:edit\.
 assert.match(bew,/rpc\('staff_decide_self_rating',\{p_id:edit\.id,p_decision:decision,p_scores:decision==='adjust'\?edit\.draft:null,p_note:edit\.note\|\|null\}\)/);
 assert.match(coach,/rpc\('staff_list_self_ratings'\)/);assert.match(coach,/el\.textContent=/);assert.doesNotMatch(coach.slice(coach.indexOf('async function loadSelfRatingNotice'),coach.indexOf('async function load(clearStatus')),/innerHTML/);
 assert.match(coach,/id="selfRatingNotice" class="self-rating-notice"/,'not a .notice (layout moves .notice to the end)');
-assert.match(boxer,/'arena\.html','bewertung\.html'\]\)/,'notification link to bewertung.html allowed');
+assert.match(boxer,/'arena\.html','bewertung\.html'/,'notification link to bewertung.html allowed');
 assert.match(help,/alle 14 Tage selbst ein/);assert.match(help,/Selbsteinschätzungen der Boxer stehen oben/);
 assert.match(css,/\.self-rating-notice\[hidden\]\{display:none\}/);
 console.log('PASS: Selbsteinschätzung – Flag aus, Tabelle gesperrt, 14 Tage, beide Flags für Boxer, bestehende Bewertungen unberührt, eigene Freigabe verboten, Oberfläche nur mit vorgesehenen RPCs, escaped, Ablehnen mit zweitem Klick');

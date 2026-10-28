@@ -13,7 +13,7 @@
 const P=window.TLPerf,$=id=>document.getElementById(id),app=$('app'),status=$('status');
 const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
 const RANKS=['F','E','D','C','B','A','S'];
-let db,mine=null,awards=null,staff=null,perf=null,view='designs',busy=false;
+let db,mine=null,awards=null,staff=null,perf=null,view='designs',busy=false,pd=null,pdList=null;
 const fmtP=(k,a,b)=>k==='cotw'?P.fmtDate(a)+' – '+P.fmtDate(b):k==='cotm'?new Intl.DateTimeFormat('de-CH',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(a+'T12:00:00Z')):String(a).slice(0,4);
 function previewCard(look,w){
  const r=perf&&perf.rating&&perf.rating.current?perf.rating.current.summary:null;
@@ -29,9 +29,10 @@ function lockText(d){
 }
 function designsView(){
  const cur=mine.look.key;
- const groups=[['start','Standard'],['rank','Mit dem Rang freigeschaltet'],['shop','Im Shop (Kampfgeist-Coins)'],['award','Nur als Auszeichnung']];
+ const groups=[['start','Standard'],['rank','Mit dem Rang freigeschaltet'],['shop','Im Shop (Kampfgeist-Coins)'],['award','Nur als Auszeichnung']]; // «Eigenes Design» hat einen eigenen Bereich
  return `<div class="tlp-panel tlp-row"><div>${previewCard(mine.look,170)}</div><div><div class="tlp-eyebrow">Aktuelles Design</div><div class="tlp-big">${P.esc(mine.look.name)}</div>
    <p class="tlp-note">Rang ${P.esc(mine.rank)}${mine.shop?' · '+(mine.coins??0)+' Coins':''}. Andere Mitglieder sehen deine Karte in diesem Design.</p></div></div>
+  ${ownView()}
   ${groups.map(([u,l])=>{const ds=mine.designs.filter(d=>d.unlock===u);if(!ds.length)return '';
    return `<h2>${P.esc(l)}</h2><div class="kd-grid">${ds.map(d=>`<article class="kd-item${d.available?'':' locked'}${d.key===cur?' on':''}">
     ${previewCard({key:d.key,name:d.name,design:d.design,awards:[]},110)}
@@ -39,6 +40,39 @@ function designsView(){
     ${d.key===cur?'<span class="kd-state">✓ ausgewählt</span>':d.available?`<button type="button" class="tlp-btn" data-equip="${P.esc(d.key)}">Auswählen</button>`
      :d.unlock==='shop'&&mine.shop?`<button type="button" class="tlp-btn ghost" data-buy="${P.esc(d.key)}" ${(mine.coins??0)<d.price?'disabled':''}>Kaufen · ${d.price} Coins</button>`
      :`<span class="kd-state">🔒 ${P.esc(lockText(d))}</span>`}</article>`).join('')}</div>`}).join('')}`;
+}
+// Etappe 12: eigenes Design – Name, vier Farben, Muster, Abzeichen, Leuchten; Vorschau live, der Server prüft beim Speichern.
+const PATTERN_LABEL={carbon:'Carbon',waves:'Wellen',sparks:'Funken',aurora:'Polarlicht',crown:'Gitter',rays:'Strahlen',grid:'Raster',petals:'Blüten',bolts:'Blitze',diamond:'Rauten',
+ stripes:'Streifen',stars:'Sterne',halftone:'Comic-Raster',dots:'Punkte',marble:'Marmor',camo:'Tarnmuster',hex:'Waben',circuit:'Leiterbahnen',tiger:'Tiger',flames:'Flammen'};
+const hexOk=v=>/^#[0-9a-f]{6}$/i.test(String(v||''));
+function ownDesignFromForm(f){
+ const v=n=>f.elements.namedItem(n);
+ const d={a:v('a').value,b:v('b').value,ink:v('ink').value,edge:v('edge').value,pattern:v('pattern').value};
+ const badge=(v('badge').value||'').trim().toUpperCase();if(badge)d.badge=badge;if(v('glow').checked)d.glow=true;
+ return d;
+}
+function ownView(){
+ if(!pd||!pd.granted)return '';
+ const d=pd.design||{},col=(k,l)=>`<label>${l}<input type="color" name="${k}" value="${hexOk(d[k])?P.esc(String(d[k]).toLowerCase()):'#888888'}"></label>`;
+ return `<section class="tlp-panel kd-own" aria-label="Mein eigenes Design"><h2>Mein eigenes Design</h2>
+  <div class="kd-own-row"><div class="kd-own-preview">${previewCard({key:'eigen',name:pd.name,design:d,awards:[]},150)}</div>
+  <form class="kd-own-form" novalidate>
+   <label class="tlp-field">Name des Designs<input name="dname" maxlength="24" required value="${P.esc(pd.name||'')}"></label>
+   <div class="kd-colors">${col('a','Oben')}${col('b','Unten')}${col('ink','Schrift')}${col('edge','Rand')}</div>
+   <label class="tlp-field">Muster<select name="pattern">${(pd.patterns||[]).map(x=>`<option value="${P.esc(x)}" ${x===d.pattern?'selected':''}>${P.esc(PATTERN_LABEL[x]||x)}</option>`).join('')}</select></label>
+   <label class="tlp-field">Abzeichen oben <span class="tlp-note">optional, 3–5 Buchstaben A–Z</span><input name="badge" maxlength="5" autocapitalize="characters" value="${P.esc(d.badge||'')}"></label>
+   <label class="kd-check"><input type="checkbox" name="glow" ${d.glow?'checked':''}> Karte leuchtet</label>
+   <button type="submit" class="tlp-btn">Design speichern</button>
+  </form></div>
+  ${pd.equipped?'<span class="kd-state">✓ Deine Karte zeigt dieses Design</span>':'<button type="button" class="tlp-btn ghost" data-equip="eigen">Als meine Karte auswählen</button>'}
+  <p class="tlp-note">Andere sehen deine Karte genau so. Die Vorschau zeigt Änderungen sofort, gespeichert wird erst mit «Design speichern».</p></section>`;
+}
+function pdAdminView(){
+ if(!perf||!perf.profile||perf.profile.role!=='admin')return '';
+ if(!pdList)return '<section class="tlp-panel"><h2>Eigenes Design</h2><p class="tlp-note">Wird geladen …</p></section>';
+ return `<section class="tlp-panel" aria-label="Eigenes Design freischalten"><h2>Eigenes Design</h2><p class="tlp-note">Wer freigeschaltet ist, gestaltet seine Karte unter «Meine Designs» selbst. Entziehen behält die Gestaltung.</p>
+  <ul class="kd-pd-list">${pdList.map(x=>`<li><span><b>${P.esc(x.display_name)}</b>${x.active?` <span class="kd-state">✓ freigeschaltet${x.name?' · '+P.esc(x.name):''}</span>`:''}</span>
+   <button type="button" class="tlp-btn ${x.active?'ghost':''} small" data-pd="${P.esc(x.profile_id)}" data-on="${x.active?'0':'1'}">${x.active?'Entziehen':'Freischalten'}</button></li>`).join('')}</ul></section>`;
 }
 function awardsView(){
  if(!awards||!awards.enabled)return '<div class="tlp-panel"><p class="tlp-note">Noch keine Auszeichnungen.</p></div>';
@@ -49,8 +83,8 @@ function awardsView(){
   <p class="tlp-note">Wer die meisten EXP aus bestätigten Trainings sammelt, wird vorgeschlagen. Ein Trainer bestätigt die Auszeichnung. Das Spezial-Design bleibt dir für immer.</p>`;
 }
 function staffView(){
- if(!staff)return '<p class="tlp-note">Wird geladen …</p>';
- return staff.kinds.map(k=>`<section class="tlp-panel"><h2>${P.esc(P.AWARD_LABEL[k.kind])}</h2>${k.periods.map(p=>`<div class="kd-period"><div class="tlp-row spread"><b>${P.esc(fmtP(k.kind,p.start,p.end))}</b><span class="tlp-note">${p.completed?'abgeschlossen':'läuft noch'}</span></div>
+ if(!staff)return pdAdminView()+'<p class="tlp-note">Wird geladen …</p>';
+ return pdAdminView()+staff.kinds.map(k=>`<section class="tlp-panel"><h2>${P.esc(P.AWARD_LABEL[k.kind])}</h2>${k.periods.map(p=>`<div class="kd-period"><div class="tlp-row spread"><b>${P.esc(fmtP(k.kind,p.start,p.end))}</b><span class="tlp-note">${p.completed?'abgeschlossen':'läuft noch'}</span></div>
    ${p.award?`<p>✓ <b>${P.esc(p.award.display_name)}</b> · vergeben von ${P.esc(p.award.awarded_by||'')}${p.award.note?' · «'+P.esc(p.award.note)+'»':''} </p><form class="kd-revoke" data-id="${p.award.id}"><label class="tlp-field">Zurücknehmen – Grund<input name="reason" maxlength="300" required placeholder="z. B. falsche Woche"></label><button type="submit" class="tlp-btn ghost">Zurücknehmen</button></form>`
     :`<ol class="kd-cands">${p.candidates.map((c,i)=>`<li><b>${P.esc(c.display_name)}</b> · ${c.exp} EXP · ${c.trainings} Trainings${i===0?' <span class="kd-state">Vorschlag</span>':''}</li>`).join('')||'<li class="tlp-note">Noch keine bestätigten Trainings.</li>'}</ol>
      ${p.completed?`<form class="kd-confirm" data-kind="${k.kind}" data-start="${p.start}"><label class="tlp-field">Boxer<select name="who">${staff.boxers.map(b=>`<option value="${P.esc(b.id)}" ${p.candidates[0]&&p.candidates[0].profile_id===b.id?'selected':''}>${P.esc(b.display_name)}</option>`).join('')}</select></label>
@@ -65,12 +99,22 @@ function render(){const y=scrollY;app.innerHTML=(mine.preview?'<p class="tlp-not
 async function load(){
  const [m,a,pf]=await Promise.all([db.rpc('get_my_card_designs'),db.rpc('get_card_awards'),db.rpc('get_my_performance')]);
  if(m.error)throw m.error;mine=m.data;awards=a.error?null:a.data;perf=pf.error?null:pf.data;
+ try{const r=await db.rpc('get_my_personal_design');pd=r.error?null:r.data}catch{pd=null}
  if(mine.enabled)mine.staff=perf&&perf.profile&&['admin','coach'].includes(perf.profile.role);
 }
-async function loadStaff(){const {data,error}=await db.rpc('staff_card_award_overview');if(error)throw error;staff=data}
+async function loadStaff(){const {data,error}=await db.rpc('staff_card_award_overview');if(error)throw error;staff=data;if(perf&&perf.profile&&perf.profile.role==='admin')await loadPd()}
+async function loadPd(){const r=await db.rpc('admin_list_personal_designs');pdList=r.error?[]:r.data||[]}
 app.addEventListener('click',async e=>{
  const b=e.target.closest('button');if(!b||busy)return;
  if(b.dataset.view){view=b.dataset.view;say('');if(view==='staff'&&!staff)await loadStaff().catch(x=>say(x.message,true));render();return}
+ if(b.dataset.pd){
+  busy=true;b.disabled=true;
+  const {data,error}=await db.rpc('admin_set_personal_design',{p_profile_id:b.dataset.pd,p_active:b.dataset.on==='1'});
+  busy=false;
+  if(error){say(error.message,true);b.disabled=false;return}
+  say(data.active?'Eigenes Design für '+data.display_name+' freigeschaltet. Die Benachrichtigung ist unterwegs.':'Eigenes Design für '+data.display_name+' entzogen.');
+  await loadPd();await load();render();return;
+ }
  if(b.dataset.equip||b.dataset.buy){
   busy=true;b.disabled=true;
   const r=b.dataset.buy?await db.rpc('buy_card_design',{p_key:b.dataset.buy}):await db.rpc('equip_card_design',{p_key:b.dataset.equip});
@@ -80,7 +124,17 @@ app.addEventListener('click',async e=>{
   say(b.dataset.buy?'Gekauft und ausgewählt.':'Design ausgewählt.');await load();render();return;
  }
 });
+app.addEventListener('input',e=>{
+ const f=e.target.closest('.kd-own-form');if(!f)return;
+ const prev=app.querySelector('.kd-own-preview');if(prev)prev.innerHTML=previewCard({key:'eigen',name:f.elements.namedItem('dname').value.trim()||pd.name,design:ownDesignFromForm(f),awards:[]},150);
+});
 app.addEventListener('submit',async e=>{
+ const of=e.target.closest('.kd-own-form');
+ if(of){e.preventDefault();if(busy)return;busy=true;const btn=of.querySelector('button[type=submit]');btn.disabled=true;
+  const {data,error}=await db.rpc('save_my_personal_design',{p_name:of.elements.namedItem('dname').value,p_design:ownDesignFromForm(of)});
+  busy=false;btn.disabled=false;
+  if(error){say(error.message,true);return}
+  say('Design «'+data.name+'» gespeichert.');await load();render();return}
  const rv=e.target.closest('.kd-revoke');
  if(rv){e.preventDefault();const reason=rv.reason.value.trim();if(!reason){say('Bitte einen Grund angeben.',true);return}
   const {error}=await db.rpc('staff_revoke_card_award',{p_award_id:Number(rv.dataset.id),p_reason:reason});

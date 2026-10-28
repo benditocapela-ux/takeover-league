@@ -1045,3 +1045,25 @@ body[data-tl-screen="mein-boxer"] .mb-cardprev{display:flex;justify-content:cent
 .tlp-compare-btn{display:flex;align-items:center;justify-content:center;margin-top:var(--sp-4);text-decoration:none;text-align:center}
 .tlp-compare-btn:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 @media(max-width:520px){.tlp-player-facts{grid-template-columns:1fr 1fr}.tlp-player-facts>div:first-child{grid-column:1/-1}}
+/* Etappe 12: zehn neue Karten-Muster und der Editor für das eigene Design */
+.tlp-card[data-pattern="stripes"]::before{background:repeating-linear-gradient(-45deg,#fff 0 6px,transparent 6px 14px)}
+.tlp-card[data-pattern="stars"]::before{background:radial-gradient(circle at 20% 25%,#fff 0 1.6px,transparent 2.2px),radial-gradient(circle at 70% 15%,#fff 0 1.2px,transparent 1.8px),radial-gradient(circle at 45% 60%,#fff 0 2px,transparent 2.6px),radial-gradient(circle at 85% 75%,#fff 0 1.4px,transparent 2px),radial-gradient(circle at 10% 85%,#fff 0 1.2px,transparent 1.8px);background-size:46px 46px}
+.tlp-card[data-pattern="halftone"]::before{background:radial-gradient(circle,#fff 0 2px,transparent 2.6px) 0 0/8px 8px}
+.tlp-card[data-pattern="dots"]::before{background:radial-gradient(circle,#fff 0 1px,transparent 1.6px) 0 0/12px 12px}
+.tlp-card[data-pattern="marble"]::before{background:linear-gradient(115deg,transparent 28%,#fff 30%,transparent 33%,transparent 58%,#fff 60%,transparent 62%),linear-gradient(35deg,transparent 44%,#fff 46%,transparent 48%),linear-gradient(160deg,transparent 70%,#fff 71%,transparent 73%)}
+.tlp-card[data-pattern="camo"]::before{background:radial-gradient(ellipse 18px 10px at 22% 30%,#fff 60%,transparent 63%),radial-gradient(ellipse 14px 9px at 72% 62%,#fff 60%,transparent 63%),radial-gradient(ellipse 12px 16px at 55% 18%,#fff 60%,transparent 63%),radial-gradient(ellipse 16px 8px at 15% 80%,#fff 60%,transparent 63%);background-size:64px 64px}
+.tlp-card[data-pattern="hex"]::before{background:linear-gradient(30deg,#fff 12%,transparent 12.5%,transparent 87%,#fff 87.5%,#fff) 0 0/20px 35px,linear-gradient(150deg,#fff 12%,transparent 12.5%,transparent 87%,#fff 87.5%,#fff) 0 0/20px 35px,linear-gradient(30deg,#fff 12%,transparent 12.5%,transparent 87%,#fff 87.5%,#fff) 10px 17.5px/20px 35px,linear-gradient(150deg,#fff 12%,transparent 12.5%,transparent 87%,#fff 87.5%,#fff) 10px 17.5px/20px 35px}
+.tlp-card[data-pattern="circuit"]::before{background:radial-gradient(circle,#fff 0 2px,transparent 2.6px) 0 0/24px 24px,linear-gradient(90deg,#fff 1px,transparent 1px) 0 0/24px 24px,linear-gradient(#fff 1px,transparent 1px) 12px 0/48px 24px}
+.tlp-card[data-pattern="tiger"]::before{background:repeating-linear-gradient(100deg,transparent 0 10px,#fff 10px 15px,transparent 15px 27px,#fff 27px 29px,transparent 29px 40px)}
+.tlp-card[data-pattern="flames"]::before{background:radial-gradient(ellipse 11px 26px at 50% 100%,#fff 60%,transparent 63%) 0 100%/22px 46px repeat-x,radial-gradient(ellipse 8px 18px at 50% 100%,#fff 60%,transparent 63%) 11px 100%/22px 70px repeat-x}
+.kd-own{display:grid;gap:var(--sp-3);border-color:var(--gold)}
+.kd-own-row{display:flex;gap:var(--sp-4);align-items:flex-start;flex-wrap:wrap}
+.kd-own-form{flex:1 1 240px;display:grid;gap:var(--sp-3);min-width:0}
+.kd-colors{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:var(--sp-2)}
+.kd-colors label{display:grid;gap:4px;font-size:12px;font-weight:700;text-align:center}
+.kd-colors input[type=color]{width:100%;height:44px;padding:2px;border:1px solid var(--line-strong);border-radius:var(--r-sm);background:var(--surface-2)}
+.kd-check{display:flex;align-items:center;gap:var(--sp-2);min-height:44px;font-weight:700}
+.kd-check input{width:22px;height:22px}
+.kd-pd-list{list-style:none;margin:0;padding:0;display:grid;gap:var(--sp-2)}
+.kd-pd-list li{display:flex;justify-content:space-between;align-items:center;gap:var(--sp-2);flex-wrap:wrap;padding:var(--sp-2) 0;border-bottom:1px solid var(--line)}
+@media(max-width:420px){.kd-colors{grid-template-columns:repeat(2,minmax(0,1fr))}}
