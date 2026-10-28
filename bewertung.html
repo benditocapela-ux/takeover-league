@@ -26,7 +26,7 @@ function ownView(data){
  if(!r||!r.current){return `<div class="tlp-panel"><b>Noch keine Bewertung.</b><p class="tlp-note">Dein Coach bewertet bald deine Offense, Defense, Beinarbeit, Kondition, Taktik und Mentalität. Dann siehst du hier deine Spielerkarte.</p></div>`}
  const cur=r.current,prev=r.previous,o=cur.summary.overall,d=prev?o-prev.summary.overall:null;
  const pos=data.style&&data.style.current?P.styleType(data.style.current.scores).pos:'BOX';
- return `<div class="tlp-center">${P.card({name:data.profile.display_name,overall:o,categories:cur.summary.categories,pos,delta:d,width:230})}</div>
+ return `<div class="tlp-center">${P.card({name:data.profile.display_name,overall:o,categories:cur.summary.categories,pos,delta:d,width:230,look:me&&me.look})}</div>${me&&me.look?'<p class="tlp-note tlp-center"><a href="./karten.html">Karten-Design ändern</a></p>':''}
   <div class="tlp-panel tlp-row spread"><div><div class="tlp-eyebrow">Gesamt</div><div class="tlp-big">${o} ${P.deltaTag(d,true)}</div></div><div class="tlp-right"><span class="tlp-note">aktualisiert am</span><br><b>${P.fmtDate(cur.created_at)}</b>${prev?`<br><span class="tlp-note">vorher ${P.fmtDate(prev.created_at)}</span>`:''}</div></div>
   ${cur.note?`<div class="tlp-panel"><b>${P.esc(cur.rated_by||'Coach')}</b><p class="tlp-quote">«${P.esc(cur.note)}»</p></div>`:''}
   <div class="tlp-grid2"><div class="tlp-panel"><div class="tlp-eyebrow ok">Deine Stärken</div>${(cur.summary.top||[]).map(x=>`<div>${P.esc(P.SKILL[x.k].n)} <b class="ok">${P.to20(x.v,cur.scale)}</b></div>`).join('')}</div>
@@ -110,7 +110,7 @@ app.addEventListener('click',async ev=>{
 async function load(){
  const p=await db.rpc('get_my_performance');
  if(p.error){say(p.error.message,true);return}
- me={role:p.data.profile.role,own:p.data};
+ me={role:p.data.profile.role,own:p.data,look:(await P.looks(db,[p.data.profile.display_name]))[p.data.profile.display_name]||null};
  if(me.role==='admin'||me.role==='coach'){
   const l=await db.rpc('staff_list_performance');
   if(l.error){say(l.error.message,true);return}

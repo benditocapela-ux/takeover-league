@@ -32,6 +32,9 @@ const REGISTERS=[
  {key:'stil',page:'stil-test.html',group:'mein',icon:'🧭',title:'Boxstil-Test',flag:'style_test',summary:'8 Fragen: Welcher Boxer-Typ bist du?',points:[
   'Beantworte 8 kurze Fragen ehrlich – es gibt keine falschen Antworten.','Du bekommst dein Stil-Netz mit 6 Achsen und einen Trainingstipp.',
   'Einmal pro Monat möglich; dein Coach kann ihn früher freigeben.']},
+ {key:'karten',page:'karten.html',group:'mein',icon:'🎴',title:'Karten & Auszeichnungen',flag:'card_designs',summary:'Kartendesign wählen, Card of the Week & Co.',points:[
+  'Wähle ein Design für deine Spielerkarte – andere sehen deine Karte so.','Neue Designs gibt es mit dem Rang, im Shop (Coins) oder nur als Auszeichnung.',
+  'Card of the Week, Card of the Month und Player of the Year: wer die meisten EXP sammelt, wird vorgeschlagen, ein Trainer bestätigt.']},
  {key:'wochenplan',page:'wochenplan.html',group:'mein',icon:'🗓️',title:'Wochenplan',flag:'gym_training',summary:'Welche Trainings diese Woche anstehen.',points:[
   'Montag, Mittwoch und Samstag sind Pflichttrainings, Dienstag und Donnerstag Ergänzung.','«Erledigt» erscheint, sobald dein Training an dem Tag bestätigt ist.',
   'Im Register «Stundenplan» siehst du alle Vereinseinheiten.']},
@@ -80,6 +83,9 @@ const REGISTERS=[
  {key:'gymstaff',page:'checkin.html',group:'staff',icon:'⚡',title:'Gym-Check-in leiten',staff:true,flag:'gym_training',summary:'Einheit starten, Anwesende bestätigen.',points:[
   'Tippe beim heutigen Stundenplan-Training auf «Starten».','Boxer checken sich ein; du kannst Anwesende auch selbst markieren.',
   '«Alle bestätigen» trägt das Training für alle ein. Später lässt sich die Einheit noch umstellen.']},
+ {key:'vergeben',page:'karten.html',group:'staff',icon:'🏆',title:'Auszeichnungen vergeben',staff:true,flag:'card_designs',summary:'Card of the Week, Month und Player of the Year.',points:[
+  'Unter «Karten & Auszeichnungen» → «Vergeben» stehen die Vorschläge (meiste EXP aus bestätigten Trainings).',
+  'Nach Ende der Woche, des Monats oder Jahres bestätigst du den Vorschlag oder wählst jemand anderen.','Zurücknehmen geht mit kurzer Begründung; sich selbst auszeichnen geht nicht.']},
  {key:'bewerten',page:'bewertung.html',group:'staff',icon:'🃏',title:'Boxer bewerten',staff:true,summary:'Spielerkarte mit Reglern 1–20 pflegen.',points:[
   'Boxer antippen, Regler einstellen – der Text darunter beschreibt die Stufe.','«war …» zeigt die bisherige Note. Die eigene Bewertung macht ein anderer Trainer.']},
  {key:'manager',page:'league-manager.html',group:'staff',icon:'🛡️',title:'League Manager & Verwaltung',staff:true,summary:'Saisons, Ziele, Liga-Challenges, Konten.',points:[
@@ -89,7 +95,7 @@ const REGISTERS=[
 const PAGE_KEY={'boxer.html':'studio','goals.html':'ziele','bewertung.html':'bewertung','stil-test.html':'stil','wochenplan.html':'wochenplan','quests.html':'quests',
  'praesenz.html':'praesenz','checkin.html':'checkin','shop.html':'shop','kampfpfad.html':'kampfpfad','roadmap.html':'roadmap','duels.html':'duelle','arena.html':'arena',
  'league-challenges.html':'challenges','challenges.html':'challenges','index.html':'ranking','boxer-compare.html':'vergleich','awards.html':'awards',
- 'league-history.html':'awards','boxer-profile.html':'profil','news.html':'news','feedback.html':'feedback','coach.html':'coach','league-manager.html':'manager','admin.html':'manager'};
+ 'league-history.html':'awards','boxer-profile.html':'profil','news.html':'news','feedback.html':'feedback','karten.html':'karten','coach.html':'coach','league-manager.html':'manager','admin.html':'manager'};
 const TOUR=[
  {icon:'👋',title:'Willkommen in der Takeover League',text:'In einer Minute zeigen wir dir, wo du was findest. Du kannst die Tour jederzeit überspringen und später unter «Hilfe & Tutorial» nochmal ansehen.'},
  {icon:'🥊',title:'Training eintragen',text:'Hier in «Mein Studio» trägst du dein Training ein. Sobald dein Coach es bestätigt, bekommst du Punkte und EXP.',focus:'.tl-screen-ribbon .tl-screen-primary'},

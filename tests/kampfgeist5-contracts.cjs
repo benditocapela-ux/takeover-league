@@ -52,7 +52,7 @@ const defined=new Set([...sql.matchAll(/CREATE OR REPLACE FUNCTION public\.([a-z
 for(const r of ['get_duel_kampfgeist','send_duel_emote','get_podium_kampfgeist','react_podium','hide_kg_emote','get_my_kampfpfad'])assert.ok(rpcOf(perf).includes(r)&&defined.has(r),r);
 assert.match(duels,/card\.dataset\.duelId=duel\.id\|\|''/);
 for(const [n,t] of [['duels.html',duels],['index.html',index]]){assert.match(t,/<script src="\.\/takeover-performance\.js" defer><\/script>/,n+' loads module');assert.doesNotMatch(t,/get_duel_kampfgeist|send_duel_emote|react_podium/,n+' unchanged RPC literals')}
-assert.match(perf,/if\(screen==='duels'\)run\(mountDuels\)/);assert.match(perf,/if\(screen==='index'\)run\(mountPodium\)/);
+assert.match(perf,/if\(screen==='duels'\)run\(mountDuels\)/);assert.match(perf,/if\(screen==='index'\)(run\(mountPodium\)|\{run\(mountPodium\);run\(mountAwards\)\})/);
 assert.match(perf,/async function mountPodium\(\)\{[\s\S]*?getSession\(\);if\(!s\.data\|\|!s\.data\.session\)return;/,'podium only for signed-in viewers');
 for(const t of [pfad,js])assert.doesNotMatch(t,/service_role|sb_secret_|(?<!Array)\.from\(|\.(insert|update|upsert|delete)\(/);
 assert.match(css,/body\[data-tl-screen\] \.kg-intro,\.kg-intro\{position:fixed;inset:0;z-index:2147483000;width:100vw/,'Einlauf covers the whole screen');

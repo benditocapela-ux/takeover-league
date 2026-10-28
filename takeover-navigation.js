@@ -58,7 +58,7 @@
    const HELP_KEY={'boxer.html':'studio','goals.html':'ziele','bewertung.html':'bewertung','stil-test.html':'stil','wochenplan.html':'wochenplan','quests.html':'quests',
      'praesenz.html':'praesenz','checkin.html':'checkin','shop.html':'shop','kampfpfad.html':'kampfpfad','roadmap.html':'roadmap','duels.html':'duelle','arena.html':'arena',
      'league-challenges.html':'challenges','challenges.html':'challenges','index.html':'ranking','boxer-compare.html':'vergleich','awards.html':'awards',
-     'league-history.html':'awards','boxer-profile.html':'profil','news.html':'news','feedback.html':'feedback','coach.html':'coach','league-manager.html':'manager','admin.html':'manager'};
+     'league-history.html':'awards','boxer-profile.html':'profil','news.html':'news','feedback.html':'feedback','karten.html':'karten','coach.html':'coach','league-manager.html':'manager','admin.html':'manager'};
    const pageName=location.pathname.split('/').pop()||'index.html',helpKey=HELP_KEY[pageName];
    const ribbon=document.querySelector('.tl-screen-ribbon');
    if(helpKey&&ribbon&&!ribbon.querySelector('.tl-help-link'))
@@ -72,6 +72,7 @@
        ['target','Meine Ziele','goals.html',''],
        ['medal','Bewertung','bewertung.html','',true],
        ['chart','Boxstil-Test','stil-test.html','',true],
+       ['medal','Karten & Auszeichnungen','karten.html','',true],
        ['season','Wochenplan','wochenplan.html','',true],
        ['target','Wochen-Quests','quests.html','',true],
        ['medal','Kampfgeist-Shop','shop.html','',true],
@@ -115,7 +116,7 @@
          '<span class="tl-menu-group-chevron" aria-hidden="true">⌄</span>'+
        '</button><div class="tl-menu-group-links" id="'+groupId+'-links" hidden>'+
          group.items.map(item=>
-           '<a class="tl-menu-link" href="./'+item[2]+'"'+(item[3]?' data-tl-section="'+item[3]+'"':'')+(item[5]?' data-tl-admin hidden':'')+(['boxer.html','goals.html','bewertung.html','stil-test.html','wochenplan.html','quests.html','shop.html','roadmap.html','kampfpfad.html','praesenz.html','checkin.html','coach.html','league-manager.html','feedback.html'].includes(item[2])?' data-tl-private hidden':'')+'>'+
+           '<a class="tl-menu-link" href="./'+item[2]+'"'+(item[3]?' data-tl-section="'+item[3]+'"':'')+(item[5]?' data-tl-admin hidden':'')+(['boxer.html','goals.html','bewertung.html','stil-test.html','wochenplan.html','quests.html','shop.html','roadmap.html','kampfpfad.html','praesenz.html','checkin.html','coach.html','league-manager.html','feedback.html','karten.html'].includes(item[2])?' data-tl-private hidden':'')+'>'+
              '<span class="tl-menu-icon" aria-hidden="true">'+emoji(item[0])+'</span>'+
              '<span class="tl-menu-label">'+item[1]+(item[4]?' <span class="tl-menu-pill">Neu</span>':'')+'</span>'+
              '<span class="tl-menu-arrow" aria-hidden="true">↗</span>'+
@@ -253,7 +254,7 @@
       if(role==='admin'&&adminEntry) adminEntry.hidden=false;
       privateEntries.forEach(anchor=>{
         const href=anchor.getAttribute('href');
-        anchor.hidden=!(['./boxer.html','./goals.html','./bewertung.html','./stil-test.html','./wochenplan.html','./quests.html','./shop.html','./roadmap.html','./kampfpfad.html','./praesenz.html','./checkin.html','./feedback.html'].includes(href.split('?')[0]) ||
+        anchor.hidden=!(['./boxer.html','./goals.html','./bewertung.html','./stil-test.html','./wochenplan.html','./quests.html','./shop.html','./roadmap.html','./kampfpfad.html','./praesenz.html','./checkin.html','./feedback.html','./karten.html'].includes(href.split('?')[0]) ||
           ((role==='admin'||role==='coach')&&['./coach.html','./league-manager.html'].includes(href)));
       });
       // static check sentinel: p.data?.role==='admin'
