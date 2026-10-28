@@ -932,3 +932,5 @@ body[data-tl-screen] .kg-intro,.kg-intro{position:fixed;inset:0;z-index:21474830
 .kd-period{border-top:1px solid var(--line);padding-top:var(--sp-3);margin-top:var(--sp-3)}
 .kd-cands{margin:var(--sp-2) 0;padding-left:1.3em;display:grid;gap:4px}
 .kd-confirm,.kd-revoke{display:grid;gap:var(--sp-2)}
+/* Etappe 7: Neuigkeiten, Feedback, Hilfe und Karten – lange Wörter (z. B. Links, Dateinamen) brechen auf schmalen Geräten um */
+body[data-tl-screen="news"] main,body[data-tl-screen="feedback"] main,body[data-tl-screen="hilfe"] main,body[data-tl-screen="karten"] main{overflow-wrap:anywhere}
