@@ -230,7 +230,7 @@ async function mountStudio(){
  const box=document.createElement('div');box.className='tlp-tiles';box.innerHTML=tiles.join('');
  host.prepend(box);
 }
-/* ---- Etappe 5: Emotes und Einlauf im Duell, Kampfgeist-Podium ---- */
+/* ---- Etappe 5: Emotes und Einlauf im Duell; Podium-Emote (Etappe 8) ---- */
 let duelState=null,duelTimer=null;
 async function mountDuels(){
  const list=document.getElementById('duelList');if(!list)return;
@@ -268,32 +268,48 @@ async function mountDuels(){
  });
  schedule();
 }
+/* Etappe 8: kein eigenes Kampfgeist-Podium. Wer auf dem normalen Podium steht, entscheidet selbst, ob dort ein Emote erscheint. */
 async function mountPodium(){
  const anchor=document.getElementById('podium-content');if(!anchor)return;
  const db=await client();
  const s=await db.auth.getSession();if(!s.data||!s.data.session)return;
- const box=document.createElement('section');box.className='tlp-profile';box.setAttribute('aria-label','Kampfgeist-Podium');anchor.after(box);
- const render=async()=>{
-  const {data,error}=await db.rpc('get_podium_kampfgeist');
-  if(error||!data||!data.enabled||!data.places.length){box.hidden=true;return}
-  const K=await kampfgeist();box.hidden=false;
-  box.innerHTML=`<div class="tlp-block"><h2>Kampfgeist-Podium</h2>${data.preview?'<p class="tlp-note">Vorschau – für die Boxer sichtbar, sobald der Shop freigeschaltet ist.</p>':''}
-   <div class="kg-podium">${data.places.map(p=>`<div class="kg-podium-place p${p.rank}"><span class="kg-place">${p.rank}.</span><span class="kg-bubble">${K.emoteHTML(p.look.emote&&p.look.emote.design,64)}</span>
-    ${K.avatarBox(p.look,104)}${K.titleTag(p.look.titel)}<b>${esc(p.name)}</b>
-    <div class="kg-reactions">${p.reactions.map(r=>`<span title="${esc(r.emote.name)}">${K.emoteHTML(r.emote.design,30)}${r.count}</span>`).join('')||'<span class="tlp-note" style="background:none">Noch keine Reaktionen</span>'}</div>
-    ${p.can_react?`<div class="kg-react" role="group" aria-label="Auf ${esc(p.name)} reagieren">${data.my_emotes.slice(0,6).map(m=>`<button type="button" data-kg-react="${esc(p.name)}" data-kg-emote="${esc(m.key)}" aria-label="${esc(m.name)}">${K.emoteHTML(m.design,40)}</button>`).join('')}</div>`
-     :p.is_me?'<span class="tlp-note">Das bist du!</span>':p.reacted_today?'<span class="tlp-note">Heute schon reagiert.</span>':''}
-    <button type="button" class="kg-mini-btn" data-kg-solo="${p.rank}">Einlauf ansehen</button></div>`).join('')}</div>
-   <p class="tlp-note">Einmal pro Tag kannst du jedem Podiumsplatz ein Emote schenken. Namen der Absender werden nicht angezeigt.</p></div>`;
-  box.onclick=async ev=>{
-   const b=ev.target.closest('[data-kg-react],[data-kg-solo]');if(!b)return;
-   if(b.dataset.kgSolo){const p=data.places.find(x=>String(x.rank)===b.dataset.kgSolo);K.playEinlauf([{look:p.look,name:p.name}]);return}
-   b.disabled=true;const r=await db.rpc('react_podium',{p_display_name:b.dataset.kgReact,p_emote_key:b.dataset.kgEmote});
-   if(r.error){alertBox(box,r.error.message);b.disabled=false;return}
-   render().catch(()=>{});
-  };
+ let data=null,K=null,busy=false,pickOpen=false;
+ const load=async()=>{const r=await db.rpc('get_podium_kampfgeist');const d=r.error||!r.data||!r.data.enabled?null:r.data;if(d)K=K||await kampfgeist();data=d};
+ const norm=v=>String(v||'').trim().toLowerCase();
+ const decorate=()=>{
+  const pod=anchor.querySelector('.tl-podium');if(!pod||!data)return;
+  pod.dataset.kgEmotes='1';
+  pod.querySelectorAll('.tl-podium-emote').forEach(n=>n.remove());
+  const old=anchor.querySelector('.tl-podium-emote-pick');if(old)old.remove();
+  for(const step of pod.querySelectorAll('.tl-podium-step')){
+   const name=norm(step.querySelector('.tl-podium-name')&&step.querySelector('.tl-podium-name').textContent);
+   const pl=data.places.find(x=>norm(x.name)===name);
+   if(!pl||!pl.show_emote||!pl.emote)continue;
+   const b=document.createElement('span');b.className='tl-podium-emote';b.setAttribute('aria-label','Emote von '+pl.name+': '+(pl.emote.name||''));
+   b.innerHTML=K.emoteHTML(pl.emote.design,i(step)?56:44);step.prepend(b);
+  }
+  const me=data.places.find(x=>x.is_me);if(!me)return;
+  const cur=data.my_emote&&data.my_emote.key,on=data.my_show&&data.my_emote;
+  const pick=document.createElement('details');pick.className='tl-podium-emote-pick';pick.open=pickOpen;
+  pick.addEventListener('toggle',()=>{pickOpen=pick.open});
+  pick.innerHTML=`<summary><b>Dein Emote im Podium</b><span class="tl-podium-emote-state">${on?K.emoteHTML(data.my_emote.design,28):'Aus'}</span></summary>
+   <div class="tl-podium-emote-body" role="group" aria-label="Emote auswählen">${data.preview?'<span class="tlp-note">Vorschau – nur für dich sichtbar, solange der Shop aus ist.</span>':''}
+   <div class="tl-podium-emote-opts"><button type="button" data-podium-emote="" aria-pressed="${!data.my_show}">Kein Emote</button>${(data.my_emotes||[]).map(m=>`<button type="button" data-podium-emote="${esc(m.key)}" aria-pressed="${data.my_show&&m.key===cur}" aria-label="${esc(m.name)}">${K.emoteHTML(m.design,36)}</button>`).join('')}</div>
+   <span class="tlp-note">Nur du entscheidest, ob neben deinem Platz ein Emote erscheint. Weitere Emotes gibt es im <a href="./shop.html">Shop</a>.</span></div>`;
+  pod.after(pick);
  };
- await render();
+ const i=step=>step.classList.contains('tl-podium-1');
+ anchor.addEventListener('click',async ev=>{
+  const b=ev.target.closest('[data-podium-emote]');if(!b||busy)return;
+  busy=true;b.disabled=true;
+  const key=b.dataset.podiumEmote;
+  const r=await db.rpc('set_podium_emote',key?{p_show:true,p_emote_key:key}:{p_show:false});
+  busy=false;b.disabled=false;
+  if(r.error){const pick=anchor.querySelector('.tl-podium-emote-pick');if(pick)alertBox(pick,r.error.message);return}
+  await load();decorate();
+ });
+ new MutationObserver(()=>{const pod=anchor.querySelector('.tl-podium');if(pod&&!pod.dataset.kgEmotes)decorate()}).observe(anchor,{childList:true});
+ await load();decorate();
 }
 /* ---- Etappe 7a: Spielerkarte und Boxstil im Boxervergleich ---- */
 async function mountCompare(){
@@ -364,7 +380,7 @@ async function mountAwards(){
      :`<span class="tlp-award-plate d-design" style="${['a','b','ink','edge'].map(k=>a.look&&a.look.design&&hex(a.look.design[k])?`--c${k}:${a.look.design[k]};`:'').join('')}"><b>${esc(a.display_name)}</b></span>`}
     <span class="tlp-note">${esc(fmtP(a))}${a.note?' · '+esc(a.note):''}</span></a>`}).join('')}</div>
   <p class="tlp-note"><a href="./karten.html">Alle Auszeichnungen und Karten-Designs</a></p></div>`;
- const after=document.querySelector('.tlp-profile[aria-label="Kampfgeist-Podium"]')||anchor;after.after(box);
+ anchor.after(box);
 }
 function alertBox(box,msg){let n=box.querySelector('.tlp-status');if(!n){n=document.createElement('p');n.className='tlp-status error';n.setAttribute('role','status');box.prepend(n)}n.textContent=msg}
 function boot(){

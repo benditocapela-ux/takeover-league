@@ -281,6 +281,23 @@ body[data-tl-screen="index"] .tl-podium-1 .tl-podium-rank{font-size:46px;color:v
 body[data-tl-screen="index"] .tl-podium-3 .tl-podium-rank{color:#d9a374}
 body[data-tl-screen="index"] .tl-podium-pts{font-size:var(--fs-sm);font-weight:700;color:var(--text-2);font-variant-numeric:tabular-nums}
 body[data-tl-screen="index"] a.tl-podium-step:hover .tl-podium-block{border-color:var(--line-strong)}
+/* Etappe 8: Emote im normalen Podium (nur wer es selbst einschaltet) */
+body[data-tl-screen="index"] .tl-podium-step{position:relative}
+body[data-tl-screen="index"] .tl-podium-emote{position:absolute;top:-14px;right:-4px;z-index:2;pointer-events:none;filter:drop-shadow(0 4px 10px rgba(0,0,0,.45));animation:tl-emote-pop .5s cubic-bezier(.2,1.6,.4,1) both}
+@keyframes tl-emote-pop{from{transform:scale(.4) rotate(-8deg);opacity:0}to{transform:none;opacity:1}}
+@media (prefers-reduced-motion:reduce){body[data-tl-screen="index"] .tl-podium-emote{animation:none}}
+.tl-podium-emote-pick{margin:var(--sp-3) 0 var(--sp-4);border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface)}
+.tl-podium-emote-pick>summary{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px var(--sp-3);cursor:pointer;list-style:none}
+.tl-podium-emote-pick>summary::-webkit-details-marker{display:none}
+.tl-podium-emote-pick>summary::after{content:"⌄";margin-left:auto;font-weight:800;color:var(--text-2);transition:transform .2s}
+.tl-podium-emote-pick[open]>summary::after{transform:rotate(180deg)}
+.tl-podium-emote-pick>summary:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:var(--r-lg)}
+.tl-podium-emote-state{display:inline-flex;align-items:center;font-size:13px;font-weight:700;color:var(--text-2)}
+.tl-podium-emote-body{display:grid;gap:8px;padding:0 var(--sp-3) var(--sp-3)}
+.tl-podium-emote-opts{display:flex;flex-wrap:wrap;gap:6px}
+.tl-podium-emote-opts button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:2px 10px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;color:var(--text);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.tl-podium-emote-opts button[aria-pressed="true"]{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 16%,transparent);box-shadow:0 0 0 2px color-mix(in srgb,var(--gold) 35%,transparent)}
+.tl-podium-emote-opts button:disabled{opacity:.5;cursor:wait}
 
 body[data-tl-screen="index"] .award{background:var(--fight-panel);color:var(--text);border:1px solid var(--line);border-top:2px solid var(--award-accent,var(--gold))}
 body[data-tl-screen="index"] .award:nth-child(1){--award-accent:var(--gold)}
@@ -759,14 +776,6 @@ body[data-tl-screen] .kg-intro,.kg-intro{position:fixed;inset:0;z-index:21474830
 .kg-picker button,.kg-react button{flex:none;border:1px solid var(--line-strong);background:var(--surface-2);border-radius:var(--r-md);padding:4px;cursor:pointer;min-height:44px}
 .kg-picker button:disabled,.kg-react button:disabled{opacity:.45;cursor:not-allowed}
 .kg-mini-btn{min-height:32px;padding:0 10px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;color:var(--text);font:inherit;font-size:12px;font-weight:700;cursor:pointer}
-.kg-podium{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:var(--sp-3)}
-.kg-podium-place{position:relative;display:flex;flex-direction:column;align-items:center;gap:8px;padding:var(--sp-3);border-radius:var(--r-lg);border:1px solid var(--line);background:var(--surface);text-align:center}
-.kg-podium-place.p1{border-color:var(--gold);box-shadow:0 0 22px color-mix(in srgb,var(--gold) 25%,transparent)}
-.kg-podium-place .kg-place{position:absolute;top:8px;left:12px;font-family:var(--font-display);font-size:22px;color:var(--gold)}
-.kg-podium-place .kg-bubble{position:absolute;top:6px;right:6px}
-.kg-reactions{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
-.kg-reactions span{display:inline-flex;align-items:center;gap:4px;font-size:12px;font-weight:800;padding:2px 8px 2px 2px;border-radius:999px;background:var(--surface-2)}
-.kg-react{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
 /* Kampfpfad */
 .kg-track{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(30%,104px),1fr));gap:var(--sp-2)}
 .kg-tier{position:relative;display:flex;flex-direction:column;align-items:center;gap:4px;padding:var(--sp-2);border-radius:var(--r-md);border:1px solid var(--line);background:var(--surface);text-align:center;min-height:132px}
@@ -930,3 +939,5 @@ body[data-tl-screen] .kg-intro,.kg-intro{position:fixed;inset:0;z-index:21474830
 .kd-period{border-top:1px solid var(--line);padding-top:var(--sp-3);margin-top:var(--sp-3)}
 .kd-cands{margin:var(--sp-2) 0;padding-left:1.3em;display:grid;gap:4px}
 .kd-confirm,.kd-revoke{display:grid;gap:var(--sp-2)}
+/* Etappe 7: Neuigkeiten, Feedback, Hilfe und Karten – lange Wörter (z. B. Links, Dateinamen) brechen auf schmalen Geräten um */
+body[data-tl-screen="news"] main,body[data-tl-screen="feedback"] main,body[data-tl-screen="hilfe"] main,body[data-tl-screen="karten"] main{overflow-wrap:anywhere}

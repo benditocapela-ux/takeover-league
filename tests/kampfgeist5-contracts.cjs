@@ -49,7 +49,9 @@ assert.doesNotMatch(rollback.match(/FUNCTION league_private\.kg_look[\s\S]*?\$fn
 const rpcOf=t=>[...new Set([...t.matchAll(/\brpc\(\s*'([a-z_]+)'/g)].map(m=>m[1]))].sort();
 assert.deepEqual(rpcOf(pfad),['claim_kampfpfad','get_my_kampfpfad']);
 const defined=new Set([...sql.matchAll(/CREATE OR REPLACE FUNCTION public\.([a-z_]+)\(/g)].map(m=>m[1]));
-for(const r of ['get_duel_kampfgeist','send_duel_emote','get_podium_kampfgeist','react_podium','hide_kg_emote','get_my_kampfpfad'])assert.ok(rpcOf(perf).includes(r)&&defined.has(r),r);
+for(const r of ['get_duel_kampfgeist','send_duel_emote','get_podium_kampfgeist','hide_kg_emote','get_my_kampfpfad'])assert.ok(rpcOf(perf).includes(r)&&defined.has(r),r);
+// Etappe 8: Reaktionen bleiben in der Datenbank (react_podium), das Podium zeigt nur noch das selbst gewählte Emote.
+assert.ok(defined.has('react_podium')&&!rpcOf(perf).includes('react_podium'),'podium reactions no longer shown');
 assert.match(duels,/card\.dataset\.duelId=duel\.id\|\|''/);
 for(const [n,t] of [['duels.html',duels],['index.html',index]]){assert.match(t,/<script src="\.\/takeover-performance\.js" defer><\/script>/,n+' loads module');assert.doesNotMatch(t,/get_duel_kampfgeist|send_duel_emote|react_podium/,n+' unchanged RPC literals')}
 assert.match(perf,/if\(screen==='duels'\)run\(mountDuels\)/);assert.match(perf,/if\(screen==='index'\)(run\(mountPodium\)|\{run\(mountPodium\);run\(mountAwards\)\})/);
