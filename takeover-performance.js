@@ -41,10 +41,43 @@ const QUESTIONS=[
  {q:'Was ist dir im Kampf am wichtigsten?',tip:'Wähle das, was dir am meisten bedeutet.',o:[['Selbst nicht getroffen werden','Gute Verteidigung zuerst.'],['Den Gegner müde machen','Immer weiter Druck und Schläge.'],['Sauber und hart treffen','Lieber wenige, aber gute Treffer.']]}
 ];
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+// Etappe 7a: Texte zum Bewertungsregler (1–20) in fünf Stufen: 1–4, 5–8, 9–12, 13–16, 17–20.
+const BAND_NAMES=['Anfang','Grundlagen','Solide','Stark','Elite'];
+const BANDS={
+ jab:['Kommt selten, langsam oder mit offener Deckung','Sitzt im Training, ist aber oft angedeutet oder zu kurz','Gerade, schnell und kommt zuverlässig zurück','Steuert Distanz und Tempo, auch doppelt und zum Körper','Echte Waffe: trifft, öffnet Kombinationen, bleibt unter Druck sauber'],
+ cross:['Ohne Hüfte, Kinn offen, verliert die Balance','Hüfte dreht mit, der Weg zurück in die Deckung ist noch langsam','Kraftvoll und gerade, Kinn bleibt geschützt','Präzise aus der Kombination und als Konter','Schlagkräftig und getimt, ohne Lücke – auch wenn er müde ist'],
+ hook:['Holt weit aus, Ellbogen hängt','Kurz, aber Drehung und Füsse fehlen noch','Kompakt mit Drehung, Deckung bleibt oben','Zum Kopf und Körper, aus Kombination und als Konter','Gefährlicher Haken, auch im Rückwärtsgehen'],
+ upper:['Ausgeholt, kommt nur aus dem Arm','Richtige Richtung, die Beine helfen noch kaum','Aus den Beinen, kurz und kontrolliert','Gezielt in der Halbdistanz eingesetzt','Treffsichere Waffe im Nahkampf'],
+ body:['Schlägt nur mit dem Arm nach unten','Beugt die Knie, verliert dabei aber die Deckung','Knie gebeugt, Deckung oben, sauber zurück nach oben','Wechselt Kopf und Körper bewusst ab','Macht den Gegner gezielt mit Körpertreffern müde'],
+ combo:['Einzelne Schläge mit langen Pausen','2er- und 3er-Kombis im Training, im Sparring stockend','Flüssige 3er- und 4er-Kombis, endet mit Deckung','Variiert Kombis, wechselt Höhe und Rhythmus','Kreative Kombis auch unter Druck, mit Bewegung zum Schluss'],
+ guard:['Hände fallen oft, Kinn ist offen','Deckung steht, fällt aber beim Schlagen','Hände oben, Ellbogen eng, auch beim Schlagen','Deckung hält auch müde und in Bewegung','Kaum Lücken, über alle Runden'],
+ block:['Blockt selten, dreht den Kopf weg','Blockt Gerade, Haken kommen noch durch','Blockt Kopf und Körper sicher','Blockt und bleibt dabei in Schlagposition','Blockt aktiv und kontert sofort'],
+ slip:['Bewegt den Kopf kaum','Weicht aus, aber zu gross oder zu spät','Knappes Ausweichen gegen den Jab','Weicht auch Geraden und Kombinationen aus','Liest den Schlag und landet direkt in der Konterposition'],
+ roll:['Duckt sich nach vorne, Augen zu','Taucht unter langsamen Haken durch','Taucht mit gebeugten Knien ab, Augen beim Gegner','Taucht ab und kommt mit Winkel heraus','Taucht flüssig ab und kontert direkt'],
+ parry:['Pariert nicht','Pariert im Partnertraining, im Sparring selten','Lenkt den Jab sicher ab','Pariert Jab und Gerade, bleibt kompakt','Pariert und kontert in einer Bewegung'],
+ counter:['Nach der Abwehr kommt nichts zurück','Konter kommt, aber zu spät','Kontert nach Block oder Ausweichen mit 1–2 Schlägen','Konter sitzen, auch mit Haken und zum Körper','Lockt Fehler heraus und bestraft sie sofort'],
+ stance:['Steht schief, Füsse kreuzen sich','Stellung stimmt im Stand, aber nicht in Bewegung','Stabile Stellung, auch beim Schlagen','Balance hält auch bei Druck und in Kombinationen','Immer im Gleichgewicht, nie überdreht'],
+ steps:['Springt oder schleift die Füsse','Kleine Schritte, Abstand noch ungenau','Sauber vor und zurück, Abstand passt','Wechselt Tempo und Rhythmus der Schritte','Kontrolliert die Distanz jederzeit'],
+ angles:['Bleibt auf einer Linie','Geht seitwärts, aber ohne Plan','Verlässt die Linie nach Kombinationen','Schafft sich Winkel zum Angreifen','Drehungen und Winkel wie selbstverständlich'],
+ ring:['Landet oft in der Ecke oder am Seil','Kommt aus der Ecke heraus, aber spät','Bleibt meistens in der Ringmitte','Drängt den Gegner dorthin, wo er ihn haben will','Kontrolliert den Ring über alle Runden'],
+ endur:['Nach einer Runde ausser Atem','Hält 2 Runden, dann deutlich schwächer','Hält 3 Runden mit leichtem Einbruch','Das ganze Sparring auf gleichem Niveau','Legt in der letzten Runde sogar noch zu'],
+ pace:['Tempo schwankt stark','Startet schnell und baut dann ab','Hält ein solides Tempo','Bestimmt das Tempo selbst','Kann das Tempo gezielt erhöhen und brechen'],
+ recov:['Braucht die ganze Pause und mehr','Atmung beruhigt sich nur langsam','Nach 30–40 Sekunden wieder bereit','Schnell erholt und hört in der Pause gut zu','Sofort wieder frisch, nutzt die Pause für den Plan'],
+ timing:['Schlägt, wenn der Gegner bereit ist','Trifft ab und zu im richtigen Moment','Erkennt offensichtliche Lücken','Trifft, wenn der Gegner einsteigt','Perfektes Timing, auch gegen schnelle Gegner'],
+ dist:['Schlägt oft ins Leere oder steht zu nah','Distanz stimmt nur im Stand','Kennt die eigene Reichweite','Spielt mit der Distanz: rein und wieder raus','Bleibt ausser Reichweite und trifft trotzdem'],
+ plan:['Kein Plan erkennbar','Plan in der ersten Runde, danach vergessen','Hält sich meistens an die Vorgabe','Setzt den Plan um und passt ihn an','Ändert den Plan selbstständig und klug'],
+ focus:['Nach einem Treffer aus dem Konzept','Fängt sich nach einigen Sekunden wieder','Bleibt meistens ruhig und konzentriert','Ruhig auch bei Rückstand oder Druck','Eiskalt in jeder Situation'],
+ heart:['Gibt bei Druck schnell auf','Kämpft, solange es gut läuft','Zieht bis zum Ende durch','Kommt nach schweren Runden zurück','Unbeugsam und reisst andere mit'],
+ coach:['Hört Tipps, setzt sie aber nicht um','Setzt Tipps erst nach mehrmaligem Erklären um','Setzt Tipps in der nächsten Runde um','Setzt Tipps sofort um und fragt nach','Denkt mit und bringt eigene Lösungen']
+};
+const bandIdx=v=>Math.max(0,Math.min(4,Math.floor((Number(v)-1)/4)));
+function band(k,v){const i=bandIdx(v);return {i,name:BAND_NAMES[i],text:(BANDS[k]||[])[i]||''}}
+// Einzelnote auf die 20er-Skala bringen (bisherige Bewertungen sind auf 1–10 gespeichert).
+const to20=(v,scale)=>Number(v)*(Number(scale)===20?1:2);
 // Spiegel von league_private.rating_summary (nur für die Live-Vorschau im Bewertungsformular).
-function summary(scores){
- const categories={};
- for(const c of CATS){const avg=c.s.reduce((t,s)=>t+Number(scores[s[0]]),0)/c.s.length;categories[c.k]=Math.min(99,Math.round(avg*10))}
+function summary(scores,scale){
+ const sc=Number(scale)===20?20:10,categories={};
+ for(const c of CATS){const avg=c.s.reduce((t,s)=>t+Number(scores[s[0]]),0)/c.s.length;categories[c.k]=Math.min(99,Math.round(avg*100/sc))}
  const overall=Math.min(99,Math.round(CATS.reduce((t,c)=>t+categories[c.k]*c.w,0)/100));
  return {categories,overall};
 }
@@ -65,6 +98,25 @@ function radarSVG(v,prev,size){
   ${AX.map((_,i)=>{const [x,y]=pt(i,100);return `<line x1="0" y1="0" x2="${x}" y2="${y}" class="tlp-grid"/>`}).join('')}
   ${prev?`<polygon points="${poly(prev)}" class="tlp-prev"/>`:''}
   <polygon points="${poly(v)}" class="tlp-shape"/>
+  ${labels}</svg>`;
+}
+// Etappe 7a: zwei Stile übereinander (gold = eigener bzw. linker Boxer, blau = Vergleich) mit gemeinsamer Fläche.
+// Die gemeinsame Fläche (Minimum je Achse) liegt immer innerhalb beider Formen.
+function similarity(a,b){
+ let lo=0,hi=0;for(const x of AX){const u=Number(a[x.k])||0,v=Number(b[x.k])||0;lo+=Math.min(u,v);hi+=Math.max(u,v)}
+ return hi?Math.round(lo*100/hi):100;
+}
+function radarCompare(gold,blue,o){
+ o=o||{};
+ const R=92,pt=(i,val)=>{const a=-Math.PI/2+i*Math.PI/3,r=R*val/100;return [(Math.cos(a)*r).toFixed(1),(Math.sin(a)*r).toFixed(1)]};
+ const ring=f=>AX.map((_,i)=>pt(i,f).join(',')).join(' ');
+ const poly=vals=>AX.map((a,i)=>pt(i,Number(vals[a.k])||0).join(',')).join(' ');
+ const both={};AX.forEach(a=>{both[a.k]=Math.min(Number(gold[a.k])||0,Number(blue[a.k])||0)});
+ const labels=AX.map((a,i)=>{const [x,y]=pt(i,128);return `<text x="${x}" y="${(+y+2).toFixed(1)}" text-anchor="middle" class="tlp-rl">${a.l}</text><text x="${x}" y="${(+y+17).toFixed(1)}" text-anchor="middle" class="tlp-rv2"><tspan class="g">${Number(gold[a.k])||0}</tspan> · <tspan class="b">${Number(blue[a.k])||0}</tspan></text>`}).join('');
+ return `<svg class="tlp-radar tlp-radar-cmp" viewBox="-160 -150 320 300" width="${o.size||320}" role="img" aria-label="Stil-Vergleich: ${AX.map(a=>a.l+' '+esc(o.goldName||'')+' '+(Number(gold[a.k])||0)+', '+esc(o.blueName||'')+' '+(Number(blue[a.k])||0)).join('; ')}">
+  ${[20,40,60,80,100].map(f=>`<polygon points="${ring(f)}" class="tlp-grid${f===100?' outer':''}"/>`).join('')}
+  ${AX.map((_,i)=>{const [x,y]=pt(i,100);return `<line x1="0" y1="0" x2="${x}" y2="${y}" class="tlp-grid"/>`}).join('')}
+  <polygon points="${poly(blue)}" class="tlp-shape2"/><polygon points="${poly(gold)}" class="tlp-shape"/><polygon points="${poly(both)}" class="tlp-overlap"/>
   ${labels}</svg>`;
 }
 function deltaTag(d,big){
@@ -117,8 +169,8 @@ async function mountProfile(){
   const r=data.rating,pos=data.style&&data.style.scores?styleType(data.style.scores).pos:'BOX';
   html+=`<div class="tlp-block"><h2>Coach-Bewertung</h2><div class="tlp-row">${card({name:data.display_name,overall:r.overall,categories:r.categories,pos,delta:r.delta,width:150})}
    <div class="tlp-side"><div class="tlp-eyebrow">Gesamt</div><div class="tlp-big">${r.overall} ${deltaTag(r.delta,true)}</div><div class="tlp-note">aktualisiert am ${fmtDate(r.rated_at)}</div>
-   <div class="tlp-eyebrow ok">Stärken</div>${(r.top||[]).map(x=>`<div class="tlp-note">${esc(SKILL[x.k]?SKILL[x.k].n:x.k)} <b class="ok">${x.v}</b></div>`).join('')}
-   <div class="tlp-eyebrow bad">Daran arbeiten</div>${(r.low||[]).map(x=>`<div class="tlp-note">${esc(SKILL[x.k]?SKILL[x.k].n:x.k)} <b class="bad">${x.v}</b></div>`).join('')}</div></div></div>`;
+   <div class="tlp-eyebrow ok">Stärken</div>${(r.top||[]).map(x=>`<div class="tlp-note">${esc(SKILL[x.k]?SKILL[x.k].n:x.k)} <b class="ok">${to20(x.v,r.scale)}</b></div>`).join('')}
+   <div class="tlp-eyebrow bad">Daran arbeiten</div>${(r.low||[]).map(x=>`<div class="tlp-note">${esc(SKILL[x.k]?SKILL[x.k].n:x.k)} <b class="bad">${to20(x.v,r.scale)}</b></div>`).join('')}</div></div></div>`;
  }
  if(data.style&&data.style.scores){
   const t=styleType(data.style.scores);
@@ -231,6 +283,55 @@ async function mountPodium(){
  };
  await render();
 }
+/* ---- Etappe 7a: Spielerkarte und Boxstil im Boxervergleich ---- */
+async function mountCompare(){
+ const results=document.getElementById('results'),left=document.getElementById('left'),right=document.getElementById('right');
+ if(!results||!left||!right)return;
+ const box=document.createElement('section');box.className='panel tlp-compare';box.hidden=true;box.setAttribute('aria-label','Spielerkarte und Boxstil im Vergleich');
+ results.after(box);
+ const db=await client();
+ const s=await db.auth.getSession(),signedIn=!!(s.data&&s.data.session);
+ let seq=0,timer=null;
+ const render=async()=>{
+  const a=left.value,b=right.value;
+  if(!a||!b||a===b){box.hidden=true;return}
+  if(!signedIn){box.hidden=false;box.innerHTML='<h2>Spielerkarte und Boxstil</h2><p class="tlp-note">Die Spielerkarten und den Boxstil-Vergleich siehst du, wenn du <a href="./login.html">angemeldet</a> bist.</p>';return}
+  const my=++seq;
+  const [ra,rb]=await Promise.all([db.rpc('get_performance_card',{p_display_name:a}),db.rpc('get_performance_card',{p_display_name:b})]);
+  if(my!==seq)return;
+  const A=ra.error?null:ra.data,B=rb.error?null:rb.data;
+  if(!A&&!B||!(A&&(A.rating||A.style))&&!(B&&(B.rating||B.style))){box.hidden=true;return}
+  // Reihenfolge wie in der Auswahl; Farbe: der eigene Boxer ist gold, sonst der linke.
+  const meRight=!!(B&&B.is_me&&!(A&&A.is_me));
+  const sides=[{d:A,n:a,c:meRight?'b':'g'},{d:B,n:b,c:meRight?'g':'b'}];
+  const G=sides.find(x=>x.c==='g'),L=sides.find(x=>x.c==='b');
+  const posOf=d=>d&&d.style&&d.style.scores?styleType(d.style.scores).pos:'BOX';
+  const cardOf=x=>x.d&&x.d.rating?card({name:x.n,overall:x.d.rating.overall,categories:x.d.rating.categories,pos:posOf(x.d),width:150})
+   :`<div class="tlp-card-empty"><b>${esc(x.n)}</b><span class="tlp-note">noch keine Coach-Bewertung</span></div>`;
+  const legend=`<div class="tlp-legend">${sides.map(x=>`<span><i class="sw ${x.c}"></i>${esc(x.n)}${x.d&&x.d.is_me?' (du)':''}</span>`).join('')}</div>`;
+  let html=`<h2>Spielerkarte und Boxstil</h2>${legend}<div class="tlp-vs">${sides.map(x=>`<div class="tlp-vs-side ${x.c}">${cardOf(x)}</div>`).join('')}</div>`;
+  const [lr,rr]=sides.map(x=>x.d&&x.d.rating);
+  if(lr&&rr){
+   const [lc,rc]=sides.map(x=>x.c);
+   const rows=[['Gesamt',lr.overall,rr.overall],...CATS.map(c=>[c.n,lr.categories[c.k],rr.categories[c.k]])];
+   html+=`<div class="tlp-cmp">${rows.map(([n,u,v])=>`<div class="tlp-cmprow${n==='Gesamt'?' total':''}"><b class="l ${lc}${u>v?' lead':''}">${u}</b><span class="tlp-cmpbar"><i class="l ${lc}" style="width:${Math.max(0,Math.min(99,u))/2}%"></i><i class="r ${rc}" style="width:${Math.max(0,Math.min(99,v))/2}%"></i></span><b class="r ${rc}${v>u?' lead':''}">${v}</b><span class="tlp-cmpname">${esc(n)}</span></div>`).join('')}</div>`;
+  }
+  const gs=G.d&&G.d.style&&G.d.style.scores,ls=L.d&&L.d.style&&L.d.style.scores;
+  if(gs&&ls){
+   const sim=similarity(gs,ls);
+   html+=`<div class="tlp-center">${radarCompare(gs,ls,{goldName:G.n,blueName:L.n,size:300})}
+    <p class="tlp-note"><b>${sim}% gleicher Stil.</b> Die helle Fläche zeigt, wo sich eure Stile überlappen. ${esc(G.n)}: ${esc(styleType(gs).title)} · ${esc(L.n)}: ${esc(styleType(ls).title)}</p></div>`;
+  }else{
+   const miss=[!gs?G.n:null,!ls?L.n:null].filter(Boolean);
+   html+=`<p class="tlp-note">Boxstil-Vergleich: ${miss.map(esc).join(' und ')} ${miss.length>1?'haben':'hat'} den Boxstil-Test noch nicht gemacht.</p>`;
+  }
+  box.innerHTML=html;box.hidden=false;
+ };
+ const schedule=()=>{clearTimeout(timer);timer=setTimeout(()=>render().catch(e=>console.warn('Vergleich nicht verfügbar:',e)),120)};
+ new MutationObserver(schedule).observe(results,{childList:true});
+ left.addEventListener('change',schedule);right.addEventListener('change',schedule);
+ schedule();
+}
 function alertBox(box,msg){let n=box.querySelector('.tlp-status');if(!n){n=document.createElement('p');n.className='tlp-status error';n.setAttribute('role','status');box.prepend(n)}n.textContent=msg}
 function boot(){
  const screen=document.body&&document.body.dataset.tlScreen;
@@ -239,7 +340,8 @@ function boot(){
  if(screen==='boxer')run(mountStudio);
  if(screen==='duels')run(mountDuels);
  if(screen==='index')run(mountPodium);
+ if(screen==='boxer-compare')run(mountCompare);
 }
-window.TLPerf={client,CATS,SKILL,SKILL_KEYS,AX,QUESTIONS,esc,summary,tier,styleType,radarSVG,deltaTag,fmtDate,card,initials};
+window.TLPerf={client,CATS,SKILL,SKILL_KEYS,AX,QUESTIONS,BANDS,BAND_NAMES,band,to20,esc,summary,tier,styleType,radarSVG,radarCompare,similarity,deltaTag,fmtDate,card,initials};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();

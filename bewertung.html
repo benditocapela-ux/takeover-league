@@ -16,8 +16,8 @@ let db,me,staffList=[],edit=null,busy=false;
 function catBlock(cur,prev,open){
  return P.CATS.map(c=>{const cv=cur.summary.categories[c.k],cd=prev?cv-prev.summary.categories[c.k]:null;
   return `<details class="tlp-panel tlp-cat" ${open||c.k==='OFF'||c.k==='DEF'?'open':''}><summary><span><b class="tlp-catname">${c.n}</b> <span class="tlp-note">${c.k}</span></span><span class="tlp-catval"><b>${cv}</b>${cd!==null?P.deltaTag(cd):''}</span></summary>
-   ${c.s.map(([k,n,h])=>{const x=Number(cur.scores[k]),d=prev?x-Number(prev.scores[k]):0,cls=x>=8?'ok':x<=5?'bad':'mid';
-    return `<div class="tlp-skill"><div class="tlp-skillhead"><b>${P.esc(n)}</b><span><b>${x}</b><span class="tlp-note">/10</span> ${d?P.deltaTag(d):''}</span></div><div class="tlp-bar ${cls}"><i style="width:${x*10}%"></i></div><span class="tlp-note">${P.esc(h)}</span></div>`}).join('')}
+   ${c.s.map(([k,n,h])=>{const x=P.to20(cur.scores[k],cur.scale),d=prev?x-P.to20(prev.scores[k],prev.scale):0,cls=x>=16?'ok':x<=10?'bad':'mid',bd=P.band(k,x);
+    return `<div class="tlp-skill"><div class="tlp-skillhead"><b>${P.esc(n)}</b><span><b>${x}</b><span class="tlp-note">/20</span> ${d?P.deltaTag(d):''}</span></div><div class="tlp-bar ${cls}"><i style="width:${x*5}%"></i></div><span class="tlp-note"><b>${P.esc(bd.name)}:</b> ${P.esc(bd.text)}</span></div>`}).join('')}
   </details>`}).join('');
 }
 function ownView(data){
@@ -29,24 +29,49 @@ function ownView(data){
  return `<div class="tlp-center">${P.card({name:data.profile.display_name,overall:o,categories:cur.summary.categories,pos,delta:d,width:230})}</div>
   <div class="tlp-panel tlp-row spread"><div><div class="tlp-eyebrow">Gesamt</div><div class="tlp-big">${o} ${P.deltaTag(d,true)}</div></div><div class="tlp-right"><span class="tlp-note">aktualisiert am</span><br><b>${P.fmtDate(cur.created_at)}</b>${prev?`<br><span class="tlp-note">vorher ${P.fmtDate(prev.created_at)}</span>`:''}</div></div>
   ${cur.note?`<div class="tlp-panel"><b>${P.esc(cur.rated_by||'Coach')}</b><p class="tlp-quote">«${P.esc(cur.note)}»</p></div>`:''}
-  <div class="tlp-grid2"><div class="tlp-panel"><div class="tlp-eyebrow ok">Deine Stärken</div>${(cur.summary.top||[]).map(x=>`<div>${P.esc(P.SKILL[x.k].n)} <b class="ok">${x.v}</b></div>`).join('')}</div>
-   <div class="tlp-panel"><div class="tlp-eyebrow bad">Daran arbeiten</div>${(cur.summary.low||[]).map(x=>`<div>${P.esc(P.SKILL[x.k].n)} <b class="bad">${x.v}</b></div>`).join('')}</div></div>
+  <div class="tlp-grid2"><div class="tlp-panel"><div class="tlp-eyebrow ok">Deine Stärken</div>${(cur.summary.top||[]).map(x=>`<div>${P.esc(P.SKILL[x.k].n)} <b class="ok">${P.to20(x.v,cur.scale)}</b></div>`).join('')}</div>
+   <div class="tlp-panel"><div class="tlp-eyebrow bad">Daran arbeiten</div>${(cur.summary.low||[]).map(x=>`<div>${P.esc(P.SKILL[x.k].n)} <b class="bad">${P.to20(x.v,cur.scale)}</b></div>`).join('')}</div></div>
   ${catBlock(cur,prev)}
   <p class="tlp-note">Die Bewertung macht dein Coach. Sie zeigt, wo du schon stark bist und woran ihr als Nächstes arbeitet. Andere Liga-Mitglieder sehen nur deine Karte, nicht die Einzelnoten und nicht den Kommentar.</p>`;
 }
 function staffListView(){
- return `<div class="tlp-panel"><p class="tlp-note">Tippe auf einen Boxer und passe seine Noten von 1 bis 10 an. Er sieht danach, was rauf- oder runterging und seit wann.</p>
+ return `<div class="tlp-panel"><p class="tlp-note">Tippe auf einen Boxer und stelle seine Noten mit den Reglern von 1 bis 20 ein. Er sieht danach, was rauf- oder runterging und seit wann.</p>
   <div class="tlp-list">${staffList.map(b=>`<button type="button" class="tlp-li" data-open="${P.esc(b.id)}" ${b.is_self?'disabled':''}><span class="tlp-chip t-${b.overall!=null?P.tier(b.overall)[0]:'bronze'}">${b.overall??'–'}</span><span class="tlp-grow"><b>${P.esc(b.display_name)}</b><span class="tlp-note">${b.is_self?'Deine Bewertung macht ein anderer Trainer':b.rated_at?'zuletzt '+P.fmtDate(b.rated_at):'noch nicht bewertet'}</span></span><span aria-hidden="true">›</span></button>`).join('')||'<p class="tlp-note">Keine aktiven Boxer.</p>'}</div></div>`;
 }
+function rateRow(k,n,h){
+ const x=edit.draft[k],was=edit.base?edit.base[k]:null,bd=P.band(k,x),cls=was===null||was===x?'':x>was?'ok':'bad';
+ return `<div class="tlp-rate tlp-slide" data-row="${k}"><div class="tlp-row spread"><b>${P.esc(n)}</b><span><span class="tlp-was">${was!==null&&was!==x?'war '+was:''}</span> <b class="tlp-val ${cls}" aria-hidden="true">${x}</b><span class="tlp-note">/20</span></span></div>
+  <input type="range" min="1" max="20" step="1" value="${x}" data-range="${k}" aria-label="${P.esc(n)} (1 bis 20)" aria-valuetext="${x} von 20 · ${P.esc(bd.name)}">
+  <span class="tlp-band b${bd.i}"><b>${P.esc(bd.name)}</b> · ${P.esc(bd.text)}</span><span class="tlp-note">${P.esc(h)}</span></div>`;
+}
+function previewView(){
+ const s=P.summary(edit.draft,20),bs=edit.base?P.summary(edit.base,20):null,d=bs?s.overall-bs.overall:null;
+ return `${P.card({name:edit.name,overall:s.overall,categories:s.categories,pos:edit.pos,delta:d,width:150})}<div><div class="tlp-eyebrow">Neue Gesamtwertung</div><div class="tlp-big">${s.overall} ${P.deltaTag(d,true)}</div><span class="tlp-note">${edit.base?'«war» zeigt die bisherige Note'+(edit.baseScale===10?' (umgerechnet von der alten 10er-Skala)':'')+'.':'Alle Noten starten bei 10.'} Der Text unter dem Regler passt sich der Note an.</span></div>`;
+}
+function catHead(c){
+ const s=P.summary(edit.draft,20),bs=edit.base?P.summary(edit.base,20):null;
+ return `<b>${s.categories[c.k]}</b>${bs?P.deltaTag(s.categories[c.k]-bs.categories[c.k]):''}`;
+}
 function editorView(){
- const v=edit.draft,base=edit.base,s=P.summary(v),bs=base?P.summary(base):null,d=bs?s.overall-bs.overall:null;
- return `<div class="tlp-row spread"><div><div class="tlp-eyebrow">${base?'zuletzt bewertet am '+P.fmtDate(edit.ratedAt):'erste Bewertung'}</div><h2 class="tlp-h2">${P.esc(edit.name)}</h2></div><button type="button" class="tlp-btn ghost" data-act="back">Zurück</button></div>
-  <div class="tlp-row">${P.card({name:edit.name,overall:s.overall,categories:s.categories,pos:edit.pos,delta:d,width:150})}<div><div class="tlp-eyebrow">Neue Gesamtwertung</div><div class="tlp-big">${s.overall} ${P.deltaTag(d,true)}</div><span class="tlp-note">${base?'«war» zeigt die bisherige Note.':'Alle Noten starten bei 5.'} Mit − und + änderst du sie.</span></div></div>
-  ${P.CATS.map(c=>`<div class="tlp-panel"><div class="tlp-row spread"><b class="tlp-catname">${c.n}</b><span class="tlp-catval"><b>${s.categories[c.k]}</b>${bs?P.deltaTag(s.categories[c.k]-bs.categories[c.k]):''}</span></div>
-   ${c.s.map(([k,n,h])=>{const x=v[k],was=base?base[k]:null;return `<div class="tlp-rate"><div class="tlp-grow"><b>${P.esc(n)}</b><span class="tlp-note">${P.esc(h)}</span></div><span class="tlp-was">${was!==null&&was!==x?'war '+was:''}</span><button type="button" class="tlp-step" data-step="${k}" data-d="-1" aria-label="${P.esc(n)} senken" ${x<=1?'disabled':''}>−</button><b class="tlp-val ${was===null||was===x?'':x>was?'ok':'bad'}" aria-live="polite">${x}</b><button type="button" class="tlp-step" data-step="${k}" data-d="1" aria-label="${P.esc(n)} erhöhen" ${x>=10?'disabled':''}>+</button></div>`}).join('')}</div>`).join('')}
+ return `<div class="tlp-row spread"><div><div class="tlp-eyebrow">${edit.base?'zuletzt bewertet am '+P.fmtDate(edit.ratedAt):'erste Bewertung'}</div><h2 class="tlp-h2">${P.esc(edit.name)}</h2></div><button type="button" class="tlp-btn ghost" data-act="back">Zurück</button></div>
+  <div class="tlp-row tlp-preview">${previewView()}</div>
+  ${P.CATS.map(c=>`<div class="tlp-panel"><div class="tlp-row spread"><b class="tlp-catname">${c.n}</b><span class="tlp-catval" data-cat="${c.k}">${catHead(c)}</span></div>
+   ${c.s.map(([k,n,h])=>rateRow(k,n,h)).join('')}</div>`).join('')}
   <label class="tlp-field" for="rateNote">Kommentar für ${P.esc(edit.name)} <span class="tlp-note">sieht nur der Boxer (und die Trainer), höchstens 600 Zeichen</span><textarea id="rateNote" maxlength="600" rows="3" placeholder="z. B. Jab viel besser, jetzt Fokus auf Winkel">${P.esc(edit.note)}</textarea></label>
   <button type="button" class="tlp-btn" data-act="save" ${busy?'disabled':''}>Bewertung speichern</button>`;
 }
+// Regler: nur die betroffene Zeile, den Bereich und die Vorschau neu zeichnen (Ziehen bleibt flüssig).
+app.addEventListener('input',ev=>{
+ const r=ev.target.closest('[data-range]');if(!r||!edit)return;
+ const k=r.dataset.range,x=Math.max(1,Math.min(20,Math.round(Number(r.value)||1)));edit.draft[k]=x;
+ const row=r.closest('[data-row]'),was=edit.base?edit.base[k]:null,bd=P.band(k,x);
+ const val=row.querySelector('.tlp-val');val.textContent=x;val.className='tlp-val '+(was===null||was===x?'':x>was?'ok':'bad');
+ row.querySelector('.tlp-was').textContent=was!==null&&was!==x?'war '+was:'';
+ const b=row.querySelector('.tlp-band');b.className='tlp-band b'+bd.i;b.innerHTML='<b>'+P.esc(bd.name)+'</b> · '+P.esc(bd.text);
+ r.setAttribute('aria-valuetext',x+' von 20 · '+bd.name);
+ const c=P.CATS.find(c=>c.s.some(s=>s[0]===k));app.querySelector('[data-cat="'+c.k+'"]').innerHTML=catHead(c);
+ app.querySelector('.tlp-preview').innerHTML=previewView();
+});
 async function render(){
  if(edit){app.innerHTML=editorView();return}
  if(me.role==='admin'||me.role==='coach'){
@@ -62,20 +87,20 @@ async function openEditor(id){
  say('Bewertung wird geladen …');
  const {data,error}=await db.rpc('staff_get_rating',{p_boxer_id:id});
  if(error){say(error.message,true);return}
- const base=data&&data.current?data.current.scores:null;
- const draft={};P.SKILL_KEYS.forEach(k=>{draft[k]=base?Number(base[k]):5});
- edit={id,name:b.display_name,base,draft,note:'',ratedAt:data&&data.current?data.current.created_at:null,pos:b.style_scores?P.styleType(b.style_scores).pos:'BOX'};
+ const cur=data&&data.current?data.current:null,baseScale=cur?Number(cur.scale)||10:null;
+ // Bisherige Noten auf die 20er-Skala bringen (alte Bewertungen: 1–10 → ×2).
+ const base=cur?Object.fromEntries(P.SKILL_KEYS.map(k=>[k,P.to20(cur.scores[k],baseScale)])):null;
+ const draft={};P.SKILL_KEYS.forEach(k=>{draft[k]=base?base[k]:10});
+ edit={id,name:b.display_name,base,baseScale,draft,note:'',ratedAt:cur?cur.created_at:null,pos:b.style_scores?P.styleType(b.style_scores).pos:'BOX'};
  say('');render();window.scrollTo(0,0);
 }
 app.addEventListener('click',async ev=>{
  const t=ev.target.closest('button');if(!t)return;
  if(t.dataset.open){openEditor(t.dataset.open);return}
- if(t.dataset.step){const n=$('rateNote');if(n)edit.note=n.value;const k=t.dataset.step;edit.draft[k]=Math.max(1,Math.min(10,edit.draft[k]+Number(t.dataset.d)));
-  const y=window.scrollY;render();window.scrollTo(0,y);return}
  if(t.dataset.act==='back'){edit=null;render();return}
  if(t.dataset.act==='save'&&!busy){
   busy=true;t.disabled=true;edit.note=($('rateNote').value||'').trim();
-  const {data,error}=await db.rpc('staff_rate_boxer',{p_boxer_id:edit.id,p_scores:edit.draft,p_note:edit.note||null});
+  const {data,error}=await db.rpc('staff_rate_boxer',{p_boxer_id:edit.id,p_scores:edit.draft,p_note:edit.note||null,p_scale:20});
   busy=false;
   if(error){say(error.message,true);t.disabled=false;return}
   say(`Gespeichert: ${edit.name} ${data.previous_overall!=null?data.previous_overall+' → ':''}${data.overall}`);
