@@ -51,7 +51,8 @@ DO $types$
 DECLARE generated boolean;
 BEGIN
  IF NOT EXISTS (SELECT 1 FROM public.training_types t WHERE t.name='Technisches Sparring') THEN
-  generated := (SELECT attidentity IN ('a','d') FROM pg_attribute WHERE attrelid='public.training_types'::regclass AND attname='id');
+  -- Produktion: GENERATED ALWAYS (Zähler aktuell). Sonst (Testprojekt: BY DEFAULT mit nachhinkendem Zähler) feste nächste ID.
+  generated := (SELECT attidentity='a' FROM pg_attribute WHERE attrelid='public.training_types'::regclass AND attname='id');
   IF generated THEN
    INSERT INTO public.training_types(name,points,is_active,category,sort_order,club_only) VALUES ('Technisches Sparring',30,false,'Boxen',105,true);
   ELSE
