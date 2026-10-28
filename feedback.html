@@ -1,0 +1,161 @@
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Feedback · Takeover League</title>
+<style>:root{color-scheme:dark;font:16px system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 110px;background:var(--bg);color:var(--text)}main{max-width:760px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}button:focus-visible,a:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:3px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="feedback">
+<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Feedback"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">💬</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Fehler melden und Ideen teilen</div><div class="tl-screen-title">Feedback</div></div></div><div class="tl-screen-links"><a href="./feedback.html" class="tl-screen-primary">Feedback</a><a href="./news.html">Neuigkeiten</a><a href="./boxer.html">Mein Studio</a></div></div>
+<p class="tl-subnav"><a href="./boxer.html">← Mein Studio</a></p>
+<h1 id="pageTitle">Feedback</h1>
+<p id="status" class="tlp-status" role="status">Wird geladen …</p>
+<div id="app"></div>
+</main>
+<script src="./takeover-performance.js" defer></script>
+<script type="module">
+const P=window.TLPerf,$=id=>document.getElementById(id),app=$('app'),status=$('status');
+const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
+const KINDS=[['bug','🐞','Fehler','Etwas funktioniert nicht'],['display','👀','Falsche Anzeige','Etwas sieht falsch aus'],['idea','💡','Idee','Vorschlag für eine Erweiterung'],['other','💬','Sonstiges','Alles andere']];
+const STATUS={open:['offen','t-bronze'],in_progress:['in Arbeit','t-silber'],done:['erledigt','t-gold'],rejected:['abgelehnt','t-bronze']};
+const BUCKET='feedback-shots',MAX_FILES=3,MAX_SIDE=1600;
+let draft={title:'',message:''};
+let db,uid,mine={items:[]},admin=null,adminFilter='open',files=[],kind='bug',busy=false,view='form';
+// Seite, von der aus gemeldet wird: ?from=seite.html (nur einfache Pfade dieser Website) oder die vorherige Seite.
+function sourcePage(){
+ const raw=new URLSearchParams(location.search).get('from')||'';
+ if(/^[a-z0-9-]+\.html(#[a-z0-9_-]*)?$/i.test(raw))return raw;
+ try{const r=new URL(document.referrer);if(r.origin===location.origin){const n=r.pathname.split('/').pop()+(r.hash||'');if(/^[a-z0-9-]+\.html(#[a-z0-9_-]*)?$/i.test(n)&&!n.startsWith('feedback.html'))return n}}catch(_){}
+ return '';
+}
+function device(){
+ const ua=navigator.userAgent||'';
+ const os=/iPhone|iPad/.test(ua)?'iOS':/Android/.test(ua)?'Android':/Mac OS X/.test(ua)?'macOS':/Windows/.test(ua)?'Windows':/Linux/.test(ua)?'Linux':'Gerät';
+ const br=/Edg\//.test(ua)?'Edge':/CriOS|Chrome\//.test(ua)?'Chrome':/FxiOS|Firefox\//.test(ua)?'Firefox':/Safari\//.test(ua)?'Safari':'Browser';
+ return (os+' · '+br+' · '+window.innerWidth+'×'+window.innerHeight+' · '+(navigator.language||'')).slice(0,300);
+}
+const page=sourcePage(),dev=device();
+// Bilder vor dem Hochladen verkleinern (max. 1600 px, JPEG) – spart Speicher und Datenvolumen.
+async function shrink(file){
+ if(!/^image\/(png|jpeg|webp)$/.test(file.type))throw Error('Nur PNG-, JPEG- oder WebP-Bilder');
+ const bmp=await createImageBitmap(file);
+ const k=Math.min(1,MAX_SIDE/Math.max(bmp.width,bmp.height)),w=Math.round(bmp.width*k),h=Math.round(bmp.height*k);
+ const c=document.createElement('canvas');c.width=w;c.height=h;c.getContext('2d').drawImage(bmp,0,0,w,h);
+ const blob=await new Promise(ok=>c.toBlob(ok,'image/jpeg',0.85));
+ if(!blob)throw Error('Bild konnte nicht gelesen werden');
+ if(blob.size>5*1024*1024)throw Error('Bild ist zu gross (max. 5 MB)');
+ return blob;
+}
+const rid=()=>Array.from(crypto.getRandomValues(new Uint8Array(9)),b=>b.toString(16).padStart(2,'0')).join('');
+async function signed(paths){
+ if(!paths.length)return {};
+ const {data,error}=await db.storage.from(BUCKET).createSignedUrls(paths,600);
+ if(error||!data)return {};
+ return Object.fromEntries(data.filter(x=>x.signedUrl).map(x=>[x.path,x.signedUrl]));
+}
+function thumbs(paths,urls){
+ return paths.length?`<div class="fb-thumbs">${paths.map((p,i)=>urls[p]?`<a href="${P.esc(urls[p])}" target="_blank" rel="noopener"><img src="${P.esc(urls[p])}" alt="Screenshot ${i+1}" loading="lazy"></a>`:`<span class="tlp-note">Bild ${i+1}</span>`).join('')}</div>`:'';
+}
+const kindLabel=k=>{const x=KINDS.find(y=>y[0]===k);return x?x[1]+' '+x[2]:k};
+const chip=s=>`<span class="fb-status ${STATUS[s]?STATUS[s][1]:''}">${P.esc(STATUS[s]?STATUS[s][0]:s)}</span>`;
+function tabs(){
+ const t=[['form','Neue Meldung'],['mine','Meine Meldungen ('+mine.items.length+')']];
+ if(mine.is_admin)t.push(['inbox','Eingang'+(admin&&admin.counts?' ('+(admin.counts.open||0)+' offen)':'')]);
+ return `<div class="fb-tabs" role="tablist">${t.map(([k,l])=>`<button type="button" role="tab" aria-selected="${view===k}" class="fb-tab${view===k?' on':''}" data-view="${k}">${P.esc(l)}</button>`).join('')}</div>`;
+}
+function formView(){
+ return `<div class="tlp-panel"><form class="fb-form" novalidate>
+  <fieldset class="fb-kinds"><legend>Worum geht es?</legend>${KINDS.map(([k,i,l,h])=>`<label class="fb-kind${kind===k?' on':''}"><input type="radio" name="fbKind" value="${k}" ${kind===k?'checked':''}><span aria-hidden="true">${i}</span><b>${P.esc(l)}</b><small>${P.esc(h)}</small></label>`).join('')}</fieldset>
+  <label class="tlp-field">Kurzer Titel<input name="fbTitle" maxlength="120" required placeholder="${kind==='idea'?'z. B. Trainingskalender als Monatsansicht':'z. B. Speichern-Knopf reagiert nicht'}"></label>
+  <label class="tlp-field">${kind==='idea'?'Deine Idee':'Was ist passiert?'}<textarea name="fbMessage" rows="5" maxlength="4000" required placeholder="${kind==='idea'?'Was soll es können? Wem hilft es?':'Was hast du gemacht, was hast du erwartet, was ist stattdessen passiert?'}"></textarea></label>
+  <div class="tlp-field">Screenshots (optional, bis ${MAX_FILES})
+   <div class="fb-files">${files.map((f,i)=>`<span class="fb-file"><img src="${f.url}" alt="Screenshot ${i+1}"><button type="button" class="kg-mini-btn" data-remove="${i}" aria-label="Screenshot ${i+1} entfernen">×</button></span>`).join('')}
+   ${files.length<MAX_FILES?`<label class="fb-add"><input type="file" accept="image/png,image/jpeg,image/webp" multiple data-files><span>+ Bild hinzufügen</span></label>`:''}</div>
+   <span class="tlp-note">Tipp: Screenshot machen (Handy: Seiten- + Lautertaste), dann hier auswählen. Bilder sieht nur der Admin.</span></div>
+  <p class="tlp-note">Wird mitgeschickt: ${page?'Seite <b>'+P.esc(page)+'</b> · ':''}${P.esc(dev)}</p>
+  <button type="submit" class="tlp-btn" ${busy?'disabled':''}>${busy?'Wird gesendet …':'Meldung senden'}</button>
+ </form></div>`;
+}
+async function mineView(){
+ if(!mine.items.length)return '<div class="tlp-panel"><p class="tlp-note">Du hast noch nichts gemeldet.</p></div>';
+ const urls=await signed(mine.items.flatMap(x=>x.attachments||[]));
+ return mine.items.map(x=>`<article class="tlp-panel fb-item"><div class="tlp-row spread"><span class="tlp-eyebrow">${P.esc(kindLabel(x.kind))} · ${P.fmtDate(x.created_at)}</span>${chip(x.status)}</div>
+  <h2 class="tlp-h2">${P.esc(x.title)}</h2><p class="fb-msg">${P.esc(x.message)}</p>${thumbs(x.attachments||[],urls)}
+  ${x.reply?`<div class="fb-reply"><b>Antwort vom Admin</b> <span class="tlp-note">${P.fmtDate(x.replied_at)}</span><p>${P.esc(x.reply)}</p></div>`:''}</article>`).join('');
+}
+async function inboxView(){
+ if(!admin)return '<p class="tlp-note">Wird geladen …</p>';
+ const f=[['open','Offen'],['in_progress','In Arbeit'],['done','Erledigt'],['rejected','Abgelehnt'],['all','Alle']];
+ const urls=await signed(admin.items.flatMap(x=>x.attachments||[]));
+ return `<div class="fb-filter">${f.map(([k,l])=>`<button type="button" class="kg-mini-btn${adminFilter===k?' on':''}" data-filter="${k}">${l}${k!=='all'&&admin.counts?' '+(admin.counts[k]||0):''}</button>`).join('')}</div>
+  ${admin.items.map(x=>`<article class="tlp-panel fb-item" data-item="${P.esc(x.id)}"><div class="tlp-row spread"><span class="tlp-eyebrow">${P.esc(kindLabel(x.kind))} · ${P.esc(x.author||'?')} · ${P.fmtDate(x.created_at)}</span>${chip(x.status)}</div>
+   <h2 class="tlp-h2">${P.esc(x.title)}</h2><p class="fb-msg">${P.esc(x.message)}</p>${thumbs(x.attachments||[],urls)}
+   <p class="tlp-note">${x.page?'Seite: '+P.esc(x.page)+' · ':''}${P.esc(x.device||'')}</p>
+   <div class="fb-admin"><label class="tlp-field">Status<select data-status>${Object.entries(STATUS).map(([k,[l]])=>`<option value="${k}" ${x.status===k?'selected':''}>${l}</option>`).join('')}</select></label>
+    <label class="tlp-field">Antwort an ${P.esc(x.author||'den Absender')} <span class="tlp-note">kommt als Benachrichtigung</span><textarea data-reply rows="2" maxlength="2000">${P.esc(x.reply||'')}</textarea></label>
+    <button type="button" class="tlp-btn" data-save="${P.esc(x.id)}">Speichern</button></div></article>`).join('')||'<div class="tlp-panel"><p class="tlp-note">Keine Meldungen in diesem Status.</p></div>'}`;
+}
+async function render(){
+ const y=window.scrollY;
+ const body=view==='form'?formView():view==='mine'?await mineView():await inboxView();
+ app.innerHTML=tabs()+body;restoreDraft();window.scrollTo(0,y);
+}
+async function loadMine(){const {data,error}=await db.rpc('my_app_feedback');if(error)throw error;mine=data}
+async function loadInbox(){const {data,error}=await db.rpc('admin_list_app_feedback',{p_status:adminFilter==='all'?null:adminFilter,p_limit:100});if(error)throw error;admin=data}
+app.addEventListener('change',async ev=>{
+ const t=ev.target;
+ if(t.name==='fbKind'){keepDraft();kind=t.value;render();return}
+ if(t.matches('[data-files]')){
+  keepDraft();
+  for(const file of [...t.files].slice(0,MAX_FILES-files.length)){
+   try{const blob=await shrink(file);files.push({blob,url:URL.createObjectURL(blob)})}catch(e){say(String(e.message||e),true)}
+  }
+  render();
+ }
+});
+function keepDraft(){const f=app.querySelector('.fb-form');if(f){draft={title:f.fbTitle.value,message:f.fbMessage.value}}}
+const restoreDraft=()=>{const f=app.querySelector('.fb-form');if(f){f.fbTitle.value=draft.title;f.fbMessage.value=draft.message}};
+app.addEventListener('click',async ev=>{
+ const b=ev.target.closest('button');if(!b)return;
+ if(b.dataset.view){keepDraft();view=b.dataset.view;say('');if(view==='inbox'&&!admin)await loadInbox().catch(e=>say(e.message,true));render();return}
+ if(b.dataset.remove){keepDraft();const f=files.splice(Number(b.dataset.remove),1)[0];if(f)URL.revokeObjectURL(f.url);render();return}
+ if(b.dataset.filter){adminFilter=b.dataset.filter;await loadInbox().catch(e=>say(e.message,true));render();return}
+ if(b.dataset.save){
+  const art=b.closest('[data-item]');b.disabled=true;
+  const {data,error}=await db.rpc('admin_update_app_feedback',{p_id:b.dataset.save,p_status:art.querySelector('[data-status]').value,p_reply:art.querySelector('[data-reply]').value.trim()||null});
+  b.disabled=false;
+  if(error){say(error.message,true);return}
+  say('Gespeichert: «'+data.title+'» ist '+(STATUS[data.status]||[data.status])[0]+'.');await loadInbox();render();
+ }
+});
+app.addEventListener('submit',async ev=>{
+ ev.preventDefault();if(busy)return;
+ const f=ev.target,title=f.fbTitle.value.trim(),message=f.fbMessage.value.trim();
+ if(title.length<3){say('Bitte einen Titel mit mindestens 3 Zeichen.',true);f.fbTitle.focus();return}
+ if(!message){say('Bitte kurz beschreiben, worum es geht.',true);f.fbMessage.focus();return}
+ busy=true;keepDraft();render();say('Wird gesendet …');
+ try{
+  const paths=[];
+  for(const x of files){
+   const path=uid+'/'+rid()+'.jpg';
+   const up=await db.storage.from(BUCKET).upload(path,x.blob,{contentType:'image/jpeg',upsert:false});
+   if(up.error)throw Error('Bild-Upload fehlgeschlagen: '+up.error.message);
+   paths.push(path);
+  }
+  const {error}=await db.rpc('submit_app_feedback',{p_kind:kind,p_title:title,p_message:message,p_page:page||null,p_device:dev,p_attachments:paths});
+  if(error)throw error;
+  files.forEach(x=>URL.revokeObjectURL(x.url));files=[];draft={title:'',message:''};
+  await loadMine();view='mine';say('Danke! Deine Meldung ist angekommen. Du bekommst eine Benachrichtigung, sobald es eine Antwort gibt.');
+ }catch(e){say(String(e.message||e),true)}
+ busy=false;render();
+});
+(async()=>{
+ try{
+  db=await P.client();
+  const s=await db.auth.getSession();
+  if(!s.data||!s.data.session){say('');app.innerHTML='<div class="tlp-panel">Bitte <a href="./login.html">anmelden</a>, um Feedback zu senden.</div>';return}
+  const u=await db.auth.getUser();uid=u.data&&u.data.user?u.data.user.id:null;
+  await loadMine();
+  if(!mine.enabled){say('');app.innerHTML='<div class="tlp-panel">Das Feedback-Portal ist noch nicht freigeschaltet.</div>';return}
+  if(mine.is_admin){$('pageTitle').textContent='Feedback & Eingang';const want=new URLSearchParams(location.search).get('view');if(want==='inbox'){view='inbox';await loadInbox()}}
+  say('');render();
+ }catch(e){say('Feedback konnte nicht geladen werden: '+(e.message||e),true)}
+})();
+</script>
+<script src="./takeover-navigation.js" defer></script></body></html>
