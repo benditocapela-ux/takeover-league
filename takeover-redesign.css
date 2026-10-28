@@ -812,3 +812,47 @@ body[data-tl-screen] .kg-intro,.kg-intro{position:fixed;inset:0;z-index:21474830
 .tlp-radar .tlp-overlap{fill:color-mix(in srgb,#ffffff 30%,transparent);stroke:#ffffff;stroke-width:1.2;stroke-dasharray:3 3}
 .tlp-radar .tlp-rv2{font-weight:700;font-size:11px;fill:var(--muted)}
 .tlp-radar .tlp-rv2 .g{fill:var(--gold)}.tlp-radar .tlp-rv2 .b{fill:#4fa3ff}
+/* Etappe 7b: Neuigkeiten */
+.news-entry.unread{border-color:color-mix(in srgb,var(--gold) 55%,var(--line))}
+.news-dot{font-size:12px;font-weight:800;color:#1a1305;background:var(--gold);border-radius:999px;padding:2px 9px}
+.news-items{list-style:none;margin:var(--sp-2) 0 0;padding:0;display:grid;gap:var(--sp-2)}
+.news-items li{display:flex;gap:var(--sp-2);align-items:flex-start;line-height:1.45}
+.news-tag{flex:none;font-size:11px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;border-radius:6px;padding:3px 7px;margin-top:2px;background:var(--surface-2);color:var(--text-2)}
+.news-tag.new{background:color-mix(in srgb,var(--gold) 22%,transparent);color:var(--gold)}
+.news-tag.better{background:color-mix(in srgb,#4fa3ff 22%,transparent);color:#8cc4ff}
+.news-tag.fixed{background:color-mix(in srgb,var(--ok) 22%,transparent);color:#8fdcae}
+.news-older summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+.tl-has-news{position:relative}
+.tl-has-news::after{content:"";position:absolute;top:6px;right:calc(50% - 20px);width:9px;height:9px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 2px var(--bg)}
+/* Etappe 7b: Feedback-Portal */
+.fb-tabs{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin-bottom:var(--sp-3)}
+.fb-tab{min-height:44px;padding:8px 14px;border-radius:var(--r-sm);border:1px solid var(--line-strong);background:var(--surface);color:var(--text);font-weight:700;cursor:pointer}
+.fb-tab.on{background:var(--gold);color:#1a1305;border-color:var(--gold)}
+.fb-form{display:grid;gap:var(--sp-3)}
+.fb-kinds{border:0;padding:0;margin:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:var(--sp-2)}
+.fb-kinds legend{font-weight:700;margin-bottom:var(--sp-2)}
+.fb-kind{display:grid;gap:2px;padding:var(--sp-3);border:1px solid var(--line-strong);border-radius:var(--r-md);background:var(--surface-2);cursor:pointer;min-height:44px}
+.fb-kind input{position:absolute;opacity:0;pointer-events:none}
+.fb-kind.on{border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
+.fb-kind:focus-within{outline:3px solid var(--gold);outline-offset:2px}
+.fb-kind small{color:var(--muted)}
+.fb-files{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin:var(--sp-2) 0}
+.fb-file{position:relative}
+.fb-file img,.fb-thumbs img{width:96px;height:96px;object-fit:cover;border-radius:var(--r-sm);border:1px solid var(--line-strong);display:block}
+.fb-file button{position:absolute;top:4px;right:4px;min-width:32px;min-height:32px}
+.fb-add{display:grid;place-items:center;width:96px;height:96px;border:1px dashed var(--line-strong);border-radius:var(--r-sm);cursor:pointer;text-align:center;font-size:13px;color:var(--text-2)}
+.fb-add{position:relative}
+.fb-add input{position:absolute;opacity:0;width:1px;height:1px}
+.fb-filter .kg-mini-btn{min-height:40px}
+.fb-add:focus-within{outline:3px solid var(--gold);outline-offset:2px}
+.fb-thumbs{display:flex;flex-wrap:wrap;gap:var(--sp-2);margin:var(--sp-2) 0}
+.fb-msg{white-space:pre-wrap;line-height:1.5}
+.fb-status{font-size:12px;font-weight:800;border-radius:999px;padding:3px 10px;background:var(--surface-2);color:var(--text-2)}
+.fb-status.t-gold{background:color-mix(in srgb,var(--ok) 25%,transparent);color:#8fdcae}
+.fb-status.t-silber{background:color-mix(in srgb,#4fa3ff 22%,transparent);color:#8cc4ff}
+.fb-reply{border-left:3px solid var(--gold);padding:var(--sp-2) var(--sp-3);background:var(--surface-2);border-radius:var(--r-sm)}
+.fb-reply p{margin:4px 0 0;white-space:pre-wrap}
+.fb-filter{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:var(--sp-3)}
+.fb-filter .on{background:var(--gold);color:#1a1305}
+.fb-admin{display:grid;gap:var(--sp-2);border-top:1px solid var(--line);padding-top:var(--sp-3);margin-top:var(--sp-2)}
+.fb-admin select{min-height:44px;background:var(--surface-2);color:var(--text);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:8px}

@@ -1,0 +1,36 @@
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Neuigkeiten · Takeover League</title>
+<style>:root{color-scheme:dark;font:16px system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 110px;background:var(--bg);color:var(--text)}main{max-width:760px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="news">
+<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Neuigkeiten"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">📰</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Was ist neu?</div><div class="tl-screen-title">Neuigkeiten</div></div></div><div class="tl-screen-links"><a href="./news.html" class="tl-screen-primary">Neuigkeiten</a><a href="./feedback.html">Feedback</a><a href="./index.html">Zur Liga</a></div></div>
+<h1>Neuigkeiten</h1>
+<p class="tlp-note">Kurz erklärt, was sich mit jedem Update geändert hat: neue Funktionen, Verbesserungen und behobene Fehler.</p>
+<p id="status" class="tlp-status" role="status">Wird geladen …</p>
+<div id="app"></div>
+</main>
+<script type="module">
+const $=id=>document.getElementById(id),app=$('app'),status=$('status');
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const TYPE={neu:['Neu','new'],verbessert:['Verbessert','better'],behoben:['Behoben','fixed'],geaendert:['Geändert','changed'],info:['Info','info']};
+const fmt=d=>{try{return new Intl.DateTimeFormat('de-CH',{day:'numeric',month:'long',year:'numeric',timeZone:'Europe/Zurich'}).format(new Date(d+'T12:00:00Z'))}catch(_){return d}};
+const VISIBLE=6;
+let seen=0;try{seen=Number(localStorage.getItem('tl.news.seen'))||0}catch(_){}
+function entry(e){
+ return `<article class="tlp-panel news-entry${e.n>seen?' unread':''}"><div class="tlp-row spread"><span class="tlp-eyebrow">${esc(fmt(e.date))}</span>${e.n>seen?'<span class="news-dot">Neu für dich</span>':''}</div>
+  <ul class="news-items">${e.items.map(i=>{const t=TYPE[i.type]||TYPE.info;return `<li><span class="news-tag ${t[1]}">${t[0]}</span><span>${esc(i.text)}</span></li>`}).join('')}</ul></article>`;
+}
+(async()=>{
+ try{
+  const r=await fetch('./news.json',{cache:'no-cache'});
+  const d=r.ok?await r.json():{entries:[]},list=Array.isArray(d.entries)?d.entries.filter(e=>e&&Array.isArray(e.items)&&e.items.length):[];
+  status.hidden=true;
+  if(!list.length){app.innerHTML='<div class="tlp-panel"><p class="tlp-note">Noch keine Neuigkeiten. Sobald ein Update live ist, steht es hier.</p></div>';return}
+  const head=list.slice(0,VISIBLE),rest=list.slice(VISIBLE);
+  app.innerHTML=head.map(entry).join('')+(rest.length?`<details class="tlp-panel news-older"><summary>Ältere Updates (${rest.length})</summary>${rest.map(entry).join('')}</details>`:'')+
+   '<p class="tlp-note">Etwas funktioniert nicht oder du hast eine Idee? <a href="./feedback.html?from=news.html">Feedback senden</a>.</p>';
+  const top=Math.max(...list.map(e=>Number(e.n)||0));
+  try{localStorage.setItem('tl.news.seen',String(top))}catch(_){}
+ }catch(e){status.textContent='Neuigkeiten konnten nicht geladen werden.';status.classList.add('error')}
+})();
+</script>
+<script src="./takeover-navigation.js" defer></script></body></html>

@@ -10,11 +10,13 @@ on:
       - '*.woff'
       - 'manifest.webmanifest'
       - 'avatars/**'
+      - 'tools/build-news.cjs'
       - '.github/workflows/takeover-pages-deploy.yml'
   workflow_dispatch:
 
 permissions:
   contents: read
+  pull-requests: read
   pages: write
   id-token: write
 
@@ -34,6 +36,8 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
       - name: Assemble release-only static site
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           mkdir -p _site
@@ -48,6 +52,10 @@ jobs:
           cp -R avatars _site/avatars
           rm -f _site/challenges-v2-preview.html _site/duels-v2-preview.html _site/league2-preview.html
           touch _site/.nojekyll
+          # Etappe 7b: Neuigkeiten aus den «## News»-Abschnitten gemergter PRs (Fehler hier stoppen das Deployment nicht).
+          gh api "repos/${GITHUB_REPOSITORY}/pulls?state=closed&base=main&sort=updated&direction=desc&per_page=80" > /tmp/prs.json || echo '[]' > /tmp/prs.json
+          node tools/build-news.cjs /tmp/prs.json _site/news.json
+          test -s _site/news.json
           test -s _site/takeover-navigation.js
           test -s _site/takeover-navigation.css
           test -s _site/takeover-theme.css

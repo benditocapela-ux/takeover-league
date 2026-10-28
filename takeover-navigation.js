@@ -89,6 +89,10 @@
        ['medal','Monatsauszeichnungen','awards.html',''],
        ['scale','Boxer-Vergleich','boxer-compare.html',''],
        ['trophy','Saisons & Hall of Fame','league-history.html','']
+     ]},
+     {icon:'💬',title:'Hilfe & Neuigkeiten',summary:'Was ist neu, Fehler melden, Ideen teilen',items:[
+       ['scroll','Neuigkeiten','news.html',''],
+       ['bolt','Feedback & Fehler melden','feedback.html','',true]
      ]}
    ];
    const contents=entries.map((group,index)=>{
@@ -100,7 +104,7 @@
          '<span class="tl-menu-group-chevron" aria-hidden="true">⌄</span>'+
        '</button><div class="tl-menu-group-links" id="'+groupId+'-links" hidden>'+
          group.items.map(item=>
-           '<a class="tl-menu-link" href="./'+item[2]+'"'+(item[3]?' data-tl-section="'+item[3]+'"':'')+(item[5]?' data-tl-admin hidden':'')+(['boxer.html','goals.html','bewertung.html','stil-test.html','wochenplan.html','quests.html','shop.html','roadmap.html','kampfpfad.html','praesenz.html','checkin.html','coach.html','league-manager.html'].includes(item[2])?' data-tl-private hidden':'')+'>'+
+           '<a class="tl-menu-link" href="./'+item[2]+'"'+(item[3]?' data-tl-section="'+item[3]+'"':'')+(item[5]?' data-tl-admin hidden':'')+(['boxer.html','goals.html','bewertung.html','stil-test.html','wochenplan.html','quests.html','shop.html','roadmap.html','kampfpfad.html','praesenz.html','checkin.html','coach.html','league-manager.html','feedback.html'].includes(item[2])?' data-tl-private hidden':'')+'>'+
              '<span class="tl-menu-icon" aria-hidden="true">'+emoji(item[0])+'</span>'+
              '<span class="tl-menu-label">'+item[1]+(item[4]?' <span class="tl-menu-pill">Neu</span>':'')+'</span>'+
              '<span class="tl-menu-arrow" aria-hidden="true">↗</span>'+
@@ -120,6 +124,22 @@
    const menuEntries=Array.from(panel.querySelectorAll('a.tl-menu-link'));
    const adminEntry=panel.querySelector('a[data-tl-admin]');
    const privateEntries=Array.from(panel.querySelectorAll('a[data-tl-private]'));
+   // Etappe 7b: «Feedback» merkt sich, von welcher Seite aus gemeldet wird; «Neuigkeiten» zeigt einen Punkt bei Ungelesenem.
+   const feedbackLink=panel.querySelector('a.tl-menu-link[href="./feedback.html"]');
+   const here=(location.pathname.split('/').pop()||'index.html')+(location.hash||'');
+   if(feedbackLink&&/^[a-z0-9-]+\.html(#[a-z0-9_-]*)?$/i.test(here)&&!here.startsWith('feedback.html'))feedbackLink.href='./feedback.html?from='+encodeURIComponent(here);
+   (async()=>{
+     try{
+       const r=await fetch('./news.json',{cache:'no-cache'});if(!r.ok)return;
+       const d=await r.json(),top=d&&Array.isArray(d.entries)&&d.entries[0]?Number(d.entries[0].n)||0:0;
+       let seen=0;try{seen=Number(localStorage.getItem('tl.news.seen'))||0}catch(_){}
+       if(top>seen&&!/news\.html$/.test(location.pathname)){
+         const link=panel.querySelector('a.tl-menu-link[href="./news.html"] .tl-menu-label');
+         if(link&&!link.querySelector('.tl-menu-pill'))link.insertAdjacentHTML('beforeend',' <span class="tl-menu-pill">Neu</span>');
+         trigger.classList.add('tl-has-news');
+       }
+     }catch(_){}
+   })();
    const bottomItems=Array.from(document.querySelectorAll(atHome?'.bottom .nav':'.tl-global-bottom .tl-nav-item'));
   // Rollenbasierte Navigation: Admin-Eintrag + Dashboard fuehrt direkt zum eigenen Bereich.
   // Keine neue Abhaengigkeit: gleicher gepinnter Supabase-CDN Endpoint wie zuvor.
@@ -222,7 +242,7 @@
       if(role==='admin'&&adminEntry) adminEntry.hidden=false;
       privateEntries.forEach(anchor=>{
         const href=anchor.getAttribute('href');
-        anchor.hidden=!(['./boxer.html','./goals.html','./bewertung.html','./stil-test.html','./wochenplan.html','./quests.html','./shop.html','./roadmap.html','./kampfpfad.html','./praesenz.html','./checkin.html'].includes(href) ||
+        anchor.hidden=!(['./boxer.html','./goals.html','./bewertung.html','./stil-test.html','./wochenplan.html','./quests.html','./shop.html','./roadmap.html','./kampfpfad.html','./praesenz.html','./checkin.html','./feedback.html'].includes(href.split('?')[0]) ||
           ((role==='admin'||role==='coach')&&['./coach.html','./league-manager.html'].includes(href)));
       });
       // static check sentinel: p.data?.role==='admin'
