@@ -137,6 +137,7 @@ async function main(){
    await page.locator('#bulkApprove').click();
    await page.waitForFunction(()=>window.__mockStats.reviewed.length===1);
    assert.equal((await page.evaluate(()=>window.__mockStats.reviewed[0])).p_decision,'approved');
+   await page.locator('[data-sec="edit"] .tl-col-toggle').click(); // Etappe 6b: «Trainings bearbeiten» ist zugeklappt
    await page.selectOption('#filterStatus','rejected');
    await page.locator('button', {hasText:'Ablehnung rückgängig'}).first().click();
    await page.waitForFunction(()=>window.__mockStats.undo===1);

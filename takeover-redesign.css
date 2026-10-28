@@ -776,3 +776,4 @@ body[data-tl-screen] .kg-intro,.kg-intro{position:fixed;inset:0;z-index:21474830
 @media (prefers-reduced-motion:reduce){.kg-intro *,.kg-intro{animation:none!important}}
 .tlp-pill.inl{align-self:flex-start;width:fit-content;max-width:100%}
 .tlp-check{align-items:center;gap:var(--sp-2);margin:var(--sp-2) 0}.tlp-check input{width:22px;height:22px;flex:none;margin:0}
+#boxerFeedbackList .feedback-archive{margin-top:var(--sp-3);border-top:1px solid var(--line);padding-top:var(--sp-3)}#boxerFeedbackList .feedback-archive summary{cursor:pointer;font-weight:800;color:var(--muted);min-height:40px;display:flex;align-items:center}#boxerFeedbackList .feedback-note.archived{opacity:.75}
