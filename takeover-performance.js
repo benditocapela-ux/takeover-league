@@ -273,7 +273,7 @@ async function mountPodium(){
  const anchor=document.getElementById('podium-content');if(!anchor)return;
  const db=await client();
  const s=await db.auth.getSession();if(!s.data||!s.data.session)return;
- let data=null,K=null,busy=false;
+ let data=null,K=null,busy=false,pickOpen=false;
  const load=async()=>{const r=await db.rpc('get_podium_kampfgeist');const d=r.error||!r.data||!r.data.enabled?null:r.data;if(d)K=K||await kampfgeist();data=d};
  const norm=v=>String(v||'').trim().toLowerCase();
  const decorate=()=>{
@@ -289,11 +289,13 @@ async function mountPodium(){
    b.innerHTML=K.emoteHTML(pl.emote.design,i(step)?56:44);step.prepend(b);
   }
   const me=data.places.find(x=>x.is_me);if(!me)return;
-  const pick=document.createElement('div');pick.className='tl-podium-emote-pick';pick.setAttribute('role','group');pick.setAttribute('aria-label','Dein Emote im Podium');
-  const cur=data.my_emote&&data.my_emote.key;
-  pick.innerHTML=`<b>Dein Emote im Podium</b>${data.preview?'<span class="tlp-note">Vorschau – nur für dich sichtbar, solange der Shop aus ist.</span>':''}
+  const cur=data.my_emote&&data.my_emote.key,on=data.my_show&&data.my_emote;
+  const pick=document.createElement('details');pick.className='tl-podium-emote-pick';pick.open=pickOpen;
+  pick.addEventListener('toggle',()=>{pickOpen=pick.open});
+  pick.innerHTML=`<summary><b>Dein Emote im Podium</b><span class="tl-podium-emote-state">${on?K.emoteHTML(data.my_emote.design,28):'Aus'}</span></summary>
+   <div class="tl-podium-emote-body" role="group" aria-label="Emote auswählen">${data.preview?'<span class="tlp-note">Vorschau – nur für dich sichtbar, solange der Shop aus ist.</span>':''}
    <div class="tl-podium-emote-opts"><button type="button" data-podium-emote="" aria-pressed="${!data.my_show}">Kein Emote</button>${(data.my_emotes||[]).map(m=>`<button type="button" data-podium-emote="${esc(m.key)}" aria-pressed="${data.my_show&&m.key===cur}" aria-label="${esc(m.name)}">${K.emoteHTML(m.design,36)}</button>`).join('')}</div>
-   <span class="tlp-note">Nur du entscheidest, ob neben deinem Platz ein Emote erscheint. Weitere Emotes gibt es im <a href="./shop.html">Shop</a>.</span>`;
+   <span class="tlp-note">Nur du entscheidest, ob neben deinem Platz ein Emote erscheint. Weitere Emotes gibt es im <a href="./shop.html">Shop</a>.</span></div>`;
   pod.after(pick);
  };
  const i=step=>step.classList.contains('tl-podium-1');

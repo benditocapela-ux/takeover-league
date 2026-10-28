@@ -286,7 +286,14 @@ body[data-tl-screen="index"] .tl-podium-step{position:relative}
 body[data-tl-screen="index"] .tl-podium-emote{position:absolute;top:-14px;right:-4px;z-index:2;pointer-events:none;filter:drop-shadow(0 4px 10px rgba(0,0,0,.45));animation:tl-emote-pop .5s cubic-bezier(.2,1.6,.4,1) both}
 @keyframes tl-emote-pop{from{transform:scale(.4) rotate(-8deg);opacity:0}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){body[data-tl-screen="index"] .tl-podium-emote{animation:none}}
-.tl-podium-emote-pick{display:grid;gap:8px;margin:var(--sp-3) 0 var(--sp-4);padding:var(--sp-3);border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface)}
+.tl-podium-emote-pick{margin:var(--sp-3) 0 var(--sp-4);border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface)}
+.tl-podium-emote-pick>summary{display:flex;align-items:center;gap:10px;min-height:48px;padding:6px var(--sp-3);cursor:pointer;list-style:none}
+.tl-podium-emote-pick>summary::-webkit-details-marker{display:none}
+.tl-podium-emote-pick>summary::after{content:"⌄";margin-left:auto;font-weight:800;color:var(--text-2);transition:transform .2s}
+.tl-podium-emote-pick[open]>summary::after{transform:rotate(180deg)}
+.tl-podium-emote-pick>summary:focus-visible{outline:3px solid var(--gold);outline-offset:2px;border-radius:var(--r-lg)}
+.tl-podium-emote-state{display:inline-flex;align-items:center;font-size:13px;font-weight:700;color:var(--text-2)}
+.tl-podium-emote-body{display:grid;gap:8px;padding:0 var(--sp-3) var(--sp-3)}
 .tl-podium-emote-opts{display:flex;flex-wrap:wrap;gap:6px}
 .tl-podium-emote-opts button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;min-width:44px;padding:2px 10px;border-radius:999px;border:1px solid var(--line-strong);background:transparent;color:var(--text);font:inherit;font-size:13px;font-weight:700;cursor:pointer}
 .tl-podium-emote-opts button[aria-pressed="true"]{border-color:var(--gold);background:color-mix(in srgb,var(--gold) 16%,transparent);box-shadow:0 0 0 2px color-mix(in srgb,var(--gold) 35%,transparent)}

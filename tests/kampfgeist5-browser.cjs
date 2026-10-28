@@ -131,15 +131,23 @@ function injected(cfg){
  assert.equal(await x.p.locator('.tl-podium .tl-podium-emote').count(),1,'only Ben shows an emote');
  assert.match(await x.p.textContent('.tl-podium-1'),/KAMPF-GEIST!!/);
  assert.equal(await x.p.locator('.tl-podium-2 .tl-podium-emote').count(),0,'Anna off by default');
+ assert.equal(await x.p.evaluate(()=>document.querySelector('.tl-podium-emote-pick').open),false,'picker collapsed by default');
+ assert.equal(await x.p.isVisible('[data-podium-emote=""]'),false,'options hidden while collapsed');
+ assert.match(await x.p.textContent('.tl-podium-emote-pick summary'),/Dein Emote im Podium\s*Aus/);
+ await x.p.evaluate(()=>document.querySelector('.tl-podium-emote-pick').scrollIntoView({block:'center'}));await shot(x.p,'kg8-podium-zu');
+ await x.p.click('.tl-podium-emote-pick summary');
  assert.equal(await x.p.getAttribute('[data-podium-emote=""]','aria-pressed'),'true','Kein Emote selected');
  assert.equal(await x.p.locator('[data-podium-emote]').count(),6,'Kein Emote + 5 own emotes');
  await x.p.click('[data-podium-emote="m_stark"]');
  await x.p.waitForFunction(()=>window.__calls.some(c=>c[0]==='set_podium_emote'&&c[1].p_show===true&&c[1].p_emote_key==='m_stark'));
  await x.p.waitForSelector('.tl-podium-2 .tl-podium-emote');
  assert.equal(await x.p.getAttribute('[data-podium-emote="m_stark"]','aria-pressed'),'true');
+ assert.equal(await x.p.evaluate(()=>document.querySelector('.tl-podium-emote-pick').open),true,'stays open after choosing');
+ assert.match(await x.p.innerHTML('.tl-podium-emote-pick summary'),/STARK/);
  await x.p.locator('.tl-podium').scrollIntoViewIfNeeded();await shot(x.p,'kg8-podium');
  // Neu laden der Rangliste (Tab-Wechsel) behält die Emotes
  await x.p.evaluate(()=>load());
+ await x.p.waitForFunction(()=>document.querySelector('.tl-podium-emote-pick')&&document.querySelector('.tl-podium-emote-pick').open);
  await x.p.waitForFunction(()=>document.querySelectorAll('.tl-podium .tl-podium-emote').length===2&&document.querySelectorAll('.tl-podium-emote-pick').length===1);
  await x.p.click('[data-podium-emote=""]');
  await x.p.waitForFunction(()=>window.__calls.some(c=>c[0]==='set_podium_emote'&&c[1].p_show===false));
