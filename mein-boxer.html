@@ -1,0 +1,154 @@
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Mein Boxer · Takeover League</title>
+<style>:root{color-scheme:dark;font:16px system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 110px;background:var(--bg);color:var(--text)}main{max-width:880px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="mein-boxer">
+<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Mein Boxer"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🥊</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Dein Boxer-Holo</div><div class="tl-screen-title">Mein Boxer</div></div></div><div class="tl-screen-links"><a href="./mein-boxer.html" class="tl-screen-primary">Mein Boxer</a><a href="./shop.html">Shop</a><a href="./boxer.html">Mein Studio</a></div></div>
+<p class="tl-subnav"><a href="./boxer.html">← Mein Studio</a></p>
+<h1 id="pageTitle">Mein Boxer</h1>
+<p id="status" class="tlp-status" role="status" aria-live="polite">Wird geladen …</p>
+<div id="app"></div>
+</main>
+<script src="./takeover-performance.js" defer></script>
+<script src="./takeover-holo.js" defer></script>
+<script type="module">
+const $=id=>document.getElementById(id),app=$('app'),status=$('status');
+const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
+await new Promise(r=>{const ok=()=>window.TLPerf&&window.TLHolo;if(ok())return r();const t=setInterval(()=>{if(ok()){clearInterval(t);r()}},30)});
+const P=window.TLPerf,H=window.TLHolo,esc=P.esc;
+const COIN='<svg class="mb-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#ffcc33"/><circle cx="12" cy="12" r="8" fill="#e8a91a"/></svg>';
+const fmt=n=>Number(n||0).toLocaleString('de-CH');
+const OPT={
+ head:[['none','Ohne'],['cap','Kappe'],['band','Stirnband'],['hijab','Sport-Hijab']],
+ top:[['none','Ohne'],['tank','Tanktop'],['shirt','T-Shirt'],['hoodie','Hoodie'],['jacke','Trainingsjacke']],
+ bottom:[['boxer','Boxershorts'],['kurz','Kurze Hose'],['jogger','Jogginghose'],['track','Trainingshose']],
+ hands:[['wraps','Bandagen'],['gloves','Handschuhe']],
+ feet:[['boots','Boxstiefel'],['sneaker','Sneaker']]
+};
+const SLOT_TITLE={coat:'Mäntel',glove:'Handschuhe',aura:'Auren',eyefx:'Spezial-Augen',scene:'Hintergründe',pose:'Posen'};
+let db,data=null,cfg=null,saved='',tab='koerper',busy=false,confirmBuy=null,coatChoice='basic',previewPose='profile';
+const items=()=>data.items||[];
+const item=(slot,v)=>items().find(i=>i.slot===slot&&i.value===v);
+const locked=(slot,v)=>{const it=item(slot,v);return !!(it&&!it.owned)};
+const lockTag=it=>it&&!it.owned?`<em class="mb-lock">${it.unlock==='shop'?COIN+fmt(it.price):esc(it.reward||'Belohnung')}</em>`:'';
+const tryOn=()=>{const l=[];const chk=(slot,v,lab)=>{const it=item(slot,v);if(it&&!it.owned)l.push(lab||it.name)};
+ for(const s of ['coat','aura','eyefx','scene'])if(cfg[s]&&cfg[s]!=='none')chk(s,cfg[s]);
+ if(cfg.hands==='gloves')chk('glove',cfg.glove,'Handschuhe '+(item('glove',cfg.glove)||{}).name);
+ chk('hair',cfg.hair);chk('pose',cfg.pose_profile,'Pose '+(item('pose',cfg.pose_profile)||{}).name);chk('pose',cfg.pose_card,'Pose '+(item('pose',cfg.pose_card)||{}).name);
+ return [...new Set(l)]};
+const dirty=()=>JSON.stringify(cfg)!==saved;
+const chip=(field,v,label,on,extra)=>`<button type="button" class="mb-chip" data-set="${field}" data-val="${esc(v)}" aria-pressed="${on}">${label}${extra||''}</button>`;
+const sw=(field,v,color,label,on)=>`<button type="button" class="mb-sw" data-set="${field}" data-val="${esc(v)}" aria-pressed="${on}" aria-label="${esc(label)}" style="--c:${color}"></button>`;
+const toggle=(id,label,on)=>`<div class="mb-toggle"><span>${label}</span><button type="button" class="mb-switch" data-toggle="${id}" aria-pressed="${on}" aria-label="${label}"><i></i></button></div>`;
+const sec=(title,body)=>`<section class="mb-sec"><h2 class="mb-h">${title}</h2>${body}</section>`;
+function itemChips(slot,field,withNone){
+ const list=items().filter(i=>i.slot===slot);
+ return (withNone?chip(field,'none','Keine',cfg[field]==='none'):'')+list.map(i=>chip(field,i.value,esc(i.name),cfg[field]===i.value,lockTag(i))).join('');
+}
+function colorRow(field,map,labels){return `<div class="mb-row">${Object.keys(map).map(k=>sw(field,k,map[k][0],labels[k]||k,cfg[field]===k)).join('')}</div>`}
+function viewKoerper(){
+ return sec('Hautfarbe',`<div class="mb-row">${H.TONES.map((t,i)=>sw('tone',i,t[0],'Hautton '+(i+1),cfg.tone===i)).join('')}</div>`)
+  +sec('Frisur',`<div class="mb-row">${items().filter(i=>i.slot==='hair').map(i=>chip('hair',i.value,esc(i.name),cfg.hair===i.value,lockTag(i))).join('')}</div>`)
+  +sec('Haarfarbe',colorRow('hc',H.HC,H.LABEL.hc))+sec('Augenfarbe',colorRow('eye',H.EYE,H.LABEL.eye));
+}
+function viewKleidung(){
+ const gl=cfg.hands==='gloves';
+ return sec('Kopf',`<div class="mb-row">${OPT.head.map(([v,l])=>chip('head',v,l,cfg.head===v)).join('')}</div>${cfg.head!=='none'?colorRow('headc',H.CL,H.LABEL.col):''}`)
+  +sec('Oberteil',`<div class="mb-row">${OPT.top.map(([v,l])=>chip('top',v,l,cfg.top===v)).join('')}</div>${cfg.top!=='none'?colorRow('topc',H.CL,H.LABEL.col):''}${cfg.top==='hoodie'?toggle('hood','Kapuze auf',cfg.hood):''}`)
+  +sec('Hose',`<div class="mb-row">${OPT.bottom.map(([v,l])=>chip('bottom',v,l,cfg.bottom===v)).join('')}</div>${colorRow('bottomc',H.CL,H.LABEL.col)}<p class="mb-note">Hose und Schuhe trägt dein Holo immer.</p>`)
+  +sec('Hände',`<div class="mb-row">${OPT.hands.map(([v,l])=>chip('hands',v,l,cfg.hands===v)).join('')}</div>${gl?`<div class="mb-row">${itemChips('glove','glove',false)}</div>`:''}`)
+  +sec('Schuhe',`<div class="mb-row">${OPT.feet.map(([v,l])=>chip('feet',v,l,cfg.feet===v)).join('')}</div>${colorRow('feetc',H.CL,H.LABEL.col)}`)
+  +sec('Mantel',`${toggle('coat','Mantel tragen',cfg.coat!=='none')}<div class="mb-row">${items().filter(i=>i.slot==='coat').map(i=>chip('coatPick',i.value,esc(i.name),(cfg.coat!=='none'?cfg.coat:coatChoice)===i.value,lockTag(i))).join('')}</div>`);
+}
+function viewExtras(){
+ return `<p class="mb-note">Gesperrtes kannst du anprobieren. Freischalten über den Shop oder Belohnungen.</p>`
+  +sec('Aura',`<div class="mb-row">${itemChips('aura','aura',true)}</div>`)
+  +sec('Spezial-Augen',`<div class="mb-row">${itemChips('eyefx','eyefx',true)}</div>`)
+  +sec('Hintergrund',`<div class="mb-row">${itemChips('scene','scene',false)}</div>`);
+}
+function poseRow(field){
+ return `<div class="mb-row">${items().filter(i=>i.slot==='pose').map(i=>`<button type="button" class="mb-pose" data-set="${field}" data-val="${esc(i.value)}" aria-pressed="${cfg[field]===i.value}"><span class="mb-pose-fig">${H.svg(cfg,{pose:i.value,scene:'none',holo:false})}</span>${esc(i.name)}${lockTag(i)}</button>`).join('')}</div>`;
+}
+function viewPosen(){
+ const perf=data.perf,r=perf&&perf.rating&&perf.rating.current?perf.rating.current.summary:null;
+ const pos=perf&&perf.style&&perf.style.current?P.styleType(perf.style.current.scores).pos:'BOX';
+ const cardHtml=P.card({name:data.display_name,overall:r?r.overall:70,categories:r?r.categories:{OFF:70,DEF:70,BEI:70,KON:70,TAK:70,MEN:70},pos,width:170,look:{holo:cfg}});
+ return sec('Im Profil',poseRow('pose_profile'))+sec('Auf der FUT-Karte',poseRow('pose_card'))+sec('So sieht deine Karte aus',`<div class="mb-cardprev">${cardHtml}</div>`);
+}
+function viewShop(){
+ if(!data.shop)return `<div class="tlp-panel">Der Kampfgeist-Shop ist noch nicht freigeschaltet. Anprobieren kannst du trotzdem.</div>`;
+ const buyBtn=(kind,key,price,owned)=>owned?`<span class="mb-owned">Im Besitz</span>`
+  :confirmBuy===kind+':'+key?`<span class="mb-confirm"><button type="button" class="mb-btn primary" data-buy-${kind}="${esc(key)}" data-confirm="1">Ja, für ${fmt(price)} kaufen</button><button type="button" class="mb-btn" data-cancel="1">Abbrechen</button></span>`
+  :`<button type="button" class="mb-btn" data-buy-${kind}="${esc(key)}"${data.coins<price?' disabled':''}>${COIN}${fmt(price)}</button>`;
+ const bundles=(data.bundles||[]).map(b=>{const its=b.items.map(k=>items().find(i=>i.key===k)).filter(Boolean);
+  const look=Object.assign({},cfg);its.forEach(i=>{if(['coat','aura','eyefx','scene'].includes(i.slot))look[i.slot]=i.value;if(i.slot==='glove'){look.hands='gloves';look.glove=i.value}if(i.slot==='pose')look.pose_profile=i.value});
+  return `<article class="mb-bundle"><span class="mb-bfig">${H.svg(look,{})}</span><div class="mb-bbody"><span class="mb-eyebrow">Bundle</span><b>${esc(b.name)}</b><p class="mb-note">${esc(b.description||'')}</p>
+   <div class="mb-price">${COIN}${fmt(b.price)} <s>${fmt(b.value)}</s></div>${buyBtn('bundle',b.key,b.price,b.owned_all)}
+   <button type="button" class="mb-btn ghost" data-try-bundle="${esc(b.key)}">Anprobieren</button></div></article>`}).join('');
+ const shopItems=items().filter(i=>i.unlock==='shop');
+ const groups=['coat','glove','aura','eyefx','scene','pose'].map(s=>{const l=shopItems.filter(i=>i.slot===s);return l.length?sec(SLOT_TITLE[s],`<div class="mb-list">${l.map(i=>`<div class="mb-li"><span><b>${esc(i.name)}</b><span class="mb-rar r-${esc(i.rarity)}">${esc(({common:'Gewöhnlich',rare:'Selten',epic:'Episch',leg:'Legendär',myth:'Mythisch'})[i.rarity]||'')}</span></span>${buyBtn('item',i.key,i.price,i.owned)}</div>`).join('')}</div>`):''}).join('');
+ const rewards=items().filter(i=>i.unlock==='reward');
+ return `<div class="mb-wallet">${COIN}<b>${fmt(data.coins)}</b> Coins</div>${bundles?sec('Bundles',`<div class="mb-bundles">${bundles}</div>`):''}${groups}`
+  +sec('Belohnungen',`<div class="mb-list">${rewards.map(i=>`<div class="mb-li"><span><b>${esc(i.name)}</b><span class="mb-note">${esc(SLOT_TITLE[i.slot]||'')} · ${esc(i.reward||'')}</span></span>${i.owned?'<span class="mb-owned">Freigeschaltet</span>':'<span class="mb-lockedtxt">Noch gesperrt</span>'}</div>`).join('')}</div>`);
+}
+function render(){
+ const tabs=[['koerper','Körper'],['kleidung','Kleidung'],['extras','Extras'],['posen','Posen'],['shop','Shop']];
+ const tl=tryOn(),pose=previewPose==='card'?cfg.pose_card:cfg.pose_profile;
+ app.innerHTML=`${data.preview?'<p class="tlp-note">Vorschau – für die Boxer sichtbar, sobald der Boxer-Holo freigeschaltet ist.</p>':''}
+ <div class="mb-layout"><div class="mb-stage"><div class="mb-preview">${H.svg(cfg,{pose,label:'Dein Boxer-Holo'})}</div>
+  <div class="mb-stage-bar"><span class="mb-pill">${previewPose==='card'?'Karten-Pose':'Profil-Pose'}</span>${data.shop?`<span class="mb-pill">${COIN}${fmt(data.coins)}</span>`:''}</div>
+  ${tl.length?`<div class="mb-tryon" role="note"><b>Anprobe:</b> ${tl.map(esc).join(', ')}<button type="button" class="mb-btn" data-tab="shop">Zum Shop</button></div>`:''}
+  <div class="mb-actions"><button type="button" class="mb-btn primary" id="saveBtn"${!dirty()||tl.length||busy?' disabled':''}>${tl.length?'Gesperrtes zuerst kaufen oder abwählen':dirty()?'Speichern':'Gespeichert'}</button>${dirty()?'<button type="button" class="mb-btn ghost" id="resetBtn">Änderungen verwerfen</button>':''}</div></div>
+ <div class="mb-panel"><div class="mb-tabs" role="tablist" aria-label="Bereiche">${tabs.map(([k,l])=>`<button type="button" role="tab" class="mb-tab" data-tab="${k}" aria-selected="${tab===k}">${l}</button>`).join('')}</div>
+  <div class="mb-tabbody">${tab==='koerper'?viewKoerper():tab==='kleidung'?viewKleidung():tab==='extras'?viewExtras():tab==='posen'?viewPosen():viewShop()}</div></div></div>`;
+}
+async function load(){
+ const [h,perf]=await Promise.all([db.rpc('get_my_holo'),db.rpc('get_my_performance')]);
+ if(h.error)throw h.error;
+ data=h.data;if(!data||!data.enabled)return;
+ data.perf=perf.error?null:perf.data;
+}
+app.addEventListener('click',async e=>{
+ const t=e.target.closest('[data-tab]');if(t){tab=t.dataset.tab;confirmBuy=null;render();if(t.closest('.mb-tryon'))app.querySelector('.mb-panel').scrollIntoView({behavior:'smooth',block:'start'});return}
+ const s=e.target.closest('[data-set]');
+ if(s){const f=s.dataset.set,v=s.dataset.val;
+  if(f==='tone')cfg.tone=Number(v);
+  else if(f==='coatPick'){coatChoice=v;cfg.coat=v}
+  else{cfg[f]=v;if(f==='pose_card')previewPose='card';if(f==='pose_profile')previewPose='profile';if(f==='top'&&v!=='hoodie')cfg.hood=false}
+  render();return}
+ const g=e.target.closest('[data-toggle]');
+ if(g){if(g.dataset.toggle==='hood')cfg.hood=!cfg.hood;else{if(cfg.coat!=='none'){coatChoice=cfg.coat;cfg.coat='none'}else cfg.coat=coatChoice}render();return}
+ const tb=e.target.closest('[data-try-bundle]');
+ if(tb){const b=data.bundles.find(x=>x.key===tb.dataset.tryBundle);if(b)b.items.forEach(k=>{const i=items().find(x=>x.key===k);if(!i)return;if(['coat','aura','eyefx','scene'].includes(i.slot))cfg[i.slot]=i.value;if(i.slot==='glove'){cfg.hands='gloves';cfg.glove=i.value}if(i.slot==='pose')cfg.pose_profile=i.value});
+  window.scrollTo({top:0,behavior:'smooth'});render();return}
+ if(e.target.closest('[data-cancel]')){confirmBuy=null;render();return}
+ const bi=e.target.closest('[data-buy-item],[data-buy-bundle]');
+ if(bi){const kind=bi.dataset.buyItem?'item':'bundle',key=bi.dataset.buyItem||bi.dataset.buyBundle;
+  if(!bi.dataset.confirm){confirmBuy=kind+':'+key;render();return}
+  if(busy)return;busy=true;say('Kauf läuft …');
+  const {data:res,error}=kind==='item'?await db.rpc('buy_holo_item',{p_key:key}):await db.rpc('buy_holo_bundle',{p_key:key});
+  busy=false;confirmBuy=null;
+  if(error){say(error.message,true);render();return}
+  const keep=cfg;await load();cfg=keep;say(`Gekauft: ${res.name}. Neuer Stand: ${fmt(res.balance)} Coins.`);render();return}
+ if(e.target.closest('#resetBtn')){cfg=JSON.parse(saved);say('Änderungen verworfen.');render();return}
+ if(e.target.closest('#saveBtn')){
+  if(busy)return;busy=true;render();
+  const {data:res,error}=await db.rpc('save_my_holo',{p_config:cfg});
+  busy=false;
+  if(error){say(error.message,true);render();return}
+  cfg=res;saved=JSON.stringify(res);say('Gespeichert. So sehen dich jetzt alle im Profil und auf deiner Karte.');render();
+ }
+});
+try{
+ db=await P.client();
+ const s=await db.auth.getSession();
+ if(!s.data||!s.data.session){say('');app.innerHTML='<div class="tlp-panel">Bitte <a href="./login.html">anmelden</a>, um deinen Boxer zu gestalten.</div>'}
+ else{
+  await load();
+  if(!data||!data.enabled){say('');app.innerHTML='<div class="tlp-panel">Der Boxer-Holo ist noch nicht freigeschaltet.</div>'}
+  else{cfg=H.normalize(data.config);saved=JSON.stringify(cfg);coatChoice=cfg.coat!=='none'?cfg.coat:'basic';
+   const want=new URLSearchParams(location.search).get('tab');if(['koerper','kleidung','extras','posen','shop'].includes(want))tab=want;
+   say(data.saved?'':'Gestalte deinen Boxer und speichere ihn. Er erscheint dann in deinem Profil und auf deiner Karte.');render()}
+ }
+}catch(e){say('Mein Boxer konnte nicht geladen werden: '+(e.message||e),true)}
+</script>
+<script src="./takeover-navigation.js" defer></script></body></html>
