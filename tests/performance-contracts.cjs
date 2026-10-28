@@ -39,12 +39,12 @@ assert.equal(P.styleType({o:90,v:20,c:60,p:10,s:40,a:20}).title,'Distanz-Boxer')
 // 5. Seiten rufen nur die vorgesehenen RPCs auf, keine privilegierten Schlüssel
 const rpcOf=t=>[...new Set([...t.matchAll(/\brpc\(\s*'([a-z_]+)'/g)].map(m=>m[1]))].sort();
 const bew=fs.readFileSync('bewertung.html','utf8'),stil=fs.readFileSync('stil-test.html','utf8');
-assert.deepEqual(rpcOf(bew),['get_my_performance','staff_get_rating','staff_list_performance','staff_rate_boxer']);
+assert.deepEqual(rpcOf(bew),['get_my_performance','get_my_self_rating','staff_decide_self_rating','staff_get_rating','staff_list_performance','staff_list_self_ratings','staff_rate_boxer','submit_self_rating']);
 assert.deepEqual(rpcOf(stil),['get_my_performance','staff_list_performance','staff_unlock_style_test','submit_style_test']);
 assert.deepEqual(rpcOf(js),['get_card_awards','get_card_looks','get_duel_kampfgeist','get_holo_looks','get_kg_look','get_my_kampfgeist','get_my_kampfpfad','get_my_performance','get_my_quests','get_my_week_plan','get_performance_card','get_podium_kampfgeist','hide_kg_emote','send_duel_emote','set_podium_emote']);
 for(const [n,t] of [['bewertung.html',bew],['stil-test.html',stil],['takeover-performance.js',js]]){
  assert.doesNotMatch(t,/service_role|sb_secret_/i,n+' must not contain privileged keys');
- assert.doesNotMatch(t,/\.from\(\s*'(boxer_ratings|style_tests|style_test_unlocks)'/,n+' must use RPCs, not tables');
+ assert.doesNotMatch(t,/\.from\(\s*'(boxer_ratings|style_tests|style_test_unlocks|rating_self_reviews)'/,n+' must use RPCs, not tables');
 }
 for(const [n,t] of [['bewertung.html',bew],['stil-test.html',stil]]){
  assert.ok(t.indexOf('takeover-performance.js')<t.indexOf('<script type="module">'),n+': library before page script');

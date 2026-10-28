@@ -15,12 +15,12 @@ for(const [path,b] of Object.entries(baseline)){
  const addedIds=gotIds.filter(id=>!b.ids.includes(id));
  const allowedAdded=path==='guest.html'
   ? ['guest-tab-overview','guest-tab-ranking','guest-tab-challenges','guest-tab-duels','guest-tab-history']
-  : path==='admin.html' ? ['showArchived'] : [];
+  : path==='admin.html' ? ['showArchived'] : path==='coach.html' ? ['selfRatingNotice'] : []; // Etappe 10: Hinweis auf offene Selbsteinschätzungen
  assert.deepEqual(addedIds,allowedAdded,`${path}: unexpected additional DOM ID`);
  const originalRpc=gotRpc.filter(rpc=>b.rpc.includes(rpc));
  assert.deepEqual(originalRpc,b.rpc,`${path}: a pre-existing RPC literal changed`);
  const addedRpc=gotRpc.filter(rpc=>!b.rpc.includes(rpc));
- const allowedRpc={'admin.html':['admin_list_profile_archive_state'],'coach.html':['coach_list_training_history','get_club_schedule','staff_list_feedback','staff_record_training','staff_send_feedback','staff_set_training_tier','staff_training_tiers','staff_update_feedback'], // Etappe 6a: Vereinsstufen, 6b: Feedback
+ const allowedRpc={'admin.html':['admin_list_profile_archive_state'],'coach.html':['coach_list_training_history','get_club_schedule','staff_list_feedback','staff_list_self_ratings','staff_record_training','staff_send_feedback','staff_set_training_tier','staff_training_tiers','staff_update_feedback'], // Etappe 6a: Vereinsstufen, 6b: Feedback
   'boxer.html':['get_my_feedback'], // Etappe 6b: Feedback aktiv/archiviert
   'league-manager.html':['league_v21_admin_delete_global_draft','league_v21_admin_publish_global_challenge','league_v21_admin_update_global_draft',
    'league_v21_archive_goal','league_v21_complete_goal','league_v21_record_goal_progress'],

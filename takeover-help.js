@@ -28,7 +28,8 @@ const REGISTERS=[
   'Automatische Ziele zählen nur bestätigte Trainings.','Freie Ziele aktualisierst du selbst.','Erreichte Ziele kannst du abschliessen oder archivieren.']},
  {key:'bewertung',page:'bewertung.html',group:'mein',icon:'🃏',title:'Bewertung & Spielerkarte',flag:'coach_ratings',summary:'Deine Spielerkarte mit den Noten deines Coaches.',points:[
   'Dein Coach bewertet 25 Punkte in 6 Bereichen von 1 bis 20.','Die Karte zeigt deine Gesamtwertung und die 6 Bereiche – mit Pfeil, was rauf- oder runterging.',
-  'Einzelnoten und Kommentar siehst nur du. Andere sehen nur die Karte, wenn dein Profil sichtbar ist.']},
+  'Einzelnoten und Kommentar siehst nur du. Andere sehen nur die Karte, wenn dein Profil sichtbar ist.',
+  'Sobald freigeschaltet, schätzt du dich alle 14 Tage selbst ein – dein Coach gibt frei oder passt an.']},
  {key:'stil',page:'stil-test.html',group:'mein',icon:'🧭',title:'Boxstil-Test',flag:'style_test',summary:'8 Fragen: Welcher Boxer-Typ bist du?',points:[
   'Beantworte 8 kurze Fragen ehrlich – es gibt keine falschen Antworten.','Du bekommst dein Stil-Netz mit 6 Achsen und einen Trainingstipp.',
   'Einmal pro Monat möglich; dein Coach kann ihn früher freigeben.']},
@@ -91,7 +92,8 @@ const REGISTERS=[
   'Unter «Karten & Auszeichnungen» → «Vergeben» stehen die Vorschläge (meiste EXP aus bestätigten Trainings).',
   'Nach Ende der Woche, des Monats oder Jahres bestätigst du den Vorschlag oder wählst jemand anderen.','Zurücknehmen geht mit kurzer Begründung; sich selbst auszeichnen geht nicht.']},
  {key:'bewerten',page:'bewertung.html',group:'staff',icon:'🃏',title:'Boxer bewerten',staff:true,summary:'Spielerkarte mit Reglern 1–20 pflegen.',points:[
-  'Boxer antippen, Regler einstellen – der Text darunter beschreibt die Stufe.','«war …» zeigt die bisherige Note. Die eigene Bewertung macht ein anderer Trainer.']},
+  'Boxer antippen, Regler einstellen – der Text darunter beschreibt die Stufe.','«war …» zeigt die bisherige Note. Die eigene Bewertung macht ein anderer Trainer.',
+  'Selbsteinschätzungen der Boxer stehen oben: so freigeben, Regler anpassen und freigeben oder ablehnen.']},
  {key:'manager',page:'league-manager.html',group:'staff',icon:'🛡️',title:'League Manager & Verwaltung',staff:true,summary:'Saisons, Ziele, Liga-Challenges, Konten.',points:[
   'Trainer verwalten hier die Boxerziele; Saisons und Liga-Challenges pflegt der Admin.','Konten, Rollen und Sichtbarkeit stehen in der Clubverwaltung (nur Admin).']}
 ];
