@@ -1,0 +1,70 @@
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kampfpfad · Takeover League</title>
+<style>:root{color-scheme:dark;font:16px system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 110px;background:var(--bg);color:var(--text)}main{max-width:900px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}</style>
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="kampfpfad">
+<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Kampfpfad"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">◆</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Kampfgeist</div><div class="tl-screen-title">Kampfpfad</div></div></div><div class="tl-screen-links"><a href="./kampfpfad.html" class="tl-screen-primary">Kampfpfad</a><a href="./shop.html">Shop</a><a href="./quests.html">Quests</a></div></div>
+<p class="tl-subnav"><a href="./boxer.html">← Mein Studio</a></p>
+<h1>Kampfpfad</h1>
+<p id="status" class="tlp-status" role="status">Wird geladen …</p>
+<div id="app"></div>
+</main>
+<script src="./takeover-performance.js" defer></script>
+<script src="./takeover-kampfgeist.js" defer></script>
+<script type="module">
+const P=window.TLPerf,K=window.TLKG,app=document.getElementById('app'),status=document.getElementById('status');
+const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
+const MONTHS=['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'];
+const monthName=d=>{const x=new Date(d+'T12:00:00Z');return MONTHS[x.getUTCMonth()]+' '+x.getUTCFullYear()};
+let db,data=null,month=null,busy=false,flash='';
+function tierCard(t){
+ const rw=t.reward||{},it=rw.item,mile=t.tier%5===0;
+ const pv=it?K.preview(it,{}):`<span class="kg-price" style="font-size:20px">${K.COIN}${K.fmt(rw.coins)}</span>`;
+ const can=data.can_claim&&t.reached&&!t.claimed;
+ return `<div class="kg-tier${t.reached?' reached':''}${t.claimed?' claimed':''}${mile?' milestone':''}"><span class="kg-tnum">${t.tier}</span><span class="kg-pv">${pv}</span>
+  <span class="tlp-note">${it?K.esc(it.name)+(rw.coins?' + '+K.fmt(rw.coins)+' Coins':''):rw.substitute?'Ersatz für '+K.esc(rw.substitute_for||'Item'):K.fmt(t.need)+' Punkte'}</span>
+  ${t.claimed?'<span class="tlp-pill ok">Abgeholt</span>':can?`<button type="button" class="tlp-btn small" data-tier="${t.tier}">Abholen</button>`:t.reached?'<span class="tlp-pill gold">Erreicht</span>':''}</div>`;
+}
+function render(){
+ if(!data.enabled){app.innerHTML='<div class="tlp-panel">Der Kampfpfad startet zusammen mit dem Kampfgeist-Shop. Noch ein bisschen Geduld!</div>';return}
+ const pt=data.points,per=pt.per_tier,tier=pt.tier,inTier=tier>=30?per:pt.total-tier*per,cur=data.month===data.current_month;
+ const open=data.tiers.filter(t=>t.reached&&!t.claimed).length;
+ app.innerHTML=`${data.preview?'<div class="tlp-panel tlp-callout">Vorschau: Für die Boxer startet der Kampfpfad, sobald der Shop freigeschaltet ist.</div>':''}${flash}
+  ${cur&&data.previous_open?`<div class="tlp-panel tlp-callout">Im letzten Monat liegen noch ${data.previous_open} Stufen zum Abholen bereit. <button type="button" class="tlp-btn small" data-month="prev">Ansehen</button></div>`:''}
+  ${!cur?'<div class="tlp-panel tlp-callout">Letzter Monat: Was du erreicht hast, kannst du bis Ende dieses Monats noch abholen. <button type="button" class="tlp-btn small ghost" data-month="cur">Zum laufenden Monat</button></div>':''}
+  <div class="tlp-panel"><div class="tlp-row spread"><div><div class="tlp-eyebrow">Kampfpfad ${K.esc(monthName(data.month))}</div><b class="kg-name">Stufe ${tier} <span class="tlp-note">von 30</span></b></div>
+   <div class="tlp-note" style="text-align:right">${K.fmt(pt.total)} Punkte${cur?'<br>noch '+data.days_left+' Tag'+(data.days_left===1?'':'e'):''}</div></div>
+   <div class="tlp-bar big"><i style="width:${Math.min(100,inTier/per*100)}%"></i></div>
+   <span class="tlp-note">${tier>=30?'Alle 30 Stufen geschafft!':'noch '+K.fmt(per-inTier)+' Punkte bis Stufe '+(tier+1)} · jede Stufe braucht ${per} Punkte</span>
+   ${open&&data.can_claim?`<button type="button" class="tlp-btn" data-all="1" style="margin-top:10px;width:100%">Alle ${open} Belohnungen abholen</button>`:''}</div>
+  <div class="tlp-kpis" style="grid-template-columns:repeat(3,minmax(0,1fr))">
+   <div class="tlp-kpi"><b>${K.fmt(pt.points_trainings)}</b><span>${pt.trainings} Trainings</span></div>
+   <div class="tlp-kpi"><b>${K.fmt(pt.points_quests)}</b><span>${pt.quests_weekly+pt.quests_daily+pt.quests_chest} Quests</span></div>
+   <div class="tlp-kpi"><b>${K.fmt(pt.points_duels)}</b><span>${pt.duels_played} Duelle, ${pt.duels_won} gewonnen</span></div></div>
+  <div class="kg-track">${data.tiers.map(tierCard).join('')}</div>
+  <div class="tlp-panel"><b>So sammelst du Punkte</b><p class="tlp-note">Bestätigte Trainings, abgeholte Wochen- und Tagesquests, die Wochentruhe, angenommene Duelle und gewonnene Duelle bringen Kampfpfad-Punkte. Jeden Monat startet ein neuer Kampfpfad bei Stufe 0. Die Items auf Stufe 10, 15, 20, 25 und 30 gibt es nur hier. Wer ein Item schon hat, bekommt dafür Coins.</p></div>`;
+}
+async function load(){const r=await db.rpc('get_my_kampfpfad',month?{p_month:month}:{});if(r.error)throw r.error;data=r.data}
+app.addEventListener('click',async ev=>{
+ const b=ev.target.closest('button');if(!b||busy)return;
+ if(b.dataset.month){const prev=new Date(data.current_month+'T12:00:00Z');prev.setUTCMonth(prev.getUTCMonth()-1);
+  month=b.dataset.month==='prev'?prev.toISOString().slice(0,10):null;flash='';try{await load();render()}catch(e){say(e.message,true)}return}
+ if(!b.dataset.tier&&!b.dataset.all)return;
+ busy=true;b.disabled=true;
+ const r=await db.rpc('claim_kampfpfad',{p_month:data.month,p_tier:b.dataset.tier?Number(b.dataset.tier):null});
+ busy=false;
+ if(r.error){say(r.error.message,true);b.disabled=false;return}
+ const items=(r.data.items||[]);
+ flash=`<div class="tlp-panel tlp-sys tlp-quest done" role="status"><span class="tlp-eyebrow gold">◆ ${r.data.claimed} Stufe${r.data.claimed>1?'n':''} abgeholt</span>
+  <div class="tlp-row spread"><span>Coins</span><b class="gold">+${K.fmt(r.data.coins)}</b></div>${items.map(i=>`<div class="tlp-row spread"><span>Neues Item</span><b class="gold">${K.esc(i.name)}</b></div>`).join('')}</div>`;
+ try{await load();say('');render();app.querySelector('[role="status"]')?.scrollIntoView({block:'nearest'})}catch(e){say(e.message,true)}
+});
+(async()=>{
+ try{
+  db=await P.client();
+  const s=await db.auth.getSession();
+  if(!s.data||!s.data.session){say('');app.innerHTML='<div class="tlp-panel">Bitte <a href="./login.html">anmelden</a>.</div>';return}
+  await load();say('');render();
+ }catch(e){say('Kampfpfad konnte nicht geladen werden: '+(e.message||e),true)}
+})();
+</script>
+<script src="./takeover-navigation.js" defer></script></body></html>

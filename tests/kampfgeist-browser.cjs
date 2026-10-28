@@ -101,7 +101,7 @@ function injected(cfg){
  assert.match(await x.p.textContent('#layer'),/Dir fehlen noch/);assert.equal(await x.p.locator('[data-buy]').count(),0);
  await x.p.keyboard.press('Escape');
  await x.p.click('[data-tab="inv"]');await x.p.waitForSelector('.kg-slot');
- assert.equal(await x.p.locator('.kg-slot').count(),6);assert.ok(await x.p.locator('.kg-item.equipped').count()>=6,'equipped marked');
+ assert.equal(await x.p.locator('.kg-slot').count(),8);assert.ok(await x.p.locator('.kg-item.equipped').count()>=6,'equipped marked');
  assert.match(await x.p.textContent('#app'),/Belohnung Rang E/);
  await shot(x.p,'kg-inventar',true);
  await x.p.click('[data-tab="coins"]');t=await x.p.textContent('#app');assert.match(t,/Startguthaben/);assert.match(t,/Gekauft: Lina/);assert.match(t,/keine Zufallsboxen/);

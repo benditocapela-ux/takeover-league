@@ -16,7 +16,7 @@ const levelOf=xp=>Math.min(MAX_LEVEL,Math.max(0,Math.floor((Math.sqrt(49+0.32*Ma
 const rankOfLevel=L=>RANKS[Math.min(6,Math.max(0,Math.floor((L-1)/10)))];
 const rankFirstLevel=i=>i*10+1, rankLastLevel=i=>i===6?MAX_LEVEL:i*10+10;
 const RAR={common:['Gewöhnlich','#a3abbd'],rare:['Selten','#4fa3ff'],epic:['Episch','#b874ff'],leg:['Legendär','#ffb020'],myth:['Mythisch','#ff3d6e']};
-const CATS=[['avatar','Avatare','Avatar'],['aura','Auren','Aura'],['banner','Banner','Banner'],['rahmen','Rahmen','Rahmen'],['titel','Titel','Titel'],['handschuhe','Handschuhe','Handschuhe']];
+const CATS=[['avatar','Avatare','Avatar'],['aura','Auren','Aura'],['banner','Banner','Banner'],['rahmen','Rahmen','Rahmen'],['titel','Titel','Titel'],['handschuhe','Handschuhe','Handschuhe'],['emote','Emotes','Sieger-Emote'],['einlauf','Einläufe','Einlauf']];
 const COIN='<svg class="kg-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#ffcc33"/><circle cx="12" cy="12" r="8.2" fill="none" stroke="#b37a00" stroke-width="1.4"/><path d="M12 5.5c1.8 2.4 3.6 4 3.6 6.8a3.6 3.6 0 01-7.2 0c0-1.4.6-2.4 1.5-3.3.1 1.2.7 2 1.4 2.3-.3-2 .1-3.9.7-5.8z" fill="#ff5a1f"/></svg>';
 const LOCK='<svg class="kg-lock" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2" fill="currentColor"/><path d="M8 11V8a4 4 0 018 0v3" stroke="currentColor" stroke-width="2.4" fill="none"/></svg>';
 const hex=c=>/^#[0-9a-fA-F]{6}$/.test(String(c||''))?c:'#888888';
@@ -80,9 +80,44 @@ function card(look,opts){
  look=look||{};opts=opts||{};const rk=RANKS.find(x=>x.r===look.rank)||RANKS[0];
  return `<div class="kg-card">${bannerHTML(look.banner&&look.banner.design)}<div class="kg-card-body">${avatarBox(look,opts.size||112)}<div class="kg-card-text">${titleTag(look.titel)}<b class="kg-name">${esc(opts.name||look.name||'')}</b><span class="kg-sub">${rankBadge(rk.r,26)} Rang ${rk.r} · ${esc(rk.n)} · Level ${Number(look.level)||1}</span></div></div></div>`;
 }
+// Emote-Sprechblase (vorgegebener Text, Form, Farbe)
+function emoteHTML(d,size){
+ d=d||{};const sz=Number(size)||90,col=hex(d.col||'#f6f0e4'),txt=String(d.txt||'');let shape;
+ if(d.shape==='burst')shape=`<polygon points="${starPts(50,50,12,46,30,true)}" fill="${col}" stroke="#0c0a13" stroke-width="3" stroke-linejoin="round"/>`;
+ else if(d.shape==='jag')shape=`<polygon points="${starPts(50,50,9,46,36,true)}" fill="${col}" stroke="#0c0a13" stroke-width="3" stroke-linejoin="round"/>`;
+ else shape=`<path d="M50 8 C76 8 94 24 94 46 C94 68 76 82 50 82 C44 82 38 81 33 79 L16 92 L22 74 C12 66 6 56 6 46 C6 24 24 8 50 8Z" fill="${col}" stroke="#0c0a13" stroke-width="3"/>`;
+ const fs=Math.max(8,Math.round(sz/(txt.length>10?8.5:6)));
+ return `<span class="kg-emote" style="--es:${fs}px;width:${sz}px;height:${sz}px"><svg viewBox="0 0 100 100" aria-hidden="true">${shape}</svg><b>${esc(txt)}</b></span>`;
+}
+// Einlauf-Vorschau (Kachel)
+function einlaufPreview(d){
+ d=d||{};const ic=hex(d.ic||'#f6f0e4'),w=String(d.word||'KAMPF!');
+ return `<span class="kg-einlauf-pv${d.dark?' dark':''}" style="--ic:${ic}"><b style="font-size:${w.length>10?12:w.length>7?15:19}px">${esc(w)}</b></span>`;
+}
+// Einlauf abspielen: Vollbild, ein oder zwei Kämpfer (je mit eigenem Einlauf). Ruft done() am Ende auf.
+function playEinlauf(fighters,done){
+ const list=(fighters||[]).filter(Boolean).slice(0,2);if(!list.length)return;
+ const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
+ const ov=document.createElement('div');ov.className='kg-intro'+(list.length===2?' vs':'')+(reduce?' still':'');ov.setAttribute('role','dialog');ov.setAttribute('aria-modal','true');
+ ov.setAttribute('aria-label','Einlauf: '+list.map(f=>f.name||'').join(' gegen '));
+ ov.innerHTML=list.map((f,i)=>{const d=(f.look&&f.look.einlauf&&f.look.einlauf.design)||{};const ic=hex(d.ic||'#f6f0e4');
+  const fx=(d.sparks?Array.from({length:10},(_,k)=>`<i class="kg-spark" style="left:${8+k*9}%;bottom:${10+(k*17)%40}%;background:${ic};box-shadow:0 0 8px ${ic};animation-delay:${(k*.13).toFixed(2)}s"></i>`).join(''):'')+
+   (d.petals?Array.from({length:10},(_,k)=>`<i class="kg-petal" style="left:${6+k*9}%;top:${(k*13)%30}%;animation-delay:${(k*.17).toFixed(2)}s"></i>`).join(''):'');
+  return `<div class="kg-intro-side s${i}${d.flash?' flash':''}${d.dark?' dark':''}" style="--ic:${ic}"><div class="kg-intro-lines"></div>${fx}
+   ${avatarBox(f.look||{},list.length===2?120:170)}<b class="kg-intro-word">${esc(d.word||'KAMPF!')}</b><span class="kg-intro-name">${titleTag(f.look&&f.look.titel)}<b>${esc(f.name||'')}</b></span></div>`;
+ }).join(list.length===2?'<b class="kg-intro-vs">VS</b>':'')+'<button type="button" class="kg-intro-close" aria-label="Einlauf schliessen">×</button>';
+ document.body.appendChild(ov);
+ const close=()=>{if(!ov.isConnected)return;ov.remove();document.removeEventListener('keydown',key);if(done)done()};
+ const key=e=>{if(e.key==='Escape')close()};
+ ov.addEventListener('click',close);document.addEventListener('keydown',key);
+ ov.querySelector('.kg-intro-close').focus();
+ setTimeout(close,reduce?2500:3400);
+}
 // Vorschau eines einzelnen Items (Shop-Kachel). base = aktuelles Aussehen für Aura/Rahmen/Handschuhe-Vorschau.
 function preview(it,base){
  base=base||{};const d=it.design||{};
+ if(it.category==='emote')return emoteHTML(d,84);
+ if(it.category==='einlauf')return einlaufPreview(d);
  if(it.category==='avatar')return avatarBox({avatar:it,handschuhe:base.handschuhe},86);
  if(it.category==='aura')return avatarBox({avatar:base.avatar,aura:it},86);
  if(it.category==='rahmen')return avatarBox({avatar:base.avatar,rahmen:it},86);
@@ -92,5 +127,5 @@ function preview(it,base){
  return '';
 }
 const fmt=n=>Number(n||0).toLocaleString('de-CH');
-window.TLKG={esc,RANKS,MAX_LEVEL,expForLevel,levelOf,rankOfLevel,rankFirstLevel,rankLastLevel,RAR,CATS,COIN,LOCK,avatarSVG,gloveSVG,auraHTML,avatarBox,bannerHTML,titleTag,rankBadge,card,preview,fmt};
+window.TLKG={esc,RANKS,MAX_LEVEL,expForLevel,levelOf,rankOfLevel,rankFirstLevel,rankLastLevel,RAR,CATS,COIN,LOCK,avatarSVG,gloveSVG,auraHTML,avatarBox,bannerHTML,titleTag,rankBadge,card,preview,emoteHTML,einlaufPreview,playEinlauf,fmt};
 })();
