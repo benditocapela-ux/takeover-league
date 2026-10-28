@@ -68,3 +68,5 @@ jobs:
         timeout-minutes: 5
       - run: node tests/kampfgeist5-browser.cjs
         timeout-minutes: 5
+      - run: node tests/club-tiers-browser.cjs
+        timeout-minutes: 5

@@ -152,6 +152,7 @@ async function renderFilteredTrainings(reset=true){
   $('allEntries').replaceChildren();
   if(!allTrainings.length){const p=document.createElement('p');p.className='muted';p.textContent='Keine passenden Trainings gefunden.';$('allEntries').append(p)}
   else allTrainings.forEach(item=>$('allEntries').append(editorRow(item,people,types)));
+  decorateTiers();
   $('resultCount').textContent=allTrainings.length+' von '+historyTotal+' Einträgen';
   button.classList.toggle('hidden',historyOffset>=historyTotal);
  }catch(err){
@@ -162,7 +163,7 @@ async function renderFilteredTrainings(reset=true){
 }
 
 function editorRow(s,people,types){
- const div=document.createElement('div');div.className='entry';
+ const div=document.createElement('div');div.className='entry';div.dataset.sid=s.id;div.dataset.status=s.status;
  const line=document.createElement('div');line.className='line';
  const name=document.createElement('strong');name.textContent=people.get(s.boxer_id)||'Unbekannt';
  const detail=document.createElement('span');detail.className='muted';detail.textContent=`${types.get(String(s.training_type_id))||'?'} · ${s.training_date} · ${s.status}`;
@@ -257,6 +258,28 @@ $('coachFeedbackForm').addEventListener('submit',async e=>{
 });
 
 const STAFF_CATEGORY_ORDER=['Wettkampf','Boxen','Athletik','Ausdauer','Erholung & Team'];
+// Etappe 6a: Vereinsstufen (Pflicht/Ergänzung) – nur sichtbar, wenn «Training im Gym» freigeschaltet ist.
+let clubSched=null,clubSchedLoaded=false;
+async function loadClubSched(){if(clubSchedLoaded)return clubSched;clubSchedLoaded=true;try{const r=await db.rpc('get_club_schedule');clubSched=r.error||!r.data||!r.data.enabled||r.data.preview?null:r.data}catch{clubSched=null}return clubSched}
+function tierOptions(select,value){select.replaceChildren(new Option('Keine Stufe (Heimtraining / Trainingsart)',''));for(const t of (clubSched?.tiers||[]))select.add(new Option(`${t.label} · ${t.exp} EXP`,t.tier));select.value=value||''}
+function defaultTier(typeId,date){if(!clubSched||!date)return '';const t=currentTypes.find(x=>String(x.id)===String(typeId));const dow=((new Date(date+'T12:00:00Z').getUTCDay()+6)%7)+1;
+ const slot=(clubSched.slots||[]).find(x=>x.is_active&&x.dow===dow&&x.tier&&(t?.club_only||String(x.training_type_id)===String(typeId)));return slot?slot.tier:''}
+async function decorateTiers(){
+ if(!(await loadClubSched()))return;
+ const rows=[...document.querySelectorAll('#allEntries .entry[data-sid]')].filter(r=>r.dataset.status==='approved'&&!r.querySelector('.tier-ctl'));
+ if(!rows.length)return;
+ const r=await db.rpc('staff_training_tiers',{p_ids:rows.map(x=>x.dataset.sid)});if(r.error)return;
+ const info=new Map((r.data||[]).map(x=>[String(x.id),x]));
+ for(const row of rows){const x=info.get(row.dataset.sid);if(!x)continue;
+  const box=document.createElement('label');box.className='tier-ctl muted small';
+  const sel=document.createElement('select');tierOptions(sel,x.club_tier);sel.disabled=!x.editable;sel.setAttribute('aria-label','Stufe');
+  const pts=document.createElement('span');pts.textContent=` · ${x.points??0} EXP${x.gym?' · Gym':''}`;
+  box.append('Stufe ',sel,pts);row.querySelector('.line').after(box);
+  sel.addEventListener('change',async()=>{sel.disabled=true;const u=await db.rpc('staff_set_training_tier',{p_submission_id:x.id,p_tier:sel.value||null});sel.disabled=false;
+   if(u.error){$('status').textContent='Stufe nicht geändert: '+u.error.message;sel.value=x.club_tier||'';return}
+   x.club_tier=u.data.club_tier;pts.textContent=` · ${u.data.points} EXP${x.gym?' · Gym':''}`;$('status').textContent='Stufe gespeichert: '+(u.data.tier_label||'keine Stufe')+' · '+u.data.points+' EXP';});
+ }
+}
 let staffRequestId=null,staffBusy=false;
 function swissToday(){const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const g=t=>parts.find(x=>x.type===t)?.value||'';return `${g('year')}-${g('month')}-${g('day')}`}
 function setupStaffEntry(){
@@ -275,10 +298,13 @@ function setupStaffEntry(){
   const km=make('input');km.type='number';km.min='0.01';km.max='1000';km.step='0.01';km.inputMode='decimal';km.placeholder='z. B. 5.5';km.name='staffKm';
   const notes=make('textarea');notes.rows=2;notes.maxLength=500;notes.minLength=3;notes.required=true;notes.placeholder='Was wurde trainiert? z. B. Pratzen, Kombinationen';notes.name='staffNotes';
   const kmField=field('Joggingdistanz (km)',km);kmField.hidden=true;
+  const tier=make('select');tier.name='staffTier';const tierField=field('Stufe',tier);tierField.hidden=true;
   const presets=make('div','staff-presets');for(const v of [30,45,60,90,120]){const b=make('button','secondary',v+' Min.');b.type='button';b.addEventListener('click',()=>{minutes.value=String(v)});presets.append(b)}
   const submit=make('button','','Eintragen und bestätigen');submit.type='submit';
   const status=make('div','status');status.setAttribute('role','status');
-  const grid=make('div','staff-grid');grid.append(field('Boxer',boxer),field('Trainingsart',type),field('Datum',date),field('Trainingsdauer (Minuten)',minutes),kmField);
+  const grid=make('div','staff-grid');grid.append(field('Boxer',boxer),field('Trainingsart',type),field('Datum',date),field('Trainingsdauer (Minuten)',minutes),kmField,tierField);
+  loadClubSched().then(cs=>{if(!cs)return;tierOptions(tier,'');tierField.hidden=false});
+  const autoTier=()=>{if(clubSched)tier.value=defaultTier(type.value,date.value)};type.addEventListener('change',autoTier);date.addEventListener('change',autoTier);
   form.append(grid,presets,field('Bemerkung',notes),submit,status);
   box.append(head,hint,form);
   const anchor=document.querySelector('#content > section.card');anchor.parentNode.insertBefore(box,anchor);
@@ -298,8 +324,11 @@ function setupStaffEntry(){
      p_duration_minutes:mins,p_notes:note,p_jogging_km:isJogging()?Number(km.value):null,p_client_request_id:staffRequestId});
     if(r.error)throw r.error;
     const d=r.data||{};
+    let tierNote='';
+    if(!d.duplicate&&clubSched&&tier.value&&d.submission_id){const u=await db.rpc('staff_set_training_tier',{p_submission_id:d.submission_id,p_tier:tier.value});
+     if(u.error)tierNote=' · Stufe nicht gesetzt: '+u.error.message;else{d.points_awarded=u.data.points;tierNote=' · '+u.data.tier_label}}
     status.className='status success';
-    status.textContent=d.duplicate?'Dieses Training war bereits eingetragen – keine doppelten Punkte.':`Eingetragen und bestätigt: ${d.training_type||'Training'} für ${d.boxer||'den Boxer'} (+${d.points_awarded??0} Punkte).`;
+    status.textContent=(d.duplicate?'Dieses Training war bereits eingetragen – keine doppelten Punkte.':`Eingetragen und bestätigt: ${d.training_type||'Training'} für ${d.boxer||'den Boxer'} (+${d.points_awarded??0} Punkte).`)+tierNote;
     staffRequestId=null;notes.value='';km.value='';
     await load(false);
    }catch(err){status.className='status error';status.textContent='Eintragen fehlgeschlagen: '+String(err.message||err)}

@@ -2,17 +2,18 @@
 // Static contracts for Etappe 2 (Gruppen, Gym-Check-in, Präsenz, Wochenplan).
 const fs=require('node:fs'),assert=require('node:assert/strict');
 const sql=fs.readFileSync('supabase/migrations/20261028190000_training_groups_gym.sql','utf8');
+const sql6a=fs.readFileSync('supabase/migrations/20261028230000_club_schedule_tiers.sql','utf8');
 const types=fs.readFileSync('supabase/migrations/20261028150000_training_types_duration_notes.sql','utf8');
 const rpcOf=t=>[...new Set([...t.matchAll(/\brpc\(\s*'([a-z_]+)'/g)].map(m=>m[1]))].sort();
 const page=n=>fs.readFileSync(n,'utf8');
 const checkin=page('checkin.html'),praesenz=page('praesenz.html'),plan=page('wochenplan.html');
-assert.deepEqual(rpcOf(checkin),['get_my_performance','get_my_presence','gym_check_in','list_training_groups','my_gym_sessions_today',
- 'staff_cancel_gym_session','staff_confirm_gym_session','staff_get_gym_session','staff_list_gym_sessions','staff_open_gym_session','staff_set_gym_attendance']);
+assert.deepEqual(rpcOf(checkin),['get_club_schedule','get_my_performance','get_my_presence','gym_check_in','list_training_groups','my_gym_sessions_today',
+ 'staff_cancel_gym_session','staff_confirm_gym_session','staff_get_gym_session','staff_list_gym_sessions','staff_open_club_session','staff_open_gym_session','staff_set_gym_attendance','staff_update_gym_session']);
 assert.deepEqual(rpcOf(praesenz),['get_my_performance','get_my_presence','gym_check_in','list_training_groups','my_gym_sessions_today','staff_presence_overview']);
-assert.deepEqual(rpcOf(plan),['admin_set_group_target','get_my_performance','get_my_week_plan','list_training_groups','staff_get_training_plan',
+assert.deepEqual(rpcOf(plan),['admin_save_club_slot','admin_set_group_target','get_club_schedule','get_my_performance','get_my_week_plan','list_training_groups','staff_get_training_plan',
  'staff_list_group_members','staff_save_training_plan','staff_set_training_group']);
 // Jede aufgerufene RPC existiert in der Migration (oder in Etappe 1)
-const defined=new Set([...sql.matchAll(/CREATE OR REPLACE FUNCTION public\.([a-z_]+)\(/g)].map(m=>m[1]).concat(['get_my_performance']));
+const defined=new Set([...(sql+sql6a).matchAll(/CREATE OR REPLACE FUNCTION public\.([a-z_]+)\(/g)].map(m=>m[1]).concat(['get_my_performance']));
 for(const r of [...rpcOf(checkin),...rpcOf(praesenz),...rpcOf(plan)])assert.ok(defined.has(r),'RPC not defined: '+r);
 for(const [n,t] of [['checkin.html',checkin],['praesenz.html',praesenz],['wochenplan.html',plan]]){
  assert.doesNotMatch(t,/service_role|sb_secret_/i,n+': privileged key');

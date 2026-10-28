@@ -38,6 +38,8 @@ on:
       - 'roadmap.html'
       - 'takeover-kampfgeist.js'
       - 'tests/kampfgeist5-*'
+      - 'tests/club-tiers-*'
+      - 'tests/club-schedule-tiers-*'
       - 'kampfpfad.html'
       - 'duels.html'
       - 'index.html'
@@ -107,6 +109,8 @@ on:
       - 'roadmap.html'
       - 'takeover-kampfgeist.js'
       - 'tests/kampfgeist5-*'
+      - 'tests/club-tiers-*'
+      - 'tests/club-schedule-tiers-*'
       - 'kampfpfad.html'
       - 'duels.html'
       - 'index.html'
@@ -162,6 +166,7 @@ jobs:
       - run: node tests/quests-contracts.cjs
       - run: node tests/kampfgeist-contracts.cjs
       - run: node tests/kampfgeist5-contracts.cjs
+      - run: node tests/club-tiers-contracts.cjs
       - run: node tests/release-static-contracts.cjs
       - run: node tests/boxer-dashboard-polish.cjs
       - run: node tests/boxer-profile-actions.cjs
@@ -997,3 +1002,37 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -X -h localhost -U postgres -d etappe5_probe -v ON_ERROR_STOP=1 -f tests/kampfgeist-etappe5-schema.sql
+
+  club-schedule-tiers-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated Etappe 6a fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres etappe6a_probe
+      - name: Verify club schedule, tiers, revaluation, edits and rollback on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d etappe6a_probe -v ON_ERROR_STOP=1 -f tests/club-schedule-tiers-schema.sql

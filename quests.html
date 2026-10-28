@@ -14,14 +14,14 @@ const P=window.TLPerf,$=id=>document.getElementById(id),app=$('app'),status=$('s
 const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
 const UNIT={technique_minutes:' Min.',home_minutes:' Min.',recovery_minutes:' Min.',plan_pct:' %',jogging_km:' km'};
 const METRIC={sessions:'Trainings',box_sessions:'Boxeinheiten',technique_minutes:'Technik-Minuten',recovery_sessions:'Mobilitätseinheiten',recovery_minutes:'Mobilitäts-Minuten',
- home_minutes:'Heimtraining-Minuten',jogging_km:'Joggen (km)',duels:'Angenommene Duelle',plan_pct:'Wochenplan (%)',weekly_all:'Alle Wochenquests'};
+ home_minutes:'Heimtraining-Minuten',jogging_km:'Joggen (km)',duels:'Angenommene Duelle',plan_pct:'Wochenplan (%)',weekly_all:'Alle Wochenquests',pflicht_days:'Pflichttrainings (Tage)'};
 const WD=['SO','MO','DI','MI','DO','FR','SA'];
 let db,role='boxer',tab='quests',mine=null,week=null,overview=[],admin=null,groups=[],flash='';
 const addDays=(d,n)=>{const x=new Date(d+'T12:00:00Z');x.setUTCDate(x.getUTCDate()+n);return x.toISOString().slice(0,10)};
 const kw=d=>{const x=new Date(d+'T12:00:00Z'),t=new Date(Date.UTC(x.getUTCFullYear(),x.getUTCMonth(),x.getUTCDate()+3-((x.getUTCDay()+6)%7)));const y=new Date(Date.UTC(t.getUTCFullYear(),0,4));return 1+Math.round(((t-y)/864e5-3+((y.getUTCDay()+6)%7))/7)};
 const num=v=>{const n=Number(v)||0;return Number.isInteger(n)?String(n):n.toFixed(1).replace('.',',')};
 const daysLeft=d=>{const n=Math.round((new Date(addDays(d.current_week,7)+'T00:00:00Z')-new Date(d.today+'T00:00:00Z'))/864e5);return n<=1?'heute um Mitternacht':'in '+n+' Tagen'};
-function reward(q){return `<span class="tlp-qreward"><b>+${q.exp} EXP</b><span>· ${q.coins} Coins</span></span>`}
+function reward(q){return Number(q.exp)>0?`<span class="tlp-qreward"><b>+${q.exp} EXP</b><span>· ${q.coins} Coins</span></span>`:`<span class="tlp-qreward"><b>+${q.coins} Coins</b></span>`}
 function questCard(q,d,label){
  const unit=UNIT[q.metric]||'',pct=q.target?Math.min(100,(Number(q.progress)||0)/q.target*100):0,canClaim=d.can_claim&&q.done&&!q.claimed&&q.period_start>=d.claim_from;
  const state=q.claimed?'<span class="tlp-pill ok">Abgeholt</span>':!q.available?'<span class="tlp-pill">nicht verfügbar</span>':q.done?'<span class="tlp-pill gold">Erfüllt</span>':'';
@@ -50,7 +50,7 @@ function boxerView(d){
   <div class="tlp-kpis"><div class="tlp-kpi"><b>${d.exp_week}</b><span>EXP aus Quests in dieser Woche</span></div><div class="tlp-kpi"><b>${d.coins_pending}</b><span>Quest-Coins, die beim nächsten <a href="./shop.html">Shop</a>-Besuch gutgeschrieben werden</span></div></div>
   ${cur?`<p class="tlp-note">Quests füllen sich automatisch, sobald dein Coach deine Trainings bestätigt. Neue Wochenquests ${daysLeft(d)}.${open?` <b class="gold">${open} Belohnung${open>1?'en':''} bereit.</b>`:''}</p>`:d.week_start>=d.claim_from?'<p class="tlp-note">Letzte Woche: Was erfüllt ist, kannst du bis Sonntag noch abholen.</p>':'<p class="tlp-note">Ältere Woche – nur zur Ansicht.</p>'}
   ${cur&&today&&today.key?questCard(today,d,'Tagesquest · heute'):''}
-  ${(d.weekly||[]).map(q=>questCard(q,d,'Wochenquest')).join('')}
+  ${(d.weekly||[]).filter(q=>q.available||q.claimed||!q.only_groups).map(q=>questCard(q,d,'Wochenquest')).join('')}
   ${chest}
   ${past.length?`<div class="tlp-panel"><b>Tagesquests dieser Woche</b>${past.map(q=>{const w=WD[new Date(q.period_start+'T12:00:00Z').getUTCDay()],can=d.can_claim&&q.done&&!q.claimed&&q.period_start>=d.claim_from;
     return `<div class="tlp-li static"><span class="tlp-grow"><b>${w} ${P.fmtDate(q.period_start)} · ${P.esc(q.title)}</b><span class="tlp-note">${num(Math.min(Number(q.progress)||0,q.target))}${UNIT[q.metric]||''} von ${num(q.target)}${UNIT[q.metric]||''} · +${q.exp} EXP · ${q.coins} Coins</span></span>${q.claimed?'<span class="tlp-pill ok">Abgeholt</span>':can?`<button type="button" class="tlp-btn small" data-claim="${P.esc(q.key)}" data-period="${q.period_start}">Abholen</button>`:q.done?'<span class="tlp-pill gold">Erfüllt</span>':'<span class="tlp-pill">offen</span>'}</div>`}).join('')}</div>`:''}`;
