@@ -143,18 +143,17 @@ BEGIN
  r := public.get_my_performance();
  IF (r->'rating'->'current'->'summary'->>'overall')::int<>61 OR (r->'rating'->'current'->>'scale')::int<>20 OR r->'rating'->'current'->>'rated_by'<>'Marco' THEN RAISE EXCEPTION 'card %', r->'rating'; END IF;
 
- -- 14 Tage: direkt danach gesperrt, am 14. Kalendertag wieder frei
+ -- 14 Tage: direkt danach gesperrt, am 14. Kalendertag wieder frei (Verschiebung in Zürcher Ortszeit, damit Sommerzeit und Mitternacht den Test nicht verfälschen)
  BEGIN PERFORM public.submit_self_rating(pg_temp.scores(13)); RAISE EXCEPTION 'cooldown'; EXCEPTION WHEN object_not_in_prerequisite_state THEN
   IF SQLERRM !~ '^Die nächste Selbsteinschätzung ist ab \d\d\.\d\d\.\d{4} möglich$' THEN RAISE EXCEPTION 'cooldown text %', SQLERRM; END IF; END;
  r := public.get_my_self_rating();
  IF (r->>'can_submit')::boolean OR r->'last'->>'status'<>'approved' OR r->'last'->>'decided_by'<>'Marco' OR (r->>'next_allowed_on')::date<>(now() AT TIME ZONE 'Europe/Zurich')::date+14 THEN RAISE EXCEPTION 'cooldown state %', r; END IF;
  PERFORM set_config('role','postgres',true);
- UPDATE public.rating_self_reviews SET created_at=created_at-interval '13 days', decided_at=decided_at-interval '13 days';
- UPDATE public.boxer_notifications SET created_at=created_at-interval '13 days', read_at=read_at-interval '13 days';
+ UPDATE public.rating_self_reviews SET created_at=((created_at AT TIME ZONE 'Europe/Zurich') - interval '13 days') AT TIME ZONE 'Europe/Zurich', decided_at=((decided_at AT TIME ZONE 'Europe/Zurich') - interval '13 days') AT TIME ZONE 'Europe/Zurich';
  PERFORM pg_temp.act(anna);
  IF (public.get_my_self_rating()->>'can_submit')::boolean THEN RAISE EXCEPTION 'free after 13 days'; END IF;
  PERFORM set_config('role','postgres',true);
- UPDATE public.rating_self_reviews SET created_at=created_at-interval '1 day', decided_at=decided_at-interval '1 day';
+ UPDATE public.rating_self_reviews SET created_at=((created_at AT TIME ZONE 'Europe/Zurich') - interval '1 day') AT TIME ZONE 'Europe/Zurich', decided_at=((decided_at AT TIME ZONE 'Europe/Zurich') - interval '1 day') AT TIME ZONE 'Europe/Zurich';
  PERFORM pg_temp.act(anna);
  IF NOT (public.get_my_self_rating()->>'can_submit')::boolean THEN RAISE EXCEPTION 'not free after 14 days'; END IF;
 
@@ -170,7 +169,7 @@ BEGIN
   THEN RAISE EXCEPTION 'adjusted rating'; END IF;
  IF NOT EXISTS (SELECT 1 FROM public.boxer_notifications WHERE recipient_id=annaP AND title='Dein Trainer hat deine Selbsteinschätzung angepasst' AND message='Neue Gesamtwertung: 71.') THEN RAISE EXCEPTION 'adjust note'; END IF;
  -- «Anpassen» mit unveränderten Noten zählt als Freigabe
- UPDATE public.rating_self_reviews SET created_at=created_at-interval '14 days', decided_at=decided_at-interval '14 days';
+ UPDATE public.rating_self_reviews SET created_at=((created_at AT TIME ZONE 'Europe/Zurich') - interval '14 days') AT TIME ZONE 'Europe/Zurich', decided_at=((decided_at AT TIME ZONE 'Europe/Zurich') - interval '14 days') AT TIME ZONE 'Europe/Zurich';
  PERFORM pg_temp.act(anna);
  id3 := (public.submit_self_rating(pg_temp.scores(15))->>'id')::bigint;
  PERFORM pg_temp.act(coach);
@@ -178,7 +177,7 @@ BEGIN
 
  -- Ablehnen: keine neue Bewertung
  PERFORM set_config('role','postgres',true);
- UPDATE public.rating_self_reviews SET created_at=created_at-interval '14 days', decided_at=decided_at-interval '14 days';
+ UPDATE public.rating_self_reviews SET created_at=((created_at AT TIME ZONE 'Europe/Zurich') - interval '14 days') AT TIME ZONE 'Europe/Zurich', decided_at=((decided_at AT TIME ZONE 'Europe/Zurich') - interval '14 days') AT TIME ZONE 'Europe/Zurich';
  n := (SELECT count(*) FROM public.boxer_ratings);
  PERFORM pg_temp.act(anna);
  id3 := (public.submit_self_rating(pg_temp.scores(20),'Ich bin Elite')->>'id')::bigint;
