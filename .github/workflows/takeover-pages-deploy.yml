@@ -56,6 +56,8 @@ jobs:
           gh api "repos/${GITHUB_REPOSITORY}/pulls?state=closed&base=main&sort=updated&direction=desc&per_page=80" > /tmp/prs.json || echo '[]' > /tmp/prs.json
           node tools/build-news.cjs /tmp/prs.json _site/news.json
           test -s _site/news.json
+          # Etappe 7b/7c: Neuigkeiten, Feedback, Hilfe und Tour werden mitgeliefert.
+          for f in news.html feedback.html hilfe.html takeover-help.js; do test -s "_site/${f}"; done
           test -s _site/takeover-navigation.js
           test -s _site/takeover-navigation.css
           test -s _site/takeover-theme.css

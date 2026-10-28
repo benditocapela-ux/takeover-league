@@ -60,6 +60,7 @@ jobs:
         timeout-minutes: 4
       - run: node tests/performance-browser.cjs
       - run: node tests/news-feedback-browser.cjs
+      - run: node tests/help-tutorial-browser.cjs
         timeout-minutes: 4
       - run: node tests/gym-browser.cjs
         timeout-minutes: 4

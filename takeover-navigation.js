@@ -54,6 +54,16 @@
      homeNav.forEach(([selector,id])=>{const link=document.querySelector(selector);if(!link)return;const label=(link.textContent||'').trim();link.innerHTML=emoji(id)+' '+label;});
    }
    addSectionWayfinders();
+   // Etappe 7c: «?» oben auf jeder Seite öffnet das passende Hilfe-Register; Tour beim nächsten Login in Mein Studio.
+   const HELP_KEY={'boxer.html':'studio','goals.html':'ziele','bewertung.html':'bewertung','stil-test.html':'stil','wochenplan.html':'wochenplan','quests.html':'quests',
+     'praesenz.html':'praesenz','checkin.html':'checkin','shop.html':'shop','kampfpfad.html':'kampfpfad','roadmap.html':'roadmap','duels.html':'duelle','arena.html':'arena',
+     'league-challenges.html':'challenges','challenges.html':'challenges','index.html':'ranking','boxer-compare.html':'vergleich','awards.html':'awards',
+     'league-history.html':'awards','boxer-profile.html':'profil','news.html':'news','feedback.html':'feedback','coach.html':'coach','league-manager.html':'manager','admin.html':'manager'};
+   const pageName=location.pathname.split('/').pop()||'index.html',helpKey=HELP_KEY[pageName];
+   const ribbon=document.querySelector('.tl-screen-ribbon');
+   if(helpKey&&ribbon&&!ribbon.querySelector('.tl-help-link'))
+     ribbon.insertAdjacentHTML('beforeend','<a class="tl-help-link" href="./hilfe.html#'+helpKey+'" aria-label="Hilfe zu dieser Seite" title="Hilfe zu dieser Seite">?</a>');
+   if(pageName==='boxer.html'&&!window.TLHelp){const sc=document.createElement('script');sc.src='./takeover-help.js';sc.defer=true;document.head.appendChild(sc)}
    // Single shared drawer. The home page supplies its existing four-item footer.
    const entries=[
      {icon:'👤',title:'Mein Bereich',summary:'Profil, Training und persönliche Ziele',items:[
@@ -90,7 +100,8 @@
        ['scale','Boxer-Vergleich','boxer-compare.html',''],
        ['trophy','Saisons & Hall of Fame','league-history.html','']
      ]},
-     {icon:'💬',title:'Hilfe & Neuigkeiten',summary:'Was ist neu, Fehler melden, Ideen teilen',items:[
+     {icon:'💬',title:'Hilfe & Neuigkeiten',summary:'Tutorial, was ist neu, Fehler melden, Ideen teilen',items:[
+       ['❓','Hilfe & Tutorial','hilfe.html',''],
        ['scroll','Neuigkeiten','news.html',''],
        ['bolt','Feedback & Fehler melden','feedback.html','',true]
      ]}
