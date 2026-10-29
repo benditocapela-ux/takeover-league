@@ -57,7 +57,13 @@ function avatarSVG(a,g){
  const hair=(HAIR[a.hair]||HAIR.buzz)(hc),marks=a.marks?hex(a.marks):'';
  return `<svg viewBox="0 0 200 200" aria-hidden="true"><path d="M12 204 C20 154 58 138 100 138 C142 138 180 154 188 204Z" fill="${sh}"/><path d="M87 116 h26 v28 h-26z" fill="${sh}"/>${a.hair==='hood'?`<path d="M48 124 C42 56 72 28 100 28 C128 28 158 56 152 124 C150 150 134 162 120 168 L80 168 C66 162 50 150 48 124Z" fill="${hc}"/>`:''}<ellipse cx="65" cy="95" rx="6" ry="10" fill="${s}"/><ellipse cx="135" cy="95" rx="6" ry="10" fill="${s}"/><ellipse cx="100" cy="90" rx="35" ry="41" fill="${s}"/><path d="M66 96 C70 122 84 131 100 131 C88 123 78 112 72 92Z" fill="${sh}" opacity=".55"/>${a.beard?`<path d="M66 100 C68 130 86 138 100 138 C114 138 132 130 134 100 C126 120 112 124 100 124 C88 124 74 120 66 100Z" fill="${hc}"/>`:''}${hair}${hb}<path d="M73 78 L97 83 L96 87.5 L74 83.5Z M127 78 L103 83 L104 87.5 L126 83.5Z" fill="${brow}"/>${eyes}<path d="M100 96 L96 108 L102 108" stroke="${sh}" stroke-width="2.2" fill="none" stroke-linejoin="round"/>${a.stache?`<path d="M82 113 C88 105 112 105 118 113 C110 111 104 114 100 114 C96 114 90 111 82 113Z" fill="${hc}"/>`:''}<path d="M90 118 Q100 121 110 117" stroke="${a.shadow?eye:'#5a2a2a'}" stroke-width="2.6" fill="none" stroke-linecap="round"/>${marks?`<path d="M70 98 L80 104 L77 114 M130 98 L120 104 L123 114 M96 62 L100 72 L104 62" stroke="${marks}" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`:''}${a.scar?'<path d="M113 99 L125 113 M116 107 L122 104" stroke="#a0524a" stroke-width="2.2" stroke-linecap="round"/>':''}${g?gloveG(g,56,176,-14,false)+gloveG(g,144,176,14,true):''}</svg>`;
 }
-const gloveSVG=g=>`<svg viewBox="-40 -44 80 84" aria-hidden="true" class="kg-glove">${gloveG(g||{},0,0,-10,false)}</svg>`;
+// Dieselben Handschuhmuster wie am Avatar, als hochwertigere Paar-Vorschau im Shop.
+const gloveSVG=g=>`<svg viewBox="0 0 180 130" aria-hidden="true" class="kg-glove">
+ <ellipse cx="90" cy="115" rx="70" ry="11" fill="#020812" opacity=".36"/>
+ <g transform="translate(48 57) scale(1.02)">${gloveG(g||{},0,0,-16,false)}</g>
+ <g transform="translate(131 57) scale(1.02)">${gloveG(g||{},0,0,18,true)}</g>
+ <path d="M29 25 L39 20 M149 25 L159 20" fill="none" stroke="#fff" opacity=".36" stroke-width="2" stroke-linecap="round"/>
+ </svg>`;
 function auraHTML(a){
  if(!a||!a.g)return '';const g=String(a.g).split(',').map(hex).join(','),p=hex(a.p||'#ffffff');
  let h=`<div class="kg-aura kg-spin kg-blur${a.pulse?' kg-pulse':''}" style="background:conic-gradient(${g})"></div><div class="kg-aura kg-spin" style="inset:4%;background:conic-gradient(${g})"></div>`;
