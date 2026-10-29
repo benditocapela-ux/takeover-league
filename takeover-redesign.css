@@ -1169,3 +1169,14 @@ body[data-tl-screen="mein-boxer"] .mb-cardprev{display:flex;justify-content:cent
 .tla-boardcell span{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tla-boardcell.a strong{color:var(--corner-a)}.tla-boardcell.b strong{color:var(--corner-b)}.tla-boardcell.x strong{color:var(--muted)}
 .tla-actions a.tlp-btn{text-decoration:none;display:inline-flex;align-items:center}
+
+/* ---- Etappe 18: Bonus-EXP (Admin, Kampfgeist-Shop → Verwaltung) ---- */
+.kg-bonus{display:grid;gap:var(--sp-3)}
+.kg-bonus .tlp-field{display:grid;gap:6px}
+.kg-check{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:600}
+.kg-check input{width:22px;height:22px;accent-color:var(--gold)}
+.kg-bonus .kg-chips{flex-wrap:wrap;overflow:visible}
+.kg-bamt{display:block;font-weight:700;color:var(--gold)}
+.kg-revoked .kg-bamt{color:var(--text-2);text-decoration:line-through}
+.kg-revoke-det{width:100%}
+.kg-revoke-det>summary{cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:14px;font-weight:700;color:var(--text-2)}

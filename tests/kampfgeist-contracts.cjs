@@ -41,11 +41,12 @@ for(const f of ['boxer-profile.js','takeover-gamification.js','boxer.html','inde
  assert.match(fs.readFileSync(f,'utf8'),/Math\.min\(98,(Math\.max\(0,)?Math\.floor\(\(Math\.sqrt\(49\+0\.32\*xp\)-7\)\/2\)/,'level cap 99 in '+f);
 // Seiten: nur vorgesehene RPCs, keine Tabellen, keine Schlüssel
 const rpcOf=t=>[...new Set([...t.matchAll(/\brpc\(\s*'([a-z_]+)'/g)].map(m=>m[1]))].sort();
-assert.deepEqual(rpcOf(shop),['admin_adjust_coins','admin_kg_overview','admin_kg_social','admin_set_emote_mute','admin_update_kg_item','admin_update_kg_pass','admin_update_kg_settings','buy_kg_item','equip_kg_item','get_my_kampfgeist','get_my_performance','hide_kg_emote']);
+assert.deepEqual(rpcOf(shop),['admin_adjust_coins','admin_give_bonus','admin_kg_overview','admin_kg_social','admin_list_bonuses','admin_revoke_bonus','admin_set_emote_mute','admin_update_kg_item','admin_update_kg_pass','admin_update_kg_settings','buy_kg_item','equip_kg_item','get_my_kampfgeist','get_my_performance','hide_kg_emote']);
 assert.deepEqual(rpcOf(road),['get_my_kampfgeist']);
 assert.ok(rpcOf(perf).includes('get_kg_look')&&rpcOf(perf).includes('get_my_kampfgeist'));
 const sql5=fs.readFileSync('supabase/migrations/20261028220000_kampfgeist_etappe5.sql','utf8');
-const defined=new Set([...(sql+sql5).matchAll(/CREATE OR REPLACE FUNCTION public\.([a-z_]+)\(/g)].map(m=>m[1]).concat(['get_my_performance']));
+const sql18=fs.readFileSync('supabase/migrations/20261029240000_admin_bonus_exp.sql','utf8'); // Etappe 18: Bonus-EXP
+const defined=new Set([...(sql+sql5+sql18).matchAll(/CREATE OR REPLACE FUNCTION public\.([a-z_]+)\(/g)].map(m=>m[1]).concat(['get_my_performance']));
 for(const r of [...rpcOf(shop),...rpcOf(road)])assert.ok(defined.has(r),'RPC not defined: '+r);
 for(const [n,t] of [['shop.html',shop],['roadmap.html',road],['takeover-kampfgeist.js',js]]){
  assert.doesNotMatch(t,/service_role|sb_secret_/i,n);assert.doesNotMatch(t,/(?<!Array)\.from\(/,n+' reads no tables');assert.doesNotMatch(t,/\.(insert|update|upsert|delete)\(/,n);
