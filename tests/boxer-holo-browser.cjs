@@ -79,8 +79,18 @@ function injected(cfg){
  await x.p.click('[data-set="hair"][data-val="locs"]');await x.p.click('[data-set="tone"][data-val="6"]');await x.p.click('[data-set="hc"][data-val="dunkelbraun"]');
  await shot(x.p,'holo-koerper');
  await x.p.click('[data-tab="kleidung"]');
+ // Die sichtbaren Itembilder stammen aus exakt demselben SVG-Renderer wie die Boxerfigur.
+ assert.equal(await x.p.locator('[data-set="head"] .mb-gear-art svg.tlh').count(),4,'Kopfbedeckungen mit echten Holo-Vorschauen');
+ assert.equal(await x.p.locator('[data-set="top"] .mb-gear-art svg.tlh').count(),5,'Oberteile als auswählbare Holo-Itembilder');
+ assert.equal(await x.p.locator('[data-set="bottom"] .mb-gear-art svg.tlh').count(),4,'Shorts und Hosen als Bilder');
+ assert.equal(await x.p.locator('[data-set="coatPick"] .mb-gear-art svg.tlh').count()>0,true,'Mantel als echtes Itembild');
+ const stageBefore=await x.p.locator('.mb-preview svg.tlh').first().evaluate(el=>el.outerHTML);
+
  assert.equal(await x.p.locator('[data-toggle="hood"]').count(),0,'no hood toggle without hoodie');
  await x.p.click('[data-set="top"][data-val="hoodie"]');
+ assert.notEqual(await x.p.locator('.mb-preview svg.tlh').first().evaluate(el=>el.outerHTML),stageBefore,'Gear selection updates the full boxer');
+ assert.equal(await x.p.locator('[data-set="top"][data-val="hoodie"]').getAttribute('aria-pressed'),'true');
+
  await x.p.click('[data-toggle="hood"]');assert.equal(await x.p.getAttribute('[data-toggle="hood"]','aria-pressed'),'true');
  await x.p.click('[data-set="bottom"][data-val="jogger"]');await x.p.click('[data-set="feet"][data-val="sneaker"]');
  await x.p.click('[data-set="hands"][data-val="gloves"]');
@@ -103,6 +113,7 @@ function injected(cfg){
  assert.ok(await x.p.isDisabled('#saveBtn'),'locked item blocks saving');
  await shot(x.p,'holo-anprobe',false);
  await x.p.click('.mb-tryon [data-tab="shop"]');
+ assert.ok(await x.p.locator('.mb-shop-item-art svg.tlh').count()>0,'Holo-Shop items have real gear thumbnails');
  await x.p.click('[data-buy-item="aura_flamme"]');
  await x.p.waitForSelector('[data-buy-item="aura_flamme"][data-confirm]');
  assert.ok(!(await calls(x.p)).some(c=>c[0]==='buy_holo_item'),'no purchase before confirm');
