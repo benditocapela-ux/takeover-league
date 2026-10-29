@@ -11,7 +11,7 @@ for(const k of ['head','top','bottom','hands','feet','coat','glove','aura','eyef
 assert.match(html,/function gearChip\(field,v,label,on,extra\)/);
 assert.match(html,/H\.svg\(look,\{pose:'guard',scene,holo:false\}\)/);
 assert.match(html,/class="mb-chip mb-gear-chip" data-set="\$\{field\}" data-val="\$\{esc\(v\)\}"/);
-assert.match(html,/class="mb-shop-item-art" aria-hidden="true"/);
+assert.match(html,/class="mb-shop-item-art mb-art-\$\{esc\(i\.slot\)\}" aria-hidden="true"/);
 assert.match(css,/\.mb-gear-chip\{/);
 assert.match(css,/\.mb-gear-head svg\.tlh/);
 assert.match(css,/\.mb-gear-bottom svg\.tlh/);

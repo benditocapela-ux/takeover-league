@@ -114,6 +114,11 @@ function injected(cfg){
  await shot(x.p,'holo-anprobe',false);
  await x.p.click('.mb-tryon [data-tab="shop"]');
  assert.ok(await x.p.locator('.mb-shop-item-art svg.tlh').count()>0,'Holo-Shop items have real gear thumbnails');
+ // Etappe 20b: auch Belohnungen mit Bild; Name/Seltenheit untereinander, Preis in einer Zeile; Details am echten Holo
+ assert.ok(await x.p.evaluate(()=>[...document.querySelectorAll('.mb-li')].filter(li=>/gesperrt|Freigeschaltet/.test(li.textContent)).every(li=>li.querySelector('.mb-shop-item-art svg.tlh'))),'reward rows show the item');
+ assert.ok(await x.p.evaluate(()=>[...document.querySelectorAll('.mb-li .mb-btn')].every(b=>b.getBoundingClientRect().height<60)),'price buttons stay on one line');
+ assert.ok(await x.p.evaluate(()=>[...document.querySelectorAll('.mb-li-txt')].every(t=>{const b=t.querySelector('b'),r=t.querySelector('.mb-rar');return !r||r.getBoundingClientRect().top>=b.getBoundingClientRect().bottom-1})),'rarity below the name');
+ assert.match(await x.p.locator('.mb-preview svg.tlh').first().evaluate(el=>el.innerHTML),/radialGradient id="tlh\d+gv"/,'stage shows the glossy glove drawing');
  await x.p.click('[data-buy-item="aura_flamme"]');
  await x.p.waitForSelector('[data-buy-item="aura_flamme"][data-confirm]');
  assert.ok(!(await calls(x.p)).some(c=>c[0]==='buy_holo_item'),'no purchase before confirm');
