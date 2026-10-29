@@ -38,15 +38,24 @@ const HAIR={
  undercut:c=>`<path d="M66 84 C64 70 66 64 70 60" stroke="${c}" stroke-width="6" opacity=".35" fill="none"/><path d="M134 84 C136 70 134 64 130 60" stroke="${c}" stroke-width="6" opacity=".35" fill="none"/><path d="M68 70 C66 46 90 34 112 38 C132 42 144 56 136 74 C124 62 106 58 88 64 C80 66 72 68 68 70Z" fill="${c}"/>`,
  curly:c=>`<g fill="${c}"><circle cx="72" cy="64" r="11"/><circle cx="88" cy="50" r="12"/><circle cx="106" cy="46" r="12"/><circle cx="124" cy="54" r="11"/><circle cx="134" cy="70" r="9"/><circle cx="66" cy="80" r="8"/></g><path d="M66 82 C70 66 84 58 100 58 C116 58 130 66 134 82 C124 70 76 70 66 82Z" fill="${c}"/>`
 };
+let gSeq=0;
+// Etappe 20b: Handschuh mit Volumen (Verlauf), Naht, Knöchelpolster, Schnürung an der Manschette und Glanzlichtern.
 function gloveG(g,x,y,rot,mirror){
- const base=hex(g.base),acc=hex(g.acc),cuff=hex(g.cuff),dk=shade(base,-45);let pat='';
+ const base=hex(g.base),acc=hex(g.acc),cuff=hex(g.cuff),dk=shade(base,-45),id='kgg'+(++gSeq);let pat='';
  if(g.pat==='flame')pat=`<path d="M-16 6 C-14 -6 -6 -8 -4 -20 C0 -12 6 -12 4 -24 C14 -14 18 -2 14 6Z" fill="${acc}" opacity=".95"/>`;
  if(g.pat==='bolt')pat=`<path d="M4 -26 L-8 -4 L1 -4 L-6 12 L12 -10 L3 -10 L10 -26Z" fill="${acc}"/>`;
  if(g.pat==='star')pat=`<polygon points="${starPts(0,-8,5,11,4.5)}" fill="${acc}"/>`;
  if(g.pat==='crack')pat=`<path d="M-14 -24 L-6 -12 L-12 -4 L-2 4 L-6 14 M6 -28 L2 -16 L10 -8 L4 2 M14 -14 L8 -10" stroke="${acc}" stroke-width="2.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/>`;
  if(g.pat==='petal')pat=`<g fill="${acc}"><circle cx="0" cy="-14" r="4"/><circle cx="-7" cy="-8" r="4"/><circle cx="7" cy="-8" r="4"/><circle cx="-4" cy="0" r="4"/><circle cx="4" cy="0" r="4"/></g><circle cx="0" cy="-7" r="2.6" fill="#fff"/>`;
  if(g.pat==='tiger')pat=`<path d="M-20 -18 L-6 -14 L-18 -10Z M-22 -2 L-4 0 L-20 4Z M18 -22 L6 -16 L16 -12Z M20 -4 L6 0 L18 4Z" fill="${acc}"/>`;
- return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${mirror?-1:1} 1)"><path d="M-24 -6 C-26 -30 -6 -38 10 -34 C28 -30 28 -6 24 10 C20 22 -18 24 -22 10Z" fill="${base}" stroke="${dk}" stroke-width="2"/><path d="M-24 -2 C-34 0 -32 14 -20 12" fill="${base}" stroke="${dk}" stroke-width="2"/>${pat}<path d="M-14 -26 C-6 -32 6 -32 12 -28" stroke="#fff" stroke-width="3" opacity=".3" fill="none" stroke-linecap="round"/><path d="M-21 10 C-14 22 16 22 23 10 L22 26 C12 36 -12 36 -20 26Z" fill="${cuff}" stroke="${dk}" stroke-width="2"/></g>`;
+ return `<g transform="translate(${x} ${y}) rotate(${rot}) scale(${mirror?-1:1} 1)"><defs><radialGradient id="${id}" cx=".36" cy=".3" r=".85"><stop offset="0" stop-color="${shade(base,70)}"/><stop offset=".5" stop-color="${base}"/><stop offset="1" stop-color="${shade(base,-55)}"/></radialGradient><linearGradient id="${id}c" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="${shade(cuff,40)}"/><stop offset=".5" stop-color="${cuff}"/><stop offset="1" stop-color="${shade(cuff,-40)}"/></linearGradient></defs>`
+  +`<path d="M-24 -6 C-26 -30 -6 -38 10 -34 C28 -30 28 -6 24 10 C20 22 -18 24 -22 10Z" fill="url(#${id})" stroke="${dk}" stroke-width="2"/>`
+  +`<path d="M-21 -4 C-22 -24 -6 -31 9 -28 C23 -25 23 -6 20 7" fill="none" stroke="${shade(base,-30)}" stroke-width="1.2" stroke-dasharray="2.4 2" opacity=".75"/>`
+  +`<path d="M-20 -12 C-8 -6 10 -7 22 -14" fill="none" stroke="${shade(base,-40)}" stroke-width="1.6" opacity=".6"/>`
+  +`<path d="M-24 -2 C-34 0 -32 14 -20 12" fill="url(#${id})" stroke="${dk}" stroke-width="2"/>${pat}`
+  +`<path d="M-14 -26 C-6 -32 6 -32 12 -28" stroke="#fff" stroke-width="3.4" opacity=".45" fill="none" stroke-linecap="round"/><ellipse cx="17" cy="-16" rx="2.6" ry="4.2" transform="rotate(25 17 -16)" fill="#fff" opacity=".4"/>`
+  +`<path d="M-21 10 C-14 22 16 22 23 10 L22 26 C12 36 -12 36 -20 26Z" fill="url(#${id}c)" stroke="${dk}" stroke-width="2"/>`
+  +`<path d="M-12 20 L-4 30 M-4 20 L-12 30 M4 20 L12 30 M12 20 L4 30" stroke="${shade(cuff,-60)}" stroke-width="1.4" stroke-linecap="round" opacity=".7"/><path d="M-20 25 C-10 33 12 33 22 25" fill="none" stroke="${acc}" stroke-width="2.2" opacity=".85"/></g>`;
 }
 function avatarSVG(a,g){
  a=a||{};const s=hex(a.skin||'#e8b48a'),sh=shade(s,-28),eye=hex(a.eye||'#ff5a1f'),hc=hex(a.hc||'#2a1616'),brow=a.brow?hex(a.brow):(a.shadow?eye:'#1a1420');
@@ -100,10 +109,13 @@ function emoteHTML(d,size){
   ?`<polygon points="${starPts(50,50,12,45,32,true)}"/>`
   :kind==='jag'?`<polygon points="${starPts(50,50,9,45,34,true)}"/>`
   :'<path d="M50 9 C76 9 92 24 92 45 C92 67 74 81 50 81 C42 81 37 80 32 78 L15 92 L20 72 C11 64 8 55 8 45 C8 24 25 9 50 9Z"/>';
- const fs=Math.max(7,Math.min(19,Math.round(sz/(txt.length>13?9.1:txt.length>8?7.4:5.9))));
+ // Etappe 20b: Schriftgrösse nach dem längsten Wort – Wörter werden nie mitten im Wort getrennt.
+ const longest=Math.max(1,...txt.split(/\s+|(?<=-)/).map(w=>w.length));
+ const fs=Math.max(7,Math.min(19,Math.round(Math.min(sz/(txt.length>13?9.1:txt.length>8?7.4:5.9),sz*.66/(longest*.66)))));
  return `<span class="kg-emote kg-emote-${kind}" style="--es:${fs}px;--kg-ec:${col};width:${sz}px;height:${sz}px" role="img" aria-label="${esc(txt)}">
   <svg viewBox="0 0 100 100" aria-hidden="true">
    <defs><linearGradient id="${id}" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#26364e"/><stop offset=".46" stop-color="#0d192d"/><stop offset="1" stop-color="#080e1d"/></linearGradient></defs>
+   <g transform="translate(2.4 3.6)" fill="#02060f" opacity=".55">${bubble}</g>
    <g fill="url(#${id})" stroke="${col}" stroke-width="3.7" stroke-linejoin="round">${bubble}</g>
    <g transform="translate(50 50) scale(.9) translate(-50 -50)" fill="none" stroke="${col}" stroke-width="1.1" opacity=".6" stroke-linejoin="round">${bubble}</g>
    <path d="M24 30 Q45 15 72 24" fill="none" stroke="#fff" stroke-width="3" opacity=".27" stroke-linecap="round"/>

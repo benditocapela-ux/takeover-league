@@ -1253,7 +1253,8 @@ body[data-tl-screen="index"] .tl-podium-holo-on .tl-podium-emote .kg-emote{filte
 .kg-emote b{
  z-index:1;color:#fff;font-weight:900;letter-spacing:-.015em;
  text-shadow:0 1px 3px #030914,0 0 7px rgba(0,0,0,.6);
- transform:rotate(-3deg);max-width:75%;pointer-events:none
+ transform:rotate(-3deg);max-width:75%;pointer-events:none;
+ overflow-wrap:normal;word-break:keep-all;hyphens:manual
 }
 .kg-emote-jag b,.kg-emote-burst b{transform:rotate(-5deg)}
 /* Auch im normalen Shop und Kampfpfad wird die vorhandene Item-Vorschau hochwertiger gezeigt. */
@@ -1335,3 +1336,12 @@ body[data-tl-screen="mein-boxer"] .mb-shop-item-art svg.tlh .tlh-aura{
 @media(max-width:390px){
  body[data-tl-screen="mein-boxer"] .mb-gear-chip{flex-basis:95px;width:95px}
 }
+
+/* ---- Etappe 20b: Holo-Shop-Zeilen – Name und Seltenheit untereinander, Preis nie umbrechen, Belohnungen mit Bild ---- */
+body[data-tl-screen="mein-boxer"] .mb-li .mb-li-txt{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1}
+body[data-tl-screen="mein-boxer"] .mb-li .mb-li-txt>b{overflow-wrap:anywhere}
+body[data-tl-screen="mein-boxer"] .mb-li>.mb-btn,body[data-tl-screen="mein-boxer"] .mb-li>.mb-owned,body[data-tl-screen="mein-boxer"] .mb-li>.mb-lockedtxt{white-space:nowrap;flex:none}
+/* Nahaufnahme je Item-Art: Handschuhe und Augen gross, Mantel/Aura/Hintergrund/Pose als ganze Figur */
+body[data-tl-screen="mein-boxer"] .mb-art-glove svg.tlh{width:128px;top:-30px}
+body[data-tl-screen="mein-boxer"] .mb-art-eyefx svg.tlh{width:210px;top:-14px}
+

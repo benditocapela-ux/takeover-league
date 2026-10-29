@@ -20,6 +20,7 @@ jobs:
       - run: node tests/release-static-contracts.cjs
       - run: node tests/holo-emote-podium-contracts.cjs
       - run: node tests/holo-gear-previews-contracts.cjs
+      - run: node tests/item-graphics-contracts.cjs
       - run: node tests/design-foundation-check.cjs
       - run: node tests/redesign-all-pages.cjs
       - run: node tests/redesign-accessibility.cjs
