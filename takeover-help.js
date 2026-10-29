@@ -56,7 +56,8 @@ const REGISTERS=[
  {key:'shop',page:'shop.html',group:'mein',icon:'🛍️',title:'Kampfgeist-Shop',flag:'kampfgeist_shop',summary:'Coins sammeln und deinen Look gestalten.',points:[
   'Für bestätigte Trainings und abgeholte Quests bekommst du Kampfgeist-Coins.','Damit kaufst du Avatare, Auren, Banner, Rahmen, Titel und Handschuhe.',
   'Manche Items gibt es erst ab einem bestimmten Rang.',
-  'Dein Rahmen und dein Titel erscheinen überall bei deinem Profilbild. Ohne Auswahl trägst du das Emblem deines Rangs.']},
+  'Dein Rahmen und dein Titel erscheinen überall bei deinem Profilbild. Ohne Auswahl trägst du das Emblem deines Rangs.',
+  'Für besondere Sachen (z. B. ein Feedbackvideo) kann dir der Admin Bonus-EXP geben – du bekommst eine Mitteilung.']},
  {key:'kampfpfad',page:'kampfpfad.html',group:'mein',icon:'🛤️',title:'Kampfpfad',flag:'kampfgeist_shop',summary:'Jeden Monat neue Stufen und Belohnungen.',points:[
   'Trainings, Quests und Duelle bringen Kampfpfad-Punkte.','Erreichte Stufen holst du ab. Jeden Monat startet der Pfad wieder bei 0.']},
  {key:'roadmap',page:'roadmap.html',group:'mein',icon:'📈',title:'Level-Roadmap',flag:'kampfgeist_shop',summary:'Was dich bei welchem Level erwartet.',points:[
@@ -102,7 +103,8 @@ const REGISTERS=[
   'Boxer antippen, Regler einstellen – der Text darunter beschreibt die Stufe.','«war …» zeigt die bisherige Note. Die eigene Bewertung macht ein anderer Trainer.',
   'Selbsteinschätzungen der Boxer stehen oben: so freigeben, Regler anpassen und freigeben oder ablehnen.']},
  {key:'manager',page:'league-manager.html',group:'staff',icon:'🛡️',title:'League Manager & Verwaltung',staff:true,summary:'Saisons, Ziele, Liga-Challenges, Konten.',points:[
-  'Trainer verwalten hier die Boxerziele; Saisons und Liga-Challenges pflegt der Admin.','Konten, Rollen und Sichtbarkeit stehen in der Clubverwaltung (nur Admin).']}
+  'Trainer verwalten hier die Boxerziele; Saisons und Liga-Challenges pflegt der Admin.','Konten, Rollen und Sichtbarkeit stehen in der Clubverwaltung (nur Admin).',
+  'Coins und Bonus-EXP vergibst du als Admin im Kampfgeist-Shop unter «Verwaltung» (Konten bzw. Bonus-EXP).']}
 ];
 // Seite → Register für den «?»-Knopf
 const PAGE_KEY={'boxer.html':'studio','goals.html':'ziele','bewertung.html':'bewertung','stil-test.html':'stil','wochenplan.html':'wochenplan','quests.html':'quests',
