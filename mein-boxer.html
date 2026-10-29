@@ -37,12 +37,38 @@ const tryOn=()=>{const l=[];const chk=(slot,v,lab)=>{const it=item(slot,v);if(it
  return [...new Set(l)]};
 const dirty=()=>JSON.stringify(cfg)!==saved;
 const chip=(field,v,label,on,extra)=>`<button type="button" class="mb-chip" data-set="${field}" data-val="${esc(v)}" aria-pressed="${on}">${label}${extra||''}</button>`;
+// Die Item-Vorschau ist dieselbe SVG-Zeichnung wie der echte Boxer, keine separate Attrappe.
+// Alle Auswahl-IDs und data-set/data-val Events bleiben unverändert.
+function itemLook(slot,value){
+ const look=Object.assign({},cfg,{scene:'holo',aura:'none'});
+ if(['head','top','bottom','hands','feet'].includes(slot))look.coat='none';
+ if(slot==='head'){look.head=value;look.hood=false;look.top='none'}
+ else if(slot==='top'){look.top=value;look.hood=value==='hoodie'&&cfg.hood}
+ else if(slot==='bottom'){look.bottom=value;look.top='none'}
+ else if(slot==='hands'){look.hands=value}
+ else if(slot==='feet'){look.feet=value}
+ else if(slot==='glove'){look.hands='gloves';look.glove=value;look.coat='none'}
+ else if(slot==='coatPick'||slot==='coat')look.coat=value;
+ else if(slot==='aura')look.aura=value;
+ else if(slot==='eyefx')look.eyefx=value;
+ else if(slot==='scene')look.scene=value;
+ else if(slot==='pose')look.pose_profile=value;
+ return look;
+}
+function gearChip(field,v,label,on,extra){
+ const slot=field==='coatPick'?'coat':field;
+ const look=itemLook(field,v);
+ const klass=slot==='glove'||slot==='hands'?'hands':slot;
+ const scene=slot==='scene'?v:'none';
+ const content=H.svg(look,{pose:'guard',scene,holo:false});
+ return `<button type="button" class="mb-chip mb-gear-chip" data-set="${field}" data-val="${esc(v)}" aria-label="${esc(label)}" aria-pressed="${on}"><span class="mb-gear-art mb-gear-${klass}" aria-hidden="true">${content}</span><span class="mb-gear-name">${esc(label)}</span>${extra||''}</button>`;
+}
 const sw=(field,v,color,label,on)=>`<button type="button" class="mb-sw" data-set="${field}" data-val="${esc(v)}" aria-pressed="${on}" aria-label="${esc(label)}" style="--c:${color}"></button>`;
 const toggle=(id,label,on)=>`<div class="mb-toggle"><span>${label}</span><button type="button" class="mb-switch" data-toggle="${id}" aria-pressed="${on}" aria-label="${label}"><i></i></button></div>`;
 const sec=(title,body)=>`<section class="mb-sec"><h2 class="mb-h">${title}</h2>${body}</section>`;
 function itemChips(slot,field,withNone){
  const list=items().filter(i=>i.slot===slot);
- return (withNone?chip(field,'none','Keine',cfg[field]==='none'):'')+list.map(i=>chip(field,i.value,esc(i.name),cfg[field]===i.value,lockTag(i))).join('');
+ return (withNone?gearChip(field,'none','Keine',cfg[field]==='none'):'')+list.map(i=>gearChip(field,i.value,i.name,cfg[field]===i.value,lockTag(i))).join('');
 }
 function colorRow(field,map,labels){return `<div class="mb-row">${Object.keys(map).map(k=>sw(field,k,map[k][0],labels[k]||k,cfg[field]===k)).join('')}</div>`}
 function viewKoerper(){
@@ -52,12 +78,12 @@ function viewKoerper(){
 }
 function viewKleidung(){
  const gl=cfg.hands==='gloves';
- return sec('Kopf',`<div class="mb-row">${OPT.head.map(([v,l])=>chip('head',v,l,cfg.head===v)).join('')}</div>${cfg.head!=='none'?colorRow('headc',H.CL,H.LABEL.col):''}`)
-  +sec('Oberteil',`<div class="mb-row">${OPT.top.map(([v,l])=>chip('top',v,l,cfg.top===v)).join('')}</div>${cfg.top!=='none'?colorRow('topc',H.CL,H.LABEL.col):''}${cfg.top==='hoodie'?toggle('hood','Kapuze auf',cfg.hood):''}`)
-  +sec('Hose',`<div class="mb-row">${OPT.bottom.map(([v,l])=>chip('bottom',v,l,cfg.bottom===v)).join('')}</div>${colorRow('bottomc',H.CL,H.LABEL.col)}<p class="mb-note">Hose und Schuhe trägt dein Holo immer.</p>`)
-  +sec('Hände',`<div class="mb-row">${OPT.hands.map(([v,l])=>chip('hands',v,l,cfg.hands===v)).join('')}</div>${gl?`<div class="mb-row">${itemChips('glove','glove',false)}</div>`:''}`)
-  +sec('Schuhe',`<div class="mb-row">${OPT.feet.map(([v,l])=>chip('feet',v,l,cfg.feet===v)).join('')}</div>${colorRow('feetc',H.CL,H.LABEL.col)}`)
-  +sec('Mantel',`${toggle('coat','Mantel tragen',cfg.coat!=='none')}<div class="mb-row">${items().filter(i=>i.slot==='coat').map(i=>chip('coatPick',i.value,esc(i.name),(cfg.coat!=='none'?cfg.coat:coatChoice)===i.value,lockTag(i))).join('')}</div>`);
+ return sec('Kopf',`<div class="mb-row">${OPT.head.map(([v,l])=>gearChip('head',v,l,cfg.head===v)).join('')}</div>${cfg.head!=='none'?colorRow('headc',H.CL,H.LABEL.col):''}`)
+  +sec('Oberteil',`<div class="mb-row">${OPT.top.map(([v,l])=>gearChip('top',v,l,cfg.top===v)).join('')}</div>${cfg.top!=='none'?colorRow('topc',H.CL,H.LABEL.col):''}${cfg.top==='hoodie'?toggle('hood','Kapuze auf',cfg.hood):''}`)
+  +sec('Hose',`<div class="mb-row">${OPT.bottom.map(([v,l])=>gearChip('bottom',v,l,cfg.bottom===v)).join('')}</div>${colorRow('bottomc',H.CL,H.LABEL.col)}<p class="mb-note">Hose und Schuhe trägt dein Holo immer.</p>`)
+  +sec('Hände',`<div class="mb-row">${OPT.hands.map(([v,l])=>gearChip('hands',v,l,cfg.hands===v)).join('')}</div>${gl?`<div class="mb-row">${itemChips('glove','glove',false)}</div>`:''}`)
+  +sec('Schuhe',`<div class="mb-row">${OPT.feet.map(([v,l])=>gearChip('feet',v,l,cfg.feet===v)).join('')}</div>${colorRow('feetc',H.CL,H.LABEL.col)}`)
+  +sec('Mantel',`${toggle('coat','Mantel tragen',cfg.coat!=='none')}<div class="mb-row">${items().filter(i=>i.slot==='coat').map(i=>gearChip('coatPick',i.value,i.name,(cfg.coat!=='none'?cfg.coat:coatChoice)===i.value,lockTag(i))).join('')}</div>`);
 }
 function viewExtras(){
  return `<p class="mb-note">Gesperrtes kannst du anprobieren. Freischalten über den Shop oder Belohnungen.</p>`
@@ -86,7 +112,7 @@ function viewShop(){
    <div class="mb-price">${COIN}${fmt(b.price)} <s>${fmt(b.value)}</s></div>${buyBtn('bundle',b.key,b.price,b.owned_all)}
    <button type="button" class="mb-btn ghost" data-try-bundle="${esc(b.key)}">Anprobieren</button></div></article>`}).join('');
  const shopItems=items().filter(i=>i.unlock==='shop');
- const groups=['coat','glove','aura','eyefx','scene','pose'].map(s=>{const l=shopItems.filter(i=>i.slot===s);return l.length?sec(SLOT_TITLE[s],`<div class="mb-list">${l.map(i=>`<div class="mb-li"><span><b>${esc(i.name)}</b><span class="mb-rar r-${esc(i.rarity)}">${esc(({common:'Gewöhnlich',rare:'Selten',epic:'Episch',leg:'Legendär',myth:'Mythisch'})[i.rarity]||'')}</span></span>${buyBtn('item',i.key,i.price,i.owned)}</div>`).join('')}</div>`):''}).join('');
+ const groups=['coat','glove','aura','eyefx','scene','pose'].map(s=>{const l=shopItems.filter(i=>i.slot===s);return l.length?sec(SLOT_TITLE[s],`<div class="mb-list">${l.map(i=>`<div class="mb-li"><span class="mb-shop-item-art" aria-hidden="true">${H.svg(itemLook(i.slot,i.value),{pose:'guard',scene:i.slot==='scene'?i.value:'none',holo:false})}</span><span><b>${esc(i.name)}</b><span class="mb-rar r-${esc(i.rarity)}">${esc(({common:'Gewöhnlich',rare:'Selten',epic:'Episch',leg:'Legendär',myth:'Mythisch'})[i.rarity]||'')}</span></span>${buyBtn('item',i.key,i.price,i.owned)}</div>`).join('')}</div>`):''}).join('');
  const rewards=items().filter(i=>i.unlock==='reward');
  return `<div class="mb-wallet">${COIN}<b>${fmt(data.coins)}</b> Coins</div>${bundles?sec('Bundles',`<div class="mb-bundles">${bundles}</div>`):''}${groups}`
   +sec('Belohnungen',`<div class="mb-list">${rewards.map(i=>`<div class="mb-li"><span><b>${esc(i.name)}</b><span class="mb-note">${esc(SLOT_TITLE[i.slot]||'')} · ${esc(i.reward||'')}</span></span>${i.owned?'<span class="mb-owned">Freigeschaltet</span>':'<span class="mb-lockedtxt">Noch gesperrt</span>'}</div>`).join('')}</div>`);
