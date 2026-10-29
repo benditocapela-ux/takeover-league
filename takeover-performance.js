@@ -651,6 +651,62 @@ async function mountKgCards(){
  new MutationObserver(()=>{if(pending())run()}).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-tl-boxer']});
  await run();
 }
+/* Boxer-Holo auf dem bestehenden Podium: nur authentifizierte, vom Server freigegebene Looks; keine neuen Rechte. */
+async function mountPodiumHolos(){
+ const anchor=document.getElementById('podium-content');if(!anchor)return;
+ const db=await client();
+ const session=await db.auth.getSession();
+ if(!session.data||!session.data.session)return;
+ let cacheKey='',looksByName=new Map(),H=null,busy=false,again=false;
+ const namesIn=pod=>[...pod.querySelectorAll('.tl-podium-step .tl-podium-name')]
+  .map(n=>n.textContent.trim()).filter(n=>n&&n!=='–').slice(0,3);
+ const addFigure=(host,name,cfg,large)=>{
+  if(!host||host.dataset.tlHoloChecked)return;
+  host.dataset.tlHoloChecked='1';
+  if(!cfg||typeof cfg!=='object'||Array.isArray(cfg)||!H)return;
+  const fig=document.createElement('span');
+  fig.className=large?'tl-champion-holo':'tl-podium-holo';
+  fig.setAttribute('role','img');
+  fig.setAttribute('aria-label','Boxer-Holo von '+name+' in seiner gewählten Profil-Pose');
+  fig.innerHTML=H.svg(cfg,{pose:cfg.pose_profile,scene:'none',holo:false});
+  const before=host.querySelector(large?'.champion':'.tl-podium-name');
+  if(before)before.before(fig);else host.prepend(fig);
+  host.classList.add(large?'tl-champion-holo-on':'tl-podium-holo-on');
+ };
+ const apply=async()=>{
+  const pod=anchor.querySelector('.tl-podium');
+  if(!pod||!pod.querySelector('.tl-podium-step:not([data-tl-holo-checked])'))return;
+  if(busy){again=true;return}
+  busy=true;
+  try{
+   const names=namesIn(pod),key=names.map(lowerName).join('\u0001');
+   if(key!==cacheKey){
+    cacheKey=key;looksByName=new Map();
+    if(names.length){
+     const r=await db.rpc('get_holo_looks',{p_display_names:names});
+     if(!r.error&&r.data&&typeof r.data==='object'&&!Array.isArray(r.data)){
+      for(const [name,cfg] of Object.entries(r.data))looksByName.set(lowerName(name),cfg);
+     }
+    }
+   }
+   if(looksByName.size&&!H)H=await holoLib();
+   if(!anchor.contains(pod))return;
+   for(const step of pod.querySelectorAll('.tl-podium-step')){
+    const el=step.querySelector('.tl-podium-name'),name=el&&el.textContent.trim();
+    addFigure(step,name||'',looksByName.get(lowerName(name)),false);
+   }
+   const champ=anchor.querySelector('.tl-champion'),champBox=champ&&champ.querySelector('.league-champion');
+   const name=champBox&&champBox.querySelector('.champion')?.textContent.trim();
+   if(champBox)addFigure(champBox,name||'',looksByName.get(lowerName(name)),true);
+  }catch(e){console.warn('Podium-Holo nicht verfügbar:',e)}
+  finally{busy=false;if(again){again=false;apply()}}
+ };
+ new MutationObserver(()=>{
+  const pod=anchor.querySelector('.tl-podium');
+  if(pod&&pod.querySelector('.tl-podium-step:not([data-tl-holo-checked])'))apply();
+ }).observe(anchor,{childList:true,subtree:true});
+ await apply();
+}
 /* ---- Etappe 11: Die Top 3 als FUT-Karten auf dem Podium (für angemeldete Boxer) ---- */
 async function mountPodiumCards(){
  const anchor=document.getElementById('podium-content');if(!anchor)return;
@@ -684,7 +740,7 @@ function boot(){
  if(screen==='boxer-profile')run(mountProfile);
  if(screen==='boxer')run(mountStudio);
  if(screen==='duels')run(mountDuels);
- if(screen==='index'){run(mountPodium);run(mountAwards);run(mountPodiumCards)}
+ if(screen==='index'){run(mountPodium);run(mountAwards);run(mountPodiumCards);run(mountPodiumHolos)}
  run(mountLooks);
  run(mountKgCards);
  if(screen==='boxer-compare')run(mountCompare);
