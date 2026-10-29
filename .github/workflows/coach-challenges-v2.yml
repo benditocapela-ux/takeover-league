@@ -41,6 +41,8 @@ on:
       - 'tests/boxer-holo-*'
       - 'tests/self-rating-*'
       - 'tests/card-scale-*'
+      - 'tests/card-gallery-*'
+      - 'tests/card-arena-*'
       - 'tests/looks-everywhere-*'
       - 'tests/card-designs-personal-*'
       - 'tests/award-designs-limited-*'
@@ -123,6 +125,8 @@ on:
       - 'tests/boxer-holo-*'
       - 'tests/self-rating-*'
       - 'tests/card-scale-*'
+      - 'tests/card-gallery-*'
+      - 'tests/card-arena-*'
       - 'tests/looks-everywhere-*'
       - 'tests/card-designs-personal-*'
       - 'tests/award-designs-limited-*'
@@ -191,6 +195,7 @@ jobs:
       - run: node tests/boxer-holo-contracts.cjs
       - run: node tests/self-rating-contracts.cjs
       - run: node tests/card-scale-contracts.cjs
+      - run: node tests/card-arena-contracts.cjs
       - run: node tests/looks-everywhere-contracts.cjs
       - run: node tests/card-designs-personal-contracts.cjs
       - run: node tests/award-designs-limited-contracts.cjs
@@ -1376,6 +1381,40 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -X -h localhost -U postgres -d card_scale_probe -v ON_ERROR_STOP=1 -f tests/card-scale-schema.sql
+
+  card-gallery-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated Etappe 16 fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres card_gallery_probe
+      - name: Verify card gallery and rollback on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d card_gallery_probe -v ON_ERROR_STOP=1 -f tests/card-gallery-schema.sql
 
   looks-everywhere-schema:
     runs-on: ubuntu-latest
