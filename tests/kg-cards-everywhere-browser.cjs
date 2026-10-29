@@ -154,7 +154,16 @@ function injected(cfg){
  // E: Angemeldete sehen nur freigegebene Holo-Looks auf dem vorhandenen Podium.
  // Podium-Pose stammt aus pose_profile, FUT-Karten-Pose bleibt separat.
  ({p,errors}=await page({signedIn:true,me:'Ben',podiumHolos:true},'index.html'));
- await p.waitForSelector('#podium-content .tl-podium-1 .tl-podium-holo svg.tlh',{timeout:12000});
+ try{await p.waitForSelector('#podium-content .tl-podium-1 .tl-podium-holo svg.tlh',{timeout:7000})}
+ catch(e){
+  console.error('Podium Holo debug:',JSON.stringify(await p.evaluate(()=>({
+   hLib:!!window.TLHolo,
+   podium:document.querySelector('#podium-content .tl-podium')?.outerHTML.slice(0,1400),
+   champ:document.querySelector('#podium-content .tl-champion .league-champion')?.outerHTML.slice(0,900),
+   calls:window.__calls.filter(x=>x[0]==='get_holo_looks'||x[0]==='get_podium_kampfgeist')
+  }))));
+  throw e;
+ }
  const annaStep=p.locator('#podium-content .tl-podium-1');
  const benStep=p.locator('#podium-content .tl-podium-2');
  await benStep.locator('.tl-podium-holo svg.tlh').waitFor();
