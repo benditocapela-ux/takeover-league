@@ -67,7 +67,11 @@ function injected(cfg){
   const p=await context.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
   p.on('dialog',d=>{errors.push('dialog '+d.message());d.dismiss()});
   await p.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm',r=>r.fulfill({status:200,contentType:'text/javascript',body:'export const createClient=()=>window.__takeoverMockClient;'}));
-  await p.route('https://docs.google.com/**',r=>r.fulfill({status:200,contentType:'text/javascript',body:''}));
+  await p.route('https://docs.google.com/**',r=>{
+   const u=new URL(r.request().url()),q=u.searchParams.get('tqx')||'';
+   const cb=(q.match(/responseHandler:([A-Za-z0-9_]+)/)||[])[1];
+   r.fulfill({status:200,contentType:'text/javascript',body:cb?'window["'+cb+'"]({status:"ok",table:{rows:[]}});':''});
+  });
   await p.route('https://iqarjivcrddcixrvqbfb.supabase.co/**',r=>{const u=r.request().url();
    const body=u.includes('get_public_levels')?[{boxer_name:'Anna',lifetime_exp:6000},{boxer_name:'Ben',lifetime_exp:2500},{boxer_name:'Cara',lifetime_exp:400}]
     :u.includes('get_public_leaderboard')?[{boxer_name:'Anna',rank_position:1,monthly_points:120,approved_sessions:6,points_training:100,points_bonus:20,lifetime_exp:6000},
