@@ -1169,3 +1169,34 @@ body[data-tl-screen="mein-boxer"] .mb-cardprev{display:flex;justify-content:cent
 .tla-boardcell span{font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tla-boardcell.a strong{color:var(--corner-a)}.tla-boardcell.b strong{color:var(--corner-b)}.tla-boardcell.x strong{color:var(--muted)}
 .tla-actions a.tlp-btn{text-decoration:none;display:inline-flex;align-items:center}
+
+/* ---- Etappe 19: Kampfgeist-Anzeige in Ranking, Podium, Profil und Studio ---- */
+.kg-disc.kg-photo{background:#14111d}
+.kg-disc.kg-photo img{width:100%;height:100%;object-fit:cover;display:block}
+.tl-kg-src{display:none!important}
+.tl-kg-face{display:inline-grid;place-items:center;flex:none;line-height:0}
+.tl-kg-face .kg-rkbadge{font-size:11px;line-height:1}
+.tl-kg-banner{position:relative;isolation:isolate;overflow:hidden}
+.tl-kg-bg{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.tl-kg-bg .kg-bn{opacity:.9}
+.tl-kg-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,12,24,.05),rgba(8,12,24,.55) 55%,rgba(8,12,24,.8))}
+.tl-kg-meta{display:inline-flex;align-items:center;gap:6px;font-size:var(--fs-sm,13px);font-weight:600;color:var(--text-2,#cbd5e1);min-width:0}
+.tl-kg-meta>span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tl-kg-meta .kg-rank{flex:none}
+/* Ranking */
+body[data-tl-screen="index"] .rank-row.tl-kg-banner{min-height:76px}
+body[data-tl-screen="index"] .rank-row .league-name{align-items:center}
+body[data-tl-screen="index"] .rank-row .tl-kg-meta{display:flex;margin-top:2px}
+/* Podium */
+body[data-tl-screen="index"] .tl-champion.tl-kg-banner .tl-kg-bg::after{background:linear-gradient(180deg,rgba(8,12,24,.2),rgba(8,12,24,.88) 70%)}
+body[data-tl-screen="index"] .tl-champion.tl-kg-banner::before{z-index:0}
+body[data-tl-screen="index"] .tl-podium-block.tl-kg-banner .tl-kg-bg::after{background:linear-gradient(180deg,rgba(8,12,24,.35),rgba(8,12,24,.85))}
+body[data-tl-screen="index"] .tl-podium-step .tl-kg-face{margin-bottom:4px}
+/* Profil */
+body[data-tl-screen="boxer-profile"] .hero.tl-kg-banner{padding:var(--sp-4,16px);border-radius:var(--r-lg,16px);border:1px solid var(--line)}
+body[data-tl-screen="boxer-profile"] .hero .tl-kg-meta{margin-top:6px}
+/* Studio */
+.tl-kg-studio{margin:var(--sp-2,8px) 0 var(--sp-3,12px);max-width:560px}
+.tl-kg-studio .kg-card{min-height:150px}
+.studio-identity.tl-kg-has-card #studioBoxerName{display:none!important}
+@media(max-width:420px){.tl-kg-studio .kg-card-body{padding:var(--sp-3,12px)}}

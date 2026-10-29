@@ -200,7 +200,7 @@ async function mountProfile(){
  const ca=document.getElementById('compareAction');if(ca&&myName){ca.dataset.tlMine='1';ca.href=cmpHref}
  let figure='';
  if(look&&look.holo&&window.TLHolo)figure=`<div class="tlh-stage tlp-figure">${window.TLHolo.svg(look.holo,{pose:look.holo.pose_profile,label:'Boxer-Holo von '+shown})}</div>`;
- else{
+ else if(!(await publicCards()).has(lowerName(name))){ // Etappe 19: Avatar steht schon im Profilkopf
   const kg=await db.rpc('get_kg_look',{p_display_name:name}).catch(()=>({error:true}));
   if(kg&&!kg.error&&kg.data&&kg.data.avatar){const K=await kampfgeist();figure=`<div class="tlp-figure">${K.avatarBox(kg.data,132)}</div>`}
  }
@@ -566,6 +566,91 @@ async function mountLooks(){
   .observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-tl-boxer']});
  await run();
 }
+/* ---- Etappe 19: Kampfgeist-Anzeige (Banner, Avatar mit Aura/Rahmen, Rang, Level) in Ranking, Podium, Profil und Studio ---- */
+// Daten: get_public_boxer_cards (auch für Gäste, nur sichtbare Profile, nur Design-Daten). Wer selbst keinen Avatar gewählt hat,
+// behält sein Profilbild – mit Aura und Rahmen. Ohne Daten (Shop aus, Funktion fehlt) bleibt alles wie bisher.
+let pubCardsPromise=null;
+function publicCards(){
+ if(!pubCardsPromise)pubCardsPromise=client().then(db=>db.rpc('get_public_boxer_cards')).then(r=>{
+  const m=new Map();if(r&&!r.error&&Array.isArray(r.data))for(const x of r.data)if(x&&x.name)m.set(lowerName(x.name),x);return m}).catch(()=>new Map());
+ return pubCardsPromise;
+}
+const kgPhoto=(el,lk)=>{if(lk.own_avatar)return null;const im=el&&el.querySelector('img');const u=im&&im.getAttribute('src');return u||null};
+function kgMeta(lk,K,short){const rk=K.RANKS.find(x=>x.r===lk.rank)||K.RANKS[0];
+ return `<span class="tl-kg-meta">${K.rankBadge(rk.r,18)}<span>Rang ${esc(rk.r)}${short?'':' · '+esc(rk.n)} · Level ${Number(lk.level)||1}</span></span>`}
+function kgBanner(host,lk,K){
+ if(host.querySelector(':scope>.tl-kg-bg'))return;
+ host.classList.add('tl-kg-banner');host.insertAdjacentHTML('afterbegin',`<span class="tl-kg-bg" aria-hidden="true">${K.bannerHTML(lk.banner&&lk.banner.design)}</span>`);
+}
+// Ersetzt ein rundes Profilbild (data-tl-boxer) durch Avatar bzw. Profilbild mit Aura und Rahmen. Das Original bleibt versteckt
+// im DOM (Etappe 11 hängt daran den Titel an).
+function kgFace(el,lk,K,size){
+ if(el.nextElementSibling&&el.nextElementSibling.classList.contains('tl-kg-face'))return;
+ const box=document.createElement('span');box.className='tl-kg-face';box.setAttribute('aria-hidden','true');
+ box.innerHTML=K.avatarBox(lk,size,{photo:kgPhoto(el,lk)});
+ const im=box.querySelector('.kg-photo img');if(im)im.addEventListener('error',()=>{im.closest('.kg-disc').innerHTML=K.avatarSVG(lk.avatar&&lk.avatar.design,lk.handschuhe&&lk.handschuhe.design)});
+ el.classList.add('tl-kg-src');el.after(box);
+}
+async function mountKgCards(){
+ if(typeof MutationObserver!=='function'||!document.querySelectorAll)return;
+ const screen=document.body.dataset.tlScreen;
+ if(!['index','boxer-profile','boxer'].includes(screen))return;
+ let busy=false,again=false,K=null,map=null;
+ const small=()=>window.matchMedia&&matchMedia('(max-width:420px)').matches;
+ const apply=()=>{
+  if(screen==='index'){
+   // Ranking: jede Zeile mit Banner, Avatar und Rang/Level
+   for(const row of document.querySelectorAll('#ranking-content .rank-row:not([data-tl-kg])')){
+    row.dataset.tlKg='1';const av=row.querySelector('[data-tl-boxer]');const lk=av&&map.get(lowerName(av.dataset.tlBoxer));if(!lk)continue;
+    kgBanner(row,lk,K);kgFace(av,lk,K,small()?54:60);
+    const sub=row.querySelector('.sub');(sub||row.querySelector('.rank-name')).insertAdjacentHTML('afterend',kgMeta(lk,K,true));
+   }
+   // Podium: Champion-Karte mit Banner und grossem Avatar, Treppchen mit Avatar und Banner im Sockel
+   for(const ch of document.querySelectorAll('#podium-content .tl-champion:not([data-tl-kg])')){
+    ch.dataset.tlKg='1';const av=ch.querySelector('.league-champion [data-tl-boxer]');const lk=av&&map.get(lowerName(av.dataset.tlBoxer));if(!lk)continue;
+    kgBanner(ch,lk,K);kgFace(av,lk,K,small()?96:112);ch.querySelector('.league-champion').insertAdjacentHTML('beforeend',kgMeta(lk,K));
+   }
+   for(const st of document.querySelectorAll('#podium-content .tl-podium-step:not([data-tl-kg])')){
+    st.dataset.tlKg='1';const av=st.querySelector('[data-tl-boxer]');const lk=av&&map.get(lowerName(av.dataset.tlBoxer));if(!lk)continue;
+    kgFace(av,lk,K,st.classList.contains('tl-podium-1')?(small()?72:84):(small()?56:64));
+    const bl=st.querySelector('.tl-podium-block');if(bl)kgBanner(bl,lk,K);
+   }
+  }
+  if(screen==='boxer-profile'){
+   const ph=document.getElementById('profilePhoto'),hero=ph&&ph.closest('.hero');
+   if(hero&&ph.dataset.tlBoxer&&!hero.dataset.tlKg){
+    hero.dataset.tlKg='1';const lk=map.get(lowerName(ph.dataset.tlBoxer));
+    if(lk){kgBanner(hero,lk,K);kgFace(ph,lk,K,small()?92:108);const rk=document.getElementById('profileRank');if(rk)rk.insertAdjacentHTML('afterend',kgMeta(lk,K))}
+   }
+  }
+  if(screen==='boxer'){
+   const nm=document.getElementById('studioBoxerName'),av=document.getElementById('avatarPreview'),id=nm&&nm.closest('.studio-identity');
+   const who=av&&av.dataset.tlBoxer;
+   if(id&&who&&!id.dataset.tlKg){
+    const lk=map.get(lowerName(who));
+    if(lk){id.dataset.tlKg='1';const box=document.createElement('div');box.className='tl-kg-studio';
+     box.innerHTML=K.card(lk,{name:lk.name,size:small()?92:108,photo:kgPhoto(av,lk)});
+     id.classList.add('tl-kg-has-card');id.prepend(box)}
+   }
+  }
+ };
+ const pending=()=>screen==='index'?!!document.querySelector('#ranking-content .rank-row:not([data-tl-kg]),#podium-content .tl-champion:not([data-tl-kg]),#podium-content .tl-podium-step:not([data-tl-kg])')
+  :screen==='boxer-profile'?!!document.querySelector('.hero:not([data-tl-kg]) #profilePhoto[data-tl-boxer]')
+  :!!document.querySelector('.studio-identity:not([data-tl-kg])')&&!!document.querySelector('#avatarPreview[data-tl-boxer]');
+ const run=async()=>{
+  if(busy){again=true;return}
+  busy=true;
+  try{
+   if(pending()){
+    if(!map)map=await publicCards();
+    if(map.size){if(!K)K=await kampfgeist();apply()}
+   }
+  }catch(e){console.warn('Kampfgeist-Anzeige nicht verfügbar:',e)}
+  finally{busy=false;if(again){again=false;run()}}
+ };
+ new MutationObserver(()=>{if(pending())run()}).observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['data-tl-boxer']});
+ await run();
+}
 /* ---- Etappe 11: Die Top 3 als FUT-Karten auf dem Podium (für angemeldete Boxer) ---- */
 async function mountPodiumCards(){
  const anchor=document.getElementById('podium-content');if(!anchor)return;
@@ -601,6 +686,7 @@ function boot(){
  if(screen==='duels')run(mountDuels);
  if(screen==='index'){run(mountPodium);run(mountAwards);run(mountPodiumCards)}
  run(mountLooks);
+ run(mountKgCards);
  if(screen==='boxer-compare')run(mountCompare);
 }
 window.TLPerf={scorecard,cardHex,CARD_TARGET,publicSummary,pubOf,client,looks,holoLib,AWARD_LABEL,CATS,SKILL,SKILL_KEYS,AX,QUESTIONS,BANDS,BAND_NAMES,band,to20,esc,summary,tier,styleType,radarSVG,radarCompare,similarity,deltaTag,fmtDate,card,initials};

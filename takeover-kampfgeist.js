@@ -68,9 +68,11 @@ function auraHTML(a){
 const cls=s=>String(s||'').replace(/[^a-z0-9_-]/g,'');
 const frameClass=d=>d&&d.fr?' kg-fr-'+cls(d.fr):'';
 // Avatar mit Aura, Handschuhen und Rahmen. look = {avatar,aura,rahmen,handschuhe} (Items mit design)
-function avatarBox(look,size){
- look=look||{};const fr=look.rahmen&&look.rahmen.design,rk=fr&&fr.fr==='rank'?RANKS.find(x=>x.r===fr.rk):null;
- return `<div class="kg-ava${frameClass(fr)}" style="--s:${Number(size)||120}px${rk?';--rk:'+rk.c:''}">${auraHTML(look.aura&&look.aura.design)}<div class="kg-disc">${avatarSVG(look.avatar&&look.avatar.design,look.handschuhe&&look.handschuhe.design)}</div>${rk?`<span class="kg-rkbadge">${rk.r}</span>`:''}</div>`;
+// opt.photo (Etappe 19): Profilbild statt Figur – für Boxer ohne eigene Avatar-Wahl; Aura und Rahmen bleiben.
+const photoOk=u=>typeof u==='string'&&/^(https:\/\/|\.\/|\/(?!\/)|data:image\/(png|jpe?g|webp);)/.test(u);
+function avatarBox(look,size,opt){
+ look=look||{};const photo=opt&&photoOk(opt.photo)?opt.photo:null;const fr=look.rahmen&&look.rahmen.design,rk=fr&&fr.fr==='rank'?RANKS.find(x=>x.r===fr.rk):null;
+ return `<div class="kg-ava${frameClass(fr)}" style="--s:${Number(size)||120}px${rk?';--rk:'+rk.c:''}">${auraHTML(look.aura&&look.aura.design)}<div class="kg-disc${photo?' kg-photo':''}">${photo?`<img src="${esc(photo)}" alt="" loading="lazy">`:avatarSVG(look.avatar&&look.avatar.design,look.handschuhe&&look.handschuhe.design)}</div>${rk?`<span class="kg-rkbadge">${rk.r}</span>`:''}</div>`;
 }
 const bannerHTML=d=>`<div class="kg-bn kg-bn-${cls(d&&d.bn||'dojo')}" aria-hidden="true"></div>`;
 const titleTag=it=>it?`<span class="kg-title r-${cls(it.rarity)}">${esc(it.name)}</span>`:'';
@@ -78,7 +80,7 @@ const rankBadge=(r,size)=>{const k=RANKS.find(x=>x.r===r)||RANKS[0];return `<spa
 // Karte: Banner, Avatar, Titel, Name, Rang/Level
 function card(look,opts){
  look=look||{};opts=opts||{};const rk=RANKS.find(x=>x.r===look.rank)||RANKS[0];
- return `<div class="kg-card">${bannerHTML(look.banner&&look.banner.design)}<div class="kg-card-body">${avatarBox(look,opts.size||112)}<div class="kg-card-text">${titleTag(look.titel)}<b class="kg-name">${esc(opts.name||look.name||'')}</b><span class="kg-sub">${rankBadge(rk.r,26)} Rang ${rk.r} · ${esc(rk.n)} · Level ${Number(look.level)||1}</span></div></div></div>`;
+ return `<div class="kg-card">${bannerHTML(look.banner&&look.banner.design)}<div class="kg-card-body">${avatarBox(look,opts.size||112,{photo:opts.photo})}<div class="kg-card-text">${titleTag(look.titel)}<b class="kg-name">${esc(opts.name||look.name||'')}</b><span class="kg-sub">${rankBadge(rk.r,26)} Rang ${rk.r} · ${esc(rk.n)} · Level ${Number(look.level)||1}</span></div></div></div>`;
 }
 // Emote-Sprechblase (vorgegebener Text, Form, Farbe)
 function emoteHTML(d,size){
