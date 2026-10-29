@@ -16,7 +16,8 @@ const RANKS=['F','E','D','C','B','A','S'];
 let db,mine=null,awards=null,staff=null,perf=null,view='designs',busy=false,pd=null,pdList=null;
 const fmtP=(k,a,b)=>k==='cotw'?P.fmtDate(a)+' – '+P.fmtDate(b):k==='cotm'?new Intl.DateTimeFormat('de-CH',{month:'long',year:'numeric',timeZone:'UTC'}).format(new Date(a+'T12:00:00Z')):String(a).slice(0,4);
 function previewCard(look,w){
- const r=perf&&perf.rating&&perf.rating.current?perf.rating.current.summary:null;
+ // Etappe 15: so, wie andere die Karte sehen (öffentliche Werte).
+ const raw=perf&&perf.rating&&perf.rating.current?perf.rating.current.summary:null,r=raw?(P.pubOf(raw)||raw):null;
  const pos=perf&&perf.style&&perf.style.current?P.styleType(perf.style.current.scores).pos:'BOX';
  return P.card({name:mine.display_name,overall:r?r.overall:70,categories:r?r.categories:{OFF:70,DEF:70,BEI:70,KON:70,TAK:70,MEN:70},pos,width:w||120,look});
 }

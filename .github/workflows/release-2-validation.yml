@@ -64,6 +64,7 @@ jobs:
       - run: node tests/card-designs-browser.cjs
       - run: node tests/boxer-holo-browser.cjs
       - run: node tests/self-rating-browser.cjs
+      - run: node tests/card-scale-browser.cjs
       - run: node tests/looks-everywhere-browser.cjs
       - run: node tests/card-designs-personal-browser.cjs
       - run: node tests/award-designs-limited-browser.cjs

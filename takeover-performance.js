@@ -81,6 +81,15 @@ function summary(scores,scale){
  const overall=Math.min(99,Math.round(CATS.reduce((t,c)=>t+categories[c.k]*c.w,0)/100));
  return {categories,overall};
 }
+// Etappe 15: öffentliche Kartenwerte – die beste Karte der Liga ist 92, alle anderen im gleichen Verhältnis (gerundet, höchstens 99).
+// Spiegel von league_private.rating_public (für die Live-Vorschau im Bewertungsformular).
+const CARD_TARGET=92;
+function publicSummary(s,best){
+ if(!s)return null;const b=Number(best);if(!(b>0))return {overall:s.overall,categories:{...s.categories}};
+ const f=v=>Math.min(99,Math.round(Number(v)*CARD_TARGET/b));
+ return {overall:f(s.overall),categories:Object.fromEntries(Object.entries(s.categories||{}).map(([k,v])=>[k,f(v)]))};
+}
+const pubOf=s=>s&&s.public&&s.public.overall!=null?s.public:null;
 const tier=o=>o>=85?['elite','Elite']:o>=75?['gold','Gold']:o>=65?['silber','Silber']:['bronze','Bronze'];
 function styleType(v){
  const s=AX.slice().sort((a,b)=>v[b.k]-v[a.k]),top=s[0],sec=s[1],spread=v[top.k]-v[s[5].k];
@@ -248,8 +257,8 @@ async function mountStudio(){
  }
  if(data.ratings_enabled){
   const r=data.rating;
-  if(r&&r.current){const o=r.current.summary.overall,d=r.previous?o-r.previous.summary.overall:null;
-   tiles.push(`<a class="tlp-tile" href="./bewertung.html"><span class="tlp-chip t-${tier(o)[0]}">${o}</span><span><span class="tlp-eyebrow">Coach-Bewertung</span><strong>Gesamt ${o} ${deltaTag(d)}</strong><span class="tlp-note">aktualisiert am ${fmtDate(r.current.created_at)}</span></span></a>`);
+  if(r&&r.current){const o=r.current.summary.overall,d=r.previous?o-r.previous.summary.overall:null,pb=pubOf(r.current.summary);
+   tiles.push(`<a class="tlp-tile" href="./bewertung.html"><span class="tlp-chip t-${tier(o)[0]}">${o}</span><span><span class="tlp-eyebrow">Coach-Bewertung</span><strong>Gesamt ${o}${pb?` <span class="tlp-pub" title="öffentlicher Wert">(${pb.overall})</span>`:''} ${deltaTag(d)}</strong><span class="tlp-note">aktualisiert am ${fmtDate(r.current.created_at)}</span></span></a>`);
   }else tiles.push(`<a class="tlp-tile" href="./bewertung.html"><span class="tlp-chip t-bronze">–</span><span><span class="tlp-eyebrow">Coach-Bewertung</span><strong>Noch keine Bewertung</strong><span class="tlp-note">Dein Coach bewertet dich bald.</span></span></a>`);
  }
  if(data.style_enabled){
@@ -500,6 +509,6 @@ function boot(){
  run(mountLooks);
  if(screen==='boxer-compare')run(mountCompare);
 }
-window.TLPerf={client,looks,holoLib,AWARD_LABEL,CATS,SKILL,SKILL_KEYS,AX,QUESTIONS,BANDS,BAND_NAMES,band,to20,esc,summary,tier,styleType,radarSVG,radarCompare,similarity,deltaTag,fmtDate,card,initials};
+window.TLPerf={CARD_TARGET,publicSummary,pubOf,client,looks,holoLib,AWARD_LABEL,CATS,SKILL,SKILL_KEYS,AX,QUESTIONS,BANDS,BAND_NAMES,band,to20,esc,summary,tier,styleType,radarSVG,radarCompare,similarity,deltaTag,fmtDate,card,initials};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
