@@ -93,7 +93,8 @@ const REGISTERS=[
   '«Alle bestätigen» trägt das Training für alle ein. Später lässt sich die Einheit noch umstellen.']},
  {key:'vergeben',page:'karten.html',group:'staff',icon:'🏆',title:'Auszeichnungen vergeben',staff:true,flag:'card_designs',summary:'Card of the Week, Month und Player of the Year.',points:[
   'Unter «Karten & Auszeichnungen» → «Vergeben» stehen die Vorschläge (meiste EXP aus bestätigten Trainings).',
-  'Nach Ende der Woche, des Monats oder Jahres bestätigst du den Vorschlag oder wählst jemand anderen.','Zurücknehmen geht mit kurzer Begründung; sich selbst auszeichnen geht nicht.']},
+  'Nach Ende der Woche, des Monats oder Jahres bestätigst du den Vorschlag oder wählst jemand anderen.','Du musst nicht vergeben: «Diesmal nicht vergeben» hält fest, dass es für den Zeitraum keine Auszeichnung gibt – mit «Doch vergeben» hebst du es wieder auf.',
+  'Zurückziehen geht mit kurzer Begründung, auch für frühere Wochen, Monate und Jahre; Spezial-Design und Symbol verschwinden sofort. Sich selbst auszeichnen geht nicht.']},
  {key:'bewerten',page:'bewertung.html',group:'staff',icon:'🃏',title:'Boxer bewerten',staff:true,summary:'Spielerkarte mit Reglern 1–20 pflegen.',points:[
   'Boxer antippen, Regler einstellen – der Text darunter beschreibt die Stufe.','«war …» zeigt die bisherige Note. Die eigene Bewertung macht ein anderer Trainer.',
   'Selbsteinschätzungen der Boxer stehen oben: so freigeben, Regler anpassen und freigeben oder ablehnen.']},

@@ -937,6 +937,13 @@ body[data-tl-screen] .kg-intro,.kg-intro{position:fixed;inset:0;z-index:21474830
 .kd-award{display:grid;gap:4px}
 .kd-hist{list-style:none;margin:0;padding:0;display:grid;gap:var(--sp-2)}
 .kd-hist li{display:flex;justify-content:space-between;gap:var(--sp-2);flex-wrap:wrap}
+.kd-more{width:100%}
+.kd-more>summary{cursor:pointer;font-size:14px;font-weight:700;color:var(--text-2);padding:8px 0;min-height:44px;display:flex;align-items:center;list-style:none;gap:6px}
+.kd-more>summary::-webkit-details-marker{display:none}
+.kd-more>summary::before{content:"▸"}
+.kd-more[open]>summary::before{content:"▾"}
+.kd-more form{display:grid;gap:var(--sp-2)}
+.kd-more .tlp-btn{min-height:44px}
 .kd-period{border-top:1px solid var(--line);padding-top:var(--sp-3);margin-top:var(--sp-3)}
 .kd-cands{margin:var(--sp-2) 0;padding-left:1.3em;display:grid;gap:4px}
 .kd-confirm,.kd-revoke{display:grid;gap:var(--sp-2)}

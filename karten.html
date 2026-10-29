@@ -84,14 +84,27 @@ function awardsView(){
   <h2>Verlauf</h2>${(awards.history||[]).length?`<div class="tlp-panel"><ul class="kd-hist">${awards.history.map(a=>`<li><span>${a.kind==='poty'?'👑':a.kind==='cotm'?'🏆':'⭐'} <b>${P.esc(a.display_name)}</b> · ${P.esc(P.AWARD_LABEL[a.kind])}</span><span class="tlp-note">${P.esc(fmtP(a.kind,a.period_start,a.period_end))}</span></li>`).join('')}</ul></div>`:'<p class="tlp-note">Noch keine Auszeichnungen vergeben.</p>'}
   <p class="tlp-note">Wer die meisten EXP aus bestätigten Trainings sammelt, wird vorgeschlagen. Ein Trainer bestätigt die Auszeichnung. Das Spezial-Design gilt im Zeitraum danach: nach der Card of the Week die ganze nächste Woche, nach der Card of the Month den nächsten Monat, nach dem Player of the Year das nächste Jahr. Die Symbole ⭐ 🏆 👑 auf deiner Karte bleiben für immer.</p>`;
 }
+// Etappe 14: «Diesmal nicht vergeben» (aufhebbar) und alle kürzlich vergebenen Auszeichnungen zurückziehen.
+const revokeForm=a=>`<details class="kd-more"><summary>Zurückziehen</summary><form class="kd-revoke" data-id="${a.id}"><label class="tlp-field">Grund<input name="reason" maxlength="300" required placeholder="z. B. falsche Woche"></label><button type="submit" class="tlp-btn ghost">Zurückziehen</button><p class="tlp-note">Spezial-Design und Symbol verschwinden sofort.</p></form></details>`;
+const skipView=s=>`<p>✕ <b>Nicht vergeben</b> · von ${P.esc(s.skipped_by||'')}${s.note?' · «'+P.esc(s.note)+'»':''}</p>${s.can_undo?`<button type="button" class="tlp-btn ghost" data-unskip="${s.id}">Doch vergeben</button>`:''}`;
+const skipForm=(k,p)=>`<details class="kd-more"><summary>Diesmal nicht vergeben</summary><form class="kd-skip" data-kind="${k}" data-start="${p.start}"><label class="tlp-field">Grund (optional)<input name="note" maxlength="300" placeholder="z. B. Ferienwoche, zu wenige Trainings"></label><button type="submit" class="tlp-btn ghost">Nicht vergeben</button></form></details>`;
+function recentView(){
+ const shown=new Set(staff.kinds.flatMap(k=>k.periods.map(p=>p.award&&p.award.id)).filter(Boolean));
+ const list=(staff.recent||[]).filter(a=>!shown.has(a.id));
+ const skips=(staff.skips||[]).filter(s=>!staff.kinds.some(k=>k.periods.some(p=>p.skip&&p.skip.id===s.id)));
+ if(!list.length&&!skips.length)return '';
+ return `<section class="tlp-panel"><h2>Frühere Zeiträume</h2><ul class="kd-hist">${list.map(a=>`<li><span>${a.kind==='poty'?'👑':a.kind==='cotm'?'🏆':'⭐'} <b>${P.esc(a.display_name)}</b> · ${P.esc(P.AWARD_LABEL[a.kind])} · ${P.esc(fmtP(a.kind,a.period_start,a.period_end))}</span>${a.can_revoke?revokeForm(a):`<span class="tlp-note">vergeben von ${P.esc(a.awarded_by||'')}</span>`}</li>`).join('')}
+  ${skips.map(x=>`<li><span>✕ ${P.esc(P.AWARD_LABEL[x.kind])} · ${P.esc(fmtP(x.kind,x.period_start,x.period_end))} · nicht vergeben${x.note?' · «'+P.esc(x.note)+'»':''}</span>${x.can_undo?`<button type="button" class="tlp-btn ghost" data-unskip="${x.id}">Doch vergeben</button>`:''}</li>`).join('')}</ul></section>`;
+}
 function staffView(){
  if(!staff)return pdAdminView()+'<p class="tlp-note">Wird geladen …</p>';
  return pdAdminView()+staff.kinds.map(k=>`<section class="tlp-panel"><h2>${P.esc(P.AWARD_LABEL[k.kind])}</h2>${k.periods.map(p=>`<div class="kd-period"><div class="tlp-row spread"><b>${P.esc(fmtP(k.kind,p.start,p.end))}</b><span class="tlp-note">${p.completed?'abgeschlossen':'läuft noch'}</span></div>
-   ${p.award?`<p>✓ <b>${P.esc(p.award.display_name)}</b> · vergeben von ${P.esc(p.award.awarded_by||'')}${p.award.note?' · «'+P.esc(p.award.note)+'»':''} </p><form class="kd-revoke" data-id="${p.award.id}"><label class="tlp-field">Zurücknehmen – Grund<input name="reason" maxlength="300" required placeholder="z. B. falsche Woche"></label><button type="submit" class="tlp-btn ghost">Zurücknehmen</button></form>`
+   ${p.award?`<p>✓ <b>${P.esc(p.award.display_name)}</b> · vergeben von ${P.esc(p.award.awarded_by||'')}${p.award.note?' · «'+P.esc(p.award.note)+'»':''} </p>${revokeForm(p.award)}`
+    :p.skip?skipView(p.skip)
     :`<ol class="kd-cands">${p.candidates.map((c,i)=>`<li><b>${P.esc(c.display_name)}</b> · ${c.exp} EXP · ${c.trainings} Trainings${i===0?' <span class="kd-state">Vorschlag</span>':''}</li>`).join('')||'<li class="tlp-note">Noch keine bestätigten Trainings.</li>'}</ol>
      ${p.completed?`<form class="kd-confirm" data-kind="${k.kind}" data-start="${p.start}"><label class="tlp-field">Boxer<select name="who">${staff.boxers.map(b=>`<option value="${P.esc(b.id)}" ${p.candidates[0]&&p.candidates[0].profile_id===b.id?'selected':''}>${P.esc(b.display_name)}</option>`).join('')}</select></label>
-      <label class="tlp-field">Begründung (optional)<input name="note" maxlength="300" placeholder="z. B. drei starke Pflichttrainings"></label><button type="submit" class="tlp-btn">Auszeichnen</button>${(k.periods.find(x=>!x.completed)||{}).end?`<p class="tlp-note">Spezial-Design für den Gewinner bis ${P.esc(P.fmtDate(k.periods.find(x=>!x.completed).end))}.</p>`:''}</form>`
-     :'<p class="tlp-note">Vergeben kannst du nach Ende des Zeitraums.</p>'}`}</div>`).join('')}</section>`).join('');
+      <label class="tlp-field">Begründung (optional)<input name="note" maxlength="300" placeholder="z. B. drei starke Pflichttrainings"></label><button type="submit" class="tlp-btn">Auszeichnen</button>${(k.periods.find(x=>!x.completed)||{}).end?`<p class="tlp-note">Spezial-Design für den Gewinner bis ${P.esc(P.fmtDate(k.periods.find(x=>!x.completed).end))}.</p>`:''}</form>${skipForm(k.kind,p)}`
+     :'<p class="tlp-note">Vergeben kannst du nach Ende des Zeitraums.</p>'}`}</div>`).join('')}</section>`).join('')+recentView();
 }
 function tabs(){
  const t=[['designs','Meine Designs'],['awards','Auszeichnungen']];if(mine.staff)t.push(['staff','Vergeben']);
@@ -109,6 +122,13 @@ async function loadPd(){const r=await db.rpc('admin_list_personal_designs');pdLi
 app.addEventListener('click',async e=>{
  const b=e.target.closest('button');if(!b||busy)return;
  if(b.dataset.view){view=b.dataset.view;say('');if(view==='staff'&&!staff)await loadStaff().catch(x=>say(x.message,true));render();return}
+ if(b.dataset.unskip){
+  busy=true;b.disabled=true;
+  const {error}=await db.rpc('staff_unskip_card_award',{p_skip_id:Number(b.dataset.unskip)});
+  busy=false;
+  if(error){say(error.message,true);b.disabled=false;return}
+  say('«Nicht vergeben» aufgehoben – du kannst jetzt auszeichnen.');await loadStaff();render();return;
+ }
  if(b.dataset.pd){
   busy=true;b.disabled=true;
   const {data,error}=await db.rpc('admin_set_personal_design',{p_profile_id:b.dataset.pd,p_active:b.dataset.on==='1'});
@@ -141,7 +161,13 @@ app.addEventListener('submit',async e=>{
  if(rv){e.preventDefault();const reason=rv.reason.value.trim();if(!reason){say('Bitte einen Grund angeben.',true);return}
   const {error}=await db.rpc('staff_revoke_card_award',{p_award_id:Number(rv.dataset.id),p_reason:reason});
   if(error){say(error.message,true);return}
-  say('Auszeichnung zurückgenommen.');await Promise.all([loadStaff(),load()]);render();return}
+  say('Auszeichnung zurückgezogen.');await Promise.all([loadStaff(),load()]);render();return}
+ const sk=e.target.closest('.kd-skip');
+ if(sk){e.preventDefault();if(busy)return;busy=true;
+  const {data,error}=await db.rpc('staff_skip_card_award',{p_kind:sk.dataset.kind,p_period_start:sk.dataset.start,p_note:sk.note.value.trim()||null});
+  busy=false;
+  if(error){say(error.message,true);return}
+  say(P.AWARD_LABEL[data.kind]+': diesmal nicht vergeben.');await loadStaff();render();return}
  const f=e.target.closest('.kd-confirm');if(!f)return;e.preventDefault();if(busy)return;busy=true;
  const {data,error}=await db.rpc('staff_confirm_card_award',{p_kind:f.dataset.kind,p_period_start:f.dataset.start,p_profile_id:f.who.value,p_note:f.note.value.trim()||null});
  busy=false;
