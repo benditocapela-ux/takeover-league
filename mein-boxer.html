@@ -69,7 +69,8 @@ function poseRow(field){
  return `<div class="mb-row">${items().filter(i=>i.slot==='pose').map(i=>`<button type="button" class="mb-pose" data-set="${field}" data-val="${esc(i.value)}" aria-pressed="${cfg[field]===i.value}"><span class="mb-pose-fig">${H.svg(cfg,{pose:i.value,scene:'none',holo:false})}</span>${esc(i.name)}${lockTag(i)}</button>`).join('')}</div>`;
 }
 function viewPosen(){
- const perf=data.perf,r=perf&&perf.rating&&perf.rating.current?perf.rating.current.summary:null;
+ // Etappe 17b: so, wie andere die Karte sehen (öffentliche Werte, beste Karte = 92)
+ const perf=data.perf,raw=perf&&perf.rating&&perf.rating.current?perf.rating.current.summary:null,r=raw?(P.pubOf(raw)||raw):null;
  const pos=perf&&perf.style&&perf.style.current?P.styleType(perf.style.current.scores).pos:'BOX';
  const cardHtml=P.card({name:data.display_name,overall:r?r.overall:70,categories:r?r.categories:{OFF:70,DEF:70,BEI:70,KON:70,TAK:70,MEN:70},pos,width:170,look:{holo:cfg}});
  return sec('Im Profil',poseRow('pose_profile'))+sec('Auf der FUT-Karte',poseRow('pose_card'))+sec('So sieht deine Karte aus',`<div class="mb-cardprev">${cardHtml}</div>`);

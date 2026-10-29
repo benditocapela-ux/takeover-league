@@ -257,8 +257,9 @@ async function mountStudio(){
  }
  if(data.ratings_enabled){
   const r=data.rating;
-  if(r&&r.current){const o=r.current.summary.overall,d=r.previous?o-r.previous.summary.overall:null,pb=pubOf(r.current.summary);
-   tiles.push(`<a class="tlp-tile" href="./bewertung.html"><span class="tlp-chip t-${tier(o)[0]}">${o}</span><span><span class="tlp-eyebrow">Coach-Bewertung</span><strong>Gesamt ${o}${pb?` <span class="tlp-pub" title="öffentlicher Wert">(${pb.overall})</span>`:''} ${deltaTag(d)}</strong><span class="tlp-note">aktualisiert am ${fmtDate(r.current.created_at)}</span></span></a>`);
+  // Etappe 17b: ausserhalb der eigenen Bewertungsseite überall der öffentliche Wert (beste Karte = 92)
+  if(r&&r.current){const cs=pubOf(r.current.summary)||r.current.summary,ps=r.previous?(pubOf(r.previous.summary)||r.previous.summary):null,o=cs.overall,d=ps?o-ps.overall:null;
+   tiles.push(`<a class="tlp-tile" href="./bewertung.html"><span class="tlp-chip t-${tier(o)[0]}">${o}</span><span><span class="tlp-eyebrow">Coach-Bewertung</span><strong>Gesamt ${o} ${deltaTag(d)}</strong><span class="tlp-note">aktualisiert am ${fmtDate(r.current.created_at)}</span></span></a>`);
   }else tiles.push(`<a class="tlp-tile" href="./bewertung.html"><span class="tlp-chip t-bronze">–</span><span><span class="tlp-eyebrow">Coach-Bewertung</span><strong>Noch keine Bewertung</strong><span class="tlp-note">Dein Coach bewertet dich bald.</span></span></a>`);
  }
  if(data.style_enabled){

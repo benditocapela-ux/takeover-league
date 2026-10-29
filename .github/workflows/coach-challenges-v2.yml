@@ -42,6 +42,7 @@ on:
       - 'tests/self-rating-*'
       - 'tests/card-scale-*'
       - 'tests/club-types-selfservice-*'
+      - 'tests/scaled-everywhere-*'
       - 'tests/card-gallery-*'
       - 'tests/card-arena-*'
       - 'tests/looks-everywhere-*'
@@ -127,6 +128,7 @@ on:
       - 'tests/self-rating-*'
       - 'tests/card-scale-*'
       - 'tests/club-types-selfservice-*'
+      - 'tests/scaled-everywhere-*'
       - 'tests/card-gallery-*'
       - 'tests/card-arena-*'
       - 'tests/looks-everywhere-*'
@@ -198,6 +200,7 @@ jobs:
       - run: node tests/self-rating-contracts.cjs
       - run: node tests/card-scale-contracts.cjs
       - run: node tests/club-types-selfservice-contracts.cjs
+      - run: node tests/scaled-everywhere-contracts.cjs
       - run: node tests/card-arena-contracts.cjs
       - run: node tests/looks-everywhere-contracts.cjs
       - run: node tests/card-designs-personal-contracts.cjs
