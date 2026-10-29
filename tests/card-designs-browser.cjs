@@ -89,10 +89,11 @@ function injected(cfg){
  await p.waitForFunction(()=>/Card of the Week: Anna ist ausgezeichnet/.test(document.getElementById('status').textContent));
  assert.deepEqual((await p.evaluate(()=>window.__calls)).find(c=>c[0]==='staff_confirm_card_award')[1],{p_kind:'cotw',p_period_start:'2026-10-19',p_profile_id:'p-anna',p_note:'Zwei starke Sparrings'});
  await shot(p,'7d-vergeben');
+ await p.locator('.kd-more:has(.kd-revoke) > summary').click();
  const rv=p.locator('.kd-revoke');await rv.locator('button').click();
  await p.waitForTimeout(200);assert.ok(!(await p.evaluate(()=>window.__calls)).some(c=>c[0]==='staff_revoke_card_award'),'no revoke without reason');
  await rv.locator('input').fill('Falsche Woche');await rv.locator('button').click();
- await p.waitForFunction(()=>/zurückgenommen/.test(document.getElementById('status').textContent));
+ await p.waitForFunction(()=>/zurückgezogen/.test(document.getElementById('status').textContent));
  assert.deepEqual((await p.evaluate(()=>window.__calls)).find(c=>c[0]==='staff_revoke_card_award')[1],{p_award_id:7,p_reason:'Falsche Woche'});
  await noOverflow(p);assert.deepEqual(errors,[]);await context.close();
 

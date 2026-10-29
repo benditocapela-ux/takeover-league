@@ -23,7 +23,7 @@ assert.match(html,/<span class="tlp-badge">COTW<\/span>/);assert.match(html,/�
 assert.doesNotMatch(P.card({...base,look:{key:'x',name:'<b>X</b>',design:{a:'#111111',badge:'<i>'}}}),/<b>X<\/b>|<i>/);
 // Seiten: nur vorgesehene RPCs
 const rpcOf=t=>[...new Set([...t.matchAll(/\brpc\(\s*'([a-z_]+)'/g)].map(m=>m[1]))].sort();
-assert.deepEqual(rpcOf(page),['admin_list_personal_designs','admin_set_personal_design','buy_card_design','equip_card_design','get_card_awards','get_my_card_designs','get_my_performance','get_my_personal_design','save_my_personal_design','staff_card_award_overview','staff_confirm_card_award','staff_revoke_card_award']); // Etappe 12: eigenes Design
+assert.deepEqual(rpcOf(page),['admin_list_personal_designs','admin_set_personal_design','buy_card_design','equip_card_design','get_card_awards','get_my_card_designs','get_my_performance','get_my_personal_design','save_my_personal_design','staff_card_award_overview','staff_confirm_card_award','staff_revoke_card_award','staff_skip_card_award','staff_unskip_card_award']); // Etappe 12: eigenes Design; Etappe 14: nicht vergeben
 assert.doesNotMatch(page,/prompt\(|alert\(|confirm\(/,'no blocking dialogs');assert.doesNotMatch(page+js,/service_role|sb_secret_/i);
 assert.match(nav,/\['medal','Karten & Auszeichnungen','karten\.html','',true\]/);
 // SQL: Flag aus, Vorschlag nur aus bestätigten Trainings, nur nach Ende, nicht sich selbst, eine pro Zeitraum, zurücknehmen statt löschen
