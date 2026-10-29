@@ -54,7 +54,7 @@ for(const r of ['get_duel_kampfgeist','send_duel_emote','get_podium_kampfgeist',
 assert.ok(defined.has('react_podium')&&!rpcOf(perf).includes('react_podium'),'podium reactions no longer shown');
 assert.match(duels,/card\.dataset\.duelId=duel\.id\|\|''/);
 for(const [n,t] of [['duels.html',duels],['index.html',index]]){assert.match(t,/<script src="\.\/takeover-performance\.js" defer><\/script>/,n+' loads module');assert.doesNotMatch(t,/get_duel_kampfgeist|send_duel_emote|react_podium/,n+' unchanged RPC literals')}
-assert.match(perf,/if\(screen==='duels'\)run\(mountDuels\)/);assert.match(perf,/if\(screen==='index'\)(run\(mountPodium\)|\{run\(mountPodium\);run\(mountAwards\)(;run\(mountPodiumCards\))?\})/); // Etappe 11: Podium-Karten
+assert.match(perf,/if\(screen==='duels'\)run\(mountDuels\)/);assert.match(perf,/if\(screen==='index'\)(run\(mountPodium\)|\{run\(mountPodium\);run\(mountAwards\)(;run\(mountPodiumCards\))?(;run\(mountPodiumHolos\))?\})/); // Etappe 11: Podium-Karten
 assert.match(perf,/async function mountPodium\(\)\{[\s\S]*?getSession\(\);if\(!s\.data\|\|!s\.data\.session\)return;/,'podium only for signed-in viewers');
 for(const t of [pfad,js])assert.doesNotMatch(t,/service_role|sb_secret_|(?<!Array)\.from\(|\.(insert|update|upsert|delete)\(/);
 assert.match(css,/body\[data-tl-screen\] \.kg-intro,\.kg-intro\{position:fixed;inset:0;z-index:2147483000;width:100vw/,'Einlauf covers the whole screen');
