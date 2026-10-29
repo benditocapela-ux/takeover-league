@@ -54,11 +54,12 @@ function selfPanel(){
 function reviewListView(){
  const list=reviews.filter(r=>!r.is_self);
  if(!list.length)return '';
- return `<div class="tlp-panel tlp-self"><div class="tlp-eyebrow">Selbsteinschätzungen · warten auf dich</div><div class="tlp-list">${list.map(r=>`<button type="button" class="tlp-li" data-review="${Number(r.id)}"><span class="tlp-chip t-${P.tier(Number(r.overall)||0)[0]}">${Number(r.overall)||'–'}</span><span class="tlp-grow"><b>${P.esc(r.display_name)}</b><span class="tlp-note">eingereicht am ${P.fmtDate(r.created_at)} · aktuelle Karte ${r.current?Number(r.current.overall):'keine'}</span></span><span aria-hidden="true">›</span></button>`).join('')}</div></div>`;
+ return `<div class="tlp-panel tlp-self"><div class="tlp-eyebrow">Selbsteinschätzungen · warten auf dich</div><div class="tlp-list">${list.map(r=>`<button type="button" class="tlp-li" data-review="${Number(r.id)}"><span class="tlp-chip t-${P.tier(Number(r.pub_overall??r.overall)||0)[0]}">${Number(r.pub_overall??r.overall)||'–'}</span><span class="tlp-grow"><b>${P.esc(r.display_name)}</b><span class="tlp-note">eingereicht am ${P.fmtDate(r.created_at)} · aktuelle Karte ${r.current?Number(r.current.overall):'keine'}</span></span><span aria-hidden="true">›</span></button>`).join('')}</div></div>`;
 }
+const pubOv=b=>b.public_overall!=null?b.public_overall:b.overall;
 function staffListView(){
- return `${reviewListView()}<div class="tlp-panel"><p class="tlp-note">Tippe auf einen Boxer und stelle seine Noten mit den Reglern von 1 bis 20 ein. Er sieht danach, was rauf- oder runterging und seit wann. Zahl links = echte Gesamtwertung, in Klammern = öffentlicher Wert (beste Karte der Liga = ${P.CARD_TARGET}).</p>
-  <div class="tlp-list">${staffList.map(b=>`<button type="button" class="tlp-li" data-open="${P.esc(b.id)}" ${b.is_self?'disabled':''}><span class="tlp-chip t-${b.overall!=null?P.tier(b.overall)[0]:'bronze'}">${b.overall??'–'}</span><span class="tlp-grow"><b>${P.esc(b.display_name)}</b>${b.public_overall!=null?' '+pubTag(b.public_overall):''}<span class="tlp-note">${b.is_self?'Deine Bewertung macht ein anderer Trainer':b.rated_at?'zuletzt '+P.fmtDate(b.rated_at):'noch nicht bewertet'}</span></span><span aria-hidden="true">›</span></button>`).join('')||'<p class="tlp-note">Keine aktiven Boxer.</p>'}</div></div>`;
+ return `${reviewListView()}<div class="tlp-panel"><p class="tlp-note">Tippe auf einen Boxer und stelle seine Noten mit den Reglern von 1 bis 20 ein. Er sieht danach, was rauf- oder runterging und seit wann. Die Zahl ist der öffentliche Wert (beste Karte der Liga = ${P.CARD_TARGET}).</p>
+  <div class="tlp-list">${staffList.map(b=>`<button type="button" class="tlp-li" data-open="${P.esc(b.id)}" ${b.is_self?'disabled':''}><span class="tlp-chip t-${pubOv(b)!=null?P.tier(pubOv(b))[0]:'bronze'}">${pubOv(b)??'–'}</span><span class="tlp-grow"><b>${P.esc(b.display_name)}</b><span class="tlp-note">${b.is_self?'Deine Bewertung macht ein anderer Trainer':b.rated_at?'zuletzt '+P.fmtDate(b.rated_at):'noch nicht bewertet'}</span></span><span aria-hidden="true">›</span></button>`).join('')||'<p class="tlp-note">Keine aktiven Boxer.</p>'}</div></div>`;
 }
 function rateRow(k,n,h){
  const x=edit.draft[k],was=edit.base?edit.base[k]:null,bd=P.band(k,x),cls=was===null||was===x?'':x>was?'ok':'bad';
@@ -69,17 +70,21 @@ function rateRow(k,n,h){
 // Vergleichsbasis der Vorschau: in der Freigabe die aktuelle Karte, sonst die bisherigen Noten.
 const refScores=()=>edit.mode==='review'?edit.cmp:edit.base;
 // Öffentlicher Wert in der Vorschau: beste Karte ohne diesen Boxer, oder seine neue Wertung, falls sie besser ist.
-const previewPub=s=>edit.bestOthers===undefined?null:P.publicSummary(s,Math.max(Number(edit.bestOthers)||0,s.overall));
+const previewBest=s=>Math.max(Number(edit.bestOthers)||0,s.overall);
+const previewPub=s=>edit.bestOthers===undefined?null:P.publicSummary(s,previewBest(s));
+// Etappe 17b: Trainer sehen beim Bewerten und Freigeben nur die öffentlichen Werte (wie überall ausser auf der eigenen Bewertungsseite).
+const coachView=()=>edit.mode!=='self'&&edit.bestOthers!==undefined;
+const shown=s=>coachView()?P.publicSummary(s,previewBest(s)):s;
 function previewView(){
- const ref=refScores(),s=P.summary(edit.draft,20),bs=ref?P.summary(ref,20):null,d=bs?s.overall-bs.overall:null,pb=previewPub(s);
+ const ref=refScores(),raw=P.summary(edit.draft,20),s=shown(raw),bs=ref?(coachView()?P.publicSummary(P.summary(ref,20),previewBest(raw)):P.summary(ref,20)):null,d=bs?s.overall-bs.overall:null,pb=coachView()?null:previewPub(raw);
  const hint=edit.mode==='review'?(edit.cmp?'Pfeil = Unterschied zur aktuellen Karte. «Boxer» zeigt seine eigene Note, wenn du sie änderst.':'Noch keine Karte. «Boxer» zeigt seine eigene Note, wenn du sie änderst.')
   :edit.base?'«war» zeigt die bisherige Note'+(edit.baseScale===10?' (umgerechnet von der alten 10er-Skala)':'')+'.':'Alle Noten starten bei 10.';
- return `${P.card({name:edit.name,overall:s.overall,categories:s.categories,pos:edit.pos,delta:d,width:150})}<div><div class="tlp-eyebrow">${edit.mode==='self'?'Deine Einschätzung':'Neue Gesamtwertung'}</div><div class="tlp-big">${s.overall} ${pb?pubTag(pb.overall):''} ${P.deltaTag(d,true)}</div><span class="tlp-note">${hint} Der Text unter dem Regler passt sich der Note an.${pb?` In Klammern: öffentlicher Wert (beste Karte der Liga = ${P.CARD_TARGET}).`:''}</span></div>`;
+ return `${P.card({name:edit.name,overall:s.overall,categories:s.categories,pos:edit.pos,delta:d,width:150})}<div><div class="tlp-eyebrow">${edit.mode==='self'?'Deine Einschätzung':'Neue Gesamtwertung'}</div><div class="tlp-big">${s.overall} ${pb?pubTag(pb.overall):''} ${P.deltaTag(d,true)}</div><span class="tlp-note">${hint} Der Text unter dem Regler passt sich der Note an.${pb?` In Klammern: öffentlicher Wert (beste Karte der Liga = ${P.CARD_TARGET}).`:coachView()?` Karte und Zahlen zeigen den öffentlichen Wert (beste Karte der Liga = ${P.CARD_TARGET}).`:''}</span></div>`;
 }
 function changedFromSelf(){return edit.mode==='review'&&P.SKILL_KEYS.some(k=>edit.draft[k]!==edit.base[k])}
 function decideLabel(){return changedFromSelf()?'Angepasst freigeben':'So freigeben'}
 function catHead(c){
- const ref=refScores(),s=P.summary(edit.draft,20),bs=ref?P.summary(ref,20):null,pb=previewPub(s);
+ const ref=refScores(),raw=P.summary(edit.draft,20),s=shown(raw),bs=ref?(coachView()?P.publicSummary(P.summary(ref,20),previewBest(raw)):P.summary(ref,20)):null,pb=coachView()?null:previewPub(raw);
  return `<b>${s.categories[c.k]}</b>${pb?pubTag(pb.categories[c.k]):''}${bs?P.deltaTag(s.categories[c.k]-bs.categories[c.k]):''}`;
 }
 function editorHead(){
@@ -141,6 +146,10 @@ async function openEditor(id){
  await loadScale(id);
  say('');render();window.scrollTo(0,0);
 }
+// Öffentlicher Wert aus der Trainer-Liste (für Meldungen nach dem Speichern)
+const pubBefore=id=>{const b=staffList.find(x=>x.id===id);return b?(b.public_overall??null):null};
+// Vorher → nachher als öffentlicher Wert; ohne öffentliche Werte (ältere Datenbank) wie bisher die Werte des Servers.
+const changeText=(before,after,data)=>after!=null?(before!=null?before+' → ':'')+after:(data.previous_overall!=null?data.previous_overall+' → ':'')+data.overall;
 function to20Map(cur){return cur?Object.fromEntries(P.SKILL_KEYS.map(k=>[k,P.to20(cur.scores[k],Number(cur.scale)||10)])):null}
 async function loadScale(id){
  try{const r=await db.rpc('get_rating_card_scale',id?{p_boxer_id:id}:{});if(!r.error&&r.data&&edit)edit.bestOthers=r.data.best_others}catch{}
@@ -159,7 +168,7 @@ async function openReview(id){
  const own=Object.fromEntries(P.SKILL_KEYS.map(k=>[k,P.to20(rv.scores[k],Number(rv.scale)||20)]));
  const b=staffList.find(x=>x.id===rv.boxer_id);
  edit={mode:'review',id:Number(rv.id),name:rv.display_name,base:own,wasLabel:'Boxer',cmp:to20Map(rv.current),draft:{...own},note:'',
-  boxerNote:rv.note||'',createdAt:rv.created_at,pos:b&&b.style_scores?P.styleType(b.style_scores).pos:'BOX'};
+  boxerNote:rv.note||'',createdAt:rv.created_at,pos:b&&b.style_scores?P.styleType(b.style_scores).pos:'BOX',boxerId:rv.boxer_id};
  await loadScale(rv.boxer_id);
  say('');render();window.scrollTo(0,0);
 }
@@ -185,9 +194,11 @@ app.addEventListener('click',async ev=>{
   const {data,error}=await db.rpc('staff_decide_self_rating',{p_id:edit.id,p_decision:decision,p_scores:decision==='adjust'?edit.draft:null,p_note:edit.note||null});
   busy=false;
   if(error){say(error.message,true);t.disabled=false;return}
+  const bid=edit.boxerId,before=pubBefore(bid);
+  edit=null;await load();
   say(data.status==='declined'?`Gespeichert: Selbsteinschätzung von ${data.boxer} abgelehnt, Karte bleibt.`
-   :`Gespeichert: ${data.boxer} ${data.previous_overall!=null?data.previous_overall+' → ':''}${data.overall}${data.status==='adjusted'?' (angepasst)':''}`);
-  edit=null;await load();return;
+   :`Gespeichert: ${data.boxer} ${changeText(before,pubBefore(bid),data)}${data.status==='adjusted'?' (angepasst)':''}`);
+  return;
  }
  if(t.dataset.act==='back'){edit=null;render();return}
  if(t.dataset.act==='save'&&!busy){
@@ -195,8 +206,9 @@ app.addEventListener('click',async ev=>{
   const {data,error}=await db.rpc('staff_rate_boxer',{p_boxer_id:edit.id,p_scores:edit.draft,p_note:edit.note||null,p_scale:20});
   busy=false;
   if(error){say(error.message,true);t.disabled=false;return}
-  say(`Gespeichert: ${edit.name} ${data.previous_overall!=null?data.previous_overall+' → ':''}${data.overall}`);
+  const bid=edit.id,nm=edit.name,before=pubBefore(bid);
   edit=null;await load();
+  say(`Gespeichert: ${nm} ${changeText(before,pubBefore(bid),data)}`);
  }
 });
 async function load(){
@@ -213,6 +225,9 @@ async function load(){
   if(l.error){say(l.error.message,true);return}
   staffList=l.data||[];
   try{const rv=await db.rpc('staff_list_self_ratings');reviews=rv.error||!Array.isArray(rv.data)?[]:rv.data}catch{reviews=[]}
+  // Etappe 17b: eingereichte Wertung als öffentlicher Wert (beste Karte ohne diesen Boxer, oder seine, falls besser)
+  await Promise.all(reviews.filter(r=>!r.is_self&&r.boxer_id).map(async r=>{try{const x=await db.rpc('get_rating_card_scale',{p_boxer_id:r.boxer_id});
+   if(!x.error&&x.data){const ov=Number(r.overall)||0;r.pub_overall=P.publicSummary({overall:ov,categories:{}},Math.max(Number(x.data.best_others)||0,ov)).overall}}catch{}}));
   const q=new URLSearchParams(location.search),want=q.get('boxer'),wantReview=q.get('selbst');
   if(wantReview&&!edit&&!openedFromLink){openedFromLink=true;render();await openReview(wantReview);if(edit)return}
   if(want&&!edit){render();await openEditor(want);return}

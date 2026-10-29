@@ -1,7 +1,7 @@
 'use strict';
 // Chromium test with mocked Supabase SDK (no real account, no server writes) for Etappe 15 (öffentliche Kartenwerte, beste = 92):
 // Boxer sieht auf der Bewertungsseite echte Werte, öffentliche in Klammern, mit Erklärung; Trainer-Liste und Vorschau im Formular
-// zeigen den öffentlichen Wert (beste Karte ohne den Boxer oder seine neue Wertung, falls besser).
+// zeigen nur den öffentlichen Wert (Etappe 17b; beste Karte ohne den Boxer oder seine neue Wertung, falls besser).
 const assert=require('node:assert/strict'),fs=require('node:fs'),http=require('node:http'),path=require('node:path');
 const {chromium}=require('playwright');
 const root=process.cwd();
@@ -68,17 +68,18 @@ function injected(cfg){
  // B: Trainer – Liste mit echtem und öffentlichem Wert; Vorschau rechnet öffentlich
  ({p,errors}=await open({role:'coach'},'bewertung.html'));
  await p.waitForSelector('[data-open="p-ben"]');
- assert.match(await p.textContent('[data-open="p-ben"]'),/65[\s\S]*Ben[\s\S]*\(92\)/);
+ // Etappe 17b: Trainer sehen nur den öffentlichen Wert
+ assert.equal((await p.textContent('[data-open="p-ben"] .tlp-chip')).trim(),'92');assert.doesNotMatch(await p.textContent('[data-open="p-ben"]'),/65|\(/);
  assert.doesNotMatch(await p.textContent('[data-open="p-sasha"]'),/\(/);
  await p.click('[data-open="p-sasha"]');
  await p.waitForSelector('.tlp-preview');
  assert.deepEqual((await p.evaluate(()=>window.__calls)).find(c=>c[0]==='get_rating_card_scale')[1],{p_boxer_id:'p-sasha'});
- // Alle Noten 10 → echt 50; beste ohne Sasha 60 → öffentlich 50×92/60 = 77
- assert.match(await p.textContent('.tlp-preview .tlp-big'),/50\s*\(77\)/);
- assert.match(await p.textContent('[data-cat="OFF"]'),/50\(77\)/);
+ // Alle Noten 10 → echt 50; beste ohne Sasha 60 → öffentlich 50×92/60 = 77 (Trainer sehen nur den öffentlichen Wert)
+ assert.match(await p.textContent('.tlp-preview .tlp-big'),/^\s*77\s*$/);assert.equal((await p.textContent('.tlp-preview .tlp-ov')).trim(),'77');
+ assert.match(await p.textContent('[data-cat="OFF"]'),/^77$/);
  // Sasha wird besser als die beste Karte → öffentlich 92
  await p.evaluate(()=>{for(const r of document.querySelectorAll('[data-range]')){r.value='20';r.dispatchEvent(new Event('input',{bubbles:true}))}});
- assert.match(await p.textContent('.tlp-preview .tlp-big'),/99\s*\(92\)/);
+ assert.match(await p.textContent('.tlp-preview .tlp-big'),/^\s*92\s*$/);
  await shot(p,'15-vorschau');await noOverflow(p);assert.deepEqual(errors,[]);
 
  for(const c of ctxs)await c.close();
