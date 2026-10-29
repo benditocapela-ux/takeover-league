@@ -126,14 +126,16 @@ function injected(cfg){
  assert.ok(!(await p.evaluate(()=>window.__calls)).some(c=>c[0]==='get_performance_card'),'guest triggers no card request');
  await context.close();
 
- // F: Boxervergleich – Karten nebeneinander, Bereiche, Stil-Overlay (eigener Stil gold)
+ // F: Boxervergleich – Karten im Ring (Arena), Bereiche, Stil-Overlay
  ({p,errors,context}=await page({role:'boxer',signedIn:true,me:'Ben'}));
  await p.goto(base+'boxer-compare.html?left=Anna&right=Ben');await p.waitForSelector('.tlp-compare:not([hidden]) .tlp-radar-cmp');
  const cmp=await p.textContent('.tlp-compare');
  assert.match(cmp,/Ben \(du\)/);assert.equal(await p.locator('.tlp-compare .tlp-card').count(),2);
- assert.equal((await p.textContent('.tlp-legend span:first-child')).trim(),'Anna','order follows the selection');
- assert.equal(await p.locator('.tlp-legend span:last-child .sw.g').count(),1,'own boxer (right) is gold');
- assert.equal(await p.locator('.tlp-vs-side.b .tlp-name').textContent(),'ANNA');
+ // Etappe 16: Arena – rote Ecke = erste Wahl, blaue Ecke = zweite (ohne Galerie über get_performance_card)
+ assert.equal((await p.textContent('.tla-corner.a .tla-name')).trim(),'Anna','order follows the selection');
+ assert.match(await p.textContent('.tla-corner.b .tla-name'),/Ben \(du\)/);
+ assert.equal(await p.locator('.tla-corner.a .tlp-name').textContent(),'ANNA');
+ assert.match(await p.textContent('.tla-verdict'),/Nach Karten/);
  assert.match(cmp,/% gleicher Stil/);assert.equal(await p.locator('.tlp-radar-cmp .tlp-overlap').count(),1);
  assert.match(await p.textContent('.tlp-cmprow.total'),/70[\s\S]*70/);
  const sim=await p.evaluate(()=>window.TLPerf.similarity({o:85,v:30,c:70,p:15,s:60,a:25},{o:20,v:45,c:18,p:80,s:20,a:63}));

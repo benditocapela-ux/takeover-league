@@ -41,9 +41,9 @@ assert.match(bew,/type="range" min="1" max="20" step="1"/);
 assert.match(bew,/p_scale:20\}/);assert.doesNotMatch(bew,/data-step|tlp-step/);
 assert.match(bew,/aria-valuetext/);
 assert.match(bew,/P\.to20\(cur\.scores\[k\],baseScale\)/,'old ratings doubled when editing');
-// Vergleich: nur über get_performance_card, Namen escaped, nur für Angemeldete
+// Vergleich: nur über get_card_gallery / get_performance_card, Namen escaped, nur für Angemeldete
 assert.match(cmp,/takeover-performance\.js/);
 const m=js.slice(js.indexOf('async function mountCompare'),js.indexOf('async function mountAwards'));
-assert.deepEqual([...new Set([...m.matchAll(/rpc\('([a-z_]+)'/g)].map(x=>x[1]))],['get_performance_card']);
+assert.deepEqual([...new Set([...m.matchAll(/rpc\('([a-z_]+)'/g)].map(x=>x[1]))],['get_card_gallery','get_performance_card']); // Etappe 16: Kartengalerie, Einzelkarte als Rückfall
 assert.match(m,/if\(!signedIn\)/);assert.doesNotMatch(m,/\$\{x\.n\}|\$\{a\}|\$\{b\}/,'names always escaped');
 console.log('PASS: Etappe 7a – Regler 1–20 mit 25×5 Stufentexten, Vorschau = Server, bisherige 10er-Bewertungen unverändert, Rollback geschützt, Vergleich nur für Angemeldete über get_performance_card');

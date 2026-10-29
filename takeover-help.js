@@ -73,8 +73,10 @@ const REGISTERS=[
   'Das Monatsranking zählt die Punkte des Monats und startet jeden Monat neu.','Die Level-Rangliste zeigt die EXP über alle Zeit.',
   'Im Punkteverlauf siehst du, woher die Punkte kommen.',
   'Stehst du auf dem Podium, kannst du direkt darunter ein eigenes Emote neben deinem Platz einschalten – oder «Kein Emote» wählen.']},
- {key:'vergleich',page:'boxer-compare.html',group:'liga',icon:'⚖️',title:'Boxervergleich',summary:'Zwei Boxer direkt nebeneinander.',points:[
-  'Wähle zwei Boxer und vergleiche Punkte, EXP und Level.','Angemeldet siehst du auch die Spielerkarten und eure Boxstile übereinander – dein Stil in Gold.',
+ {key:'vergleich',page:'boxer-compare.html',group:'liga',icon:'⚖️',title:'Boxervergleich',summary:'Alle Karten der Liga – zwei in den Ring schicken.',points:[
+  'Angemeldet siehst du alle Spielerkarten von der besten zur schwächsten, sortierbar nach Gesamt oder einer Kategorie.',
+  'Tippe zwei Karten an: rote und blaue Ecke, Kampfplakat, Punktzettel (jede Kategorie eine Runde), Tale of the Tape, Kartenprofil und Boxstil.',
+  'Darunter: Liga-Bilanz (Punkte, EXP) und eure direkten Duelle. Der Kartenvergleich ist kein echtes Duell.',
   'Mit «Merken» speicherst du Favoriten auf diesem Gerät.']},
  {key:'awards',page:'awards.html',group:'liga',icon:'🏅',title:'Auszeichnungen & Saisons',summary:'Monatsauszeichnungen, Saisons und Hall of Fame.',points:[
   'Monatsauszeichnungen beruhen nur auf bestätigten Trainings.','Unter «Saisons & Hall of Fame» stehen die offiziellen Ergebnisse.']},

@@ -350,54 +350,147 @@ async function mountPodium(){
  await load();decorate();
 }
 /* ---- Etappe 7a: Spielerkarte und Boxstil im Boxervergleich ---- */
+/* ---- Etappe 16: Kartenarena – alle Karten von der besten zur schlechtesten, zwei antippen, Kampfplakat, Punktzettel ---- */
+// Rote Ecke = erste Wahl (links), blaue Ecke = zweite Wahl (rechts). Kartenwerte sind die öffentlichen (beste Karte = 92).
+const SORTS=[['overall','Gesamt'],...CATS.map(c=>[c.k,c.n])];
+const cardVal=(d,k)=>{const r=d&&d.rating;if(!r)return null;return k==='overall'?Number(r.overall):Number(r.categories&&r.categories[k])};
+// Punktzettel wie im Boxen: jede Kategorie ist eine Runde, Sieger 10, Verlierer 9, gleich 10:10.
+function scorecard(ra,rb){
+ const rounds=CATS.map((c,i)=>{const u=Number(ra.categories[c.k])||0,v=Number(rb.categories[c.k])||0;return {i:i+1,k:c.k,n:c.n,u,v,a:u>=v?10:9,b:v>=u?10:9}});
+ const ta=rounds.reduce((t,r)=>t+r.a,0),tb=rounds.reduce((t,r)=>t+r.b,0);
+ return {rounds,ta,tb,wa:rounds.filter(r=>r.u>r.v).length,wb:rounds.filter(r=>r.v>r.u).length};
+}
+function cardHex(a,b,na,nb,size){
+ const R=92,keys=CATS.map(c=>c.k),pt=(i,val)=>{const t=-Math.PI/2+i*Math.PI/3,r=R*Math.max(0,Math.min(99,val))/99;return [(Math.cos(t)*r).toFixed(1),(Math.sin(t)*r).toFixed(1)]};
+ const ring=f=>keys.map((_,i)=>pt(i,f).join(',')).join(' '),poly=v=>keys.map((k,i)=>pt(i,Number(v[k])||0).join(',')).join(' ');
+ const labels=keys.map((k,i)=>{const [x,y]=pt(i,128);return `<text x="${x}" y="${(+y+2).toFixed(1)}" text-anchor="middle" class="tlp-rl">${k}</text><text x="${x}" y="${(+y+17).toFixed(1)}" text-anchor="middle" class="tlp-rv2"><tspan class="g">${Number(a[k])||0}</tspan> · <tspan class="b">${Number(b[k])||0}</tspan></text>`}).join('');
+ return `<svg class="tlp-radar tla-hex" viewBox="-160 -150 320 300" width="${size||300}" role="img" aria-label="Kartenwerte im Vergleich: ${keys.map(k=>k+' '+esc(na)+' '+(Number(a[k])||0)+', '+esc(nb)+' '+(Number(b[k])||0)).join('; ')}">
+  ${[33,66,99].map(f=>`<polygon points="${ring(f)}" class="tlp-grid${f===99?' outer':''}"/>`).join('')}
+  ${keys.map((_,i)=>{const [x,y]=pt(i,99);return `<line x1="0" y1="0" x2="${x}" y2="${y}" class="tlp-grid"/>`}).join('')}
+  <polygon points="${poly(b)}" class="tlp-shape2"/><polygon points="${poly(a)}" class="tlp-shape"/>${labels}</svg>`;
+}
 async function mountCompare(){
- const results=document.getElementById('results'),left=document.getElementById('left'),right=document.getElementById('right');
- if(!results||!left||!right)return;
- const box=document.createElement('section');box.className='panel tlp-compare';box.hidden=true;box.setAttribute('aria-label','Spielerkarte und Boxstil im Vergleich');
- results.after(box);
+ const left=document.getElementById('left'),right=document.getElementById('right'),status=document.getElementById('status');
+ if(!left||!right||!status)return;
+ const q0=new URLSearchParams(location.search),want=[q0.get('left'),q0.get('right')].filter(Boolean); // vor allen Ladevorgängen merken
+ const gal=document.createElement('section');gal.className='tla-gallery';gal.hidden=true;gal.setAttribute('aria-labelledby','tlaGalleryTitle');
+ const arena=document.createElement('section');arena.className='tlp-compare tla-arena';arena.hidden=true;arena.setAttribute('aria-label','Kartenvergleich');
+ const bar=document.createElement('div');bar.className='tla-bar';bar.hidden=true;
+ status.after(gal);gal.after(arena);document.body.append(bar);
  const db=await client();
  const s=await db.auth.getSession(),signedIn=!!(s.data&&s.data.session);
- let seq=0,timer=null;
- const render=async()=>{
-  const a=left.value,b=right.value;
-  if(!a||!b||a===b){box.hidden=true;return}
-  if(!signedIn){box.hidden=false;box.innerHTML='<h2>Spielerkarte und Boxstil</h2><p class="tlp-note">Die Spielerkarten und den Boxstil-Vergleich siehst du, wenn du <a href="./login.html">angemeldet</a> bist.</p>';return}
+ let items=[],lks={},sortKey='overall',sel=[],gallery=false,seq=0,lastPair='',muted=false;
+ const lc=n=>String(n||'').toLocaleLowerCase('de-CH');
+ const find=n=>items.find(x=>lc(x.display_name)===lc(n));
+ if(signedIn){
+  try{const r=await db.rpc('get_card_gallery');if(!r.error&&Array.isArray(r.data)&&r.data.length){items=r.data;gallery=true}}catch(_){}
+  if(gallery){try{lks=await looks(db,items.map(x=>x.display_name))}catch(_){lks={}}}
+ }
+ const posOf=d=>d&&d.style&&d.style.scores?styleType(d.style.scores).pos:'BOX';
+ const ranked=()=>{const k=sortKey;return items.slice().sort((x,y)=>{const u=cardVal(x,k),v=cardVal(y,k);if(u===null&&v===null)return lc(x.display_name)<lc(y.display_name)?-1:1;if(u===null)return 1;if(v===null)return -1;return v-u||(lc(x.display_name)<lc(y.display_name)?-1:1)})};
+ const placeOf=n=>{const r=ranked().filter(x=>cardVal(x,sortKey)!==null);const i=r.findIndex(x=>lc(x.display_name)===lc(n));return i<0?null:{i:i+1,of:r.length}};
+ const cornerOf=n=>{const i=sel.findIndex(x=>lc(x)===lc(n));return i===0?'a':i===1?'b':''};
+ const cardHtml=(d,n,w)=>d&&d.rating?card({name:n,overall:d.rating.overall,categories:d.rating.categories,pos:posOf(d),delta:d.rating.delta,width:w,look:lks[n]||lks[Object.keys(lks).find(k=>lc(k)===lc(n))]})
+  :`<div class="tlp-card-empty tla-blank" style="--fw:${w}px"><b>${esc(n)}</b><span class="tlp-note">noch keine Karte</span></div>`;
+ function renderGallery(){
+  if(!gallery){gal.hidden=true;return}
+  const list=ranked();let place=0;
+  gal.innerHTML=`<div class="tla-head"><h2 id="tlaGalleryTitle">Kartenrangliste</h2><p class="tlp-note">Von der besten zur schwächsten Karte. Tippe zwei Karten an und schick sie in den Ring.</p></div>
+   <div class="tla-sort" role="group" aria-label="Sortieren nach">${SORTS.map(([k,l])=>`<button type="button" class="tla-chip" data-sort="${k}" aria-pressed="${k===sortKey}">${esc(l)}</button>`).join('')}</div>
+   <ol class="tla-grid">${list.map(d=>{const n=d.display_name,c=cornerOf(n),v=cardVal(d,sortKey),p=v===null?null:++place;
+    return `<li><button type="button" class="tla-item${c?' sel '+c:''}${d.is_me?' me':''}${p===1?' first':''}" data-pick="${esc(n)}" aria-pressed="${!!c}" aria-label="${esc(n)}${p?', Platz '+p:''}${v!==null?', '+esc(SORTS.find(x=>x[0]===sortKey)[1])+' '+v:', noch keine Karte'}${c?', '+(c==='a'?'rote':'blaue')+' Ecke':''}">
+     <span class="tla-place" aria-hidden="true">${p??'–'}</span>${cardHtml(d,n,112)}
+     <span class="tla-pick" aria-hidden="true">${c==='a'?'Rote Ecke':c==='b'?'Blaue Ecke':d.is_me?'Du':''}</span>${sortKey!=='overall'&&v!==null?`<span class="tla-sv">${esc(sortKey)} ${v}</span>`:''}</button></li>`}).join('')}</ol>`;
+  gal.hidden=false;
+ }
+ function renderBar(){
+  if(!gallery||!sel.length){bar.hidden=true;return}
+  bar.innerHTML=`<span class="tla-barnames"><b class="a">${esc(sel[0])}</b><span class="tla-barvs">vs</span>${sel[1]?`<b class="b">${esc(sel[1])}</b>`:'<span class="tlp-note">zweite Karte wählen</span>'}</span>${sel.length===2?'<button type="button" class="tlp-btn" data-act="ring">Zum Ring</button>':`<button type="button" class="tlp-btn ghost" data-act="clear">Leeren</button>`}`;
+  bar.hidden=arenaVisible&&sel.length===2;
+ }
+ let arenaVisible=false;
+ if(typeof IntersectionObserver==='function')new IntersectionObserver(es=>{arenaVisible=es.some(e=>e.isIntersecting);renderBar()}).observe(arena);
+ const syncSelects=()=>{
+  muted=true;
+  for(const [el,n] of [[left,sel[0]],[right,sel[1]]]){const ok=n&&[...el.options].some(o=>o.value===n);el.value=ok?n:'';el.dispatchEvent(new Event('change',{bubbles:true}))}
+  muted=false;
+  const p=new URLSearchParams();if(sel[0])p.set('left',sel[0]);if(sel[1])p.set('right',sel[1]);
+  history.replaceState(null,'',location.pathname+(p.size?'?'+p.toString():''));
+ };
+ async function dataFor(n){
+  const d=find(n);if(d||gallery)return d||null;
+  const r=await db.rpc('get_performance_card',{p_display_name:n}).catch(()=>({error:true}));return r.error?null:r.data;
+ }
+ async function renderArena(){
+  const [a,b]=sel;
+  if(!a||!b||lc(a)===lc(b)){arena.hidden=true;lastPair='';return}
+  if(!signedIn){arena.hidden=false;arena.innerHTML='<div class="panel"><h2>Spielerkarten im Ring</h2><p class="tlp-note">Die Karten, den Punktzettel und den Boxstil-Vergleich siehst du, wenn du <a href="./login.html">angemeldet</a> bist.</p></div>';return}
   const my=++seq;
-  const [ra,rb]=await Promise.all([db.rpc('get_performance_card',{p_display_name:a}),db.rpc('get_performance_card',{p_display_name:b})]);
+  const [A,B]=await Promise.all([dataFor(a),dataFor(b)]);
+  if(!gallery){const l=await looks(db,[a,b]).catch(()=>({}));Object.assign(lks,l)}
   if(my!==seq)return;
-  const A=ra.error?null:ra.data,B=rb.error?null:rb.data,lks=await looks(db,[a,b]);
-  if(my!==seq)return;
-  if(!A&&!B||!(A&&(A.rating||A.style))&&!(B&&(B.rating||B.style))){box.hidden=true;return}
-  // Reihenfolge wie in der Auswahl; Farbe: der eigene Boxer ist gold, sonst der linke.
-  const meRight=!!(B&&B.is_me&&!(A&&A.is_me));
-  const sides=[{d:A,n:a,c:meRight?'b':'g'},{d:B,n:b,c:meRight?'g':'b'}];
-  const G=sides.find(x=>x.c==='g'),L=sides.find(x=>x.c==='b');
-  const posOf=d=>d&&d.style&&d.style.scores?styleType(d.style.scores).pos:'BOX';
-  const cardOf=x=>x.d&&x.d.rating?card({name:x.n,overall:x.d.rating.overall,categories:x.d.rating.categories,pos:posOf(x.d),width:150,look:lks[x.n]})
-   :`<div class="tlp-card-empty"><b>${esc(x.n)}</b><span class="tlp-note">noch keine Coach-Bewertung</span></div>`;
-  const legend=`<div class="tlp-legend">${sides.map(x=>`<span><i class="sw ${x.c}"></i>${esc(x.n)}${x.d&&x.d.is_me?' (du)':''}</span>`).join('')}</div>`;
-  let html=`<h2>Spielerkarte und Boxstil</h2>${legend}<div class="tlp-vs">${sides.map(x=>`<div class="tlp-vs-side ${x.c}">${cardOf(x)}</div>`).join('')}</div>`;
-  const [lr,rr]=sides.map(x=>x.d&&x.d.rating);
-  if(lr&&rr){
-   const [lc,rc]=sides.map(x=>x.c);
-   const rows=[['Gesamt',lr.overall,rr.overall],...CATS.map(c=>[c.n,lr.categories[c.k],rr.categories[c.k]])];
-   html+=`<div class="tlp-cmp">${rows.map(([n,u,v])=>`<div class="tlp-cmprow${n==='Gesamt'?' total':''}"><b class="l ${lc}${u>v?' lead':''}">${u}</b><span class="tlp-cmpbar"><i class="l ${lc}" style="width:${Math.max(0,Math.min(99,u))/2}%"></i><i class="r ${rc}" style="width:${Math.max(0,Math.min(99,v))/2}%"></i></span><b class="r ${rc}${v>u?' lead':''}">${v}</b><span class="tlp-cmpname">${esc(n)}</span></div>`).join('')}</div>`;
-  }
-  const gs=G.d&&G.d.style&&G.d.style.scores,ls=L.d&&L.d.style&&L.d.style.scores;
-  if(gs&&ls){
-   const sim=similarity(gs,ls);
-   html+=`<div class="tlp-center">${radarCompare(gs,ls,{goldName:G.n,blueName:L.n,size:300})}
-    <p class="tlp-note"><b>${sim}% gleicher Stil.</b> Die helle Fläche zeigt, wo sich eure Stile überlappen. ${esc(G.n)}: ${esc(styleType(gs).title)} · ${esc(L.n)}: ${esc(styleType(ls).title)}</p></div>`;
+  if(!A&&!B){arena.hidden=true;return}
+  const pair=lc(a)+'|'+lc(b),fresh=pair!==lastPair;lastPair=pair;
+  const ra=A&&A.rating,rb=B&&B.rating,pa=gallery?placeOf(a):null,pb=gallery?placeOf(b):null;
+  const side=(d,n,c,pl)=>`<div class="tla-corner ${c}"><span class="tla-cornername">${c==='a'?'Rote Ecke':'Blaue Ecke'}</span>${cardHtml(d,n,150)}
+   <b class="tla-name">${esc(n)}${d&&d.is_me?' <span class="tlp-note">(du)</span>':''}</b>${pl?`<span class="tla-rank">Platz ${pl.i} von ${pl.of}</span>`:''}</div>`;
+  let html=`<div class="tla-poster${fresh?' go':''}"><div class="tla-ropes" aria-hidden="true"><i></i><i></i><i></i></div>${side(A,a,'a',pa)}<div class="tla-vs" aria-hidden="true">VS</div>${side(B,b,'b',pb)}</div>`;
+  if(ra&&rb){
+   const sc=scorecard(ra,rb),win=sc.ta>sc.tb?a:sc.tb>sc.ta?b:null,wc=sc.ta>sc.tb?'a':'b';
+   html+=`<p class="tla-verdict">${win?`Nach Karten gewinnt <b class="${wc}">${esc(win)}</b> ${Math.max(sc.ta,sc.tb)}:${Math.min(sc.ta,sc.tb)} – ${Math.max(sc.wa,sc.wb)} von 6 Runden.`:`Nach Karten unentschieden, ${sc.ta}:${sc.tb}.`}</p>
+    <p class="tlp-note tla-fine">Ein Kartenvergleich, kein echtes Duell: jede Kategorie zählt als Runde, 10 für den besseren Wert, 9 für den anderen.</p>
+    <div class="tla-block"><h3>Punktzettel</h3><table class="tla-score"><thead><tr><th scope="col" class="a">${esc(a)}</th><th scope="col">Runde</th><th scope="col" class="b">${esc(b)}</th></tr></thead>
+     <tbody>${sc.rounds.map(r=>`<tr><td class="a${r.a>r.b?' won':''}">${r.a}</td><th scope="row"><span class="tla-rnd">${r.i}</span> ${esc(r.n)}</th><td class="b${r.b>r.a?' won':''}">${r.b}</td></tr>`).join('')}</tbody>
+     <tfoot><tr><td class="a${sc.ta>sc.tb?' won':''}">${sc.ta}</td><th scope="row">Total</th><td class="b${sc.tb>sc.ta?' won':''}">${sc.tb}</td></tr></tfoot></table></div>`;
+   const rows=[['Gesamt',ra.overall,rb.overall],...CATS.map(c=>[c.n,ra.categories[c.k],rb.categories[c.k]])];
+   html+=`<div class="tla-block"><h3>Tale of the Tape</h3><div class="tlp-cmp">${rows.map(([n,u,v])=>`<div class="tlp-cmprow${n==='Gesamt'?' total':''}"><b class="l g${u>v?' lead':''}">${u}</b><span class="tlp-cmpbar"><i class="l g" style="width:${Math.max(0,Math.min(99,u))/2}%"></i><i class="r b" style="width:${Math.max(0,Math.min(99,v))/2}%"></i></span><b class="r b${v>u?' lead':''}">${v}</b><span class="tlp-cmpname">${esc(n)}${u!==v?` <span class="tla-diff ${u>v?'a':'b'}">+${Math.abs(u-v)}</span>`:''}</span></div>`).join('')}</div></div>`;
+   const edge=(x,y)=>CATS.map(c=>({c,d:(Number(x.categories[c.k])||0)-(Number(y.categories[c.k])||0)})).sort((p,q)=>q.d-p.d)[0];
+   const ea=edge(ra,rb),eb=edge(rb,ra);
+   const line=(n,e,c,o)=>e.d>0?`<li class="${c}"><b>${esc(n)}</b> hat den grössten Vorsprung in <b>${esc(e.c.n)}</b> (+${e.d}).</li>`:`<li class="${c}"><b>${esc(n)}</b> liegt in keiner Kategorie vorne – am knappsten in <b>${esc(e.c.n)}</b>${e.d<0?' ('+e.d+')':''}.</li>`;
+   html+=`<div class="tla-block tla-two"><div><h3>Kartenprofil</h3><div class="tlp-center">${cardHex(ra.categories,rb.categories,a,b,300)}</div></div>
+    <div><h3>Wo es entschieden wird</h3><ul class="tla-edges">${line(a,ea,'a')}${line(b,eb,'b')}</ul></div></div>`;
   }else{
-   const miss=[!gs?G.n:null,!ls?L.n:null].filter(Boolean);
+   const miss=[!ra?a:null,!rb?b:null].filter(Boolean);
+   html+=`<p class="tlp-note">${miss.map(esc).join(' und ')} ${miss.length>1?'haben':'hat'} noch keine Karte – Punktzettel und Kartenprofil gibt es mit zwei Karten.</p>`;
+  }
+  const sa=A&&A.style&&A.style.scores,sb=B&&B.style&&B.style.scores;
+  if(sa&&sb){
+   html+=`<div class="tla-block"><h3>Boxstil</h3><div class="tlp-center">${radarCompare(sa,sb,{goldName:a,blueName:b,size:300})}
+    <p class="tlp-note"><b>${similarity(sa,sb)}% gleicher Stil.</b> Die helle Fläche zeigt, wo sich die Stile überlappen. ${esc(a)}: ${esc(styleType(sa).title)} · ${esc(b)}: ${esc(styleType(sb).title)}</p></div></div>`;
+  }else{
+   const miss=[!sa?a:null,!sb?b:null].filter(Boolean);
    html+=`<p class="tlp-note">Boxstil-Vergleich: ${miss.map(esc).join(' und ')} ${miss.length>1?'haben':'hat'} den Boxstil-Test noch nicht gemacht.</p>`;
   }
-  box.innerHTML=html;box.hidden=false;
+  const enc=encodeURIComponent;
+  html+=`<div class="tla-actions"><button type="button" class="tlp-btn ghost" data-act="swap">Ecken tauschen</button>${gallery&&items.length>2?'<button type="button" class="tlp-btn ghost" data-act="random">Zufälliges Duell</button>':''}${gallery?'<button type="button" class="tlp-btn ghost" data-act="clear">Neue Auswahl</button>':''}<button type="button" class="tlp-btn ghost" data-act="link">Link kopieren</button>
+   <a class="tlp-btn ghost" href="./boxer-profile.html?name=${enc(a)}">Profil ${esc(a)}</a><a class="tlp-btn ghost" href="./boxer-profile.html?name=${enc(b)}">Profil ${esc(b)}</a></div>`;
+  arena.innerHTML=html;arena.hidden=false;
+ }
+ const update=(scroll)=>{renderGallery();renderBar();renderArena().then(()=>{renderBar();if(scroll&&!arena.hidden)arena.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'})}).catch(e=>console.warn('Vergleich nicht verfügbar:',e))};
+ const pick=n=>{const i=sel.findIndex(x=>lc(x)===lc(n));if(i>=0)sel.splice(i,1);else if(sel.length<2)sel.push(n);else sel[1]=n;syncSelects();update(sel.length===2)};
+ const onAct=async(t)=>{
+  const act=t.dataset.act;
+  if(act==='swap'){sel=[sel[1],sel[0]].filter(Boolean);syncSelects();update(false)}
+  else if(act==='clear'){sel=[];syncSelects();update(false);gal.scrollIntoView({block:'start'})}
+  else if(act==='ring')arena.scrollIntoView({behavior:'smooth',block:'start'});
+  else if(act==='random'){const pool=items.filter(x=>x.rating).map(x=>x.display_name);if(pool.length<2)return;const i=Math.floor(Math.random()*pool.length);let j=Math.floor(Math.random()*(pool.length-1));if(j>=i)j++;sel=[pool[i],pool[j]];syncSelects();update(true)}
+  else if(act==='link'){try{await navigator.clipboard.writeText(location.href);status.textContent='Link kopiert – damit öffnet sich genau dieses Duell.'}catch(_){status.textContent='Link: '+location.href}}
  };
- const schedule=()=>{clearTimeout(timer);timer=setTimeout(()=>render().catch(e=>console.warn('Vergleich nicht verfügbar:',e)),120)};
- new MutationObserver(schedule).observe(results,{childList:true});
- left.addEventListener('change',schedule);right.addEventListener('change',schedule);
- schedule();
+ gal.addEventListener('click',e=>{const s=e.target.closest('[data-sort]');if(s){sortKey=s.dataset.sort;renderGallery();if(!arena.hidden)renderArena();return}const b=e.target.closest('[data-pick]');if(b)pick(b.dataset.pick)});
+ arena.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(t)onAct(t)});
+ bar.addEventListener('click',e=>{const t=e.target.closest('[data-act]');if(t)onAct(t)});
+ // Auswahl über die Listen (Gäste, ohne Galerie) oder aus Links (?left=…&right=…)
+ const fromSelects=()=>{if(muted||gallery)return;const v=[left.value,right.value].filter(Boolean);if(gallery&&!v.length&&sel.length)return;sel=v;update(false)};
+ left.addEventListener('change',fromSelects);right.addEventListener('change',fromSelects);
+ if(gallery){
+  document.body.classList.add('tla-mode');
+  sel=want.map(n=>find(n)).filter(Boolean).map(d=>d.display_name).slice(0,2);
+  if(sel.length===2&&lc(sel[0])===lc(sel[1]))sel.pop();
+  update(false);
+  // Die Seite füllt die Listen erst nach dem Laden der Liga-Daten: dann Auswahl übernehmen, ohne sie zu überschreiben.
+  const mo=new MutationObserver(()=>{if(left.options.length>1){mo.disconnect();syncSelects()}});mo.observe(left,{childList:true});
+  if(left.options.length>1)syncSelects();
+ }else{sel=[left.value,right.value].filter(Boolean);update(false)}
 }
 /* ---- Etappe 7d: Card of the Week / Month / Player of the Year auf dem Podium ---- */
 async function mountAwards(){
@@ -509,6 +602,6 @@ function boot(){
  run(mountLooks);
  if(screen==='boxer-compare')run(mountCompare);
 }
-window.TLPerf={CARD_TARGET,publicSummary,pubOf,client,looks,holoLib,AWARD_LABEL,CATS,SKILL,SKILL_KEYS,AX,QUESTIONS,BANDS,BAND_NAMES,band,to20,esc,summary,tier,styleType,radarSVG,radarCompare,similarity,deltaTag,fmtDate,card,initials};
+window.TLPerf={scorecard,cardHex,CARD_TARGET,publicSummary,pubOf,client,looks,holoLib,AWARD_LABEL,CATS,SKILL,SKILL_KEYS,AX,QUESTIONS,BANDS,BAND_NAMES,band,to20,esc,summary,tier,styleType,radarSVG,radarCompare,similarity,deltaTag,fmtDate,card,initials};
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',boot);else boot();
 })();
