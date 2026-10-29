@@ -1200,3 +1200,13 @@ body[data-tl-screen="boxer-profile"] .hero .tl-kg-meta{margin-top:6px}
 .tl-kg-studio .kg-card{min-height:150px}
 .studio-identity.tl-kg-has-card #studioBoxerName{display:none!important}
 @media(max-width:420px){.tl-kg-studio .kg-card-body{padding:var(--sp-3,12px)}}
+/* ---- Etappe 18: Bonus-EXP (Admin, Kampfgeist-Shop → Verwaltung) ---- */
+.kg-bonus{display:grid;gap:var(--sp-3)}
+.kg-bonus .tlp-field{display:grid;gap:6px}
+.kg-check{display:flex;align-items:center;gap:10px;min-height:44px;font-weight:600}
+.kg-check input{width:22px;height:22px;accent-color:var(--gold)}
+.kg-bonus .kg-chips{flex-wrap:wrap;overflow:visible}
+.kg-bamt{display:block;font-weight:700;color:var(--gold)}
+.kg-revoked .kg-bamt{color:var(--text-2);text-decoration:line-through}
+.kg-revoke-det{width:100%}
+.kg-revoke-det>summary{cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:14px;font-weight:700;color:var(--text-2)}
