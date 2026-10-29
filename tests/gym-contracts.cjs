@@ -18,7 +18,8 @@ for(const r of [...rpcOf(checkin),...rpcOf(praesenz),...rpcOf(plan)])assert.ok(d
 for(const [n,t] of [['checkin.html',checkin],['praesenz.html',praesenz],['wochenplan.html',plan]]){
  assert.doesNotMatch(t,/service_role|sb_secret_/i,n+': privileged key');
  const tables=[...t.matchAll(/\.from\('([a-z_0-9]+)'\)/g)].map(m=>m[1]);
- assert.ok(tables.every(x=>x==='training_types'),n+': only training_types may be read directly, got '+tables);
+ // Etappe 17a: der Wochenplan liest zusätzlich den Schalter club_checkin_only (nur lesen, wie boxer.html)
+ assert.ok(tables.every(x=>x==='training_types'||x==='league_feature_flags'),n+': only training_types and feature flags may be read directly, got '+tables);
  assert.doesNotMatch(t,/\.(insert|update|upsert|delete)\(/,n+': no direct table writes');
  assert.ok(t.indexOf('takeover-performance.js')<t.indexOf('<script type="module">'),n+': library before page script');
  assert.match(t,/data-tl-screen="/);assert.match(t,/takeover-navigation\.js/);

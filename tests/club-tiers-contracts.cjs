@@ -70,7 +70,7 @@ for(const r of ['get_club_schedule','staff_set_training_tier','staff_training_ti
 for(const r of ['staff_open_club_session','staff_update_gym_session','get_club_schedule'])assert.ok(rpcOf(checkin).includes(r),'checkin '+r);
 for(const r of ['admin_save_club_slot','get_club_schedule'])assert.ok(rpcOf(plan).includes(r),'plan '+r);
 assert.match(coach,/clubSched=r\.error\|\|!r\.data\|\|!r\.data\.enabled\|\|r\.data\.preview\?null:r\.data/,'tier controls only when gym is on');
-assert.match(boxer,/feature_key','gym_training'[\s\S]{0,260}types=types\.filter\(x=>!x\.club_only\)/,'club types hidden for boxers');
+assert.match(boxer,/flagOn\('gym_training'\)&&flagOn\('club_checkin_only'\)&&types\.some\(x=>x\.club_only\)\)\{[\s\S]{0,120}types=types\.filter\(x=>!x\.club_only\)/,'club types hidden only with both switches (Etappe 17a)');
 assert.match(questsPage,/filter\(q=>q\.available\|\|q\.claimed\|\|!q\.only_groups\)/,'group-only quests hidden for other groups');
 assert.match(questsPage,/pflicht_days:'Pflichttrainings \(Tage\)'/);
 for(const [n,t] of [['checkin',checkin],['wochenplan',plan],['praesenz',praesenz]]){
