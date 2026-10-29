@@ -67,6 +67,7 @@ jobs:
       - run: node tests/card-scale-browser.cjs
       - run: node tests/club-types-selfservice-browser.cjs
       - run: node tests/scaled-everywhere-browser.cjs
+      - run: node tests/kg-cards-everywhere-browser.cjs
       - run: node tests/admin-bonus-exp-browser.cjs
       - run: node tests/card-arena-browser.cjs
       - run: node tests/looks-everywhere-browser.cjs
