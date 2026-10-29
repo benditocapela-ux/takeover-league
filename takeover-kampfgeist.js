@@ -83,13 +83,26 @@ function card(look,opts){
  return `<div class="kg-card">${bannerHTML(look.banner&&look.banner.design)}<div class="kg-card-body">${avatarBox(look,opts.size||112,{photo:opts.photo})}<div class="kg-card-text">${titleTag(look.titel)}<b class="kg-name">${esc(opts.name||look.name||'')}</b><span class="kg-sub">${rankBadge(rk.r,26)} Rang ${rk.r} · ${esc(rk.n)} · Level ${Number(look.level)||1}</span></div></div></div>`;
 }
 // Emote-Sprechblase (vorgegebener Text, Form, Farbe)
+let emoteSeq=0;
 function emoteHTML(d,size){
- d=d||{};const sz=Number(size)||90,col=hex(d.col||'#f6f0e4'),txt=String(d.txt||'');let shape;
- if(d.shape==='burst')shape=`<polygon points="${starPts(50,50,12,46,30,true)}" fill="${col}" stroke="#0c0a13" stroke-width="3" stroke-linejoin="round"/>`;
- else if(d.shape==='jag')shape=`<polygon points="${starPts(50,50,9,46,36,true)}" fill="${col}" stroke="#0c0a13" stroke-width="3" stroke-linejoin="round"/>`;
- else shape=`<path d="M50 8 C76 8 94 24 94 46 C94 68 76 82 50 82 C44 82 38 81 33 79 L16 92 L22 74 C12 66 6 56 6 46 C6 24 24 8 50 8Z" fill="${col}" stroke="#0c0a13" stroke-width="3"/>`;
- const fs=Math.max(8,Math.round(sz/(txt.length>10?8.5:6)));
- return `<span class="kg-emote" style="--es:${fs}px;width:${sz}px;height:${sz}px"><svg viewBox="0 0 100 100" aria-hidden="true">${shape}</svg><b>${esc(txt)}</b></span>`;
+ d=d||{};
+ const sz=Math.max(24,Math.min(160,Number(size)||90));
+ const col=hex(d.col||'#f6f0e4'),txt=String(d.txt||'');
+ const kind=d.shape==='burst'?'burst':d.shape==='jag'?'jag':'cloud';
+ const id='kge'+(++emoteSeq);
+ const bubble=kind==='burst'
+  ?`<polygon points="${starPts(50,50,12,45,32,true)}"/>`
+  :kind==='jag'?`<polygon points="${starPts(50,50,9,45,34,true)}"/>`
+  :'<path d="M50 9 C76 9 92 24 92 45 C92 67 74 81 50 81 C42 81 37 80 32 78 L15 92 L20 72 C11 64 8 55 8 45 C8 24 25 9 50 9Z"/>';
+ const fs=Math.max(7,Math.min(19,Math.round(sz/(txt.length>13?9.1:txt.length>8?7.4:5.9))));
+ return `<span class="kg-emote kg-emote-${kind}" style="--es:${fs}px;--kg-ec:${col};width:${sz}px;height:${sz}px" role="img" aria-label="${esc(txt)}">
+  <svg viewBox="0 0 100 100" aria-hidden="true">
+   <defs><linearGradient id="${id}" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#26364e"/><stop offset=".46" stop-color="#0d192d"/><stop offset="1" stop-color="#080e1d"/></linearGradient></defs>
+   <g fill="url(#${id})" stroke="${col}" stroke-width="3.7" stroke-linejoin="round">${bubble}</g>
+   <g transform="translate(50 50) scale(.9) translate(-50 -50)" fill="none" stroke="${col}" stroke-width="1.1" opacity=".6" stroke-linejoin="round">${bubble}</g>
+   <path d="M24 30 Q45 15 72 24" fill="none" stroke="#fff" stroke-width="3" opacity=".27" stroke-linecap="round"/>
+   <path d="M73 12 L76 19 L83 22 L76 25 L73 32 L70 25 L63 22 L70 19Z" fill="${col}" opacity=".8"/>
+  </svg><b>${esc(txt)}</b></span>`;
 }
 // Einlauf-Vorschau (Kachel)
 function einlaufPreview(d){

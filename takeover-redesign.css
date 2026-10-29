@@ -1210,3 +1210,63 @@ body[data-tl-screen="boxer-profile"] .hero .tl-kg-meta{margin-top:6px}
 .kg-revoked .kg-bamt{color:var(--text-2);text-decoration:line-through}
 .kg-revoke-det{width:100%}
 .kg-revoke-det>summary{cursor:pointer;min-height:40px;display:flex;align-items:center;font-size:14px;font-weight:700;color:var(--text-2)}
+
+
+/* ---- Holo-Podium & Sprechblasen V1: vorhandene Item- und Boxer-Daten, rein visuell ---- */
+/* Die ausgewählte Profil-Pose ersetzt nur auf dem Podium die runde Avatar-Vorschau.
+ * Gästeseiten und Boxer ohne freigegebenen Holo behalten unverändert ihr Profilbild. */
+body[data-tl-screen="index"] .tl-podium-holo-on>.league-avatar,
+body[data-tl-screen="index"] .tl-podium-holo-on>.tl-kg-face,
+body[data-tl-screen="index"] .tl-champion-holo-on>.league-avatar,
+body[data-tl-screen="index"] .tl-champion-holo-on>.tl-kg-face{display:none!important}
+body[data-tl-screen="index"] .tl-podium-holo{
+ display:grid;place-items:center;position:relative;isolation:isolate;
+ width:min(100%,130px);height:clamp(140px,24vw,190px);margin:0 auto 2px;
+ filter:drop-shadow(0 5px 11px rgba(0,0,0,.55))
+}
+body[data-tl-screen="index"] .tl-podium-holo::before,
+body[data-tl-screen="index"] .tl-champion-holo::before{
+ content:"";position:absolute;z-index:-1;left:12%;right:12%;bottom:4%;
+ height:11%;border:1px solid color-mix(in srgb,var(--gold) 46%,#6ba9df);
+ border-radius:50%;background:radial-gradient(ellipse,rgba(95,185,255,.22),transparent 72%);
+ box-shadow:0 0 14px rgba(79,216,255,.16);pointer-events:none
+}
+body[data-tl-screen="index"] .tl-podium-1 .tl-podium-holo::before{border-color:var(--gold);box-shadow:0 0 16px rgba(242,193,78,.25)}
+body[data-tl-screen="index"] .tl-podium-holo>svg.tlh,
+body[data-tl-screen="index"] .tl-champion-holo>svg.tlh{display:block;width:100%;height:100%;max-width:100%;overflow:visible}
+body[data-tl-screen="index"] .tl-podium-holo-on .tl-podium-name{margin-top:3px}
+body[data-tl-screen="index"] .tl-champion-holo{
+ display:grid;place-items:center;position:relative;isolation:isolate;
+ width:min(180px,48vw);height:210px;max-width:100%;
+ filter:drop-shadow(0 7px 17px rgba(0,0,0,.55))
+}
+body[data-tl-screen="index"] .tl-podium-holo-on .tl-podium-emote{top:6px;right:0;z-index:3}
+body[data-tl-screen="index"] .tl-podium-holo-on .tl-podium-emote .kg-emote{filter:drop-shadow(0 3px 5px rgba(0,0,0,.55))}
+@media(max-width:420px){
+ body[data-tl-screen="index"] .tl-podium-holo{height:145px;width:min(100%,92px)}
+ body[data-tl-screen="index"] .tl-champion-holo{height:175px;width:140px}
+ body[data-tl-screen="index"] .tl-podium-holo-on .tl-podium-emote{right:-4px;top:0}
+}
+/* Neue Konturen für die vorhandenen Sprechblasen; die Item-Texte und Formen bleiben gleich. */
+.kg-emote{isolation:isolate;vertical-align:middle;filter:drop-shadow(0 2px 4px rgba(0,0,0,.5))}
+.kg-emote svg{filter:drop-shadow(0 0 2px var(--kg-ec,#98b9da))}
+.kg-emote b{
+ z-index:1;color:#fff;font-weight:900;letter-spacing:-.015em;
+ text-shadow:0 1px 3px #030914,0 0 7px rgba(0,0,0,.6);
+ transform:rotate(-3deg);max-width:75%;pointer-events:none
+}
+.kg-emote-jag b,.kg-emote-burst b{transform:rotate(-5deg)}
+/* Auch im normalen Shop und Kampfpfad wird die vorhandene Item-Vorschau hochwertiger gezeigt. */
+.kg-item .kg-pv,.kg-tier .kg-pv{
+ isolation:isolate;background:radial-gradient(ellipse at 50% 35%,color-mix(in srgb,var(--rc,var(--gold)) 17%,#152038),#091221 87%);
+ border:1px solid color-mix(in srgb,var(--rc,var(--gold)) 24%,var(--line));
+}
+.kg-item .kg-pv::before,.kg-tier .kg-pv::before{
+ content:"";position:absolute;inset:0;pointer-events:none;
+ background:linear-gradient(126deg,rgba(255,255,255,.09),transparent 36%,transparent 65%,rgba(255,255,255,.04))
+}
+.kg-item .kg-pv>:not(style),.kg-tier .kg-pv>:not(style){position:relative;z-index:1}
+.kg-item.equipped .kg-pv{border-color:var(--gold)}
+@media(prefers-reduced-motion:reduce){
+ body[data-tl-screen="index"] .tl-podium-holo,.kg-emote{animation:none}
+}
