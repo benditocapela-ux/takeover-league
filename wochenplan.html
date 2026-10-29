@@ -68,11 +68,13 @@ function staffGroupsView(){
  return targets+`<div class="tlp-panel"><b>Boxer zuteilen</b><p class="tlp-note">Jeder Boxer gehört zu einer Gruppe. Danach sieht er den Plan und das Wochenziel seiner Gruppe.</p>${members.map(m=>`<div class="tlp-li static"><span class="tlp-grow"><b>${P.esc(m.display_name)}</b><span class="tlp-note">${m.role==='coach'?'Trainer':'Boxer'}</span></span><select data-member="${m.id}" aria-label="Gruppe von ${P.esc(m.display_name)}"><option value="">ohne Gruppe</option>${groups.map(g=>`<option value="${g.key}" ${m.group===g.key?'selected':''}>${P.esc(g.name)}</option>`).join('')}</select></div>`).join('')}</div>`;
 }
 const DOW=['Mo','Di','Mi','Do','Fr','Sa','So'];
+// Etappe 17a: Hinweis zu Vereinstrainings je nach Schalter «nur per Gym-Check-in»
+let clubCheckinOnly=false;
 function scheduleView(){
  if(!sched)return '<div class="tlp-panel">Stundenplan wird geladen …</div>';
  const canEdit=sched.can_edit,tiers=sched.tiers||[],home=sched.home||{};
  const legend=`<div class="tlp-panel"><b>Wertung pro Training</b><div class="tlp-list">${tiers.map(t=>`<div class="tlp-li static"><span class="tlp-grow">${tierPill(t.tier,t.label)}<span class="tlp-note">${t.exp} EXP · ${t.coins} Coins · ${t.pass_points} Kampfpfad-Punkte${t.required_groups&&t.required_groups.length?' · Pflicht für '+t.required_groups.map(k=>P.esc((groups.find(g=>g.key===k)||{}).name||k)).join(', '):''}</span></span></div>`).join('')}<div class="tlp-li static"><span class="tlp-grow"><b>Heimtraining</b><span class="tlp-note">EXP nach Trainingsart · ${home.coins??10} Coins · ${home.pass_points??10} Kampfpfad-Punkte</span></span></div></div>
-  <p class="tlp-note">Die Stufe gilt für Einheiten im Gym, deren Anwesenheit ein Coach bestätigt. Vereinstrainings (${(sched.club_types||[]).map(P.esc).join(', ')}) gibt es nur über den Gym-Check-in.</p></div>`;
+  <p class="tlp-note">Die Stufe gilt für Einheiten im Gym, deren Anwesenheit ein Coach bestätigt. ${clubCheckinOnly?`Vereinstrainings (${(sched.club_types||[]).map(P.esc).join(', ')}) gibt es nur über den Gym-Check-in.`:`Vereinstrainings (${(sched.club_types||[]).map(P.esc).join(', ')}) können im Moment auch selbst eingetragen werden; mit Gym-Check-in zählt die Stufe.`}</p></div>`;
  const slotRow=x=>editSlot===x.id?slotForm(x):`<div class="tlp-li static"><span class="tlp-daylbl"><span>${DOW[x.dow-1]}</span></span><span class="tlp-grow"><b>${P.esc(x.label)}</b> ${tierPill(x.tier,x.tier_label)}${x.is_active?'':' <span class="tlp-pill">inaktiv</span>'}<span class="tlp-note">${P.esc(x.training_type)} · ${x.duration_minutes} Min.</span></span>${canEdit?`<button type="button" class="tlp-btn ghost small" data-editslot="${x.id}">Ändern</button>`:''}</div>`;
  return legend+`<div class="tlp-panel"><b>Stundenplan</b><div class="tlp-list">${(sched.slots||[]).map(slotRow).join('')||'<p class="tlp-note">Noch keine Einheiten.</p>'}</div>
   ${canEdit?(editSlot==='new'?slotForm(null):'<button type="button" class="tlp-chipbtn dashed" data-editslot="new">+ Einheit</button>'):'<p class="tlp-note">Nur der Admin ändert den Stundenplan.</p>'}</div>`;
@@ -154,6 +156,7 @@ async function loadMembers(){const m=await db.rpc('staff_list_group_members');if
   const s=await db.auth.getSession();
   if(!s.data||!s.data.session){say('');app.innerHTML='<div class="tlp-panel">Bitte <a href="./login.html">anmelden</a>.</div>';return}
   week=monday(iso(new Date()));
+  try{const f=await db.from('league_feature_flags').select('is_enabled').eq('feature_key','club_checkin_only').maybeSingle();clubCheckinOnly=!!(f&&f.data&&f.data.is_enabled===true)}catch{clubCheckinOnly=false}
   const me=await db.rpc('get_my_performance');if(me.error){say(me.error.message,true);return}
   role=me.data.profile.role;
   if(role==='admin'||role==='coach'){

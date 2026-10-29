@@ -49,7 +49,7 @@ const REGISTERS=[
   'Die Punkte zeigen die letzten 4 Wochen, links ist diese Woche.','Wettkämpfer sehen zusätzlich ihre Pflichtquote.']},
  {key:'checkin',page:'checkin.html',group:'mein',icon:'⚡',title:'Gym-Check-in',flag:'gym_training',summary:'Im Gym einchecken statt selbst eintragen.',points:[
   'Startet dein Coach das Training, tippst du hier auf «Einchecken».','Nach dem Training bestätigt der Coach alle Anwesenden – du musst nichts mehr eintragen.',
-  'Vereinstrainings (z. B. Technik, Sparring) laufen nur noch über den Check-in.']},
+  'Vereinstrainings (z. B. Technik, Sparring) kannst du im Moment auch selbst eintragen – mit Check-in zählt die Stufe des Trainings.']},
  {key:'meinboxer',page:'mein-boxer.html',group:'mein',icon:'🥊',title:'Mein Boxer',flag:'boxer_holo',summary:'Deinen eigenen Boxer-Holo gestalten.',points:[
   'Wähle Hautfarbe, Frisur, Haar- und Augenfarbe. Alles ist gratis und jederzeit änderbar.','Ziehe deinen Boxer an: Kappe, Hoodie mit Kapuze auf oder ab, Trainingsanzug, Hosen, Bandagen oder Handschuhe, Mantel an oder aus.',
   'Mäntel, Auren, Spezial-Augen, Hintergründe und Posen gibt es im Shop, in Bundles oder als Belohnung. Gesperrtes kannst du vorher anprobieren.','Wähle eine Pose für dein Profil und eine für deine FUT-Karte und tippe auf «Speichern».']},
