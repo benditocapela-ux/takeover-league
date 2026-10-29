@@ -28,7 +28,7 @@ assert.match(section,/if\(!session\.data\|\|!session\.data\.session\)return;/);
 assert.match(section,/db\.rpc\('get_holo_looks',\{p_display_names:names\}\)/);
 assert.match(section,/H\.svg\(cfg,\{pose:cfg\.pose_profile,scene:'none',holo:false\}\)/);
 assert.match(section,/if\(!cfg\|\|typeof cfg!=='object'/);
-assert.match(section,/data\.tlHoloChecked/,'idempotence after re-render');
+assert.match(section,/dataset\.tlHoloChecked/,'idempotence after re-render');
 assert.doesNotMatch(section,/\.from\(|\.insert\(|\.update\(|\.delete\(|\.upsert\(/,'no direct table writes');
 assert.match(perf,/run\(mountPodiumHolos\)/);
 assert.match(css,/\.tl-podium-holo-on>\.tl-kg-face/);
