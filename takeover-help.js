@@ -36,6 +36,7 @@ const REGISTERS=[
  {key:'karten',page:'karten.html',group:'mein',icon:'🎴',title:'Karten & Auszeichnungen',flag:'card_designs',summary:'Kartendesign wählen, Card of the Week & Co.',points:[
   'Wähle ein Design für deine Spielerkarte – andere sehen deine Karte so.','Neue Designs gibt es mit dem Rang, im Shop (Coins) oder nur als Auszeichnung.',
   'Card of the Week, Card of the Month und Player of the Year: wer die meisten EXP sammelt, wird vorgeschlagen, ein Trainer bestätigt.',
+  'Das Spezial-Design einer Auszeichnung gilt im Zeitraum danach (eine Woche, ein Monat bzw. ein Jahr). Die Symbole ⭐ 🏆 👑 auf deiner Karte bleiben.',
   'Eigenes Design: Schaltet der Admin es für dich frei, gestaltest du Farben, Muster und Abzeichen deiner Karte selbst.']},
  {key:'wochenplan',page:'wochenplan.html',group:'mein',icon:'🗓️',title:'Wochenplan',flag:'gym_training',summary:'Welche Trainings diese Woche anstehen.',points:[
   'Montag, Mittwoch und Samstag sind Pflichttrainings, Dienstag und Donnerstag Ergänzung.','«Erledigt» erscheint, sobald dein Training an dem Tag bestätigt ist.',

@@ -932,6 +932,7 @@ body[data-tl-screen] .kg-intro,.kg-intro{position:fixed;inset:0;z-index:21474830
 .kd-item.locked .tlp-card{filter:grayscale(.7) brightness(.7)}
 .kd-item .tlp-btn{min-height:44px;width:100%}
 .kd-state{font-size:13px;font-weight:700;color:var(--text-2)}
+.kd-until{display:inline-block;font-size:12px;font-weight:800;color:var(--gold);letter-spacing:.02em}
 .kd-awards{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:var(--sp-3)}
 .kd-award{display:grid;gap:4px}
 .kd-hist{list-style:none;margin:0;padding:0;display:grid;gap:var(--sp-2)}

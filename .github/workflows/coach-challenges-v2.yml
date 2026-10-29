@@ -42,6 +42,7 @@ on:
       - 'tests/self-rating-*'
       - 'tests/looks-everywhere-*'
       - 'tests/card-designs-personal-*'
+      - 'tests/award-designs-limited-*'
       - 'takeover-holo.js'
       - 'mein-boxer.html'
       - 'tests/club-tiers-*'
@@ -121,6 +122,7 @@ on:
       - 'tests/self-rating-*'
       - 'tests/looks-everywhere-*'
       - 'tests/card-designs-personal-*'
+      - 'tests/award-designs-limited-*'
       - 'takeover-holo.js'
       - 'mein-boxer.html'
       - 'tests/club-tiers-*'
@@ -186,6 +188,7 @@ jobs:
       - run: node tests/self-rating-contracts.cjs
       - run: node tests/looks-everywhere-contracts.cjs
       - run: node tests/card-designs-personal-contracts.cjs
+      - run: node tests/award-designs-limited-contracts.cjs
       - run: node tests/gym-contracts.cjs
       - run: node tests/quests-contracts.cjs
       - run: node tests/kampfgeist-contracts.cjs
@@ -1401,3 +1404,37 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -X -h localhost -U postgres -d card_personal_probe -v ON_ERROR_STOP=1 -f tests/card-designs-personal-schema.sql
+
+  award-designs-limited-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated Etappe 13 fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres award_limited_probe
+      - name: Verify limited award designs and rollback on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d award_limited_probe -v ON_ERROR_STOP=1 -f tests/award-designs-limited-schema.sql
