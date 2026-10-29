@@ -526,6 +526,8 @@ body[data-tl-screen="bewertung"] #app,body[data-tl-screen="stil-test"] #app{disp
 .tlp-cat summary{display:flex;justify-content:space-between;align-items:center;gap:var(--sp-3);cursor:pointer;list-style:none}.tlp-cat summary::-webkit-details-marker{display:none}
 .tlp-catname{font-family:var(--font-display);font-weight:800;font-size:22px;text-transform:uppercase}
 .tlp-catval{display:flex;align-items:center;gap:var(--sp-2)}.tlp-catval b{font-size:22px;font-variant-numeric:tabular-nums}
+.tlp-pub{font-size:.62em;font-weight:700;color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+.tlp-catval .tlp-pub{font-size:15px}
 .tlp-skill{padding:10px 0;border-top:1px solid var(--line)}.tlp-skill:first-of-type{margin-top:var(--sp-3)}
 .tlp-skillhead{display:flex;justify-content:space-between;gap:var(--sp-2);align-items:center}
 .tlp-bar{height:7px;border-radius:999px;background:var(--bg);overflow:hidden;margin:6px 0 4px}.tlp-bar i{display:block;height:100%;border-radius:inherit;background:var(--gold)}

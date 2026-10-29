@@ -29,6 +29,7 @@ const REGISTERS=[
  {key:'bewertung',page:'bewertung.html',group:'mein',icon:'🃏',title:'Bewertung & Spielerkarte',flag:'coach_ratings',summary:'Deine Spielerkarte mit den Noten deines Coaches.',points:[
   'Dein Coach bewertet 25 Punkte in 6 Bereichen von 1 bis 20.','Die Karte zeigt deine Gesamtwertung und die 6 Bereiche – mit Pfeil, was rauf- oder runterging.',
   'Einzelnoten und Kommentar siehst nur du. Andere sehen nur die Karte, wenn dein Profil sichtbar ist.',
+  'Öffentlich wird jede Karte umgerechnet: Die beste Karte der Liga hat 92, alle anderen im gleichen Verhältnis. Auf deiner Bewertungsseite steht die echte Wertung, in Klammern der öffentliche Wert.',
   'Sobald freigeschaltet, schätzt du dich alle 14 Tage selbst ein – dein Coach gibt frei oder passt an.']},
  {key:'stil',page:'stil-test.html',group:'mein',icon:'🧭',title:'Boxstil-Test',flag:'style_test',summary:'8 Fragen: Welcher Boxer-Typ bist du?',points:[
   'Beantworte 8 kurze Fragen ehrlich – es gibt keine falschen Antworten.','Du bekommst dein Stil-Netz mit 6 Achsen und einen Trainingstipp.',

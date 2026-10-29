@@ -40,6 +40,7 @@ on:
       - 'tests/kampfgeist5-*'
       - 'tests/boxer-holo-*'
       - 'tests/self-rating-*'
+      - 'tests/card-scale-*'
       - 'tests/looks-everywhere-*'
       - 'tests/card-designs-personal-*'
       - 'tests/award-designs-limited-*'
@@ -121,6 +122,7 @@ on:
       - 'tests/kampfgeist5-*'
       - 'tests/boxer-holo-*'
       - 'tests/self-rating-*'
+      - 'tests/card-scale-*'
       - 'tests/looks-everywhere-*'
       - 'tests/card-designs-personal-*'
       - 'tests/award-designs-limited-*'
@@ -188,6 +190,7 @@ jobs:
       - run: node tests/card-designs-contracts.cjs
       - run: node tests/boxer-holo-contracts.cjs
       - run: node tests/self-rating-contracts.cjs
+      - run: node tests/card-scale-contracts.cjs
       - run: node tests/looks-everywhere-contracts.cjs
       - run: node tests/card-designs-personal-contracts.cjs
       - run: node tests/award-designs-limited-contracts.cjs
@@ -1339,6 +1342,40 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: psql -X -h localhost -U postgres -d self_rating_probe -v ON_ERROR_STOP=1 -f tests/self-rating-schema.sql
+
+  card-scale-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated Etappe 15 fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres card_scale_probe
+      - name: Verify public card scale (best = 92) and rollback on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d card_scale_probe -v ON_ERROR_STOP=1 -f tests/card-scale-schema.sql
 
   looks-everywhere-schema:
     runs-on: ubuntu-latest
