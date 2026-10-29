@@ -24,19 +24,21 @@ function lockText(d){
  if(d.available)return '';
  if(d.unlock==='rank')return 'ab Rang '+d.min_rank+' (du: '+mine.rank+')';
  if(d.unlock==='shop')return d.price+' Coins';
- if(d.unlock==='award')return 'nur als '+P.AWARD_LABEL[d.award_kind];
+ if(d.unlock==='award')return d.won?'abgelaufen – gilt wieder nach der nächsten '+P.AWARD_LABEL[d.award_kind]:'nur als '+P.AWARD_LABEL[d.award_kind];
  return 'gesperrt';
 }
+// Etappe 13: Auszeichnungs-Designs gelten nur im Zeitraum nach dem Gewinn – «gilt bis» zeigen.
+const untilText=d=>d&&d.unlock==='award'&&d.valid_until?'gilt bis '+P.fmtDate(d.valid_until):'';
 function designsView(){
- const cur=mine.look.key;
+ const cur=mine.look.key,curD=mine.designs.find(d=>d.key===cur);
  const groups=[['start','Standard'],['rank','Mit dem Rang freigeschaltet'],['shop','Im Shop (Kampfgeist-Coins)'],['award','Nur als Auszeichnung']]; // «Eigenes Design» hat einen eigenen Bereich
- return `<div class="tlp-panel tlp-row"><div>${previewCard(mine.look,170)}</div><div><div class="tlp-eyebrow">Aktuelles Design</div><div class="tlp-big">${P.esc(mine.look.name)}</div>
+ return `<div class="tlp-panel tlp-row"><div>${previewCard(mine.look,170)}</div><div><div class="tlp-eyebrow">Aktuelles Design</div><div class="tlp-big">${P.esc(mine.look.name)}</div>${untilText(curD)?`<span class="kd-until">${P.esc(untilText(curD))}</span>`:''}
    <p class="tlp-note">Rang ${P.esc(mine.rank)}${mine.shop?' · '+(mine.coins??0)+' Coins':''}. Andere Mitglieder sehen deine Karte in diesem Design.</p></div></div>
   ${ownView()}
   ${groups.map(([u,l])=>{const ds=mine.designs.filter(d=>d.unlock===u);if(!ds.length)return '';
    return `<h2>${P.esc(l)}</h2><div class="kd-grid">${ds.map(d=>`<article class="kd-item${d.available?'':' locked'}${d.key===cur?' on':''}">
     ${previewCard({key:d.key,name:d.name,design:d.design,awards:[]},110)}
-    <b>${P.esc(d.name)}</b><span class="tlp-note">${P.esc(d.description||'')}</span>
+    <b>${P.esc(d.name)}</b><span class="tlp-note">${P.esc(d.description||'')}</span>${untilText(d)?`<span class="kd-until">${P.esc(untilText(d))}</span>`:''}
     ${d.key===cur?'<span class="kd-state">✓ ausgewählt</span>':d.available?`<button type="button" class="tlp-btn" data-equip="${P.esc(d.key)}">Auswählen</button>`
      :d.unlock==='shop'&&mine.shop?`<button type="button" class="tlp-btn ghost" data-buy="${P.esc(d.key)}" ${(mine.coins??0)<d.price?'disabled':''}>Kaufen · ${d.price} Coins</button>`
      :`<span class="kd-state">🔒 ${P.esc(lockText(d))}</span>`}</article>`).join('')}</div>`}).join('')}`;
@@ -78,9 +80,9 @@ function awardsView(){
  if(!awards||!awards.enabled)return '<div class="tlp-panel"><p class="tlp-note">Noch keine Auszeichnungen.</p></div>';
  const latest=['cotw','cotm','poty'].map(k=>[k,awards.latest&&awards.latest[k]]);
  return `<div class="kd-awards">${latest.map(([k,a])=>`<article class="tlp-panel kd-award"><div class="tlp-eyebrow">${P.esc(P.AWARD_LABEL[k])}</div>
-   ${a?`<b>${P.esc(a.display_name)}</b><span class="tlp-note">${P.esc(fmtP(k,a.period_start,a.period_end))} · ${a.exp} EXP</span>${a.note?`<p class="tlp-quote">«${P.esc(a.note)}»</p>`:''}`:'<span class="tlp-note">Noch nicht vergeben.</span>'}</article>`).join('')}</div>
+   ${a?`<b>${P.esc(a.display_name)}</b><span class="tlp-note">${P.esc(fmtP(k,a.period_start,a.period_end))} · ${a.exp} EXP</span>${a.design_until?`<span class="kd-until">Spezial-Design bis ${P.esc(P.fmtDate(a.design_until))}</span>`:''}${a.note?`<p class="tlp-quote">«${P.esc(a.note)}»</p>`:''}`:'<span class="tlp-note">Noch nicht vergeben.</span>'}</article>`).join('')}</div>
   <h2>Verlauf</h2>${(awards.history||[]).length?`<div class="tlp-panel"><ul class="kd-hist">${awards.history.map(a=>`<li><span>${a.kind==='poty'?'👑':a.kind==='cotm'?'🏆':'⭐'} <b>${P.esc(a.display_name)}</b> · ${P.esc(P.AWARD_LABEL[a.kind])}</span><span class="tlp-note">${P.esc(fmtP(a.kind,a.period_start,a.period_end))}</span></li>`).join('')}</ul></div>`:'<p class="tlp-note">Noch keine Auszeichnungen vergeben.</p>'}
-  <p class="tlp-note">Wer die meisten EXP aus bestätigten Trainings sammelt, wird vorgeschlagen. Ein Trainer bestätigt die Auszeichnung. Das Spezial-Design bleibt dir für immer.</p>`;
+  <p class="tlp-note">Wer die meisten EXP aus bestätigten Trainings sammelt, wird vorgeschlagen. Ein Trainer bestätigt die Auszeichnung. Das Spezial-Design gilt im Zeitraum danach: nach der Card of the Week die ganze nächste Woche, nach der Card of the Month den nächsten Monat, nach dem Player of the Year das nächste Jahr. Die Symbole ⭐ 🏆 👑 auf deiner Karte bleiben für immer.</p>`;
 }
 function staffView(){
  if(!staff)return pdAdminView()+'<p class="tlp-note">Wird geladen …</p>';
@@ -88,7 +90,7 @@ function staffView(){
    ${p.award?`<p>✓ <b>${P.esc(p.award.display_name)}</b> · vergeben von ${P.esc(p.award.awarded_by||'')}${p.award.note?' · «'+P.esc(p.award.note)+'»':''} </p><form class="kd-revoke" data-id="${p.award.id}"><label class="tlp-field">Zurücknehmen – Grund<input name="reason" maxlength="300" required placeholder="z. B. falsche Woche"></label><button type="submit" class="tlp-btn ghost">Zurücknehmen</button></form>`
     :`<ol class="kd-cands">${p.candidates.map((c,i)=>`<li><b>${P.esc(c.display_name)}</b> · ${c.exp} EXP · ${c.trainings} Trainings${i===0?' <span class="kd-state">Vorschlag</span>':''}</li>`).join('')||'<li class="tlp-note">Noch keine bestätigten Trainings.</li>'}</ol>
      ${p.completed?`<form class="kd-confirm" data-kind="${k.kind}" data-start="${p.start}"><label class="tlp-field">Boxer<select name="who">${staff.boxers.map(b=>`<option value="${P.esc(b.id)}" ${p.candidates[0]&&p.candidates[0].profile_id===b.id?'selected':''}>${P.esc(b.display_name)}</option>`).join('')}</select></label>
-      <label class="tlp-field">Begründung (optional)<input name="note" maxlength="300" placeholder="z. B. drei starke Pflichttrainings"></label><button type="submit" class="tlp-btn">Auszeichnen</button></form>`
+      <label class="tlp-field">Begründung (optional)<input name="note" maxlength="300" placeholder="z. B. drei starke Pflichttrainings"></label><button type="submit" class="tlp-btn">Auszeichnen</button>${(k.periods.find(x=>!x.completed)||{}).end?`<p class="tlp-note">Spezial-Design für den Gewinner bis ${P.esc(P.fmtDate(k.periods.find(x=>!x.completed).end))}.</p>`:''}</form>`
      :'<p class="tlp-note">Vergeben kannst du nach Ende des Zeitraums.</p>'}`}</div>`).join('')}</section>`).join('');
 }
 function tabs(){
