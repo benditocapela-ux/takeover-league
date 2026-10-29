@@ -42,7 +42,11 @@ function injected(cfg){
    style:{current:null,previous:null,state:{}}},error:null};
   if(name==='get_kg_look')return {data:{name:args.p_display_name,avatar:{key:'a_kenji',design:{hair:'spiky',skin:'#e8b48a'}},rahmen:{key:'f_rang_d',design:{fr:'rank',rk:'D'}},titel:{name:'Contender',rarity:'rare'},rank:'D',level:25},error:null};
   if(name==='get_my_self_rating')return {data:{enabled:false,reason:'flag'},error:null};
-  if(/^(get_card_looks|get_holo_looks)$/.test(name))return {data:{},error:null};
+  if(name==='get_holo_looks')return {data:cfg.podiumHolos?{
+   Anna:{tone:6,hair:'afro',coat:'samurai',hands:'gloves',glove:'rot',bottom:'boxer',bottomc:'gold',pose_profile:'sieg',pose_card:'jab'},
+   Ben:{tone:2,hair:'locs',coat:'basic',hands:'gloves',glove:'rot',bottom:'boxer',bottomc:'blau',pose_profile:'jab',pose_card:'guard'}
+  }:{},error:null};
+  if(name==='get_card_looks')return {data:{},error:null};
   if(/^(get_podium_kampfgeist|get_card_awards)$/.test(name))return {data:{enabled:false},error:null};
   return {data:null,error:{message:'unexpected rpc '+name}};
  };
@@ -145,6 +149,24 @@ function injected(cfg){
  assert.equal(await card.locator('b.kg-title b').count(),0,'title escaped');
  assert.ok(await p.locator('#studioBoxerName').isHidden());
  if(process.env.SHOTS)await p.locator('.studio-identity').screenshot({path:process.env.SHOTS+'/19-studio-card.png'});await shot(p,'19-studio');await noOverflow(p);
+ assert.deepEqual(errors,[]);
+
+ // E: Angemeldete sehen nur freigegebene Holo-Looks auf dem vorhandenen Podium.
+ // Podium-Pose stammt aus pose_profile, FUT-Karten-Pose bleibt separat.
+ ({p,errors}=await page({signedIn:true,me:'Ben',podiumHolos:true},'index.html'));
+ await p.waitForSelector('#podium-content .tl-podium-1 .tl-podium-holo svg.tlh',{timeout:12000});
+ const annaStep=p.locator('#podium-content .tl-podium-1');
+ const benStep=p.locator('#podium-content .tl-podium-2');
+ await benStep.locator('.tl-podium-holo svg.tlh').waitFor();
+ assert.equal(await annaStep.locator('.tl-podium-holo').getAttribute('data-tl-pose'),'sieg','Anna chose victory as profile pose');
+ assert.equal(await benStep.locator('.tl-podium-holo').getAttribute('data-tl-pose'),'jab','Ben chose jab as profile pose');
+ assert.equal(await p.locator('#podium-content .tl-champion .tl-champion-holo').getAttribute('data-tl-pose'),'sieg');
+ assert.equal(await p.locator('#podium-content .tl-podium-3 .tl-podium-holo').count(),0,'without Holo keep previous avatar');
+ assert.equal(await p.locator('#podium-content .tl-podium-3 .tl-kg-face').count(),1,'fallback avatar still displayed');
+ assert.ok(await benStep.locator('.tl-kg-face').isHidden(),'avoid duplicate avatar when Holo is shown');
+ assert.equal((await p.evaluate(()=>window.__calls)).filter(x=>x[0]==='get_holo_looks'&&x[1]?.p_display_names?.length===3).length>=1,true,'only listed podium names requested');
+ if(process.env.SHOTS)await p.locator('.tl-podium').screenshot({path:process.env.SHOTS+'/holo-podium-poses.png'});
+ await noOverflow(p);
  assert.deepEqual(errors,[]);
 
  for(const c of ctxs)await c.close();
