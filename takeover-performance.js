@@ -668,7 +668,9 @@ async function mountPodiumHolos(){
   fig.className=large?'tl-champion-holo':'tl-podium-holo';
   fig.setAttribute('role','img');
   fig.setAttribute('aria-label','Boxer-Holo von '+name+' in seiner gewählten Profil-Pose');
-  fig.innerHTML=H.svg(cfg,{pose:cfg.pose_profile,scene:'none',holo:false});
+  const pose=H.normalize(cfg).pose_profile;
+  fig.dataset.tlPose=pose;
+  fig.innerHTML=H.svg(cfg,{pose,scene:'none',holo:false});
   const before=host.querySelector(large?'.champion':'.tl-podium-name');
   if(before)before.before(fig);else host.prepend(fig);
   host.classList.add(large?'tl-champion-holo-on':'tl-podium-holo-on');
