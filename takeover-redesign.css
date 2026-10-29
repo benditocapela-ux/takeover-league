@@ -1270,3 +1270,68 @@ body[data-tl-screen="index"] .tl-podium-holo-on .tl-podium-emote .kg-emote{filte
 @media(prefers-reduced-motion:reduce){
  body[data-tl-screen="index"] .tl-podium-holo,.kg-emote{animation:none}
 }
+
+
+/* ---- Holo-Item-Vorschauen V2: Figuren und Gegenstände aus dem echten Renderer ---- */
+body[data-tl-screen="mein-boxer"] .mb-gear-chip{
+ display:inline-flex;flex-direction:column;align-items:stretch;justify-content:flex-start;
+ gap:5px;flex:0 0 102px;width:102px;min-width:0;min-height:136px;
+ border-radius:15px;padding:6px 5px 8px;
+ border:1px solid color-mix(in srgb,var(--line-strong) 76%,#4fd8ff 24%);
+ background:linear-gradient(162deg,#182740,#0a1428 82%);
+ box-shadow:inset 0 1px 0 rgba(255,255,255,.06);font-size:12px;line-height:1.18;
+ text-align:center;white-space:normal;position:relative
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip[aria-pressed="true"]{
+ border-color:#4fd8ff;box-shadow:0 0 0 2px rgba(79,216,255,.36),inset 0 0 15px rgba(79,216,255,.1)
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip:focus-visible{
+ outline:3px solid var(--gold);outline-offset:3px
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-art{
+ display:block;position:relative;isolation:isolate;
+ width:100%;height:86px;border-radius:11px;
+ overflow:hidden;background:radial-gradient(ellipse at 50% 75%,rgba(68,132,186,.24),transparent 72%),#0b1629;
+ border:1px solid rgba(102,157,203,.16)
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-art::after{
+ content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+ background:linear-gradient(130deg,rgba(255,255,255,.1),transparent 32%,transparent 73%,rgba(255,255,255,.045))
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-art svg.tlh{
+ position:absolute;left:50%;top:-13px;width:130px;max-width:none;height:auto;
+ transform:translateX(-50%);overflow:visible;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-head svg.tlh{width:168px;top:-14px}
+body[data-tl-screen="mein-boxer"] .mb-gear-top svg.tlh{width:144px;top:-38px}
+body[data-tl-screen="mein-boxer"] .mb-gear-bottom svg.tlh{width:145px;top:-85px}
+body[data-tl-screen="mein-boxer"] .mb-gear-hands svg.tlh{width:150px;top:-41px}
+body[data-tl-screen="mein-boxer"] .mb-gear-feet svg.tlh{width:146px;top:-158px}
+body[data-tl-screen="mein-boxer"] .mb-gear-coat svg.tlh{width:105px;top:-12px}
+body[data-tl-screen="mein-boxer"] .mb-gear-aura svg.tlh,
+body[data-tl-screen="mein-boxer"] .mb-gear-scene svg.tlh{width:78px;top:-15px}
+body[data-tl-screen="mein-boxer"] .mb-gear-eyefx svg.tlh{width:175px;top:-21px}
+body[data-tl-screen="mein-boxer"] .mb-gear-art .tlh .tlh-fig,
+body[data-tl-screen="mein-boxer"] .mb-shop-item-art .tlh .tlh-fig{animation:none}
+body[data-tl-screen="mein-boxer"] .mb-gear-name{
+ font-size:12px;font-weight:800;line-height:1.2;min-height:28px;
+ display:flex;align-items:center;justify-content:center;overflow-wrap:anywhere
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip .mb-lock{
+ width:100%;max-width:100%;font-size:10px;justify-content:center;white-space:normal;overflow-wrap:anywhere
+}
+body[data-tl-screen="mein-boxer"] .mb-shop-item-art{
+ flex:none;display:block;position:relative;width:62px;height:80px;
+ background:radial-gradient(ellipse at 50% 55%,rgba(79,216,255,.16),#0c1427 75%);
+ border:1px solid rgba(120,162,215,.27);border-radius:10px;overflow:hidden
+}
+body[data-tl-screen="mein-boxer"] .mb-shop-item-art svg.tlh{
+ position:absolute;left:50%;top:-5px;width:58px;max-width:none;height:auto;
+ transform:translateX(-50%);
+}
+body[data-tl-screen="mein-boxer"] .mb-shop-item-art svg.tlh .tlh-aura{
+ animation:none
+}
+@media(max-width:390px){
+ body[data-tl-screen="mein-boxer"] .mb-gear-chip{flex-basis:95px;width:95px}
+}
