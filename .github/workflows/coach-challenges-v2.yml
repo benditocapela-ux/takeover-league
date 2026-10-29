@@ -45,6 +45,9 @@ on:
       - 'tests/scaled-everywhere-*'
       - 'tests/kg-cards-everywhere-*'
       - 'tests/admin-bonus-exp-*'
+      - 'tests/fresh-release-*'
+      - '.github/workflows/takeover-pages-deploy.yml'
+      - 'takeover-navigation.js'
       - 'tests/card-gallery-*'
       - 'tests/card-arena-*'
       - 'tests/looks-everywhere-*'
@@ -133,6 +136,9 @@ on:
       - 'tests/scaled-everywhere-*'
       - 'tests/kg-cards-everywhere-*'
       - 'tests/admin-bonus-exp-*'
+      - 'tests/fresh-release-*'
+      - '.github/workflows/takeover-pages-deploy.yml'
+      - 'takeover-navigation.js'
       - 'tests/card-gallery-*'
       - 'tests/card-arena-*'
       - 'tests/looks-everywhere-*'
@@ -207,6 +213,7 @@ jobs:
       - run: node tests/scaled-everywhere-contracts.cjs
       - run: node tests/kg-cards-everywhere-contracts.cjs
       - run: node tests/admin-bonus-exp-contracts.cjs
+      - run: node tests/fresh-release-contracts.cjs
       - run: node tests/card-arena-contracts.cjs
       - run: node tests/looks-everywhere-contracts.cjs
       - run: node tests/card-designs-personal-contracts.cjs

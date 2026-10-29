@@ -92,6 +92,14 @@ jobs:
           sed -i -E "s#((href|src)=\"\./[A-Za-z0-9._-]+\.(css|js))\"#\1?v=${release}\"#g" _site/*.html
           test "$(grep -c "takeover-redesign.css?v=${release}" _site/index.html)" -ge 1
           if grep -lE '(href|src)="\./[A-Za-z0-9._-]+\.(css|js)"' _site/*.html; then echo 'Unversioned local asset link left'; exit 1; fi
+          # Etappe 20a: auch nachgeladene Skripte versionieren, Version für die Neu-Lade-Prüfung mitliefern.
+          sed -i -E "s#(\.src=')\./([A-Za-z0-9._-]+\.js)'#\1./\2?v=${release}'#g" _site/*.js
+          grep -Fq "takeover-holo.js?v=${release}" _site/takeover-performance.js
+          grep -Fq "takeover-kampfgeist.js?v=${release}" _site/takeover-performance.js
+          if grep -lE "\.src='\./[A-Za-z0-9._-]+\.js'" _site/*.js; then echo 'Unversioned dynamic script left'; exit 1; fi
+          sed -i "0,/<head>/s##<head><meta name=\"tl-release\" content=\"${release}\">#" _site/*.html
+          test "$(grep -c "<meta name=\"tl-release\" content=\"${release}\">" _site/index.html)" -eq 1
+          printf '{"release":"%s"}\n' "${release}" > _site/version.json
       - uses: actions/upload-pages-artifact@v4
         with:
           path: _site
