@@ -44,6 +44,11 @@ assert.match(premium,/class="tlh-premium-coat"/);
 assert.match(premium,/class="tlh-premium-fabric"/);
 assert.match(premium,/class="tlh-premium-gear"/);
 assert.match(premium,/radialGradient/);
+assert.equal((premium.match(/class="tlh-premium-eyes"/g)||[]).length,2,'premium face renders 2 anime eyes');
+assert.doesNotMatch(basic,/tlh-premium-eyes/,'standard profile keeps its current eye style');
+const green=H.svg({...config,eye:'gruen'},{pose:'cool',premium:true,holo:false});
+assert.match(green,/tlh-premium-eyes/);
+assert.doesNotMatch(green,/class="tlh-scan"/,'editor does not scan over premium fighter');
 assert.doesNotMatch(basic,/tlh-premium-coat/);
 assert.doesNotMatch(basic,/tlh-premium-fabric/);
 for(const item of [
