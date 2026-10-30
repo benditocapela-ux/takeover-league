@@ -132,6 +132,16 @@ function svg(cfg,opts){
  <path d="M69 90 Q79 84 96 91" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
  <path d="M72 89 Q81 86 93 90" fill="none" stroke="${hc[1]}" stroke-width="1.8" stroke-linecap="round" opacity=".7"/>
  </g>`;
+ // Optional studio embroidery uses selected colours, not raster overlays.
+ const premiumDetails=()=>{
+  if(!premium)return "";
+  const crest=top?`<g><path d="M109 132 L114 136 L120 126 L126 136 L131 132 L129 144 L111 144Z" fill="url(#${u}pm)" stroke="#2b190d" stroke-width=".8"/><path d="M110 147 H130" fill="none" stroke="${tc[2]}" stroke-width="2" stroke-linecap="round"/><path d="M102 163 Q120 168 138 163" stroke="${tc[2]}" stroke-width="1.2" fill="none" opacity=".55"/></g>`:"";
+  const coatTrim=co?`<g><path d="M76 114 C69 146 69 225 73 276 M164 114 C171 146 171 225 167 276" fill="none" stroke="${co.a}" stroke-width="1.8" opacity=".75"/><path d="M83 244 l4 -6 l4 6 l-4 6Z M157 244 l-4 -6 l-4 6 l4 6Z" fill="${co.a}" opacity=".85"/><path d="M104 104 Q120 118 136 104" stroke="#fff0ba" stroke-width="2.2" fill="none" opacity=".7"/></g>`:"";
+  return `<g class="tlh-premium-signature" aria-hidden="true">${crest}<path d="M86 175 Q120 177 154 175" stroke="#ffe6a3" stroke-width="1.5" opacity=".85" fill="none"/><text x="120" y="184" font-size="7" font-family="Arial,sans-serif" font-weight="900" letter-spacing=".2" fill="#fff2c0" text-anchor="middle">TAKEOVER</text><path d="M84 217 L81 230 M156 217 L159 230" fill="none" stroke="#f0cd84" stroke-width="1.3" opacity=".75"/>${coatTrim}</g>`;
+ };
+ const premiumHairDetails=()=>premium&&showHair&&c.hair==="afro"&&!hoodUp&&!cap
+  ?`<g class="tlh-premium-hair" stroke="${hc[2]}" stroke-linecap="round" fill="none" opacity=".72"><path d="M45 43 q5 -7 10 -2 M61 27 q4 -6 9 -2 M77 18 q5 -4 9 0 M96 12 q5 -4 10 1 M116 17 q5 -5 10 1 M135 29 q6 -5 10 3 M147 48 q6 -4 7 5 M39 70 q5 -4 10 2 M62 51 q5 -4 9 1 M88 40 q5 -4 10 1 M113 43 q5 -4 9 1 M135 63 q5 -4 10 2" stroke-width="1.8"/></g>`
+  :"";
  const strandSvg=(d,w,dash)=>d?`<path d="${d}" fill="none" stroke="${INK}" stroke-width="${w+3.4}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="url(#${u}h)" stroke-width="${w}" stroke-linecap="round"${dash?' stroke-dasharray="5 2.2"':''}/><path d="${d}" fill="none" stroke="${hc[2]}" stroke-width="1.3" stroke-linecap="round" opacity=".45"/>`:'';
  const scenes={
   dojo:`<rect width="240" height="380" fill="#efe2c4"/><path d="M0 0 H240 V300 H0Z M60 0 V300 M120 0 V300 M180 0 V300 M0 75 H240 M0 150 H240 M0 225 H240" fill="none" stroke="#8a5a32" stroke-width="5"/><rect y="292" width="240" height="88" fill="#6b4224"/><path d="M0 312 H240 M0 334 H240 M0 358 H240" stroke="#4a2b14" stroke-width="2"/>`,
@@ -175,6 +185,7 @@ function svg(cfg,opts){
   +(premium?`<g class="tlh-premium-gear"><path d="M89 241 L92 300 M151 241 L148 300" stroke="#ffefc0" stroke-width="1.6" stroke-linecap="round" opacity=".25" fill="none"/><path d="M78 333 L108 333 M130 333 L160 333" stroke="url(#${u}pm)" stroke-width="1.6" stroke-linecap="round" opacity=".75" fill="none"/></g>`
    +(top?`<g class="tlh-premium-fabric"><path d="M92 112 Q98 118 100 138 M146 110 Q143 122 140 151 M101 177 Q120 179 140 177" fill="none" stroke="#fff" opacity=".16" stroke-width="2.2" stroke-linecap="round"/></g>`:'')
    +(co?`<g class="tlh-premium-coat"><path d="M81 110 Q87 106 101 107 L97 255 M159 110 Q152 106 139 107 L143 255" fill="none" stroke="url(#${u}pm)" stroke-width="1.8" stroke-linecap="round" opacity=".8"/><path d="M77 271 L98 276 M142 276 L163 271" fill="none" stroke="${co.a}" stroke-width="1.6" opacity=".75"/><path d="M91 143 l2 3 l-2 3 l-2 -3 Z M149 143 l2 3 l-2 3 l-2 -3 Z" fill="#f2c14e" opacity=".8"/></g>`:''):'')
+  +premiumDetails()
   +`<g transform="translate(60 -6) scale(0.6)">`
   +`<ellipse cx="62" cy="106" rx="5.5" ry="9.5" fill="${skin}" stroke="${INK}" stroke-width="2.6"/><ellipse cx="138" cy="106" rx="5.5" ry="9.5" fill="${sd}" stroke="${INK}" stroke-width="2.6"/>`
   +`<path d="M62 92 C62 60 80 46 100 46 C120 46 138 60 138 92 C138 116 130 133 117 146 L104 157 C101.5 159 98.5 159 96 157 L83 146 C70 133 62 116 62 92Z" fill="${skin}" stroke="${INK}" stroke-width="3.4" stroke-linejoin="round"/><path d="M138 92 C138 116 130 133 117 146 L104 157 C113 140 123 123 127 100Z" fill="${sd}" opacity=".6"/>`
@@ -187,6 +198,7 @@ function svg(cfg,opts){
    +(H.fstrands&&!hoodUp&&!cap?strandSvg(H.fstrands,(H.w||8)-1,H.dash):'')
    +p(H.tex,`fill="none" stroke="${H.dash?hc[2]:hc[1]}" stroke-width="2" stroke-linecap="round"${H.dash?' stroke-dasharray="3 2"':''} opacity=".8"`)
    +(H.hi&&!cap&&!hoodUp?p(H.hi,H.hiSkin?'fill="#fff" opacity=".35"':`fill="${hc[2]}" opacity=".85"`):''):'')
+  +premiumHairDetails()
   +(hijab?`<path d="M60 108 C56 66 78 46 100 46 C122 46 144 66 140 108" fill="none" stroke="${INK}" stroke-width="13" stroke-linecap="round"/><path d="M60 108 C56 66 78 46 100 46 C122 46 144 66 140 108" fill="none" stroke="${hd[0]}" stroke-width="8.5" stroke-linecap="round"/><path d="M64 136 C80 160 120 160 136 136 L156 178 C130 198 70 198 44 178Z" fill="${hd[0]}" stroke="${INK}" stroke-width="3"/><path d="M76 162 C92 170 108 170 124 162" fill="none" stroke="${hd[1]}" stroke-width="3"/>`:'')
   +(cap?`<path d="M58 80 C56 42 80 30 100 30 C120 30 144 42 142 80 C122 72 78 72 58 80Z" fill="${hd[0]}" stroke="${INK}" stroke-width="3.2" stroke-linejoin="round"/><path d="M100 30 L100 74" stroke="${hd[1]}" stroke-width="2.4"/><path d="M52 80 C78 70 122 70 148 80 C156 88 140 96 100 94 C60 96 44 88 52 80Z" fill="${hd[1]}" stroke="${INK}" stroke-width="3.2" stroke-linejoin="round"/><path d="M84 46 C92 40 104 40 112 44" stroke="#fff" stroke-width="3" fill="none" opacity=".35" stroke-linecap="round"/>`:'')
   +(hoodUp?`<path d="M56 120 C48 62 76 36 100 36 C124 36 152 62 144 120" fill="none" stroke="${INK}" stroke-width="15" stroke-linecap="round"/><path d="M56 120 C48 62 76 36 100 36 C124 36 152 62 144 120" fill="none" stroke="${tc[1]}" stroke-width="10" stroke-linecap="round"/>`:'')
