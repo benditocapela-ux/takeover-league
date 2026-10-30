@@ -187,3 +187,24 @@ Ein **lokaler Grafikvergleich** liegt jetzt unter `tools/boxer-art-review.html`.
 - Die Browserabnahme `tests/boxer-art-review-browser.cjs` kontrolliert lokale Dateiauswahl, Dimensionsanzeige, Überlagerung, Transparenzraster und mobiles Layout.
 
 **Künstlerische Grenzen:** Der bestehende Referenzausschnitt ist sichtbar unsauber freigestellt (helle Ränder und Schattenreste). Er dient ausschliesslich zur Prüfung von Silhouette, Farbpalette und Verschränkung der Arme. Die Grafiken dürfen erst nach professioneller Bereinigung und separater Prüfung der austauschbaren Ebenen als Premium-Asset freigegeben werden. Referenzdateien mit ungeklärten Nutzungsrechten nicht in ein öffentliches GitHub-Repository hochladen.
+
+## Erster Acht-Ebenen-Referenzentwurf der bestätigten Cool-Pose (30.10.2026)
+
+Aus dem vom Nutzer visuell bestätigten Anime-Boxer (schwarz-goldener Mantel, kurzer Afro, dunkle Haut, verschränkte Arme, TAKEOVER-Shorts und hohe Stiefel) wurde ein **extern bereitgestelltes, noch nicht im Repository gespeichertes** Testpaket mit acht **768 × 1216 Pixel grossen PNGs** erstellt:
+
+- `cool/coatBack.png` → Mantelschösse und Hintergrundteile
+- `cool/body.png` → verbleibende sichtbare Haut/Körperbereiche
+- `cool/bottom.png` → schwarz-goldene Boxershorts
+- `cool/feet.png` → hohe Boxstiefel
+- `cool/eyes.png` → Gesichts-/Augenausschnitt
+- `cool/hair.png` → kurzer Afro
+- `cool/coatFront.png` → Mantelärmel und Vorderteile
+- `cool/hands.png` → Bandagen und verschränkte Unterarme
+
+Eine unabhängige lokale Überprüfung hat die **pixelgenaue Rekonstruktion des Originalbilds aus diesen acht Bildern bestätigt**. Das Paket enthält ein `manifest-draft.json`, ein `composited-proof.png` und eine Vorschau der einzelnen Ebenen. Die Werte in `manifest-draft.json` sind ausdrücklich `approved:false` und `enabled:false`.
+
+**Wesentliche Einschränkung:** Dieser erste Entwurf teilt vorhandene Pixel mittels Regionmasken auf. Er ergänzt **keine Anatomie oder Kleidung, die im freigegebenen Einzelbild verdeckt ist**. Deshalb entstehen beim Austausch/Entfernen einzelner Ebenen sichtbare Lücken. Man kann damit die Originalpose rekonstruieren und den Produktionsprozess testen, aber **noch keine vollständige, frei anpassbare Premium-Figur** liefern. Für die echte Shop-/Outfit-Integration braucht es retuschierte Unterlagen (vollständiger Körper), überlappende Mäntel/Hosen/Schuhe und alle benötigten Farb- und Posenvarianten. Das alte Holo bleibt für diese Varianten Pflicht-Fallback.
+
+Das externe Testpaket wurde **nicht automatisch in GitHub hochgeladen**, weil die verbundenen GitHub-Textdatei-Aktionen die binären PNGs nicht direkt aus dem lokalen Arbeitscontainer übernehmen. Daher wurde das produktive Manifest nicht mit Dateiverweisen auf noch fehlende GitHub-Dateien versehen – andernfalls würden die Staging-Tests gezielt fehlschlagen.
+
+Nach bewusstem Upload ins Repository müssen die acht Bilddateien unter `assets/boxer-artpacks/v1/cool/` abgelegt und das echte JavaScript-Manifest entsprechend dem geprüften JSON angepasst werden. Anschliessend: Dateivalidator, tatsächliche Playwright-Abnahme mit dem ersten Look und **erst danach** gesonderte visuelle Freigabe.
