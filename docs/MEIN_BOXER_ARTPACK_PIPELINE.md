@@ -175,3 +175,15 @@ Der neue Schritt `node tools/publish-boxer-artpack.cjs _site` im Pages-Build hat
 Beachte: Ein **öffentliches GitHub-Repository** macht hochgeladene Dateien im Repository selbst sichtbar. Dass Entwurfsbilder nicht in GitHub Pages kopiert werden, macht sie deshalb **nicht vertraulich**. Unveröffentlichte, vertrauliche Designvorlagen dürfen nicht in einem öffentlichen Repo abgelegt werden.
 
 Damit besteht der vollständige technische Pfad: Manifest → Datei- und Grössenprüfung → ausdrückliche Freigabe → gezielte Pages-Auslieferung → kontrollierte Editor-Aktivierung. Die finalen Anime-Illustrationen werden weiterhin separat benötigt.
+ 
+## Visuelle Referenzprüfung vor dem ersten Asset-Pack
+
+Ein **lokaler Grafikvergleich** liegt jetzt unter `tools/boxer-art-review.html`. Er ist absichtlich kein öffentlicher Navigationspunkt und wird vom Pages-Workflow (der nur die Root-HTML-Dateien ausliefert) nicht mitveröffentlicht.
+
+- Aus dem ausgecheckten Repository über einen lokalen Webserver öffnen: `python3 -m http.server 8000`, anschliessend `http://localhost:8000/tools/boxer-art-review.html`.
+- Links den **Originalboxer mit verschränkten Armen** als PNG/WebP-Datei wählen, rechts eine neue Illustration oder transparente Ebene. Beide Bilder werden im lokalen Browser per Object-URL geöffnet, **ohne Server-Upload oder Datenbankverbindung**.
+- Das Tool prüft die Leinwandgrösse von 768 × 1216 und ob transparente Pixel vorhanden sind. Im Schieberegler lassen sich die Figuren überlagern und die Kopf-/Arm-/Schuhpositionen kontrollieren.
+- Die vorhandene Schnittstelle bleibt weiterhin die echte Produktionspipeline. Ein einzelner freigestellter Referenzboxer ist **kein** vollständiges Outfit-Paket und darf nicht einfach unter falschen Kleidungsschlüsseln in das Manifest eingetragen werden.
+- Die Browserabnahme `tests/boxer-art-review-browser.cjs` kontrolliert lokale Dateiauswahl, Dimensionsanzeige, Überlagerung, Transparenzraster und mobiles Layout.
+
+**Künstlerische Grenzen:** Der bestehende Referenzausschnitt ist sichtbar unsauber freigestellt (helle Ränder und Schattenreste). Er dient ausschliesslich zur Prüfung von Silhouette, Farbpalette und Verschränkung der Arme. Die Grafiken dürfen erst nach professioneller Bereinigung und separater Prüfung der austauschbaren Ebenen als Premium-Asset freigegeben werden. Referenzdateien mit ungeklärten Nutzungsrechten nicht in ein öffentliches GitHub-Repository hochladen.
