@@ -14,7 +14,7 @@ vm.runInContext(holo,ctx);
 vm.runInContext(itemsJS,ctx);
 vm.runInContext(layersJS,ctx);
 const H=ctx.window.TLHolo,G=ctx.window.TLGearArt;
-assert.match(html,/await import\('\.\/takeover-mein-boxer-items\.js'\)/);
+assert.ok(html.includes("import('./takeover-mein-boxer-items.js')"),'optional game-item module stays available');
 assert.match(html,/G\.svg\(field,v,look\)/);
 const types=[
  ['head','cap'],['head','band'],['head','hijab'],
