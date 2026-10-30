@@ -31,3 +31,19 @@ Die vom Nutzer bestätigte Web-App-Konzeptansicht dient als **Designziel**: dunk
 Die echten, qualitativ mit der bestätigten Anime-Vorlage übereinstimmenden, **austauschbaren** Bilddateien fehlen noch. Daher bleiben im aktuellen `takeover-mein-boxer-artpack-manifest.js` beide Schalter `approved:false` und `enabled:false`. Der sichtbare Boxer ist derzeit weiterhin das anpassbare SVG-Holo. Der nächste Design-Abnahmeschritt sind reale, sauber getrennte Ebenen für Körper/Haut, Afro/Frisuren, Mantel, Oberteil, Shorts, Schuhe und Hände – mit identischer Leinwand und unveränderter Figurhaltung.
 
 **Vor einem Merge**: CI-Ergebnisse und Screenshots sichten, am echten Mobilgerät testen, Rechte an den Premium-Illustrationen verifizieren, Visuelles gegen die Nutzerreferenz abnehmen. Kein ungeprüftes KI-Gesamtbild als auswählbares Einzel-Outfit ausgeben.
+
+## Erste echte Anime-Referenz in der fixierten Arena (30.10.2026)
+
+Die verbindlich bestätigte Anime-Figur (Afro, dunkle Haut, verschränkte Arme, schwarz-goldener Mantel, TAKEOVER-Shorts und hohe Stiefel) liegt als **echte freigestellte Referenz in 768 × 1216 Pixeln** vor. Die Datei wurde bewusst **nicht** als vollwertiges, anpassbares Sprite-Asset-Pack ausgegeben.
+
+**Neue sichere Vorschau im PR:** `mein-boxer.html?art=reference` zeigt neben dem fixierten Boxer einen lokalen Dateiwähler für PNG/WebP. Die referenzierte Bilddatei wird **ausschliesslich als Object-URL im Browser** geöffnet. Die Upload-Funktion ist keine Datenbank- oder GitHub-Upload-Funktion, speichert keine Charakterdaten und ist im normalen Editor ohne URL-Parameter unsichtbar.
+
+- Nur `image/png` und `image/webp` mit maximal **2 MiB** und exakt **768 × 1216 Pixeln** werden akzeptiert.
+- Nach dem Laden wird die komplette Anime-Illustration in derselben Arena angezeigt. Der Button «Bearbeitbaren Boxer anzeigen» schaltet jederzeit auf den echten Holo-Renderer zurück.
+- **Eine Änderung an Hautfarbe, Frisur, Outfit, Pose oder Anprobe beendet die statische Referenzanzeige automatisch**, damit kein Anwender eine falsche Vorstellung von modularer Änderbarkeit erhält. Die Datei bleibt lokal für erneuten Vergleich verfügbar.
+- Bei Seitenwechsel wird die Object-URL freigegeben. Normale Shop-, Speicher- und Profilfunktionen bleiben unverändert.
+- `tests/boxer-holo-browser.cjs` prüft einen gültigen lokalen 768×1216-PNG-Upload, die Rückkehr zu SVG nach Outfitwechsel sowie das Ausbleiben jeglicher `save_my_holo`-RPC und die Unsichtbarkeit des Werkzeugs im normalen Editor.
+
+Für eine sofortige **offline nutzbare Demo** gibt es zusätzlich ein separates Preview-ZIP mit `index.html`, transparentem PNG und komprimiertem WebP der bestätigten Figur. Das ZIP ist eine Design-Demo, nicht der produktive App-Build. Neue Kleidungskarten in dieser Demo dienen ausdrücklich nur der visuellen Orientierung.
+
+**Noch offen:** saubere Bildzerlegung oder Neuzeichnung in eigenständige Körper-, Haar-, Gesicht-, Mantel-, Shorts-, Schuh- und Hand-Ebenen, einschliesslich wirklich unabhängig anpassbarer Farben und Posen. Erst damit darf `takeover-mein-boxer-artpack-manifest.js` auf `approved:true` gestellt werden. Im PR bleiben die Freigabeschalter ausgeschaltet.
