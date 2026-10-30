@@ -321,3 +321,15 @@ Das neue Paket **`takeover_pr79_originalgrafiken_dropin.zip`** (separat beim Nut
 Automatische Abnahme: `tests/mein-boxer-installed-art-contracts.cjs` prüft das Ein-Klick-Laden mit korrekten und falschen acht Hashes, gleich-origin Pfade, lokale Blob-URL-Bereinigung und Erhalt bereits valider Grafiken bei Fehlern. `tests/boxer-holo-browser.cjs` bestätigt den sicheren SVG-Fallback bei fehlenden Repo-Dateien. Staging-CI testet beides.
 
 **Keine Produktfreigabe:** Das Paket stellt ausschliesslich die eine bestätigte, noch nicht frei umkleidbare Cool-Pose bereit. Es werden keine neuen Kleidungs-, Haut- oder Frisurenvarianten erfunden. Das Produktionsmanifest bleibt absichtlich deaktiviert, das öffentliche Profil und der Shop nutzen weiterhin das vorhandene Holo.
+
+## PR-Abnahme: Originalgrafiken wirklich im Repository? (30. Oktober 2026)
+
+Nach dem Import des zuvor bereitgestellten Git-Binärpatches gibt es eine **eindeutige automatische Abnahme statt bloss grüner Funktions-Mocks**:
+
+- `node tests/boxer-original-art-readiness.cjs` läuft in GitHub Actions und zeigt im Job Summary entweder **PENDING (0/8)** oder **VERIFIED (8/8)**. **PENDING bedeutet ausdrücklich, dass die Original-PNGs nicht im PR vorhanden und noch nicht in einem echten Browser abgenommen sind**, selbst wenn sämtliche allgemeinen Tests grün sind.
+- Sobald **eine** der acht Dateien hinzugefügt wurde, muss das Paket vollständig sein. Jede Datei wird anhand ihrer **exakten SHA-256-Prüfsumme** kontrolliert; die acht Einträge des noch deaktivierten Cool-Pose-Manifests müssen die korrekten kleingeschriebenen GitHub-Pfade referenzieren. Fehlende, veränderte oder nicht originalgetreue Dateien schlagen in CI fehl.
+- `tests/boxer-original-art-readiness-contracts.cjs` deckt die Zustände fehlende, teilweise vorhandene, gefälschte und falsch referenzierte Dateien ab.
+- `tests/boxer-holo-browser.cjs` verwendet die acht **tatsächlich im PR eingecheckten** PNGs ohne Mocks, sobald sie vorhanden sind. Der Browser lädt die echten Dateien mit dem Ein-Klick-Button, verifiziert die Hashwerte, prüft identische Leinwand-/Bildpositionen, erstellt `holo-original-8-repository-art.png` und testet den vollständigen SVG-Fallback beim Kleidungswechsel.
+- Es gibt **keinen automatischen Übergang zu `approved:true` oder `enabled:true`**. Die originalen sichtbaren Pixel sind weiterhin nur eine künstlerische Cool-Pose-Referenz, nicht die fertig umkleidbare Anime-Figur.
+
+**Noch zu tun:** `takeover_pr79_git_patch_installieren.zip` im echten Checkout des PR-Branches ausführen und die neun Änderungen nach Sichtprüfung **in den PR-Branch pushen**. Danach zeigt die CI-Zusammenfassung VERIFIED statt PENDING. Kein Merge oder GitHub-Pages-Deployment durch diesen Vorbereitungsschritt.
