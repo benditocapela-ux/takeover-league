@@ -229,3 +229,18 @@ Für den **ersten originalgetreuen Referenzlook** gibt es nun direkt im mobilen 
 - Chromium prüft vollständigen achtteiligen Aufbau, exakt gleiche Rechtecke, direkten SVG-Vergleich, Fallback bei Kleidungswechsel, Fehler bei sieben Dateien sowie unsichtbaren Debugmodus auf der normalen Seite. Dazu gibt es den isolierten Contract-Test `tests/mein-boxer-draft-layers-contracts.cjs`.
 
 Dies ist **ein echter technischer Ebenen-Test**, aber noch keine fertig individualisierbare Premium-Figur. Die Schnittsegmente bewahren dieselben Ursprungspixel. Verdeckte Anatomie und austauschbare Kleidung müssen erst professionell neu gezeichnet werden. Die beiden produktiven Manifestflags bleiben `approved:false` und `enabled:false`; kein Merge oder Deployment ohne erneute Freigabe.
+
+## Acht-Ebenen-Prüfmodus: Masken, Original-Look und Quellenidentität (30.10.2026)
+
+Der schon vorhandene Modus `mein-boxer.html?art=layers` wurde für die tatsächliche Weiterzeichnung ausgebaut:
+
+1. Das lokale **achtteilige Referenzpaket** mit den bekannten Namen `coatBack.png`, `body.png`, `bottom.png`, `feet.png`, `eyes.png`, `hair.png`, `coatFront.png`, `hands.png` auswählen. Es wird nichts an GitHub oder Supabase übertragen.
+2. **«Grafikebenen prüfen»** oben in der Bühne öffnen. Das Menü ist standardmässig eingeklappt, damit der Boxer vollständig sichtbar bleibt.
+3. **«Original-Look ansehen»** zeigt die unveränderte, bestätigte Cool-Pose zur Designprüfung, selbst wenn der angemeldete Boxer andere Haare oder Kleidung besitzt. Der sichtbare Hinweis sagt ausdrücklich, dass dies **nicht** die aktuelle Ausrüstung des Profils ist. Der Profilzustand wird nicht geändert und kein `save_my_holo` ausgelöst.
+4. Acht Kontrollkästchen lassen jede tatsächliche Pixel-Ebene separat sichtbar oder unsichtbar werden. Beispielsweise **«Mantel vorne»** deaktivieren, um die fehlende verdeckte Anatomie der Erstfassung zu erkennen. Mit allen acht aktiven Ebenen bleibt das bestätigte Gesamtbild erhalten.
+5. Bei einer echten Änderung der Kleidung, Frisur, Hautfarbe oder beim Speichern endet die vorübergehende Original-Look-Übersteuerung. Die dynamische Holo-Figur bleibt die sichere Darstellung aller noch nicht gezeichneten Varianten.
+6. Wenn Web Crypto verfügbar ist, berechnet der Browser **lokal SHA-256 je PNG** und vergleicht die acht Werte mit den Originaldateien aus dem vom Nutzer bestätigten Referenzpaket. Originaldateien erhalten einen positiven Herkunftshinweis; abweichende Testdateien werden als solche gekennzeichnet. Ist die Prüfung im Browser nicht möglich, wird dies offen angegeben. **Ein positiver Hash ist keine künstlerische oder produktive Freigabe der fehlenden Outfit-Varianten.**
+
+Die Kontrollwerkzeuge verwenden eine aufklappbare `<details>`-Oberfläche und erhalten ihren Öffnungszustand bei einem Renderwechsel. Ihre Bedienung setzt nicht die Scrollposition des Ausrüstungsbereichs zurück. Der Browser-Test prüft auch eine isoliert ausgeblendete Mantelvorderseite, Fokus, Rückschalten auf SVG und die markierte, nicht gespeicherte Original-Look-Vorschau.
+
+**Lieferstatus:** Die echten acht PNGs sind nach wie vor ausschliesslich in der dem Nutzer bereitgestellten ZIP-Datei vorhanden, nicht als binäre Dateien im GitHub-PR. Die angebundene GitHub-Schnittstelle unterstützt hier Textänderungen sowie binäre Base64-Blobs, aber **keinen direkten Transfer aus dem lokalen Dateisystem**. Daher ist kein Upload dieser Originalbilder erfolgt. Die Grafikfreigabe im Produktionsmanifest bleibt `approved:false, enabled:false`. Die verbleibende künstlerische Aufgabe ist das Nachzeichnen der verdeckten Körperbereiche unter Mantel/Armen und das Erstellen echter Kleidungsvarianten.
