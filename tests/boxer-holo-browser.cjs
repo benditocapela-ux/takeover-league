@@ -71,6 +71,24 @@ function injected(cfg){
  let x=await page({});
  await x.p.goto(base+'mein-boxer.html');
  await x.p.waitForSelector('.mb-preview svg.tlh');
+ // The complete SVG must fit inside the fixed stage; the previous build
+ // overflowed behind the save actions and only showed the upper body.
+ const previewGeometry=await x.p.evaluate(()=>{
+  const preview=document.querySelector('.mb-preview');
+  const figure=preview.querySelector('svg.tlh');
+  const p=preview.getBoundingClientRect(),r=figure.getBoundingClientRect();
+  return {top:r.top-p.top,bottom:p.bottom-r.bottom,left:r.left-p.left,right:p.right-r.right,
+   height:r.height,viewport:p.height,svgOverflow:getComputedStyle(figure).overflow,
+   statusHidden:document.getElementById('status').hidden};
+ });
+ assert.ok(previewGeometry.viewport>100,'fixed preview has room for boxer');
+ assert.ok(previewGeometry.top>=-1&&previewGeometry.bottom>=-1,
+  'boxer must fit vertically inside preview: '+JSON.stringify(previewGeometry));
+ assert.ok(previewGeometry.left>=-1&&previewGeometry.right>=-1,
+  'boxer must fit horizontally inside preview: '+JSON.stringify(previewGeometry));
+ assert.equal(previewGeometry.svgOverflow,'hidden','mobile preview clips SVG to full figure viewbox');
+ assert.ok(previewGeometry.statusHidden,'initial status toast must not obscure equipment');
+
  assert.equal(await x.p.locator('[data-set="hair"]').count(),18,'18 hair styles');
  for(const h of ['Afro','Locs','Box Braids','Cornrows','Twists','Afro-Puffs','Locken','Glatze'])assert.ok(await x.p.locator('[data-set="hair"]',{hasText:h}).count(),h);
  assert.equal(await x.p.locator('[data-set="tone"]').count(),8,'8 skin tones');
