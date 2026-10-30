@@ -136,3 +136,15 @@ Beide Schalter sind im PR weiterhin ausdrücklich `false`. Der produktive Aufruf
 Zur kontrollierten Inbetriebnahme: Erst Grafiken vollständig in den Assetordner liefern; danach den Validator und echte mobile Vergleichsscreenshots prüfen; Rechte und Designfreigabe schriftlich festhalten; erst dann `approved:true`, im Testbetrieb prüfen und separat `enabled:true` freigeben. Die Umstellung betrifft nur den «Mein Boxer»-Editor. Öffentliche Profile und FUT-Karten verwenden weiterhin ihren eigenen SVG-Holo-Renderer, bis sie gesondert integriert und getestet werden.
 
 **Bei Problemen:** `enabled:false` zurücksetzen, ohne gespeicherte Boxer-Daten, Shopbesitz oder Supabase zu ändern. Der SVG-Fallback bleibt in jeder Konfiguration erhalten.
+
+## Mobiles Performance-Budget für Charaktergrafiken (30.10.2026)
+
+Eine Figur in der fixierten Vorschau besteht aus mehreren transparenten, jeweils 768 × 1216 Pixel grossen Bildern. Für eine produktionsreife mobile Web-App reichen korrekte Bildmasse allein nicht:
+
+- **Maximal drei parallele Ladevorgänge** im Studio. `takeover-mein-boxer-artpack.js` nutzt eine gemeinsame Warteschlange für einzelne Bilddateien; wiederholtes Auswählen derselben Ausstattung startet keine Doppel-Downloads. Die gesamte Premium-Figur wird erst nach vollständigem Laden sichtbar, ansonsten bleibt das SVG.
+- **Maximal 2 MiB pro Bilddatei**, wie bisher, **zusätzlich höchstens 6 MiB pro maximalem Outfit**. Der Validator nimmt für jede der möglichen Ebenen eines Posen-Pakets die grösste definierte Variante und summiert sie konservativ. Diese Worst-Case-Grenze verhindert, dass zehn einzeln zulässige, aber gemeinsam viel zu grosse Bilder in einen mobilen Kampfanzug gelangen.
+- **PNG/WebP mit transparentem Alphakanal** bleibt verpflichtend. WebP ist bei passender Qualität für die Übertragung oft deutlich kleiner; tatsächliche Bildschärfe muss gegen die bestätigte Anime-Vorlage geprüft werden.
+- **Keine voreilige Live-Schaltung:** `enabled:true` bei `approved:false` wird nun auch von der Datei-Validierung ausdrücklich zurückgewiesen.
+- Die automatischen Tests `tests/mein-boxer-preload-performance.cjs` und `tests/validate-boxer-artpack-contracts.cjs` prüfen den gleichzeitigen Bildabruf, gemeinsam genutzte Downloads, Fehlerbehandlung sowie das kombinierte Byte-Limit.
+
+Die 6-MiB-Grenze ist ein Startbudget für das Studio, keine gemessene reale Netzwerklast. Nach Lieferung der echten Artwork-Dateien sind Bildqualität, iPhone-Speicherverbrauch und Ladezeiten anhand der realen Daten zu verifizieren. Sollte die gewählte Bildqualität nicht unter diesem Budget möglich sein, muss das Team die Grafikebenen optimieren und den Grenzwert mit dokumentierten mobilen Messungen neu bewerten.
