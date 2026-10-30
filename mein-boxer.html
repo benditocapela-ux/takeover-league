@@ -12,7 +12,13 @@
 <script src="./takeover-holo.js" defer></script>
 <script type="module">
 const $=id=>document.getElementById(id),app=$('app'),status=$('status');
-const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
+let statusTimer=null;
+const say=(t,err)=>{
+ if(statusTimer){clearTimeout(statusTimer);statusTimer=null}
+ status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t;
+ // Success messages are accessible and temporary; errors remain until resolved.
+ if(t&&!err&&!/läuft/.test(t))statusTimer=setTimeout(()=>{status.hidden=true;statusTimer=null},3000);
+};
 await new Promise(r=>{const ok=()=>window.TLPerf&&window.TLHolo;if(ok())return r();const t=setInterval(()=>{if(ok()){clearInterval(t);r()}},30)});
 await import('./takeover-mein-boxer-items.js');
 const P=window.TLPerf,H=window.TLHolo,G=window.TLGearArt,esc=P.esc;
@@ -194,7 +200,7 @@ try{
   if(!data||!data.enabled){say('');app.innerHTML='<div class="tlp-panel">Der Boxer-Holo ist noch nicht freigeschaltet.</div>'}
   else{cfg=H.normalize(data.config);saved=JSON.stringify(cfg);coatChoice=cfg.coat!=='none'?cfg.coat:'basic';
    const want=new URLSearchParams(location.search).get('tab');if(['koerper','kleidung','extras','posen','shop'].includes(want))tab=want;
-   say(data.saved?'':'Gestalte deinen Boxer und speichere ihn. Er erscheint dann in deinem Profil und auf deiner Karte.');render()}
+   say('');render()}
  }
 }catch(e){say('Mein Boxer konnte nicht geladen werden: '+(e.message||e),true)}
 </script>
