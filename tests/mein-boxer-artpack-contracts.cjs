@@ -42,6 +42,9 @@ assert.equal(build.inspect(cfg,'guard').state,'missing-pose','preview identifies
 assert.equal(build.inspect({...cfg,scene:'arena'},'cool').state,'unsupported-effect');
 assert.equal(AP.active.inspect(cfg,'cool').state,'unapproved','default manifest explains inactive art');
 assert.ok(html.includes('artDebugLabel(cfg,pose)'),'preview diagnostics are coupled to the hero');
+assert.ok(html.includes('data-art-compare="1"'),'approved preview supports SVG artwork comparison');
+assert.ok(html.includes("if(compare&&canCompareArt)"),'comparison must be opt-in and approved');
+assert.ok(html.includes("refreshHero();"),'comparison swaps the figure without rebuilding menus');
 assert.ok(html.includes('if(!tryPremiumArt)return'), 'normal editor hides debugging details');
 assert.ok(markup,'complete pack can be rendered');
 assert.ok(markup.includes('data-artpack-version="1"'));
