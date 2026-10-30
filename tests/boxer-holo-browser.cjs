@@ -70,6 +70,29 @@ function injected(cfg){
   return {p,errors,context};
  }
  const noScroll=async p=>assert.ok(await p.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth+1),'no horizontal scroll');
+
+ // Valid 768×1216 RGBA PNG, generated without third-party image libraries.
+ const zlib=require('node:zlib');
+ const crc=(bytes)=>{
+  let n=0xffffffff;
+  for(const v of bytes){n^=v;for(let j=0;j<8;j++)n=(n>>>1)^(n&1?0xedb88320:0)}
+  return (n^0xffffffff)>>>0;
+ };
+ const chunk=(type,data)=>{
+  const name=Buffer.from(type),len=Buffer.alloc(4),check=Buffer.alloc(4);
+  len.writeUInt32BE(data.length);check.writeUInt32BE(crc(Buffer.concat([name,data])));
+  return Buffer.concat([len,name,data,check]);
+ };
+ const makeTransparentReferencePng=()=>{
+  const header=Buffer.alloc(13);
+  header.writeUInt32BE(768,0);header.writeUInt32BE(1216,4);
+  header[8]=8;header[9]=6;
+  const blank=Buffer.alloc(1216*(1+768*4));
+  return Buffer.concat([
+   Buffer.from([137,80,78,71,13,10,26,10]),
+   chunk('IHDR',header),chunk('IDAT',zlib.deflateSync(blank)),chunk('IEND',Buffer.alloc(0))
+  ]);
+ };
  const calls=p=>p.evaluate(()=>window.__calls);
  const done=async x=>{await noScroll(x.p);assert.deepEqual(x.errors,[]);await x.context.close()};
 
@@ -375,6 +398,46 @@ function injected(cfg){
  assert.equal(await x.p.locator('[data-set="tone"][data-val="5"]').getAttribute('aria-pressed'),'true',
   'newer unsaved skin tone remains selected after save resolves');
  assert.equal(await x.p.isDisabled('#saveBtn'),false,'newer changes remain saveable');
+ await done(x);
+
+
+ // The approved single-character reference can be previewed locally without
+ // pretending it is a modular outfit or touching player profiles.
+ x=await page({visualDemo:true});
+ await x.p.goto(base+'mein-boxer.html?art=reference');
+ await x.p.waitForSelector('#mb-reference-file');
+ assert.equal(await x.p.locator('.mb-reference-figure').count(),0,'no arbitrary reference before upload');
+ assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),1,'SVG remains the default figure');
+ const validReference=makeTransparentReferencePng();
+ await x.p.locator('#mb-reference-file').setInputFiles({
+  name:'takeover-reference-cool.png',mimeType:'image/png',buffer:validReference
+ });
+ await x.p.waitForSelector('.mb-reference-figure');
+ assert.equal(await x.p.locator('.mb-reference-figure').getAttribute('alt'),
+  'Anime-Referenz nur zum visuellen Vergleich','preview is visibly declared not editable');
+ assert.ok((await x.p.locator('.mb-reference-figure').getAttribute('src')).startsWith('blob:'),
+  'file stays in the local browser');
+ await shot(x.p,'holo-reference-local-upload');
+ await x.p.click('[data-tab="kleidung"]');
+ assert.equal(await x.p.locator('.mb-reference-figure').count(),1,
+  'navigating among tabs does not discard the approved reference');
+ await x.p.click('[data-set="top"][data-val="hoodie"]');
+ assert.equal(await x.p.locator('.mb-reference-figure').count(),0,
+  'changing outfit returns to the truly editable Holo instead of a fake fixed image');
+ assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),1);
+ assert.equal(await x.p.locator('[data-reference-toggle]').getAttribute('aria-pressed'),'false');
+ await x.p.click('[data-reference-toggle]');
+ assert.equal(await x.p.locator('.mb-reference-figure').count(),1,
+  'editor can compare again without changing saved configuration');
+ assert.ok(!(await calls(x.p)).some(c=>c[0]==='save_my_holo'),
+  'viewing a reference does not persist a new outfit');
+ await done(x);
+
+ x=await page({visualDemo:true});
+ await x.p.goto(base+'mein-boxer.html');
+ await x.p.waitForSelector('.mb-preview svg.tlh');
+ assert.equal(await x.p.locator('.mb-reference-tools,.mb-reference-figure').count(),0,
+  'live editor never shows the developer-only local image picker');
  await done(x);
 
  // Art-pack integration is opt-in and can never show a partial costume.
