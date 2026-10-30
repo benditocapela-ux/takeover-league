@@ -85,3 +85,15 @@ Das ist nur ein **Schema-Beispiel**, keine bereits vorhandene Grafikdatei. Für 
 3. Alle Ebenen im Testbranch ablegen, Manifest auf `approved:true` setzen, `?art=preview` verwenden.
 4. Browser-Screenshots kontrollieren, mobile Performance/Netzwerkvolumen messen, Save/Reset, Käufe und sichere Fallbacks testen.
 5. Erst nach ausdrücklicher Freigabe den Produktivmodus und dann PR #79 freigeben/mergen. **Kein automatisches Live-Deployment.**
+
+## Editor-Abnahme: Bedienung, Ausfälle und Datensicherheit (30.10.2026)
+
+Das Studio verändert weiter **keine** Server-Schnittstelle und bleibt als Draft unpubliziert.
+
+- **Zugänglichkeit:** Die fünf Bereiche «Körper», «Kleidung», «Extras», «Posen» und «Shop» verwenden einen nachvollziehbaren Tab-/Tabpanel-Zusammenhang. Links/Rechts sowie Home/End wechseln mit der Tastatur die aktive Rubrik. Aktive Auswahlknöpfe behalten nach Farb- und Ausrüstungsänderungen den Fokus.
+- **Stabile Bedienung:** Bei asynchron geladenen oder fehlgeschlagenen Grafiken wird nur die zentrale Figur ersetzt – nicht das gesamte Menü. So gehen der Fokus und die Positionen in den horizontalen Ausrüstungsleisten nicht verloren.
+- **Netzwerkfehler:** Speichern und Einkaufen reagieren auch auf unerwartete Promise-Abbrüche. Die Oberfläche bleibt anschliessend bedienbar und zeigt einen Fehler; Käufe werden bei einem fehlgeschlagenen Refresh nicht automatisch wiederholt.
+- **Änderungen während des Speicherns:** Der gespeicherte Stand ist ein unveränderlicher Snapshot. Wenn jemand danach weitere Änderungen auswählt, bleiben diese sichtbar und als **noch nicht gespeichert** markiert.
+- **Automatische Abnahme:** Der Chromium-Test simuliert Tastaturnavigation, Fokus- und Scrollpositionen, Speicherfehler, Kaufausfälle sowie Änderungen, während eine Speicheranforderung läuft. Ein zusätzliches GitHub-Review der Screenshots bleibt vor Merge erforderlich.
+
+Die Testsimulation ist kein Ersatz für einen eingeloggten iPhone-Safari-Praxistest. Die echten Premium-Illustrationen fehlen weiterhin.
