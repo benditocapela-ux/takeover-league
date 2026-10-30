@@ -159,3 +159,19 @@ Die Bildprüfung läuft nun bereits mit **`approved:false`**, sobald die erste P
 4. Nur mit ausdrücklicher zusätzlicher Freigabe den produktiven Schalter `enabled:true` setzen. Bei Bedarf genügt `enabled:false` als sofortiger Rückweg zum SVG-Editor.
 
 Die GitHub-Testworkflows besitzen ausserdem jetzt `concurrency`-Gruppen je PR. Neuere Commits können damit überholte Staging- und V2-Integrationsprüfungen ersetzen. Der getrennte GitHub-Pages-Veröffentlichungsworkflow bleibt davon unberührt.
+
+## Tatsächliche GitHub-Pages-Auslieferung der freigegebenen Sprites (30.10.2026)
+
+**Behobener Integrationsfehler:** Der Pages-Workflow `.github/workflows/takeover-pages-deploy.yml` hatte bisher nur Root-Dateien und den Ordner `avatars/` kopiert. Selbst bei vorhandenen und freigegebenen Premium-Grafiken wären die Bild-URLs unter `assets/boxer-artpacks/v1/` deshalb im veröffentlichten Editor auf HTTP 404 gelaufen.
+
+Der neue Schritt `node tools/publish-boxer-artpack.cjs _site` im Pages-Build hat folgende Sicherheitsregeln:
+
+- **Entwurf (`approved:false`):** Vorhandene Bilddateien werden validiert, aber **nicht** nach `_site/` kopiert. Ein leerer Entwurf ist weiterhin zulässig.
+- **Freigegeben (`approved:true`):** Nur Dateien, die im freigegebenen Manifest über Posen und Ebenen referenziert sind, werden nach `_site/assets/boxer-artpacks/v1/` kopiert. Es werden weder unreferenzierte Grafiken noch Stilvorlagen/Entwurfsordner kopiert.
+- **Prüfung vor dem Kopieren:** Fehlende Dateien, unerlaubte relative Pfade, unpassende Abmessungen und zu grosse Outfits schlagen im Build fehl. Der Kopierer prüft zusätzlich, dass Symlinks keine Dateien ausserhalb des Quellordners preisgeben.
+- **Veröffentlichung:** Der vorhandene Main-Branch-Schutz im Workflow bleibt bestehen. Neu enthalten seine Änderungstrigger auch `assets/boxer-artpacks/v1/**` und den Kopier-/Validierungscode.
+- **Regression:** `tests/publish-boxer-artpack-contracts.cjs` prüft das Verhalten mit künstlichen Bild-Fixtures und kontrolliert, dass GitHub Pages den sicheren Kopierpfad tatsächlich aufruft.
+
+Beachte: Ein **öffentliches GitHub-Repository** macht hochgeladene Dateien im Repository selbst sichtbar. Dass Entwurfsbilder nicht in GitHub Pages kopiert werden, macht sie deshalb **nicht vertraulich**. Unveröffentlichte, vertrauliche Designvorlagen dürfen nicht in einem öffentlichen Repo abgelegt werden.
+
+Damit besteht der vollständige technische Pfad: Manifest → Datei- und Grössenprüfung → ausdrückliche Freigabe → gezielte Pages-Auslieferung → kontrollierte Editor-Aktivierung. Die finalen Anime-Illustrationen werden weiterhin separat benötigt.
