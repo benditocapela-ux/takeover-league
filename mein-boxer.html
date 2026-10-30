@@ -41,18 +41,30 @@ const referenceReview=new URLSearchParams(location.search).get('art')==='referen
 const draftReview=new URLSearchParams(location.search).get('art')==='layers';
 const draftPack=draftReview&&window.TLBoxerDraftPreview
  ?window.TLBoxerDraftPreview.create(window):null;
-let draftVisible=true;
+let draftVisible=true,draftSample=false;
+const draftLayers=new Set(window.TLBoxerDraftPreview?.NAMES||[]);
+const DRAFT_LABELS=Object.freeze({
+ coatBack:'Mantel hinten',body:'Körper',bottom:'Shorts',feet:'Stiefel',
+ eyes:'Augen',hair:'Afro',coatFront:'Mantel vorne',hands:'Bandagen'
+});
 function draftNotice(){
  if(!draftReview)return '';
  const ready=draftPack&&draftPack.status().ready;
  const pose=cfg&&(previewPose==='card'?cfg.pose_card:cfg.pose_profile);
- const matches=ready&&draftPack.compatible(H.normalize(cfg),pose);
+ const matches=!!(ready&&draftPack.compatible(H.normalize(cfg),pose));
+ const mode=draftSample?'Nur Referenzlook (nicht dein Outfit).':
+  matches?'Referenz-Look vollständig geladen.':'Andere Ausstattung: SVG-Fallback aktiv.';
  return '<div class="mb-draft-tools" role="group" aria-label="Nur lokale Acht-Ebenen-Vorschau">'+
   '<label for="mb-draft-files">8 PNG-Ebenen lokal laden</label>'+
   '<input id="mb-draft-files" type="file" accept="image/png,.png" multiple aria-describedby="mb-draft-note">'+
   (ready?'<button type="button" class="mb-btn" data-draft-toggle="1" aria-pressed="'+draftVisible+'">'+
-   (draftVisible?'SVG-Boxer vergleichen':'Acht Ebenen anzeigen')+'</button>':'')+
-  '<small id="mb-draft-note">'+(ready?(matches?'Referenz-Look vollständig geladen.':'Andere Ausstattung: SVG-Fallback aktiv.'):'Nur die acht Dateien aus dem Entwurfs-ZIP auswählen.')+
+   (draftVisible?'SVG-Boxer vergleichen':'Acht Ebenen anzeigen')+'</button>'+
+   '<button type="button" class="mb-btn" data-draft-sample="1" aria-pressed="'+draftSample+'">'+
+   (draftSample?'Mein Outfit verwenden':'Original-Look ansehen')+'</button>'+
+   '<fieldset class="mb-draft-layer-controls"><legend>Ebenen einzeln prüfen</legend>'+
+   window.TLBoxerDraftPreview.NAMES.map(name=>'<label><input type="checkbox" data-draft-layer="'+name+'"'+
+    (draftLayers.has(name)?' checked':'')+'>'+DRAFT_LABELS[name]+'</label>').join('')+'</fieldset>':'')+
+  '<small id="mb-draft-note">'+(ready?mode:'Nur die acht Dateien aus dem Entwurfs-ZIP auswählen.')+
   ' Kein Upload, keine Speicherung, keine Produktionsfreigabe.</small></div>';
 }
 
@@ -75,7 +87,9 @@ let compareSvg=false;
 const heroArt=(config,pose)=>{
  const normalized=H.normalize(config);
  if(draftReview&&draftPack&&draftVisible){
-  const draft=draftPack.render(normalized,pose);
+  const draft=draftSample
+   ?draftPack.render(draftPack.reference,'cool',draftLayers)
+   :draftPack.render(normalized,pose,draftLayers);
   if(draft)return draft;
  }
  // A local user's whole-body reference is a non-editable design overlay only.
@@ -312,12 +326,24 @@ app.addEventListener('keydown',e=>{
 // Eight first-pass raster layers are previewable only via user-local Object URLs.
 // Missing anatomy in other outfits forces fallback to dynamic Holo; no RPС changes.
 app.addEventListener('change',async e=>{
+ const layer=e.target.closest('[data-draft-layer]');
+ if(layer&&draftReview&&draftPack){
+  const name=layer.dataset.draftLayer;
+  if(window.TLBoxerDraftPreview.NAMES.includes(name)){
+   if(layer.checked)draftLayers.add(name);else draftLayers.delete(name);
+   refreshHero(); // preserve this checkbox's focus and the clothing scroll
+  }
+  return;
+ }
  const picker=e.target.closest('#mb-draft-files');
  if(!picker||!draftReview||!draftPack)return;
  try{
   say('Acht Grafikebenen werden geprüft …');
   await draftPack.load([...picker.files]);
   draftVisible=true;
+  const pose=previewPose==='card'?cfg.pose_card:cfg.pose_profile;
+  draftSample=!draftPack.compatible(H.normalize(cfg),pose);
+  window.TLBoxerDraftPreview.NAMES.forEach(name=>draftLayers.add(name));
   say('Acht Ebenen lokal geladen. Nur die unveränderte Cool-Pose ist verfügbar.');
   render();
  }catch(err){
@@ -354,6 +380,13 @@ app.addEventListener('change',e=>{
 });
 window.addEventListener('pagehide',()=>{if(referenceSrc)URL.revokeObjectURL(referenceSrc)});
 app.addEventListener('click',async e=>{
+ const sample=e.target.closest('[data-draft-sample]');
+ if(sample&&draftReview&&draftPack&&draftPack.status().ready){
+  draftSample=!draftSample;
+  render();
+  app.querySelector('[data-draft-sample]')?.focus({preventScroll:true});
+  return;
+ }
  const draftToggle=e.target.closest('[data-draft-toggle]');
  if(draftToggle&&draftPack&&draftPack.status().ready){
   draftVisible=!draftVisible;
@@ -378,15 +411,15 @@ app.addEventListener('click',async e=>{
  }
  const t=e.target.closest('[data-tab]');if(t){tab=t.dataset.tab;confirmBuy=null;render();if(t.closest('.mb-tryon'))app.querySelector('.mb-tabbody')?.scrollTo({top:0,behavior:'smooth'});return}
  const s=e.target.closest('[data-set]');
- if(s){referenceVisible=false;const f=s.dataset.set,v=s.dataset.val;
+ if(s){referenceVisible=false;draftSample=false;const f=s.dataset.set,v=s.dataset.val;
   if(f==='tone')cfg.tone=Number(v);
   else if(f==='coatPick'){coatChoice=v;cfg.coat=v}
   else{cfg[f]=v;if(f==='pose_card')previewPose='card';if(f==='pose_profile')previewPose='profile';if(f==='top'&&v!=='hoodie')cfg.hood=false}
   render();return}
  const g=e.target.closest('[data-toggle]');
- if(g){referenceVisible=false;if(g.dataset.toggle==='hood')cfg.hood=!cfg.hood;else{if(cfg.coat!=='none'){coatChoice=cfg.coat;cfg.coat='none'}else cfg.coat=coatChoice}render();return}
+ if(g){referenceVisible=false;draftSample=false;if(g.dataset.toggle==='hood')cfg.hood=!cfg.hood;else{if(cfg.coat!=='none'){coatChoice=cfg.coat;cfg.coat='none'}else cfg.coat=coatChoice}render();return}
  const tb=e.target.closest('[data-try-bundle]');
- if(tb){referenceVisible=false;const b=data.bundles.find(x=>x.key===tb.dataset.tryBundle);if(b)b.items.forEach(k=>{const i=items().find(x=>x.key===k);if(!i)return;if(['coat','aura','eyefx','scene'].includes(i.slot))cfg[i.slot]=i.value;if(i.slot==='glove'){cfg.hands='gloves';cfg.glove=i.value}if(i.slot==='pose')cfg.pose_profile=i.value});
+ if(tb){referenceVisible=false;draftSample=false;const b=data.bundles.find(x=>x.key===tb.dataset.tryBundle);if(b)b.items.forEach(k=>{const i=items().find(x=>x.key===k);if(!i)return;if(['coat','aura','eyefx','scene'].includes(i.slot))cfg[i.slot]=i.value;if(i.slot==='glove'){cfg.hands='gloves';cfg.glove=i.value}if(i.slot==='pose')cfg.pose_profile=i.value});
   render();app.querySelector('.mb-tabbody')?.scrollTo({top:0,behavior:'smooth'});return}
  if(e.target.closest('[data-cancel]')){confirmBuy=null;render();return}
  const bi=e.target.closest('[data-buy-item],[data-buy-bundle]');
@@ -419,11 +452,11 @@ app.addEventListener('click',async e=>{
   }
   return;
  }
- if(e.target.closest('#resetBtn')){
+ if(e.target.closest('#resetBtn')){draftSample=false;
   if(busy)return;
   cfg=JSON.parse(saved);say('Änderungen verworfen.');render();return;
  }
- if(e.target.closest('#saveBtn')){
+ if(e.target.closest('#saveBtn')){draftSample=false;
   if(busy)return;
   const snapshot=JSON.stringify(cfg);
   busy=true;render();
