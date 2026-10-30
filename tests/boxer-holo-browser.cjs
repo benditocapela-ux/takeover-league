@@ -94,6 +94,12 @@ function injected(cfg){
  assert.equal(await x.p.locator('[data-set="tone"]').count(),8,'8 skin tones');
  assert.equal(await x.p.locator('[data-set="eye"]').count(),8,'8 eye colours');
  assert.ok(await x.p.isDisabled('#saveBtn'),'nothing to save yet');
+ assert.equal(await x.p.locator('.mb-preview svg.tlh .tl-layer-outfit').count(),1,
+  'mobile hero uses the layered material kit');
+ assert.equal(await x.p.locator('.mb-preview svg.tlh .tl-layer-bottom').count(),1,
+  'shorts are a separate configurable layer');
+ assert.equal(await x.p.locator('.mb-preview svg.tlh .tl-layer-shoes').count(),1,
+  'shoes are a separate configurable layer');
  await x.p.click('[data-set="hair"][data-val="locs"]');await x.p.click('[data-set="tone"][data-val="6"]');await x.p.click('[data-set="hc"][data-val="dunkelbraun"]');
  await shot(x.p,'holo-koerper');
  await x.p.click('[data-tab="kleidung"]');
@@ -221,6 +227,10 @@ function injected(cfg){
  await shot(x.p,'holo-visual-reference');
  await x.p.click('[data-tab="kleidung"]');
  await shot(x.p,'holo-visual-reference-equipment');
+ assert.equal(await x.p.locator('.mb-preview svg.tlh .tl-layer-coat').count(),1,
+  'gold-accented outfit has independent coat layer');
+ assert.equal(await x.p.locator('.mb-preview svg.tlh .tl-layer-hair').count(),1,
+  'afro uses head-aligned hair layer');
  await done(x);
 
  // Profil: Holo statt Kampfgeist-Karte, Karte mit Holo
