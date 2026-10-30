@@ -472,6 +472,18 @@ function injected(cfg){
  assert.ok((await calls(x.p)).every(c=>c[0]!=='save_my_holo'),
   'uploading local art does not write a boxer profile');
  await shot(x.p,'holo-eight-layer-draft-preview');
+ assert.equal(await x.p.locator('.mb-draft-layer-controls input').count(),8,'every real layer has a visibility switch');
+ const coatMask=x.p.locator('[data-draft-layer="coatFront"]');
+ await coatMask.uncheck();
+ assert.equal(await x.p.locator('.mb-draft-artpack img').count(),7,
+  'disabling the front coat reveals missing skin anatomy instead of faking another outfit');
+ assert.equal(await x.p.evaluate(()=>document.activeElement?.dataset.draftLayer),'coatFront',
+  'layer inspection preserves keyboard focus');
+ await shot(x.p,'holo-eight-layer-coat-removed-review');
+ await coatMask.check();
+ assert.equal(await x.p.locator('.mb-draft-artpack img').count(),8,
+  'coat masking never destroys the original reference');
+
  await x.p.click('[data-draft-toggle]');
  assert.equal(await x.p.locator('.mb-draft-artpack').count(),0,
   'reviewer can compare against original dynamic SVG');
@@ -487,6 +499,29 @@ function injected(cfg){
  assert.match(await x.p.locator('#mb-draft-note').textContent(),/SVG-Fallback/);
  assert.ok((await calls(x.p)).every(c=>c[0]!=='save_my_holo'),
   'draft image selection is never saved or purchased');
+ await done(x);
+
+ // A boxer with different saved gear can still compare the exact approved art
+ // in an explicitly labelled temporary review, with NO player data mutation.
+ x=await page({visualDemo:true});
+ await x.p.goto(base+'mein-boxer.html?art=layers');
+ await x.p.waitForSelector('#mb-draft-files');
+ await x.p.locator('#mb-draft-files').setInputFiles(draftFiles);
+ await x.p.waitForSelector('.mb-draft-artpack img');
+ assert.match(await x.p.locator('#mb-draft-note').textContent(),/Nur Referenzlook/);
+ assert.equal(await x.p.locator('[data-draft-sample]').getAttribute('aria-pressed'),'true',
+  'reference override is explicit and clearly labelled');
+ await x.p.click('[data-draft-sample]');
+ assert.equal(await x.p.locator('.mb-draft-artpack').count(),0,
+  'player can switch back to their actual saved gear without replacing it');
+ await x.p.click('[data-draft-sample]');
+ assert.equal(await x.p.locator('.mb-draft-artpack img').count(),8,
+  'approved original look can be inspected again regardless of player gear');
+ await x.p.click('[data-set="tone"][data-val="6"]');
+ assert.equal(await x.p.locator('.mb-draft-artpack').count(),0,
+  'changing skin tone ends the temporary reference override');
+ assert.ok(!(await calls(x.p)).some(c=>c[0]==='save_my_holo'),
+  'reference override and layer controls never write the user profile');
  await done(x);
 
  // A missing or malformed draft cannot create an incomplete visible costume.
