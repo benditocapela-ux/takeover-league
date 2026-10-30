@@ -19,7 +19,7 @@ function create(manifest){
  const stats={attempted:0,matched:0};
  function choose(config,pose){
   stats.attempted++;
-  if(!valid||typeof pose!=='string'||!OWN(m.poses,pose))return null;
+  if(!valid||typeof pose!=='string'||!/^[a-z0-9_-]{1,32}$/.test(pose)||!OWN(m.poses,pose))return null;
   const cfg=config||{};
   // Unsupported effects may not be silently omitted by the new art.
   if(cfg.aura!=='none'||cfg.eyefx!=='none'||(cfg.scene!=='holo'&&cfg.scene!=='none'))return null;
