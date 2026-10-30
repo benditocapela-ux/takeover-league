@@ -27,8 +27,17 @@ await import('./takeover-mein-boxer-artpack.js');
 const P=window.TLPerf,H=window.TLHolo,G=window.TLGearArt,A=window.TLBoxerArtPacks,esc=P.esc;
 // Manual preview opt-in only. Production uses the SVG Holo until asset artwork is approved.
 const tryPremiumArt=new URLSearchParams(location.search).get('art')==='preview';
-const heroArt=(config,pose)=>tryPremiumArt&&A&&A.active.render(H.normalize(config),pose)
- ||H.svg(config,{pose,label:'Dein Boxer-Holo',premium:true,holo:false,layered:true});
+const heroArt=(config,pose)=>{
+ const normalized=H.normalize(config);
+ // Render only fully loaded artwork. A stale load can only re-render current cfg.
+ if(tryPremiumArt&&A&&A.active.prepare(normalized,pose,()=>{
+  if(cfg&&app.querySelector('.mb-preview'))render();
+ })){
+  const ready=A.active.render(normalized,pose);
+  if(ready)return ready;
+ }
+ return H.svg(config,{pose,label:'Dein Boxer-Holo',premium:true,holo:false,layered:true});
+};
 const COIN='<svg class="mb-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#ffcc33"/><circle cx="12" cy="12" r="8" fill="#e8a91a"/></svg>';
 const fmt=n=>Number(n||0).toLocaleString('de-CH');
 const OPT={
