@@ -27,6 +27,7 @@ function injected(cfg){
  const items=cfg.items.map(i=>Object.assign({},i,{owned:cfg.visualDemo===true||i.unlock==='start'||(i.unlock==='reward'&&i.key==='pose_flex')}));
  const bundles=[{key:'drachen_bundle',name:'Drachen-Bundle',description:'Drachen-Mantel, Flammen-Aura, Glut-Augen und die Pose Ansage.',price:3400,items:['coat_drache','aura_flamme','eyefx_glut','pose_ansage'],value:4700,owned_all:false}];
  let coins=cfg.coins??5000,saved=cfg.saved||null;
+ let failSaveOnce=cfg.failSaveOnce===true,failBuyOnce=cfg.failBuyOnce===true;
  const DEF={tone:2,hair:'kurz_glatt',hc:'schwarz',eye:'braun',eyefx:'none',head:'none',headc:'schwarz',top:'none',hood:false,topc:'grau',bottom:'boxer',bottomc:'rot',hands:'wraps',glove:'rot',feet:'boots',feetc:'weiss',coat:'none',aura:'none',scene:'holo',pose_profile:'guard',pose_card:'guard'};
  const rating={categories:{OFF:75,DEF:63,BEI:70,KON:70,TAK:70,MEN:70},overall:72,scale:20,top:[],low:[],rated_at:'2026-10-20T10:00:00Z',delta:0};
  const annaHolo=Object.assign({},DEF,{hair:'afro',tone:6,top:'hoodie',hood:false,topc:'lila',coat:'basic',pose_profile:'sieg',pose_card:'jab',scene:'dojo'});
@@ -34,9 +35,14 @@ function injected(cfg){
   calls.push([name,args]);
   if(name==='get_my_holo')return {data:cfg.off?{enabled:false}:{enabled:true,preview:false,shop:true,display_name:'Ben',coins,saved:!!saved,config:Object.assign({},DEF,saved||{}),items:items.map(i=>Object.assign({},i)),
    bundles:bundles.map(b=>Object.assign({},b,{owned_all:b.items.every(k=>items.find(i=>i.key===k).owned)}))},error:null};
-  if(name==='save_my_holo'){const c=Object.assign({},DEF,args.p_config);for(const s of ['coat','aura','eyefx','scene']){const it=items.find(i=>i.slot===s&&i.value===c[s]);if(c[s]!=='none'&&it&&!it.owned)return {data:null,error:{message:'«'+it.name+'» ist für dich noch nicht freigeschaltet'}}}
+  if(name==='save_my_holo'){
+   if(failSaveOnce){failSaveOnce=false;throw Error('Verbindung beim Speichern unterbrochen')}
+   if(cfg.saveDelay)await new Promise(resolve=>setTimeout(resolve,cfg.saveDelay));
+   const c=Object.assign({},DEF,args.p_config);for(const s of ['coat','aura','eyefx','scene']){const it=items.find(i=>i.slot===s&&i.value===c[s]);if(c[s]!=='none'&&it&&!it.owned)return {data:null,error:{message:'«'+it.name+'» ist für dich noch nicht freigeschaltet'}}}
    saved=c;return {data:c,error:null}}
-  if(name==='buy_holo_item'){const it=items.find(i=>i.key===args.p_key);if(coins<it.price)return {data:null,error:{message:'Zu wenig Coins'}};coins-=it.price;it.owned=true;return {data:{key:it.key,name:it.name,price:it.price,balance:coins},error:null}}
+  if(name==='buy_holo_item'){
+   if(failBuyOnce){failBuyOnce=false;throw Error('Verbindung beim Kauf unterbrochen')}
+   const it=items.find(i=>i.key===args.p_key);if(coins<it.price)return {data:null,error:{message:'Zu wenig Coins'}};coins-=it.price;it.owned=true;return {data:{key:it.key,name:it.name,price:it.price,balance:coins},error:null}}
   if(name==='buy_holo_bundle'){const b=bundles.find(x=>x.key===args.p_key);coins-=b.price;b.items.forEach(k=>{items.find(i=>i.key===k).owned=true});return {data:{key:b.key,name:b.name,price:b.price,new_items:4,balance:coins},error:null}}
   if(name==='get_my_performance')return {data:{profile:{id:'p-me',display_name:'Ben',role:'boxer'},ratings_enabled:true,style_enabled:false,rating:{current:{scores:{},scale:20,summary:rating,created_at:'2026-10-20T10:00:00Z',note:null,rated_by:'Marco'},previous:null},style:null},error:null};
   if(name==='get_holo_looks'){const o={};for(const n of args.p_display_names){if(n==='Anna')o.Anna=annaHolo;if(n==='Ben'&&saved)o.Ben=saved}return {data:o,error:null}}
@@ -283,6 +289,44 @@ function injected(cfg){
  await x.p.waitForFunction(()=>window.__calls.some(c=>c[0]==='save_my_holo'));
  assert.equal((await calls(x.p)).find(c=>c[0]==='save_my_holo')[1].p_config.top,'shirt',
   'optional art failures never block saving');
+ await done(x);
+
+ // Network exceptions must never leave saving/purchases stuck in busy state.
+ x=await page({failSaveOnce:true});
+ await x.p.goto(base+'mein-boxer.html');
+ await x.p.waitForSelector('[data-set="tone"][data-val="6"]');
+ await x.p.click('[data-set="tone"][data-val="6"]');
+ await x.p.click('#saveBtn');
+ await x.p.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('Speichern fehlgeschlagen'));
+ assert.equal(await x.p.isDisabled('#saveBtn'),false,'save can be retried after network exception');
+ await x.p.click('#saveBtn');
+ await x.p.waitForSelector('#saveBtn:disabled');
+ assert.match(await x.p.textContent('#status'),/Gespeichert/);
+ await done(x);
+
+ x=await page({failBuyOnce:true});
+ await x.p.goto(base+'mein-boxer.html');
+ await x.p.click('[data-tab="shop"]');
+ await x.p.click('[data-buy-item="aura_flamme"]');
+ await x.p.click('[data-buy-item="aura_flamme"][data-confirm]');
+ await x.p.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('Kauf fehlgeschlagen'));
+ assert.equal(await x.p.locator('[data-buy-item="aura_flamme"]').isDisabled(),false,
+  'purchase is recoverable after network exception');
+ await done(x);
+
+ // Save must commit a snapshot but preserve newer unsaved edits while waiting.
+ x=await page({saveDelay:550});
+ await x.p.goto(base+'mein-boxer.html');
+ await x.p.waitForSelector('[data-set="tone"][data-val="6"]');
+ await x.p.click('[data-set="tone"][data-val="6"]');
+ await x.p.click('#saveBtn');
+ await x.p.click('[data-set="tone"][data-val="5"]');
+ await x.p.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('neueren Änderungen'));
+ const savedSnapshot=(await calls(x.p)).find(v=>v[0]==='save_my_holo')[1].p_config;
+ assert.equal(savedSnapshot.tone,6,'RPC receives immutable snapshot selected at save time');
+ assert.equal(await x.p.locator('[data-set="tone"][data-val="5"]').getAttribute('aria-pressed'),'true',
+  'newer unsaved skin tone remains selected after save resolves');
+ assert.equal(await x.p.isDisabled('#saveBtn'),false,'newer changes remain saveable');
  await done(x);
 
  // Art-pack integration is opt-in and can never show a partial costume.
