@@ -102,7 +102,7 @@ let uidN=0;
 function svg(cfg,opts){
  opts=opts||{};const c=normalize(cfg),u='tlh'+(++uidN);
  const pose=pick(POSE,opts.pose||c.pose_profile,'guard'),scene=opts.scene==='none'?'none':oneOf(opts.scene||c.scene,['holo','dojo','neon','arena'],'holo');
- const holo=opts.holo!==false,holoc='#4fd8ff';
+ const holo=opts.holo!==false,holoc='#4fd8ff',premium=opts.premium===true;
  const [skin,sd]=TONES[c.tone],hc=HC[c.hc],fx=c.eyefx!=='none'?EFX[c.eyefx]:null,ev=fx||EYE[c.eye];
  const hijab=c.head==='hijab',cap=c.head==='cap',band=c.head==='band';
  const top=c.top!=='none'?TOPS[c.top]:null,hoodUp=!!(top&&c.top==='hoodie'&&c.hood),hoodDown=!!(top&&c.top==='hoodie'&&!c.hood);
@@ -143,6 +143,7 @@ function svg(cfg,opts){
   +(scene==='arena'?`<radialGradient id="${u}sp" cx=".5" cy="0" r="1"><stop offset="0" stop-color="#fff" stop-opacity=".35"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>`:'')
   +(holo?`<pattern id="${u}s" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1.3" fill="${holoc}"/></pattern>`:'')
   +(clipY!==null?`<clipPath id="${u}cl"><rect x="-40" y="${clipY}" width="280" height="400"/></clipPath>`:'')
+  +(premium?`<radialGradient id="${u}ps" cx=".24" cy=".18" r=".95"><stop offset="0" stop-color="#ffe7b9" stop-opacity=".6"/><stop offset=".36" stop-color="${skin}" stop-opacity=".24"/><stop offset=".8" stop-color="${sd}" stop-opacity=".32"/><stop offset="1" stop-color="#090d17" stop-opacity=".32"/></radialGradient><linearGradient id="${u}pm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff2c6" stop-opacity=".8"/><stop offset=".45" stop-color="#f2c14e" stop-opacity=".95"/><stop offset=".72" stop-color="#ad7425" stop-opacity=".8"/><stop offset="1" stop-color="#ffe6a0" stop-opacity=".7"/></linearGradient><clipPath id="${u}pt"><path d="M78 102 C96 96 144 96 162 102 C168 108 168 118 164 128 C160 148 154 162 150 176 L90 176 C86 162 80 148 76 128 C72 118 72 108 78 102Z"/></clipPath>`:'')
   +`</defs>`+(scene!=='none'?scenes[scene]:'')
   +(c.aura!=='none'?`<g class="tlh-aura">${auras[c.aura]}</g>`:'')
   +`<g class="tlh-fig"><g transform="translate(60 -6) scale(0.6)">`
@@ -153,15 +154,20 @@ function svg(cfg,opts){
   +`</g>`
   +`<path d="M111 80 L129 80 L130 104 L110 104Z" fill="${skin}" stroke="${INK}" stroke-width="1.6"/><path d="M111 84 L129 84 L129 94 C124 98 116 98 111 94Z" fill="${sd}"/>`
   +`<path d="M78 102 C96 96 144 96 162 102 C168 108 168 118 164 128 C160 148 154 162 150 176 L90 176 C86 162 80 148 76 128 C72 118 72 108 78 102Z" fill="${skin}" stroke="${INK}" stroke-width="2"/><path d="M162 102 C168 108 168 118 164 128 C160 148 154 162 150 176 L140 176 C148 150 154 124 150 104Z" fill="${sd}" opacity=".6"/><path d="M96 124 C106 130 114 130 118 126 M122 126 C126 130 134 130 144 124 M120 132 L120 168 M108 146 L132 146 M110 159 L130 159" fill="none" stroke="${sd}" stroke-width="2" stroke-linecap="round"/>`
+  +(premium?`<g clip-path="url(#${u}pt)"><rect x="73" y="96" width="95" height="88" fill="url(#${u}ps)"/><path d="M84 111 C90 108 95 109 99 113 M137 113 C145 109 150 109 156 112 M92 131 Q105 140 117 132 M122 132 Q137 140 149 129 M120 134 L120 164 M108 145 C111 150 116 151 120 150 M120 150 C124 151 129 150 133 145 M110 156 Q120 160 130 156" fill="none" stroke="${sd}" stroke-width="2.1" stroke-linecap="round" opacity=".64"/><path d="M82 106 Q90 104 101 108 M129 108 Q142 103 154 108" fill="none" stroke="#fff5d7" stroke-width="2" stroke-linecap="round" opacity=".33"/></g>`:'')
   +`<path d="M84 232 L112 236 L110 322 L88 322Z" fill="${skin}" stroke="${INK}" stroke-width="2"/><path d="M128 236 L156 232 L152 322 L130 322Z" fill="${skin}" stroke="${INK}" stroke-width="2"/><path d="M146 236 L156 232 L152 322 L144 322Z" fill="${sd}" opacity=".6"/>`
   +p(bt.d,`fill="${bc[0]}" stroke="${INK}" stroke-width="2" stroke-linejoin="round"`)+p(bt.band,`fill="${c.bottom==='boxer'?bc[2]:bc[1]}" stroke="${INK}" stroke-width="1.6"`)+p(bt.stripe,`fill="none" stroke="${bc[2]}" stroke-width="4" stroke-linecap="round"`)+p(bt.shade,'fill="#000" opacity=".2"')
   +p(ft.d,`fill="${fc[0]}" stroke="${INK}" stroke-width="2" stroke-linejoin="round"`)+p(ft.lace,`fill="none" stroke="${fc[2]}" stroke-width="2.4" stroke-linecap="round"`)+p(ft.sole,`fill="${INK}"`)
   +(top?p(top.d,`fill="${tc[0]}" stroke="${INK}" stroke-width="2" stroke-linejoin="round"`)+p(top.shade,'fill="#000" opacity=".22"')+p(top.detail,`fill="none" stroke="${tc[2]}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"`)+p(top.pocket,`fill="${tc[1]}" stroke="${INK}" stroke-width="1.6"`):'')
   +(hoodDown?`<path d="M96 98 C104 110 136 110 144 98 C150 106 142 117 120 117 C98 117 90 106 96 98Z" fill="${tc[1]}" stroke="${INK}" stroke-width="2"/>`:'')
   +(co?p(co.body,`fill="${co.c}" stroke="${INK}" stroke-width="2" stroke-linejoin="round"`)+p(co.trim,`fill="none" stroke="${co.a}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"`):'')
+  +(premium?`<g class="tlh-premium-gear"><path d="M89 241 L92 300 M151 241 L148 300" stroke="#ffefc0" stroke-width="1.6" stroke-linecap="round" opacity=".25" fill="none"/><path d="M78 333 L108 333 M130 333 L160 333" stroke="url(#${u}pm)" stroke-width="1.6" stroke-linecap="round" opacity=".75" fill="none"/></g>`
+   +(top?`<g class="tlh-premium-fabric"><path d="M92 112 Q98 118 100 138 M146 110 Q143 122 140 151 M101 177 Q120 179 140 177" fill="none" stroke="#fff" opacity=".16" stroke-width="2.2" stroke-linecap="round"/></g>`:'')
+   +(co?`<g class="tlh-premium-coat"><path d="M81 110 Q87 106 101 107 L97 255 M159 110 Q152 106 139 107 L143 255" fill="none" stroke="url(#${u}pm)" stroke-width="1.8" stroke-linecap="round" opacity=".8"/><path d="M77 271 L98 276 M142 276 L163 271" fill="none" stroke="${co.a}" stroke-width="1.6" opacity=".75"/><path d="M91 143 l2 3 l-2 3 l-2 -3 Z M149 143 l2 3 l-2 3 l-2 -3 Z" fill="#f2c14e" opacity=".8"/></g>`:''):'')
   +`<g transform="translate(60 -6) scale(0.6)">`
   +`<ellipse cx="62" cy="106" rx="5.5" ry="9.5" fill="${skin}" stroke="${INK}" stroke-width="2.6"/><ellipse cx="138" cy="106" rx="5.5" ry="9.5" fill="${sd}" stroke="${INK}" stroke-width="2.6"/>`
   +`<path d="M62 92 C62 60 80 46 100 46 C120 46 138 60 138 92 C138 116 130 133 117 146 L104 157 C101.5 159 98.5 159 96 157 L83 146 C70 133 62 116 62 92Z" fill="${skin}" stroke="${INK}" stroke-width="3.4" stroke-linejoin="round"/><path d="M138 92 C138 116 130 133 117 146 L104 157 C113 140 123 123 127 100Z" fill="${sd}" opacity=".6"/>`
+  +(premium?`<path d="M67 112 C74 118 82 121 89 121 M111 121 C119 120 128 117 134 111 M72 126 C80 133 86 137 91 138 M109 138 C118 137 125 132 130 126" fill="none" stroke="${sd}" stroke-width="3" stroke-linecap="round" opacity=".32"/><path d="M72 96 Q82 91 94 96 M106 96 Q118 91 129 96" fill="none" stroke="#16121b" stroke-width="2.4" stroke-linecap="round" opacity=".7"/>`:'')
   +(showHair&&c.hair!=='glatze'?`<path d="M64 94 C80 103 120 103 136 94 L136 103 C120 111 80 111 64 103Z" fill="${sd}" opacity=".5"/>`:'')
   +eye(false)+eye(true)
   +`<path d="M100.5 116 L97.6 123 L101.2 123.6" fill="none" stroke="${sd}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="${pose.m}" fill="none" stroke="#4a1a22" stroke-width="2.8" stroke-linecap="round"/>`
