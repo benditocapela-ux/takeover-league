@@ -244,3 +244,20 @@ Der schon vorhandene Modus `mein-boxer.html?art=layers` wurde für die tatsächl
 Die Kontrollwerkzeuge verwenden eine aufklappbare `<details>`-Oberfläche und erhalten ihren Öffnungszustand bei einem Renderwechsel. Ihre Bedienung setzt nicht die Scrollposition des Ausrüstungsbereichs zurück. Der Browser-Test prüft auch eine isoliert ausgeblendete Mantelvorderseite, Fokus, Rückschalten auf SVG und die markierte, nicht gespeicherte Original-Look-Vorschau.
 
 **Lieferstatus:** Die echten acht PNGs sind nach wie vor ausschliesslich in der dem Nutzer bereitgestellten ZIP-Datei vorhanden, nicht als binäre Dateien im GitHub-PR. Die angebundene GitHub-Schnittstelle unterstützt hier Textänderungen sowie binäre Base64-Blobs, aber **keinen direkten Transfer aus dem lokalen Dateisystem**. Daher ist kein Upload dieser Originalbilder erfolgt. Die Grafikfreigabe im Produktionsmanifest bleibt `approved:false, enabled:false`. Die verbleibende künstlerische Aufgabe ist das Nachzeichnen der verdeckten Körperbereiche unter Mantel/Armen und das Erstellen echter Kleidungsvarianten.
+
+## Anatomische Unterzeichnung V0 hinter dem Referenzmantel (30.10.2026)
+
+**Neuer echter Artwork-Arbeitsschritt – nicht als Premium-Illustration freigegeben:** Die Datei `takeover-mein-boxer-anatomy-blockout.js` enthält eine editierbare **768×1216-SVG-Unterzeichnung** für Schultern, Deltoide, seitlichen Brustkorb, überkreuzte Oberarme, Taille, seitliche Hosenbereiche und Beine. Die Formen liegen unter den acht originalen PNG-Masken, sodass eine Illustratorin genau erkennt, welche Körperregionen unter dem Mantel neu gezeichnet werden müssen. Die Rohskizze hat absichtlich eine vereinfachte, sichtbar nicht zum Detailgrad der bestätigten Anime-Figur passende Oberfläche.
+
+**Benutzung im Testmodus:**
+
+1. `mein-boxer.html?art=layers` öffnen, die acht echten PNGs vom bereitgestellten Testpaket lokal auswählen und das Menü **«Grafikebenen prüfen»** aufklappen.
+2. **«Mantel vorne»** sowie optional **«Mantel hinten»** ausschalten, um die derzeit transparenten Ausschnitte zu sehen.
+3. Das neue Kästchen **«Anatomie-Skizze zeigen (unfertig)»** aktivieren. Damit erscheint die Vektorskizze **hinter allen originalen Rasterebenen**. Die konkreten Lücken lassen sich mit und ohne Vektorbasis vergleichen.
+4. Die Unterzeichnung wieder ausschalten. Die originalen Referenzpixel bleiben exakt unverändert. Es wird kein Profilwert gespeichert und das Produktionsmanifest bleibt `approved:false, enabled:false`.
+
+**Sicherheit:** Die Unterzeichnung wird ausschliesslich mit `?art=layers` importiert; die Checkbox steht beim Öffnen immer auf «aus». Auch mit Unterzeichnung bleibt die bekannte Kompatibilitätsprüfung (nur der originalgetreue Cool-Look) zwingend. Kein Shirt, Mantelwechsel oder neuer Hautton wird dadurch als fertig verfügbares Premium-Outfit ausgegeben.
+
+**Tests:** `tests/mein-boxer-anatomy-blockout-contracts.cjs` sichert Canvasgrösse, reine lokale Vektorgeometrie, nicht freigegebenen Status, standardmässig deaktivierte Unterzeichnung, Ebenenreihenfolge und SVG-Fallback ab. Der bestehende Chromium-Integrationstest erzeugt einen Screenshot **`holo-eight-layer-underpaint-blockout.png`** mit temporär ausgeblendeter Mantelvorderseite und überprüft anschliessend die unveränderte Rückkehr zum Referenzbild.
+
+**Offene künstlerische Qualitätsarbeit:** Die Skizze ist lediglich ein *anatomisches Blockout*, noch **keine** stilsichere Body-PNG. Schultern/Arme, Seitenkörper, Muskellicht und Stoffüberlappungen müssen zur bestätigten Anime-Referenz neu gezeichnet werden. Nur eine solche saubere Illustration ermöglicht später den echten Mantel-an/Mantel-aus-Outfitwechsel. Als zusätzliche Übergabe gibt es ein lokales ZIP-Arbeitsset mit transparentem SVG/PNG, Originalmasken, direktem Dreistufenvergleich und detaillierter Art-Anweisung. Das ZIP ist nicht selbst ins GitHub-Repository übertragen worden.
