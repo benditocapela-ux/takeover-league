@@ -100,9 +100,33 @@ function injected(cfg){
   'shorts are a separate configurable layer');
  assert.equal(await x.p.locator('.mb-preview svg.tlh .tl-layer-shoes').count(),1,
   'shoes are a separate configurable layer');
- await x.p.click('[data-set="hair"][data-val="locs"]');await x.p.click('[data-set="tone"][data-val="6"]');await x.p.click('[data-set="hc"][data-val="dunkelbraun"]');
+ await x.p.click('[data-set="hair"][data-val="locs"]');
+ assert.equal(await x.p.evaluate(()=>document.activeElement?.dataset.val),'locs',
+  'a selection remains keyboard-focused after changing a hairstyle');
+ await x.p.click('[data-set="tone"][data-val="6"]');
+ assert.equal(await x.p.evaluate(()=>document.activeElement?.dataset.val),'6',
+  'skin-tone selection preserves keyboard focus');
+ await x.p.click('[data-set="hc"][data-val="dunkelbraun"]');
  await shot(x.p,'holo-koerper');
+ // The five mobile editor tabs have an accessible, arrow-key-driven tab pattern.
+ assert.equal(await x.p.locator('.mb-tabs [role="tab"]').count(),5,'five named editor tabs');
+ assert.equal(await x.p.locator('.mb-tabs [role="tab"][tabindex="0"]').count(),1,
+  'only the selected tab is in the natural keyboard order');
+ await x.p.locator('.mb-tabs [data-tab="koerper"]').focus();
+ await x.p.keyboard.press('ArrowRight');
+ assert.equal(await x.p.locator('.mb-tabs [role="tab"][aria-selected="true"]').getAttribute('data-tab'),
+  'kleidung','right arrow moves to clothing');
+ assert.equal(await x.p.evaluate(()=>document.activeElement?.dataset.tab),'kleidung',
+  'keyboard arrow keeps focus on the active tab');
+ await x.p.keyboard.press('End');
+ assert.equal(await x.p.locator('.mb-tabs [role="tab"][aria-selected="true"]').getAttribute('data-tab'),
+  'shop','End key moves to final tab');
+ await x.p.keyboard.press('Home');
+ assert.equal(await x.p.locator('.mb-tabs [role="tab"][aria-selected="true"]').getAttribute('data-tab'),
+  'koerper','Home key returns to first tab');
  await x.p.click('[data-tab="kleidung"]');
+ assert.equal(await x.p.locator('.mb-tabbody[role="tabpanel"]').getAttribute('aria-labelledby'),
+  'mb-tab-kleidung','editor panel has correct accessible tab label');
  // Die sichtbaren Itembilder stammen aus exakt demselben SVG-Renderer wie die Boxerfigur.
  assert.equal(await x.p.locator('[data-set="head"] .mb-gear-art svg.mb-item-svg').count(),4,'Kopfbedeckungen mit eigenständigen SVG-Items');
  assert.equal(await x.p.locator('[data-set="top"] .mb-gear-art svg.mb-item-svg').count(),5,'Oberteile als auswählbare SVG-Items');
@@ -124,6 +148,8 @@ function injected(cfg){
 
  assert.equal(await x.p.locator('[data-toggle="hood"]').count(),0,'no hood toggle without hoodie');
  await x.p.click('[data-set="top"][data-val="hoodie"]');
+ assert.equal(await x.p.evaluate(()=>document.activeElement?.dataset.val),'hoodie',
+  'changing clothing preserves focus for keyboard and assistive input');
  assert.notEqual(await x.p.locator('.mb-preview svg.tlh').first().evaluate(el=>el.outerHTML),stageBefore,'Gear selection updates the full boxer');
  assert.equal(await x.p.locator('[data-set="top"][data-val="hoodie"]').getAttribute('aria-pressed'),'true');
 
