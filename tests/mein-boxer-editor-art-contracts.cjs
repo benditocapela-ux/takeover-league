@@ -54,6 +54,15 @@ const withHijab=H.svg({...config,head:'hijab'},{premium:true,layered:true});
 assert.ok(!withHijab.includes('class="tl-layer-hair"'),'headwear covers hair overlay');
 const changedColours=H.svg({...config,topc:'weiss',bottomc:'rot'},{premium:true,layered:true});
 assert.notEqual(layered.replace(/tlh\d+/g,'tlh'),changedColours.replace(/tlh\d+/g,'tlh'),'layer colours follow configured items');
+let layerVariants=0;
+for(const hair of H.HAIR_KEYS)for(let tone=0;tone<8;tone++)for(const top of ['none','shirt','hoodie']){
+ const dynamic=H.svg({...config,hair,tone,top},{premium:true,layered:true,holo:false});
+ assert.ok(dynamic.includes('class="tl-layer-bottom"'),'bottom layer for '+hair+'/'+tone+'/'+top);
+ assert.ok(dynamic.includes('class="tl-layer-shoes"'),'shoe layer for '+hair+'/'+tone+'/'+top);
+ assert.equal((dynamic.match(/<svg /g)||[]).length,1,'single root SVG for '+hair+'/'+tone+'/'+top);
+ layerVariants++;
+}
+assert.equal(layerVariants,432,'full combination matrix coverage');
 assert.match(premium,/class="tlh-premium-coat"/);
 assert.match(premium,/class="tlh-premium-fabric"/);
 assert.match(premium,/class="tlh-premium-gear"/);
