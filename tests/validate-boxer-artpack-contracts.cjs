@@ -32,10 +32,15 @@ try{
  const approved={version:1,approved:true,canvas:{width:768,height:1216},poses:{cool:required}};
  assert.equal(validate(approved,root).checked,1);
  assert.equal(validate(approved,root).maxOutfitBytes,5*33,'worst-case outfit cost counts each displayed slot');
- assert.equal(validate({...approved,approved:false},root).skipped,true);
+ assert.equal(validate({...approved,approved:false},root).skipped,false,
+  'draft artwork is checked before release approval');
+ assert.equal(validate({...approved,approved:false,poses:{}},root).skipped,true,
+  'an empty and disabled draft has no files to validate');
  assert.throws(()=>validate({...approved,approved:false,enabled:true},root),/cannot be enabled before approval/,
   'the deployment validator refuses unsafe release flags');
  assert.throws(()=>validate({...approved,poses:{cool:{...required,body:{'6':'body/small.png'}}}},root),/Wrong dimensions/);
+ assert.throws(()=>validate({...approved,approved:false,poses:{cool:{...required,body:{'6':'body/small.png'}}}},root),
+  /Wrong dimensions/,'draft artwork must fail dimension checks before approval');
  assert.throws(()=>validate({...approved,poses:{cool:{...required,body:{'6':'body/opaque.png'}}}},root),/transparency/);
  assert.throws(()=>validate({...approved,poses:{cool:{...required,body:{'6':'..\/escape.png'}}}},root),/Invalid asset path/);
  assert.throws(()=>validate({...approved,poses:{cool:{...required,eyes:{}}}},root),/Missing required layer group/);
