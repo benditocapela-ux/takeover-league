@@ -356,6 +356,7 @@ function injected(cfg){
  await x.p.waitForSelector('.mb-preview svg.tlh');
  assert.equal(await x.p.locator('.mb-art-debug').getAttribute('data-art-state'),'unapproved',
   'preview explains that no production artpack has been approved');
+ await shot(x.p,'holo-artpack-debug-unapproved');
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,'unapproved art cannot appear');
  await done(x);
 
@@ -367,6 +368,7 @@ function injected(cfg){
  await x.p.waitForSelector('.mb-preview .mb-artpack-img');
  assert.equal(await x.p.locator('.mb-art-debug').getAttribute('data-art-state'),'ready',
   'preview reports a complete and loaded artpack');
+ await shot(x.p,'holo-artpack-debug-ready');
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),9,'all nine required canvas layers');
  assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),0,'complete art pack replaces SVG');
  await x.p.click('[data-tab="kleidung"]');
@@ -375,6 +377,7 @@ function injected(cfg){
  assert.equal(await x.p.locator('.mb-art-debug').getAttribute('data-art-state'),'missing-layer',
   'preview identifies unsupported clothing variant');
  assert.match(await x.p.locator('.mb-art-debug').textContent(),/top:hoodie/);
+ await shot(x.p,'holo-artpack-debug-missing-outfit');
  assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),1,'missing outfit returns whole SVG');
  await done(x);
 
@@ -417,6 +420,7 @@ function injected(cfg){
  await x.p.goto(base+'mein-boxer.html?art=preview');
  await x.p.waitForSelector('.mb-preview svg.tlh');
  await x.p.waitForSelector('.mb-art-debug[data-art-state="load-failed"]');
+ await shot(x.p,'holo-artpack-debug-load-failed');
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,'failed sprite removes entire partial art');
  await done(x);
 
