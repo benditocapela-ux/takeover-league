@@ -7,6 +7,9 @@ const MANIFEST='takeover-mein-boxer-artpack-manifest.js';
 const PATH=/^[a-z0-9_-]+(?:\/[a-z0-9_-]+)*\.(?:png|webp)$/;
 const EXPECTED_WIDTH=768,EXPECTED_HEIGHT=1216;
 const MAX_FILE=2*1024*1024;
+// The mobile hero displays up to ten full-resolution transparent layers.
+// The upper bound is deliberately lower than ten independent 2 MiB files.
+const MAX_OUTFIT=6*1024*1024;
 function meta(data,filename){
  if(filename.endsWith('.png')){
   if(data.length<26||!data.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10])))throw Error('Invalid PNG header');
@@ -33,7 +36,8 @@ function meta(data,filename){
 }
 function validate(manifest,root=ROOT){
  if(manifest.version!==1||manifest.canvas?.width!==EXPECTED_WIDTH||manifest.canvas?.height!==EXPECTED_HEIGHT)throw Error('Canvas must be 768 x 1216');
- if(manifest.approved!==true)return {skipped:true,checked:0,totalBytes:0};
+ if(manifest.enabled===true&&manifest.approved!==true)throw Error('Live artwork cannot be enabled before approval');
+ if(manifest.approved!==true)return {skipped:true,checked:0,totalBytes:0,maxOutfitBytes:0};
  const poses=manifest.poses||{};
  if(Object.keys(poses).length===0)throw Error('Approved manifest has no poses');
  const paths=new Set();
@@ -53,23 +57,36 @@ function validate(manifest,root=ROOT){
   }
  }
  let totalBytes=0;
+ const sizes=new Map();
  for(const file of paths){
   const full=path.resolve(root,file);
   if(!full.startsWith(path.resolve(root)+path.sep))throw Error('Path outside asset root: '+file);
   const data=fs.readFileSync(full);
   if(data.length>MAX_FILE)throw Error('Asset exceeds 2 MiB: '+file);
-  const m=meta(data,file);totalBytes+=data.length;
+  const m=meta(data,file);totalBytes+=data.length;sizes.set(file,data.length);
   if(m.width!==EXPECTED_WIDTH||m.height!==EXPECTED_HEIGHT)throw Error('Wrong dimensions '+file+': '+m.width+'x'+m.height);
   if(!m.alpha)throw Error('Image has no transparency channel: '+file);
   if(m.animated)throw Error('Animated asset not permitted: '+file);
  }
- return {skipped:false,checked:paths.size,totalBytes};
+ // Conservative worst-case bound: largest variant of each visible art slot.
+ // Actual outfits may hide hair or a coat; overestimating is intentional.
+ let maxOutfitBytes=0;
+ for(const groups of Object.values(poses)){
+  let bytes=0;
+  for(const variants of Object.values(groups)){
+   const sizesForSlot=Object.values(variants).map(file=>sizes.get(file));
+   bytes+=Math.max(0,...sizesForSlot);
+  }
+  if(bytes>MAX_OUTFIT)throw Error('Outfit exceeds mobile 6 MiB image budget: '+bytes+' bytes');
+  maxOutfitBytes=Math.max(maxOutfitBytes,bytes);
+ }
+ return {skipped:false,checked:paths.size,totalBytes,maxOutfitBytes};
 }
 if(require.main===module){
  const context={window:{}};
  vm.runInNewContext(fs.readFileSync(MANIFEST,'utf8'),context,{timeout:1000});
  const result=validate(context.window.TLBoxerArtPackManifest||{});
  console.log(result.skipped?'SKIP: artpack not approved, SVG remains active':
-  'PASS: '+result.checked+' transparent, aligned image layers ('+Math.round(result.totalBytes/1024)+' KiB)');
+  'PASS: '+result.checked+' transparent, aligned image layers ('+Math.round(result.totalBytes/1024)+' KiB total; up to '+Math.round(result.maxOutfitBytes/1024)+' KiB per outfit)');
 }
 module.exports={meta,validate};
