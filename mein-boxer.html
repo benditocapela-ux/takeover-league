@@ -62,6 +62,7 @@ function draftNotice(){
  return '<details class="mb-draft-tools"><summary>Grafikebenen prüfen</summary><div class="mb-draft-contents" role="group" aria-label="Nur lokale Acht-Ebenen-Vorschau">'+
   '<label for="mb-draft-files">8 PNG-Ebenen lokal laden</label>'+
   '<input id="mb-draft-files" type="file" accept="image/png,.png" multiple aria-describedby="mb-draft-note">'+
+  '<button type="button" class="mb-btn" data-draft-repo="1">Originalebenen aus Testbranch laden</button>'+
   (ready?'<button type="button" class="mb-btn" data-draft-toggle="1" aria-pressed="'+draftVisible+'">'+
    (draftVisible?'SVG-Boxer vergleichen':'Acht Ebenen anzeigen')+'</button>'+
    '<button type="button" class="mb-btn" data-draft-sample="1" aria-pressed="'+draftSample+'">'+
@@ -413,6 +414,23 @@ app.addEventListener('change',e=>{
 });
 window.addEventListener('pagehide',()=>{if(referenceSrc)URL.revokeObjectURL(referenceSrc)});
 app.addEventListener('click',async e=>{
+ const fromRepo=e.target.closest('[data-draft-repo]');
+ if(fromRepo&&draftReview&&draftPack){
+  fromRepo.disabled=true;
+  try{
+   await draftPack.loadInstalled();
+   draftVisible=true;
+   const actualPose=previewPose==='card'?cfg.pose_card:cfg.pose_profile;
+   draftSample=!draftPack.compatible(H.normalize(cfg),actualPose);
+   window.TLBoxerDraftPreview.NAMES.forEach(name=>draftLayers.add(name));
+   say('Acht Originalgrafiken aus dem lokalen Testbranch geprüft und geladen.');
+   render();
+  }catch(err){
+   say('Branch-Grafiken nicht verfügbar: '+(err.message||err),true);
+   fromRepo.disabled=false;
+  }
+  return;
+ }
  const clearBody=e.target.closest('[data-clear-underpaint]');
  if(clearBody&&draftReview&&draftPack){
   draftPack.clearUnderpaint();
