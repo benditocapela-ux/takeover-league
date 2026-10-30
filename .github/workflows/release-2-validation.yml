@@ -65,7 +65,13 @@ jobs:
       - run: node tests/news-feedback-browser.cjs
       - run: node tests/help-tutorial-browser.cjs
       - run: node tests/card-designs-browser.cjs
-      - run: node tests/boxer-holo-browser.cjs
+      - name: Capture Mein-Boxer mobile browser screenshots
+        run: mkdir -p "${{ runner.temp }}/mein-boxer-shots"
+      - name: Boxer-Holo integration with screenshots
+        env:
+          SHOTS: ${{ runner.temp }}/mein-boxer-shots
+        run: node tests/boxer-holo-browser.cjs
+        timeout-minutes: 4
       - run: node tests/self-rating-browser.cjs
       - run: node tests/card-scale-browser.cjs
       - run: node tests/club-types-selfservice-browser.cjs
@@ -90,3 +96,12 @@ jobs:
         timeout-minutes: 5
       - run: node tests/coach-feedback-browser.cjs
         timeout-minutes: 5
+
+      - name: Save rendered Mein-Boxer screens for design review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mein-boxer-rendered-screens
+          path: ${{ runner.temp }}/mein-boxer-shots/*.png
+          if-no-files-found: ignore
+          retention-days: 14
