@@ -151,9 +151,25 @@ function viewShop(){
  return `<div class="mb-wallet">${COIN}<b>${fmt(data.coins)}</b> Coins</div>${bundles?sec('Bundles',`<div class="mb-bundles">${bundles}</div>`):''}${groups}`
   +sec('Belohnungen',`<div class="mb-list">${rewards.map(i=>`<div class="mb-li"><span><b>${esc(i.name)}</b><span class="mb-note">${esc(SLOT_TITLE[i.slot]||'')} · ${esc(i.reward||'')}</span></span>${i.owned?'<span class="mb-owned">Freigeschaltet</span>':'<span class="mb-lockedtxt">Noch gesperrt</span>'}</div>`).join('')}</div>`);
 }
+// Preserve the focused selection across the DOM rebuild caused by outfit edits.
+// Match only our own fixed control attributes; never construct selectors from user data.
+function editorFocusKey(el){
+ if(!el||!app.contains(el))return null;
+ const names=['data-set','data-val','data-tab','data-toggle','data-buy-item',
+  'data-buy-bundle','data-confirm','data-cancel','data-try-bundle','id'];
+ const values=names.filter(k=>el.hasAttribute(k)).map(k=>[k,el.getAttribute(k)]);
+ return values.length?values:null;
+}
+function restoreEditorFocus(key){
+ if(!key)return;
+ const el=[...app.querySelectorAll('button')].find(btn=>
+  key.every(([name,value])=>btn.getAttribute(name)===value));
+ if(el&&!el.disabled)el.focus({preventScroll:true});
+}
 function render(){
  // Keep the vertical editor position and horizontal equipment carousel positions
  // when changing colors/items. Re-rendering must not jump back to the beginning.
+ const focused=editorFocusKey(document.activeElement);
  const previousTab=app.querySelector('.mb-panel')?.dataset.activeTab;
  const previousScroll=app.querySelector('.mb-tabbody')?.scrollTop||0;
  const previousTabsScroll=app.querySelector('.mb-tabs')?.scrollLeft||0;
@@ -168,8 +184,8 @@ function render(){
  <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span>Mein Boxer</span><a href="./boxer.html">Mein Studio</a></div><div class="mb-preview">${heroArt(cfg,pose)}</div>
   <div class="mb-stage-bar"><span class="mb-pill">${previewPose==='card'?'Karten-Pose':'Profil-Pose'}</span>${data.shop?`<span class="mb-pill">${COIN}${fmt(data.coins)}</span>`:''}</div>
   <div class="mb-actions"><button type="button" class="mb-btn primary" id="saveBtn"${!dirty()||tl.length||busy?' disabled':''}>${tl.length?'Gesperrtes zuerst kaufen oder abwählen':dirty()?'Speichern':'Gespeichert'}</button>${dirty()?'<button type="button" class="mb-btn ghost" id="resetBtn">Änderungen verwerfen</button>':''}</div></div>
- <div class="mb-panel" data-active-tab="${tab}"><div class="mb-tabs" role="tablist" aria-label="Bereiche">${tabs.map(([k,l])=>`<button type="button" role="tab" class="mb-tab" data-tab="${k}" aria-selected="${tab===k}">${l}</button>`).join('')}</div>
-  <div class="mb-tabbody">${tl.length?`<div class="mb-tryon" role="note"><b>Anprobe:</b> ${tl.map(esc).join(', ')}<button type="button" class="mb-btn" data-tab="shop">Zum Shop</button></div>`:''}${tab==='koerper'?viewKoerper():tab==='kleidung'?viewKleidung():tab==='extras'?viewExtras():tab==='posen'?viewPosen():viewShop()}</div></div></div>`;
+ <div class="mb-panel" data-active-tab="${tab}"><div class="mb-tabs" role="tablist" aria-label="Bereiche">${tabs.map(([k,l])=>`<button type="button" role="tab" id="mb-tab-${k}" aria-controls="mb-tabbody" class="mb-tab" data-tab="${k}" aria-selected="${tab===k}" tabindex="${tab===k?0:-1}">${l}</button>`).join('')}</div>
+  <div class="mb-tabbody" id="mb-tabbody" role="tabpanel" aria-labelledby="mb-tab-${tab}" tabindex="0">${tl.length?`<div class="mb-tryon" role="note"><b>Anprobe:</b> ${tl.map(esc).join(', ')}<button type="button" class="mb-btn" data-tab="shop">Zum Shop</button></div>`:''}${tab==='koerper'?viewKoerper():tab==='kleidung'?viewKleidung():tab==='extras'?viewExtras():tab==='posen'?viewPosen():viewShop()}</div></div></div>`;
  const tabsRail=app.querySelector('.mb-tabs');
  if(tabsRail)tabsRail.scrollLeft=previousTabsScroll;
  if(previousTab===tab){
@@ -180,6 +196,7 @@ function render(){
    if(old)[...sec.querySelectorAll('.mb-row')].forEach((row,i)=>{row.scrollLeft=old.lefts[i]||0});
   }
  }
+ restoreEditorFocus(focused);
 }
 async function load(){
  const [h,perf]=await Promise.all([db.rpc('get_my_holo'),db.rpc('get_my_performance')]);
@@ -193,6 +210,21 @@ app.addEventListener('error',e=>{
  if(!img||!img.matches||!img.matches('.mb-preview .mb-artpack-img'))return;
  if(A&&A.active.markFailed(img.getAttribute('src')))render();
 },true);
+// Roving tab focus: left/right arrows, Home and End mirror native tab controls.
+app.addEventListener('keydown',e=>{
+ const btn=e.target.closest('[role="tab"][data-tab]');
+ if(!btn||!app.contains(btn))return;
+ if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
+ const tabs=[...app.querySelectorAll('.mb-tabs [role="tab"]')];
+ const i=tabs.indexOf(btn);
+ if(i<0)return;
+ e.preventDefault();
+ const next=e.key==='Home'?0:e.key==='End'?tabs.length-1:
+  (i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
+ tabs[next].click();
+ const active=app.querySelector('.mb-tabs [role="tab"][aria-selected="true"]');
+ if(active)active.focus({preventScroll:true});
+});
 app.addEventListener('click',async e=>{
  const t=e.target.closest('[data-tab]');if(t){tab=t.dataset.tab;confirmBuy=null;render();if(t.closest('.mb-tryon'))app.querySelector('.mb-tabbody')?.scrollTo({top:0,behavior:'smooth'});return}
  const s=e.target.closest('[data-set]');
