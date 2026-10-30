@@ -362,6 +362,20 @@ function injected(cfg){
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,'unapproved art cannot appear');
  await done(x);
 
+ // If a preview manifest is approved but its renderer is unavailable offline,
+ // users must not see a comparison button that does nothing.
+ x=await page({visualDemo:true,saved:artConfig});
+ await x.p.route('**/takeover-mein-boxer-artpack-manifest.js',r=>
+  r.fulfill({status:200,contentType:'text/javascript',body:fixtureArt}));
+ await x.p.route('**/takeover-mein-boxer-artpack.js',r=>r.abort('failed'));
+ await x.p.goto(base+'mein-boxer.html?art=preview',{waitUntil:'domcontentloaded'});
+ await x.p.waitForSelector('.mb-preview svg.tlh');
+ assert.equal(await x.p.locator('.mb-art-debug').getAttribute('data-art-state'),'unavailable',
+  'preview explains missing graphics renderer');
+ assert.equal(await x.p.locator('[data-art-compare]').count(),0,
+  'missing artpack module never exposes an inert comparison button');
+ await done(x);
+
  // A complete, approved fixture composes image layers on the fixed stage.
  x=await page({visualDemo:true,saved:artConfig});
  await x.p.route('**/takeover-mein-boxer-artpack-manifest.js',r=>r.fulfill({status:200,contentType:'text/javascript',body:fixtureArt}));
