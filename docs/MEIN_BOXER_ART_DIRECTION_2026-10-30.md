@@ -34,6 +34,8 @@ Die mobile Aufteilung ist fertig implementiert, nicht produktiv veröffentlicht.
 
 **Abnahme:** Der Kontrakttest enthält eine 432-Varianten-Matrix und prüft die Ebenengruppen, Haarabdeckung durch Hijab, das Entfernen von Mantelgrafik bei deaktiviertem Mantel, die dynamische Farbwahl und den unveränderten öffentlichen Renderer. Chromium testet die Hauptfigur sowie Kleidungs- und Haar-Ebenen in der tatsächlich gerenderten mobilen Ansicht.
 
+**Art pass 5 – Anatomie/Schultern (30.10.2026):** Nach einer Sichtprüfung der gerenderten iPhone-Version wurden die zu kantigen, einfarbigen Ärmel als grösste sichtbare Abweichung markiert. Der `premium`-Renderer besitzt nun je nach Konfiguration eigene Schulterschichten: farbabhängig abgedunkelte Mantelmaterialien, einen gestuften Lichtverlauf, metallische Schulterzierlinien und zusätzliche Ärmel-/Muskeldetails ohne Mantel. Zwei Schulterformen sind auch in anderen Posen vorhanden; `premium:false` bleibt unverändert. Browser-Checks prüfen die Ebenen und erzeugen den Screenshot `holo-anime-shoulders-black-gold.png`. Keine Datenbank-/Shopänderungen.
+
 **Abgrenzung:** Zusätzliche Vektordetails sind kein pixelgenauer Nachbau des aufwendig gemalten Anime-Boxers. Eine echte 1:1-Nachbildung würde gesondert gemalte, konsistente transparente Ebenen für Körper/Haare/Kleidung oder ein animierbares 2D/3D-Rig benötigen. Kein fixes PNG auf das Holo legen – das würde die individuellen Anpassungen visuell verfälschen.
 
 ## Technische Leitplanken
