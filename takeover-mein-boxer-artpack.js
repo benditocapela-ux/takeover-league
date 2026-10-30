@@ -18,18 +18,21 @@ function create(manifest){
  const failed=new Set();
  const stats={attempted:0,matched:0};
  const loaded=new Set(),pending=new Map(),notifying=new Set();
- function choose(config,pose){
-  stats.attempted++;
-  if(!valid||typeof pose!=='string'||!/^[a-z0-9_-]{1,32}$/.test(pose)||!OWN(m.poses,pose))return null;
+ // One source of truth for both rendering and integration diagnostics.
+ // The viewer never substitutes another variant for a missing outfit piece.
+ function selection(config,pose){
+  if(!valid)return {state:'unapproved'};
+  if(typeof pose!=='string'||!/^[a-z0-9_-]{1,32}$/.test(pose)||!OWN(m.poses,pose))
+   return {state:'missing-pose',detail:String(pose||'')};
   const cfg=config||{};
-  // Unsupported effects may not be silently omitted by the new art.
-  if(cfg.aura!=='none'||cfg.eyefx!=='none'||(cfg.scene!=='holo'&&cfg.scene!=='none'))return null;
+  if(cfg.aura!=='none'||cfg.eyefx!=='none'||(cfg.scene!=='holo'&&cfg.scene!=='none'))
+   return {state:'unsupported-effect'};
   const pack=m.poses[pose];
-  if(!pack||typeof pack!=='object')return null;
+  if(!pack||typeof pack!=='object')return {state:'missing-pose',detail:pose};
   const hood=cfg.top==='hoodie'&&cfg.hood===true;
   const hiddenHair=cfg.head==='hijab'||hood;
   const request=[
-   ['coatBack',cfg.coat, cfg.coat==='none'],
+   ['coatBack',cfg.coat,cfg.coat==='none'],
    ['body',String(cfg.tone),false],
    ['bottom',cfg.bottom+'/'+cfg.bottomc,false],
    ['feet',cfg.feet+'/'+cfg.feetc,false],
@@ -44,16 +47,32 @@ function create(manifest){
   for(const [slot,key,skip] of request){
    if(skip)continue;
    const group=OWN(pack,slot)?pack[slot]:null;
-   if(!group||!OWN(group,key))return null;
+   if(!group||!OWN(group,key))
+    return {state:'missing-layer',detail:slot+':'+key};
    const name=group[key];
-   if(typeof name!=='string'||!FILE.test(name))return null;
+   if(typeof name!=='string'||!FILE.test(name))
+    return {state:'invalid-path',detail:slot+':'+key};
    const src=ROOT+name;
-   if(failed.has(src))return null;
+   if(failed.has(src))return {state:'load-failed',detail:slot+':'+key};
    selected.push({slot,src});
   }
-  if(!selected.length)return null;
+  if(!selected.length)return {state:'missing-layer'};
+  return {state:selected.every(x=>loaded.has(x.src))?'ready':'loading',layers:selected};
+ }
+ function choose(config,pose){
+  stats.attempted++;
+  const found=selection(config,pose);
+  if(!found.layers)return null;
   stats.matched++;
-  return selected;
+  return found.layers;
+ }
+ function inspect(config,pose){
+  const found=selection(config,pose);
+  return Object.freeze({
+   state:found.state,detail:found.detail||'',
+   total:found.layers?found.layers.length:0,
+   loaded:found.layers?found.layers.filter(x=>loaded.has(x.src)).length:0
+  });
  }
  // Atomic swap: show the original SVG until every image in this outfit
  // has finished loading. One failed layer invalidates the whole artwork.
@@ -98,7 +117,7 @@ function create(manifest){
   failed.add(url);
   return true;
  }
- return Object.freeze({render,choose,prepare,markFailed,stats});
+ return Object.freeze({render,choose,prepare,inspect,markFailed,stats});
 }
 window.TLBoxerArtPacks=Object.freeze({
  create,active:create(window.TLBoxerArtPackManifest)
