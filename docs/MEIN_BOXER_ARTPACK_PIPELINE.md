@@ -119,3 +119,20 @@ Für die Bildabnahme gibt es jetzt **einen direkten Vorher-/Nachher-Vergleich** 
 - Ist das Artpack-Modul im Offline-Modus nicht verfügbar, ist der Schalter unsichtbar. Die SVG-Figur funktioniert trotzdem.
 
 **Wichtig:** Momentan ist `approved:false`, daher wird der Vergleichsschalter auf dem realen PR-Stand noch nicht angeboten. Die neuen Tests verwenden vollständig künstliche, lokale Bild-Fixtures; sie beweisen den technisch korrekten Vergleich, **nicht** die künstlerische Qualität der noch fehlenden Game-Art.
+
+## Sichere Aktivierung im normalen Studio (30.10.2026)
+
+Die Studio-Grafik hat **zwei voneinander unabhängige Freigabeschalter** im Manifest `takeover-mein-boxer-artpack-manifest.js`:
+
+| `approved` | `enabled` | Normales «Mein Boxer» | `?art=preview` |
+|---|---|---|---|
+| `false` | `false` | Bestehender SVG-Boxer | SVG mit Diagnose «nicht freigegeben» |
+| `true` | `false` | Bestehender SVG-Boxer | Premium-Art, falls für die Auswahl vollständig; SVG-Fallback sonst |
+| `false` | `true` | Bestehender SVG-Boxer | SVG mit Diagnose «nicht freigegeben» |
+| `true` | `true` | Premium-Art, falls vollständig; SVG-Fallback sonst | Premium-Art mit SVG-Vergleich |
+
+Beide Schalter sind im PR weiterhin ausdrücklich `false`. Der produktive Aufruf ohne URL-Parameter übernimmt also **niemals** ein noch nicht freigegebenes Paket. Der Vergleichsschalter und die Debug-Diagnosen bleiben auch nach einer möglichen Freigabe ausschliesslich im manuellen Testmodus `?art=preview`.
+
+Zur kontrollierten Inbetriebnahme: Erst Grafiken vollständig in den Assetordner liefern; danach den Validator und echte mobile Vergleichsscreenshots prüfen; Rechte und Designfreigabe schriftlich festhalten; erst dann `approved:true`, im Testbetrieb prüfen und separat `enabled:true` freigeben. Die Umstellung betrifft nur den «Mein Boxer»-Editor. Öffentliche Profile und FUT-Karten verwenden weiterhin ihren eigenen SVG-Holo-Renderer, bis sie gesondert integriert und getestet werden.
+
+**Bei Problemen:** `enabled:false` zurücksetzen, ohne gespeicherte Boxer-Daten, Shopbesitz oder Supabase zu ändern. Der SVG-Fallback bleibt in jeder Konfiguration erhalten.
