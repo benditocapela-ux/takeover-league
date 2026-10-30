@@ -227,6 +227,13 @@ function injected(cfg){
  await shot(x.p,'holo-visual-reference');
  await x.p.click('[data-tab="kleidung"]');
  await shot(x.p,'holo-visual-reference-equipment');
+ // The preview-only 3D shoulder detail follows the chosen mantle;
+ // release cards deliberately do not inherit this markup.
+ assert.equal(await x.p.locator('.mb-preview svg.tlh .tlh-premium-arm').count(),2,
+  'two independently shaded shoulders for selected coat');
+ assert.equal(await x.p.locator('.mb-preview svg.tlh .tlh-premium-signature').count(),1,
+  'premium outfit uses crown and garment signature');
+ await shot(x.p,'holo-anime-shoulders-black-gold');
  assert.equal(await x.p.locator('.mb-preview svg.tlh .tl-layer-coat').count(),1,
   'gold-accented outfit has independent coat layer');
  assert.equal(await x.p.locator('.mb-preview svg.tlh .tl-layer-hair').count(),1,
