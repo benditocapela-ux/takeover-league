@@ -459,6 +459,8 @@ function injected(cfg){
  await x.p.waitForSelector('.mb-draft-artpack .mb-artpack-img');
  assert.equal(await x.p.locator('.mb-draft-artpack .mb-artpack-img').count(),8,
   'the draft reference is composed from exactly eight independent local images');
+ assert.match(await x.p.locator('#mb-draft-note').textContent(),/Dateien weichen vom Referenzpaket ab/,
+  'synthetic graphics must never masquerade as the approved original artwork');
  const draftBounds=await x.p.evaluate(()=>{
   const root=document.querySelector('.mb-draft-artpack').getBoundingClientRect();
   return [...document.querySelectorAll('.mb-draft-artpack img')].every(img=>{
