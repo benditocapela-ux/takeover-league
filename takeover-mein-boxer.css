@@ -394,3 +394,232 @@ body[data-tl-screen="mein-boxer"] .mb-stage .mb-art-compare:focus-visible{
 body[data-tl-screen="mein-boxer"] .mb-preview .mb-art-debug[data-art-state="manual-svg"]{
  border-color:#6c88b7;color:#d6e2f2;
 }
+
+/* Phase 4 · approved mobile webapp visual direction, 30 October 2026.
+   Arena and item visuals are genuine DOM/CSS: the boxer is ALWAYS the
+   selectable SVG/approved sprite renderer, never a fixed concept screenshot. */
+body[data-tl-screen="mein-boxer"] .mb-stage{
+  position:relative;
+  border-color:#916d3488;
+  background:
+    radial-gradient(ellipse 38% 20% at 50% 71%,#ffcf6a20,transparent 95%),
+    radial-gradient(ellipse 95% 90% at 50% 39%,#10345c,#050d1d 75%);
+  box-shadow:inset 0 1px 0 #f4d18c36,0 0 28px #b884261a,0 16px 40px #0009;
+}
+body[data-tl-screen="mein-boxer"] .mb-arena{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
+  border-radius:inherit;
+  background:
+    radial-gradient(circle at 11% 24%,#d4ecff86 0 1px,#56a0df3d 3px,transparent 19px),
+    radial-gradient(circle at 89% 24%,#d4ecff86 0 1px,#56a0df3d 3px,transparent 19px),
+    radial-gradient(circle at 28% 33%,#ffffff66 0 1px,transparent 13px),
+    radial-gradient(circle at 72% 33%,#ffffff66 0 1px,transparent 13px),
+    linear-gradient(180deg,#152f501c 0%,transparent 36%,#0610207a 75%,#b17c2720 92%);
+}
+body[data-tl-screen="mein-boxer"] .mb-arena::before{
+  content:"";position:absolute;inset:-15% -20% 11%;
+  background:
+    conic-gradient(from 156deg at 17% 16%,transparent 0deg,#92c4fb19 12deg,transparent 28deg),
+    conic-gradient(from 173deg at 83% 16%,transparent 0deg,#92c4fb19 12deg,transparent 29deg);
+  opacity:.9;
+}
+body[data-tl-screen="mein-boxer"] .mb-arena::after{
+  content:"";position:absolute;inset:45% 0 0;
+  background:
+    repeating-linear-gradient(0deg,transparent 0 21px,#f1cf7030 22px,transparent 23px),
+    radial-gradient(ellipse at 50% 74%,#e8b64a18,transparent 64%);
+  mask-image:linear-gradient(180deg,transparent,#000 30%,transparent 92%);
+}
+body[data-tl-screen="mein-boxer"] .mb-arena-light{
+  position:absolute;top:19%;width:22px;height:22px;border-radius:50%;
+  background:#d6ebff;box-shadow:0 0 8px #d2e8ff,0 0 30px 14px #71b5f36b;
+  opacity:.55;
+}
+body[data-tl-screen="mein-boxer"] .mb-arena-light--left{left:12%}
+body[data-tl-screen="mein-boxer"] .mb-arena-light--right{right:12%}
+body[data-tl-screen="mein-boxer"] .mb-arena-flag{
+  position:absolute;top:28%;width:16%;height:34%;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  gap:3px;color:#e1b86c;text-align:center;
+  background:linear-gradient(145deg,#1e304bde,#060c1eec);
+  border:1px solid #c69b4f98;
+  clip-path:polygon(0 0,100% 0,100% 100%,50% 88%,0 100%);
+  box-shadow:inset 0 0 22px #d1a64d18;
+  opacity:.68;
+}
+body[data-tl-screen="mein-boxer"] .mb-arena-flag--left{left:4%;transform:skewY(4deg)}
+body[data-tl-screen="mein-boxer"] .mb-arena-flag--right{right:4%;transform:skewY(-4deg)}
+body[data-tl-screen="mein-boxer"] .mb-arena-flag b{
+  font-size:clamp(17px,4vw,27px);line-height:1;
+}
+body[data-tl-screen="mein-boxer"] .mb-arena-flag small{
+  font:900 clamp(6px,1.5vw,10px)/1 system-ui,sans-serif;
+  letter-spacing:.06em;
+}
+body[data-tl-screen="mein-boxer"] .mb-arena-rope{
+  position:absolute;left:-4%;right:-4%;top:58%;height:15%;
+  border-top:1px solid #8dafd856;border-bottom:1px solid #779dc756;
+  box-shadow:0 -11px 0 -10px #7095c452,0 11px 0 -10px #7095c452;
+  transform:perspective(400px) rotateX(32deg);
+  opacity:.4;
+}
+body[data-tl-screen="mein-boxer"] .mb-arena-ring{
+  position:absolute;bottom:21%;left:15%;width:70%;height:8%;
+  border:2px solid #f5ce77b3;border-radius:50%;
+  background:radial-gradient(ellipse,#f5c87524,transparent 65%);
+  box-shadow:0 0 0 4px #e5b65720,inset 0 0 13px #e5b65742,0 0 23px #ffc86a69;
+}
+body[data-tl-screen="mein-boxer"] .mb-stage-heading,
+body[data-tl-screen="mein-boxer"] .mb-stage-bar,
+body[data-tl-screen="mein-boxer"] .mb-actions{position:relative;z-index:4}
+body[data-tl-screen="mein-boxer"] .mb-stage-heading{
+  display:flex;gap:7px;min-width:0;min-height:40px;justify-content:space-between;
+}
+body[data-tl-screen="mein-boxer"] .mb-stage-title{
+  display:flex;flex:1 1 auto;min-width:0;flex-direction:column;gap:1px;
+  color:#f8cf76;text-shadow:0 0 14px #e9b3484d;
+}
+body[data-tl-screen="mein-boxer"] .mb-stage-title small{
+  color:#bea56e;font:800 8px/1.3 system-ui,sans-serif;letter-spacing:.2em;
+}
+body[data-tl-screen="mein-boxer"] .mb-stage-title strong{
+  font:950 clamp(17px,4.4vw,23px)/1.1 var(--font-display),system-ui,sans-serif;
+  letter-spacing:.025em;white-space:nowrap;
+}
+body[data-tl-screen="mein-boxer"] .mb-save-state{
+  flex:none;align-self:center;border:1px solid #af8e4a9e;border-radius:8px;
+  padding:5px 8px;background:#102016e9;color:#d1edbc;
+  font:800 10px/1.25 system-ui,sans-serif;white-space:nowrap;
+}
+body[data-tl-screen="mein-boxer"] .mb-save-state[data-save-status="dirty"]{
+  color:#ffe2a1;background:#352711e9;
+}
+body[data-tl-screen="mein-boxer"] .mb-save-state[data-save-status="tryon"],
+body[data-tl-screen="mein-boxer"] .mb-save-state[data-save-status="busy"]{
+  color:#adddff;background:#15324aef;border-color:#6bbce29c;
+}
+body[data-tl-screen="mein-boxer"] .mb-stage-heading a{
+  flex:none;align-self:center;font-size:11px;padding:6px 7px;
+  border-color:#bb97536b;color:#eed1a0;background:#09172ac2;
+}
+body[data-tl-screen="mein-boxer"] .mb-preview{
+  position:relative;z-index:2;
+  background:transparent!important;filter:none!important;
+}
+body[data-tl-screen="mein-boxer"] .mb-preview::before{
+  background:radial-gradient(ellipse 35% 75% at 50% 50%,#dfb65313,transparent 90%);
+}
+body[data-tl-screen="mein-boxer"] .mb-preview::after{
+  border-color:#e7b85fba;box-shadow:0 0 20px #e7b85f91;
+}
+body[data-tl-screen="mein-boxer"] .mb-actions .mb-btn.primary{
+  border:1px solid #ffdb8b;
+  background:linear-gradient(180deg,#ffde91,#eab95d 53%,#ba8534);
+  color:#091328;font-weight:900;text-shadow:0 1px #fff6;
+  box-shadow:inset 0 1px 0 #fff7,0 4px 15px #e2ad4748;
+}
+body[data-tl-screen="mein-boxer"] .mb-actions .mb-btn.primary:disabled{
+  background:linear-gradient(180deg,#a38c62,#80683c);
+  border-color:#b09a6e;color:#0f1b2d;box-shadow:none;
+}
+body[data-tl-screen="mein-boxer"] .mb-panel{
+  border-color:#405775;border-radius:17px 17px 0 0;
+  background:linear-gradient(180deg,#0d1a2e,#071323);
+}
+body[data-tl-screen="mein-boxer"] .mb-tabs{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+  overflow-x:hidden;gap:0;border-bottom:1px solid #53658299;
+  background:linear-gradient(180deg,#10203a,#0a172a);
+}
+body[data-tl-screen="mein-boxer"] .mb-tabs .mb-tab{
+  display:flex;min-width:0;min-height:60px;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;
+  padding:7px 2px 6px;font-size:11px;line-height:1.2;
+  white-space:nowrap;border-right:1px solid #3e53724a;
+}
+body[data-tl-screen="mein-boxer"] .mb-tab-icon{display:block;width:22px;height:22px}
+body[data-tl-screen="mein-boxer"] .mb-tab-icon svg{display:block;width:100%;height:100%}
+body[data-tl-screen="mein-boxer"] .mb-tabs .mb-tab[aria-selected="true"]{
+  color:#ffdb86;border-bottom-color:#ffcf6e;
+  background:linear-gradient(180deg,#c69b3419,#ffca6712);
+  box-shadow:inset 0 -3px 8px #e7b25f1c;
+}
+body[data-tl-screen="mein-boxer"] .mb-tabs .mb-tab:focus-visible{
+  outline:2px solid #8ad6ff;outline-offset:-3px;
+}
+body[data-tl-screen="mein-boxer"] .mb-tabbody{
+  background:linear-gradient(180deg,#091627eb,#071123ed);
+  gap:12px;
+}
+body[data-tl-screen="mein-boxer"] .mb-sec{
+  padding:12px 10px 10px;gap:10px;border-radius:14px;
+  border:1px solid #3145639c;
+  background:linear-gradient(150deg,#11223b 0%,#071326 100%);
+}
+body[data-tl-screen="mein-boxer"] .mb-h{
+  font-size:13px;letter-spacing:.045em;color:#f4f6fc;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip{
+  position:relative;border-radius:13px;padding:7px 6px 9px;min-height:140px;
+  border-color:#405d82;background:linear-gradient(170deg,#172a48,#0b192d);
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip[aria-pressed="true"]{
+  border-color:#5edaff;box-shadow:0 0 0 1px #5edaff,0 0 14px #53c7fc6b;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip[aria-pressed="true"]::after{
+  content:"✓";position:absolute;top:5px;right:5px;
+  display:grid;place-items:center;
+  width:18px;height:18px;border-radius:50%;
+  background:#35c9f5;color:#061226;font:900 13px/1 system-ui,sans-serif;
+  box-shadow:0 0 6px #3bcbff66;pointer-events:none;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip .mb-gear-art{
+  height:88px;border-radius:9px;background:
+   radial-gradient(ellipse at 50% 70%,#e4bc5228,transparent 63%),#0b192b;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-name{
+  font-size:12px;line-height:1.25;text-align:center;
+}
+body[data-tl-screen="mein-boxer"] .mb-sw{
+  width:40px;height:40px;border:3px solid #071326;
+  box-shadow:0 1px 6px #0006;
+}
+body[data-tl-screen="mein-boxer"] .mb-sw[aria-pressed="true"]{
+  box-shadow:0 0 0 2px #ffd783,0 0 12px #f5cc7c6e;
+}
+body[data-tl-screen="mein-boxer"] .mb-switch[aria-pressed="true"]{
+  background:linear-gradient(90deg,#167a9f,#39c4f3);
+}
+body[data-tl-screen="mein-boxer"] .mb-pose[aria-pressed="true"]{
+  border-color:#ffd17e;box-shadow:0 0 0 2px #f1ba5b53;
+}
+@media(max-width:819px){
+ body[data-tl-screen="mein-boxer"] .mb-stage{
+   padding:8px 10px 9px;gap:4px;
+ }
+ body[data-tl-screen="mein-boxer"] .mb-stage-heading a{padding:5px 6px}
+ body[data-tl-screen="mein-boxer"] .mb-tabbody{padding:11px 9px 20px}
+ body[data-tl-screen="mein-boxer"] .mb-row .mb-gear-chip{flex-basis:101px;width:101px}
+}
+@media(max-width:819px) and (min-height:721px){
+ body[data-tl-screen="mein-boxer"] .mb-stage{flex:0 0 clamp(365px,52dvh,455px)}
+}
+@media(max-width:819px) and (max-height:620px){
+ body[data-tl-screen="mein-boxer"] .mb-stage{flex-basis:clamp(195px,43dvh,255px)}
+ body[data-tl-screen="mein-boxer"] .mb-stage-heading{min-height:30px}
+ body[data-tl-screen="mein-boxer"] .mb-stage-title strong{font-size:15px}
+ body[data-tl-screen="mein-boxer"] .mb-stage-title small{display:none}
+ body[data-tl-screen="mein-boxer"] .mb-tabs .mb-tab{min-height:48px;padding:3px 2px;gap:2px}
+ body[data-tl-screen="mein-boxer"] .mb-tab-icon{width:17px;height:17px}
+ body[data-tl-screen="mein-boxer"] .mb-arena-flag{opacity:.43}
+}
+@media(max-width:365px){
+ body[data-tl-screen="mein-boxer"] .mb-stage-heading{gap:4px}
+ body[data-tl-screen="mein-boxer"] .mb-stage-title strong{font-size:16px}
+ body[data-tl-screen="mein-boxer"] .mb-save-state{padding:4px;font-size:9px}
+ body[data-tl-screen="mein-boxer"] .mb-tabs .mb-tab{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){
+ body[data-tl-screen="mein-boxer"] .mb-arena,
+ body[data-tl-screen="mein-boxer"] .mb-arena *{animation:none;transition:none}
+}
