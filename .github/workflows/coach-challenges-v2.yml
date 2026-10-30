@@ -172,6 +172,11 @@ on:
       - 'tests/season-single-active-*'
       - 'tests/admin-change-log-*'
       - '.github/workflows/coach-challenges-v2.yml'
+# Only the latest commit in this PR needs the large schema-test matrix.
+# Do not cancel other PRs or the production Pages deployment.
+concurrency:
+  group: v2-integration-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 jobs:
   static-checks:
     runs-on: ubuntu-latest
