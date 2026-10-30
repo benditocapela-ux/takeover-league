@@ -370,6 +370,20 @@ function injected(cfg){
  await x.p.waitForSelector('.mb-preview .mb-artpack-img');
  assert.equal(await x.p.locator('.mb-art-debug').getAttribute('data-art-state'),'ready',
   'preview reports a complete and loaded artpack');
+ const alignment=await x.p.evaluate(()=>{
+  const host=document.querySelector('.mb-preview').getBoundingClientRect();
+  const art=document.querySelector('.mb-artpack').getBoundingClientRect();
+  const images=[...document.querySelectorAll('.mb-artpack-img')].map(el=>el.getBoundingClientRect());
+  return {host:host.toJSON(),art:art.toJSON(),aligned:images.every(r=>Math.abs(r.x-art.x)<1&&
+   Math.abs(r.y-art.y)<1&&Math.abs(r.width-art.width)<1&&Math.abs(r.height-art.height)<1)};
+ });
+ assert.ok(alignment.art.width>40&&alignment.art.height>80,
+  'painted character must occupy a visible stage area: '+JSON.stringify(alignment));
+ assert.ok(Math.abs(alignment.art.left+alignment.art.width/2-alignment.host.left-alignment.host.width/2)<2,
+  'painted character stays horizontally centered on phone');
+ assert.ok(alignment.art.top>=alignment.host.top-2&&alignment.art.bottom<=alignment.host.bottom+2,
+  'painted character does not spill beyond its fixed preview');
+ assert.ok(alignment.aligned,'all png layers share identical drawn viewport');
  await shot(x.p,'holo-artpack-debug-ready');
  const artCompare=x.p.locator('[data-art-compare]');
  assert.equal(await artCompare.count(),1,'comparison control appears only for approved preview assets');
