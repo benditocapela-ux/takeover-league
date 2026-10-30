@@ -35,7 +35,7 @@ assert.notEqual(G.svg('top','tank',{}).replace(/mbi\d+/g,'mbi'),G.svg('top','hoo
 assert.equal(G.supports('glove','<script>'),false,'unknown item cannot be interpreted as HTML');
 assert.equal(G.svg('glove','<script>',{}),'','unknown item cannot be rendered');
 
-assert.ok(html.includes("await import('./takeover-mein-boxer-layers.js')"));
+assert.ok(html.includes("import('./takeover-mein-boxer-layers.js')"));
 assert.match(html,/const heroArt=\(config,pose\)=>/);
 assert.ok(html.includes("H.svg(config,{pose,label:'Dein Boxer-Holo',premium:true,holo:false,layered:true})"));
 assert.ok(html.includes('${heroArt(cfg,pose)}'),'hero stage uses optional pack and complete SVG fallback');
