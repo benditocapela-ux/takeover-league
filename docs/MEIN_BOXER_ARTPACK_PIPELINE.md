@@ -71,6 +71,9 @@ Das ist nur ein **Schema-Beispiel**, keine bereits vorhandene Grafikdatei. Für 
 - `takeover-mein-boxer-artpack.js`: `create(manifest)` prüft den Manifestvertrag, wählt exakt passende Layer und erzeugt nur dann den Bildstapel.
 - `takeover-mein-boxer.html`: existiert **nicht**; der tatsächliche Einstiegspunkt ist `mein-boxer.html`. Der Editor lädt die Module und nutzt neue Bilder ausschliesslich bei `?art=preview` **und** `approved:true`.
 - Bild-Ladefehler und unvollständige Outfits schalten automatisch auf den alten SVG-Boxer zurück.
+- **Atomarer Bildwechsel:** Der alte SVG-Boxer bleibt so lange sichtbar, bis alle Bilddateien eines komplett passenden Outfits erfolgreich vorgeladen sind. Erst dann werden alle Ebenen zusammen angezeigt. Ein einzelner Bildfehler verhindert die gesamte Umschaltung.
+- **Dateivalidierung:** Vor der Freigabe `node scripts/validate-boxer-artpack.cjs` ausführen. Die Prüfung kontrolliert erlaubte lokale Pfade, 768×1216 Pixel, PNG-/WebP-Transparenzkennzeichen und maximal 2 MiB pro Datei. Der CI-Workflow führt dieselbe Prüfung aus. Bei `approved:false` wird die produktive Dateiprüfung bewusst übersprungen.
+- **Grenze der automatischen Prüfung:** Ein vorhandener Alphakanal beweist nicht, dass Kleidung und Körper grafisch deckungsgleich sind. Das muss mit echten Bildschirmfotos, unterschiedlichen Outfits und einer Bildprüfung bestätigt werden.
 - Das bestehende Datenbankmodell, die gespeicherte Konfiguration und Kauf-/Besitzinformationen werden nicht geändert.
 - `tests/mein-boxer-artpack-contracts.cjs` prüft Varianten, Fallbacks, gültige Pfade und verbotene externen Ressourcen.
 - Browser-Tests müssen die weiterhin funktionierende mobile Bühne, den Outfitwechsel und fehlgeschlagene Bildladungen abdecken.
