@@ -107,3 +107,15 @@ Für die konkrete Übergabe an Illustratorinnen oder Game-Art-Plattformen gibt e
 3. **Vor Freigabe:** Mit `node scripts/validate-boxer-artpack.cjs` werden die realen Dateien geprüft. Ein Manifest-Eintrag oder grüner Abdeckungsbericht allein beweist noch nicht, dass die Grafiken existieren oder optisch richtig ausgerichtet sind.
 
 **Nicht mitgeliefert:** hochwertige externe Anime-Grafiken; diese bleiben ein bewusst offener visueller Meilenstein. Eine nicht vorhandene Grafik wird weder durch ein beliebiges generiertes Bild noch durch das bestehende SVG als neues Premium-Asset ausgegeben.
+
+## Premium-/SVG-Vergleich direkt im Editor (30.10.2026)
+
+Für die Bildabnahme gibt es jetzt **einen direkten Vorher-/Nachher-Vergleich** ohne neue Datenbankfelder, Käufe oder öffentliche Einstellungen.
+
+- Der Vergleichsschalter erscheint ausschliesslich, wenn `mein-boxer.html?art=preview` geöffnet ist, ein **freigegebenes** Manifest geladen wurde und das optionale Artpack-Modul verfügbar ist.
+- Der Schalter wechselt zwischen der aktuellen SVG-Grafik und dem Premium-Asset-Renderer. Er verändert weder die Konfiguration noch das Shopinventar oder die gespeicherten Profilwerte.
+- Die Auswahl der Rubrik und des Outfits bleibt beim Umschalten bestehen. Die Tastatur kann den Schalter mit Enter/Leertaste bedienen. Die Statusanzeige kennzeichnet manuell ausgewählte SVG-Grafik.
+- Die Chromium-Abnahme erstellt sowohl einen Screenshot der geladenen Premium-Vorschau als auch der dazugehörigen SVG-Darstellung. Sie prüft zusätzlich Zentrierung, Bildausschnitt und Deckungsgleichheit aller Ebenen im mobilen Vorschaubereich.
+- Ist das Artpack-Modul im Offline-Modus nicht verfügbar, ist der Schalter unsichtbar. Die SVG-Figur funktioniert trotzdem.
+
+**Wichtig:** Momentan ist `approved:false`, daher wird der Vergleichsschalter auf dem realen PR-Stand noch nicht angeboten. Die neuen Tests verwenden vollständig künstliche, lokale Bild-Fixtures; sie beweisen den technisch korrekten Vergleich, **nicht** die künstlerische Qualität der noch fehlenden Game-Art.
