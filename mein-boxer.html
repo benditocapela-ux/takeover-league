@@ -47,7 +47,30 @@ function refreshHero(){
  const preview=app.querySelector('.mb-preview');
  if(!preview||!cfg)return;
  const pose=previewPose==='card'?cfg.pose_card:cfg.pose_profile;
- preview.innerHTML=heroArt(cfg,pose);
+ preview.innerHTML=heroArt(cfg,pose)+artDebugLabel(cfg,pose);
+}
+// Diagnostics are only exposed to editors explicitly using ?art=preview.
+// Nothing is added to public cards, profiles or normal Studio operation.
+function artDebugLabel(config,pose){
+ if(!tryPremiumArt)return '';
+ const info=A&&A.active&&A.active.inspect
+  ?A.active.inspect(H.normalize(config),pose)
+  :{state:'unavailable',detail:''};
+ const words={
+  'unapproved':'Grafikpaket nicht freigegeben',
+  'unavailable':'Grafikmodul nicht geladen',
+  'missing-pose':'Pose fehlt',
+  'unsupported-effect':'Effekt nutzt SVG',
+  'missing-layer':'Grafikebene fehlt',
+  'invalid-path':'Ungültige Grafikdatei',
+  'load-failed':'Grafik konnte nicht geladen werden',
+  'loading':'Grafik wird vorgeladen',
+  'ready':'Premium-Grafik bereit'
+ };
+ const title=(words[info.state]||'SVG-Fallback')+(info.detail?' · '+info.detail:'');
+ const progress=info.state==='loading'?' ('+info.loaded+'/'+info.total+')':'';
+ return '<span class="mb-art-debug" role="status" data-art-state="'+esc(info.state)+'" title="'+esc(title)+'">'+
+  esc(title+progress)+'</span>';
 }
 const COIN='<svg class="mb-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#ffcc33"/><circle cx="12" cy="12" r="8" fill="#e8a91a"/></svg>';
 const fmt=n=>Number(n||0).toLocaleString('de-CH');
@@ -181,7 +204,7 @@ function render(){
  const tabs=[['koerper','Körper'],['kleidung','Kleidung'],['extras','Extras'],['posen','Posen'],['shop','Shop']];
  const tl=tryOn(),pose=previewPose==='card'?cfg.pose_card:cfg.pose_profile;
  app.innerHTML=`${data.preview?'<p class="tlp-note">Vorschau – für die Boxer sichtbar, sobald der Boxer-Holo freigeschaltet ist.</p>':''}
- <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span>Mein Boxer</span><a href="./boxer.html">Mein Studio</a></div><div class="mb-preview">${heroArt(cfg,pose)}</div>
+ <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span>Mein Boxer</span><a href="./boxer.html">Mein Studio</a></div><div class="mb-preview">${heroArt(cfg,pose)}${artDebugLabel(cfg,pose)}</div>
   <div class="mb-stage-bar"><span class="mb-pill">${previewPose==='card'?'Karten-Pose':'Profil-Pose'}</span>${data.shop?`<span class="mb-pill">${COIN}${fmt(data.coins)}</span>`:''}</div>
   <div class="mb-actions"><button type="button" class="mb-btn primary" id="saveBtn"${!dirty()||tl.length||busy?' disabled':''}>${tl.length?'Gesperrtes zuerst kaufen oder abwählen':dirty()?'Speichern':'Gespeichert'}</button>${dirty()?'<button type="button" class="mb-btn ghost" id="resetBtn">Änderungen verwerfen</button>':''}</div></div>
  <div class="mb-panel" data-active-tab="${tab}"><div class="mb-tabs" role="tablist" aria-label="Bereiche">${tabs.map(([k,l])=>`<button type="button" role="tab" id="mb-tab-${k}" aria-controls="mb-tabbody" class="mb-tab" data-tab="${k}" aria-selected="${tab===k}" tabindex="${tab===k?0:-1}">${l}</button>`).join('')}</div>
