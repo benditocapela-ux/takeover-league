@@ -45,7 +45,7 @@ function create(win){
   // A replacement is never shown until it has been fully decoded and checked.
   // Failed replacements leave the previous valid artwork available.
   const id=++underpaintGeneration;
-  if(!file||typeof file.name!=='string'||!/\\.png$/i.test(file.name)||
+  if(!file||typeof file.name!=='string'||!/\.png$/i.test(file.name)||
     (file.type&&file.type!=='image/png')||file.size<40||file.size>MAX_FILE)
    throw Error('Körperzeichnung muss PNG bis 2 MiB sein.');
   const incoming=win.URL.createObjectURL(file);
