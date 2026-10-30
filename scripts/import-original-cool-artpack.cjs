@@ -38,10 +38,10 @@ function readAll(zip,expected=SHA){
 function manifestText(){
  const m={version:1,approved:false,enabled:false,canvas:{width:768,height:1216},
   poses:{cool:{
-   coatBack:{samurai:'cool/coatBack.png'},body:{'6':'cool/body.png'},
+   coatBack:{samurai:'cool/coatback.png'},body:{'6':'cool/body.png'},
    bottom:{'boxer/schwarz':'cool/bottom.png'},
    feet:{'boots/schwarz':'cool/feet.png'},eyes:{braun:'cool/eyes.png'},
-   hair:{'afro/schwarz':'cool/hair.png'},coatFront:{samurai:'cool/coatFront.png'},
+   hair:{'afro/schwarz':'cool/hair.png'},coatFront:{samurai:'cool/coatfront.png'},
    hands:{wraps:'cool/hands.png'}
   }}};
  return "/* Original cool reference only; NOT approved. */\n(function(){'use strict';window.TLBoxerArtPackManifest=Object.freeze("+
@@ -60,14 +60,14 @@ function importPack(zip,root=process.cwd(),opts={}){
   throw Error('Existing draft manifest differs from exact original cool import');
  const dest=path.join(root,PREFIX);
  for(const [name,data] of pack){
-  const file=path.join(dest,name+'.png');
+  const file=path.join(dest,name.toLowerCase()+'.png');
   if(fs.existsSync(file)&&digest(fs.readFileSync(file))!==digest(data))
    throw Error('Different artwork already exists: '+file);
  }
  const bytes=[...pack.values()].reduce((s,d)=>s+d.length,0);
  if(!opts.dryRun){
   fs.mkdirSync(dest,{recursive:true});
-  for(const [name,data] of pack)fs.writeFileSync(path.join(dest,name+'.png'),data);
+  for(const [name,data] of pack)fs.writeFileSync(path.join(dest,name.toLowerCase()+'.png'),data);
   fs.writeFileSync(manifestFile,manifestText());
  }
  return {files:pack.size,bytes,dryRun:!!opts.dryRun,approved:false,enabled:false};
