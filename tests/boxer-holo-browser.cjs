@@ -107,7 +107,7 @@ function injected(cfg){
   const figure=preview.querySelector('svg.tlh');
   const p=preview.getBoundingClientRect(),r=figure.getBoundingClientRect();
   return {top:r.top-p.top,bottom:p.bottom-r.bottom,left:r.left-p.left,right:p.right-r.right,
-   height:r.height,viewport:p.height,svgOverflow:getComputedStyle(figure).overflow,
+   height:r.height,viewport:p.height,svgOverflow:getComputedStyle(figure).overflow,previewOverflow:getComputedStyle(preview).overflow,
    statusHidden:document.getElementById('status').hidden};
  });
  assert.ok(previewGeometry.viewport>100,'fixed preview has room for boxer');
@@ -115,7 +115,8 @@ function injected(cfg){
   'boxer must fit vertically inside preview: '+JSON.stringify(previewGeometry));
  assert.ok(previewGeometry.left>=-1&&previewGeometry.right>=-1,
   'boxer must fit horizontally inside preview: '+JSON.stringify(previewGeometry));
- assert.equal(previewGeometry.svgOverflow,'hidden','mobile preview clips SVG to full figure viewbox');
+ assert.equal(previewGeometry.svgOverflow,'visible','wide pose hands may extend beyond the inner SVG viewbox');
+ assert.equal(previewGeometry.previewOverflow,'hidden','outer arena still prevents overlap with save controls');
  assert.ok(previewGeometry.statusHidden,'initial status toast must not obscure equipment');
  // Approved concept translated to DOM/CSS, not flattened into a static screenshot:
  // arena light, two gold banners, elevated platform and a dynamic boxer on top.
