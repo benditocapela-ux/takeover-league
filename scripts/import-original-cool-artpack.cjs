@@ -53,9 +53,11 @@ function importPack(zip,root=process.cwd(),opts={}){
  const ctx={window:{}};
  vm.runInNewContext(fs.readFileSync(manifestFile,'utf8'),ctx,{timeout:1000});
  const old=ctx.window.TLBoxerArtPackManifest;
- if(!old||old.approved!==false||old.enabled!==false||
-  Object.keys(old.poses||{}).length!==0)
+ if(!old||old.approved!==false||old.enabled!==false)
   throw Error('Expected empty, unapproved, disabled artpack manifest');
+ const known=Object.keys(old.poses||{}).length!==0;
+ if(known&&fs.readFileSync(manifestFile,'utf8')!==manifestText())
+  throw Error('Existing draft manifest differs from exact original cool import');
  const dest=path.join(root,PREFIX);
  for(const [name,data] of pack){
   const file=path.join(dest,name+'.png');
