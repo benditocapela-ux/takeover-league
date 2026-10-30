@@ -89,6 +89,30 @@ function create(win){
   return '<div class="mb-artpack mb-draft-artpack" role="img" aria-label="Originaler Anime-Cool-Referenzlook, Ebene für Ebene überprüfbar, nur Entwurf">'+
    draft+NAMES.filter(name=>enabled.has(name)).map((name,i)=>'<img class="mb-artpack-img" loading="eager" decoding="async" style="z-index:'+(i+1)+'" src="'+urls[name]+'" alt="" draggable="false">').join('')+'</div>';
  }
+ // Reviewer-only import of eight committed raster references. Never runs in
+ // production or automatically; the UI invokes this from a real button click.
+ // Source bytes must match all eight approved-reference hashes, not just names.
+ async function loadInstalled(){
+  if(!win.fetch||!win.crypto?.subtle||!win.File)
+   throw Error('Automatischer Import benötigt sicheren Browserkontext und Web Crypto.');
+  const files=[];
+  for(const name of NAMES){
+   const fileName=name.toLowerCase()+'.png';
+   const response=await win.fetch('./assets/boxer-artpacks/v1/cool/'+fileName,{
+    mode:'same-origin',credentials:'same-origin',cache:'no-store'
+   });
+   if(!response.ok)throw Error('Originalebene noch nicht im Branch: '+fileName);
+   const bytes=await response.arrayBuffer();
+   if(bytes.byteLength<40||bytes.byteLength>MAX_FILE)
+    throw Error('Ungültige Bildgrösse: '+fileName);
+   const hash=await win.crypto.subtle.digest('SHA-256',bytes);
+   const hex=Array.from(new Uint8Array(hash),b=>b.toString(16).padStart(2,'0')).join('');
+   if(hex!==ORIGINAL_SHA256[name])
+    throw Error('Referenz-Prüfsumme stimmt nicht: '+fileName);
+   files.push(new win.File([bytes],name+'.png',{type:'image/png'}));
+  }
+  return load(files);
+ }
  async function load(files){
   const id=++generation;
   if(!files||files.length!==NAMES.length)throw Error('Bitte genau acht Ebenen wählen.');
@@ -131,7 +155,7 @@ function create(win){
    return status();
   }catch(e){revoke(incoming);throw e}
  }
- return Object.freeze({load,loadUnderpaint,clearUnderpaint,clear,status,render,compatible,reference:REFERENCE});
+ return Object.freeze({load,loadInstalled,loadUnderpaint,clearUnderpaint,clear,status,render,compatible,reference:REFERENCE});
 }
 window.TLBoxerDraftPreview=Object.freeze({create,compatible,NAMES,REFERENCE});
 })();
