@@ -50,13 +50,26 @@ function create(win){
    throw Error('Körperzeichnung muss PNG bis 2 MiB sein.');
   const incoming=win.URL.createObjectURL(file);
   try{
-   await new Promise((resolve,reject)=>{
+   const artwork=await new Promise((resolve,reject)=>{
     const img=new win.Image();
     img.onload=()=>img.naturalWidth===768&&img.naturalHeight===1216
-     ?resolve():reject(Error('Körperzeichnung muss 768 × 1216 Pixel gross sein.'));
+     ?resolve(img):reject(Error('Körperzeichnung muss 768 × 1216 Pixel gross sein.'));
     img.onerror=()=>reject(Error('Körperzeichnung konnte nicht gelesen werden.'));
     img.src=incoming;
    });
+   // A completely opaque fake body would cover the original eight sprite layers.
+   // Transparent corners are a minimum requirement for an underpaint draft.
+   if(win.document?.createElement){
+    const canvas=win.document.createElement('canvas');
+    canvas.width=768;canvas.height=1216;
+    const context=canvas.getContext('2d',{willReadFrequently:true});
+    if(!context)throw Error('PNG-Transparenz kann nicht geprüft werden.');
+    context.drawImage(artwork,0,0);
+    for(const [x,y] of [[0,0],[767,0],[0,1215],[767,1215]]){
+     if(context.getImageData(x,y,1,1).data[3]>8)
+      throw Error('Körperzeichnung braucht transparenten Hintergrund.');
+    }
+   }
    if(id!==underpaintGeneration)throw Error('Überholte Körperzeichnung.');
    const previous=underpaintUrl;
    underpaintUrl=incoming;
