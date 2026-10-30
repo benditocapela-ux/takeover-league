@@ -28,6 +28,12 @@ Die mobile Aufteilung ist fertig implementiert, nicht produktiv veröffentlicht.
 
 **Technische Abnahme:** Die Renderer-Ausgabe wurde mit 18 Frisuren × 8 Hauttönen × 3 Oberteilen (=432 Kombinationen) in JavaScript auf fehlerfreie SVG-Erzeugung geprüft. Ein neuer Chromium-Regressionstest kontrolliert mobile Bildschirmgeometrie und unabhängiges Scrollen bei 360×640, 375×667 und 430×932. Der aktuelle CI-Lauf ist noch ausstehend; vor Merge muss die Screenshot-Abnahme erfolgen.
 
+**Art pass 4 – 2.5D-Grafikebenen (30.10.2026):** Die `takeover-mein-boxer-layers.js` ist ein neues, eigenständiges Modul. Sie erstellt Materialverläufe mit individueller Clip-Maske aus den tatsächlich ausgewählten Outfit-Geometrien. Separate gruppierte Vektorebenen (`tl-layer-shirt`, `tl-layer-bottom`, `tl-layer-shoes`, `tl-layer-coat`, `tl-layer-hair`) ergänzen die bestehende Figur um reflektierende Stoffe, Metallakzente und selektive Haarglanzlichter. Die Ebenen sind dynamisch und enthalten keine eingebetteten PNGs oder andere Rastergrafiken.
+
+**Einbindung:** Nur `mein-boxer.html` lädt das Modul und schaltet `layered:true` für das zentrale Boxer-Holo ein. Öffentliche Karten/Boxerprofile werden weiterhin ohne diese Zusatzebenen gezeichnet; wenn das Modul nicht geladen ist, fällt der Holo-Renderer ohne Fehler auf die bestehende SVG-Darstellung zurück. Der Kauf- und Speichervorgang benutzt dieselben Konfigurationsschlüssel wie zuvor.
+
+**Abnahme:** Der Kontrakttest enthält eine 432-Varianten-Matrix und prüft die Ebenengruppen, Haarabdeckung durch Hijab, das Entfernen von Mantelgrafik bei deaktiviertem Mantel, die dynamische Farbwahl und den unveränderten öffentlichen Renderer. Chromium testet die Hauptfigur sowie Kleidungs- und Haar-Ebenen in der tatsächlich gerenderten mobilen Ansicht.
+
 **Abgrenzung:** Zusätzliche Vektordetails sind kein pixelgenauer Nachbau des aufwendig gemalten Anime-Boxers. Eine echte 1:1-Nachbildung würde gesondert gemalte, konsistente transparente Ebenen für Körper/Haare/Kleidung oder ein animierbares 2D/3D-Rig benötigen. Kein fixes PNG auf das Holo legen – das würde die individuellen Anpassungen visuell verfälschen.
 
 ## Technische Leitplanken
