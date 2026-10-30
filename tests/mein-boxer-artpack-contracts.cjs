@@ -34,6 +34,7 @@ const garmentLayers={
 const manifest={version:1,approved:true,canvas:{width:768,height:1216},poses:{cool:garmentLayers}};
 const build=AP.create(manifest);
 const markup=build.render(cfg,'cool');
+assert.equal(build.prepare(cfg,'cool'),false,'art remains SVG when preload cannot run');
 assert.ok(markup,'complete pack can be rendered');
 assert.ok(markup.includes('data-artpack-version="1"'));
 assert.equal((markup.match(/class="mb-artpack-img"/g)||[]).length,9);
