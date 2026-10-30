@@ -33,6 +33,18 @@ const P=window.TLPerf,H=window.TLHolo,G=window.TLGearArt,A=window.TLBoxerArtPack
 // Production is explicitly disabled until BOTH art approval and launch enablement.
 // ?art=preview remains available for artists without activating live characters.
 const tryPremiumArt=new URLSearchParams(location.search).get('art')==='preview';
+const referenceReview=new URLSearchParams(location.search).get('art')==='reference';
+let referenceSrc=null,referenceVisible=false;
+function referenceNotice(){
+ if(!referenceReview)return '';
+ return '<div class="mb-reference-tools" role="group" aria-label="Nur lokaler Referenzvergleich">'+
+  '<label for="mb-reference-file">Anime-Referenz laden (PNG/WebP, 768 × 1216)</label>'+
+  '<input id="mb-reference-file" type="file" accept="image/png,image/webp" aria-describedby="mb-reference-note">'+
+  (referenceSrc?'<button type="button" class="mb-btn mb-reference-toggle" data-reference-toggle="1" aria-pressed="'+referenceVisible+'">'+
+   (referenceVisible?'Bearbeitbaren Boxer anzeigen':'Anime-Referenz anzeigen')+'</button>':'')+
+  '<small id="mb-reference-note">Nur lokale Designvorschau, keine Speicherung. Bei einer Ausrüstungsänderung erscheint wieder dein echter Boxer.</small></div>';
+}
+
 const artManifest=window.TLBoxerArtPackManifest;
 const livePremiumArt=!!(A&&A.active&&artManifest?.approved===true&&artManifest?.enabled===true);
 const usePremiumArt=tryPremiumArt||livePremiumArt;
@@ -40,6 +52,10 @@ const canCompareArt=!!(tryPremiumArt&&A&&A.active&&artManifest?.approved===true)
 let compareSvg=false;
 const heroArt=(config,pose)=>{
  const normalized=H.normalize(config);
+ // A local user's whole-body reference is a non-editable design overlay only.
+ // It is never persisted, released, or presented as a layer-based outfit.
+ if(referenceReview&&referenceVisible&&referenceSrc)
+  return '<img class="mb-reference-figure" src="'+esc(referenceSrc)+'" alt="Anime-Referenz nur zum visuellen Vergleich" decoding="async">';
  // Render only fully loaded artwork. A stale load can only re-render current cfg.
  if(usePremiumArt&&!compareSvg&&A&&A.active.prepare(normalized,pose,refreshHero)){
   const ready=A.active.render(normalized,pose);
@@ -223,7 +239,7 @@ function render(){
  app.innerHTML=`${data.preview?'<p class="tlp-note">Vorschau – für die Boxer sichtbar, sobald der Boxer-Holo freigeschaltet ist.</p>':''}
  <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span class="mb-stage-title"><small>TAKEOVER LEAGUE</small><strong>MEIN BOXER</strong></span><span class="mb-save-state" data-save-status="${busy?'busy':tl.length?'tryon':dirty()?'dirty':'saved'}">${busy?'Wird gespeichert …':tl.length?'Anprobe':dirty()?'Nicht gespeichert':'✓ Gespeichert'}</span><a href="./boxer.html" aria-label="Mein Studio öffnen">Studio</a></div>
  <div class="mb-arena" aria-hidden="true"><span class="mb-arena-light mb-arena-light--left"></span><span class="mb-arena-light mb-arena-light--right"></span><span class="mb-arena-flag mb-arena-flag--left"><b>♛</b><small>TAKEOVER</small></span><span class="mb-arena-flag mb-arena-flag--right"><b>♛</b><small>TAKEOVER</small></span><span class="mb-arena-rope"></span><span class="mb-arena-ring"></span></div>
- <div class="mb-preview">${heroArt(cfg,pose)}${artDebugLabel(cfg,pose)}</div>${canCompareArt?`<button type="button" class="mb-art-compare" data-art-compare="1" aria-pressed="${compareSvg}" aria-label="Boxer-Grafik vergleichen">${compareSvg?'Premium anzeigen':'Mit SVG vergleichen'}</button>`:''}
+ <div class="mb-preview">${heroArt(cfg,pose)}${artDebugLabel(cfg,pose)}</div>${referenceNotice()}${canCompareArt?`<button type="button" class="mb-art-compare" data-art-compare="1" aria-pressed="${compareSvg}" aria-label="Boxer-Grafik vergleichen">${compareSvg?'Premium anzeigen':'Mit SVG vergleichen'}</button>`:''}
   <div class="mb-stage-bar"><span class="mb-pill">${previewPose==='card'?'Karten-Pose':'Profil-Pose'}</span>${data.shop?`<span class="mb-pill">${COIN}${fmt(data.coins)}</span>`:''}</div>
   <div class="mb-actions"><button type="button" class="mb-btn primary" id="saveBtn"${!dirty()||tl.length||busy?' disabled':''}>${tl.length?'Gesperrtes zuerst kaufen oder abwählen':dirty()?'Speichern':'Gespeichert'}</button>${dirty()?'<button type="button" class="mb-btn ghost" id="resetBtn">Änderungen verwerfen</button>':''}</div></div>
  <div class="mb-panel" data-active-tab="${tab}"><div class="mb-tabs" role="tablist" aria-label="Bereiche">${tabs.map(([k,l])=>`<button type="button" role="tab" id="mb-tab-${k}" aria-controls="mb-tabbody" class="mb-tab" data-tab="${k}" aria-selected="${tab===k}" tabindex="${tab===k?0:-1}"><span class="mb-tab-icon">${TAB_ICONS[k]}</span><span class="mb-tab-label">${l}</span></button>`).join('')}</div>
@@ -267,7 +283,42 @@ app.addEventListener('keydown',e=>{
  const active=app.querySelector('.mb-tabs [role="tab"][aria-selected="true"]');
  if(active)active.focus({preventScroll:true});
 });
+// Reference image never leaves this browser, is not uploaded and never affects RPCs.
+app.addEventListener('change',e=>{
+ const picker=e.target.closest('#mb-reference-file');
+ if(!picker||!referenceReview)return;
+ const file=picker.files&&picker.files[0];
+ if(!file)return;
+ if(!['image/png','image/webp'].includes(file.type)||file.size>2*1024*1024){
+  say('Nur PNG oder WebP bis 2 MiB erlaubt.',true);return;
+ }
+ const candidate=URL.createObjectURL(file);
+ const img=new Image();
+ img.onload=()=>{
+  if(img.naturalWidth!==768||img.naturalHeight!==1216){
+   URL.revokeObjectURL(candidate);
+   say('Referenz muss 768 × 1216 Pixel gross sein.',true);return;
+  }
+  if(referenceSrc)URL.revokeObjectURL(referenceSrc);
+  referenceSrc=candidate;referenceVisible=true;
+  say('Anime-Referenz lokal geladen. Ausrüstung bleibt unverändert.');
+  render();
+ };
+ img.onerror=()=>{
+  URL.revokeObjectURL(candidate);
+  say('Bild konnte nicht gelesen werden.',true);
+ };
+ img.src=candidate;
+});
+window.addEventListener('pagehide',()=>{if(referenceSrc)URL.revokeObjectURL(referenceSrc)});
 app.addEventListener('click',async e=>{
+ const reference=e.target.closest('[data-reference-toggle]');
+ if(reference&&referenceReview&&referenceSrc){
+  referenceVisible=!referenceVisible;
+  render();
+  app.querySelector('[data-reference-toggle]')?.focus({preventScroll:true});
+  return;
+ }
  const compare=e.target.closest('[data-art-compare]');
  if(compare&&canCompareArt){
   compareSvg=!compareSvg;
@@ -278,15 +329,15 @@ app.addEventListener('click',async e=>{
  }
  const t=e.target.closest('[data-tab]');if(t){tab=t.dataset.tab;confirmBuy=null;render();if(t.closest('.mb-tryon'))app.querySelector('.mb-tabbody')?.scrollTo({top:0,behavior:'smooth'});return}
  const s=e.target.closest('[data-set]');
- if(s){const f=s.dataset.set,v=s.dataset.val;
+ if(s){referenceVisible=false;const f=s.dataset.set,v=s.dataset.val;
   if(f==='tone')cfg.tone=Number(v);
   else if(f==='coatPick'){coatChoice=v;cfg.coat=v}
   else{cfg[f]=v;if(f==='pose_card')previewPose='card';if(f==='pose_profile')previewPose='profile';if(f==='top'&&v!=='hoodie')cfg.hood=false}
   render();return}
  const g=e.target.closest('[data-toggle]');
- if(g){if(g.dataset.toggle==='hood')cfg.hood=!cfg.hood;else{if(cfg.coat!=='none'){coatChoice=cfg.coat;cfg.coat='none'}else cfg.coat=coatChoice}render();return}
+ if(g){referenceVisible=false;if(g.dataset.toggle==='hood')cfg.hood=!cfg.hood;else{if(cfg.coat!=='none'){coatChoice=cfg.coat;cfg.coat='none'}else cfg.coat=coatChoice}render();return}
  const tb=e.target.closest('[data-try-bundle]');
- if(tb){const b=data.bundles.find(x=>x.key===tb.dataset.tryBundle);if(b)b.items.forEach(k=>{const i=items().find(x=>x.key===k);if(!i)return;if(['coat','aura','eyefx','scene'].includes(i.slot))cfg[i.slot]=i.value;if(i.slot==='glove'){cfg.hands='gloves';cfg.glove=i.value}if(i.slot==='pose')cfg.pose_profile=i.value});
+ if(tb){referenceVisible=false;const b=data.bundles.find(x=>x.key===tb.dataset.tryBundle);if(b)b.items.forEach(k=>{const i=items().find(x=>x.key===k);if(!i)return;if(['coat','aura','eyefx','scene'].includes(i.slot))cfg[i.slot]=i.value;if(i.slot==='glove'){cfg.hands='gloves';cfg.glove=i.value}if(i.slot==='pose')cfg.pose_profile=i.value});
   render();app.querySelector('.mb-tabbody')?.scrollTo({top:0,behavior:'smooth'});return}
  if(e.target.closest('[data-cancel]')){confirmBuy=null;render();return}
  const bi=e.target.closest('[data-buy-item],[data-buy-bundle]');
