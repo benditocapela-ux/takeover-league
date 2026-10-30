@@ -32,10 +32,12 @@ catch(e){console.warn('Optional boxer art-pack unavailable; continuing with SVG'
 const P=window.TLPerf,H=window.TLHolo,G=window.TLGearArt,A=window.TLBoxerArtPacks,esc=P.esc;
 // Manual preview opt-in only. Production uses the SVG Holo until asset artwork is approved.
 const tryPremiumArt=new URLSearchParams(location.search).get('art')==='preview';
+const canCompareArt=tryPremiumArt&&window.TLBoxerArtPackManifest?.approved===true;
+let compareSvg=false;
 const heroArt=(config,pose)=>{
  const normalized=H.normalize(config);
  // Render only fully loaded artwork. A stale load can only re-render current cfg.
- if(tryPremiumArt&&A&&A.active.prepare(normalized,pose,refreshHero)){
+ if(tryPremiumArt&&!compareSvg&&A&&A.active.prepare(normalized,pose,refreshHero)){
   const ready=A.active.render(normalized,pose);
   if(ready)return ready;
  }
@@ -53,6 +55,7 @@ function refreshHero(){
 // Nothing is added to public cards, profiles or normal Studio operation.
 function artDebugLabel(config,pose){
  if(!tryPremiumArt)return '';
+ if(compareSvg)return '<span class="mb-art-debug" role="status" data-art-state="manual-svg">Vergleich: Original-SVG</span>';
  const info=A&&A.active&&A.active.inspect
   ?A.active.inspect(H.normalize(config),pose)
   :{state:'unavailable',detail:''};
@@ -204,7 +207,7 @@ function render(){
  const tabs=[['koerper','Körper'],['kleidung','Kleidung'],['extras','Extras'],['posen','Posen'],['shop','Shop']];
  const tl=tryOn(),pose=previewPose==='card'?cfg.pose_card:cfg.pose_profile;
  app.innerHTML=`${data.preview?'<p class="tlp-note">Vorschau – für die Boxer sichtbar, sobald der Boxer-Holo freigeschaltet ist.</p>':''}
- <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span>Mein Boxer</span><a href="./boxer.html">Mein Studio</a></div><div class="mb-preview">${heroArt(cfg,pose)}${artDebugLabel(cfg,pose)}</div>
+ <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span>Mein Boxer</span><a href="./boxer.html">Mein Studio</a></div><div class="mb-preview">${heroArt(cfg,pose)}${artDebugLabel(cfg,pose)}</div>${canCompareArt?`<button type="button" class="mb-art-compare" data-art-compare="1" aria-pressed="${compareSvg}" aria-label="Boxer-Grafik vergleichen">${compareSvg?'Premium anzeigen':'Mit SVG vergleichen'}</button>`:''}
   <div class="mb-stage-bar"><span class="mb-pill">${previewPose==='card'?'Karten-Pose':'Profil-Pose'}</span>${data.shop?`<span class="mb-pill">${COIN}${fmt(data.coins)}</span>`:''}</div>
   <div class="mb-actions"><button type="button" class="mb-btn primary" id="saveBtn"${!dirty()||tl.length||busy?' disabled':''}>${tl.length?'Gesperrtes zuerst kaufen oder abwählen':dirty()?'Speichern':'Gespeichert'}</button>${dirty()?'<button type="button" class="mb-btn ghost" id="resetBtn">Änderungen verwerfen</button>':''}</div></div>
  <div class="mb-panel" data-active-tab="${tab}"><div class="mb-tabs" role="tablist" aria-label="Bereiche">${tabs.map(([k,l])=>`<button type="button" role="tab" id="mb-tab-${k}" aria-controls="mb-tabbody" class="mb-tab" data-tab="${k}" aria-selected="${tab===k}" tabindex="${tab===k?0:-1}">${l}</button>`).join('')}</div>
@@ -249,6 +252,14 @@ app.addEventListener('keydown',e=>{
  if(active)active.focus({preventScroll:true});
 });
 app.addEventListener('click',async e=>{
+ const compare=e.target.closest('[data-art-compare]');
+ if(compare&&canCompareArt){
+  compareSvg=!compareSvg;
+  compare.setAttribute('aria-pressed',String(compareSvg));
+  compare.textContent=compareSvg?'Premium anzeigen':'Mit SVG vergleichen';
+  refreshHero();
+  return;
+ }
  const t=e.target.closest('[data-tab]');if(t){tab=t.dataset.tab;confirmBuy=null;render();if(t.closest('.mb-tryon'))app.querySelector('.mb-tabbody')?.scrollTo({top:0,behavior:'smooth'});return}
  const s=e.target.closest('[data-set]');
  if(s){const f=s.dataset.set,v=s.dataset.val;
