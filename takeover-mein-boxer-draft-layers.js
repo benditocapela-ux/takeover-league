@@ -93,6 +93,7 @@ function create(win){
  // production or automatically; the UI invokes this from a real button click.
  // Source bytes must match all eight approved-reference hashes, not just names.
  async function loadInstalled(){
+  const revision=generation; // do not replace a newer user-selected artwork
   if(!win.fetch||!win.crypto?.subtle||!win.File)
    throw Error('Automatischer Import benötigt sicheren Browserkontext und Web Crypto.');
   const files=[];
@@ -111,6 +112,7 @@ function create(win){
     throw Error('Referenz-Prüfsumme stimmt nicht: '+fileName);
    files.push(new win.File([bytes],name+'.png',{type:'image/png'}));
   }
+  if(revision!==generation)throw Error('Zwischenzeitlich wurde eine andere Grafik geladen.');
   return load(files);
  }
  async function load(files){
