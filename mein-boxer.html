@@ -30,14 +30,18 @@ await Promise.allSettled([
 try{await import('./takeover-mein-boxer-artpack.js')}
 catch(e){console.warn('Optional boxer art-pack unavailable; continuing with SVG',e)}
 const P=window.TLPerf,H=window.TLHolo,G=window.TLGearArt,A=window.TLBoxerArtPacks,esc=P.esc;
-// Manual preview opt-in only. Production uses the SVG Holo until asset artwork is approved.
+// Production is explicitly disabled until BOTH art approval and launch enablement.
+// ?art=preview remains available for artists without activating live characters.
 const tryPremiumArt=new URLSearchParams(location.search).get('art')==='preview';
-const canCompareArt=!!(tryPremiumArt&&A&&A.active&&window.TLBoxerArtPackManifest?.approved===true);
+const artManifest=window.TLBoxerArtPackManifest;
+const livePremiumArt=!!(A&&A.active&&artManifest?.approved===true&&artManifest?.enabled===true);
+const usePremiumArt=tryPremiumArt||livePremiumArt;
+const canCompareArt=!!(tryPremiumArt&&A&&A.active&&artManifest?.approved===true);
 let compareSvg=false;
 const heroArt=(config,pose)=>{
  const normalized=H.normalize(config);
  // Render only fully loaded artwork. A stale load can only re-render current cfg.
- if(tryPremiumArt&&!compareSvg&&A&&A.active.prepare(normalized,pose,refreshHero)){
+ if(usePremiumArt&&!compareSvg&&A&&A.active.prepare(normalized,pose,refreshHero)){
   const ready=A.active.render(normalized,pose);
   if(ready)return ready;
  }
