@@ -71,6 +71,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
  assert.ok(html.includes('data-draft-repo="1"'));
  assert.ok(html.includes('await draftPack.loadInstalled()'));
  assert.ok(html.includes('if(fromRepo&&draftReview&&draftPack)'));
- assert.ok(!html.includes('draftPack.loadInstalled();'), 'no automatic import outside user click handler');
+ assert.equal((html.match(/draftPack\.loadInstalled\(\)/g)||[]).length,1,
+  'installed-art import is only called from its explicit reviewer click handler');
  console.log('PASS: one-click local branch import verifies all eight SHA hashes and never exposes corrupt art');
 })().catch(e=>{console.error(e);process.exitCode=1});
