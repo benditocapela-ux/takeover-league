@@ -44,6 +44,14 @@ assert.match(premium,/class="tlh-premium-coat"/);
 assert.match(premium,/class="tlh-premium-fabric"/);
 assert.match(premium,/class="tlh-premium-gear"/);
 assert.match(premium,/radialGradient/);
+assert.match(premium,/class="tlh-premium-signature"/,'embroidery must render in premium mode');
+assert.match(premium,/>TAKEOVER<\\/text>/,'waistband typography on premium boxer');
+assert.match(premium,/class="tlh-premium-hair"/,'afro has separate detailed hair layer');
+assert.doesNotMatch(basic,/tlh-premium-signature/,'public profile unaffected by premium embroidery');
+const noCoat=H.svg({...config,coat:'none',hair:'locs'},{premium:true});
+assert.doesNotMatch(noCoat,/class="tlh-premium-hair"/,'afro highlights hidden with other hairstyles');
+assert.match(css,/\.mb-preview svg\.tlh \.tlh-fig/,'wider hero stays editor-only');
+
 assert.equal((premium.match(/class="tlh-premium-eyes"/g)||[]).length,2,'premium face renders 2 anime eyes');
 assert.doesNotMatch(basic,/tlh-premium-eyes/,'standard profile keeps its current eye style');
 const green=H.svg({...config,eye:'gruen'},{pose:'cool',premium:true,holo:false});
