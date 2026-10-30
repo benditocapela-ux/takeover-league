@@ -240,20 +240,62 @@ app.addEventListener('click',async e=>{
   render();app.querySelector('.mb-tabbody')?.scrollTo({top:0,behavior:'smooth'});return}
  if(e.target.closest('[data-cancel]')){confirmBuy=null;render();return}
  const bi=e.target.closest('[data-buy-item],[data-buy-bundle]');
- if(bi){const kind=bi.dataset.buyItem?'item':'bundle',key=bi.dataset.buyItem||bi.dataset.buyBundle;
+ if(bi){
+  const kind=bi.dataset.buyItem?'item':'bundle',key=bi.dataset.buyItem||bi.dataset.buyBundle;
+  if(busy)return;
   if(!bi.dataset.confirm){confirmBuy=kind+':'+key;render();return}
-  if(busy)return;busy=true;say('Kauf läuft …');
-  const {data:res,error}=kind==='item'?await db.rpc('buy_holo_item',{p_key:key}):await db.rpc('buy_holo_bundle',{p_key:key});
-  busy=false;confirmBuy=null;
-  if(error){say(error.message,true);render();return}
-  const keep=cfg;await load();cfg=keep;say(`Gekauft: ${res.name}. Neuer Stand: ${fmt(res.balance)} Coins.`);render();return}
- if(e.target.closest('#resetBtn')){cfg=JSON.parse(saved);say('Änderungen verworfen.');render();return}
+  busy=true;say('Kauf läuft …');
+  try{
+   const {data:res,error}=kind==='item'
+    ?await db.rpc('buy_holo_item',{p_key:key})
+    :await db.rpc('buy_holo_bundle',{p_key:key});
+   if(error)throw error;
+   if(!res)throw Error('Keine Kaufbestätigung erhalten.');
+   // A successful purchase must not look unsuccessful just because the subsequent
+   // refresh fails. Never auto-repeat a transaction.
+   const keep=cfg;
+   if(data&&Number.isFinite(Number(res.balance)))data.coins=Number(res.balance);
+   try{
+    await load();cfg=keep;
+    say(`Gekauft: ${res.name}. Neuer Stand: ${fmt(res.balance)} Coins.`);
+   }catch(e){
+    cfg=keep;
+    say('Kauf bestätigt. Kontostand konnte nicht aktualisiert werden – bitte Seite später neu laden.',true);
+   }
+  }catch(e){
+   say('Kauf fehlgeschlagen: '+(e.message||e),true);
+  }finally{
+   busy=false;confirmBuy=null;render();
+  }
+  return;
+ }
+ if(e.target.closest('#resetBtn')){
+  if(busy)return;
+  cfg=JSON.parse(saved);say('Änderungen verworfen.');render();return;
+ }
  if(e.target.closest('#saveBtn')){
-  if(busy)return;busy=true;render();
-  const {data:res,error}=await db.rpc('save_my_holo',{p_config:cfg});
-  busy=false;
-  if(error){say(error.message,true);render();return}
-  cfg=res;saved=JSON.stringify(res);say('Gespeichert. So sehen dich jetzt alle im Profil und auf deiner Karte.');render();
+  if(busy)return;
+  const snapshot=JSON.stringify(cfg);
+  busy=true;render();
+  try{
+   // Send an immutable snapshot; later colour or outfit changes must not be lost.
+   const {data:res,error}=await db.rpc('save_my_holo',{p_config:JSON.parse(snapshot)});
+   if(error)throw error;
+   if(!res)throw Error('Keine Speicherbestätigung erhalten.');
+   const result=H.normalize(res);
+   saved=JSON.stringify(result);
+   if(JSON.stringify(cfg)===snapshot){
+    cfg=result;
+    say('Gespeichert. So sehen dich jetzt alle im Profil und auf deiner Karte.');
+   }else{
+    say('Gespeichert. Deine neueren Änderungen sind noch nicht gespeichert.');
+   }
+  }catch(e){
+   say('Speichern fehlgeschlagen: '+(e.message||e),true);
+  }finally{
+   busy=false;render();
+  }
+  return;
  }
 });
 try{
