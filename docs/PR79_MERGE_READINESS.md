@@ -36,7 +36,7 @@ Die isolierte Browserprüfung verwendet den echten Dateizusammenbau und beide un
 ## Befunde nach Schwere
 
 - **P0/P1:** keine verbleibenden Fehler in den geprüften Szenarien gefunden.
-- **P2:** potenziell veraltete Build-Dateien in wiederverwendetem Staging werden jetzt durch ein erforderliches leeres Ziel verhindert. Keine weitere relevante offene P2-Regression festgestellt.
+- **P2, behoben:** Mobile SVG-Begrenzung schnitt die ausgestreckte Jab-Hand nach der bestehenden horizontalen Verbreiterung ab. Das innere SVG erlaubt jetzt Überstand; die Arena bleibt begrenzt. Neue Geometrieprüfungen für alle Posen bestehen in beiden Engines; die alte CSS-Regel scheitert gezielt in der Negativkontrolle. Zusätzlich: potenziell veraltete Build-Dateien in wiederverwendetem Staging werden jetzt durch ein erforderliches leeres Ziel verhindert. Keine weitere relevante offene P2-Regression festgestellt.
 - **Testanpassung:** alte Shell-String-Erwartungen und Windows-Symlink-Erstellung waren Test-/Umgebungsprobleme, keine Darstellungsfehler.
 - **Design:** Handschuhposition anatomisch technisch abgeschlossen; Handschuhstil und Übereinstimmung von Gesicht/Anatomie mit der gewünschten Anime-Originalreferenz bleiben dem finalen künstlerischen Pass vorbehalten.
 - **Bewusste Funktionsgrenze:** Nur Cool und 32 Kombinationen haben diesen modularen PNG-Satz. Die anderen Posen/Varianten werden korrekt als SVG dargestellt. Das ist weder ein unsichtbarer Boxer noch eine Zusage vollständiger Anime-Ausstattung.

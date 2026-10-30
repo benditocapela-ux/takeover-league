@@ -287,7 +287,9 @@ body[data-tl-screen="mein-boxer"] .mb-gear-chip{
     max-width:100%!important;
     min-height:0;
     aspect-ratio:12/19;
-    overflow:hidden!important;
+    /* Wide SVG poses can extend past their viewBox after the hero scaleX.
+       The outer preview still clips to the arena; do not cut off Jab's hand. */
+    overflow:visible!important;
     filter:drop-shadow(0 0 7px #f2c14e24);
   }
   body[data-tl-screen="mein-boxer"] .mb-preview::after{

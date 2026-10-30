@@ -51,6 +51,14 @@ const server=http.createServer((req,res)=>{
      const normalize=s=>s.replace(/tlh\d+/g,'tlhID');
      return normalize(document.querySelector('.mb-preview svg.tlh').outerHTML)===normalize(div.querySelector('svg').outerHTML);
     },{initial,pose}),'fallback renders the requested pose, not a frozen Cool/Guard');
+    const bounds=await p.evaluate(()=>{
+     const svg=document.querySelector('.mb-preview svg.tlh'),fig=svg.querySelector('.tlh-fig');
+     const preview=svg.closest('.mb-preview'),f=fig.getBoundingClientRect(),s=svg.getBoundingClientRect(),a=preview.getBoundingClientRect();
+     return {figure:f.toJSON(),arena:a.toJSON(),visible:getComputedStyle(svg).overflow==='visible',extends:f.left<s.left-1||f.right>s.right+1,
+      contained:getComputedStyle(preview).overflow==='visible'||(f.left>=a.left-1&&f.right<=a.right+1&&f.top>=a.top-1&&f.bottom<=a.bottom+1)};
+    });
+    assert.ok(!bounds.extends||bounds.visible,'wide SVG arms must not be clipped by the inner viewBox');
+    assert.ok(bounds.contained,'complete '+pose+' pose must fit inside the arena: '+JSON.stringify(bounds));
    };
    const shot=async(p,name)=>{if(process.env.SHOTS){fs.mkdirSync(process.env.SHOTS,{recursive:true});await p.screenshot({path:path.join(process.env.SHOTS,engine+'-'+name+'.png')})}};
    for(const desktop of [false,true]){
