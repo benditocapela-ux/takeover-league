@@ -578,6 +578,25 @@ function injected(cfg){
   'reference override and layer controls never write the user profile');
  await done(x);
 
+ // A committed, but missing or invalid, reference pack never breaks the
+ // SVG editor or saves user data. Reviewer can still upload the local ZIP.
+ x=await page({visualDemo:true,saved:draftCool});
+ await x.p.route('**/assets/boxer-artpacks/v1/cool/*.png',r=>r.fulfill({status:404,body:'Not Found'}));
+ await x.p.goto(base+'mein-boxer.html?art=layers');
+ await x.p.locator('.mb-draft-tools summary').click();
+ assert.equal(await x.p.locator('.mb-draft-artpack').count(),0);
+ await x.p.locator('[data-draft-repo]').click();
+ await x.p.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('Branch-Grafiken nicht verfügbar'));
+ assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),1,
+  'missing committed raster files must preserve the real editable Holo');
+ assert.equal(await x.p.locator('[data-draft-repo]').isEnabled(),true,
+  'failed attempt leaves retry possible');
+ assert.equal(await x.p.locator('#mb-draft-files').count(),1,
+  'local file picker remains as fallback');
+ assert.ok(!(await calls(x.p)).some(c=>c[0]==='save_my_holo'),
+  'a missing branch art pack never touches saved boxer configuration');
+ await done(x);
+
  // A missing or malformed draft cannot create an incomplete visible costume.
  x=await page({visualDemo:true,saved:draftCool});
  await x.p.goto(base+'mein-boxer.html?art=layers');
