@@ -30,14 +30,20 @@ const tryPremiumArt=new URLSearchParams(location.search).get('art')==='preview';
 const heroArt=(config,pose)=>{
  const normalized=H.normalize(config);
  // Render only fully loaded artwork. A stale load can only re-render current cfg.
- if(tryPremiumArt&&A&&A.active.prepare(normalized,pose,()=>{
-  if(cfg&&app.querySelector('.mb-preview'))render();
- })){
+ if(tryPremiumArt&&A&&A.active.prepare(normalized,pose,refreshHero)){
   const ready=A.active.render(normalized,pose);
   if(ready)return ready;
  }
  return H.svg(config,{pose,label:'Dein Boxer-Holo',premium:true,holo:false,layered:true});
 };
+// Async image completion only replaces the figure: never reset editing focus,
+// equipment scroll positions or the active selection tab.
+function refreshHero(){
+ const preview=app.querySelector('.mb-preview');
+ if(!preview||!cfg)return;
+ const pose=previewPose==='card'?cfg.pose_card:cfg.pose_profile;
+ preview.innerHTML=heroArt(cfg,pose);
+}
 const COIN='<svg class="mb-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#ffcc33"/><circle cx="12" cy="12" r="8" fill="#e8a91a"/></svg>';
 const fmt=n=>Number(n||0).toLocaleString('de-CH');
 const OPT={
