@@ -70,6 +70,16 @@ assert.match(premium,/radialGradient/);
 assert.match(premium,/class="tlh-premium-signature"/,'embroidery must render in premium mode');
 assert.ok(premium.includes('>TAKEOVER</text>'),'waistband typography on premium boxer');
 assert.match(premium,/class="tlh-premium-hair"/,'afro has separate detailed hair layer');
+assert.equal((premium.match(/class="tlh-premium-arm"/g)||[]).length,2,
+ 'premium coat draws both individually shaded shoulder pieces');
+const uncovered=H.svg({...config,coat:'none',top:'shirt'},{premium:true});
+assert.equal((uncovered.match(/class="tlh-premium-sleeve"/g)||[]).length,2,
+ 'shirt sleeves remain dynamic without coat');
+const bare=H.svg({...config,coat:'none',top:'none'},{premium:true});
+assert.equal((bare.match(/class="tlh-premium-muscle"/g)||[]).length,2,
+ 'bare arms retain skin detail instead of forced sleeves');
+assert.doesNotMatch(basic,/tlh-premium-arm/,'public figure arm geometry remains unchanged');
+
 assert.doesNotMatch(basic,/tlh-premium-signature/,'public profile unaffected by premium embroidery');
 const noCoat=H.svg({...config,coat:'none',hair:'locs'},{premium:true});
 assert.doesNotMatch(noCoat,/class="tlh-premium-hair"/,'afro highlights hidden with other hairstyles');
