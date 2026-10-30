@@ -65,6 +65,16 @@ function create(manifest){
   if(typeof pose!=='string'||!/^[a-z0-9_-]{1,32}$/.test(pose)||!OWN(m.poses,pose))
    return {state:'missing-pose',detail:String(pose||'')};
   const cfg=config||{};
+  // Masked reference art is not an independent wardrobe. Keep its occlusion
+  // dependencies explicit, even if an approval flag is changed later.
+  if(OWN(m,'configurations')){
+   const constraints=OWN(m.configurations,pose)?m.configurations[pose]:null;
+   if(!constraints||typeof constraints!=='object'||Array.isArray(constraints))
+    return {state:'missing-layer',detail:'configuration:'+pose};
+   for(const key of Object.keys(constraints)){
+    if(cfg[key]!==constraints[key])return {state:'missing-layer',detail:'configuration:'+key};
+   }
+  }
   if(cfg.aura!=='none'||cfg.eyefx!=='none'||(cfg.scene!=='holo'&&cfg.scene!=='none'))
    return {state:'unsupported-effect'};
   const pack=m.poses[pose];

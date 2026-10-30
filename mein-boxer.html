@@ -261,9 +261,12 @@ function editorFocusKey(el){
 }
 function restoreEditorFocus(key){
  if(!key)return;
- const el=[...app.querySelectorAll('button')].find(btn=>
+ const el=[...app.querySelectorAll('button,[role="tabpanel"]')].find(btn=>
   key.every(([name,value])=>btn.getAttribute(name)===value));
  if(el&&!el.disabled)el.focus({preventScroll:true});
+ // A completed purchase removes its confirmation control. Keep keyboard users
+ // inside the editor rather than dropping focus onto the document body.
+ else app.querySelector('.mb-tabs [aria-selected="true"]')?.focus({preventScroll:true});
 }
 // Decorative navigation artwork for the approved navy/gold mobile design.
 // Each tab retains its ordinary button semantics and accessible text label.
@@ -291,7 +294,7 @@ function render(){
  const tabs=[['koerper','Körper'],['kleidung','Kleidung'],['extras','Extras'],['posen','Posen'],['shop','Shop']];
  const tl=tryOn(),pose=previewPose==='card'?cfg.pose_card:cfg.pose_profile;
  app.innerHTML=`${data.preview?'<p class="tlp-note">Vorschau – für die Boxer sichtbar, sobald der Boxer-Holo freigeschaltet ist.</p>':''}
- <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span class="mb-stage-title"><small>TAKEOVER LEAGUE</small><strong>MEIN BOXER</strong></span><span class="mb-save-state" data-save-status="${busy?'busy':tl.length?'tryon':dirty()?'dirty':'saved'}">${busy?'Wird gespeichert …':tl.length?'Anprobe':dirty()?'Nicht gespeichert':'✓ Gespeichert'}</span><a href="./boxer.html" aria-label="Mein Studio öffnen">Studio</a></div>
+ <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span class="mb-stage-title"><small>TAKEOVER LEAGUE</small><strong>MEIN BOXER</strong></span><span class="mb-save-state" data-save-status="${busy?'busy':tl.length?'tryon':dirty()?'dirty':'saved'}">${busy?(busy==='buy'?'Kauf läuft …':'Wird gespeichert …'):tl.length?'Anprobe':dirty()?'Nicht gespeichert':'✓ Gespeichert'}</span><a href="./boxer.html" aria-label="Mein Studio öffnen">Studio</a></div>
  <div class="mb-arena" aria-hidden="true"><span class="mb-arena-light mb-arena-light--left"></span><span class="mb-arena-light mb-arena-light--right"></span><span class="mb-arena-flag mb-arena-flag--left"><b>♛</b><small>TAKEOVER</small></span><span class="mb-arena-flag mb-arena-flag--right"><b>♛</b><small>TAKEOVER</small></span><span class="mb-arena-rope"></span><span class="mb-arena-ring"></span></div>
  <div class="mb-preview">${heroArt(cfg,pose)}${artDebugLabel(cfg,pose)}</div>${referenceNotice()}${draftNotice()}${canCompareArt?`<button type="button" class="mb-art-compare" data-art-compare="1" aria-pressed="${compareSvg}" aria-label="Boxer-Grafik vergleichen">${compareSvg?'Premium anzeigen':'Mit SVG vergleichen'}</button>`:''}
   <div class="mb-stage-bar"><span class="mb-pill">${previewPose==='card'?'Karten-Pose':'Profil-Pose'}</span>${data.shop?`<span class="mb-pill">${COIN}${fmt(data.coins)}</span>`:''}</div>
@@ -313,10 +316,16 @@ function render(){
  restoreEditorFocus(focused);
 }
 async function load(){
- const [h,perf]=await Promise.all([db.rpc('get_my_holo'),db.rpc('get_my_performance')]);
+ // Performance decorates the card; its network failure must not block editing.
+ const [h,perf]=await Promise.all([db.rpc('get_my_holo'),
+  Promise.resolve().then(()=>db.rpc('get_my_performance')).catch(()=>({error:true}))]);
  if(h.error)throw h.error;
- data=h.data;if(!data||!data.enabled)return;
- data.perf=perf.error?null:perf.data;
+ // Keep the last usable inventory if a post-purchase refresh has no payload.
+ if(!h.data)throw Error('Keine Boxer-Daten erhalten.');
+ if(data&&data.enabled&&!h.data.enabled)throw Error('Boxer derzeit nicht verfügbar.');
+ const next=h.data;
+ next.perf=perf.error?null:perf.data;
+ data=next;
 }
 // If even one approved artwork file fails, redraw the complete SVG hero.
 app.addEventListener('error',e=>{
@@ -486,7 +495,7 @@ app.addEventListener('click',async e=>{
   const kind=bi.dataset.buyItem?'item':'bundle',key=bi.dataset.buyItem||bi.dataset.buyBundle;
   if(busy)return;
   if(!bi.dataset.confirm){confirmBuy=kind+':'+key;render();return}
-  busy=true;say('Kauf läuft …');
+  busy='buy';say('Kauf läuft …');render();
   try{
    const {data:res,error}=kind==='item'
     ?await db.rpc('buy_holo_item',{p_key:key})
@@ -495,13 +504,15 @@ app.addEventListener('click',async e=>{
    if(!res)throw Error('Keine Kaufbestätigung erhalten.');
    // A successful purchase must not look unsuccessful just because the subsequent
    // refresh fails. Never auto-repeat a transaction.
-   const keep=cfg;
    if(data&&Number.isFinite(Number(res.balance)))data.coins=Number(res.balance);
+   // The receipt confirms ownership even if the follow-up read is offline.
+   const bought=kind==='item'?[key]:(data.bundles||[]).find(b=>b.key===key)?.items||[];
+   for(const it of items())if(bought.includes(it.key))it.owned=true;
+   for(const bundle of data.bundles||[])bundle.owned_all=bundle.items.every(k=>items().some(it=>it.key===k&&it.owned));
    try{
-    await load();cfg=keep;
+    await load();
     say(`Gekauft: ${res.name}. Neuer Stand: ${fmt(res.balance)} Coins.`);
    }catch(e){
-    cfg=keep;
     say('Kauf bestätigt. Kontostand konnte nicht aktualisiert werden – bitte Seite später neu laden.',true);
    }
   }catch(e){
@@ -518,7 +529,7 @@ app.addEventListener('click',async e=>{
  if(e.target.closest('#saveBtn')){draftSample=false;
   if(busy)return;
   const snapshot=JSON.stringify(cfg);
-  busy=true;render();
+  busy='save';render();
   try{
    // Send an immutable snapshot; later colour or outfit changes must not be lost.
    const {data:res,error}=await db.rpc('save_my_holo',{p_config:JSON.parse(snapshot)});

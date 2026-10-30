@@ -28,7 +28,9 @@ Die vom Nutzer bestätigte Web-App-Konzeptansicht dient als **Designziel**: dunk
 
 ## Noch offen vor Freigabe
 
-Die echten, qualitativ mit der bestätigten Anime-Vorlage übereinstimmenden, **austauschbaren** Bilddateien fehlen noch. Daher bleiben im aktuellen `takeover-mein-boxer-artpack-manifest.js` beide Schalter `approved:false` und `enabled:false`. Der sichtbare Boxer ist derzeit weiterhin das anpassbare SVG-Holo. Der nächste Design-Abnahmeschritt sind reale, sauber getrennte Ebenen für Körper/Haut, Afro/Frisuren, Mantel, Oberteil, Shorts, Schuhe und Hände – mit identischer Leinwand und unveränderter Figurhaltung.
+Die acht Originalmasken der Cool-Pose liegen im Repository; der Browser lädt und verifiziert sie über `?art=layers`. Sie bilden die bestätigte Figur ab, sind aber noch kein unabhängig **austauschbares** Outfit. Daher bleiben im aktuellen `takeover-mein-boxer-artpack-manifest.js` beide Schalter `approved:false` und `enabled:false`. Der normale Editor zeigt weiterhin das anpassbare SVG-Holo. Benötigte neue Ebenen und verdeckte Anatomie sind in [MEIN_BOXER_ART_GAPS.md](MEIN_BOXER_ART_GAPS.md) beschrieben.
+
+Die responsive Regression prüft zusätzlich 375 × 812, 390 × 844, 430 × 932, 768 × 1024 und 1440 × 900 Pixel, den Wechsel zwischen Desktop und Mobilansicht, Tastaturnavigation, unabhängiges Ausrüstungsscrollen und das Original-PNG-Paket auf Mobilgerät und Desktop. `BROWSER=webkit` führt dieselbe Matrix mit Playwright-WebKit aus. Das sind simulierte Viewports, keine Prüfung auf einem physischen iPhone.
 
 **Vor einem Merge**: CI-Ergebnisse und Screenshots sichten, am echten Mobilgerät testen, Rechte an den Premium-Illustrationen verifizieren, Visuelles gegen die Nutzerreferenz abnehmen. Kein ungeprüftes KI-Gesamtbild als auswählbares Einzel-Outfit ausgeben.
 

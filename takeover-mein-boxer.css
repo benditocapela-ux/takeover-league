@@ -162,6 +162,9 @@ body[data-tl-screen="mein-boxer"] .mb-tabs::-webkit-scrollbar{display:none}
   body[data-tl-screen="mein-boxer"] .mb-stage{top:14px}
   body[data-tl-screen="mein-boxer"] .mb-preview{
     position:relative;filter:drop-shadow(0 0 12px #f2c14e30);
+    /* Sprite/reference layers are absolutely positioned: reserve the same
+       canvas as the in-flow SVG so swapping renderers cannot collapse it. */
+    aspect-ratio:768/1216;
   }
   body[data-tl-screen="mein-boxer"] .mb-tabbody{padding:20px}
 }
@@ -399,7 +402,6 @@ body[data-tl-screen="mein-boxer"] .mb-preview .mb-art-debug[data-art-state="manu
    Arena and item visuals are genuine DOM/CSS: the boxer is ALWAYS the
    selectable SVG/approved sprite renderer, never a fixed concept screenshot. */
 body[data-tl-screen="mein-boxer"] .mb-stage{
-  position:relative;
   border-color:#916d3488;
   background:
     radial-gradient(ellipse 38% 20% at 50% 71%,#ffcf6a20,transparent 95%),
@@ -748,4 +750,12 @@ body[data-tl-screen="mein-boxer"] .mb-draft-anatomy{
 }
 body[data-tl-screen="mein-boxer"] .mb-draft-anatomy input{
  width:14px;height:14px;flex:none;accent-color:#d9ae63;
+}
+
+/* The desktop stage is only 300px wide. Give the heading its own row so
+   longer save states and browser font metrics cannot overlap the Studio link. */
+@media(min-width:820px){
+ body[data-tl-screen="mein-boxer"] .mb-stage-heading{flex-wrap:wrap}
+ body[data-tl-screen="mein-boxer"] .mb-stage-title{flex-basis:100%}
+ body[data-tl-screen="mein-boxer"] .mb-stage :is(.mb-draft-tools,.mb-reference-tools,.mb-art-compare){top:88px}
 }

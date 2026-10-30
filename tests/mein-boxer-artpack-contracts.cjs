@@ -40,6 +40,17 @@ const garmentLayers={
 };
 const manifest={version:1,approved:true,canvas:{width:768,height:1216},poses:{cool:garmentLayers}};
 const build=AP.create(manifest);
+const referenceManifest={...ctx.window.TLBoxerArtPackManifest,approved:true};
+const reference=AP.create(referenceManifest);
+const referenceCfg={...cfg,top:'none',head:'none'};
+assert.ok(reference.render(referenceCfg,'cool'),'original pose is available for controlled approval tests');
+assert.equal(reference.render({...referenceCfg,coat:'none'},'cool'),null,
+ 'original masks cannot remove the coat and expose missing anatomy');
+assert.equal(reference.prepare({...referenceCfg,coat:'none'},'cool'),false,
+ 'unsupported original outfit must not preload');
+assert.equal(reference.inspect({...referenceCfg,coat:'none'},'cool').detail,'configuration:coat');
+assert.equal(AP.create({...referenceManifest,configurations:{}}).render(referenceCfg,'cool'),null,
+ 'a restricted manifest with a missing pose constraint fails closed');
 const markup=build.render(cfg,'cool');
 assert.equal(build.prepare(cfg,'cool'),false,'art remains SVG when preload cannot run');
 assert.equal(build.inspect(cfg,'cool').state,'loading','preview describes unloaded approved layers');

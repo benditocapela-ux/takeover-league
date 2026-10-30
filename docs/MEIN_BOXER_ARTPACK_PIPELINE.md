@@ -5,7 +5,9 @@ Stand: 30.10.2026 · Ergänzung zu Draft-PR #79
 
 Die ursprüngliche Navy-/Gold-/Cyan-Vorlage mit ernstem Anime-Boxer, gekreuzten Armen und schwarz-goldener Ausrüstung ist **verbindlich**. Die aktuelle SVG-Figur ist die belastbare Rückfalllösung, aber kein fertiger Nachbau dieser Illustration. Externe Grafikpakete aus Scenario, Layer AI oder einer professionellen Illustration können eingebaut werden, ohne die bestehenden Supabase- und Shop-Funktionen zu ersetzen.
 
-**Zurzeit sind keine Produktions-Assets freigegeben.** Die Manifest-Datei `takeover-mein-boxer-artpack-manifest.js` steht deshalb auf `approved:false` und enthält keine Posen. In der publizierten App ändert sich am Boxer durch diese Pipeline nichts.
+**Aktueller Stand:** Die acht Original-PNGs liegen im Repository und sind im Manifest unter `poses.cool` zugeordnet. SHA-256, 768 × 1216 Pixel, Alphakanal und Grössenbudget werden geprüft (8/8, zusammen 812800 Bytes). `approved:false` und `enabled:false` bleiben bestehen. `configurations.cool` beschränkt diese noch nicht unabhängig umkleidbaren Masken auf die exakte Referenzkombination; andere Konfigurationen verwenden SVG. Siehe [fehlende Character-Art](MEIN_BOXER_ART_GAPS.md).
+
+**Historie:** Die nachfolgenden Abschnitte dokumentieren auch frühere lokale ZIP- und Upload-Zwischenstände. Aussagen über nicht eingecheckte Originalbilder oder ein leeres Manifest sind durch den Grafikimport in `f4d8b6e` überholt. Lokaler Dateiimport und das Ein-Klick-Laden aus dem Repository sind heute beide möglich. Künstlerische Freigabe und neue Ausrüstungsvarianten bleiben offen.
 
 ## Exportvertrag für die Illustratorin / den Illustrator
 
@@ -332,4 +334,4 @@ Nach dem Import des zuvor bereitgestellten Git-Binärpatches gibt es eine **eind
 - `tests/boxer-holo-browser.cjs` verwendet die acht **tatsächlich im PR eingecheckten** PNGs ohne Mocks, sobald sie vorhanden sind. Der Browser lädt die echten Dateien mit dem Ein-Klick-Button, verifiziert die Hashwerte, prüft identische Leinwand-/Bildpositionen, erstellt `holo-original-8-repository-art.png` und testet den vollständigen SVG-Fallback beim Kleidungswechsel.
 - Es gibt **keinen automatischen Übergang zu `approved:true` oder `enabled:true`**. Die originalen sichtbaren Pixel sind weiterhin nur eine künstlerische Cool-Pose-Referenz, nicht die fertig umkleidbare Anime-Figur.
 
-**Noch zu tun:** `takeover_pr79_git_patch_installieren.zip` im echten Checkout des PR-Branches ausführen und die neun Änderungen nach Sichtprüfung **in den PR-Branch pushen**. Danach zeigt die CI-Zusammenfassung VERIFIED statt PENDING. Kein Merge oder GitHub-Pages-Deployment durch diesen Vorbereitungsschritt.
+**Erledigt:** Der Originalimport ist seit `f4d8b6e` im PR-Branch enthalten. Der ZIP-Patch muss nicht erneut angewendet werden. Die Originalprüfung meldet VERIFIED (8/8). Nächster Schritt ist die visuelle Abnahme und hochwertige Ergänzung der in `MEIN_BOXER_ART_GAPS.md` beschriebenen Körper- und Ausrüstungsebenen.

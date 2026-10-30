@@ -1,4 +1,4 @@
-/* Original Cool-Pose reference ONLY. No public art approval. */
+/* Original cool reference only; NOT approved. */
 (function(){'use strict';window.TLBoxerArtPackManifest=Object.freeze({
   "version": 1,
   "approved": false,
@@ -6,6 +6,22 @@
   "canvas": {
     "width": 768,
     "height": 1216
+  },
+  "configurations": {
+    "cool": {
+      "tone": 6,
+      "hair": "afro",
+      "hc": "schwarz",
+      "eye": "braun",
+      "top": "none",
+      "head": "none",
+      "coat": "samurai",
+      "bottom": "boxer",
+      "bottomc": "schwarz",
+      "feet": "boots",
+      "feetc": "schwarz",
+      "hands": "wraps"
+    }
   },
   "poses": {
     "cool": {

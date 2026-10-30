@@ -37,6 +37,8 @@ function readAll(zip,expected=SHA){
 }
 function manifestText(){
  const m={version:1,approved:false,enabled:false,canvas:{width:768,height:1216},
+  configurations:{cool:{tone:6,hair:'afro',hc:'schwarz',eye:'braun',top:'none',head:'none',
+   coat:'samurai',bottom:'boxer',bottomc:'schwarz',feet:'boots',feetc:'schwarz',hands:'wraps'}},
   poses:{cool:{
    coatBack:{samurai:'cool/coatback.png'},body:{'6':'cool/body.png'},
    bottom:{'boxer/schwarz':'cool/bottom.png'},
