@@ -440,6 +440,71 @@ function injected(cfg){
   'live editor never shows the developer-only local image picker');
  await done(x);
 
+ // First eight locally cut anime layers are a genuine pixel-composited preview,
+ // not a claim that invisible skin or new clothing has been painted.
+ const draftCool={
+  tone:6,hair:'afro',hc:'schwarz',eye:'braun',head:'none',top:'none',topc:'grau',
+  bottom:'boxer',bottomc:'schwarz',feet:'boots',feetc:'schwarz',coat:'samurai',
+  hands:'wraps',aura:'none',eyefx:'none',scene:'holo',pose_profile:'cool'
+ };
+ const draftNames=['coatBack','body','bottom','feet','eyes','hair','coatFront','hands'];
+ const draftFiles=draftNames.map(name=>({
+  name:name+'.png',mimeType:'image/png',buffer:makeTransparentReferencePng()
+ }));
+ x=await page({visualDemo:true,saved:draftCool});
+ await x.p.goto(base+'mein-boxer.html?art=layers');
+ await x.p.waitForSelector('#mb-draft-files');
+ assert.equal(await x.p.locator('.mb-draft-artpack').count(),0,'no fake assets before local selection');
+ await x.p.locator('#mb-draft-files').setInputFiles(draftFiles);
+ await x.p.waitForSelector('.mb-draft-artpack .mb-artpack-img');
+ assert.equal(await x.p.locator('.mb-draft-artpack .mb-artpack-img').count(),8,
+  'the draft reference is composed from exactly eight independent local images');
+ const draftBounds=await x.p.evaluate(()=>{
+  const root=document.querySelector('.mb-draft-artpack').getBoundingClientRect();
+  return [...document.querySelectorAll('.mb-draft-artpack img')].every(img=>{
+   const r=img.getBoundingClientRect();
+   return Math.abs(r.x-root.x)<1&&Math.abs(r.y-root.y)<1&&
+    Math.abs(r.width-root.width)<1&&Math.abs(r.height-root.height)<1&&
+    img.src.startsWith('blob:');
+  });
+ });
+ assert.equal(draftBounds,true,'all layer canvases overlap exactly; no remote image URLs');
+ assert.ok((await calls(x.p)).every(c=>c[0]!=='save_my_holo'),
+  'uploading local art does not write a boxer profile');
+ await shot(x.p,'holo-eight-layer-draft-preview');
+ await x.p.click('[data-draft-toggle]');
+ assert.equal(await x.p.locator('.mb-draft-artpack').count(),0,
+  'reviewer can compare against original dynamic SVG');
+ assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),1);
+ await x.p.click('[data-draft-toggle]');
+ assert.equal(await x.p.locator('.mb-draft-artpack img').count(),8,
+  'draft layers reappear without another file upload');
+ await x.p.click('[data-tab="kleidung"]');
+ await x.p.click('[data-set="top"][data-val="shirt"]');
+ assert.equal(await x.p.locator('.mb-draft-artpack').count(),0,
+  'different shirt MUST use the genuinely configurable SVG, never the static masked layer');
+ assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),1);
+ assert.match(await x.p.locator('#mb-draft-note').textContent(),/SVG-Fallback/);
+ assert.ok((await calls(x.p)).every(c=>c[0]!=='save_my_holo'),
+  'draft image selection is never saved or purchased');
+ await done(x);
+
+ // A missing or malformed draft cannot create an incomplete visible costume.
+ x=await page({visualDemo:true,saved:draftCool});
+ await x.p.goto(base+'mein-boxer.html?art=layers');
+ await x.p.waitForSelector('#mb-draft-files');
+ await x.p.locator('#mb-draft-files').setInputFiles(draftFiles.slice(0,7));
+ await x.p.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('genau acht'));
+ assert.equal(await x.p.locator('.mb-draft-artpack').count(),0,'seven assets never create a partial costume');
+ await done(x);
+
+ x=await page({visualDemo:true,saved:draftCool});
+ await x.p.goto(base+'mein-boxer.html');
+ await x.p.waitForSelector('.mb-preview svg.tlh');
+ assert.equal(await x.p.locator('.mb-draft-tools,.mb-draft-artpack').count(),0,
+  'ordinary boxer editor never exposes draft sprites');
+ await done(x);
+
  // Art-pack integration is opt-in and can never show a partial costume.
  // Fixture PNG data stays in the browser test, not in the repository or site.
  const artConfig={
