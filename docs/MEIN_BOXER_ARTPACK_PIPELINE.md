@@ -72,7 +72,7 @@ Das ist nur ein **Schema-Beispiel**, keine bereits vorhandene Grafikdatei. Für 
 - `takeover-mein-boxer.html`: existiert **nicht**; der tatsächliche Einstiegspunkt ist `mein-boxer.html`. Der Editor lädt die Module und nutzt neue Bilder ausschliesslich bei `?art=preview` **und** `approved:true`.
 - Bild-Ladefehler und unvollständige Outfits schalten automatisch auf den alten SVG-Boxer zurück.
 - **Atomarer Bildwechsel:** Der alte SVG-Boxer bleibt so lange sichtbar, bis alle Bilddateien eines komplett passenden Outfits erfolgreich vorgeladen sind. Erst dann werden alle Ebenen zusammen angezeigt. Ein einzelner Bildfehler verhindert die gesamte Umschaltung.
-- **Dateivalidierung:** Vor der Freigabe `node scripts/validate-boxer-artpack.cjs` ausführen. Die Prüfung kontrolliert erlaubte lokale Pfade, 768×1216 Pixel, PNG-/WebP-Transparenzkennzeichen und maximal 2 MiB pro Datei. Der CI-Workflow führt dieselbe Prüfung aus. Bei `approved:false` wird die produktive Dateiprüfung bewusst übersprungen.
+- **Dateivalidierung:** Vor der Freigabe `node scripts/validate-boxer-artpack.cjs` ausführen. Die Prüfung kontrolliert erlaubte lokale Pfade, 768×1216 Pixel, PNG-/WebP-Transparenzkennzeichen und maximal 2 MiB pro Datei. Der CI-Workflow führt dieselbe Prüfung aus. Auch Entwurfspakete mit `approved:false` werden geprüft, sobald das Manifest mindestens eine Pose enthält. Nur ein vollständig leeres, deaktiviertes Manifest wird übersprungen.
 - **Grenze der automatischen Prüfung:** Ein vorhandener Alphakanal beweist nicht, dass Kleidung und Körper grafisch deckungsgleich sind. Das muss mit echten Bildschirmfotos, unterschiedlichen Outfits und einer Bildprüfung bestätigt werden.
 - Das bestehende Datenbankmodell, die gespeicherte Konfiguration und Kauf-/Besitzinformationen werden nicht geändert.
 - `tests/mein-boxer-artpack-contracts.cjs` prüft Varianten, Fallbacks, gültige Pfade und verbotene externen Ressourcen.
@@ -148,3 +148,14 @@ Eine Figur in der fixierten Vorschau besteht aus mehreren transparenten, jeweils
 - Die automatischen Tests `tests/mein-boxer-preload-performance.cjs` und `tests/validate-boxer-artpack-contracts.cjs` prüfen den gleichzeitigen Bildabruf, gemeinsam genutzte Downloads, Fehlerbehandlung sowie das kombinierte Byte-Limit.
 
 Die 6-MiB-Grenze ist ein Startbudget für das Studio, keine gemessene reale Netzwerklast. Nach Lieferung der echten Artwork-Dateien sind Bildqualität, iPhone-Speicherverbrauch und Ladezeiten anhand der realen Daten zu verifizieren. Sollte die gewählte Bildqualität nicht unter diesem Budget möglich sein, muss das Team die Grafikebenen optimieren und den Grenzwert mit dokumentierten mobilen Messungen neu bewerten.
+
+## Aktualisierter Abnahmeablauf: vor der Grafikfreigabe prüfen
+
+Die Bildprüfung läuft nun bereits mit **`approved:false`**, sobald die erste Pose im Manifest eingetragen wird. Dieser Zustand ist für den Import neuer Grafiken vorgesehen:
+
+1. Dateien unter `assets/boxer-artpacks/v1/` ergänzen und zugehörige Posen-/Variantenpfade in das Manifest aufnehmen. `approved:false` und `enabled:false` beibehalten.
+2. `node scripts/validate-boxer-artpack.cjs` ausführen: Dateipfade, Bildformate, 768×1216-Abmessungen, Alphakanäle, maximal 2 MiB je Bild und maximal 6 MiB für die grösstmögliche Ausstattung.
+3. Erst nach fehlerfreier Prüfung und visueller Abnahme `approved:true` für den kontrollierten `?art=preview`-Vergleich auf dem Testbranch einsetzen. Der normale Editor bleibt wegen `enabled:false` weiterhin SVG.
+4. Nur mit ausdrücklicher zusätzlicher Freigabe den produktiven Schalter `enabled:true` setzen. Bei Bedarf genügt `enabled:false` als sofortiger Rückweg zum SVG-Editor.
+
+Die GitHub-Testworkflows besitzen ausserdem jetzt `concurrency`-Gruppen je PR. Neuere Commits können damit überholte Staging- und V2-Integrationsprüfungen ersetzen. Der getrennte GitHub-Pages-Veröffentlichungsworkflow bleibt davon unberührt.
