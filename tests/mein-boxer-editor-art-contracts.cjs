@@ -33,7 +33,7 @@ assert.notEqual(G.svg('top','tank',{}).replace(/mbi\d+/g,'mbi'),G.svg('top','hoo
 assert.equal(G.supports('glove','<script>'),false,'unknown item cannot be interpreted as HTML');
 assert.equal(G.svg('glove','<script>',{}),'','unknown item cannot be rendered');
 
-assert.match(html,/H\.svg\(cfg,\{pose,label:'Dein Boxer-Holo',premium:true\}\)/);
+assert.match(html,/H\.svg\(cfg,\{pose,label:'Dein Boxer-Holo',premium:true,holo:false\}\)/);
 assert.match(css,/\.mb-gear-chip\[aria-pressed="true"\]/);
 assert.match(css,/\.mb-preview/);
 const def={...H.DEF,top:'shirt',topc:'schwarz',bottom:'boxer',bottomc:'schwarz'};
