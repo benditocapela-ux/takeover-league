@@ -20,6 +20,7 @@ const LABEL={
 };
 // Hilfen für Frisuren (Kopf-Koordinaten 0–200, Gesicht 62–138 × 46–158)
 const f1=n=>Math.round(n*10)/10;
+const darker=(v,n)=>'#'+[1,3,5].map(k=>Math.round(parseInt(v.slice(k,k+2),16)*n).toString(16).padStart(2,'0')).join('');
 function bumpy(cx,cy,rx,ry,n,amp){
  let d='';for(let i=0;i<=n;i++){const a=Math.PI*2*i/n-Math.PI/2,x=cx+Math.cos(a)*rx,y=cy+Math.sin(a)*ry;
   if(!i){d='M'+f1(x)+' '+f1(y);continue}
@@ -119,13 +120,29 @@ function svg(cfg,opts){
  const clipA=clipY!==null?` clip-path="url(#${u}cl)"`:'';
  const arm=pts=>{const [s,e,w]=pts,dx=w[0]-e[0],dy=w[1]-e[1],len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len,ang=f1(Math.atan2(dy,dx)*180/Math.PI);
   const full=`M${s[0]} ${s[1]} L${e[0]} ${e[1]} L${f1(w[0]-ux*12)} ${f1(w[1]-uy*12)}`,upper=`M${s[0]} ${s[1]} L${e[0]} ${e[1]}`,short=`M${s[0]} ${s[1]} L${f1((s[0]+e[0])/2)} ${f1((s[1]+e[1])/2)}`;
-  return {d:`M${s[0]} ${s[1]} L${e[0]} ${e[1]} L${w[0]} ${w[1]}`,tsl:top&&top.sleeve?(top.sleeve==='short'?short:full):'',csl:co?(co.short?upper:full):'',t:`translate(${f1(w[0]+ux*6)} ${f1(w[1]+uy*6)}) rotate(${ang})`}};
+  return {s,e,w,d:`M${s[0]} ${s[1]} L${e[0]} ${e[1]} L${w[0]} ${w[1]}`,tsl:top&&top.sleeve?(top.sleeve==='short'?short:full):'',csl:co?(co.short?upper:full):'',t:`translate(${f1(w[0]+ux*6)} ${f1(w[1]+uy*6)}) rotate(${ang})`}};
  const hand=(a,thumbUp)=>gloves
   ?`<g transform="${a.t}"><rect x="-15" y="-11" width="13" height="22" rx="4" fill="${gv[2]}" stroke="${INK}" stroke-width="2"/><ellipse cx="7" cy="0" rx="15.5" ry="13.5" fill="${gv[0]}" stroke="${INK}" stroke-width="2.4"/><path d="M-6 4 C2 13 15 13 21 5 C19 11 12 14.5 6 14.5 C0 14.5 -6 10 -6 4Z" fill="${gv[1]}"/><ellipse cx="2" cy="${thumbUp?-9:9}" rx="7" ry="4.6" fill="${gv[0]}" stroke="${INK}" stroke-width="2"/><path d="M0 -8 C6 -11.5 13 -10.5 17 -6" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" opacity=".85"/></g>`
   :`<g transform="${a.t}"><ellipse cx="4" cy="0" rx="10.5" ry="10" fill="${skin}" stroke="${INK}" stroke-width="2.2"/><rect x="-12" y="-9" width="14" height="18" rx="3" fill="#f6f2ea" stroke="${INK}" stroke-width="1.8"/><path d="M-9 -9 L-3 9 M-4 -9 L1 9 M5 -9 L9 9" stroke="${INK}" stroke-width="1" opacity=".35"/><path d="M2 -9 L7 9" stroke="#f6f2ea" stroke-width="4.5"/><path d="M10 -6 L14 -4 M11 0 L15 1 M10 5 L13 7" stroke="${INK}" stroke-width="1.4" stroke-linecap="round"/></g>`;
- const armSvg=(a,thumbUp)=>`<path d="${a.d}" fill="none" stroke="${INK}" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><path d="${a.d}" fill="none" stroke="${skin}" stroke-width="15.5" stroke-linecap="round" stroke-linejoin="round"/>`
+ const armDetail=a=>{
+  if(!premium)return "";
+  if(co&&a.csl){
+   const x=a.s[0],y=a.s[1],dark=darker(co.c,.34);
+   return `<g class="tlh-premium-arm" aria-hidden="true">
+    <path d="${a.csl}" fill="none" stroke="${dark}" stroke-width="${co.short?19:15}" stroke-linecap="round" stroke-linejoin="round" opacity=".9"/>
+    <path d="${a.csl}" fill="none" stroke="url(#${u}pa)" stroke-width="${co.short?14:11}" stroke-linecap="round" stroke-linejoin="round"/>
+    <ellipse cx="${x}" cy="${y}" rx="14.5" ry="15.5" fill="url(#${u}pa)" stroke="${dark}" stroke-width="2.8"/>
+    <path d="M${x-9} ${y-5} Q${x} ${y-12} ${x+9} ${y-5}" fill="none" stroke="${co.a}" stroke-width="2.3" stroke-linecap="round"/>
+    <path d="M${x-8} ${y+9} Q${x} ${y+12} ${x+8} ${y+9}" fill="none" stroke="${co.a}" stroke-width="1.25" opacity=".64"/>
+    <circle cx="${x}" cy="${y+1}" r="2" fill="${co.a}" opacity=".66"/>
+   </g>`;
+  }
+  if(top&&a.tsl)return `<path class="tlh-premium-sleeve" d="${a.tsl}" fill="none" stroke="${tc[2]}" stroke-width="1.5" opacity=".73"/>`;
+  return `<path class="tlh-premium-muscle" d="${a.d}" fill="none" stroke="#fff2ce" stroke-width="1.1" opacity=".2"/>`;
+ };
+  const armSvg=(a,thumbUp)=>`<path d="${a.d}" fill="none" stroke="${INK}" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><path d="${a.d}" fill="none" stroke="${skin}" stroke-width="15.5" stroke-linecap="round" stroke-linejoin="round"/>`
   +(a.tsl?`<path d="${a.tsl}" fill="none" stroke="${INK}" stroke-width="${(top.w||19)+4}" stroke-linecap="round" stroke-linejoin="round"/><path d="${a.tsl}" fill="none" stroke="${tc[0]}" stroke-width="${top.w||19}" stroke-linecap="round" stroke-linejoin="round"/>`+(top.stripe?`<path d="${a.tsl}" fill="none" stroke="${tc[2]}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`:''):'')
-  +(a.csl?`<path d="${a.csl}" fill="none" stroke="${INK}" stroke-width="${co.short?28:24}" stroke-linecap="round" stroke-linejoin="round"/><path d="${a.csl}" fill="none" stroke="${co.c}" stroke-width="${co.short?24:20}" stroke-linecap="round" stroke-linejoin="round"/>`:'')+hand(a,thumbUp);
+  +(a.csl?`<path d="${a.csl}" fill="none" stroke="${INK}" stroke-width="${co.short?28:24}" stroke-linecap="round" stroke-linejoin="round"/><path d="${a.csl}" fill="none" stroke="${co.c}" stroke-width="${co.short?24:20}" stroke-linecap="round" stroke-linejoin="round"/>`:'')+armDetail(a)+hand(a,thumbUp);
  const eye=mirror=>`<g${mirror?' transform="translate(200 0) scale(-1 1)"':''}><path d="M71.5 102 C77 98 88 97.5 95.5 100.5 C95 106 93 111 88 113 C81 114.5 75 112 71.5 107Z" fill="#fff"/><ellipse cx="84" cy="106" rx="7" ry="8.6" fill="url(#${u}i)"/>${fx?`<circle cx="84" cy="106" r="7.6" fill="none" stroke="${fx[3]}" stroke-width="1.6" opacity=".95"/>`:''}<path d="${PUP[c.eyefx]||PUP.none}" fill="${ev[1]}"/><circle cx="${mirror?86.6:81.4}" cy="102.8" r="2.6" fill="#fff"/><circle cx="${mirror?80.6:87.4}" cy="110.2" r="1.3" fill="#fff"/><path d="M70 99 C75 93 87 92 96 97 L97 100.6 C88 96.6 77 97.6 71.5 102.6Z M70.5 99.5 L64 96.5 L71.5 102.6Z" fill="${INK}"/><path d="M69 87 C77 85.6 88 87.4 96 91.6" fill="none" stroke="${INK}" stroke-width="3.4" stroke-linecap="round"/></g>`;
  // Premium edit-mode eye anatomy; preserve dynamic iris colours.
  const premiumEye=mirror=>`<g class="tlh-premium-eyes"${mirror?' transform="translate(200 0) scale(-1 1)"':''}>
@@ -172,6 +189,7 @@ function svg(cfg,opts){
   +(clipY!==null?`<clipPath id="${u}cl"><rect x="-40" y="${clipY}" width="280" height="400"/></clipPath>`:'')
   +(premium?`<radialGradient id="${u}ps" cx=".24" cy=".18" r=".95"><stop offset="0" stop-color="#ffe7b9" stop-opacity=".6"/><stop offset=".36" stop-color="${skin}" stop-opacity=".24"/><stop offset=".8" stop-color="${sd}" stop-opacity=".32"/><stop offset="1" stop-color="#090d17" stop-opacity=".32"/></radialGradient><linearGradient id="${u}pm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff2c6" stop-opacity=".8"/><stop offset=".45" stop-color="#f2c14e" stop-opacity=".95"/><stop offset=".72" stop-color="#ad7425" stop-opacity=".8"/><stop offset="1" stop-color="#ffe6a0" stop-opacity=".7"/></linearGradient><clipPath id="${u}pt"><path d="M78 102 C96 96 144 96 162 102 C168 108 168 118 164 128 C160 148 154 162 150 176 L90 176 C86 162 80 148 76 128 C72 118 72 108 78 102Z"/></clipPath>`:'')
   +(layers?layers.defs:'')
+  +(premium&&co?`<linearGradient id="${u}pa" x1=".1" y1="0" x2=".9" y2=".9"><stop offset="0" stop-color="${co.a}" stop-opacity=".65"/><stop offset=".26" stop-color="${darker(co.c,.62)}"/><stop offset=".7" stop-color="${darker(co.c,.28)}"/><stop offset="1" stop-color="#030710"/></linearGradient>`:'')
   +`</defs>`+(scene!=='none'?scenes[scene]:'')
   +(c.aura!=='none'?`<g class="tlh-aura">${auras[c.aura]}</g>`:'')
   +`<g class="tlh-fig"><g transform="translate(60 -6) scale(0.6)">`
