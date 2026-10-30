@@ -6,6 +6,17 @@
 'use strict';
 const NAMES=Object.freeze(['coatBack','body','bottom','feet','eyes','hair','coatFront','hands']);
 const MAX_FILE=2*1024*1024;
+const ORIGINAL_SHA256=Object.freeze({
+ coatBack:'bf5cee68e8cc19d3e7444c01882a3ea3019a6320b87270ec8d51e1197bf26e4a',
+ body:'5991018fc9469342b91dbdd93dcc4ff618a70c66754cb4b3cc23779fb724bed3',
+ bottom:'ca02a420022e0ecbfe79d64e1c326e119744d62f51a594c5fbd095c65c5af6f1',
+ feet:'05e8cf320330df8dfb541d0f900f05121142dee8a91259093880d0e9ef404dd7',
+ eyes:'a9a0a97a7a89abbdee6add40c1c3bff104e97f630c30591cf3a2c7905d72f8e8',
+ hair:'7c7b3cf7cc007b5394ff00000326f53eb26554f6711e2d2f128e10f49ee1f0d4',
+ coatFront:'aef43b7b888d4c591318682077d2ea5ed0f1562db5c3e1d195b131817a67cfac',
+ hands:'feddacf8e8727c04e3ade21502d988e541711151a763fcffcea5c36207f45d68'
+});
+
 const REFERENCE=Object.freeze({
  tone:6,hair:'afro',hc:'schwarz',eye:'braun',head:'none',top:'none',
  coat:'samurai',bottom:'boxer',bottomc:'schwarz',feet:'boots',feetc:'schwarz',
@@ -21,10 +32,10 @@ function compatible(cfg,pose){
   (cfg.scene==='holo'||cfg.scene==='none');
 }
 function create(win){
- let urls=null,generation=0;
+ let urls=null,generation=0,verified=null;
  const revoke=list=>{if(list)Object.values(list).forEach(url=>win.URL.revokeObjectURL(url))};
- function clear(){generation++;revoke(urls);urls=null}
- function status(){return Object.freeze({ready:!!urls,layers:urls?NAMES.length:0})}
+ function clear(){generation++;revoke(urls);urls=null;verified=null}
+ function status(){return Object.freeze({ready:!!urls,layers:urls?NAMES.length:0,verified})}
  function render(config,pose,visibleLayers=NAMES){
   if(!urls||!compatible(config,pose))return null;
   // Only the fixed, verified slot names can select image sources.
@@ -56,7 +67,21 @@ function create(win){
     img.src=incoming[name];
    })));
    if(id!==generation)throw Error('Überholter Ladevorgang.');
-   const old=urls;urls=incoming;revoke(old);
+   // Exact source identification, performed locally with Web Crypto. A different
+   // PNG pack can be inspected, but it is never labelled as the reference.
+   let same=null;
+   if(win.crypto?.subtle&&NAMES.every(name=>typeof map.get(name).arrayBuffer==='function')){
+    const checks=[];
+    for(const name of NAMES){
+     const bytes=await map.get(name).arrayBuffer();
+     const digest=await win.crypto.subtle.digest('SHA-256',bytes);
+     const hex=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');
+     checks.push(hex===ORIGINAL_SHA256[name]);
+    }
+    same=checks.every(Boolean);
+   }
+   if(id!==generation)throw Error('Überholter Ladevorgang.');
+   const old=urls;urls=incoming;verified=same;revoke(old);
    return status();
   }catch(e){revoke(incoming);throw e}
  }
