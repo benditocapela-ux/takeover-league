@@ -30,6 +30,7 @@ jobs:
       - run: node tests/mein-boxer-draft-layers-contracts.cjs
       - run: node tests/mein-boxer-anatomy-blockout-contracts.cjs
       - run: node tests/mein-boxer-custom-underpaint-contracts.cjs
+      - run: node tests/import-original-cool-contracts.cjs
       - run: node tests/mein-boxer-preload-performance.cjs
       - run: node tests/publish-boxer-artpack-contracts.cjs
       - run: node tests/validate-boxer-artpack-contracts.cjs
