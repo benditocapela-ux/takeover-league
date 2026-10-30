@@ -19,8 +19,12 @@ for(const k of ['body:0','body:7','hair:afro/schwarz','hair:locs/schwarz',
  assert.ok(keys.has(k),'first-wave art coverage includes '+k);
 const initial=report(manifest,H);
 assert.equal(initial.approved,false);
-assert.equal(initial.reference.present,0,'no production graphics falsely claimed');
-assert.equal(initial.reference.missing.length,9);
+// The eight verified Cool-Pose images are now present as draft references.
+// The ninth planning slot (top/shirt) needs genuinely independent artwork.
+assert.equal(initial.reference.present,8,'all eight original draft layer paths are registered');
+assert.equal(initial.reference.missing.length,1,'independent shirt top is not yet supplied');
+assert.equal(initial.reference.missing[0].slot,'top');
+assert.equal(initial.expansion.present,8,'coverage reports draft paths without implying approval');
 assert.equal(initial.catalogue.hairstyles,18);
 assert.equal(initial.catalogue.skinTones,8);
 const preview={approved:true,poses:{cool:{body:{'6':'body/skin6.webp'},hair:{'afro/schwarz':'hair/afro.webp'}}}};
