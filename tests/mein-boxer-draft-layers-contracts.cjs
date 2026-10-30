@@ -48,7 +48,7 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
  assert.equal(revoked.length,16,'closing page removes all local object URLs');
  assert.equal(kitInstance.render(cfg,'cool'),null);
  const html=fs.readFileSync('mein-boxer.html','utf8');
- assert.ok(html.includes("get('art')==='layers'")&&html.includes('draftPack.render(normalized,pose,draftLayers)'));
+ assert.ok(html.includes("get('art')==='layers'")&&html.includes('draftPack.render(normalized,pose,draftLayers,draftAnatomy)'));
  assert.ok(html.includes("draftPack.render(draftPack.reference,'cool',draftLayers)"),
   'the explicit reference view never saves another boxer configuration');
  assert.ok(html.includes('data-draft-layer')&&html.includes('data-draft-sample'),
