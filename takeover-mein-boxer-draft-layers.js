@@ -32,16 +32,46 @@ function compatible(cfg,pose){
   (cfg.scene==='holo'||cfg.scene==='none');
 }
 function create(win){
- let urls=null,generation=0,verified=null;
+ let urls=null,generation=0,verified=null,underpaintUrl=null,underpaintGeneration=0;
  const revoke=list=>{if(list)Object.values(list).forEach(url=>win.URL.revokeObjectURL(url))};
- function clear(){generation++;revoke(urls);urls=null;verified=null}
- function status(){return Object.freeze({ready:!!urls,layers:urls?NAMES.length:0,verified})}
+ function clearUnderpaint(){
+  underpaintGeneration++;
+  if(underpaintUrl)win.URL.revokeObjectURL(underpaintUrl);
+  underpaintUrl=null;
+ }
+ function clear(){generation++;revoke(urls);urls=null;verified=null;clearUnderpaint()}
+ function status(){return Object.freeze({ready:!!urls,layers:urls?NAMES.length:0,verified,customUnderpaint:!!underpaintUrl})}
+ async function loadUnderpaint(file){
+  // A replacement is never shown until it has been fully decoded and checked.
+  // Failed replacements leave the previous valid artwork available.
+  const id=++underpaintGeneration;
+  if(!file||typeof file.name!=='string'||!/\\.png$/i.test(file.name)||
+    (file.type&&file.type!=='image/png')||file.size<40||file.size>MAX_FILE)
+   throw Error('Körperzeichnung muss PNG bis 2 MiB sein.');
+  const incoming=win.URL.createObjectURL(file);
+  try{
+   await new Promise((resolve,reject)=>{
+    const img=new win.Image();
+    img.onload=()=>img.naturalWidth===768&&img.naturalHeight===1216
+     ?resolve():reject(Error('Körperzeichnung muss 768 × 1216 Pixel gross sein.'));
+    img.onerror=()=>reject(Error('Körperzeichnung konnte nicht gelesen werden.'));
+    img.src=incoming;
+   });
+   if(id!==underpaintGeneration)throw Error('Überholte Körperzeichnung.');
+   const previous=underpaintUrl;
+   underpaintUrl=incoming;
+   if(previous)win.URL.revokeObjectURL(previous);
+   return status();
+  }catch(e){win.URL.revokeObjectURL(incoming);throw e}
+ }
  function render(config,pose,visibleLayers=NAMES,showAnatomy=false){
   if(!urls||!compatible(config,pose))return null;
   // Only the fixed, verified slot names can select image sources.
   // Optional cartoon-quality anatomy tracing is NEVER an approved sprite.
   const enabled=new Set(visibleLayers);
-  const draft=showAnatomy&&win.TLBoxerAnatomyBlockout?.approved===false
+  const draft=showAnatomy&&underpaintUrl
+   ?'<img class="mb-draft-underpaint mb-draft-underpaint-file" src="'+underpaintUrl+'" alt="" decoding="async" draggable="false">'
+   :showAnatomy&&win.TLBoxerAnatomyBlockout?.approved===false
    ?win.TLBoxerAnatomyBlockout.markup():'';
   return '<div class="mb-artpack mb-draft-artpack" role="img" aria-label="Originaler Anime-Cool-Referenzlook, Ebene für Ebene überprüfbar, nur Entwurf">'+
    draft+NAMES.filter(name=>enabled.has(name)).map((name,i)=>'<img class="mb-artpack-img" loading="eager" decoding="async" style="z-index:'+(i+1)+'" src="'+urls[name]+'" alt="" draggable="false">').join('')+'</div>';
@@ -88,7 +118,7 @@ function create(win){
    return status();
   }catch(e){revoke(incoming);throw e}
  }
- return Object.freeze({load,clear,status,render,compatible,reference:REFERENCE});
+ return Object.freeze({load,loadUnderpaint,clearUnderpaint,clear,status,render,compatible,reference:REFERENCE});
 }
 window.TLBoxerDraftPreview=Object.freeze({create,compatible,NAMES,REFERENCE});
 })();
