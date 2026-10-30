@@ -14,7 +14,8 @@
 const $=id=>document.getElementById(id),app=$('app'),status=$('status');
 const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
 await new Promise(r=>{const ok=()=>window.TLPerf&&window.TLHolo;if(ok())return r();const t=setInterval(()=>{if(ok()){clearInterval(t);r()}},30)});
-const P=window.TLPerf,H=window.TLHolo,esc=P.esc;
+await import('./takeover-mein-boxer-items.js');
+const P=window.TLPerf,H=window.TLHolo,G=window.TLGearArt,esc=P.esc;
 const COIN='<svg class="mb-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#ffcc33"/><circle cx="12" cy="12" r="8" fill="#e8a91a"/></svg>';
 const fmt=n=>Number(n||0).toLocaleString('de-CH');
 const OPT={
@@ -60,7 +61,7 @@ function gearChip(field,v,label,on,extra){
  const look=itemLook(field,v);
  const klass=slot==='glove'||slot==='hands'?'hands':slot;
  const scene=slot==='scene'?v:'none';
- const content=H.svg(look,{pose:'guard',scene,holo:false});
+ const content=G&&G.supports(field,v)?G.svg(field,v,look):H.svg(look,{pose:'guard',scene,holo:false});
  return `<button type="button" class="mb-chip mb-gear-chip" data-set="${field}" data-val="${esc(v)}" aria-label="${esc(label)}" aria-pressed="${on}"><span class="mb-gear-art mb-gear-${klass}" aria-hidden="true">${content}</span><span class="mb-gear-name">${esc(label)}</span>${extra||''}</button>`;
 }
 const sw=(field,v,color,label,on)=>`<button type="button" class="mb-sw" data-set="${field}" data-val="${esc(v)}" aria-pressed="${on}" aria-label="${esc(label)}" style="--c:${color}"></button>`;
