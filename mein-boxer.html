@@ -208,7 +208,7 @@ async function load(){
 app.addEventListener('error',e=>{
  const img=e.target;
  if(!img||!img.matches||!img.matches('.mb-preview .mb-artpack-img'))return;
- if(A&&A.active.markFailed(img.getAttribute('src')))render();
+ if(A&&A.active.markFailed(img.getAttribute('src')))refreshHero();
 },true);
 // Roving tab focus: left/right arrows, Home and End mirror native tab controls.
 app.addEventListener('keydown',e=>{
