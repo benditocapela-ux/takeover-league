@@ -34,7 +34,7 @@ try{
  assert.equal(manifest.approved,false);
  assert.equal(manifest.enabled,false);
  assert.equal(manifest.poses.cool.hair['afro/schwarz'],'cool/hair.png');
- assert.equal(manifest.poses.cool.coatFront.samurai,'cool/coatFront.png');
+ assert.equal(manifest.poses.cool.coatFront.samurai,'cool/coatfront.png');
  assert.equal(validate(manifest,path.join(repo,'assets/boxer-artpacks/v1')).checked,8,
   'draft copied assets pass existing file header/byte validator');
  assert.equal(importPack(zip,repo,{expected}).files,8,'repeated identical import safe');
