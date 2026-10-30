@@ -304,3 +304,20 @@ Diese Vorlage ist **noch kein frei umkleidbares Premium-Artpack**: Sie rekonstru
 Das neue Arbeitsset `takeover_anatomie_v2_arbeitsset.zip` enthält eine weitere 768×1216-RGBA-PNG-Unterzeichnung (`assets/anatomie_v2.png`) und einen Vierfachvergleich: bestätigte Referenz, fehlende Mantelanatomie, V1 und V2. Die V2 überträgt sichtbare Original-Hauttexturen auf organischere Schulterbereiche und ist **ein reproduzierbarer Retuscheversuch**, keine echte freigegebene Neuzeichnung. Die Muskel-/Stoffübergänge weichen erkennbar vom bestätigten Anime-Detailgrad ab. Ihre Erzeugungsdatei liegt im ZIP für die Weiterbearbeitung.
 
 Sie kann im privaten `?art=layers`-Prüfmodus über **«Eigene Körperzeichnung»** geladen werden. Weder die produktiven Grafikflags noch die Shop-Auswahl ändern sich. Eine aus dieser Studie abgeleitete Shop-Freigabe ist ausdrücklich ausgeschlossen.
+
+## Drop-in-Originalgrafiken und Ein-Klick-Test im Studio (30. Oktober 2026)
+
+Das neue Paket **`takeover_pr79_originalgrafiken_dropin.zip`** (separat beim Nutzer bereitgestellt) enthält bereits die **acht binären Original-PNGs** in der endgültigen relativen Repository-Ordnerstruktur **plus das deaktivierte JS-Manifest**. Die beiden Manteldateien heissen im Repo `coatback.png` und `coatfront.png` (Kleinschreibung für die strengen Validator-Pfade); ihre Bildbytes bleiben mit den bestätigten SHA-256-Prüfsummen **identisch**. Die Zusammensetzung aller Ebenen wurde nochmals gegen `composited-proof.png` pixelgenau geprüft (maximale RGBA-Abweichung 0).
+
+**Für Entwicklerinnen und Entwickler mit PR-Checkout:**
+
+1. Branch `design/mein-boxer-sticky-webapp-20261030` auschecken.
+2. Das Drop-in-ZIP im Repository-Hauptverzeichnis entpacken. Das Paket enthält die notwendigen Verzeichnisse `assets/boxer-artpacks/v1/cool/` und `takeover-mein-boxer-artpack-manifest.js`; keine manuellen Umbenennungen nötig. Vorhandene abweichende Dateien nicht unkontrolliert überschreiben.
+3. `node scripts/validate-boxer-artpack.cjs` und `node tests/import-original-cool-contracts.cjs` ausführen. Der Paketzustand ist weiterhin `approved:false`, `enabled:false`.
+4. Lokalen HTTP-Server starten und `mein-boxer.html?art=layers` öffnen. Nach Login im Bereich «Grafikebenen prüfen» auf **«Originalebenen aus Testbranch laden»** klicken. Acht Image-Requests erfolgen direkt vom gleichen Server; jede Datei wird **vor der Anzeige erneut mit SHA-256** gegen die freigegebenen Ursprungspixel überprüft.
+5. Fehlt auch nur eine Datei, weicht ein Hash ab, oder sind die Referenzgrafiken noch nicht auf dem lokalen Server vorhanden, bleibt der bisherige **SVG-Boxer** sichtbar. Der manuelle Acht-PNG-Wähler bleibt als Alternative verwendbar. Auch während des Ladens können neuere manuelle Auswahlen den älteren Remote-Ladevorgang nicht unbeabsichtigt überschreiben.
+6. Nach Prüfung: Änderungen **nur auf dem PR-Branch** committen und pushen, wenn gewünscht. Die Lieferung dieses ZIPs an den Nutzer ist **kein automatischer GitHub-Binary-Upload**.
+
+Automatische Abnahme: `tests/mein-boxer-installed-art-contracts.cjs` prüft das Ein-Klick-Laden mit korrekten und falschen acht Hashes, gleich-origin Pfade, lokale Blob-URL-Bereinigung und Erhalt bereits valider Grafiken bei Fehlern. `tests/boxer-holo-browser.cjs` bestätigt den sicheren SVG-Fallback bei fehlenden Repo-Dateien. Staging-CI testet beides.
+
+**Keine Produktfreigabe:** Das Paket stellt ausschliesslich die eine bestätigte, noch nicht frei umkleidbare Cool-Pose bereit. Es werden keine neuen Kleidungs-, Haut- oder Frisurenvarianten erfunden. Das Produktionsmanifest bleibt absichtlich deaktiviert, das öffentliche Profil und der Shop nutzen weiterhin das vorhandene Holo.
