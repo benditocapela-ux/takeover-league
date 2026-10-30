@@ -276,3 +276,31 @@ Die alte starre Anatomie-Skizze kann jetzt im bereits vorhandenen achtteiligen T
 **Künstlerischer Status:** `anatomie_textur_v1.png` ist eine farblich überarbeitete **Texturstudie**, deren Hochfrequenz-Hautdetails aus der genehmigten Referenz stammen. Sie ergänzt **keine wirklich neu gezeichnete, originalgetreue Schultermuskulatur** und wird deshalb *nicht* als fertiger Anime-Body oder ausziehbarer Mantel freigegeben. Das Original bleibt die verbindliche Qualitätsvorlage. Keine Änderung der Produktionsflags `approved:false` / `enabled:false`.
 
 Der separate ZIP-Arbeitsordner enthält `index.html`, acht unveränderte Ebenen mit überprüften Original-SHA-256-Werten, V0/V1-Unterzeichnungen, Vergleichs-JPG, README und einen reproduzierbaren Python-Entwurf.
+
+## Einmaliger ZIP-Import der acht Originalgrafiken in den PR-Checkout
+
+Das bisherige manuelle Kopieren der acht Original-PNGs entfällt mit dem neuen Node-Skript:
+
+```bash
+# Im lokal ausgecheckten Branch design/mein-boxer-sticky-webapp-20261030:
+node scripts/import-original-cool-artpack.cjs /pfad/zu/takeover_cool_8_layer_draft.zip --dry-run
+node scripts/import-original-cool-artpack.cjs /pfad/zu/takeover_cool_8_layer_draft.zip
+node scripts/validate-boxer-artpack.cjs
+git status --short
+```
+
+Das Skript ist absichtlich **streng auf die acht vom Nutzer bestätigten Referenzpixelmasken** beschränkt und nicht für beliebige generierte Grafiken gedacht:
+
+- Es akzeptiert nur die exakt erwarteten Dateinamen (im ZIP-Root oder im bekannten `assets/boxer-artpacks/v1/cool/`-Pfad), 768 × 1216 RGBA-PNG, höchstens 2 MiB pro Ebene und die hinterlegten **acht originalen SHA-256-Prüfsummen**.
+- Erst wenn sämtliche Dateien überprüft wurden, erzeugt es die acht Dateien im Zielverzeichnis und schreibt das JavaScript-Manifest mit der einzelnen Pose `cool`. Beide Flags bleiben **`approved:false`, `enabled:false`**; es erfolgt **keine** Veröffentlichung.
+- `--dry-run` liest und prüft die Dateien, **schreibt aber nichts**. Wiederholter Import ist nur mit bereits **identischem** Manifest und identischen Zieldateien erlaubt. Abweichende Bilder oder ein bereits freigegebenes Manifest werden nicht überschrieben.
+- Der separate Dateivalidator prüft die importierten PNGs anschliessend unabhängig von der Freigabestufe. Ein Git-Commit/Push bleibt ausdrücklich ein separater, bewusster Schritt des Entwicklers. **Der PR enthält zurzeit weiterhin nur das Importskript, nicht die binären Original-PNGs.**
+- `tests/import-original-cool-contracts.cjs` prüft ein synthetisches ZIP, falsche Prüfsummen, keine Änderungen im Checkmodus, Manifestfreigaben, wiederholten Import und Überschreibschutz.
+
+Diese Vorlage ist **noch kein frei umkleidbares Premium-Artpack**: Sie rekonstruiert nur den ursprünglichen Cool-Look. Vor einer späteren visuellen Freigabe sind die verdeckten Körperbereiche unter dem Mantel nachzuzeichnen.
+
+## Körperunterzeichnung V2 – externe Arbeitsdatei, keine Produktivgrafik
+
+Das neue Arbeitsset `takeover_anatomie_v2_arbeitsset.zip` enthält eine weitere 768×1216-RGBA-PNG-Unterzeichnung (`assets/anatomie_v2.png`) und einen Vierfachvergleich: bestätigte Referenz, fehlende Mantelanatomie, V1 und V2. Die V2 überträgt sichtbare Original-Hauttexturen auf organischere Schulterbereiche und ist **ein reproduzierbarer Retuscheversuch**, keine echte freigegebene Neuzeichnung. Die Muskel-/Stoffübergänge weichen erkennbar vom bestätigten Anime-Detailgrad ab. Ihre Erzeugungsdatei liegt im ZIP für die Weiterbearbeitung.
+
+Sie kann im privaten `?art=layers`-Prüfmodus über **«Eigene Körperzeichnung»** geladen werden. Weder die produktiven Grafikflags noch die Shop-Auswahl ändern sich. Eine aus dieser Studie abgeleitete Shop-Freigabe ist ausdrücklich ausgeschlossen.
