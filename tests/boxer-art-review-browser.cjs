@@ -27,7 +27,7 @@ const pixel=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR
   assert.equal(await page.locator('#overlayPanel').isHidden(),true,'comparison is initially opt-in');
   await page.click('#switch');
   assert.equal(await page.locator('#overlayPanel').isVisible(),true,'two source images can be compared');
-  await page.locator('#compare').fill('72');
+  await page.locator('#compare').evaluate(el=>{el.value='72';el.dispatchEvent(new Event('input',{bubbles:true}))});
   assert.equal(await page.locator('#percent').textContent(),'72 %');
   assert.equal(await page.locator('#split').evaluate(e=>e.style.width),'72%');
   await page.click('#checker');
