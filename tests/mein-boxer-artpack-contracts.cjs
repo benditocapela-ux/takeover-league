@@ -35,6 +35,14 @@ const manifest={version:1,approved:true,canvas:{width:768,height:1216},poses:{co
 const build=AP.create(manifest);
 const markup=build.render(cfg,'cool');
 assert.equal(build.prepare(cfg,'cool'),false,'art remains SVG when preload cannot run');
+assert.equal(build.inspect(cfg,'cool').state,'loading','preview describes unloaded approved layers');
+assert.equal(build.inspect({...cfg,top:'hoodie'},'cool').state,'missing-layer','preview identifies missing outfit');
+assert.match(build.inspect({...cfg,top:'hoodie'},'cool').detail,/top:hoodie/);
+assert.equal(build.inspect(cfg,'guard').state,'missing-pose','preview identifies missing pose');
+assert.equal(build.inspect({...cfg,scene:'arena'},'cool').state,'unsupported-effect');
+assert.equal(AP.active.inspect(cfg,'cool').state,'unapproved','default manifest explains inactive art');
+assert.ok(html.includes('artDebugLabel(cfg,pose)'),'preview diagnostics are coupled to the hero');
+assert.ok(html.includes('if(!tryPremiumArt)return'), 'normal editor hides debugging details');
 assert.ok(markup,'complete pack can be rendered');
 assert.ok(markup.includes('data-artpack-version="1"'));
 assert.equal((markup.match(/class="mb-artpack-img"/g)||[]).length,9);
@@ -54,6 +62,7 @@ assert.equal(AP.create({...manifest,poses:{cool:{...garmentLayers,top:{'shirt/sc
 assert.equal(AP.create({...manifest,poses:{cool:{...garmentLayers,top:{'shirt/schwarz':'top/shirt.svg'}}}}).render(cfg,'cool'),null,'unreviewed SVG path refused');
 assert.equal(build.markFailed('./assets/boxer-artpacks/v1/top/shirt-black.webp'),true);
 assert.equal(build.render(cfg,'cool'),null,'failed layer causes entire figure to use SVG');
+assert.equal(build.inspect(cfg,'cool').state,'load-failed','a missing image is diagnosed, not hidden');
 assert.equal(build.markFailed('https://example.org/a.png'),false,'external URL cannot disable assets');
 const hijab={...cfg,head:'hijab',headc:'schwarz'};
 const hijabManifest={...manifest,poses:{cool:{...garmentLayers,head:{'hijab/schwarz':'head/hijab-black.webp'}}}};
