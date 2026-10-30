@@ -196,6 +196,16 @@ function restoreEditorFocus(key){
   key.every(([name,value])=>btn.getAttribute(name)===value));
  if(el&&!el.disabled)el.focus({preventScroll:true});
 }
+// Decorative navigation artwork for the approved navy/gold mobile design.
+// Each tab retains its ordinary button semantics and accessible text label.
+const tabIcon=d=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+d+'</svg>';
+const TAB_ICONS=Object.freeze({
+ koerper:tabIcon('<circle cx="12" cy="5" r="2.7"/><path d="M8 21v-6l-3 2-2-2 4-6h10l4 6-2 2-3-2v6M9 9l3 3 3-3"/>'),
+ kleidung:tabIcon('<path d="m9 3 3 2 3-2 6 4-2 5-3-1v10H8V11l-3 1-2-5 6-4Z"/>'),
+ extras:tabIcon('<path d="m12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2Z"/><path d="M19 2v4M17 4h4"/>'),
+ posen:tabIcon('<circle cx="11" cy="4.5" r="2"/><path d="m10 8 4 3 4-1 2 2-6 2-3-2-3 4-5 3m8-7 3 5 4 4"/>'),
+ shop:tabIcon('<path d="M2 3h3l3 12h11l3-9H6"/><circle cx="10" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/>')
+});
 function render(){
  // Keep the vertical editor position and horizontal equipment carousel positions
  // when changing colors/items. Re-rendering must not jump back to the beginning.
@@ -211,10 +221,12 @@ function render(){
  const tabs=[['koerper','Körper'],['kleidung','Kleidung'],['extras','Extras'],['posen','Posen'],['shop','Shop']];
  const tl=tryOn(),pose=previewPose==='card'?cfg.pose_card:cfg.pose_profile;
  app.innerHTML=`${data.preview?'<p class="tlp-note">Vorschau – für die Boxer sichtbar, sobald der Boxer-Holo freigeschaltet ist.</p>':''}
- <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span>Mein Boxer</span><a href="./boxer.html">Mein Studio</a></div><div class="mb-preview">${heroArt(cfg,pose)}${artDebugLabel(cfg,pose)}</div>${canCompareArt?`<button type="button" class="mb-art-compare" data-art-compare="1" aria-pressed="${compareSvg}" aria-label="Boxer-Grafik vergleichen">${compareSvg?'Premium anzeigen':'Mit SVG vergleichen'}</button>`:''}
+ <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span class="mb-stage-title"><small>TAKEOVER LEAGUE</small><strong>MEIN BOXER</strong></span><span class="mb-save-state" data-save-status="${busy?'busy':tl.length?'tryon':dirty()?'dirty':'saved'}">${busy?'Wird gespeichert …':tl.length?'Anprobe':dirty()?'Nicht gespeichert':'✓ Gespeichert'}</span><a href="./boxer.html" aria-label="Mein Studio öffnen">Studio</a></div>
+ <div class="mb-arena" aria-hidden="true"><span class="mb-arena-light mb-arena-light--left"></span><span class="mb-arena-light mb-arena-light--right"></span><span class="mb-arena-flag mb-arena-flag--left"><b>♛</b><small>TAKEOVER</small></span><span class="mb-arena-flag mb-arena-flag--right"><b>♛</b><small>TAKEOVER</small></span><span class="mb-arena-rope"></span><span class="mb-arena-ring"></span></div>
+ <div class="mb-preview">${heroArt(cfg,pose)}${artDebugLabel(cfg,pose)}</div>${canCompareArt?`<button type="button" class="mb-art-compare" data-art-compare="1" aria-pressed="${compareSvg}" aria-label="Boxer-Grafik vergleichen">${compareSvg?'Premium anzeigen':'Mit SVG vergleichen'}</button>`:''}
   <div class="mb-stage-bar"><span class="mb-pill">${previewPose==='card'?'Karten-Pose':'Profil-Pose'}</span>${data.shop?`<span class="mb-pill">${COIN}${fmt(data.coins)}</span>`:''}</div>
   <div class="mb-actions"><button type="button" class="mb-btn primary" id="saveBtn"${!dirty()||tl.length||busy?' disabled':''}>${tl.length?'Gesperrtes zuerst kaufen oder abwählen':dirty()?'Speichern':'Gespeichert'}</button>${dirty()?'<button type="button" class="mb-btn ghost" id="resetBtn">Änderungen verwerfen</button>':''}</div></div>
- <div class="mb-panel" data-active-tab="${tab}"><div class="mb-tabs" role="tablist" aria-label="Bereiche">${tabs.map(([k,l])=>`<button type="button" role="tab" id="mb-tab-${k}" aria-controls="mb-tabbody" class="mb-tab" data-tab="${k}" aria-selected="${tab===k}" tabindex="${tab===k?0:-1}">${l}</button>`).join('')}</div>
+ <div class="mb-panel" data-active-tab="${tab}"><div class="mb-tabs" role="tablist" aria-label="Bereiche">${tabs.map(([k,l])=>`<button type="button" role="tab" id="mb-tab-${k}" aria-controls="mb-tabbody" class="mb-tab" data-tab="${k}" aria-selected="${tab===k}" tabindex="${tab===k?0:-1}"><span class="mb-tab-icon">${TAB_ICONS[k]}</span><span class="mb-tab-label">${l}</span></button>`).join('')}</div>
   <div class="mb-tabbody" id="mb-tabbody" role="tabpanel" aria-labelledby="mb-tab-${tab}" tabindex="0">${tl.length?`<div class="mb-tryon" role="note"><b>Anprobe:</b> ${tl.map(esc).join(', ')}<button type="button" class="mb-btn" data-tab="shop">Zum Shop</button></div>`:''}${tab==='koerper'?viewKoerper():tab==='kleidung'?viewKleidung():tab==='extras'?viewExtras():tab==='posen'?viewPosen():viewShop()}</div></div></div>`;
  const tabsRail=app.querySelector('.mb-tabs');
  if(tabsRail)tabsRail.scrollLeft=previousTabsScroll;
