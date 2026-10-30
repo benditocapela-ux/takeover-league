@@ -24,6 +24,10 @@ Die mobile Aufteilung ist fertig implementiert, nicht produktiv veröffentlicht.
 
 **Art pass 2:** Die Ausrüstungsübersicht erhält den separaten, leichtgewichtigen SVG-Renderer `takeover-mein-boxer-items.js`. Kopf, Oberteile, Hosen, Handschuhe, Schuhe und Mäntel werden als eigene Game-Item-Grafiken mit Materialverläufen, Kantenlicht und Symbolen dargestellt, nicht mehr als beschnittene Ganzkörperfigur. Unterstützte Konfigurationen greifen auf dieselben Farb- und Werteschlüssel wie der Boxer zu; bei weiteren Slots bleibt der alte Renderer als Fallback bestehen. Einzelne Shop-Items verwenden dieselbe Darstellung. Ein echter Chromium-Test mit Mock-Login und gespeicherten Screenshots dient der Abnahme.
 
+**Art pass 3 (30.10.2026):** Der editierbare Hauptboxer hat im mobilen Studio nun breitere Proportionen (`scaleX(1.20)` nur auf `.mb-preview .tlh-fig`), eine optional gerenderte Kronen-Signatur auf der Kleidung, `TAKEOVER`-Bundbeschriftung, zusätzliche Mantelstickerei und feinere Afro-Haar-Lichtlinien. Diese Details folgen weiterhin den erlaubten Konfigurationswerten und sind **nicht** in öffentlichen Profil-/Kartenansichten aktiv. Die Grafik bleibt bewusst ein echter editierbarer SVG-Avatar und ist weiterhin nicht fotogleich zur aufwendigen Anime-Referenz.
+
+**Technische Abnahme:** Die Renderer-Ausgabe wurde mit 18 Frisuren × 8 Hauttönen × 3 Oberteilen (=432 Kombinationen) in JavaScript auf fehlerfreie SVG-Erzeugung geprüft. Ein neuer Chromium-Regressionstest kontrolliert mobile Bildschirmgeometrie und unabhängiges Scrollen bei 360×640, 375×667 und 430×932. Der aktuelle CI-Lauf ist noch ausstehend; vor Merge muss die Screenshot-Abnahme erfolgen.
+
 **Abgrenzung:** Zusätzliche Vektordetails sind kein pixelgenauer Nachbau des aufwendig gemalten Anime-Boxers. Eine echte 1:1-Nachbildung würde gesondert gemalte, konsistente transparente Ebenen für Körper/Haare/Kleidung oder ein animierbares 2D/3D-Rig benötigen. Kein fixes PNG auf das Holo legen – das würde die individuellen Anpassungen visuell verfälschen.
 
 ## Technische Leitplanken
