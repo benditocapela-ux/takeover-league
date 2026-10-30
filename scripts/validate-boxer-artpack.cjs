@@ -37,9 +37,14 @@ function meta(data,filename){
 function validate(manifest,root=ROOT){
  if(manifest.version!==1||manifest.canvas?.width!==EXPECTED_WIDTH||manifest.canvas?.height!==EXPECTED_HEIGHT)throw Error('Canvas must be 768 x 1216');
  if(manifest.enabled===true&&manifest.approved!==true)throw Error('Live artwork cannot be enabled before approval');
- if(manifest.approved!==true)return {skipped:true,checked:0,totalBytes:0,maxOutfitBytes:0};
  const poses=manifest.poses||{};
- if(Object.keys(poses).length===0)throw Error('Approved manifest has no poses');
+ if(!poses||typeof poses!=='object'||Array.isArray(poses))throw Error('Invalid artpack poses');
+ if(Object.keys(poses).length===0){
+  if(manifest.approved===true)throw Error('Approved manifest has no poses');
+  return {skipped:true,checked:0,totalBytes:0,maxOutfitBytes:0};
+ }
+ // Draft artwork is validated BEFORE approving it. Release flags are not
+ // required to check new image files, so reviewers can catch mistakes early.
  const paths=new Set();
  for(const [pose,groups] of Object.entries(poses)){
   if(!/^[a-z0-9_-]{1,32}$/.test(pose))throw Error('Unsafe pose key: '+pose);
@@ -86,7 +91,7 @@ if(require.main===module){
  const context={window:{}};
  vm.runInNewContext(fs.readFileSync(MANIFEST,'utf8'),context,{timeout:1000});
  const result=validate(context.window.TLBoxerArtPackManifest||{});
- console.log(result.skipped?'SKIP: artpack not approved, SVG remains active':
+ console.log(result.skipped?'SKIP: no artpack poses yet; SVG remains active':
   'PASS: '+result.checked+' transparent, aligned image layers ('+Math.round(result.totalBytes/1024)+' KiB total; up to '+Math.round(result.maxOutfitBytes/1024)+' KiB per outfit)');
 }
 module.exports={meta,validate};
