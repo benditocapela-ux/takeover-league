@@ -597,6 +597,51 @@ function injected(cfg){
   'a missing branch art pack never touches saved boxer configuration');
  await done(x);
 
+
+ // Real repository artwork acceptance: once the eight exact PNGs have been
+ // committed to this PR, exercise the entire button -> real HTTP -> WebCrypto
+ // -> decoded alpha layers -> browser stage route. Never mock these files.
+ const originalNames=['coatback','body','bottom','feet','eyes','hair','coatfront','hands'];
+ const installed=originalNames.filter(n=>fs.existsSync(
+  path.join(root,'assets/boxer-artpacks/v1/cool',n+'.png')));
+ if(installed.length){
+  assert.equal(installed.length,8,
+   'a partially committed original artpack must not pass Chromium acceptance');
+  x=await page({visualDemo:true,saved:draftCool});
+  await x.p.goto(base+'mein-boxer.html?art=layers');
+  await x.p.waitForSelector('.mb-preview svg.tlh');
+  await x.p.locator('.mb-draft-tools summary').click();
+  await x.p.locator('[data-draft-repo]').click();
+  await x.p.waitForSelector('.mb-draft-artpack .mb-artpack-img',{timeout:12000});
+  assert.equal(await x.p.locator('.mb-draft-artpack img').count(),8,
+   'all eight original repository image files decode as a single art stack');
+  assert.match(await x.p.locator('#mb-draft-note').textContent(),
+   /Originaldateien per SHA-256 bestätigt/,
+   'loaded real files must match every confirmed original SHA-256 digest');
+  const originalsAligned=await x.p.evaluate(()=>{
+   const stack=document.querySelector('.mb-draft-artpack').getBoundingClientRect();
+   return [...document.querySelectorAll('.mb-draft-artpack img')].every(img=>{
+    const b=img.getBoundingClientRect();
+    return img.complete&&img.naturalWidth===768&&img.naturalHeight===1216&&
+     Math.abs(b.x-stack.x)<1&&Math.abs(b.y-stack.y)<1&&
+     Math.abs(b.width-stack.width)<1&&Math.abs(b.height-stack.height)<1;
+   });
+  });
+  assert.ok(originalsAligned,'original sprite layers must decode, center and align identically');
+  await x.p.locator('.mb-draft-tools summary').click();
+  await shot(x.p,'holo-original-8-repository-art');
+  await x.p.click('[data-tab="kleidung"]');
+  await x.p.click('[data-set="top"][data-val="hoodie"]');
+  assert.equal(await x.p.locator('.mb-draft-artpack').count(),0,
+   'real original art must fall back to editable Holo for unsupported outfits');
+  assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),1);
+  assert.ok(!(await calls(x.p)).some(c=>c[0]==='save_my_holo'),
+   'real sprite inspection must never save a user configuration');
+  await done(x);
+ }else{
+  console.log('PENDING ARTWORK: no original PNGs are committed to this PR; real raster Chromium acceptance is not yet possible.');
+ }
+
  // A missing or malformed draft cannot create an incomplete visible costume.
  x=await page({visualDemo:true,saved:draftCool});
  await x.p.goto(base+'mein-boxer.html?art=layers');
