@@ -457,6 +457,9 @@ function injected(cfg){
  assert.equal(await x.p.locator('.mb-draft-artpack').count(),0,'no fake assets before local selection');
  await x.p.locator('#mb-draft-files').setInputFiles(draftFiles);
  await x.p.waitForSelector('.mb-draft-artpack .mb-artpack-img');
+ assert.equal(await x.p.locator('.mb-draft-tools').getAttribute('open'),null,
+  'eight-layer inspector is collapsed by default to protect mobile character visibility');
+ await x.p.locator('.mb-draft-tools summary').click();
  assert.equal(await x.p.locator('.mb-draft-artpack .mb-artpack-img').count(),8,
   'the draft reference is composed from exactly eight independent local images');
  assert.match(await x.p.locator('#mb-draft-note').textContent(),/Dateien weichen vom Referenzpaket ab/,
@@ -487,6 +490,8 @@ function injected(cfg){
   'coat masking never destroys the original reference');
 
  await x.p.click('[data-draft-toggle]');
+ assert.equal(await x.p.locator('.mb-draft-tools').getAttribute('open'),'',
+  'inspector stays expanded when the character toggles between SVG and sprites');
  assert.equal(await x.p.locator('.mb-draft-artpack').count(),0,
   'reviewer can compare against original dynamic SVG');
  assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),1);
@@ -510,6 +515,7 @@ function injected(cfg){
  await x.p.waitForSelector('#mb-draft-files');
  await x.p.locator('#mb-draft-files').setInputFiles(draftFiles);
  await x.p.waitForSelector('.mb-draft-artpack img');
+ await x.p.locator('.mb-draft-tools summary').click();
  assert.match(await x.p.locator('#mb-draft-note').textContent(),/Nur Referenzlook/);
  assert.equal(await x.p.locator('[data-draft-sample]').getAttribute('aria-pressed'),'true',
   'reference override is explicit and clearly labelled');
