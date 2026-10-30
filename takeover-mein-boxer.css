@@ -169,3 +169,69 @@ body[data-tl-screen="mein-boxer"] .mb-tabs::-webkit-scrollbar{display:none}
   body[data-tl-screen="mein-boxer"] .mb-tabbody,
   body[data-tl-screen="mein-boxer"] .mb-row{scroll-behavior:auto}
 }
+
+/* Art pass 1 · reference-matched item cards and restrained golden studio light.
+   The item artwork remains generated from the same editable boxer configuration. */
+body[data-tl-screen="mein-boxer"] .mb-stage{
+  border-color:#344765;
+  background:
+    radial-gradient(ellipse 24% 48% at 50% 53%,#eabf6020,transparent 94%),
+    radial-gradient(ellipse 72% 73% at 50% 58%,#1a3e5a88,transparent 75%),
+    linear-gradient(160deg,#081427,#070e1d 80%);
+}
+body[data-tl-screen="mein-boxer"] .mb-preview{
+  filter:drop-shadow(0 0 11px #f2c14e42);
+}
+body[data-tl-screen="mein-boxer"] .mb-stage .tlh-premium-coat,
+body[data-tl-screen="mein-boxer"] .mb-stage .tlh-premium-gear{
+  filter:drop-shadow(0 0 2px #f2c14e35);
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip{
+  border-color:#375070;
+  background:
+    radial-gradient(ellipse 84% 60% at 50% 25%,#3b58743b,transparent 80%),
+    linear-gradient(160deg,#13223a,#091222 85%);
+  box-shadow:inset 0 1px 0 #ffffff12,0 4px 12px #00000035;
+  transition:border-color .16s ease,box-shadow .16s ease;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-art{
+  border-color:#5673944d;
+  background:
+    radial-gradient(ellipse at 50% 72%,#f2c14e1a,transparent 50%),
+    radial-gradient(ellipse at 50% 33%,#1f4c6a99,transparent 70%),#071326;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-art::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:repeating-linear-gradient(180deg,#6ca7cf08 0 1px,transparent 1px 7px);
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-name{color:#e6ecf6;font-weight:800}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip[aria-pressed="true"]{
+  border-color:#ffda7b;
+  box-shadow:0 0 0 1px #ffd36b99,0 0 18px #dba73b45,inset 0 0 15px #dba73b15;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip[aria-pressed="true"] .mb-gear-art{
+  border-color:#f2c14e8c;
+  background:radial-gradient(ellipse at 50% 65%,#f2c14e32,transparent 62%),#0c1b30;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip .mb-lock{
+  background:#33270c;border:1px solid #ab852a66;
+}
+body[data-tl-screen="mein-boxer"] .mb-tab[aria-selected="true"]{
+  color:#fff; border-bottom-color:#4fd8ff;
+  background:linear-gradient(180deg,#172c4600,#44c9ff0c);
+}
+body[data-tl-screen="mein-boxer"] .mb-h{
+  color:#b5c9df;letter-spacing:.13em;
+}
+@media(max-width:819px){
+  body[data-tl-screen="mein-boxer"] .mb-preview{filter:none}
+  body[data-tl-screen="mein-boxer"] .mb-stage{
+    background:
+      radial-gradient(ellipse 31% 60% at 50% 54%,#f2c14e1c,transparent 95%),
+      radial-gradient(ellipse 65% 72% at 50% 55%,#164a6d8a,transparent 90%),
+      linear-gradient(180deg,#0a1a31,#080f20 100%);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  body[data-tl-screen="mein-boxer"] .mb-gear-chip{transition:none}
+}
