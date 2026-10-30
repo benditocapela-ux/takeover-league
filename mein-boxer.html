@@ -52,6 +52,9 @@ function draftNotice(){
  const ready=draftPack&&draftPack.status().ready;
  const pose=cfg&&(previewPose==='card'?cfg.pose_card:cfg.pose_profile);
  const matches=!!(ready&&draftPack.compatible(H.normalize(cfg),pose));
+ const matchSource=ready?(draftPack.status().verified===true?'✓ Originaldateien per SHA-256 bestätigt.':
+  draftPack.status().verified===false?'Hinweis: Dateien weichen vom Referenzpaket ab.':
+  'Dateiherkunft konnte hier nicht geprüft werden.'):'';
  const mode=draftSample?'Nur Referenzlook (nicht dein Outfit).':
   matches?'Referenz-Look vollständig geladen.':'Andere Ausstattung: SVG-Fallback aktiv.';
  return '<div class="mb-draft-tools" role="group" aria-label="Nur lokale Acht-Ebenen-Vorschau">'+
@@ -65,7 +68,7 @@ function draftNotice(){
    window.TLBoxerDraftPreview.NAMES.map(name=>'<label><input type="checkbox" data-draft-layer="'+name+'"'+
     (draftLayers.has(name)?' checked':'')+'>'+DRAFT_LABELS[name]+'</label>').join('')+'</fieldset>':'')+
   '<small id="mb-draft-note">'+(ready?mode:'Nur die acht Dateien aus dem Entwurfs-ZIP auswählen.')+
-  ' Kein Upload, keine Speicherung, keine Produktionsfreigabe.</small></div>';
+  ' '+matchSource+' Kein Upload, keine Speicherung, keine Produktionsfreigabe.</small></div>';
 }
 
 let referenceSrc=null,referenceVisible=false;
