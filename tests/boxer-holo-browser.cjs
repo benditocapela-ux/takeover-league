@@ -282,6 +282,23 @@ function injected(cfg){
  assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),1,'missing outfit returns whole SVG');
  await done(x);
 
+ // Atomic preview test: while the last equipment layer loads, ONLY the
+ // existing SVG may be visible. The complete painted character swaps in once.
+ x=await page({visualDemo:true,saved:artConfig});
+ await x.p.route('**/takeover-mein-boxer-artpack-manifest.js',r=>r.fulfill({status:200,contentType:'text/javascript',body:fixtureArt}));
+ await x.p.route('**/assets/boxer-artpacks/v1/**',async r=>{
+  if(r.request().url().endsWith('/coats/front.png'))await new Promise(resolve=>setTimeout(resolve,1500));
+  await r.fulfill({status:200,contentType:'image/png',body:pixel});
+ });
+ await x.p.goto(base+'mein-boxer.html?art=preview',{waitUntil:'domcontentloaded'});
+ await x.p.waitForSelector('.mb-preview svg.tlh');
+ assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,
+  'unloaded image layers may never appear as a partial outfit');
+ await x.p.waitForSelector('.mb-preview .mb-artpack-img',{timeout:7000});
+ assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),9,
+  'the finished outfit appears as one image stack');
+ await done(x);
+
  // A single failed external image also recovers to full SVG automatically.
  x=await page({visualDemo:true,saved:artConfig});
  await x.p.route('**/takeover-mein-boxer-artpack-manifest.js',r=>r.fulfill({status:200,contentType:'text/javascript',body:fixtureArt}));
