@@ -29,11 +29,33 @@ await Promise.allSettled([
 ]);
 try{await import('./takeover-mein-boxer-artpack.js')}
 catch(e){console.warn('Optional boxer art-pack unavailable; continuing with SVG',e)}
+if(new URLSearchParams(location.search).get('art')==='layers'){
+ try{await import('./takeover-mein-boxer-draft-layers.js')}
+ catch(e){console.warn('Local draft layer preview unavailable',e)}
+}
 const P=window.TLPerf,H=window.TLHolo,G=window.TLGearArt,A=window.TLBoxerArtPacks,esc=P.esc;
 // Production is explicitly disabled until BOTH art approval and launch enablement.
 // ?art=preview remains available for artists without activating live characters.
 const tryPremiumArt=new URLSearchParams(location.search).get('art')==='preview';
 const referenceReview=new URLSearchParams(location.search).get('art')==='reference';
+const draftReview=new URLSearchParams(location.search).get('art')==='layers';
+const draftPack=draftReview&&window.TLBoxerDraftPreview
+ ?window.TLBoxerDraftPreview.create(window):null;
+let draftVisible=true;
+function draftNotice(){
+ if(!draftReview)return '';
+ const ready=draftPack&&draftPack.status().ready;
+ const pose=cfg&&(previewPose==='card'?cfg.pose_card:cfg.pose_profile);
+ const matches=ready&&draftPack.compatible(H.normalize(cfg),pose);
+ return '<div class="mb-draft-tools" role="group" aria-label="Nur lokale Acht-Ebenen-Vorschau">'+
+  '<label for="mb-draft-files">8 PNG-Ebenen lokal laden</label>'+
+  '<input id="mb-draft-files" type="file" accept="image/png,.png" multiple aria-describedby="mb-draft-note">'+
+  (ready?'<button type="button" class="mb-btn" data-draft-toggle="1" aria-pressed="'+draftVisible+'">'+
+   (draftVisible?'SVG-Boxer vergleichen':'Acht Ebenen anzeigen')+'</button>':'')+
+  '<small id="mb-draft-note">'+(ready?(matches?'Referenz-Look vollständig geladen.':'Andere Ausstattung: SVG-Fallback aktiv.'):'Nur die acht Dateien aus dem Entwurfs-ZIP auswählen.')+
+  ' Kein Upload, keine Speicherung, keine Produktionsfreigabe.</small></div>';
+}
+
 let referenceSrc=null,referenceVisible=false;
 function referenceNotice(){
  if(!referenceReview)return '';
@@ -52,6 +74,10 @@ const canCompareArt=!!(tryPremiumArt&&A&&A.active&&artManifest?.approved===true)
 let compareSvg=false;
 const heroArt=(config,pose)=>{
  const normalized=H.normalize(config);
+ if(draftReview&&draftPack&&draftVisible){
+  const draft=draftPack.render(normalized,pose);
+  if(draft)return draft;
+ }
  // A local user's whole-body reference is a non-editable design overlay only.
  // It is never persisted, released, or presented as a layer-based outfit.
  if(referenceReview&&referenceVisible&&referenceSrc)
@@ -239,7 +265,7 @@ function render(){
  app.innerHTML=`${data.preview?'<p class="tlp-note">Vorschau – für die Boxer sichtbar, sobald der Boxer-Holo freigeschaltet ist.</p>':''}
  <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span class="mb-stage-title"><small>TAKEOVER LEAGUE</small><strong>MEIN BOXER</strong></span><span class="mb-save-state" data-save-status="${busy?'busy':tl.length?'tryon':dirty()?'dirty':'saved'}">${busy?'Wird gespeichert …':tl.length?'Anprobe':dirty()?'Nicht gespeichert':'✓ Gespeichert'}</span><a href="./boxer.html" aria-label="Mein Studio öffnen">Studio</a></div>
  <div class="mb-arena" aria-hidden="true"><span class="mb-arena-light mb-arena-light--left"></span><span class="mb-arena-light mb-arena-light--right"></span><span class="mb-arena-flag mb-arena-flag--left"><b>♛</b><small>TAKEOVER</small></span><span class="mb-arena-flag mb-arena-flag--right"><b>♛</b><small>TAKEOVER</small></span><span class="mb-arena-rope"></span><span class="mb-arena-ring"></span></div>
- <div class="mb-preview">${heroArt(cfg,pose)}${artDebugLabel(cfg,pose)}</div>${referenceNotice()}${canCompareArt?`<button type="button" class="mb-art-compare" data-art-compare="1" aria-pressed="${compareSvg}" aria-label="Boxer-Grafik vergleichen">${compareSvg?'Premium anzeigen':'Mit SVG vergleichen'}</button>`:''}
+ <div class="mb-preview">${heroArt(cfg,pose)}${artDebugLabel(cfg,pose)}</div>${referenceNotice()}${draftNotice()}${canCompareArt?`<button type="button" class="mb-art-compare" data-art-compare="1" aria-pressed="${compareSvg}" aria-label="Boxer-Grafik vergleichen">${compareSvg?'Premium anzeigen':'Mit SVG vergleichen'}</button>`:''}
   <div class="mb-stage-bar"><span class="mb-pill">${previewPose==='card'?'Karten-Pose':'Profil-Pose'}</span>${data.shop?`<span class="mb-pill">${COIN}${fmt(data.coins)}</span>`:''}</div>
   <div class="mb-actions"><button type="button" class="mb-btn primary" id="saveBtn"${!dirty()||tl.length||busy?' disabled':''}>${tl.length?'Gesperrtes zuerst kaufen oder abwählen':dirty()?'Speichern':'Gespeichert'}</button>${dirty()?'<button type="button" class="mb-btn ghost" id="resetBtn">Änderungen verwerfen</button>':''}</div></div>
  <div class="mb-panel" data-active-tab="${tab}"><div class="mb-tabs" role="tablist" aria-label="Bereiche">${tabs.map(([k,l])=>`<button type="button" role="tab" id="mb-tab-${k}" aria-controls="mb-tabbody" class="mb-tab" data-tab="${k}" aria-selected="${tab===k}" tabindex="${tab===k?0:-1}"><span class="mb-tab-icon">${TAB_ICONS[k]}</span><span class="mb-tab-label">${l}</span></button>`).join('')}</div>
@@ -283,6 +309,22 @@ app.addEventListener('keydown',e=>{
  const active=app.querySelector('.mb-tabs [role="tab"][aria-selected="true"]');
  if(active)active.focus({preventScroll:true});
 });
+// Eight first-pass raster layers are previewable only via user-local Object URLs.
+// Missing anatomy in other outfits forces fallback to dynamic Holo; no RPС changes.
+app.addEventListener('change',async e=>{
+ const picker=e.target.closest('#mb-draft-files');
+ if(!picker||!draftReview||!draftPack)return;
+ try{
+  say('Acht Grafikebenen werden geprüft …');
+  await draftPack.load([...picker.files]);
+  draftVisible=true;
+  say('Acht Ebenen lokal geladen. Nur die unveränderte Cool-Pose ist verfügbar.');
+  render();
+ }catch(err){
+  say('Ebenen konnten nicht geladen werden: '+(err.message||err),true);
+ }
+});
+window.addEventListener('pagehide',()=>{if(draftPack)draftPack.clear()});
 // Reference image never leaves this browser, is not uploaded and never affects RPCs.
 app.addEventListener('change',e=>{
  const picker=e.target.closest('#mb-reference-file');
@@ -312,6 +354,13 @@ app.addEventListener('change',e=>{
 });
 window.addEventListener('pagehide',()=>{if(referenceSrc)URL.revokeObjectURL(referenceSrc)});
 app.addEventListener('click',async e=>{
+ const draftToggle=e.target.closest('[data-draft-toggle]');
+ if(draftToggle&&draftPack&&draftPack.status().ready){
+  draftVisible=!draftVisible;
+  render();
+  app.querySelector('[data-draft-toggle]')?.focus({preventScroll:true});
+  return;
+ }
  const reference=e.target.closest('[data-reference-toggle]');
  if(reference&&referenceReview&&referenceSrc){
   referenceVisible=!referenceVisible;
