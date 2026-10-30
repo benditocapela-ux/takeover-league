@@ -108,6 +108,12 @@ function svg(cfg,opts){
  const top=c.top!=='none'?TOPS[c.top]:null,hoodUp=!!(top&&c.top==='hoodie'&&c.hood),hoodDown=!!(top&&c.top==='hoodie'&&!c.hood);
  const co=c.coat!=='none'?COATS[c.coat]:null,tc=CL[c.topc],bc=CL[c.bottomc],fc=CL[c.feetc],hd=CL[c.headc],gv=GL[c.glove];
  const bt=BOTTOMS[c.bottom],ft=FEET[c.feet],H=HAIR[c.hair],gloves=c.hands==='gloves';
+ // Optional 2.5D overlay: only the personal editor loads TLStudioLayers.
+ // Slot paths and colours are normalised above; public Holo renders are unchanged.
+ const layers=opts.layered===true&&premium&&window.TLStudioLayers
+  ?window.TLStudioLayers.render(c,{id:u,skin,shade:sd,hair:hc,top:tc,bottom:bc,feet:fc,coat:co,
+   paths:{top:top?top.d:'',bottom:bt.d,feet:ft.d,coat:co?co.body:'',hair:H.front||H.back||''}})
+  :null;
  const showHair=!hijab,clipY=hoodUp?104:cap?64:null;
  const p=(d,a)=>d?`<path d="${d}" ${a}/>`:'';
  const clipA=clipY!==null?` clip-path="url(#${u}cl)"`:'';
@@ -165,6 +171,7 @@ function svg(cfg,opts){
   +(holo?`<pattern id="${u}s" width="4" height="4" patternUnits="userSpaceOnUse"><rect width="4" height="1.3" fill="${holoc}"/></pattern>`:'')
   +(clipY!==null?`<clipPath id="${u}cl"><rect x="-40" y="${clipY}" width="280" height="400"/></clipPath>`:'')
   +(premium?`<radialGradient id="${u}ps" cx=".24" cy=".18" r=".95"><stop offset="0" stop-color="#ffe7b9" stop-opacity=".6"/><stop offset=".36" stop-color="${skin}" stop-opacity=".24"/><stop offset=".8" stop-color="${sd}" stop-opacity=".32"/><stop offset="1" stop-color="#090d17" stop-opacity=".32"/></radialGradient><linearGradient id="${u}pm" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fff2c6" stop-opacity=".8"/><stop offset=".45" stop-color="#f2c14e" stop-opacity=".95"/><stop offset=".72" stop-color="#ad7425" stop-opacity=".8"/><stop offset="1" stop-color="#ffe6a0" stop-opacity=".7"/></linearGradient><clipPath id="${u}pt"><path d="M78 102 C96 96 144 96 162 102 C168 108 168 118 164 128 C160 148 154 162 150 176 L90 176 C86 162 80 148 76 128 C72 118 72 108 78 102Z"/></clipPath>`:'')
+  +(layers?layers.defs:'')
   +`</defs>`+(scene!=='none'?scenes[scene]:'')
   +(c.aura!=='none'?`<g class="tlh-aura">${auras[c.aura]}</g>`:'')
   +`<g class="tlh-fig"><g transform="translate(60 -6) scale(0.6)">`
@@ -185,6 +192,7 @@ function svg(cfg,opts){
   +(premium?`<g class="tlh-premium-gear"><path d="M89 241 L92 300 M151 241 L148 300" stroke="#ffefc0" stroke-width="1.6" stroke-linecap="round" opacity=".25" fill="none"/><path d="M78 333 L108 333 M130 333 L160 333" stroke="url(#${u}pm)" stroke-width="1.6" stroke-linecap="round" opacity=".75" fill="none"/></g>`
    +(top?`<g class="tlh-premium-fabric"><path d="M92 112 Q98 118 100 138 M146 110 Q143 122 140 151 M101 177 Q120 179 140 177" fill="none" stroke="#fff" opacity=".16" stroke-width="2.2" stroke-linecap="round"/></g>`:'')
    +(co?`<g class="tlh-premium-coat"><path d="M81 110 Q87 106 101 107 L97 255 M159 110 Q152 106 139 107 L143 255" fill="none" stroke="url(#${u}pm)" stroke-width="1.8" stroke-linecap="round" opacity=".8"/><path d="M77 271 L98 276 M142 276 L163 271" fill="none" stroke="${co.a}" stroke-width="1.6" opacity=".75"/><path d="M91 143 l2 3 l-2 3 l-2 -3 Z M149 143 l2 3 l-2 3 l-2 -3 Z" fill="#f2c14e" opacity=".8"/></g>`:''):'')
+  +(layers?layers.outfit:'')
   +premiumDetails()
   +`<g transform="translate(60 -6) scale(0.6)">`
   +`<ellipse cx="62" cy="106" rx="5.5" ry="9.5" fill="${skin}" stroke="${INK}" stroke-width="2.6"/><ellipse cx="138" cy="106" rx="5.5" ry="9.5" fill="${sd}" stroke="${INK}" stroke-width="2.6"/>`
@@ -199,6 +207,7 @@ function svg(cfg,opts){
    +p(H.tex,`fill="none" stroke="${H.dash?hc[2]:hc[1]}" stroke-width="2" stroke-linecap="round"${H.dash?' stroke-dasharray="3 2"':''} opacity=".8"`)
    +(H.hi&&!cap&&!hoodUp?p(H.hi,H.hiSkin?'fill="#fff" opacity=".35"':`fill="${hc[2]}" opacity=".85"`):''):'')
   +premiumHairDetails()
+  +(layers?layers.hair:'')
   +(hijab?`<path d="M60 108 C56 66 78 46 100 46 C122 46 144 66 140 108" fill="none" stroke="${INK}" stroke-width="13" stroke-linecap="round"/><path d="M60 108 C56 66 78 46 100 46 C122 46 144 66 140 108" fill="none" stroke="${hd[0]}" stroke-width="8.5" stroke-linecap="round"/><path d="M64 136 C80 160 120 160 136 136 L156 178 C130 198 70 198 44 178Z" fill="${hd[0]}" stroke="${INK}" stroke-width="3"/><path d="M76 162 C92 170 108 170 124 162" fill="none" stroke="${hd[1]}" stroke-width="3"/>`:'')
   +(cap?`<path d="M58 80 C56 42 80 30 100 30 C120 30 144 42 142 80 C122 72 78 72 58 80Z" fill="${hd[0]}" stroke="${INK}" stroke-width="3.2" stroke-linejoin="round"/><path d="M100 30 L100 74" stroke="${hd[1]}" stroke-width="2.4"/><path d="M52 80 C78 70 122 70 148 80 C156 88 140 96 100 94 C60 96 44 88 52 80Z" fill="${hd[1]}" stroke="${INK}" stroke-width="3.2" stroke-linejoin="round"/><path d="M84 46 C92 40 104 40 112 44" stroke="#fff" stroke-width="3" fill="none" opacity=".35" stroke-linecap="round"/>`:'')
   +(hoodUp?`<path d="M56 120 C48 62 76 36 100 36 C124 36 152 62 144 120" fill="none" stroke="${INK}" stroke-width="15" stroke-linecap="round"/><path d="M56 120 C48 62 76 36 100 36 C124 36 152 62 144 120" fill="none" stroke="${tc[1]}" stroke-width="10" stroke-linecap="round"/>`:'')
