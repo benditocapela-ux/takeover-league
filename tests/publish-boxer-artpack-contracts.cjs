@@ -2,6 +2,14 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
 const {publish}=require('../tools/publish-boxer-artpack.cjs');
+const pagesWorkflow=fs.readFileSync('.github/workflows/takeover-pages-deploy.yml','utf8');
+assert.ok(pagesWorkflow.includes("node tools/publish-boxer-artpack.cjs _site"),
+ 'GitHub Pages release must actually invoke the artwork copier');
+assert.ok(pagesWorkflow.includes("'assets/boxer-artpacks/v1/**'"),
+ 'changing sprites must trigger an approved release build on main');
+assert.ok(pagesWorkflow.includes("branches: [main]"),
+ 'artifact shipping must retain the existing main-only deployment guard');
+
 const root=fs.mkdtempSync(path.join(os.tmpdir(),'takeover-art-release-'));
 const src=path.join(root,'source'),target=path.join(root,'_site');
 const png=(w=768,h=1216)=>{
