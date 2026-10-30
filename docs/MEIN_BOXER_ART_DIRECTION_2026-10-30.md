@@ -22,6 +22,8 @@ Die mobile Aufteilung ist fertig implementiert, nicht produktiv veröffentlicht.
 
 **Art pass 1:** Der existierende `TLHolo.svg`-Renderer erhält eine optionale `premium:true`-Ebene mit Gesicht-/Muskel-Schattierung, Stoffnähten, Mantel-Lichtkanten und Ausrüstungs-Glanz. Die Option ist **nur im Mein-Boxer-Editor** eingeschaltet. Auf öffentlichen Karten und im Kampfsystem bleibt der alte Renderer vorerst unverändert. Vorschauen verwenden die tatsächlichen Konfigurationswerte.
 
+**Art pass 2:** Die Ausrüstungsübersicht erhält den separaten, leichtgewichtigen SVG-Renderer `takeover-mein-boxer-items.js`. Kopf, Oberteile, Hosen, Handschuhe, Schuhe und Mäntel werden als eigene Game-Item-Grafiken mit Materialverläufen, Kantenlicht und Symbolen dargestellt, nicht mehr als beschnittene Ganzkörperfigur. Unterstützte Konfigurationen greifen auf dieselben Farb- und Werteschlüssel wie der Boxer zu; bei weiteren Slots bleibt der alte Renderer als Fallback bestehen. Einzelne Shop-Items verwenden dieselbe Darstellung. Ein echter Chromium-Test mit Mock-Login und gespeicherten Screenshots dient der Abnahme.
+
 **Abgrenzung:** Zusätzliche Vektordetails sind kein pixelgenauer Nachbau des aufwendig gemalten Anime-Boxers. Eine echte 1:1-Nachbildung würde gesondert gemalte, konsistente transparente Ebenen für Körper/Haare/Kleidung oder ein animierbares 2D/3D-Rig benötigen. Kein fixes PNG auf das Holo legen – das würde die individuellen Anpassungen visuell verfälschen.
 
 ## Technische Leitplanken
