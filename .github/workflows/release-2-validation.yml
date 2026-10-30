@@ -21,6 +21,7 @@ jobs:
       - run: node tests/holo-emote-podium-contracts.cjs
       - run: node tests/holo-gear-previews-contracts.cjs
       - run: node tests/mein-boxer-editor-art-contracts.cjs
+      - run: node tests/mein-boxer-artpack-contracts.cjs
       - run: node tests/design-foundation-check.cjs
       - run: node tests/redesign-all-pages.cjs
       - run: node tests/redesign-accessibility.cjs
