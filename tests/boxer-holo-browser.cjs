@@ -85,6 +85,18 @@ function injected(cfg){
  assert.equal(await x.p.locator('[data-set="bottom"] .mb-gear-art svg.mb-item-svg').count(),4,'Shorts und Hosen als eigenständige Bilder');
  assert.equal(await x.p.locator('[data-set="coatPick"] .mb-gear-art svg.mb-item-svg').count()>0,true,'Mantel als echtes Itembild');
  const stageBefore=await x.p.locator('.mb-preview svg.tlh').first().evaluate(el=>el.outerHTML);
+ // Mobile PWA: the character stays fixed even while the equipment list scrolls.
+ const fixedStage=await x.p.evaluate(()=>{
+  const stage=document.querySelector('.mb-stage'),list=document.querySelector('.mb-tabbody');
+  const first=stage.getBoundingClientRect().top;
+  list.scrollTop=180;
+  return {first,second:stage.getBoundingClientRect().top,scroll:list.scrollTop,overflow:getComputedStyle(list).overflowY};
+ });
+ assert.equal(fixedStage.overflow,'auto','equipment editor must scroll independently');
+ assert.ok(fixedStage.scroll>40,'equipment editor has real scrolling content');
+ assert.ok(Math.abs(fixedStage.second-fixedStage.first)<1,'boxer remains stationary while clothes scroll');
+ await shot(x.p,'holo-kleidung-scroll');
+
 
  assert.equal(await x.p.locator('[data-toggle="hood"]').count(),0,'no hood toggle without hoodie');
  await x.p.click('[data-set="top"][data-val="hoodie"]');
