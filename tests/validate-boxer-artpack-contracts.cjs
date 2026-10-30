@@ -31,10 +31,26 @@ try{
   eyes:{braun:'body/test.png'},hands:{wraps:'body/test.png'}};
  const approved={version:1,approved:true,canvas:{width:768,height:1216},poses:{cool:required}};
  assert.equal(validate(approved,root).checked,1);
+ assert.equal(validate(approved,root).maxOutfitBytes,5*33,'worst-case outfit cost counts each displayed slot');
  assert.equal(validate({...approved,approved:false},root).skipped,true);
+ assert.throws(()=>validate({...approved,approved:false,enabled:true},root),/cannot be enabled before approval/,
+  'the deployment validator refuses unsafe release flags');
  assert.throws(()=>validate({...approved,poses:{cool:{...required,body:{'6':'body/small.png'}}}},root),/Wrong dimensions/);
  assert.throws(()=>validate({...approved,poses:{cool:{...required,body:{'6':'body/opaque.png'}}}},root),/transparency/);
  assert.throws(()=>validate({...approved,poses:{cool:{...required,body:{'6':'..\/escape.png'}}}},root),/Invalid asset path/);
  assert.throws(()=>validate({...approved,poses:{cool:{...required,eyes:{}}}},root),/Missing required layer group/);
+ // Each asset is below the individual 2 MiB cap but the complete costume
+ // must also be lightweight enough for a mobile browser.
+ const slots=['coatBack','body','bottom','feet','top','eyes','hair','head','coatFront','hands'];
+ const expensive={};
+ for(let i=0;i<slots.length;i++){
+  const name='body/heavy'+i+'.png';
+  fs.writeFileSync(path.join(root,name),Buffer.concat([
+   makePng(768,1216),Buffer.alloc(768*1024)
+  ]));
+  expensive[slots[i]]={one:name};
+ }
+ assert.throws(()=>validate({...approved,poses:{cool:expensive}},root),
+  /Outfit exceeds mobile 6 MiB image budget/,'nine or ten art layers must have a total mobile budget');
 }finally{fs.rmSync(root,{recursive:true,force:true});}
 console.log('PASS: artpack checks dimensions, transparency flags, size, safe paths and manifest completeness');
