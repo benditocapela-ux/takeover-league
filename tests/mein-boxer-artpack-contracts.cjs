@@ -11,6 +11,13 @@ vm.runInContext(read('takeover-mein-boxer-artpack.js'),ctx);
 const H=ctx.window.TLHolo,AP=ctx.window.TLBoxerArtPacks;
 const html=read('mein-boxer.html'),css=read('takeover-mein-boxer.css');
 assert.equal(ctx.window.TLBoxerArtPackManifest.approved,false,'production art is not approved yet');
+assert.equal(ctx.window.TLBoxerArtPackManifest.enabled,false,'live artwork defaults to disabled');
+assert.ok(html.includes('artManifest?.approved===true&&artManifest?.enabled===true'),
+ 'live artwork requires separate approval and enablement flags');
+assert.ok(html.includes('const usePremiumArt=tryPremiumArt||livePremiumArt'),
+ 'approved artwork can be released independently of preview mode');
+assert.ok(html.includes('if(usePremiumArt&&!compareSvg'),
+ 'live and preview share one safe rendering path');
 assert.equal(AP.active.render(H.normalize(H.DEF),'guard'),null,'default editor still uses proven SVG');
 assert.ok(html.includes("new URLSearchParams(location.search).get('art')==='preview'"));
 assert.ok(html.includes("import('./takeover-mein-boxer-artpack.js')"));
