@@ -22,7 +22,13 @@ const say=(t,err)=>{
 await new Promise(r=>{const ok=()=>window.TLPerf&&window.TLHolo;if(ok())return r();const t=setInterval(()=>{if(ok()){clearInterval(t);r()}},30)});
 await import('./takeover-mein-boxer-items.js');
 await import('./takeover-mein-boxer-layers.js');
-const P=window.TLPerf,H=window.TLHolo,G=window.TLGearArt,esc=P.esc;
+await import('./takeover-mein-boxer-artpack-manifest.js');
+await import('./takeover-mein-boxer-artpack.js');
+const P=window.TLPerf,H=window.TLHolo,G=window.TLGearArt,A=window.TLBoxerArtPacks,esc=P.esc;
+// Manual preview opt-in only. Production uses the SVG Holo until asset artwork is approved.
+const tryPremiumArt=new URLSearchParams(location.search).get('art')==='preview';
+const heroArt=(config,pose)=>tryPremiumArt&&A&&A.active.render(H.normalize(config),pose)
+ ||H.svg(config,{pose,label:'Dein Boxer-Holo',premium:true,holo:false,layered:true});
 const COIN='<svg class="mb-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#ffcc33"/><circle cx="12" cy="12" r="8" fill="#e8a91a"/></svg>';
 const fmt=n=>Number(n||0).toLocaleString('de-CH');
 const OPT={
@@ -139,7 +145,7 @@ function render(){
  const tabs=[['koerper','Körper'],['kleidung','Kleidung'],['extras','Extras'],['posen','Posen'],['shop','Shop']];
  const tl=tryOn(),pose=previewPose==='card'?cfg.pose_card:cfg.pose_profile;
  app.innerHTML=`${data.preview?'<p class="tlp-note">Vorschau – für die Boxer sichtbar, sobald der Boxer-Holo freigeschaltet ist.</p>':''}
- <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span>Mein Boxer</span><a href="./boxer.html">Mein Studio</a></div><div class="mb-preview">${H.svg(cfg,{pose,label:'Dein Boxer-Holo',premium:true,holo:false,layered:true})}</div>
+ <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span>Mein Boxer</span><a href="./boxer.html">Mein Studio</a></div><div class="mb-preview">${heroArt(cfg,pose)}</div>
   <div class="mb-stage-bar"><span class="mb-pill">${previewPose==='card'?'Karten-Pose':'Profil-Pose'}</span>${data.shop?`<span class="mb-pill">${COIN}${fmt(data.coins)}</span>`:''}</div>
   <div class="mb-actions"><button type="button" class="mb-btn primary" id="saveBtn"${!dirty()||tl.length||busy?' disabled':''}>${tl.length?'Gesperrtes zuerst kaufen oder abwählen':dirty()?'Speichern':'Gespeichert'}</button>${dirty()?'<button type="button" class="mb-btn ghost" id="resetBtn">Änderungen verwerfen</button>':''}</div></div>
  <div class="mb-panel" data-active-tab="${tab}"><div class="mb-tabs" role="tablist" aria-label="Bereiche">${tabs.map(([k,l])=>`<button type="button" role="tab" class="mb-tab" data-tab="${k}" aria-selected="${tab===k}">${l}</button>`).join('')}</div>
@@ -161,6 +167,12 @@ async function load(){
  data=h.data;if(!data||!data.enabled)return;
  data.perf=perf.error?null:perf.data;
 }
+// If even one approved artwork file fails, redraw the complete SVG hero.
+app.addEventListener('error',e=>{
+ const img=e.target;
+ if(!img||!img.matches||!img.matches('.mb-preview .mb-artpack-img'))return;
+ if(A&&A.active.markFailed(img.getAttribute('src')))render();
+},true);
 app.addEventListener('click',async e=>{
  const t=e.target.closest('[data-tab]');if(t){tab=t.dataset.tab;confirmBuy=null;render();if(t.closest('.mb-tryon'))app.querySelector('.mb-tabbody')?.scrollTo({top:0,behavior:'smooth'});return}
  const s=e.target.closest('[data-set]');
