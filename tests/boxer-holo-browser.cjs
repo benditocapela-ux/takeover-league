@@ -453,7 +453,7 @@ function injected(cfg){
  }));
  x=await page({visualDemo:true,saved:draftCool});
  await x.p.goto(base+'mein-boxer.html?art=layers');
- await x.p.waitForSelector('#mb-draft-files');
+ await x.p.waitForSelector('#mb-draft-files',{state:'attached'});
  assert.equal(await x.p.locator('.mb-draft-artpack').count(),0,'no fake assets before local selection');
  await x.p.locator('#mb-draft-files').setInputFiles(draftFiles);
  await x.p.waitForSelector('.mb-draft-artpack .mb-artpack-img');
@@ -512,7 +512,7 @@ function injected(cfg){
  // in an explicitly labelled temporary review, with NO player data mutation.
  x=await page({visualDemo:true});
  await x.p.goto(base+'mein-boxer.html?art=layers');
- await x.p.waitForSelector('#mb-draft-files');
+ await x.p.waitForSelector('#mb-draft-files',{state:'attached'});
  await x.p.locator('#mb-draft-files').setInputFiles(draftFiles);
  await x.p.waitForSelector('.mb-draft-artpack img');
  await x.p.locator('.mb-draft-tools summary').click();
@@ -535,7 +535,7 @@ function injected(cfg){
  // A missing or malformed draft cannot create an incomplete visible costume.
  x=await page({visualDemo:true,saved:draftCool});
  await x.p.goto(base+'mein-boxer.html?art=layers');
- await x.p.waitForSelector('#mb-draft-files');
+ await x.p.waitForSelector('#mb-draft-files',{state:'attached'});
  await x.p.locator('#mb-draft-files').setInputFiles(draftFiles.slice(0,7));
  await x.p.waitForFunction(()=>document.querySelector('#status')?.textContent.includes('genau acht'));
  assert.equal(await x.p.locator('.mb-draft-artpack').count(),0,'seven assets never create a partial costume');
