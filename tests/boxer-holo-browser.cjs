@@ -354,6 +354,8 @@ function injected(cfg){
  x=await page({visualDemo:true,saved:artConfig});
  await x.p.goto(base+'mein-boxer.html?art=preview');
  await x.p.waitForSelector('.mb-preview svg.tlh');
+ assert.equal(await x.p.locator('.mb-art-debug').getAttribute('data-art-state'),'unapproved',
+  'preview explains that no production artpack has been approved');
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,'unapproved art cannot appear');
  await done(x);
 
@@ -363,11 +365,16 @@ function injected(cfg){
  await x.p.route('**/assets/boxer-artpacks/v1/**',r=>r.fulfill({status:200,contentType:'image/png',body:pixel}));
  await x.p.goto(base+'mein-boxer.html?art=preview');
  await x.p.waitForSelector('.mb-preview .mb-artpack-img');
+ assert.equal(await x.p.locator('.mb-art-debug').getAttribute('data-art-state'),'ready',
+  'preview reports a complete and loaded artpack');
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),9,'all nine required canvas layers');
  assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),0,'complete art pack replaces SVG');
  await x.p.click('[data-tab="kleidung"]');
  await x.p.click('[data-set="top"][data-val="hoodie"]');
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,'unpainted hoodie must not use shirt art');
+ assert.equal(await x.p.locator('.mb-art-debug').getAttribute('data-art-state'),'missing-layer',
+  'preview identifies unsupported clothing variant');
+ assert.match(await x.p.locator('.mb-art-debug').textContent(),/top:hoodie/);
  assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),1,'missing outfit returns whole SVG');
  await done(x);
 
@@ -381,6 +388,8 @@ function injected(cfg){
  });
  await x.p.goto(base+'mein-boxer.html?art=preview',{waitUntil:'domcontentloaded'});
  await x.p.waitForSelector('.mb-preview svg.tlh');
+ assert.equal(await x.p.locator('.mb-art-debug').getAttribute('data-art-state'),'loading',
+  'preview identifies a still-incomplete image preload');
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,
   'unloaded image layers may never appear as a partial outfit');
  await x.p.click('[data-tab="kleidung"]');
@@ -407,6 +416,7 @@ function injected(cfg){
  });
  await x.p.goto(base+'mein-boxer.html?art=preview');
  await x.p.waitForSelector('.mb-preview svg.tlh');
+ await x.p.waitForSelector('.mb-art-debug[data-art-state="load-failed"]');
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,'failed sprite removes entire partial art');
  await done(x);
 
