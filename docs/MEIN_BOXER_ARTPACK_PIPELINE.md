@@ -1,0 +1,84 @@
+# Takeover League · Anime-Art-Pipeline für «Mein Boxer»
+Stand: 30.10.2026 · Ergänzung zu Draft-PR #79
+
+## Ziel und Freigabestatus
+
+Die ursprüngliche Navy-/Gold-/Cyan-Vorlage mit ernstem Anime-Boxer, gekreuzten Armen und schwarz-goldener Ausrüstung ist **verbindlich**. Die aktuelle SVG-Figur ist die belastbare Rückfalllösung, aber kein fertiger Nachbau dieser Illustration. Externe Grafikpakete aus Scenario, Layer AI oder einer professionellen Illustration können eingebaut werden, ohne die bestehenden Supabase- und Shop-Funktionen zu ersetzen.
+
+**Zurzeit sind keine Produktions-Assets freigegeben.** Die Manifest-Datei `takeover-mein-boxer-artpack-manifest.js` steht deshalb auf `approved:false` und enthält keine Posen. In der publizierten App ändert sich am Boxer durch diese Pipeline nichts.
+
+## Exportvertrag für die Illustratorin / den Illustrator
+
+Alle Ebenen werden als **einzeln transparente PNG- oder WebP-Dateien** exportiert. Jede Datei muss denselben Bildausschnitt und dieselbe Positionierung besitzen:
+
+- **Canvas:** exakt 768 × 1216 Pixel, transparenter Hintergrund.
+- **Nullpunkt:** immer links oben bei (0, 0); keine automatische Zuschnittbox und kein Versetzen einzelner Ebenen.
+- **Pose:** Die aktuell benötigte Studio-Pose wird im Manifest mit dem vorhandenen Schlüssel bezeichnet, z. B. `cool`. Die gekreuzten Arme müssen in *allen* Layern exakt ausgerichtet sein. Andere Posen haben eigene vollständige Dateisätze.
+- **Zeichenstil:** stilisierter hochwertiger Anime-Boxer, nicht fotorealistisch, nicht rot-schwarz. Licht kommt konsistent von links oben. Kein Text oder eingebautes UI in Charakter-Layern.
+- **Farben:** Für jede angebotene Farbvariante wird eine passende Datei benötigt. Das Frontend färbt gemalte Texturen nicht willkürlich ein.
+- **Assets:** Nutzungsrechte für den öffentlichen, auch kommerziellen Website-Einsatz müssen geklärt sein. Keine ungeprüfte Verwendung fremder Marken oder geschützter Spielfiguren.
+
+### Z-Reihenfolge der Ebenen
+
+| Reihenfolge | Ebene | Varianten-Schlüssel (Beispiele) | Wann erforderlich? |
+|---|---|---|---|
+| 1 | `coatBack` | `samurai` | Mantel angelegt |
+| 2 | `body` | `0` bis `7` | Immer, mit passender Haut |
+| 3 | `bottom` | `boxer/schwarz` | Immer |
+| 4 | `feet` | `boots/schwarz` | Immer |
+| 5 | `top` | `shirt/schwarz`, `hoodie/schwarz/up` | Oberteil angelegt |
+| 6 | `eyes` | `braun` | Immer |
+| 7 | `hair` | `afro/schwarz` | Sichtbare Haare (nicht unter Hijab/hochgezogener Kapuze) |
+| 8 | `head` | `hijab/schwarz`, `cap/schwarz` | Kopfbedeckung |
+| 9 | `coatFront` | `samurai` | Mantel angelegt |
+| 10 | `hands` | `wraps`, `gloves/schwarzgold` | Immer |
+
+Der Körper-Layer enthält die für die gewählte Pose korrekten unbedeckten Körperpartien; Hände/Boxhandschuhe müssen die Arme korrekt überdecken. Für nicht vorhandene oder inkompatible Ebenen wird **die komplette SVG-Figur** gezeigt, nicht eine Mischung aus fremden Kleidungsstücken. Das verhindert, dass ein Nutzer beispielsweise einen roten Mantel auswählt, aber einen schwarzen sieht.
+
+**Noch nicht im Rasterpack unterstützt:** aktive Aura, Spezialaugen-Effekt oder nicht unterstützte Szenen. Die Auswahl bleibt möglich, wird dann aber aus dem bisherigen SVG-Renderer angezeigt.
+
+## Ablage und Manifest
+
+Die Dateien werden nach Freigabe unter `assets/boxer-artpacks/v1/` abgelegt. **Nur relative, kleingeschriebene Pfade auf `.png` oder `.webp` sind zulässig**; keine dynamischen URLs, Daten-URLs, externen Domains oder `../`.
+
+Beispiel für einen kompletten (!) Datenblock einer einzelnen Konfiguration:
+
+```js
+window.TLBoxerArtPackManifest = {
+  version: 1,
+  approved: true, // erst NACH Sicht- und Rechtefreigabe ändern
+  canvas: { width: 768, height: 1216 },
+  poses: {
+    cool: {
+      coatBack:  { samurai: 'coats/samurai-back.webp' },
+      body:      { '6': 'body/tone-6.webp' },
+      bottom:    { 'boxer/schwarz': 'bottom/boxer-black.webp' },
+      feet:      { 'boots/schwarz': 'feet/boots-black.webp' },
+      top:       { 'shirt/schwarz': 'top/shirt-black.webp' },
+      eyes:      { braun: 'eyes/brown.webp' },
+      hair:      { 'afro/schwarz': 'hair/afro-black.webp' },
+      coatFront: { samurai: 'coats/samurai-front.webp' },
+      hands:     { wraps: 'hands/wraps.webp' }
+    }
+  }
+};
+```
+
+Das ist nur ein **Schema-Beispiel**, keine bereits vorhandene Grafikdatei. Für die echte Produktion müssen alle im jeweiligen Menü anwendbaren Kombinationen erstellt beziehungsweise gewünschte Pakete bewusst begrenzt werden. Bis dahin bleibt der SVG-Renderer die Anzeige.
+
+## Integration & Tests
+
+- `takeover-mein-boxer-artpack.js`: `create(manifest)` prüft den Manifestvertrag, wählt exakt passende Layer und erzeugt nur dann den Bildstapel.
+- `takeover-mein-boxer.html`: existiert **nicht**; der tatsächliche Einstiegspunkt ist `mein-boxer.html`. Der Editor lädt die Module und nutzt neue Bilder ausschliesslich bei `?art=preview` **und** `approved:true`.
+- Bild-Ladefehler und unvollständige Outfits schalten automatisch auf den alten SVG-Boxer zurück.
+- Das bestehende Datenbankmodell, die gespeicherte Konfiguration und Kauf-/Besitzinformationen werden nicht geändert.
+- `tests/mein-boxer-artpack-contracts.cjs` prüft Varianten, Fallbacks, gültige Pfade und verbotene externen Ressourcen.
+- Browser-Tests müssen die weiterhin funktionierende mobile Bühne, den Outfitwechsel und fehlgeschlagene Bildladungen abdecken.
+
+## Freigabecheck
+
+1. Eine Musterfigur **direkt gegen die freigegebene Originalvorlage** prüfen; insbesondere Gesicht, Armhaltung, schwarze/goldene Materialien.
+2. Relevante Haar-, Haut- und Ausrüstungsvarianten auf deckungsgleicher 768×1216-Fläche exportieren und Rechte klären.
+3. Alle Ebenen im Testbranch ablegen, Manifest auf `approved:true` setzen, `?art=preview` verwenden.
+4. Browser-Screenshots kontrollieren, mobile Performance/Netzwerkvolumen messen, Save/Reset, Käufe und sichere Fallbacks testen.
+5. Erst nach ausdrücklicher Freigabe den Produktivmodus und dann PR #79 freigeben/mergen. **Kein automatisches Live-Deployment.**
