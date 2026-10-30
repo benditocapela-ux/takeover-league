@@ -500,6 +500,27 @@ function injected(cfg){
   return Number(getComputedStyle(under).zIndex)<Number(getComputedStyle(img).zIndex);
  });
  assert.equal(sketchLayerOrder,true,'reference pixels remain visually above draft anatomy');
+ await x.p.locator('#mb-underpaint-file').setInputFiles({
+  name:'artist-draft-body.png',mimeType:'image/png',buffer:makeTransparentReferencePng()
+ });
+ await x.p.waitForSelector('.mb-draft-underpaint-file');
+ assert.equal(await x.p.locator('.mb-draft-underpaint-file').getAttribute('src').then(x=>x.startsWith('blob:')),true,
+  'artist body remains on local object URL');
+ assert.equal(await x.p.locator('.mb-draft-underpaint').count(),1,
+  'new PNG replaces vector geometry rather than stacking duplicate bodies');
+ assert.equal(await x.p.locator('.mb-draft-artpack .mb-artpack-img').count(),7,
+  'new body is still behind seven unchanged original art masks');
+ assert.ok(!(await calls(x.p)).some(c=>c[0]==='save_my_holo'),
+  'importing a body drawing never saves or purchases an outfit');
+ await x.p.locator('.mb-draft-tools summary').click();
+ await shot(x.p,'holo-eight-layer-custom-body-png');
+ await x.p.locator('.mb-draft-tools summary').click();
+ await x.p.locator('[data-clear-underpaint]').click();
+ assert.equal(await x.p.locator('.mb-draft-underpaint-file').count(),0,
+  'artist may remove new body art with no persistent state change');
+ await x.p.locator('[data-draft-anatomy]').check();
+ assert.equal(await x.p.locator('.mb-draft-underpaint').count(),1,
+  'existing SVG tracing remains available after removing optional PNG');
  await x.p.locator('.mb-draft-tools summary').click();
  assert.equal(await x.p.locator('.mb-draft-tools').getAttribute('open'),null,
   'comparison screenshot must show the complete body instead of covering it with tools');
