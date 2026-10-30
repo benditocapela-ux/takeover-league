@@ -36,12 +36,15 @@ function create(win){
  const revoke=list=>{if(list)Object.values(list).forEach(url=>win.URL.revokeObjectURL(url))};
  function clear(){generation++;revoke(urls);urls=null;verified=null}
  function status(){return Object.freeze({ready:!!urls,layers:urls?NAMES.length:0,verified})}
- function render(config,pose,visibleLayers=NAMES){
+ function render(config,pose,visibleLayers=NAMES,showAnatomy=false){
   if(!urls||!compatible(config,pose))return null;
   // Only the fixed, verified slot names can select image sources.
+  // Optional cartoon-quality anatomy tracing is NEVER an approved sprite.
   const enabled=new Set(visibleLayers);
+  const draft=showAnatomy&&win.TLBoxerAnatomyBlockout?.approved===false
+   ?win.TLBoxerAnatomyBlockout.markup():'';
   return '<div class="mb-artpack mb-draft-artpack" role="img" aria-label="Originaler Anime-Cool-Referenzlook, Ebene für Ebene überprüfbar, nur Entwurf">'+
-   NAMES.filter(name=>enabled.has(name)).map((name,i)=>'<img class="mb-artpack-img" loading="eager" decoding="async" style="z-index:'+i+'" src="'+urls[name]+'" alt="" draggable="false">').join('')+'</div>';
+   draft+NAMES.filter(name=>enabled.has(name)).map((name,i)=>'<img class="mb-artpack-img" loading="eager" decoding="async" style="z-index:'+(i+1)+'" src="'+urls[name]+'" alt="" draggable="false">').join('')+'</div>';
  }
  async function load(files){
   const id=++generation;
