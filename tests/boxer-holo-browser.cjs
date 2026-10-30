@@ -401,7 +401,10 @@ function injected(cfg){
  await shot(x.p,'holo-artpack-debug-ready');
  const artCompare=x.p.locator('[data-art-compare]');
  assert.equal(await artCompare.count(),1,'comparison control appears only for approved preview assets');
- const configBefore=(await x.p.locator('[data-set="top"][data-val="shirt"]').count());
+ await x.p.click('[data-tab="kleidung"]');
+ const configBefore=await x.p.locator('[data-set="top"][data-val="shirt"]').getAttribute('aria-pressed');
+ const tabBefore=await x.p.locator('.mb-panel').getAttribute('data-active-tab');
+ assert.equal(configBefore,'true','the reference outfit has a selected shirt');
  await artCompare.focus();
  await x.p.keyboard.press('Enter');
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,
@@ -416,8 +419,10 @@ function injected(cfg){
  await artCompare.click();
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),9,
   'reviewer can switch back to preloaded premium layers immediately');
- assert.equal(await x.p.locator('[data-set="top"][data-val="shirt"]').count(),configBefore,
-  'art comparison does not remove outfit options');
+ assert.equal(await x.p.locator('[data-set="top"][data-val="shirt"]').getAttribute('aria-pressed'),configBefore,
+  'art comparison preserves the selected outfit');
+ assert.equal(await x.p.locator('.mb-panel').getAttribute('data-active-tab'),tabBefore,
+  'art comparison preserves the clothing tab');
  assert.ok(!(await calls(x.p)).some(c=>c[0]==='save_my_holo'),
   'reviewing graphics never writes the user configuration');
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),9,'all nine required canvas layers');
