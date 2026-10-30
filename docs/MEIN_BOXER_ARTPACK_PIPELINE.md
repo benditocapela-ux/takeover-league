@@ -97,3 +97,13 @@ Das Studio verändert weiter **keine** Server-Schnittstelle und bleibt als Draft
 - **Automatische Abnahme:** Der Chromium-Test simuliert Tastaturnavigation, Fokus- und Scrollpositionen, Speicherfehler, Kaufausfälle sowie Änderungen, während eine Speicheranforderung läuft. Ein zusätzliches GitHub-Review der Screenshots bleibt vor Merge erforderlich.
 
 Die Testsimulation ist kein Ersatz für einen eingeloggten iPhone-Safari-Praxistest. Die echten Premium-Illustrationen fehlen weiterhin.
+
+## Integrationstools für externe Game-Art (30.10.2026)
+
+Für die konkrete Übergabe an Illustratorinnen oder Game-Art-Plattformen gibt es zwei ergänzende Hilfen:
+
+1. **Im Browser:** Nur mit `mein-boxer.html?art=preview` erscheint am Charakter eine kleine Diagnose. Sie zeigt zuverlässig, ob das Paket nicht freigegeben ist, die Pose fehlt, ein bestimmtes Kleidungsstück nicht angelegt werden kann, die Ebenen noch laden oder eine Datei defekt ist. Der normale Editor zeigt keine Debug-Informationen.
+2. **Im Repository:** `node scripts/report-boxer-artpack.cjs` erstellt eine verständliche Liste der noch fehlenden Grafiken für den schwarz-goldenen Referenzboxer (9 Basisebenen) und zählt den Stand der ersten Ausbauwelle. `node scripts/report-boxer-artpack.cjs --json` liefert dieselben Informationen maschinenlesbar. Der Bericht liest die tatsächlich vorhandenen Hautton-, Frisuren- und Augenfarben-Schlüssel aus dem gemeinsamen Holo-Renderer; keine frei erfundenen IDs.
+3. **Vor Freigabe:** Mit `node scripts/validate-boxer-artpack.cjs` werden die realen Dateien geprüft. Ein Manifest-Eintrag oder grüner Abdeckungsbericht allein beweist noch nicht, dass die Grafiken existieren oder optisch richtig ausgerichtet sind.
+
+**Nicht mitgeliefert:** hochwertige externe Anime-Grafiken; diese bleiben ein bewusst offener visueller Meilenstein. Eine nicht vorhandene Grafik wird weder durch ein beliebiges generiertes Bild noch durch das bestehende SVG als neues Premium-Asset ausgegeben.
