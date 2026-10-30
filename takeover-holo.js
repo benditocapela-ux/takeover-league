@@ -121,6 +121,17 @@ function svg(cfg,opts){
   +(a.tsl?`<path d="${a.tsl}" fill="none" stroke="${INK}" stroke-width="${(top.w||19)+4}" stroke-linecap="round" stroke-linejoin="round"/><path d="${a.tsl}" fill="none" stroke="${tc[0]}" stroke-width="${top.w||19}" stroke-linecap="round" stroke-linejoin="round"/>`+(top.stripe?`<path d="${a.tsl}" fill="none" stroke="${tc[2]}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>`:''):'')
   +(a.csl?`<path d="${a.csl}" fill="none" stroke="${INK}" stroke-width="${co.short?28:24}" stroke-linecap="round" stroke-linejoin="round"/><path d="${a.csl}" fill="none" stroke="${co.c}" stroke-width="${co.short?24:20}" stroke-linecap="round" stroke-linejoin="round"/>`:'')+hand(a,thumbUp);
  const eye=mirror=>`<g${mirror?' transform="translate(200 0) scale(-1 1)"':''}><path d="M71.5 102 C77 98 88 97.5 95.5 100.5 C95 106 93 111 88 113 C81 114.5 75 112 71.5 107Z" fill="#fff"/><ellipse cx="84" cy="106" rx="7" ry="8.6" fill="url(#${u}i)"/>${fx?`<circle cx="84" cy="106" r="7.6" fill="none" stroke="${fx[3]}" stroke-width="1.6" opacity=".95"/>`:''}<path d="${PUP[c.eyefx]||PUP.none}" fill="${ev[1]}"/><circle cx="${mirror?86.6:81.4}" cy="102.8" r="2.6" fill="#fff"/><circle cx="${mirror?80.6:87.4}" cy="110.2" r="1.3" fill="#fff"/><path d="M70 99 C75 93 87 92 96 97 L97 100.6 C88 96.6 77 97.6 71.5 102.6Z M70.5 99.5 L64 96.5 L71.5 102.6Z" fill="${INK}"/><path d="M69 87 C77 85.6 88 87.4 96 91.6" fill="none" stroke="${INK}" stroke-width="3.4" stroke-linecap="round"/></g>`;
+ // Premium edit-mode eye anatomy; preserve dynamic iris colours.
+ const premiumEye=mirror=>`<g class="tlh-premium-eyes"${mirror?' transform="translate(200 0) scale(-1 1)"':''}>
+ <path d="M70 101 Q80 96 97 98 Q91 109 75 109 Q72 107 70 101Z" fill="#f5e8da" stroke="${INK}" stroke-width="2" stroke-linejoin="round"/>
+ <ellipse cx="85" cy="103.5" rx="4.7" ry="5.4" fill="url(#${u}i)"/>
+ <ellipse cx="85" cy="104" rx="2.6" ry="4.1" fill="${ev[1]}"/>
+ <path d="M71 99 C78 95 88 94 97 98 L96 102 Q83 99 73 104Z" fill="${INK}"/>
+ <path d="M72 108 Q83 113 95 107" fill="none" stroke="${sd}" stroke-width="1.5" opacity=".9"/>
+ <circle cx="82.8" cy="101.4" r="1.7" fill="#fff" opacity=".9"/>
+ <path d="M69 90 Q79 84 96 91" fill="none" stroke="${INK}" stroke-width="5" stroke-linecap="round"/>
+ <path d="M72 89 Q81 86 93 90" fill="none" stroke="${hc[1]}" stroke-width="1.8" stroke-linecap="round" opacity=".7"/>
+ </g>`;
  const strandSvg=(d,w,dash)=>d?`<path d="${d}" fill="none" stroke="${INK}" stroke-width="${w+3.4}" stroke-linecap="round"/><path d="${d}" fill="none" stroke="url(#${u}h)" stroke-width="${w}" stroke-linecap="round"${dash?' stroke-dasharray="5 2.2"':''}/><path d="${d}" fill="none" stroke="${hc[2]}" stroke-width="1.3" stroke-linecap="round" opacity=".45"/>`:'';
  const scenes={
   dojo:`<rect width="240" height="380" fill="#efe2c4"/><path d="M0 0 H240 V300 H0Z M60 0 V300 M120 0 V300 M180 0 V300 M0 75 H240 M0 150 H240 M0 225 H240" fill="none" stroke="#8a5a32" stroke-width="5"/><rect y="292" width="240" height="88" fill="#6b4224"/><path d="M0 312 H240 M0 334 H240 M0 358 H240" stroke="#4a2b14" stroke-width="2"/>`,
@@ -169,7 +180,7 @@ function svg(cfg,opts){
   +`<path d="M62 92 C62 60 80 46 100 46 C120 46 138 60 138 92 C138 116 130 133 117 146 L104 157 C101.5 159 98.5 159 96 157 L83 146 C70 133 62 116 62 92Z" fill="${skin}" stroke="${INK}" stroke-width="3.4" stroke-linejoin="round"/><path d="M138 92 C138 116 130 133 117 146 L104 157 C113 140 123 123 127 100Z" fill="${sd}" opacity=".6"/>`
   +(premium?`<path d="M67 112 C74 118 82 121 89 121 M111 121 C119 120 128 117 134 111 M72 126 C80 133 86 137 91 138 M109 138 C118 137 125 132 130 126" fill="none" stroke="${sd}" stroke-width="3" stroke-linecap="round" opacity=".32"/><path d="M72 96 Q82 91 94 96 M106 96 Q118 91 129 96" fill="none" stroke="#16121b" stroke-width="2.4" stroke-linecap="round" opacity=".7"/>`:'')
   +(showHair&&c.hair!=='glatze'?`<path d="M64 94 C80 103 120 103 136 94 L136 103 C120 111 80 111 64 103Z" fill="${sd}" opacity=".5"/>`:'')
-  +eye(false)+eye(true)
+  +(premium?premiumEye(false)+premiumEye(true):eye(false)+eye(true))
   +`<path d="M100.5 116 L97.6 123 L101.2 123.6" fill="none" stroke="${sd}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/><path d="${pose.m}" fill="none" stroke="#4a1a22" stroke-width="2.8" stroke-linecap="round"/>`
   +(band?`<path d="M62 80 C80 72 120 72 138 80 L138 90 C120 82 80 82 62 90Z" fill="${hd[0]}" stroke="${INK}" stroke-width="2.6"/>`:'')
   +(showHair?p(H.front,`fill="url(#${u}h)" stroke="${INK}" stroke-width="3.2" stroke-linejoin="round"`)+p(H.front2,`fill="url(#${u}h)" stroke="${INK}" stroke-width="3" stroke-linejoin="round"`)
