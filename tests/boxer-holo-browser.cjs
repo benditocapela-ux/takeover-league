@@ -240,6 +240,60 @@ function injected(cfg){
   'afro uses head-aligned hair layer');
  await done(x);
 
+ // Art-pack integration is opt-in and can never show a partial costume.
+ // Fixture PNG data stays in the browser test, not in the repository or site.
+ const artConfig={
+  tone:6,hair:'afro',hc:'schwarz',eye:'braun',head:'none',top:'shirt',topc:'schwarz',
+  bottom:'boxer',bottomc:'schwarz',feet:'boots',feetc:'schwarz',coat:'samurai',
+  hands:'wraps',aura:'none',eyefx:'none',scene:'holo',pose_profile:'cool'
+ };
+ const partNames={
+  coatBack:{samurai:'coats/back.png'},
+  body:{'6':'body/tone6.png'},
+  bottom:{'boxer/schwarz':'bottom/shorts.png'},
+  feet:{'boots/schwarz':'feet/boots.png'},
+  top:{'shirt/schwarz':'top/shirt.png'},
+  eyes:{braun:'eyes/brown.png'},
+  hair:{'afro/schwarz':'hair/afro.png'},
+  coatFront:{samurai:'coats/front.png'},
+  hands:{wraps:'hands/wraps.png'}
+ };
+ const testManifest={version:1,approved:true,canvas:{width:768,height:1216},poses:{cool:partNames}};
+ const fixtureArt='window.TLBoxerArtPackManifest='+JSON.stringify(testManifest)+';';
+ const pixel=Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO/uAKQAAAAASUVORK5CYII=','base64');
+ // Even with an explicit preview URL, the shipping manifest is not approved.
+ x=await page({visualDemo:true,saved:artConfig});
+ await x.p.goto(base+'mein-boxer.html?art=preview');
+ await x.p.waitForSelector('.mb-preview svg.tlh');
+ assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,'unapproved art cannot appear');
+ await done(x);
+
+ // A complete, approved fixture composes image layers on the fixed stage.
+ x=await page({visualDemo:true,saved:artConfig});
+ await x.p.route('**/takeover-mein-boxer-artpack-manifest.js',r=>r.fulfill({status:200,contentType:'text/javascript',body:fixtureArt}));
+ await x.p.route('**/assets/boxer-artpacks/v1/**',r=>r.fulfill({status:200,contentType:'image/png',body:pixel}));
+ await x.p.goto(base+'mein-boxer.html?art=preview');
+ await x.p.waitForSelector('.mb-preview .mb-artpack-img');
+ assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),9,'all nine required canvas layers');
+ assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),0,'complete art pack replaces SVG');
+ await x.p.click('[data-tab="kleidung"]');
+ await x.p.click('[data-set="top"][data-val="hoodie"]');
+ assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,'unpainted hoodie must not use shirt art');
+ assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),1,'missing outfit returns whole SVG');
+ await done(x);
+
+ // A single failed external image also recovers to full SVG automatically.
+ x=await page({visualDemo:true,saved:artConfig});
+ await x.p.route('**/takeover-mein-boxer-artpack-manifest.js',r=>r.fulfill({status:200,contentType:'text/javascript',body:fixtureArt}));
+ await x.p.route('**/assets/boxer-artpacks/v1/**',r=>{
+  if(r.request().url().endsWith('/coats/front.png'))return r.fulfill({status:404,contentType:'text/plain',body:'missing'});
+  return r.fulfill({status:200,contentType:'image/png',body:pixel});
+ });
+ await x.p.goto(base+'mein-boxer.html?art=preview');
+ await x.p.waitForSelector('.mb-preview svg.tlh');
+ assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,'failed sprite removes entire partial art');
+ await done(x);
+
  // Profil: Holo statt Kampfgeist-Karte, Karte mit Holo
  x=await page({});
  await x.p.goto(base+'boxer-profile.html?name=Anna');
