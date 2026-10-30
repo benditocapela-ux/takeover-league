@@ -317,3 +317,21 @@ body[data-tl-screen="mein-boxer"] .mb-gear-chip{
     flex:0 0 clamp(370px,51dvh,448px);
   }
 }
+
+/* Art pass 3 · wider boxer proportions without stretching the stage or icons.
+   Only the editable hero pose is affected; public player cards remain identical. */
+body[data-tl-screen="mein-boxer"] .mb-preview svg.tlh .tlh-fig{
+  transform:scaleX(1.20);
+  transform-origin:50% 50%;
+  animation:none;
+}
+body[data-tl-screen="mein-boxer"] .mb-stage .mb-preview::before{
+  background:
+    radial-gradient(ellipse 23% 80% at 50% 50%,#f2c14e19,transparent 95%),
+    radial-gradient(ellipse 42% 82% at 50% 55%,#53c6ff12,transparent 98%);
+}
+@media(max-width:819px){
+  body[data-tl-screen="mein-boxer"] .mb-preview svg.tlh{
+    filter:drop-shadow(0 0 6px #f2c14e3e);
+  }
+}
