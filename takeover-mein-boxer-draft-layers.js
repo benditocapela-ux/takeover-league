@@ -6,6 +6,11 @@
 'use strict';
 const NAMES=Object.freeze(['coatBack','body','bottom','feet','eyes','hair','coatFront','hands']);
 const MAX_FILE=2*1024*1024;
+const REFERENCE=Object.freeze({
+ tone:6,hair:'afro',hc:'schwarz',eye:'braun',head:'none',top:'none',
+ coat:'samurai',bottom:'boxer',bottomc:'schwarz',feet:'boots',feetc:'schwarz',
+ hands:'wraps',aura:'none',eyefx:'none',scene:'holo'
+});
 function compatible(cfg,pose){
  if(pose!=='cool'||!cfg)return false;
  return cfg.tone===6&&cfg.hair==='afro'&&cfg.hc==='schwarz'&&
@@ -20,10 +25,12 @@ function create(win){
  const revoke=list=>{if(list)Object.values(list).forEach(url=>win.URL.revokeObjectURL(url))};
  function clear(){generation++;revoke(urls);urls=null}
  function status(){return Object.freeze({ready:!!urls,layers:urls?NAMES.length:0})}
- function render(config,pose){
+ function render(config,pose,visibleLayers=NAMES){
   if(!urls||!compatible(config,pose))return null;
-  return '<div class="mb-artpack mb-draft-artpack" role="img" aria-label="Acht Bildschichten der originalen Anime-Cool-Pose, nur Entwurf">'+
-   NAMES.map((name,i)=>'<img class="mb-artpack-img" loading="eager" decoding="async" style="z-index:'+i+'" src="'+urls[name]+'" alt="" draggable="false">').join('')+'</div>';
+  // Only the fixed, verified slot names can select image sources.
+  const enabled=new Set(visibleLayers);
+  return '<div class="mb-artpack mb-draft-artpack" role="img" aria-label="Originaler Anime-Cool-Referenzlook, Ebene für Ebene überprüfbar, nur Entwurf">'+
+   NAMES.filter(name=>enabled.has(name)).map((name,i)=>'<img class="mb-artpack-img" loading="eager" decoding="async" style="z-index:'+i+'" src="'+urls[name]+'" alt="" draggable="false">').join('')+'</div>';
  }
  async function load(files){
   const id=++generation;
@@ -53,7 +60,7 @@ function create(win){
    return status();
   }catch(e){revoke(incoming);throw e}
  }
- return Object.freeze({load,clear,status,render,compatible});
+ return Object.freeze({load,clear,status,render,compatible,reference:REFERENCE});
 }
-window.TLBoxerDraftPreview=Object.freeze({create,compatible,NAMES});
+window.TLBoxerDraftPreview=Object.freeze({create,compatible,NAMES,REFERENCE});
 })();
