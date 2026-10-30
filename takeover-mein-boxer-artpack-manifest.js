@@ -7,6 +7,8 @@
 window.TLBoxerArtPackManifest=Object.freeze({
  version:1,
  approved:false,
+ // Independent release switch. Keep false until visual, performance and rights approval.
+ enabled:false,
  canvas:{width:768,height:1216},
  poses:{}
 });
