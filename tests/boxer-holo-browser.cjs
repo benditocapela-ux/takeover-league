@@ -54,7 +54,7 @@ function injected(cfg){
  const browser=await chromium.launch();
  const shot=async(p,n,full)=>{if(process.env.SHOTS)await p.screenshot({path:process.env.SHOTS+'/'+n+'.png',fullPage:full!==false})};
  async function page(cfg){
-  const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:'reduce'});
+  const context=await browser.newContext({viewport:{width:cfg.testWidth||390,height:cfg.testHeight||844},reducedMotion:'reduce'});
   await context.addInitScript({content:'('+injected.toString()+')('+JSON.stringify(Object.assign({items:ITEMS},cfg))+')'});
   const p=await context.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
   await p.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm',r=>r.fulfill({status:200,contentType:'text/javascript',body:'export const createClient=()=>window.__takeoverMockClient;'}));
@@ -171,6 +171,36 @@ function injected(cfg){
  saved=(await calls(x.p)).filter(c=>c[0]==='save_my_holo')[1][1].p_config;
  assert.equal(saved.aura,'flamme');assert.equal(saved.coat,'drache');assert.equal(saved.pose_card,'flex');assert.equal(saved.pose_profile,'ansage');
  await done(x);
+
+ // Responsive locked-stage checks on small and tall mobile devices.
+ for(const [width,height] of [[360,640],[375,667],[430,932]]){
+  const test=await page({testWidth:width,testHeight:height,visualDemo:true,saved:{
+   tone:6,hair:'afro',top:'shirt',topc:'schwarz',bottom:'boxer',bottomc:'schwarz',
+   coat:'samurai',feet:'boots',feetc:'schwarz',pose_profile:'cool'
+  }});
+  await test.p.goto(base+'mein-boxer.html');
+  await test.p.waitForSelector('.mb-preview svg.tlh');
+  await test.p.click('[data-tab="kleidung"]');
+  const dimensions=await test.p.evaluate(()=>{
+   const stage=document.querySelector('.mb-stage'),panel=document.querySelector('.mb-panel');
+   const body=document.querySelector('.mb-tabbody'),figure=document.querySelector('.mb-preview svg.tlh');
+   const r=stage.getBoundingClientRect(),p=panel.getBoundingClientRect(),f=figure.getBoundingClientRect();
+   const listBefore=body.scrollTop;
+   body.scrollTop=145;
+   return {stageTop:r.top,stageBottom:r.bottom,panelTop:p.top,panelHeight:p.height,
+    figLeft:f.left,figRight:f.right,screenWidth:innerWidth,
+    stageStill:stage.getBoundingClientRect().top===r.top,listScrolled:body.scrollTop>listBefore,
+    contentOverflow:getComputedStyle(body).overflowY};
+  });
+  assert.ok(dimensions.stageStill,'boxer fixed at '+width+'×'+height);
+  assert.ok(dimensions.panelHeight>=115,'choices remain usable at '+width+'×'+height+': '+JSON.stringify(dimensions));
+  assert.ok(dimensions.stageBottom<=dimensions.panelTop+2,'stage never overlays item tabs');
+  assert.equal(dimensions.contentOverflow,'auto');
+  assert.ok(dimensions.listScrolled,'equipment choices can scroll at '+width+'×'+height);
+  assert.ok(dimensions.figLeft>=-1&&dimensions.figRight<=width+1,'figure fits screen at '+width+'×'+height);
+  await shot(test.p,'holo-responsive-'+width+'x'+height);
+  await done(test);
+ }
 
  // Flag aus
  x=await page({off:true});
