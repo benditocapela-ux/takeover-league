@@ -17,6 +17,7 @@ function create(manifest){
   m.poses&&typeof m.poses==='object'&&!Array.isArray(m.poses);
  const failed=new Set();
  const stats={attempted:0,matched:0};
+ const loaded=new Set(),pending=new Map(),notifying=new Set();
  function choose(config,pose){
   stats.attempted++;
   if(!valid||typeof pose!=='string'||!/^[a-z0-9_-]{1,32}$/.test(pose)||!OWN(m.poses,pose))return null;
@@ -54,6 +55,34 @@ function create(manifest){
   stats.matched++;
   return selected;
  }
+ // Atomic swap: show the original SVG until every image in this outfit
+ // has finished loading. One failed layer invalidates the whole artwork.
+ function prepare(config,pose,onReady){
+  const layers=choose(config,pose);
+  if(!layers)return false;
+  const urls=[...new Set(layers.map(layer=>layer.src))];
+  if(urls.every(url=>loaded.has(url)))return true;
+  if(typeof window.Image!=='function')return false;
+  const tasks=urls.map(url=>{
+   if(loaded.has(url))return Promise.resolve(true);
+   if(!pending.has(url)){
+    const pic=new window.Image();
+    const task=new Promise(resolve=>{
+     pic.onload=()=>{loaded.add(url);resolve(true)};
+     pic.onerror=()=>{failed.add(url);resolve(false)};
+     pic.src=url;
+    }).finally(()=>pending.delete(url));
+    pending.set(url,task);
+   }
+   return pending.get(url);
+  });
+  const key=urls.join('|');
+  if(typeof onReady==='function'&&!notifying.has(key)){
+   notifying.add(key);
+   Promise.all(tasks).then(()=>{notifying.delete(key);onReady()});
+  }
+  return false;
+ }
  function render(config,pose){
   const layers=choose(config,pose);
   if(!layers)return null;
@@ -69,7 +98,7 @@ function create(manifest){
   failed.add(url);
   return true;
  }
- return Object.freeze({render,choose,markFailed,stats});
+ return Object.freeze({render,choose,prepare,markFailed,stats});
 }
 window.TLBoxerArtPacks=Object.freeze({
  create,active:create(window.TLBoxerArtPackManifest)
