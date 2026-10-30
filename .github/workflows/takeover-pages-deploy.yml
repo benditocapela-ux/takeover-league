@@ -10,6 +10,9 @@ on:
       - '*.woff'
       - 'manifest.webmanifest'
       - 'avatars/**'
+      - 'assets/boxer-artpacks/v1/**'
+      - 'tools/publish-boxer-artpack.cjs'
+      - 'scripts/validate-boxer-artpack.cjs'
       - 'tools/build-news.cjs'
       - '.github/workflows/takeover-pages-deploy.yml'
   workflow_dispatch:
@@ -50,6 +53,9 @@ jobs:
             test -s "_site/${font}.woff"
           done
           cp -R avatars _site/avatars
+          # Ship only approved, referenced premium character sprites. Never copy
+          # draft art, source references or unused media into the public site.
+          node tools/publish-boxer-artpack.cjs _site
           rm -f _site/challenges-v2-preview.html _site/duels-v2-preview.html _site/league2-preview.html
           touch _site/.nojekyll
           # Etappe 7b: Neuigkeiten aus den «## News»-Abschnitten gemergter PRs (Fehler hier stoppen das Deployment nicht).
