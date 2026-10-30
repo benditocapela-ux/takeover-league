@@ -145,7 +145,7 @@ jobs:
           node-version: '22'
       - run: npm install --no-save --package-lock=false playwright@1.56.1
       - run: npx playwright install --with-deps ${{ matrix.browser }}
-      - name: Verify all 32 modular draft outfits with repository PNGs
+      - name: Verify 32 outfits and anatomical glove pixel regressions
         env:
           BROWSER: ${{ matrix.browser }}
           SHOTS: ${{ runner.temp }}/modular-art-shots
@@ -156,6 +156,8 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: modular-art-${{ matrix.browser }}
-          path: ${{ runner.temp }}/modular-art-shots/*.png
+          path: |
+            ${{ runner.temp }}/modular-art-shots/*.png
+            ${{ runner.temp }}/modular-art-shots/*-glove-pixels.json
           if-no-files-found: ignore
           retention-days: 14

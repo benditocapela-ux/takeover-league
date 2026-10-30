@@ -45,13 +45,13 @@
     "file": "hair-short.png"
   },
   {
-    "bytes": 83122,
-    "sha256": "6b5ae8dca73191f4e823577b616cf9e76149d4031e913cc951a9439871a52102",
+    "bytes": 60549,
+    "sha256": "506fa20305d31bd7dc6cedfa52e9517f42046f520102c58e4f264b9c1561069f",
     "file": "hands-blackgold.png"
   },
   {
-    "bytes": 84908,
-    "sha256": "d8583009e61945f7d16106cfa76cf9f1dd5250c461d43e99042abb61bd0ae0c3",
+    "bytes": 61767,
+    "sha256": "641c0c384b0bbd28ed02ec4d6b10d97fac7ddd27e19899cc8bee11bfe7dc73ae",
     "file": "hands-white.png"
   },
   {

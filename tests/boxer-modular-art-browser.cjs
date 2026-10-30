@@ -89,6 +89,22 @@ const server=http.createServer((req,res)=>{
    await noWrites(x.p);await x.context.close();
 
    x=await page();await x.p.goto(base+'/mein-boxer.html?art=modular');await ready(x.p);
+   const glovePixels=await require('./boxer-glove-pixels.cjs')(x.p,base);
+   for(const report of glovePixels.reports){
+    assert.ok(report.wrists.every(p=>p.min>220),'both cuffs cover body-derived wrist anchors');
+    assert.ok(report.hands.every(p=>p.min>220),'gloves cover original bare fingertips/hand centres');
+    assert.ok(report.forearm.every(p=>p.max<16),'foreground forearm stays uncovered by the glove sprites');
+    const [rear,front]=report.boxes;
+    assert.ok(rear.left>=235&&rear.right<=360&&rear.top>=305&&rear.bottom<=390&&rear.area>3500&&rear.area<6000,'rear glove fits the outer hand and stops at the foreground arm');
+    assert.ok(front.left>=390&&front.right<=535&&front.top>=305&&front.bottom<=420&&front.area>6000&&front.area<9000,'front glove fits opposite wrist without covering the lower arm');
+   }
+   assert.ok(glovePixels.iou>.96,'colour variants share at least 96% alpha silhouette overlap');
+   for(let i=0;i<2;i++){
+    const a=glovePixels.reports[0].boxes[i],b=glovePixels.reports[1].boxes[i];
+    assert.ok(Math.hypot(a.cx-b.cx,a.cy-b.cy)<1.5,'variant swap does not move either glove');
+    for(const key of ['left','top','right','bottom'])assert.ok(Math.abs(a[key]-b[key])<=2,'variant contour bounds remain registered');
+   }
+   if(process.env.SHOTS)fs.writeFileSync(path.join(process.env.SHOTS,engine+'-glove-pixels.json'),JSON.stringify(glovePixels,null,2));
    assert.equal(await x.p.locator('#saveBtn').isDisabled(),true,'draft URL does not change saved outfit');
    const stable=await x.p.locator('.mb-preview').boundingBox();
    let combinations=0;const contact=[],geometryErrors=[];
@@ -142,6 +158,37 @@ const server=http.createServer((req,res)=>{
    assert.ok(desktop.width>100&&desktop.height>100&&desktop.contained&&desktop.noOverflow,'desktop stage contains full canvas: '+JSON.stringify(desktop));
    await shot(x.p,'modular-desktop-1440x900');await noWrites(x.p);assert.deepEqual(x.errors,[]);await x.context.close();
 
+   // Focused visual matrix: both gloves × coat × tank × mobile/desktop.
+   // Compare the assembled central forearm against the original body pixels;
+   // a displaced glove or incorrectly opaque tank/coat must not repaint it.
+   for(const viewport of [{width:390,height:844},{width:1440,height:900}]){
+    x=await page();await x.p.setViewportSize(viewport);await x.p.goto(base+'/mein-boxer.html?art=modular');await ready(x.p);
+    for(const coat of [false,true])for(const top of ['none','tank'])for(const glove of ['schwarzgold','weiss']){
+     await x.p.evaluate(({coat,top,glove})=>{
+      document.querySelector('.mb-tabs [data-tab="kleidung"]').click();
+      document.querySelector('[data-set="top"][data-val="'+top+'"]').click();
+      document.querySelector('[data-set="glove"][data-val="'+glove+'"]').click();
+      if(coat)document.querySelector('[data-set="coatPick"][data-val="samurai"]').click();
+      else if(document.querySelector('[data-toggle="coat"]').getAttribute('aria-pressed')==='true')document.querySelector('[data-toggle="coat"]').click();
+     },{coat,top,glove});await ready(x.p);
+     const arm=await x.p.evaluate(()=>{
+      const imgs=[...document.querySelectorAll('.mb-preview .mb-artpack-img')];
+      const c=document.createElement('canvas');c.width=768;c.height=1216;const g=c.getContext('2d');
+      g.drawImage(imgs.find(i=>i.dataset.artSlot==='body'),0,0);const body=g.getImageData(0,0,768,1216).data;
+      g.clearRect(0,0,768,1216);for(const i of imgs)g.drawImage(i,0,0);const all=g.getImageData(0,0,768,1216).data;
+      let delta=0;for(const [x,y] of [[360,407],[382,402],[366,399],[375,395]])for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++)for(let k=0;k<4;k++){const idx=((y+dy)*768+x+dx)*4+k;delta=Math.max(delta,Math.abs(all[idx]-body[idx]))}
+      const crop=document.createElement('canvas');crop.width=1140;crop.height=705;crop.getContext('2d').drawImage(c,190,245,380,235,0,0,1140,705);
+      const box=imgs[0].getBoundingClientRect();return {delta,crop:crop.toDataURL().split(',')[1],width:box.width,height:box.height};
+     });
+     assert.ok(arm.width>100&&arm.height>100,'focused outfit has visible dimensions');
+     assert.equal(arm.delta,0,'coat/tank/gloves preserve foreground forearm at marked skin probes');
+     const name=`gloves-${viewport.width}-${coat?'coat':'bare'}-${top}-${glove}`;
+     await shot(x.p,name);
+     if(process.env.SHOTS)fs.writeFileSync(path.join(process.env.SHOTS,engine+'-'+name+'-arms.png'),Buffer.from(arm.crop,'base64'));
+    }
+    await noWrites(x.p);assert.deepEqual(x.errors,[]);await x.context.close();
+   }
+
    // Delay one real PNG request while choosing its variant. Keep complete SVG
    // until that request finishes, even though the other files are already cached.
    x=await page();let release,seen;
@@ -163,7 +210,7 @@ const server=http.createServer((req,res)=>{
    assert.match(await x.p.locator('.mb-art-debug').innerText(),/Entwurf – nicht freigegeben/);
    await shot(x.p,'modular-missing-fallback');await noWrites(x.p);assert.deepEqual(x.errors,[]);await x.context.close();
    assert.deepEqual(geometryErrors,[],'outfit changes keep stage stable');
-   console.log('PASS '+engine+': 32 real-PNG combinations, 768×1216 registration, stable mobile stage, unobscured head and draft badge, desktop 1440×900, default unchanged, atomic variant load, missing-image SVG fallback');
+   console.log('PASS '+engine+': 32 outfits + 16 focused glove views; wrist/hand coverage, clear forearm pixels, variant alpha alignment, mobile/desktop, atomic load and SVG fallback');
   }finally{await browser.close()}
  }}finally{await new Promise(r=>server.close(r))}
 })().catch(e=>{console.error(e);process.exitCode=1});

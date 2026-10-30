@@ -8,6 +8,10 @@ for(const file of ['takeover-holo.js','takeover-mein-boxer-artpack-manifest.js',
 const {TLBoxerArtPacks:A,TLBoxerModularDraftManifest:m,TLHolo:H}=ctx.window;
 const assetReport=require('../scripts/validate-boxer-artpack.cjs').validate(m);
 assert.equal(assetReport.checked,12,'all twelve real files pass dimension, alpha and mobile size budgets');
+const registration=JSON.parse(fs.readFileSync('assets/boxer-artpacks/v1/modular-cool/registration.json','utf8'));
+const gloves=['hands-blackgold','hands-white'].map(name=>registration.find(x=>x.name===name));
+for(const key of ['scale','dx','dy','registrationGroup','bodyWristAnchors'])
+ assert.deepEqual(gloves[0][key],gloves[1][key],'glove variants share anatomical registration: '+key);
 const cfg=H.normalize({...H.DEF,tone:6,hair:'afro',hc:'schwarz',eye:'braun',
  top:'none',head:'none',coat:'none',hands:'gloves',glove:'schwarzgold',
  bottom:'boxer',bottomc:'schwarz',feet:'boots',feetc:'schwarz',

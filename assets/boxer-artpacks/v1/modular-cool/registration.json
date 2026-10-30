@@ -102,14 +102,27 @@
       1579
     ],
     "sourceBounds": [
-      164,
-      275,
-      898,
-      640
+      184,
+      492,
+      877,
+      737
     ],
-    "scale": 0.3333333333333333,
-    "dx": 190.33333333333334,
-    "dy": 239.33333333333334
+    "scale": 0.4,
+    "dx": 173,
+    "dy": 117,
+    "sourceSha256": "37ee4c9075029ed683f218696e6dd36d05668bac70b05d647bde491aa38bfda1",
+    "registrationGroup": "crossed-arms-v2",
+    "bodyWristAnchors": {
+      "rear": [
+        310,
+        374
+      ],
+      "front": [
+        420,
+        386
+      ]
+    },
+    "notes": "Both variants share one proportional transform. Rear glove lower contour is drawn as occluded by foreground arm; no skin repainting."
   },
   {
     "name": "top-tank",
@@ -182,13 +195,26 @@
       1578
     ],
     "sourceBounds": [
-      162,
-      272,
-      897,
-      642
+      183,
+      491,
+      874,
+      737
     ],
-    "scale": 0.3328804347826087,
-    "dx": 191.07336956521738,
-    "dy": 239.7072010869565
+    "scale": 0.4,
+    "dx": 173,
+    "dy": 117,
+    "sourceSha256": "e1b4452d2b987be38176fb0545c8dbc23842934137c2d280d3dd7c007bb88c0e",
+    "registrationGroup": "crossed-arms-v2",
+    "bodyWristAnchors": {
+      "rear": [
+        310,
+        374
+      ],
+      "front": [
+        420,
+        386
+      ]
+    },
+    "notes": "Both variants share one proportional transform. Rear glove lower contour is drawn as occluded by foreground arm; no skin repainting."
   }
 ]
