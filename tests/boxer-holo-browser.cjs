@@ -94,6 +94,20 @@ function injected(cfg){
   'boxer must fit horizontally inside preview: '+JSON.stringify(previewGeometry));
  assert.equal(previewGeometry.svgOverflow,'hidden','mobile preview clips SVG to full figure viewbox');
  assert.ok(previewGeometry.statusHidden,'initial status toast must not obscure equipment');
+ // Approved concept translated to DOM/CSS, not flattened into a static screenshot:
+ // arena light, two gold banners, elevated platform and a dynamic boxer on top.
+ assert.equal(await x.p.locator('.mb-arena').count(),1,'mobile studio has actual arena stage');
+ assert.equal(await x.p.locator('.mb-arena-flag').count(),2,'two Takeover arena banners');
+ assert.equal(await x.p.locator('.mb-arena-ring').count(),1,'golden fighting platform');
+ assert.equal(await x.p.locator('.mb-preview img').count(),0,
+  'unapproved artwork may not silently replace the editable boxer with a fixed screenshot');
+ assert.equal(await x.p.locator('.mb-save-state').getAttribute('data-save-status'),'saved',
+  'editor initially displays saved profile state');
+ assert.equal(await x.p.locator('.mb-tab-icon svg').count(),5,
+  'each of the five tabs has a real inline vector icon');
+ assert.equal(await x.p.locator('.mb-tabs').evaluate(el=>getComputedStyle(el).display),'grid',
+  'tab icons occupy equal mobile widths without horizontal scrolling');
+ await shot(x.p,'holo-approved-arena-design');
 
  assert.equal(await x.p.locator('[data-set="hair"]').count(),18,'18 hair styles');
  for(const h of ['Afro','Locs','Box Braids','Cornrows','Twists','Afro-Puffs','Locken','Glatze'])assert.ok(await x.p.locator('[data-set="hair"]',{hasText:h}).count(),h);
@@ -107,6 +121,8 @@ function injected(cfg){
  assert.equal(await x.p.locator('.mb-preview svg.tlh .tl-layer-shoes').count(),1,
   'shoes are a separate configurable layer');
  await x.p.click('[data-set="hair"][data-val="locs"]');
+ assert.equal(await x.p.locator('.mb-save-state').getAttribute('data-save-status'),'dirty',
+  'visual status changes when a hairstyle selection is unsaved');
  assert.equal(await x.p.evaluate(()=>document.activeElement?.dataset.val),'locs',
   'a selection remains keyboard-focused after changing a hairstyle');
  await x.p.click('[data-set="tone"][data-val="6"]');
@@ -136,6 +152,8 @@ function injected(cfg){
  // Die sichtbaren Itembilder stammen aus exakt demselben SVG-Renderer wie die Boxerfigur.
  assert.equal(await x.p.locator('[data-set="head"] .mb-gear-art svg.mb-item-svg').count(),4,'Kopfbedeckungen mit eigenständigen SVG-Items');
  assert.equal(await x.p.locator('[data-set="top"] .mb-gear-art svg.mb-item-svg').count(),5,'Oberteile als auswählbare SVG-Items');
+ assert.equal(await x.p.locator('[data-set="top"][aria-pressed="true"]').count(),1,
+  'premium item gallery still displays the active outfit selection');
  assert.equal(await x.p.locator('[data-set="bottom"] .mb-gear-art svg.mb-item-svg').count(),4,'Shorts und Hosen als eigenständige Bilder');
  assert.equal(await x.p.locator('[data-set="coatPick"] .mb-gear-art svg.mb-item-svg').count()>0,true,'Mantel als echtes Itembild');
  const stageBefore=await x.p.locator('.mb-preview svg.tlh').first().evaluate(el=>el.outerHTML);
