@@ -309,3 +309,11 @@ body[data-tl-screen="mein-boxer"] .mb-gear-chip{
     text-align:center;
   }
 }
+
+/* More visual presence on tall phones, while keeping the gear list independently scrollable.
+   Short screens retain the original compact heights. */
+@media(max-width:819px) and (min-height:721px){
+  body[data-tl-screen="mein-boxer"] .mb-stage{
+    flex:0 0 clamp(370px,51dvh,448px);
+  }
+}
