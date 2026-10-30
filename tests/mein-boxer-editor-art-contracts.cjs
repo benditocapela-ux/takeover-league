@@ -87,6 +87,24 @@ const noCoat=H.svg({...config,coat:'none',hair:'locs'},{premium:true});
 assert.doesNotMatch(noCoat,/class="tlh-premium-hair"/,'afro highlights hidden with other hairstyles');
 assert.match(css,/\.mb-preview svg\.tlh \.tlh-fig/,'wider hero stays editor-only');
 
+assert.ok(html.includes('mb-arena-flag--left')&&html.includes('mb-arena-flag--right'),
+ 'approved arena uses two decorative banners around the dynamic character');
+assert.ok(html.includes('mb-arena-ring')&&html.includes('mb-arena-rope'),
+ 'studio stage includes real gold ring and rope elements');
+assert.ok(html.includes('mb-save-state')&&html.includes("dirty()?'Nicht gespeichert'"),
+ 'save badge must display actual dirty state');
+assert.ok(html.includes('TAB_ICONS[k]')&&html.includes('mb-tab-label'),
+ 'five interactive sections show real inline vectors and text');
+assert.match(css,/\.mb-arena-ring/,'arena platform has separate CSS geometry');
+assert.match(css,/\.mb-tabs \.mb-tab\[aria-selected="true"\]/,
+ 'selected main tab retains gold highlight');
+assert.match(css,/\.mb-gear-chip\[aria-pressed="true"\]::after/,
+ 'outfit gallery identifies the selected item with a real status indicator');
+assert.match(css,/\.mb-arena-flag/);
+assert.ok(!html.includes('<img class="mb-reference-character"'),
+ 'no static reference character should silently replace selectable editor art');
+
+
 assert.equal((premium.match(/class="tlh-premium-eyes"/g)||[]).length,2,'premium face renders 2 anime eyes');
 assert.doesNotMatch(basic,/tlh-premium-eyes/,'standard profile keeps its current eye style');
 const green=H.svg({...config,eye:'gruen'},{pose:'cool',premium:true,holo:false});
