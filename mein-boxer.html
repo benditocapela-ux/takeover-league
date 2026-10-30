@@ -30,8 +30,10 @@ await Promise.allSettled([
 try{await import('./takeover-mein-boxer-artpack.js')}
 catch(e){console.warn('Optional boxer art-pack unavailable; continuing with SVG',e)}
 if(new URLSearchParams(location.search).get('art')==='layers'){
- try{await import('./takeover-mein-boxer-draft-layers.js')}
- catch(e){console.warn('Local draft layer preview unavailable',e)}
+ try{
+  await import('./takeover-mein-boxer-anatomy-blockout.js');
+  await import('./takeover-mein-boxer-draft-layers.js');
+ }catch(e){console.warn('Local draft layer preview unavailable',e)}
 }
 const P=window.TLPerf,H=window.TLHolo,G=window.TLGearArt,A=window.TLBoxerArtPacks,esc=P.esc;
 // Production is explicitly disabled until BOTH art approval and launch enablement.
@@ -41,7 +43,7 @@ const referenceReview=new URLSearchParams(location.search).get('art')==='referen
 const draftReview=new URLSearchParams(location.search).get('art')==='layers';
 const draftPack=draftReview&&window.TLBoxerDraftPreview
  ?window.TLBoxerDraftPreview.create(window):null;
-let draftVisible=true,draftSample=false;
+let draftVisible=true,draftSample=false,draftAnatomy=false;
 const draftLayers=new Set(window.TLBoxerDraftPreview?.NAMES||[]);
 const DRAFT_LABELS=Object.freeze({
  coatBack:'Mantel hinten',body:'Körper',bottom:'Shorts',feet:'Stiefel',
@@ -64,6 +66,8 @@ function draftNotice(){
    (draftVisible?'SVG-Boxer vergleichen':'Acht Ebenen anzeigen')+'</button>'+
    '<button type="button" class="mb-btn" data-draft-sample="1" aria-pressed="'+draftSample+'">'+
    (draftSample?'Mein Outfit verwenden':'Original-Look ansehen')+'</button>'+
+   '<label class="mb-draft-anatomy"><input type="checkbox" data-draft-anatomy="1"'+(draftAnatomy?' checked':'')+
+   '> Anatomie-Skizze zeigen (unfertig)</label>'+
    '<fieldset class="mb-draft-layer-controls"><legend>Ebenen einzeln prüfen</legend>'+
    window.TLBoxerDraftPreview.NAMES.map(name=>'<label><input type="checkbox" data-draft-layer="'+name+'"'+
     (draftLayers.has(name)?' checked':'')+'>'+DRAFT_LABELS[name]+'</label>').join('')+'</fieldset>':'')+
@@ -91,8 +95,8 @@ const heroArt=(config,pose)=>{
  const normalized=H.normalize(config);
  if(draftReview&&draftPack&&draftVisible){
   const draft=draftSample
-   ?draftPack.render(draftPack.reference,'cool',draftLayers)
-   :draftPack.render(normalized,pose,draftLayers);
+   ?draftPack.render(draftPack.reference,'cool',draftLayers,draftAnatomy)
+   :draftPack.render(normalized,pose,draftLayers,draftAnatomy);
   if(draft)return draft;
  }
  // A local user's whole-body reference is a non-editable design overlay only.
@@ -332,6 +336,12 @@ app.addEventListener('keydown',e=>{
 // Eight first-pass raster layers are previewable only via user-local Object URLs.
 // Missing anatomy in other outfits forces fallback to dynamic Holo; no RPС changes.
 app.addEventListener('change',async e=>{
+ const anatomy=e.target.closest('[data-draft-anatomy]');
+ if(anatomy&&draftReview&&draftPack){
+  draftAnatomy=anatomy.checked;
+  refreshHero();
+  return;
+ }
  const layer=e.target.closest('[data-draft-layer]');
  if(layer&&draftReview&&draftPack){
   const name=layer.dataset.draftLayer;
