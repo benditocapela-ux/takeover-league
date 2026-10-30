@@ -80,10 +80,10 @@ function injected(cfg){
  await shot(x.p,'holo-koerper');
  await x.p.click('[data-tab="kleidung"]');
  // Die sichtbaren Itembilder stammen aus exakt demselben SVG-Renderer wie die Boxerfigur.
- assert.equal(await x.p.locator('[data-set="head"] .mb-gear-art svg.tlh').count(),4,'Kopfbedeckungen mit echten Holo-Vorschauen');
- assert.equal(await x.p.locator('[data-set="top"] .mb-gear-art svg.tlh').count(),5,'Oberteile als auswählbare Holo-Itembilder');
- assert.equal(await x.p.locator('[data-set="bottom"] .mb-gear-art svg.tlh').count(),4,'Shorts und Hosen als Bilder');
- assert.equal(await x.p.locator('[data-set="coatPick"] .mb-gear-art svg.tlh').count()>0,true,'Mantel als echtes Itembild');
+ assert.equal(await x.p.locator('[data-set="head"] .mb-gear-art svg.mb-item-svg').count(),4,'Kopfbedeckungen mit eigenständigen SVG-Items');
+ assert.equal(await x.p.locator('[data-set="top"] .mb-gear-art svg.mb-item-svg').count(),5,'Oberteile als auswählbare SVG-Items');
+ assert.equal(await x.p.locator('[data-set="bottom"] .mb-gear-art svg.mb-item-svg').count(),4,'Shorts und Hosen als eigenständige Bilder');
+ assert.equal(await x.p.locator('[data-set="coatPick"] .mb-gear-art svg.mb-item-svg').count()>0,true,'Mantel als echtes Itembild');
  const stageBefore=await x.p.locator('.mb-preview svg.tlh').first().evaluate(el=>el.outerHTML);
 
  assert.equal(await x.p.locator('[data-toggle="hood"]').count(),0,'no hood toggle without hoodie');
