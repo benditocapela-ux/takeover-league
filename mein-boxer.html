@@ -122,6 +122,7 @@ function render(){
  // when changing colors/items. Re-rendering must not jump back to the beginning.
  const previousTab=app.querySelector('.mb-panel')?.dataset.activeTab;
  const previousScroll=app.querySelector('.mb-tabbody')?.scrollTop||0;
+ const previousTabsScroll=app.querySelector('.mb-tabs')?.scrollLeft||0;
  const oldRows=[...app.querySelectorAll('.mb-sec')].map(sec=>({
   title:sec.querySelector('.mb-h')?.textContent,
   lefts:[...sec.querySelectorAll('.mb-row')].map(row=>row.scrollLeft)
@@ -135,6 +136,8 @@ function render(){
   <div class="mb-actions"><button type="button" class="mb-btn primary" id="saveBtn"${!dirty()||tl.length||busy?' disabled':''}>${tl.length?'Gesperrtes zuerst kaufen oder abwählen':dirty()?'Speichern':'Gespeichert'}</button>${dirty()?'<button type="button" class="mb-btn ghost" id="resetBtn">Änderungen verwerfen</button>':''}</div></div>
  <div class="mb-panel" data-active-tab="${tab}"><div class="mb-tabs" role="tablist" aria-label="Bereiche">${tabs.map(([k,l])=>`<button type="button" role="tab" class="mb-tab" data-tab="${k}" aria-selected="${tab===k}">${l}</button>`).join('')}</div>
   <div class="mb-tabbody">${tl.length?`<div class="mb-tryon" role="note"><b>Anprobe:</b> ${tl.map(esc).join(', ')}<button type="button" class="mb-btn" data-tab="shop">Zum Shop</button></div>`:''}${tab==='koerper'?viewKoerper():tab==='kleidung'?viewKleidung():tab==='extras'?viewExtras():tab==='posen'?viewPosen():viewShop()}</div></div></div>`;
+ const tabsRail=app.querySelector('.mb-tabs');
+ if(tabsRail)tabsRail.scrollLeft=previousTabsScroll;
  if(previousTab===tab){
   const content=app.querySelector('.mb-tabbody');
   if(content)content.scrollTop=previousScroll;
