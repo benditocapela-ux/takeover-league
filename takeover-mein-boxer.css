@@ -260,3 +260,52 @@ body[data-tl-screen="mein-boxer"] .mb-gear-chip{
 @media(prefers-reduced-motion:reduce){
   body[data-tl-screen="mein-boxer"] .mb-gear-art .mb-item-svg{animation:none}
 }
+
+/* Screenshot-based layout correction (390px Chromium/iPhone viewport).
+   The inline SVG initially exceeded its grid cell, hiding the legs behind
+   controls. Constrain the entire viewBox inside the preview, not a zoomed crop. */
+@media(max-width:819px){
+  body[data-tl-screen="mein-boxer"] .mb-preview{
+    position:relative;
+    display:block;
+    min-height:0;
+    overflow:hidden;
+    contain:layout paint;
+    border-radius:10px;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-preview svg.tlh{
+    position:absolute;
+    top:3%;
+    left:50%;
+    transform:translateX(-50%);
+    width:auto!important;
+    height:94%!important;
+    max-height:94%!important;
+    max-width:100%!important;
+    min-height:0;
+    aspect-ratio:12/19;
+    overflow:hidden!important;
+    filter:drop-shadow(0 0 7px #f2c14e24);
+  }
+  body[data-tl-screen="mein-boxer"] .mb-preview::after{
+    z-index:2;
+    height:11px;
+    bottom:0;
+    opacity:.8;
+    width:min(43vw,155px);
+  }
+  body[data-tl-screen="mein-boxer"] .mb-stage-bar{
+    margin-top:1px;
+    flex-wrap:nowrap;
+    justify-content:center;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-actions{
+    min-height:40px;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-actions .mb-btn{
+    line-height:1.3;
+    white-space:normal;
+    overflow-wrap:anywhere;
+    text-align:center;
+  }
+}
