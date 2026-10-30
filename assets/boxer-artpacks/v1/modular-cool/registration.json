@@ -102,16 +102,16 @@
       1579
     ],
     "sourceBounds": [
-      184,
-      492,
-      877,
-      737
+      182,
+      493,
+      876,
+      738
     ],
     "scale": 0.4,
     "dx": 173,
     "dy": 117,
-    "sourceSha256": "37ee4c9075029ed683f218696e6dd36d05668bac70b05d647bde491aa38bfda1",
-    "registrationGroup": "crossed-arms-v2",
+    "sourceSha256": "59c65325f282d2202ac41f249a76249c791bd5ad315efd417f0f68a5434f8101",
+    "registrationGroup": "crossed-arms-v3-ornate",
     "bodyWristAnchors": {
       "rear": [
         310,
@@ -122,7 +122,7 @@
         386
       ]
     },
-    "notes": "Both variants share one proportional transform. Rear glove lower contour is drawn as occluded by foreground arm; no skin repainting."
+    "notes": "Original ornate leather/gold style restored using imagegen; unchanged common transform 0.4 / 173 / 117. Rear lower edge remains occluded by foreground arm; style awaits personal approval."
   },
   {
     "name": "top-tank",
@@ -195,16 +195,16 @@
       1578
     ],
     "sourceBounds": [
-      183,
+      182,
       491,
-      874,
-      737
+      881,
+      739
     ],
     "scale": 0.4,
     "dx": 173,
     "dy": 117,
-    "sourceSha256": "e1b4452d2b987be38176fb0545c8dbc23842934137c2d280d3dd7c007bb88c0e",
-    "registrationGroup": "crossed-arms-v2",
+    "sourceSha256": "5a81fc8a950b46da1e765c5948facbba022b16e5cef3cb173132b237748e9a3d",
+    "registrationGroup": "crossed-arms-v3-ornate",
     "bodyWristAnchors": {
       "rear": [
         310,
@@ -215,6 +215,6 @@
         386
       ]
     },
-    "notes": "Both variants share one proportional transform. Rear glove lower contour is drawn as occluded by foreground arm; no skin repainting."
+    "notes": "Original ornate leather/gold style restored using imagegen; unchanged common transform 0.4 / 173 / 117. Rear lower edge remains occluded by foreground arm; style awaits personal approval."
   }
 ]

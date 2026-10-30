@@ -144,7 +144,9 @@ function build(manifest,draftPreview){
   const layers=choose(config,pose);
   if(!layers)return null;
   const html='<span class="mb-artpack" role="img" aria-label="'+(draftPreview?'Dein Boxer – nicht freigegebener Grafikentwurf':LABEL)+'" data-artpack-version="1"'+(draftPreview?' data-artpack-draft="modular-cool"':'')+' data-artpack-pose="'+pose+'">'+
-   layers.map(x=>'<img class="mb-artpack-img" data-art-slot="'+x.slot+'" src="'+x.src+'" alt="" draggable="false" decoding="async" loading="eager">').join('')+
+   // These URLs are already preloaded. Present their decoded layers together;
+   // async decoding can paint a bare body before hair/hands on the first frame.
+   layers.map(x=>'<img class="mb-artpack-img" data-art-slot="'+x.slot+'" src="'+x.src+'" alt="" draggable="false" decoding="sync" loading="eager">').join('')+
    '</span>';
   return html;
  }

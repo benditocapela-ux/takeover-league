@@ -88,7 +88,13 @@ const server=http.createServer((req,res)=>{
    assert.equal(await x.p.locator('#saveBtn').isDisabled(),true,'saved outfit unchanged on normal URL');
    await noWrites(x.p);await x.context.close();
 
-   x=await page();await x.p.goto(base+'/mein-boxer.html?art=modular');await ready(x.p);
+   x=await page();await x.p.goto(base+'/mein-boxer.html?art=modular');
+   await x.p.waitForFunction(()=>document.querySelector('.mb-art-debug')?.dataset.artState==='ready');
+   const firstPaint=await x.p.locator('.mb-preview .mb-artpack').screenshot({animations:'disabled'});
+   await ready(x.p);
+   await x.p.locator('.mb-preview .mb-artpack-img').evaluateAll(images=>Promise.all(images.map(i=>i.decode())));
+   assert.deepEqual(await x.p.locator('.mb-preview .mb-artpack').screenshot({animations:'disabled'}),firstPaint,
+    'first visible preloaded outfit matches the fully decoded outfit, with no missing hair/hands');
    const glovePixels=await require('./boxer-glove-pixels.cjs')(x.p,base);
    for(const report of glovePixels.reports){
     assert.ok(report.wrists.every(p=>p.min>220),'both cuffs cover body-derived wrist anchors');

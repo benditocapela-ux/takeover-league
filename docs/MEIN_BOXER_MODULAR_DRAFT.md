@@ -49,3 +49,9 @@ Körperbasis, Tanktop, Mantel und Originalmasken blieben unverändert. Die vorha
 - Lokale Negativkontrolle mit den beiden unveränderten alten PNGs aus `a318638`: Beide scheitern an den neuen Prüfungen für freie Unterarme und abgedeckte nackte Hände. Damit ist belegt, dass die Regression den ursprünglichen Fehler erkennt.
 
 **Ergebnis:** technisch korrekt registriert und nach der durchgeführten Sichtprüfung für diese Cool-Kombinationen ausreichend korrigiert. Keine schwebenden Fäuste, freiliegenden zusätzlichen Finger oder auf den Bauch verschobenen Manschetten mehr in den geprüften Ansichten. Geringe zeichnerische Konturunterschiede zwischen den Farben bleiben; die persönliche künstlerische Freigabe des Auftraggebers und alle Aktivierungsflags bleiben offen beziehungsweise ausgeschaltet.
+
+## Release-Candidate-Politur — 31. Oktober 2026
+
+Der Handschuhstil wurde nach der zugänglichen früheren Zeichnung gezielt angenähert: glänzendes Leder, aufwendigere Kronen und zusätzliche Goldnähte. Anatomische Anker und gemeinsamer Transform bleiben unverändert. Neue Alpha-IoU 97,18 % bei unveränderten Grenzwerten; beide Browser bestehen weiterhin 32 Outfits und 16 Handschuhansichten. Zwölf PNGs nun insgesamt 2.113.320 Bytes. Persönliche Designfreigabe bleibt offen. Die historischen Werte und der vorherige Vergleich oben dokumentieren den damaligen Stand.
+
+Aktueller Vergleich, Tests, manuelle Prüfanleitung und getrennte Release-Wege: [PR79_RELEASE_CANDIDATE.md](PR79_RELEASE_CANDIDATE.md).

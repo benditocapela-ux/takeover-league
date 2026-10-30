@@ -158,6 +158,11 @@ jobs:
           SHOTS: ${{ runner.temp }}/modular-art-shots
         run: node tests/boxer-pose-fallback-browser.cjs
         timeout-minutes: 5
+      - name: Verify purchase receipts and network failures in both browsers
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: node tests/boxer-editor-transactions-browser.cjs
+        timeout-minutes: 4
       - name: Save unapproved modular draft screenshots for review
         if: always()
         uses: actions/upload-artifact@v4

@@ -1,7 +1,9 @@
 'use strict';
 // Exercise real editor code with isolated RPC responses; never contact a live backend.
 const assert=require('node:assert/strict'),fs=require('node:fs'),http=require('node:http'),path=require('node:path');
-const {chromium}=require('playwright');
+const playwright=require('playwright');
+const engine=process.env.BROWSER||'chromium';
+assert.ok(['chromium','webkit'].includes(engine),'supported transaction browser');
 const root=process.cwd();
 function mock(options){
  const items=[
@@ -43,7 +45,7 @@ function mock(options){
  const base='http://127.0.0.1:'+server.address().port;
  let browser;
  try{
-  browser=await chromium.launch();
+  browser=await playwright[engine].launch();
   for(const kind of ['item','bundle'])for(const refresh of ['reject','null','disabled']){
    const context=await browser.newContext({viewport:{width:390,height:844}});
    await context.addInitScript(mock,{refresh});
