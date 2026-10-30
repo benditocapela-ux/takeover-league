@@ -500,7 +500,13 @@ function injected(cfg){
   return Number(getComputedStyle(under).zIndex)<Number(getComputedStyle(img).zIndex);
  });
  assert.equal(sketchLayerOrder,true,'reference pixels remain visually above draft anatomy');
+ await x.p.locator('.mb-draft-tools summary').click();
+ assert.equal(await x.p.locator('.mb-draft-tools').getAttribute('open'),null,
+  'comparison screenshot must show the complete body instead of covering it with tools');
  await shot(x.p,'holo-eight-layer-underpaint-blockout');
+ await x.p.locator('.mb-draft-tools summary').click();
+ assert.equal(await x.p.locator('[data-draft-anatomy]').isChecked(),true,
+  'temporary anatomy selection survives collapse and reopen');
  await x.p.locator('[data-draft-anatomy]').uncheck();
  assert.equal(await x.p.locator('.mb-draft-underpaint').count(),0,
   'disabling the sketch restores the exact original pixels');
