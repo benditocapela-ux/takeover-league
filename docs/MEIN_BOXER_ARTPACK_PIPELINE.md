@@ -208,3 +208,24 @@ Eine unabhängige lokale Überprüfung hat die **pixelgenaue Rekonstruktion des 
 Das externe Testpaket wurde **nicht automatisch in GitHub hochgeladen**, weil die verbundenen GitHub-Textdatei-Aktionen die binären PNGs nicht direkt aus dem lokalen Arbeitscontainer übernehmen. Daher wurde das produktive Manifest nicht mit Dateiverweisen auf noch fehlende GitHub-Dateien versehen – andernfalls würden die Staging-Tests gezielt fehlschlagen.
 
 Nach bewusstem Upload ins Repository müssen die acht Bilddateien unter `assets/boxer-artpacks/v1/cool/` abgelegt und das echte JavaScript-Manifest entsprechend dem geprüften JSON angepasst werden. Anschliessend: Dateivalidator, tatsächliche Playwright-Abnahme mit dem ersten Look und **erst danach** gesonderte visuelle Freigabe.
+
+## Echt zusammengesetzte Acht-PNG-Vorschau im PR (30.10.2026)
+
+Für den **ersten originalgetreuen Referenzlook** gibt es nun direkt im mobilen Editor die URL `mein-boxer.html?art=layers`. Die Original-PNG-Dateien werden dabei **nicht** aus GitHub geladen, sondern direkt auf dem Gerät des Reviewers ausgewählt. Diese Ergänzung macht die erste tatsächliche Mehr-Ebenen-Komposition im echten Editor prüfbar, ohne bereits neue Farben oder Kleidungsstücke zu erfinden.
+
+**So wird sie geprüft:**
+
+1. `takeover_cool_8_layer_draft.zip` vom vorherigen Arbeitspaket lokal entpacken.
+2. Im Draft-Testbranch `mein-boxer.html?art=layers` aufrufen und mit einem aktivierten Boxer anmelden.
+3. Unter `assets/boxer-artpacks/v1/cool/` **alle acht PNGs gleichzeitig** wählen: `coatBack.png`, `body.png`, `bottom.png`, `feet.png`, `eyes.png`, `hair.png`, `coatFront.png`, `hands.png`.
+4. Die gesamte Vorlage wird nur dann als acht deckungsgleiche Bilder angezeigt, wenn die Boxer-Konfiguration dem Originallook entspricht: **Cool-Pose, Haut 6, Afro/Schwarz, braune Augen, kein Oberteil, Samurai-Mantel, schwarze Boxershorts, schwarze Boots, Bandagen, keine weiteren Effekte oder Kopfstücke**.
+5. Über den Vergleichsschalter kann jederzeit wieder der echte SVG-Boxer angezeigt werden. Eine **andere** Kleidung, Pose, Frisur oder Hautfarbe zeigt unmittelbar den echten SVG-Fallback. Das Entwurfspaket bleibt geladen, damit derselbe Referenzlook erneut betrachtet werden kann.
+
+**Sicherheitsgrenzen:**
+
+- Das Modul `takeover-mein-boxer-draft-layers.js` wird nur bei `?art=layers` geladen. Der normale Editor, öffentliche Boxerprofile, die FUT-Karten und Shopkäufe werden nicht verändert.
+- Der Browser akzeptiert nur die acht festgelegten PNG-Namen, maximal **2 MiB je Datei**, mit **768 × 1216 Pixeln**. Fehlende oder doppelte Ebenen schlagen als geschlossener, nicht teilweise gezeichneter Satz fehl. Alte lokale Bild-URLs werden beim Neuladen bzw. Seitenverlassen freigegeben.
+- Die Browserschnittstelle verwendet nur lokale `blob:`-URLs. Die acht Entwurfsbilder werden **nicht an Supabase, GitHub oder einen anderen Server hochgeladen**, und sie können nicht versehentlich einen Kauf oder ein `save_my_holo` auslösen.
+- Chromium prüft vollständigen achtteiligen Aufbau, exakt gleiche Rechtecke, direkten SVG-Vergleich, Fallback bei Kleidungswechsel, Fehler bei sieben Dateien sowie unsichtbaren Debugmodus auf der normalen Seite. Dazu gibt es den isolierten Contract-Test `tests/mein-boxer-draft-layers-contracts.cjs`.
+
+Dies ist **ein echter technischer Ebenen-Test**, aber noch keine fertig individualisierbare Premium-Figur. Die Schnittsegmente bewahren dieselben Ursprungspixel. Verdeckte Anatomie und austauschbare Kleidung müssen erst professionell neu gezeichnet werden. Die beiden produktiven Manifestflags bleiben `approved:false` und `enabled:false`; kein Merge oder Deployment ohne erneute Freigabe.
