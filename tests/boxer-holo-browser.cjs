@@ -376,6 +376,56 @@ function injected(cfg){
   'missing artpack module never exposes an inert comparison button');
  await done(x);
 
+ // Release rollout has TWO explicit guards: approved artwork and enabled launch.
+ // Approved but disabled: even the ordinary studio shows the original SVG.
+ x=await page({visualDemo:true,saved:artConfig});
+ await x.p.route('**/takeover-mein-boxer-artpack-manifest.js',r=>r.fulfill({
+  status:200,contentType:'text/javascript',body:fixtureArt
+ }));
+ await x.p.route('**/assets/boxer-artpacks/v1/**',r=>r.fulfill({
+  status:200,contentType:'image/png',body:pixel
+ }));
+ await x.p.goto(base+'mein-boxer.html');
+ await x.p.waitForSelector('.mb-preview svg.tlh');
+ assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,
+  'approved graphics remain off until release-enabled');
+ assert.equal(await x.p.locator('.mb-art-debug,[data-art-compare]').count(),0,
+  'production never exposes developer-only diagnostics or artwork comparison');
+ await done(x);
+
+ // Approved AND release-enabled: ordinary studio displays the new artpack.
+ const liveFixtureArt='window.TLBoxerArtPackManifest='+JSON.stringify({...testManifest,enabled:true})+';';
+ x=await page({visualDemo:true,saved:artConfig});
+ await x.p.route('**/takeover-mein-boxer-artpack-manifest.js',r=>r.fulfill({
+  status:200,contentType:'text/javascript',body:liveFixtureArt
+ }));
+ await x.p.route('**/assets/boxer-artpacks/v1/**',r=>r.fulfill({
+  status:200,contentType:'image/png',body:pixel
+ }));
+ await x.p.goto(base+'mein-boxer.html');
+ await x.p.waitForSelector('.mb-preview .mb-artpack-img');
+ assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),9,
+  'release enabled artwork draws exactly nine aligned layers');
+ assert.equal(await x.p.locator('.mb-art-debug,[data-art-compare]').count(),0,
+  'release never shows preview-only diagnostics or comparison');
+ await x.p.click('[data-tab="kleidung"]');
+ await x.p.click('[data-set="top"][data-val="hoodie"]');
+ assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),1,
+  'production falls back to SVG for missing clothing artwork');
+ await done(x);
+
+ // Release-enabled alone is never sufficient when the asset is unapproved.
+ x=await page({visualDemo:true,saved:artConfig});
+ await x.p.route('**/takeover-mein-boxer-artpack-manifest.js',r=>r.fulfill({
+  status:200,contentType:'text/javascript',
+  body:'window.TLBoxerArtPackManifest='+JSON.stringify({...testManifest,approved:false,enabled:true})+';'
+ }));
+ await x.p.goto(base+'mein-boxer.html');
+ await x.p.waitForSelector('.mb-preview svg.tlh');
+ assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,
+  'unapproved artwork cannot go live despite enabled flag');
+ await done(x);
+
  // A complete, approved fixture composes image layers on the fixed stage.
  x=await page({visualDemo:true,saved:artConfig});
  await x.p.route('**/takeover-mein-boxer-artpack-manifest.js',r=>r.fulfill({status:200,contentType:'text/javascript',body:fixtureArt}));
