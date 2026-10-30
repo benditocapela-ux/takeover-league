@@ -240,6 +240,25 @@ function injected(cfg){
   'afro uses head-aligned hair layer');
  await done(x);
 
+ // A stale/offline mobile PWA can lack optional files; the editor must
+ // still allow changing, saving and previewing the SVG boxer.
+ x=await page({visualDemo:true});
+ for(const optional of ['takeover-mein-boxer-items.js','takeover-mein-boxer-layers.js',
+  'takeover-mein-boxer-artpack-manifest.js','takeover-mein-boxer-artpack.js']){
+  await x.p.route('**/'+optional,r=>r.abort('failed'));
+ }
+ await x.p.goto(base+'mein-boxer.html?art=preview',{waitUntil:'domcontentloaded'});
+ await x.p.waitForSelector('.mb-preview svg.tlh');
+ await x.p.click('[data-tab="kleidung"]');
+ assert.equal(await x.p.locator('[data-set="top"] .mb-gear-art svg.tlh').count(),5,
+  'missing item sprites fall back to five Holo clothing choices');
+ await x.p.click('[data-set="top"][data-val="shirt"]');
+ await x.p.click('#saveBtn');
+ await x.p.waitForFunction(()=>window.__calls.some(c=>c[0]==='save_my_holo'));
+ assert.equal((await calls(x.p)).find(c=>c[0]==='save_my_holo')[1].p_config.top,'shirt',
+  'optional art failures never block saving');
+ await done(x);
+
  // Art-pack integration is opt-in and can never show a partial costume.
  // Fixture PNG data stays in the browser test, not in the repository or site.
  const artConfig={
