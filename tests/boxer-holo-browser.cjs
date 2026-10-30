@@ -356,6 +356,8 @@ function injected(cfg){
  await x.p.waitForSelector('.mb-preview svg.tlh');
  assert.equal(await x.p.locator('.mb-art-debug').getAttribute('data-art-state'),'unapproved',
   'preview explains that no production artpack has been approved');
+ assert.equal(await x.p.locator('[data-art-compare]').count(),0,
+  'unapproved art must not show an inert comparison control');
  await shot(x.p,'holo-artpack-debug-unapproved');
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,'unapproved art cannot appear');
  await done(x);
@@ -369,6 +371,27 @@ function injected(cfg){
  assert.equal(await x.p.locator('.mb-art-debug').getAttribute('data-art-state'),'ready',
   'preview reports a complete and loaded artpack');
  await shot(x.p,'holo-artpack-debug-ready');
+ const artCompare=x.p.locator('[data-art-compare]');
+ assert.equal(await artCompare.count(),1,'comparison control appears only for approved preview assets');
+ const configBefore=(await x.p.locator('[data-set="top"][data-val="shirt"]').count());
+ await artCompare.focus();
+ await x.p.keyboard.press('Enter');
+ assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,
+  'reviewer can switch to original SVG without modifying gear');
+ assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),1,
+  'same character uses original Holo in comparison mode');
+ assert.equal(await x.p.locator('.mb-art-debug').getAttribute('data-art-state'),'manual-svg',
+  'preview identifies the manually chosen SVG comparison');
+ assert.equal(await x.p.evaluate(()=>document.activeElement?.hasAttribute('data-art-compare')),true,
+  'comparison remains keyboard-focusable after switching art');
+ await shot(x.p,'holo-artpack-compare-svg');
+ await artCompare.click();
+ assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),9,
+  'reviewer can switch back to preloaded premium layers immediately');
+ assert.equal(await x.p.locator('[data-set="top"][data-val="shirt"]').count(),configBefore,
+  'art comparison does not remove outfit options');
+ assert.ok(!(await calls(x.p)).some(c=>c[0]==='save_my_holo'),
+  'reviewing graphics never writes the user configuration');
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),9,'all nine required canvas layers');
  assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),0,'complete art pack replaces SVG');
  await x.p.click('[data-tab="kleidung"]');
