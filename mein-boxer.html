@@ -138,7 +138,7 @@ function render(){
  const tabs=[['koerper','Körper'],['kleidung','Kleidung'],['extras','Extras'],['posen','Posen'],['shop','Shop']];
  const tl=tryOn(),pose=previewPose==='card'?cfg.pose_card:cfg.pose_profile;
  app.innerHTML=`${data.preview?'<p class="tlp-note">Vorschau – für die Boxer sichtbar, sobald der Boxer-Holo freigeschaltet ist.</p>':''}
- <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span>Mein Boxer</span><a href="./boxer.html">Mein Studio</a></div><div class="mb-preview">${H.svg(cfg,{pose,label:'Dein Boxer-Holo',premium:true})}</div>
+ <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span>Mein Boxer</span><a href="./boxer.html">Mein Studio</a></div><div class="mb-preview">${H.svg(cfg,{pose,label:'Dein Boxer-Holo',premium:true,holo:false})}</div>
   <div class="mb-stage-bar"><span class="mb-pill">${previewPose==='card'?'Karten-Pose':'Profil-Pose'}</span>${data.shop?`<span class="mb-pill">${COIN}${fmt(data.coins)}</span>`:''}</div>
   <div class="mb-actions"><button type="button" class="mb-btn primary" id="saveBtn"${!dirty()||tl.length||busy?' disabled':''}>${tl.length?'Gesperrtes zuerst kaufen oder abwählen':dirty()?'Speichern':'Gespeichert'}</button>${dirty()?'<button type="button" class="mb-btn ghost" id="resetBtn">Änderungen verwerfen</button>':''}</div></div>
  <div class="mb-panel" data-active-tab="${tab}"><div class="mb-tabs" role="tablist" aria-label="Bereiche">${tabs.map(([k,l])=>`<button type="button" role="tab" class="mb-tab" data-tab="${k}" aria-selected="${tab===k}">${l}</button>`).join('')}</div>
