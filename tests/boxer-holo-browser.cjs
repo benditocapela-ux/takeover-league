@@ -485,6 +485,25 @@ function injected(cfg){
  assert.equal(await x.p.evaluate(()=>document.activeElement?.dataset.draftLayer),'coatFront',
   'layer inspection preserves keyboard focus');
  await shot(x.p,'holo-eight-layer-coat-removed-review');
+ // First anatomical tracing fills the missing undercoat silhouette, but only
+ // after an explicit reviewer action; it is NOT passed off as anime-quality art.
+ assert.equal(await x.p.locator('.mb-draft-underpaint').count(),0,
+  'rough sketch is never enabled by default');
+ await x.p.locator('[data-draft-anatomy]').check();
+ assert.equal(await x.p.locator('.mb-draft-underpaint').count(),1,
+  'opt-in editable underpaint appears behind the real pixel layers');
+ assert.equal(await x.p.locator('.mb-draft-artpack img').count(),7,
+  'tracing sketch does not remove original raster artwork');
+ const sketchLayerOrder=await x.p.evaluate(()=>{
+  const under=document.querySelector('.mb-draft-underpaint');
+  const img=document.querySelector('.mb-draft-artpack img');
+  return Number(getComputedStyle(under).zIndex)<Number(getComputedStyle(img).zIndex);
+ });
+ assert.equal(sketchLayerOrder,true,'reference pixels remain visually above draft anatomy');
+ await shot(x.p,'holo-eight-layer-underpaint-blockout');
+ await x.p.locator('[data-draft-anatomy]').uncheck();
+ assert.equal(await x.p.locator('.mb-draft-underpaint').count(),0,
+  'disabling the sketch restores the exact original pixels');
  await coatMask.check();
  assert.equal(await x.p.locator('.mb-draft-artpack img').count(),8,
   'coat masking never destroys the original reference');
