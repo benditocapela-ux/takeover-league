@@ -294,9 +294,19 @@ function injected(cfg){
  await x.p.waitForSelector('.mb-preview svg.tlh');
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),0,
   'unloaded image layers may never appear as a partial outfit');
+ await x.p.click('[data-tab="kleidung"]');
+ const shirt=x.p.locator('[data-set="top"][data-val="shirt"]');
+ await shirt.focus();
+ await x.p.evaluate(()=>{document.querySelector('.mb-tabbody').scrollTop=110});
+ const scrollBefore=await x.p.locator('.mb-tabbody').evaluate(el=>el.scrollTop);
+ assert.ok(scrollBefore>50,'equipment list is independently scrolled during the pending load');
  await x.p.waitForSelector('.mb-preview .mb-artpack-img',{timeout:7000});
  assert.equal(await x.p.locator('.mb-preview .mb-artpack-img').count(),9,
   'the finished outfit appears as one image stack');
+ assert.equal(await x.p.evaluate(()=>document.activeElement?.dataset.val),'shirt',
+  'async image completion does not steal focus or rebuild the editor');
+ assert.ok(Math.abs(await x.p.locator('.mb-tabbody').evaluate(el=>el.scrollTop)-scrollBefore)<2,
+  'async image completion preserves independent equipment scrolling');
  await done(x);
 
  // A single failed external image also recovers to full SVG automatically.
