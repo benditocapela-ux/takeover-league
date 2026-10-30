@@ -28,6 +28,7 @@ jobs:
       - run: node tests/mein-boxer-editor-art-contracts.cjs
       - run: node tests/mein-boxer-artpack-contracts.cjs
       - run: node tests/mein-boxer-preload-performance.cjs
+      - run: node tests/publish-boxer-artpack-contracts.cjs
       - run: node tests/validate-boxer-artpack-contracts.cjs
       - run: node tests/report-boxer-artpack-contracts.cjs
       - run: node scripts/report-boxer-artpack.cjs
