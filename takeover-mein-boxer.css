@@ -733,3 +733,19 @@ body[data-tl-screen="mein-boxer"] .mb-draft-layer-controls input{
 body[data-tl-screen="mein-boxer"] .mb-draft-layer-controls input:focus-visible{
  outline:2px solid #7fddff;outline-offset:2px;
 }
+
+/* Temporary anatomy tracing only: a deliberately unfinished vector sketch,
+   visible ONLY after opening ?art=layers and checking its explicit opt-in.
+   It draws beneath all eight user-reference image layers. */
+body[data-tl-screen="mein-boxer"] .mb-preview .mb-draft-underpaint{
+ position:absolute;inset:0;display:block;width:100%;height:100%;
+ z-index:0;pointer-events:none;user-select:none;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-anatomy{
+ display:flex;align-items:center;gap:5px;padding:5px 4px;
+ border:1px dashed #bf9a55a6;border-radius:7px;
+ color:#ffe2a6;font:700 10px/1.3 system-ui,sans-serif;cursor:pointer;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-anatomy input{
+ width:14px;height:14px;flex:none;accent-color:#d9ae63;
+}
