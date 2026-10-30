@@ -5,6 +5,11 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+# A new PR commit supersedes old screenshots and test results. Cancel stale
+# staging work, never the unrelated GitHub Pages deployment workflow.
+concurrency:
+  group: release2-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
