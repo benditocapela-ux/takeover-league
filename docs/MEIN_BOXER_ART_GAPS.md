@@ -2,6 +2,10 @@
 
 Stand: 30. Oktober 2026. Technische Dateiannahme und künstlerische Freigabe sind getrennt. `approved:false` und `enabled:false` bleiben bestehen.
 
+## Aktueller modularer Entwurf
+
+Der nachfolgende Befund dokumentiert die ursprünglichen acht Masken und den früheren Lieferauftrag. Inzwischen liegt ein separater Zwölf-PNG-Satz mit neuen Kleidungszeichnungen für die V4-Körperbasis vor. Lieferumfang, 32 Kombinationen und weiterhin bestehende Grenzen stehen in [MEIN_BOXER_MODULAR_DRAFT.md](MEIN_BOXER_MODULAR_DRAFT.md). Der Originalsatz und beide Freigabeflags bleiben unverändert.
+
 ## Verifiziertes Ausgangspaket
 
 Die acht Original-PNGs in `assets/boxer-artpacks/v1/cool/` sind zusammen 812800 Bytes gross. `node tests/boxer-original-art-readiness.cjs` prüft alle acht SHA-256-Hashes; `node scripts/validate-boxer-artpack.cjs` prüft Abmessungen, Transparenzkennzeichen und Grössenbudget. Diese Prüfungen beweisen keine vollständige verdeckte Anatomie.

@@ -29,6 +29,10 @@ await Promise.allSettled([
 ]);
 try{await import('./takeover-mein-boxer-artpack.js')}
 catch(e){console.warn('Optional boxer art-pack unavailable; continuing with SVG',e)}
+if(new URLSearchParams(location.search).get('art')==='modular'){
+ try{await import('./takeover-mein-boxer-modular-manifest.js')}
+ catch(e){console.warn('Modular draft manifest unavailable; continuing with SVG',e)}
+}
 if(new URLSearchParams(location.search).get('art')==='layers'){
  try{
   await import('./takeover-mein-boxer-anatomy-blockout.js');
@@ -41,6 +45,9 @@ const P=window.TLPerf,H=window.TLHolo,G=window.TLGearArt,A=window.TLBoxerArtPack
 const tryPremiumArt=new URLSearchParams(location.search).get('art')==='preview';
 const referenceReview=new URLSearchParams(location.search).get('art')==='reference';
 const draftReview=new URLSearchParams(location.search).get('art')==='layers';
+const modularReview=new URLSearchParams(location.search).get('art')==='modular';
+const modularPack=modularReview&&A?.createDraft&&window.TLBoxerModularDraftManifest
+ ?A.createDraft(window.TLBoxerModularDraftManifest):null;
 const draftPack=draftReview&&window.TLBoxerDraftPreview
  ?window.TLBoxerDraftPreview.create(window):null;
 let draftVisible=true,draftSample=false,draftAnatomy=false;
@@ -99,6 +106,12 @@ const canCompareArt=!!(tryPremiumArt&&A&&A.active&&artManifest?.approved===true)
 let compareSvg=false;
 const heroArt=(config,pose)=>{
  const normalized=H.normalize(config);
+ // An explicit draft URL may preview this disabled collection. It never changes
+ // the user's configuration, ownership or the production approval switches.
+ if(modularReview&&modularPack&&modularPack.prepare(normalized,pose,refreshHero)){
+  const ready=modularPack.render(normalized,pose);
+  if(ready)return ready;
+ }
  if(draftReview&&draftPack&&draftVisible){
   const draft=draftSample
    ?draftPack.render(draftPack.reference,'cool',draftLayers,draftAnatomy)
@@ -127,10 +140,11 @@ function refreshHero(){
 // Diagnostics are only exposed to editors explicitly using ?art=preview.
 // Nothing is added to public cards, profiles or normal Studio operation.
 function artDebugLabel(config,pose){
- if(!tryPremiumArt)return '';
+ if(!tryPremiumArt&&!modularReview)return '';
  if(compareSvg)return '<span class="mb-art-debug" role="status" data-art-state="manual-svg">Vergleich: Original-SVG</span>';
- const info=A&&A.active&&A.active.inspect
-  ?A.active.inspect(H.normalize(config),pose)
+ const runtime=modularReview?modularPack:A&&A.active;
+ const info=runtime&&runtime.inspect
+  ?runtime.inspect(H.normalize(config),pose)
   :{state:'unavailable',detail:''};
  const words={
   'unapproved':'Grafikpaket nicht freigegeben',
@@ -141,12 +155,13 @@ function artDebugLabel(config,pose){
   'invalid-path':'Ungültige Grafikdatei',
   'load-failed':'Grafik konnte nicht geladen werden',
   'loading':'Grafik wird vorgeladen',
-  'ready':'Premium-Grafik bereit'
+  'ready':modularReview?'Modulare Grafik bereit':'Premium-Grafik bereit'
  };
- const title=(words[info.state]||'SVG-Fallback')+(info.detail?' · '+info.detail:'');
+ const title=(modularReview?'Entwurf – nicht freigegeben · ':'')+
+  (words[info.state]||'SVG-Fallback')+(info.detail?' · '+info.detail:'');
  const progress=info.state==='loading'?' ('+info.loaded+'/'+info.total+')':'';
- return '<span class="mb-art-debug" role="status" data-art-state="'+esc(info.state)+'" title="'+esc(title)+'">'+
-  esc(title+progress)+'</span>';
+ return '<span class="mb-art-debug" role="status"'+(modularReview?' data-art-draft="modular"':'')+' data-art-state="'+esc(info.state)+'" title="'+esc(title)+'">'+
+  esc(modularReview?'Entwurf – nicht freigegeben':title+progress)+'</span>';
 }
 const COIN='<svg class="mb-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#ffcc33"/><circle cx="12" cy="12" r="8" fill="#e8a91a"/></svg>';
 const fmt=n=>Number(n||0).toLocaleString('de-CH');
@@ -298,7 +313,7 @@ function render(){
  <div class="mb-arena" aria-hidden="true"><span class="mb-arena-light mb-arena-light--left"></span><span class="mb-arena-light mb-arena-light--right"></span><span class="mb-arena-flag mb-arena-flag--left"><b>♛</b><small>TAKEOVER</small></span><span class="mb-arena-flag mb-arena-flag--right"><b>♛</b><small>TAKEOVER</small></span><span class="mb-arena-rope"></span><span class="mb-arena-ring"></span></div>
  <div class="mb-preview">${heroArt(cfg,pose)}${artDebugLabel(cfg,pose)}</div>${referenceNotice()}${draftNotice()}${canCompareArt?`<button type="button" class="mb-art-compare" data-art-compare="1" aria-pressed="${compareSvg}" aria-label="Boxer-Grafik vergleichen">${compareSvg?'Premium anzeigen':'Mit SVG vergleichen'}</button>`:''}
   <div class="mb-stage-bar"><span class="mb-pill">${previewPose==='card'?'Karten-Pose':'Profil-Pose'}</span>${data.shop?`<span class="mb-pill">${COIN}${fmt(data.coins)}</span>`:''}</div>
-  <div class="mb-actions"><button type="button" class="mb-btn primary" id="saveBtn"${!dirty()||tl.length||busy?' disabled':''}>${tl.length?'Gesperrtes zuerst kaufen oder abwählen':dirty()?'Speichern':'Gespeichert'}</button>${dirty()?'<button type="button" class="mb-btn ghost" id="resetBtn">Änderungen verwerfen</button>':''}</div></div>
+  <div class="mb-actions"><button type="button" class="mb-btn primary" id="saveBtn"${!dirty()||tl.length||busy?' disabled':''}>${tl.length?'Gesperrtes zuerst kaufen oder abwählen':dirty()?'Speichern':'Gespeichert'}</button>${dirty()?'<button type="button" class="mb-btn ghost" id="resetBtn" aria-label="Änderungen verwerfen">Verwerfen</button>':''}</div></div>
  <div class="mb-panel" data-active-tab="${tab}"><div class="mb-tabs" role="tablist" aria-label="Bereiche">${tabs.map(([k,l])=>`<button type="button" role="tab" id="mb-tab-${k}" aria-controls="mb-tabbody" class="mb-tab" data-tab="${k}" aria-selected="${tab===k}" tabindex="${tab===k?0:-1}"><span class="mb-tab-icon">${TAB_ICONS[k]}</span><span class="mb-tab-label">${l}</span></button>`).join('')}</div>
   <div class="mb-tabbody" id="mb-tabbody" role="tabpanel" aria-labelledby="mb-tab-${tab}" tabindex="0">${tl.length?`<div class="mb-tryon" role="note"><b>Anprobe:</b> ${tl.map(esc).join(', ')}<button type="button" class="mb-btn" data-tab="shop">Zum Shop</button></div>`:''}${tab==='koerper'?viewKoerper():tab==='kleidung'?viewKleidung():tab==='extras'?viewExtras():tab==='posen'?viewPosen():viewShop()}</div></div></div>`;
  const draftMenu=app.querySelector('.mb-draft-tools');
@@ -331,7 +346,8 @@ async function load(){
 app.addEventListener('error',e=>{
  const img=e.target;
  if(!img||!img.matches||!img.matches('.mb-preview .mb-artpack-img'))return;
- if(A&&A.active.markFailed(img.getAttribute('src')))refreshHero();
+ const runtime=modularReview?modularPack:A&&A.active;
+ if(runtime&&runtime.markFailed(img.getAttribute('src')))refreshHero();
 },true);
 // Roving tab focus: left/right arrows, Home and End mirror native tab controls.
 app.addEventListener('keydown',e=>{

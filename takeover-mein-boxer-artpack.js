@@ -10,9 +10,9 @@ const ROOT='./assets/boxer-artpacks/v1/';
 const FILE=/^[a-z0-9_-]+(?:\/[a-z0-9_-]+)*\.(?:png|webp)$/;
 const OWN=(o,k)=>o&&Object.prototype.hasOwnProperty.call(o,k);
 const LABEL='Dein Boxer – Premium-Grafik';
-function create(manifest){
+function build(manifest,draftPreview){
  const m=manifest&&typeof manifest==='object'?manifest:{};
- const valid= m.version===1 && m.approved===true &&
+ const valid= m.version===1 && (m.approved===true||draftPreview===true) &&
   m.canvas&&m.canvas.width===768&&m.canvas.height===1216 &&
   m.poses&&typeof m.poses==='object'&&!Array.isArray(m.poses);
  const failed=new Set();
@@ -143,7 +143,7 @@ function create(manifest){
  function render(config,pose){
   const layers=choose(config,pose);
   if(!layers)return null;
-  const html='<span class="mb-artpack" role="img" aria-label="'+LABEL+'" data-artpack-version="1" data-artpack-pose="'+pose+'">'+
+  const html='<span class="mb-artpack" role="img" aria-label="'+(draftPreview?'Dein Boxer – nicht freigegebener Grafikentwurf':LABEL)+'" data-artpack-version="1"'+(draftPreview?' data-artpack-draft="modular-cool"':'')+' data-artpack-pose="'+pose+'">'+
    layers.map(x=>'<img class="mb-artpack-img" data-art-slot="'+x.slot+'" src="'+x.src+'" alt="" draggable="false" decoding="async" loading="eager">').join('')+
    '</span>';
   return html;
@@ -157,7 +157,17 @@ function create(manifest){
  }
  return Object.freeze({render,choose,prepare,inspect,markFailed,stats});
 }
+function create(manifest){return build(manifest,false)}
+function createDraft(manifest){
+ // This entry point never approves or mutates a manifest. Only the explicitly
+ // requested review URL may inspect this particular disabled collection.
+ let requested=false;
+ try{requested=new URLSearchParams(window.location.search).get('art')==='modular'}catch(e){}
+ const permitted=requested&&manifest&&manifest.draft==='modular-cool'&&
+  manifest.approved===false&&manifest.enabled===false;
+ return build(permitted?manifest:null,!!permitted);
+}
 window.TLBoxerArtPacks=Object.freeze({
- create,active:create(window.TLBoxerArtPackManifest)
+ create,createDraft,active:create(window.TLBoxerArtPackManifest)
 });
 })();

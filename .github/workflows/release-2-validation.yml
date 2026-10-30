@@ -27,6 +27,8 @@ jobs:
       - run: node tests/holo-gear-previews-contracts.cjs
       - run: node tests/mein-boxer-editor-art-contracts.cjs
       - run: node tests/mein-boxer-artpack-contracts.cjs
+      - run: node tests/mein-boxer-modular-art-contracts.cjs
+      - run: node tests/mein-boxer-modular-editor-contracts.cjs
       - run: node tests/mein-boxer-draft-layers-contracts.cjs
       - run: node tests/mein-boxer-anatomy-blockout-contracts.cjs
       - run: node tests/mein-boxer-custom-underpaint-contracts.cjs
@@ -126,5 +128,34 @@ jobs:
         with:
           name: mein-boxer-rendered-screens
           path: ${{ runner.temp }}/mein-boxer-shots/*.png
+          if-no-files-found: ignore
+          retention-days: 14
+
+  modular-art-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false playwright@1.56.1
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Verify all 32 modular draft outfits with repository PNGs
+        env:
+          BROWSER: ${{ matrix.browser }}
+          SHOTS: ${{ runner.temp }}/modular-art-shots
+        run: node tests/boxer-modular-art-browser.cjs
+        timeout-minutes: 5
+      - name: Save unapproved modular draft screenshots for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: modular-art-${{ matrix.browser }}
+          path: ${{ runner.temp }}/modular-art-shots/*.png
           if-no-files-found: ignore
           retention-days: 14

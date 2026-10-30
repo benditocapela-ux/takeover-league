@@ -22,7 +22,21 @@ assert.equal(AP.active.render(H.normalize(H.DEF),'guard'),null,'default editor s
 assert.ok(html.includes("new URLSearchParams(location.search).get('art')==='preview'"));
 assert.ok(html.includes("import('./takeover-mein-boxer-artpack.js')"));
 assert.ok(html.includes("import('./takeover-mein-boxer-artpack-manifest.js')"));
-assert.ok(html.includes("A.active.markFailed(img.getAttribute('src'))"));
+const imageErrorHandler=html.slice(html.indexOf("app.addEventListener('error'"),html.indexOf('// Roving tab focus:'));
+for(const modularReview of [false,true]){
+ const failures=[],listeners={};let refreshed=0;
+ const errorContext=vm.createContext({modularReview,
+  A:{active:{markFailed:src=>{failures.push(['active',src]);return true}}},
+  modularPack:{markFailed:src=>{failures.push(['draft',src]);return true}},
+  refreshHero:()=>refreshed++,app:{addEventListener:(name,fn)=>listeners[name]=fn}});
+ vm.runInContext(imageErrorHandler,errorContext);
+ listeners.error({target:{matches:()=>true,getAttribute:()=> './assets/boxer-artpacks/v1/test.png'}});
+ assert.deepEqual(failures,[[modularReview?'draft':'active','./assets/boxer-artpacks/v1/test.png']],
+  'image errors invalidate only the selected production/draft runtime');
+ assert.equal(refreshed,1,'image failure refreshes full hero fallback');
+ listeners.error({target:{matches:()=>false}});
+ assert.equal(refreshed,1,'unrelated image errors do not affect the hero');
+}
 assert.match(css,/\.mb-preview \.mb-artpack-img/);
 const cfg=H.normalize({...H.DEF,tone:6,hair:'afro',hc:'schwarz',eye:'braun',top:'shirt',topc:'schwarz',
  bottom:'boxer',bottomc:'schwarz',feet:'boots',feetc:'schwarz',coat:'samurai',
@@ -63,7 +77,10 @@ assert.ok(html.includes('artDebugLabel(cfg,pose)'),'preview diagnostics are coup
 assert.ok(html.includes('data-art-compare="1"'),'approved preview supports SVG artwork comparison');
 assert.ok(html.includes("if(compare&&canCompareArt)"),'comparison must be opt-in and approved');
 assert.ok(html.includes("refreshHero();"),'comparison swaps the figure without rebuilding menus');
-assert.ok(html.includes('if(!tryPremiumArt)return'), 'normal editor hides debugging details');
+const labelSource=html.slice(html.indexOf('function artDebugLabel('),html.indexOf('const COIN='));
+const labelContext=vm.createContext({tryPremiumArt:false,modularReview:false});
+vm.runInContext(labelSource,labelContext);
+assert.equal(vm.runInContext('artDebugLabel({},"cool")',labelContext),'', 'normal editor hides debugging details without invoking either runtime');
 assert.ok(markup,'complete pack can be rendered');
 assert.ok(markup.includes('data-artpack-version="1"'));
 assert.equal((markup.match(/class="mb-artpack-img"/g)||[]).length,9);
