@@ -24,7 +24,7 @@ const server=http.createServer((req,res)=>{
 });
 function injected(cfg){
  const calls=[];window.__calls=calls;
- const items=cfg.items.map(i=>Object.assign({},i,{owned:i.unlock==='start'||(i.unlock==='reward'&&i.key==='pose_flex')}));
+ const items=cfg.items.map(i=>Object.assign({},i,{owned:cfg.visualDemo===true||i.unlock==='start'||(i.unlock==='reward'&&i.key==='pose_flex')}));
  const bundles=[{key:'drachen_bundle',name:'Drachen-Bundle',description:'Drachen-Mantel, Flammen-Aura, Glut-Augen und die Pose Ansage.',price:3400,items:['coat_drache','aura_flamme','eyefx_glut','pose_ansage'],value:4700,owned_all:false}];
  let coins=cfg.coins??5000,saved=cfg.saved||null;
  const DEF={tone:2,hair:'kurz_glatt',hc:'schwarz',eye:'braun',eyefx:'none',head:'none',headc:'schwarz',top:'none',hood:false,topc:'grau',bottom:'boxer',bottomc:'rot',hands:'wraps',glove:'rot',feet:'boots',feetc:'weiss',coat:'none',aura:'none',scene:'holo',pose_profile:'guard',pose_card:'guard'};
@@ -176,6 +176,21 @@ function injected(cfg){
  x=await page({off:true});
  await x.p.goto(base+'mein-boxer.html');
  await x.p.waitForFunction(()=>/noch nicht freigeschaltet/.test(document.getElementById('app').textContent));
+ await done(x);
+
+ // Visual-reference fixture: fully configurable black-and-gold outfit using
+ // real, dynamic renderer. Mock-owned items avoid purchase banners in the shot.
+ x=await page({visualDemo:true,coins:265,saved:{
+  tone:6,hair:'afro',hc:'schwarz',eye:'braun',head:'none',
+  top:'shirt',topc:'schwarz',bottom:'boxer',bottomc:'schwarz',
+  hands:'wraps',feet:'boots',feetc:'schwarz',coat:'samurai',
+  aura:'none',pose_profile:'cool',pose_card:'guard'
+ }});
+ await x.p.goto(base+'mein-boxer.html');
+ await x.p.waitForSelector('.mb-preview svg.tlh');
+ await shot(x.p,'holo-visual-reference');
+ await x.p.click('[data-tab="kleidung"]');
+ await shot(x.p,'holo-visual-reference-equipment');
  await done(x);
 
  // Profil: Holo statt Kampfgeist-Karte, Karte mit Holo
