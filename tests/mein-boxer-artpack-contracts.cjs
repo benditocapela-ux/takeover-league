@@ -13,8 +13,8 @@ const html=read('mein-boxer.html'),css=read('takeover-mein-boxer.css');
 assert.equal(ctx.window.TLBoxerArtPackManifest.approved,false,'production art is not approved yet');
 assert.equal(AP.active.render(H.normalize(H.DEF),'guard'),null,'default editor still uses proven SVG');
 assert.ok(html.includes("new URLSearchParams(location.search).get('art')==='preview'"));
-assert.ok(html.includes("await import('./takeover-mein-boxer-artpack.js')"));
-assert.ok(html.includes("await import('./takeover-mein-boxer-artpack-manifest.js')"));
+assert.ok(html.includes("import('./takeover-mein-boxer-artpack.js')"));
+assert.ok(html.includes("import('./takeover-mein-boxer-artpack-manifest.js')"));
 assert.ok(html.includes("A.active.markFailed(img.getAttribute('src'))"));
 assert.match(css,/\.mb-preview \.mb-artpack-img/);
 const cfg=H.normalize({...H.DEF,tone:6,hair:'afro',hc:'schwarz',eye:'braun',top:'shirt',topc:'schwarz',
