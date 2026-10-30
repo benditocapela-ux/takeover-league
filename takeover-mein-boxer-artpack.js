@@ -16,8 +16,48 @@ function create(manifest){
   m.canvas&&m.canvas.width===768&&m.canvas.height===1216 &&
   m.poses&&typeof m.poses==='object'&&!Array.isArray(m.poses);
  const failed=new Set();
- const stats={attempted:0,matched:0};
+ // Transparent 768x1216 sprites are expensive on mobile: never open an entire
+ // outfit's requests in parallel. Reuse each pending fetch across selections.
+ const MAX_PARALLEL=3;
+ const stats={attempted:0,matched:0,started:0,maxActive:0};
  const loaded=new Set(),pending=new Map(),notifying=new Set();
+ const queue=[];
+ let activeLoads=0;
+ function pump(){
+  while(activeLoads<MAX_PARALLEL&&queue.length){
+   const job=queue.shift();
+   activeLoads++;
+   stats.started++;
+   stats.maxActive=Math.max(stats.maxActive,activeLoads);
+   let finished=false;
+   const settle=ok=>{
+    if(finished)return;
+    finished=true;
+    if(ok)loaded.add(job.url);else failed.add(job.url);
+    pending.delete(job.url);
+    activeLoads--;
+    job.resolve(ok);
+    pump();
+   };
+   try{
+    const pic=new window.Image();
+    pic.onload=()=>settle(true);
+    pic.onerror=()=>settle(false);
+    pic.src=job.url;
+   }catch(e){settle(false)}
+  }
+ }
+ function loadImage(url){
+  if(loaded.has(url))return Promise.resolve(true);
+  if(failed.has(url))return Promise.resolve(false);
+  if(pending.has(url))return pending.get(url);
+  let resolveTask;
+  const task=new Promise(resolve=>{resolveTask=resolve});
+  pending.set(url,task);
+  queue.push({url,resolve:resolveTask});
+  pump();
+  return task;
+ }
  // One source of truth for both rendering and integration diagnostics.
  // The viewer never substitutes another variant for a missing outfit piece.
  function selection(config,pose){
@@ -82,19 +122,7 @@ function create(manifest){
   const urls=[...new Set(layers.map(layer=>layer.src))];
   if(urls.every(url=>loaded.has(url)))return true;
   if(typeof window.Image!=='function')return false;
-  const tasks=urls.map(url=>{
-   if(loaded.has(url))return Promise.resolve(true);
-   if(!pending.has(url)){
-    const pic=new window.Image();
-    const task=new Promise(resolve=>{
-     pic.onload=()=>{loaded.add(url);resolve(true)};
-     pic.onerror=()=>{failed.add(url);resolve(false)};
-     pic.src=url;
-    }).finally(()=>pending.delete(url));
-    pending.set(url,task);
-   }
-   return pending.get(url);
-  });
+  const tasks=urls.map(loadImage);
   const key=urls.join('|');
   if(typeof onReady==='function'&&!notifying.has(key)){
    notifying.add(key);
