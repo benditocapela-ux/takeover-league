@@ -2,6 +2,7 @@
 const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 (async()=>{
  const created=[],revoked=[];
+ let opaqueCorners=false;
  class Img{
   set src(url){
    this._src=url;
@@ -15,7 +16,10 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
  const win={Image:Img,URL:{
   createObjectURL:file=>{const url='blob:local/'+file.name;created.push(url);return url},
   revokeObjectURL:url=>revoked.push(url)
- }};
+ },document:{createElement:()=>({width:0,height:0,getContext:()=>({
+  drawImage:()=>{},
+  getImageData:()=>({data:[0,0,0,opaqueCorners?255:0]})
+ })})}};
  const ctx={window:win};vm.createContext(ctx);
  vm.runInContext(fs.readFileSync('takeover-mein-boxer-anatomy-blockout.js','utf8'),ctx);
  vm.runInContext(fs.readFileSync('takeover-mein-boxer-draft-layers.js','utf8'),ctx);
@@ -41,6 +45,12 @@ const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('nod
  await assert.rejects(kit.loadUnderpaint({name:'invalid.png',size:110,type:'image/png'}),
   /768 × 1216/,'incorrect canvas resolution rejected');
  assert.equal(kit.status().customUnderpaint,true,'failed replacement does not erase valid image');
+ opaqueCorners=true;
+ await assert.rejects(kit.loadUnderpaint({name:'opaque.png',size:1010,type:'image/png'}),
+  /transparenten Hintergrund/,'completely opaque artwork must not cover the reference');
+ opaqueCorners=false;
+ assert.equal(kit.status().customUnderpaint,true,'failed transparency check keeps prior valid body');
+ assert.ok(revoked.includes('blob:local/opaque.png'),'opaque blob URL is also freed');
  await assert.rejects(kit.loadUnderpaint({name:'body.svg',size:900,type:'image/svg+xml'}),
   /PNG/,'no SVG upload or scriptable image content');
  await assert.rejects(kit.loadUnderpaint({name:'huge.png',size:3*1024*1024,type:'image/png'}),
