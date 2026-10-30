@@ -261,3 +261,18 @@ Die Kontrollwerkzeuge verwenden eine aufklappbare `<details>`-Oberfläche und er
 **Tests:** `tests/mein-boxer-anatomy-blockout-contracts.cjs` sichert Canvasgrösse, reine lokale Vektorgeometrie, nicht freigegebenen Status, standardmässig deaktivierte Unterzeichnung, Ebenenreihenfolge und SVG-Fallback ab. Der bestehende Chromium-Integrationstest erzeugt einen Screenshot **`holo-eight-layer-underpaint-blockout.png`** mit temporär ausgeblendeter Mantelvorderseite und überprüft anschliessend die unveränderte Rückkehr zum Referenzbild.
 
 **Offene künstlerische Qualitätsarbeit:** Die Skizze ist lediglich ein *anatomisches Blockout*, noch **keine** stilsichere Body-PNG. Schultern/Arme, Seitenkörper, Muskellicht und Stoffüberlappungen müssen zur bestätigten Anime-Referenz neu gezeichnet werden. Nur eine solche saubere Illustration ermöglicht später den echten Mantel-an/Mantel-aus-Outfitwechsel. Als zusätzliche Übergabe gibt es ein lokales ZIP-Arbeitsset mit transparentem SVG/PNG, Originalmasken, direktem Dreistufenvergleich und detaillierter Art-Anweisung. Das ZIP ist nicht selbst ins GitHub-Repository übertragen worden.
+
+## Austauschbare lokale Körperzeichnungen für das Anime-Layer-Review (30.10.2026)
+
+Die alte starre Anatomie-Skizze kann jetzt im bereits vorhandenen achtteiligen Testmodus durch **eine echte transparente PNG-Unterzeichnung** ersetzt werden. Der PR speichert die Benutzerbilder weder im Repository noch in Supabase; das ist eine *bewusst lokale künstlerische Abnahme*, keine neue Shopfunktion.
+
+1. `mein-boxer.html?art=layers` im PR-Testbranch öffnen und zunächst die acht Original-PNGs aus `takeover_anatomie_v1_arbeitsset.zip` auswählen.
+2. «Grafikebenen prüfen» öffnen. Bei **«Eigene Körperzeichnung (PNG, 768 × 1216)»** die Datei `anatomie_textur_v1.png` oder einen professionell neu gezeichneten Nachfolger auswählen.
+3. Die neue Grafik erscheint dann ausschliesslich **hinter** den weiterhin pixelgenau zusammengesetzten Originalebenen. Zum Prüfen die Ebenen «Mantel vorne» / «Mantel hinten» ausschalten und das Werkzeugmenü schliessen. Beim Wechsel von Frisur, Outfit, Hautton oder Pose bleibt der bisherige anpassbare SVG-Holo der Fallback.
+4. «Eigene Zeichnung entfernen» gibt die lokale Object-URL frei. Die nicht produktionsreife SVG-V0-Unterzeichnung bleibt als Vergleich verfügbar. Auch beim Seitenverlassen werden die geladenen Dateien wieder freigegeben.
+
+**Dateiprüfung:** PNG-MIME/Endung, maximal 2 MiB, exakt 768 × 1216 Pixel und transparenter Hintergrund an den vier Bild-Ecken. Die Ersatzdatei wird erst nach vollständigem Laden sichtbar; bei fehlerhaftem Format oder Abbruch bleibt eine vorherige gültige lokale Zeichnung erhalten. Die Regres­sionstests `tests/mein-boxer-custom-underpaint-contracts.cjs` und `tests/boxer-holo-browser.cjs` prüfen Ablehnung, URL-Freigabe, Ebenenreihenfolge und fehlende Datenbank-Speicheraktionen.
+
+**Künstlerischer Status:** `anatomie_textur_v1.png` ist eine farblich überarbeitete **Texturstudie**, deren Hochfrequenz-Hautdetails aus der genehmigten Referenz stammen. Sie ergänzt **keine wirklich neu gezeichnete, originalgetreue Schultermuskulatur** und wird deshalb *nicht* als fertiger Anime-Body oder ausziehbarer Mantel freigegeben. Das Original bleibt die verbindliche Qualitätsvorlage. Keine Änderung der Produktionsflags `approved:false` / `enabled:false`.
+
+Der separate ZIP-Arbeitsordner enthält `index.html`, acht unveränderte Ebenen mit überprüften Original-SHA-256-Werten, V0/V1-Unterzeichnungen, Vergleichs-JPG, README und einen reproduzierbaren Python-Entwurf.
