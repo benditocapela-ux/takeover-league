@@ -45,7 +45,7 @@ assert.match(premium,/class="tlh-premium-fabric"/);
 assert.match(premium,/class="tlh-premium-gear"/);
 assert.match(premium,/radialGradient/);
 assert.match(premium,/class="tlh-premium-signature"/,'embroidery must render in premium mode');
-assert.match(premium,/>TAKEOVER<\\/text>/,'waistband typography on premium boxer');
+assert.ok(premium.includes('>TAKEOVER</text>'),'waistband typography on premium boxer');
 assert.match(premium,/class="tlh-premium-hair"/,'afro has separate detailed hair layer');
 assert.doesNotMatch(basic,/tlh-premium-signature/,'public profile unaffected by premium embroidery');
 const noCoat=H.svg({...config,coat:'none',hair:'locs'},{premium:true});
