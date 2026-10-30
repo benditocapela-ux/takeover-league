@@ -41,7 +41,7 @@ assert.ok(!markup.includes('http:')&&!markup.includes('https:')&&!markup.include
 assert.ok(!markup.includes('<svg')&&!markup.includes('<image'),'art must load external, correctly aligned files');
 assert.equal(build.render({...cfg,top:'hoodie'},'cool'),null,'no mismatched shirt for hoodie selection');
 assert.equal(build.render({...cfg,topc:'rot'},'cool'),null,'no silent colour substitution');
-assert.equal(build.render({...cfg,coat:'none'},'cool'),null,'required clothing still must be complete');
+assert.ok(build.render({...cfg,coat:'none'},'cool'),'no coat is a valid outfit without coat images');
 assert.equal(build.render({...cfg,aura:'flamme'},'cool'),null,'unsupported aura falls back to SVG');
 assert.equal(build.render({...cfg,eyefx:'glut'},'cool'),null,'unsupported eye effect falls back to SVG');
 assert.equal(build.render({...cfg,scene:'arena'},'cool'),null,'unsupported scene falls back to SVG');
