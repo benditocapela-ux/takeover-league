@@ -309,6 +309,36 @@ function injected(cfg){
   'optional art failures never block saving');
  await done(x);
 
+ // Device acceptance for compact phones and tall phones. The hero stays
+ // fixed; navigation and gear remain separately accessible without sideways page scroll.
+ for(const [width,height] of [[320,568],[375,667],[430,932]]){
+  const device=await page({testWidth:width,testHeight:height});
+  await device.p.goto(base+'mein-boxer.html');
+  await device.p.waitForSelector('.mb-preview svg.tlh');
+  const viewport=await device.p.evaluate(()=>{
+   const stage=document.querySelector('.mb-stage').getBoundingClientRect();
+   const root=document.querySelector('.mb-layout').getBoundingClientRect();
+   const nav=document.querySelector('.mb-tabs').getBoundingClientRect();
+   const body=document.querySelector('.mb-tabbody');
+   const preview=document.querySelector('.mb-preview').getBoundingClientRect();
+   return {stage:stage.toJSON(),root:root.toJSON(),nav:nav.toJSON(),
+    preview:preview.toJSON(),scrollHeight:body.scrollHeight,clientHeight:body.clientHeight,
+    overflowY:getComputedStyle(body).overflowY,scrollWidth:document.documentElement.scrollWidth};
+  });
+  assert.ok(viewport.stage.height>=180,'stage must fit on '+width+'×'+height);
+  assert.ok(viewport.preview.height>=55,'character must remain visible on '+width+'×'+height);
+  assert.ok(viewport.nav.width<=viewport.root.width+1,'five tabs never overflow on '+width+'×'+height);
+  assert.equal(viewport.overflowY,'auto','gear remains independently scrollable on '+width+'×'+height);
+  assert.ok(viewport.clientHeight>=70,'clothing editor keeps usable height on '+width+'×'+height);
+  assert.ok(viewport.scrollWidth<=width+1,'page never scrolls horizontally on '+width+'×'+height);
+  await device.p.click('[data-tab="kleidung"]');
+  assert.equal(await device.p.locator('[data-set="top"][data-val="hoodie"]').count(),1,
+   'full clothing selection remains accessible on '+width+'×'+height);
+  if(width===375)await shot(device.p,'holo-arena-compact-phone');
+  if(width===430)await shot(device.p,'holo-arena-tall-phone');
+  await done(device);
+ }
+
  // Network exceptions must never leave saving/purchases stuck in busy state.
  x=await page({failSaveOnce:true});
  await x.p.goto(base+'mein-boxer.html');
