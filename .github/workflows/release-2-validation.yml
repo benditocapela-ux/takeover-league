@@ -38,6 +38,8 @@ jobs:
       - run: node tests/boxer-original-art-readiness.cjs
       - run: node tests/mein-boxer-preload-performance.cjs
       - run: node tests/publish-boxer-artpack-contracts.cjs
+      - run: node tests/boxer-pages-build.cjs
+      - run: node tests/boxer-character-architecture.cjs
       - run: node tests/validate-boxer-artpack-contracts.cjs
       - run: node tests/report-boxer-artpack-contracts.cjs
       - run: node scripts/report-boxer-artpack.cjs
@@ -148,8 +150,13 @@ jobs:
       - name: Verify 32 outfits and anatomical glove pixel regressions
         env:
           BROWSER: ${{ matrix.browser }}
-          SHOTS: ${{ runner.temp }}/modular-art-shots
         run: node tests/boxer-modular-art-browser.cjs
+        timeout-minutes: 5
+      - name: Verify all pose fallbacks and the isolated Pages assembly
+        env:
+          BROWSER: ${{ matrix.browser }}
+          SHOTS: ${{ runner.temp }}/modular-art-shots
+        run: node tests/boxer-pose-fallback-browser.cjs
         timeout-minutes: 5
       - name: Save unapproved modular draft screenshots for review
         if: always()

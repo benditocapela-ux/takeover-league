@@ -81,6 +81,15 @@ const POSE={
  flex:{L:[[78,110],[46,104],[58,70]],R:[[162,110],[194,104],[182,70]],m:'M92 132 C96 139 104 139 108 132'},
  ansage:{L:[[78,110],[66,150],[74,186]],R:[[162,110],[196,120],[222,102]],m:'M92 133 C97 136 103 136 109 131'}
 };
+// Read-only authoring metadata derived from the SAME pose table as SVG render.
+// These are SVG-space joints, not anchors for the independently drawn PNGs.
+const POSE_DEFINITIONS=Object.freeze(Object.fromEntries(Object.entries(POSE).map(([id,p])=>{
+ const joints=points=>Object.freeze(Object.fromEntries(['shoulder','elbow','wrist'].map((name,i)=>
+  [name,Object.freeze({x:points[i][0],y:points[i][1]})])));
+ return [id,Object.freeze({id,coordinateSpace:'svg-240x380',
+  imageLeft:joints(p.L),imageRight:joints(p.R),
+  armDrawOrder:Object.freeze(['imageRight','imageLeft'])})];
+})));
 function star(cx,cy,n,r1,r2){const q=[];for(let i=0;i<n*2;i++){const a=Math.PI*i/n-Math.PI/2,r=i%2?r2:r1;q.push((i?'L':'M')+f1(cx+Math.cos(a)*r)+' '+f1(cy+Math.sin(a)*r))}return q.join(' ')+'Z'}
 const PUP={none:'M81.5 107.2 A3.1 4.4 0 1 0 87.7 107.2 A3.1 4.4 0 1 0 81.5 107.2Z',stern:star(84.6,107,5,5.4,2.3),kristall:'M84.6 100.6 L89 107 L84.6 113.4 L80.2 107Z',glut:'M84.6 100 C88.6 104 89 108 87.6 111 C86.6 113 82.6 113 81.6 111 C80.6 108.6 81.6 106.4 83.4 105 C83.2 106.8 84.2 107.6 85 107.2 C86 104.8 85.6 102.4 84.6 100Z',mond:'M86.8 101.6 A5 5.6 0 1 0 86.8 112.6 A4 4.6 0 1 1 86.8 101.6Z'};
 const pick=(map,k,d)=>Object.prototype.hasOwnProperty.call(map,k)?map[k]:map[d];
@@ -233,5 +242,5 @@ function svg(cfg,opts){
   +armSvg(arm(pose.R),false)+armSvg(arm(pose.L),true)
   +`</g>`+(holo?`<rect class="tlh-scan" x="30" y="0" width="180" height="350" fill="url(#${u}s)" opacity=".16"/>`:'')+`</svg>`;
 }
-window.TLHolo={svg,normalize,DEF,LABEL,TONES,HC,EYE,CL,GL,HAIR_KEYS:Object.keys(HAIR),POSES:Object.keys(POSE)};
+window.TLHolo={svg,normalize,DEF,LABEL,TONES,HC,EYE,CL,GL,HAIR_KEYS:Object.keys(HAIR),POSES:Object.freeze(Object.keys(POSE)),POSE_DEFINITIONS};
 })();
