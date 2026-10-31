@@ -234,3 +234,10 @@ body[data-tl-screen="admin"] .tl-screen-links button[data-stf-global-menu]:focus
  body[data-tl-screen="admin"] table,
  body[data-tl-screen="admin"] .table-wrap{min-width:0!important;max-width:100%}
 }
+
+/* Remove duplicate utility bars without removing their actions or account access. */
+body[data-tl-screen="coach"] .tl-subnav,
+body[data-tl-screen="admin"] .tl-subnav{justify-content:flex-end;gap:8px}
+body[data-tl-screen="coach"] .tl-subnav .brand,
+body[data-tl-screen="admin"] .tl-subnav .brand{display:none}
+body[data-tl-screen="admin"] .tl-screen-ribbon .tl-screen-links a[href="./coach.html"]{display:none}
