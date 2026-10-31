@@ -159,6 +159,25 @@ async function run(browser,engine){
  assert.ok(await page.isVisible('#ex-home-holo'));
  // Drawer: Escape schliesst und gibt den Fokus zurück
  await page.click('#ex-settings');assert.ok(await page.isVisible('#ex-drawer'));await page.keyboard.press('Escape');assert.ok(await page.isHidden('#ex-drawer'));
+ // Simulate iPhone standalone status-bar inset even on desktop CI runners.
+ // The top-right menu and drawer close must be below that reserved area.
+ const simulatedInset=58;
+ const safeStyle=await page.addStyleTag({content:':root{--ex-safe-top:'+simulatedInset+'px!important}'});
+ const headBounds=await page.locator('.ex-head').boundingBox();
+ const menuBounds=await page.locator('#ex-settings').boundingBox();
+ assert.ok(headBounds&&headBounds.height>=simulatedInset+58,'iPhone safe area must increase header height');
+ assert.ok(menuBounds&&menuBounds.y>=simulatedInset,'menu button must sit below iPhone status bar');
+ assert.ok(menuBounds.width>=44&&menuBounds.height>=44,'menu must have >=44px hit target');
+ assert.equal(await page.evaluate(()=>{
+   const button=document.getElementById('ex-settings'),r=button.getBoundingClientRect();
+   return button.contains(document.elementFromPoint(r.left+r.width/2,r.top+r.height/2));
+ }),true,'menu is topmost hit target, not covered by another element');
+ await page.click('#ex-settings');
+ const closeBounds=await page.locator('#ex-close').boundingBox();
+ assert.ok(closeBounds&&closeBounds.y>=simulatedInset,'drawer close button must sit below iPhone status bar');
+ await page.click('#ex-close');
+ assert.ok(await page.isHidden('#ex-drawer'),'menu still closes under safe-area inset');
+ await safeStyle.evaluate(node=>node.remove());
  assert.deepEqual(errors,[],'no page errors: '+JSON.stringify(errors));await context.close();
  // Weitere Status, Check-in-only, zwei Einheiten, Rückfall ohne Training 2.0 bzw. ohne Migration
  const statusCase=async(cfg,re,extra)=>{const o=await open(browser,cfg,'#training');await o.page.waitForSelector('text=Warst du heute im Vereinstraining?');
