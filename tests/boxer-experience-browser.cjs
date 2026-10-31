@@ -165,9 +165,10 @@ async function run(browser,engine){
  const safeStyle=await page.addStyleTag({content:':root{--ex-safe-top:'+simulatedInset+'px!important}'});
  const headBounds=await page.locator('.ex-head').boundingBox();
  const menuBounds=await page.locator('#ex-settings').boundingBox();
- assert.ok(headBounds&&headBounds.height>=simulatedInset+58,'iPhone safe area must increase header height');
+ assert.ok(headBounds&&headBounds.height>=simulatedInset+62,'iPhone safe area must increase header height');
  assert.ok(menuBounds&&menuBounds.y>=simulatedInset,'menu button must sit below iPhone status bar');
  assert.ok(menuBounds.width>=44&&menuBounds.height>=44,'menu must have >=44px hit target');
+ assert.ok(menuBounds.y+menuBounds.height<=headBounds.y+headBounds.height+1,'iPhone menu remains fully inside the header, not clipped or obscured');
  assert.equal(await page.evaluate(()=>{
    const button=document.getElementById('ex-settings'),r=button.getBoundingClientRect();
    return button.contains(document.elementFromPoint(r.left+r.width/2,r.top+r.height/2));
