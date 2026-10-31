@@ -21,14 +21,15 @@ const server = http.createServer((req, res) => { const p = new URL(req.url, 'htt
         await page.goto(base + '/' + lab + 'effects-test.html'); await page.waitForFunction(() => document.body.dataset.ready === 'true');
         const result = await page.evaluate(() => {
           const api = TLPremiumEffects, canvas = () => { const c = document.createElement('canvas'); c.width = 768; c.height = 1216; return c; }, a = canvas(), b = canvas(), g = a.getContext('2d'), h = b.getContext('2d');
-          const equal = () => { const x = g.getImageData(0, 0, 768, 1216).data, y = h.getImageData(0, 0, 768, 1216).data; for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return false; return true; };
+          // Synchronize WebKit deferred canvas output before exact RGBA readback; see WEBKIT_READBACK.md.
+          const equal = () => { a.toDataURL(); b.toDataURL(); const x = g.getImageData(0, 0, 768, 1216).data, y = h.getImageData(0, 0, 768, 1216).data; for (let i = 0; i < x.length; i++) if (x[i] !== y[i]) return false; return true; };
           let combinations = 0;
           for (const pose_profile of ['cool', 'guard']) for (const scene of api.keys.scene) for (const aura of api.keys.aura) {
-            const c = { ...referenceConfig, pose_profile, scene, aura }; g.clearRect(0, 0, 768, 1216); h.clearRect(0, 0, 768, 1216); api.drawBack(g, c, 0); api.drawSlot(h, c, 'scene', 0); api.drawSlot(h, c, 'aura', 0); if (!equal()) throw Error('Back/slot mismatch'); combinations++;
+            const c = { ...referenceConfig, pose_profile, scene, aura }; g.clearRect(0, 0, 768, 1216); h.clearRect(0, 0, 768, 1216); api.drawBack(g, c, 0); api.drawSlot(h, c, 'scene', 0); api.drawSlot(h, c, 'aura', 0); if (!equal()) throw Error('Back/slot mismatch: '+JSON.stringify(c)); combinations++;
           }
           const eyes = [];
           for (const eyefx of api.keys.eyefx.filter(k => k !== 'none')) {
-            const c = { ...referenceConfig, eyefx }; g.clearRect(0, 0, 768, 1216); h.clearRect(0, 0, 768, 1216); api.drawEyes(g, c, 0); api.drawSlot(h, c, 'eyefx', 0); if (!equal()) throw Error('Eye/slot mismatch');
+            const c = { ...referenceConfig, eyefx }; g.clearRect(0, 0, 768, 1216); h.clearRect(0, 0, 768, 1216); api.drawEyes(g, c, 0); api.drawSlot(h, c, 'eyefx', 0); if (!equal()) throw Error('Eye/slot mismatch: '+eyefx);
             const pixels = g.getImageData(0, 0, 768, 1216).data; let visible = 0, outside = 0;
             for (let y = 0; y < 1216; y++) for (let x = 0; x < 768; x++) if (pixels[(y * 768 + x) * 4 + 3]) { visible++; if (y < 147 || y > 163 || !((x >= 345 && x <= 369) || (x >= 394 && x <= 418))) outside++; }
             eyes.push({ eyefx, visible, outside });

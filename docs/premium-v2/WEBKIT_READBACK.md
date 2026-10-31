@@ -9,3 +9,5 @@ Zusätzlich werden temporäre Vergleichs- und UI-Canvases nach dem Kopieren expl
 Die vorläufige Vermutung sichtbar verschwundener Artwork-Ebenen ist durch diesen identischen PNG-Vergleich nicht bestätigt. Die endgültige Freigabe der technischen Varianten hängt weiterhin vom vollständigen Chromium-/WebKit-Test und unveränderten Quell-Hashes ab; künstlerische Freigabe ist damit nicht verbunden.
 
 Archivierte Beweisbilder: [beobachtet](evidence/webkit-readback-observed.png) und [Referenz](evidence/webkit-readback-reference.png). Beide PNG-Dateien haben denselben SHA-256: `87126e3faac1b0984bea37edcce6df927ccd63d30bc6bca8257726ec8b031761`.
+
+Der Linux-GitHub-Lauf von Paket 3 zeigte denselben synchronen Back/Slot-Vergleichsfehler im separaten Effekttest. Auch dort synchronisiert nun ein PNG-Snapshot die beiden Zeichenflächen vor dem unverändert bytegenauen Vergleich; Effektcode und Benchmarks bleiben unverändert. Lokale Chromium-/WebKit-Effekttests bestehen.
