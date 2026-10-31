@@ -86,7 +86,8 @@ async function run(browser,engine){
  // Liga: Podium mit echten Top 3 in der richtigen Reihenfolge (2-1-3) und deren Holos
  assert.deepEqual(await page.evaluate(()=>[...document.querySelectorAll('#ex-podium .ex-step-name')].map(x=>x.textContent)),['Ben','Anna','Cleo']);
  assert.equal(await page.locator('#ex-podium .ex-step svg').count(),3);
- assert.equal(await page.textContent('#ex-league-points'),'1’200'.replace('’',"'")||'1200');
+ // Tausendertrennzeichen hängt von der ICU-Version des Browsers ab (' oder ’ oder schmales Leerzeichen)
+ assert.match(await page.textContent('#ex-league-points'),/^1\D?200$/);
  if(engine==='chromium')await shot(page,'83-02-liga-podium');
  // Mein Boxer: feststehende FUT-Card, darunter Boxstil-Diagramm, Inhalt scrollt, Karte bleibt
  await page.click('.ex-menu [data-tab="boxer"]');
@@ -161,4 +162,7 @@ async function run(browser,engine){
   try{await run(browser,name);ran++}finally{await browser.close()}
  }
  server.close();if(process.env.REQUIRE_WEBKIT&&ran<2)throw new Error('WebKit required');
-})().catch(e=>{console.error('BROWSER TEST FAILED',e);server.close();process.exit(1)});
+})().catch(e=>{console.error('BROWSER TEST FAILED',e);
+ // In GitHub Actions als Annotation ausgeben (lesbar über die Checks-API, auch ohne Log-Zugriff)
+ if(process.env.GITHUB_ACTIONS)console.log('::error title=boxer-experience-browser::'+String(e&&e.stack||e).slice(0,1500).replace(/%/g,'%25').replace(/\r/g,'%0D').replace(/\n/g,'%0A'));
+ server.close();process.exit(1)});
