@@ -46,7 +46,7 @@ test('Question is optional and keeps three training routes',()=>{
  assert.match(ui,/Nein, eigenes Training/);
  assert.match(ui,/Anderes Vereinstraining/);
  assert.match(ui,/submit_scheduled_club_training_today/);
- assert.match(ui,/status==='submitted'/);
+ assert.match(ui,/\['submitted','checked_in'\]\.includes\(result\.status\)/);
  assert.match(ui,/role','status'/);
  assert.match(ui,/form\.hidden=true/);
  assert.match(ui,/form\.hidden=false/);
@@ -63,7 +63,7 @@ test('Check-in keeps fixed weekly slots and existing supervised check-ins',()=>{
  assert.match(checkin,/gym_check_in/);
  assert.match(ui,/FIXER VEREINSSTUNDENPLAN/);
  assert.match(checkin,/unifiedScheduleActive/);
- assert.match(checkin,/list\.filter\(s=>s\.club_tier!=='pflicht'\)/);
+ assert.match(checkin,/list\.filter\(s=>s\.club_tier!=='pflicht'\|\|pflicht\.length>1\)/);
  assert.match(ui,/case 'checked_in'|checked_in:/);
  assert.match(ui,/case 'gym_not_open'|gym_not_open:/);
 
