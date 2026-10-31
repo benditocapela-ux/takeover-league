@@ -141,6 +141,75 @@
     const looks=top.length?await safeRpc('get_holo_looks',{p_display_names:top.map(r=>r.boxer_name)}):null;
     renderPodium(rows,looks);
   }
+  /* PR #84 integration contract:
+   * Config is read from public.get_training_v2_config, not duplicated locally.
+   * Render only server-advertised options while enabled. The existing
+   * boxer.html form (with takeover-training-v2.js) owns the actual selection,
+   * payload, validation and rewards. No preview implies a confirmed credit.
+   */
+  function trainingOption(title,detail,href,subtitle){
+    const a=document.createElement('a');
+    a.className='ex-link-card';a.href=href;
+    const h=document.createElement('b');h.textContent=title;
+    const sub=document.createElement('small');sub.textContent=detail;
+    a.append(h,sub);
+    if(subtitle){const more=document.createElement('small');more.textContent=subtitle;more.style.color='#f2c14e';a.append(more)}
+    return a;
+  }
+  function trainingReward(value){
+    const points=Number(value?.points),exp=Number(value?.exp),coins=Number(value?.coins);
+    return [Number.isFinite(points)?fmt(points)+' Punkte':null,
+            Number.isFinite(exp)?fmt(exp)+' EXP':null,
+            Number.isFinite(coins)?fmt(coins)+' Coins':null].filter(Boolean).join(' · ');
+  }
+  function trainingFallback(host){
+    host.replaceChildren();
+    const intro=document.createElement('p');intro.className='ex-muted';
+    intro.textContent='Training 2.0 ist noch nicht freigeschaltet. Du kannst weiterhin das bisherige Trainingsformular verwenden.';
+    host.append(intro,trainingOption('🥊 TRAINING EINREICHEN','Das bewährte Formular öffnen','./boxer.html#trainingFormCard'));
+  }
+  async function loadTrainingConfiguration(){
+    const host=$('ex-training-options');if(!host)return;
+    // No SQL migration or disabled flag? Remain usable with the old form.
+    const [cfg,checkin]=await Promise.all([
+      safeRpc('get_training_v2_config'),
+      state.db.from('league_feature_flags').select('is_enabled').eq('feature_key','club_checkin_only').maybeSingle().catch(()=>({error:true}))
+    ]);
+    if(cfg?.enabled!==true||!Array.isArray(cfg.pflicht)||!Array.isArray(cfg.extras)){
+      trainingFallback(host);return;
+    }
+    const checkinOnly=!checkin.error&&checkin.data?.is_enabled===true;
+    host.replaceChildren();
+    const headline=document.createElement('p');headline.className='ex-eyebrow';
+    headline.textContent='TRAINING 2.0 · AKTIV';
+    host.append(headline);
+    const grid=document.createElement('div');grid.className='ex-grid';
+    const clubHref=checkinOnly?'./checkin.html':'./boxer.html#trainingFormCard';
+    if(cfg.pflicht.length){
+      const info=cfg.pflicht.map(x=>String(x.day_name||'')+' · '+String(x.label||'')).join(' / ');
+      // Rewards may differ per schedule slot; never hardcode 60/40.
+      const reward=cfg.pflicht.map(x=>trainingReward(x.reward)).filter(Boolean);
+      grid.append(trainingOption('📅 PFLICHTTRAINING',info,clubHref,
+        checkinOnly?'Nur via Gym-Check-in':reward.length&&reward.every(x=>x===reward[0])?'Voraussichtlich: '+reward[0]:'Wert wird im Formular angezeigt'));
+    }
+    if(cfg.extras.length){
+      const info=cfg.extras.map(x=>String(x.label||'')).join(' / ');
+      const reward=cfg.extras.map(x=>trainingReward(x.reward)).filter(Boolean);
+      grid.append(trainingOption('💪 ERGÄNZUNGSTRAINING',info,clubHref,
+        checkinOnly?'Nur via Gym-Check-in':reward.length&&reward.every(x=>x===reward[0])?'Voraussichtlich: '+reward[0]:'Wert wird im Formular angezeigt'));
+    }
+    const individual=(Array.isArray(cfg.types)?cfg.types:[]).filter(x=>x.club_only!==true);
+    if(individual.length)grid.append(trainingOption('🏃 INDIVIDUELLES TRAINING',
+      'Joggen, Kraft, Heimtraining und weitere Trainingsarten','./boxer.html#trainingFormCard',
+      'Wert abhängig von der gewählten Trainingsart'));
+    if(grid.childElementCount)host.append(grid);
+    else trainingFallback(host);
+    if(checkinOnly){
+      const warning=document.createElement('p');warning.className='ex-note';
+      warning.textContent='Dein Verein verlangt für Vereinstrainings derzeit den Gym-Check-in. Das direkte Formular wird dafür nicht angeboten.';
+      host.append(warning);
+    }
+  }
   async function loadTraining(){
     const db=state.db, id=state.profile.id;
     const [entries,types]=await Promise.all([
@@ -196,7 +265,7 @@
       setText('ex-home-name',profile.display_name||'MEIN BOXER');
       setText('ex-welcome','Willkommen, '+profile.display_name+'. Dein nächster Schritt ist nur einen Klick entfernt.');
       $('ex-gate').hidden=true;$('ex-app').hidden=false;
-      await Promise.allSettled([loadMyPerformance(),loadLeaderboard(),loadTraining(),loadLevel()]);
+      await Promise.allSettled([loadMyPerformance(),loadLeaderboard(),loadTraining(),loadLevel(),loadTrainingConfiguration()]);
     }catch(error){
       console.error('[boxer-experience] init failed',error);
       showGate('VERBINDUNGSPROBLEM','Deine Daten konnten nicht geladen werden. Bitte lade die Seite neu.','ERNEUT VERSUCHEN','./boxer-experience.html');
