@@ -50,3 +50,14 @@ Keine produktive Route wurde ersetzt. Ein nicht gemergter PR kann ohne Auswirkun
 | Aktivierung | noch nicht als Boxer-Standard verlinkt | Migration und Aktivierung durch Owner | keine produktiven Eingriffe |
 
 **Wichtig:** Die optische Zusammenführung in ein einziges eingebettetes Formular ist noch nicht fertig. Bis dahin öffnet der Training-Tab die kanonische Trainingsseite, damit genau eine serverseitige Validierungs- und Buchungslogik existiert. Die Doku von PR #84 nennt zudem offene Risiken bei `club_checkin_only` und Gym-Duplikaten; diese werden durch das Redesign nicht behoben.
+
+## Ein-Klick-Vereinstraining – Abstimmung mit PR #84
+
+- Die Startseiten-Aktion «Training einreichen» wechselt jetzt zum Trainingstab, statt die Ja/Nein-Frage zu überspringen.
+- Bei `get_training_v2_config.enabled=true` erscheint die Frage «Warst du heute im Vereinstraining?». «Ja» nutzt ausschliesslich den serverseitigen RPC `submit_scheduled_club_training_today` von PR #84. Es werden weder Trainingsart noch Stufe, Punkte, EXP oder Coins vom Boxer gesetzt.
+- «Nein» öffnet `boxer.html?individual=1#trainingFormCard` mit individueller Vorauswahl. Für Ergänzungstrainings im Verein ist `?club=1` vorgesehen.
+- Der RPC unterscheidet `submitted`, `already_pending`, `already_approved`, `gym_registered`, `no_slot`, `choose_slot`, `checkin_required` und `disabled`. Nur `submitted` zeigt eine tatsächliche neue Einreichung an.
+- Mit deaktiviertem `training_v2` oder fehlender Migration fällt das UI auf das alte Formular zurück. Bei verpflichtendem Gym-Check-in wird keine zusätzliche Selbstmeldung erzwungen.
+- Check-in-Seite und Server-RPC werden ausschliesslich in PR #84 bearbeitet. PR #83 verwendet sie nur nach dessen Integration.
+
+**Gate:** Beide PRs müssen zusammen gegen die Basis-Migration und die zusätzliche `20261031100000_scheduled_club_training_quick_request.sql` getestet werden, bevor sie produktiv verlinkt oder aktiviert werden. Die jetzige Umsetzung ist weiterhin Draft und hat weder Merge noch Deployment ausgelöst.
