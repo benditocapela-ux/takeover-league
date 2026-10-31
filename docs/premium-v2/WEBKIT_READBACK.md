@@ -11,3 +11,5 @@ Die vorläufige Vermutung sichtbar verschwundener Artwork-Ebenen ist durch diese
 Archivierte Beweisbilder: [beobachtet](evidence/webkit-readback-observed.png) und [Referenz](evidence/webkit-readback-reference.png). Beide PNG-Dateien haben denselben SHA-256: `87126e3faac1b0984bea37edcce6df927ccd63d30bc6bca8257726ec8b031761`.
 
 Der Linux-GitHub-Lauf von Paket 3 zeigte denselben synchronen Back/Slot-Vergleichsfehler im separaten Effekttest. Auch dort synchronisiert nun ein PNG-Snapshot die beiden Zeichenflächen vor dem unverändert bytegenauen Vergleich; Effektcode und Benchmarks bleiben unverändert. Lokale Chromium-/WebKit-Effekttests bestehen.
+
+Der anschließende Linux-Lauf widerlegte eine vollständige Behebung allein durch Snapshot-Flush: Flamme/Holo blieb im separaten Back/Slot-Vergleich unterschiedlich. Die Laufzeit verwendet deshalb jetzt für Hintergrund und Aura exakt dieselben jeweils isolierten drawSlot-Aufrufe wie die Item-Vorschau. Der gemeinsame Quellenpfad verhindert, dass Szenen-Zeichenzustand in den Aura-Pfad hineinwirkt. Der exakte Vergleich bleibt bestehen; alle integrierten Belege werden für diesen neuen Quellenhash erneut erzeugt.

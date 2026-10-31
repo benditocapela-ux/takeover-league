@@ -113,7 +113,9 @@
     g.restore(); return true;
   }
   function drawBack(g, input, time = 0) {
-    const c = config(input); if (!supports(c)) return false; g.save(); drawScene(g, c); drawAura(g, c, time); g.restore(); return true;
+    const c = config(input); if (!supports(c)) return false;
+    // Use the identical state-isolated path as equipment previews on every backend.
+    drawSlot(g, c, 'scene', time); drawSlot(g, c, 'aura', time); return true;
   }
   function drawSlot(g, input, slot, time = 0) {
     const c = config(input); if (!supports(c)) return false; g.save();

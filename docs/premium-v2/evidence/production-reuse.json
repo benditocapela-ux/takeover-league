@@ -2,7 +2,7 @@
   "approved": false,
   "enabled": false,
   "evidenceReport": "docs/premium-v2/evidence/production-tests.json",
-  "evidenceSHA256": "296bcd1ebcfd6989f0d9bdb473a3c31afaec2b463abc0095eaaca9973d0a8880",
+  "evidenceSHA256": "8efb71448cae204983fdd8f3b888379ff9e549f839c3838301b25cad80bf9f38",
   "evidenceCells": 519,
   "method": "Unique source file + component id + UV + registered box among actual accepted baseline configurations. Palette variants do not multiply unique components. File bytes include packed unused atlas pixels; not visible-pixel reuse or art-production-time savings. Canvas effects reported separately. Unpaired Guard Basic is counted pose-specific, not inferred reusable.",
   "overall": {

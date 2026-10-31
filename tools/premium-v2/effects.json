@@ -95,7 +95,7 @@
   },
   "module": {
     "file": "effects.js",
-    "sha256": "f4b5e6fac84186ed37fb78a937f9f7ca05870a9a5d491e0effb4dec738467e22"
+    "sha256": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
   },
   "layers": {
     "scene": "behind aura and all character components",
