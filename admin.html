@@ -65,7 +65,7 @@ const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable
 const $=id=>document.getElementById(id);
 const msg=(value,error=false)=>{const el=$('adminStatus');el.textContent=value;el.classList.toggle('error',error)};
 let admin=false;
-let archiveById=new Map(),allProfiles=[];
+let archiveById=new Map(),allProfiles=[],adminSearch='',adminShown=10;
 const add=(tag,text,cls)=>{const el=document.createElement(tag);if(text!==undefined)el.textContent=text;if(cls)el.className=cls;return el};
 async function mustBeAdmin(){
  const {data:{user},error}=await db.auth.getUser();
@@ -173,6 +173,40 @@ function buildRow(p){
  if(p.role==='admin')archiveCell.append(add('small','Adminprofile sind geschützt.'));
  return tr;
 }
+function renderProfileRows(){
+ if(!admin)return;
+ const query=adminSearch.trim().toLocaleLowerCase('de-CH');
+ const visible=allProfiles.filter(row=>
+  ($('showArchived').checked||!archiveById.has(row.id))&&
+  (!query||[row.display_name,row.email,row.prepared_email,row.id].some(v=>
+   String(v||'').toLocaleLowerCase('de-CH').includes(query))));
+ const shown=visible.slice(0,adminShown);
+ const root=$('profilesBody');root.replaceChildren();
+ for(const row of shown)root.append(buildRow(row));
+ const label=document.querySelector('[data-staff-result]');
+ if(label)label.textContent=visible.length+' passende Profile';
+ const paging=document.querySelector('[data-staff-page-status]');
+ if(paging)paging.textContent=shown.length+' von '+visible.length+' angezeigt';
+ const more=document.querySelector('[data-staff-more]');
+ if(more)more.hidden=shown.length>=visible.length;
+ if(!shown.length){
+  const tr=add('tr');
+  const td=add('td','Keine passenden Profile gefunden. Filter anpassen.');
+  td.colSpan=5;
+  tr.append(td);root.append(tr);
+ }
+}
+function openStaffPanel(key,{focus=false}={}){
+ if(!admin||!['profiles','security','audit'].includes(key))return;
+ const controls=document.querySelectorAll('[data-staff-target]');
+ for(const b of controls)b.setAttribute('aria-current',b.dataset.staffTarget===key?'page':'false');
+ for(const panel of document.querySelectorAll('[data-staff-pane]'))panel.hidden=panel.dataset.staffPane!==key;
+ if(focus){
+  window.scrollTo({top:0,behavior:'instant'});
+  const title=document.querySelector('[data-staff-pane="'+key+'"] h2');
+  if(title){title.tabIndex=-1;title.focus({preventScroll:true})}
+ }
+}
 async function load(silent=false){
  if(!admin)return;if(!silent)msg('Profile werden geladen …');
  const result=await db.rpc('admin_list_profiles');
@@ -182,9 +216,7 @@ async function load(silent=false){
  if(archiveResult.error){msg('Archivstatus konnte nicht geladen werden: '+archiveResult.error.message,true);return;}
  archiveById=new Map((archiveResult.data||[]).filter(x=>x.archived_at).map(x=>[x.profile_id,x.archived_at]));
  rows.sort((a,b)=>(a.has_account===b.has_account?0:a.has_account?1:-1)||((a.is_listed===b.is_listed)?0:a.is_listed?1:-1)||a.display_name.localeCompare(b.display_name,'de-CH'));
- const body=$('profilesBody');body.replaceChildren();
- const visibleRows=rows.filter(row=>$('showArchived').checked||!archiveById.has(row.id));
- for(const row of visibleRows)body.append(buildRow(row));
+ renderProfileRows();
  $('profileTotals').replaceChildren(
   add('span',rows.length+' Profile'),
   add('span',' · '+rows.filter(x=>x.is_active).length+' aktiv'),
@@ -206,12 +238,15 @@ async function loadAudit(){
  }
 }
 $('adminRefresh').addEventListener('click',()=>load());
-$('showArchived').addEventListener('change',()=>load(true));
+$('showArchived').addEventListener('change',()=>{adminShown=10;renderProfileRows()});
+document.querySelector('[data-staff-search]').addEventListener('input',e=>{adminSearch=e.target.value;adminShown=10;renderProfileRows()});
+document.querySelector('[data-staff-more]').addEventListener('click',()=>{adminShown+=10;renderProfileRows()});
+document.querySelectorAll('[data-staff-target]').forEach(b=>b.addEventListener('click',()=>openStaffPanel(b.dataset.staffTarget,{focus:true})));
 document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{
  try{await navigator.clipboard.writeText($(button.dataset.copy).textContent);msg('SQL-Hinweis kopiert. Er wurde nicht ausgeführt.')}
  catch{msg('Kopieren nicht möglich. SQL-Text oben manuell markieren.',true)}
 }));
-try{await mustBeAdmin();await load()}catch(e){msg(e.message,true);$('adminContent').classList.add('hidden')}
+try{await mustBeAdmin();await load();openStaffPanel('profiles')}catch(e){msg(e.message,true);$('adminContent').classList.add('hidden')}
 </script>
 <script src="./takeover-navigation.js" defer></script>
 </body></html>
