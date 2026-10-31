@@ -131,7 +131,17 @@ app.addEventListener('change',ev=>{if(ev.target.id==='ciMin')form.min=Number(ev.
   if(!s.data||!s.data.session){say('');app.innerHTML='<div class="tlp-panel">Bitte <a href="./login.html">anmelden</a>.</div>';return}
   const me=await db.rpc('get_my_performance');if(me.error){say(me.error.message,true);return}
   role=me.data.profile.role;say('');
-  if(role==='admin'||role==='coach'){$('pageTitle').textContent='Gym-Check-in';await loadStaff(false)}else{$('pageTitle').textContent='Einchecken';await loadBoxer()}
+  if(role==='admin'||role==='coach'){$('pageTitle').textContent='Gym-Check-in';await loadStaff(false)}else{
+   $('pageTitle').textContent='Vereinstraining & Check-in';
+   await loadBoxer();
+   try{
+    const config=await db.rpc('get_training_v2_config');
+    if(!config.error&&config.data?.enabled===true){
+     const quick=await import('./takeover-club-today.js');
+     quick.mountCheckinSchedule({db,cfg:config.data,role});
+    }
+   }catch(err){console.warn('Vereinsstundenplan nicht verfügbar:',err)}
+  }
  }catch(e){say('Check-in konnte nicht geladen werden: '+(e.message||e),true)}
 })();
 </script>
