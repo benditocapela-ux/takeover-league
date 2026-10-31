@@ -115,6 +115,45 @@ async function run(browser,engine){
  await yes.click();
  await page.waitForFunction(()=>/bereits eingereicht/.test(document.querySelector('#ex-training-options [role=status]').textContent));
  if(engine==='chromium')await shot(page,'83-04-training-ein-klick');
+ // Non-club and supplementary actions must stay IN the five-tab application.
+ // A small same-origin fixture verifies the navigation shell; the original
+ // boxer.html form remains separately covered by training-v2-browser.cjs.
+ const fakeTraining='<!doctype html><html><head><title>Training</title></head><body data-tl-screen="boxer"><main><div class="tl-screen-ribbon">Altes Studio</div><div id="content" class="studio-content"><div id="studioPanelOverview" class="studio-pane-overview"><section class="card" id="trainingFormCard"><h2>Training einreichen</h2><form id="form"><label for="kind">Art</label><select id="kind"><option>Joggen</option></select><input id="date" type="date"><button id="submit" type="submit">Training beantragen</button></form></section></div></div></main></body></html>';
+ await page.route(/\/boxer\.html(?:\?|$)/,route=>route.fulfill({status:200,contentType:'text/html',body:fakeTraining}));
+ const openEmbedded=async(selector,expected)=>{
+  await page.locator(selector).first().click();
+  await page.locator('#ex-flow:not([hidden])').waitFor();
+  await page.waitForFunction(()=>document.getElementById('ex-flow-frame').style.visibility==='visible');
+  assert.match(await page.locator('#ex-flow-frame').getAttribute('src'),expected);
+  assert.match(page.url(),/boxer-experience\.html/,'top-level URL remains boxer experience');
+  assert.equal(await page.locator('.ex-menu [data-tab]').count(),5);
+ };
+ await openEmbedded('#ex-training-options a:has-text("NEIN, EIGENES TRAINING")',/boxer\.html\?individual=1#trainingFormCard/);
+ assert.ok(await page.frameLocator('#ex-flow-frame').locator('#form').isVisible(),'original form is now inside modern shell');
+ assert.ok(await page.frameLocator('#ex-flow-frame').locator('.tl-screen-ribbon').isHidden(),'old page header not shown in app');
+ assert.ok(await page.frameLocator('#ex-flow-frame').locator('body.tl-ex-embedded.tl-ex-training').count()===1);
+ await page.locator('#ex-flow-back').click();
+ assert.ok(await page.locator('#ex-flow').isHidden(),'back restores original modern tab');
+ await openEmbedded('#ex-training-options a:has-text("ERGAENZUNGSTRAINING IM VEREIN")',/boxer\.html\?club=1#trainingFormCard/);
+ await page.locator('.ex-menu [data-tab="kaempfe"]').click();
+ assert.ok(await page.locator('#ex-flow').isHidden(),'main tab closes embedded area');
+ assert.ok(await page.locator('[data-view="kaempfe"]').isVisible());
+
+ // Representative internal route and nested route stay framed.
+ const simple=(label)=>'<!doctype html><html><head><title>'+label+'</title></head><body data-tl-screen="shop"><div class="tl-screen-ribbon">Alte Navigation</div><main><h1>'+label+'</h1><a href="./goals.html">Meine Ziele</a></main></body></html>';
+ await page.route(/\/shop\.html(?:\?|$)/,route=>route.fulfill({status:200,contentType:'text/html',body:simple('Shop')}));
+ await page.route(/\/goals\.html(?:\?|$)/,route=>route.fulfill({status:200,contentType:'text/html',body:simple('Ziele')}));
+ await page.locator('.ex-menu [data-tab="boxer"]').click();
+ await openEmbedded('.ex-view[data-view="boxer"] a[href="./shop.html"]',/shop\.html$/);
+ await page.frameLocator('#ex-flow-frame').getByRole('link',{name:'Meine Ziele'}).click();
+ await page.waitForFunction(()=>document.getElementById('ex-flow-frame').src.endsWith('shop.html')&&
+  document.getElementById('ex-flow-frame').contentWindow.location.pathname.endsWith('/goals.html')&&
+  document.getElementById('ex-flow-frame').style.visibility==='visible');
+ assert.match(page.url(),/boxer-experience\.html/,'nested navigation does not replace the new app');
+ await page.locator('#ex-flow-back').click();
+ assert.ok(await page.locator('#ex-flow').isHidden());
+ await page.locator('.ex-menu [data-tab="training"]').click();
+
  // Tastatur: Tabs per Enter
  await page.focus('.ex-menu [data-tab="heute"]');await page.keyboard.press('Enter');
  assert.ok(await page.isVisible('#ex-home-holo'));

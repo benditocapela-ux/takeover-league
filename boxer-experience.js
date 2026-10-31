@@ -313,5 +313,10 @@
       showGate('VERBINDUNGSPROBLEM','Deine Daten konnten nicht geladen werden. Bitte lade die Seite neu.','ERNEUT VERSUCHEN','./boxer-experience.html');
     }
   }
+  // Returning from the secure canonical training form refreshes the live
+  // history and pending counters without constructing a second form.
+  document.addEventListener('takeover:flow-closed',()=>{
+    if(state.db&&state.profile)void loadTraining().catch(e=>console.warn('[boxer-experience] training refresh after flow:',e));
+  });
   init();
 })();
