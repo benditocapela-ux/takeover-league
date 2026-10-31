@@ -111,6 +111,27 @@ button{cursor:pointer}
 /* Die Kartenbreite kommt aus dem Stylesheet (!important überschreibt die feste Breite des Karten-Renderers), damit die Karte in die Bühne passt. */
 /* Kleine Displays: Texte neben dem Holo bzw. der FUT-Card überdecken sich nicht */
 @media(max-width:560px){.ex-card-stage .ex-figure-title,.ex-card-stage .ex-figure-stats{display:none}.ex-home-stage .ex-figure-foot{display:none}}
+
+/* Original five-tab shell stays visible while canonical subpages open inside it. */
+.ex-flow{flex:1;min-height:0;display:flex;flex-direction:column;background:#090f1e}
+.ex-flow[hidden]{display:none!important}
+.ex-flow-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:8px;
+ padding:8px clamp(9px,2.4vw,18px);border-bottom:1px solid #394965;
+ background:linear-gradient(110deg,#1a2b46,#0c1829);min-height:55px;flex:none}
+.ex-flow-head h2{min-width:0;margin:0;font:900 clamp(17px,3vw,23px)/1.1 'Barlow Condensed',system-ui,sans-serif;
+ color:#f6d585;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ex-flow-back{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:44px;
+ padding:6px 11px;border-radius:10px;background:#182942;border:1px solid #60728a;color:#f6e2ae;
+ font:800 12px system-ui;cursor:pointer}
+.ex-flow-direct{font-size:10px;color:#aebfd6;text-decoration:underline;min-height:44px;display:inline-flex;align-items:center;padding:3px 7px}
+.ex-flow-content{flex:1;min-height:0;position:relative;background:#08101e}
+.ex-flow-frame,#ex-flow-frame{display:block;width:100%;height:100%;border:0;background:#08101e}
+.ex-flow-loading{position:absolute;z-index:1;inset:10px 12px auto;padding:11px 13px;border-radius:12px;
+ border:1px solid #4f607c;background:#112039;color:#dce8fc;font-size:12px}
+.ex-flow-loading[hidden]{display:none!important}
+.ex-flow-loading[data-error="true"]{border-color:#a85b5b;color:#ffbbbb}
+@media(max-width:380px){.ex-flow-head{grid-template-columns:auto minmax(0,1fr)}.ex-flow-direct{display:none}}
+
 </style>
 </head>
 <body data-tl-screen="boxer-experience">
@@ -168,6 +189,17 @@ button{cursor:pointer}
   </section>
  </main>
 </div>
+<section id="ex-flow" class="ex-flow" hidden aria-label="Takeover Funktionsbereich">
+ <div class="ex-flow-head">
+  <button type="button" id="ex-flow-back" class="ex-flow-back" aria-label="Zurück zur Boxer Experience">‹ <span>Zurück</span></button>
+  <h2 id="ex-flow-title">Takeover</h2>
+  <a id="ex-flow-direct" class="ex-flow-direct" href="./boxer.html" target="_blank" rel="noopener noreferrer">Separat öffnen</a>
+ </div>
+ <div class="ex-flow-content">
+  <p id="ex-flow-loading" class="ex-flow-loading" role="status" aria-live="polite">Bereich wird geöffnet …</p>
+  <iframe id="ex-flow-frame" title="Takeover Funktionsbereich" referrerpolicy="strict-origin-when-cross-origin"></iframe>
+ </div>
+</section>
 <nav class="ex-menu" aria-label="Boxer Hauptnavigation">
  <button type="button" data-tab="heute" aria-current="page"><strong>⌂</strong>Heute</button>
  <button type="button" data-tab="training"><strong>♜</strong>Training</button>
@@ -185,4 +217,5 @@ button{cursor:pointer}
 <script src="./takeover-holo.js" defer></script>
 <script src="./takeover-performance.js" defer></script>
 <script src="./boxer-experience.js" defer></script>
+<script src="./takeover-boxer-flow.js" defer></script>
 </body></html>
