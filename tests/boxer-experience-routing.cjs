@@ -8,6 +8,7 @@ const login=fs.readFileSync('login.html','utf8');
 const nav=fs.readFileSync('takeover-navigation.js','utf8');
 const studio=fs.readFileSync('boxer.html','utf8');
 const exp=fs.readFileSync('boxer-experience.html','utf8');
+const expJs=fs.readFileSync('boxer-experience.js','utf8');
 const publish=fs.readFileSync('.github/workflows/takeover-pages-deploy.yml','utf8');
 test('Shared navigation remains syntactically valid',()=>{
  assert.doesNotThrow(()=>new vm.Script(nav));
@@ -43,7 +44,7 @@ test('Trainer/Admin menu cannot link to boxer-only experience',()=>{
 test('Legacy boxer studio remains discoverable; training deep links are preserved',()=>{
  assert.match(studio,/data-tl-experience-link href="\.\/boxer-experience\.html" hidden/);
  assert.match(studio,/if\(profile\.role==='boxer'\)\{const newView=document\.querySelector/);
- assert.match(exp,/href="\.\/boxer\.html#trainingFormCard"/);
+ assert.match(expJs,/\.\/boxer\.html#trainingFormCard/);
  assert.match(exp,/href="\.\/boxer\.html"/);
 });
 test('New static page and its JS are included in Pages release assembly',()=>{
