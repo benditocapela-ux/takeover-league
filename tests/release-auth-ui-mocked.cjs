@@ -133,21 +133,28 @@ async function main(){
   } else {
    await page.goto(url+'/coach.html');
    await page.waitForFunction(()=>!document.querySelector('#content').classList.contains('hidden'));
+   // Training 2.0: Bestätigen-Bereich, Sammelaktion mit Zusammenfassung (ohne Migration über review_training)
+   await page.locator('#cv2Tabs [data-view="review"]').click();
    await page.locator('#selectPending').click();
    await page.locator('#bulkApprove').click();
+   await page.locator('#cv2Sheet .cv2-sheet-foot .cv2-btn-ok').click();
    await page.waitForFunction(()=>window.__mockStats.reviewed.length===1);
    assert.equal((await page.evaluate(()=>window.__mockStats.reviewed[0])).p_decision,'approved');
-   await page.locator('[data-sec="edit"] .tl-col-toggle').click(); // Etappe 6b: «Trainings bearbeiten» ist zugeklappt
+   await page.locator('#cv2Sheet .cv2-sheet-foot .cv2-btn-sec').click();
+   await page.locator('#cv2Tabs [data-view="history"]').click();
+   await page.locator('#cv2Filters summary').click();
    await page.selectOption('#filterStatus','rejected');
    await page.locator('button', {hasText:'Ablehnung rückgängig'}).first().click();
    await page.waitForFunction(()=>window.__mockStats.undo===1);
    console.log('PASS admin bulk review, guarded undo, mobile Chromium');
   }
+  if(role==='boxer'){ // Trainer-Dashboard 2.0 blendet die Schnellaktionen aus (eigene Bereichsnavigation, keine zweite Menüebene)
   const action=page.locator('.tl-quick-open');await action.waitFor({state:'visible'});
   await action.click();assert.equal(await page.locator('.tl-quick-dialog').evaluate(el=>el.open),true);
-  const expected=role==='boxer'?'Challenge-Liste':'Offene Trainings';
+  const expected='Challenge-Liste';
   assert.match(await page.locator('.tl-quick-links').innerText(),new RegExp(expected));
   await page.locator('.tl-quick-close').click();assert.equal(await page.locator('.tl-quick-dialog').evaluate(el=>el.open),false);
+  }else assert.equal(await page.locator('.tl-quick-open').isVisible(),false,'no competing quick-action menu on the coach dashboard');
   const x=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
   assert.ok(x<=5,'Unexpected '+role+' horizontal overflow '+x);
   await context.close();

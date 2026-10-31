@@ -20,6 +20,12 @@ const REGISTERS=[
   'Du trainierst und trägst dein Training in «Mein Studio» ein.','Dein Coach bestätigt es. Erst dann bekommst du Punkte und EXP.',
   'Punkte zählen für das Monatsranking und starten jeden Monat neu.','EXP bleiben für immer: damit steigst du im Level (1–99) und Rang (F bis S) auf.',
   'Unten in der Leiste findest du Podium, Ranking, das Menü mit allen Bereichen und dein Studio.']},
+ {key:'experience',page:'boxer-experience.html',group:'mein',icon:'🥊',title:'Mein Takeover',summary:'Deine neue Boxer-Startseite mit fünf übersichtlichen Bereichen.',points:[
+  '«Heute» zeigt deinen Holo, deine Fortschritte und das nächste Training.',
+  '«Training» erfasst Vereinstrainings oder führt zum eigenen Trainingsformular.',
+  '«Kämpfe» bündelt Duelle, Challenges und Arena.',
+  '«Liga» zeigt das Podium und deine Monatsposition.',
+  '«Mein Boxer» zeigt die FUT-Card und darunter dein Boxstil-Diagramm.']},
  {key:'studio',page:'boxer.html',group:'mein',icon:'🥊',title:'Mein Studio',summary:'Dein Startpunkt: Training eintragen und Fortschritt sehen.',points:[
   '«Training einreichen»: Art, Datum und Dauer wählen und absenden.','«Letzte Trainings» zeigt, was offen, bestätigt oder abgelehnt ist.',
   'Wochenfortschritt, Kalender und «Performance · letzte 30 Tage» zeigen, wie regelmässig du trainierst.',
@@ -107,7 +113,7 @@ const REGISTERS=[
   'Coins und Bonus-EXP vergibst du als Admin im Kampfgeist-Shop unter «Verwaltung» (Konten bzw. Bonus-EXP).']}
 ];
 // Seite → Register für den «?»-Knopf
-const PAGE_KEY={'boxer.html':'studio','goals.html':'ziele','bewertung.html':'bewertung','stil-test.html':'stil','wochenplan.html':'wochenplan','quests.html':'quests',
+const PAGE_KEY={'boxer.html':'studio','boxer-experience.html':'experience','goals.html':'ziele','bewertung.html':'bewertung','stil-test.html':'stil','wochenplan.html':'wochenplan','quests.html':'quests',
  'praesenz.html':'praesenz','checkin.html':'checkin','shop.html':'shop','mein-boxer.html':'meinboxer','kampfpfad.html':'kampfpfad','roadmap.html':'roadmap','duels.html':'duelle','arena.html':'arena',
  'league-challenges.html':'challenges','challenges.html':'challenges','index.html':'ranking','boxer-compare.html':'vergleich','awards.html':'awards',
  'league-history.html':'awards','boxer-profile.html':'profil','news.html':'news','feedback.html':'feedback','karten.html':'karten','coach.html':'coach','league-manager.html':'manager','admin.html':'manager'};

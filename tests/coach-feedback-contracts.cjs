@@ -31,9 +31,9 @@ assert.doesNotMatch(coach,/from\('boxer_coach_feedback'\)\.insert/,'coaches cann
 assert.match(coach,/db\.rpc\('staff_list_feedback'/);assert.match(coach,/db\.rpc\('staff_update_feedback'/);
 assert.match(coach,/p_visible_until:addDaysIso\(swissToday\(\),-1\)/,'archive now = yesterday');
 assert.doesNotMatch(coach,/innerHTML\s*=\s*[^;]*item\.(title|message)/,'feedback text never as HTML');
-// Dashboard: Reihenfolge, Standard offen/zu, Zustand pro Gerät, nur letzte 5
-assert.match(coach,/COACH_SECTIONS=\[\['pending','Offene Trainings',true\],\['gym','Gym heute',true\],\['entry','Training eintragen',false\],\['feedback','Feedback',false\],\['edit','Trainings bearbeiten',false\],\['audit','Änderungshistorie',false\]\]/);
-assert.match(coach,/localStorage\.getItem\('tl\.coach\.sections'\)/);assert.match(coach,/catch\{return \{\}\}/);
-assert.match(coach,/coach_training_audit_recent',\{p_limit:5\}/);assert.match(coach,/p_limit:5,p_offset:historyOffset/);
-assert.match(coach,/#content:not\(\.hidden\)\{display:flex/);
-console.log('PASS: Etappe 6b – Feedback sichtbar bis (7 Tage Vorgabe, max. 90), Archiv, Zurückziehen nur durch Verfasser/Admin und für Boxer unsichtbar, Inhalte unverändert; Coach-Dashboard geordnet, zuklappbar, letzte 5');
+// Dashboard (Training 2.0 ersetzt die zuklappbaren Abschnitte durch Bereiche mit Navigation): Bereiche, Filter pro Sitzung, 10 pro Seite
+assert.match(coach,/COACH_VIEWS=\[\['home','Start','🏠','start'\],\['review','Prüfen','✅','bestaetigen'\],\['gym','Gym','🏟️','gym'\],\['boxers','Boxer','👥','boxer'\],\['history','Historie','🗓️','historie'\],\['more','Mehr','☰','mehr'\]\]/);
+assert.match(coach,/sessionStorage\.getItem\('tl\.coach\.filters'\)/);assert.match(coach,/catch\{\}/);
+assert.match(coach,/coach_training_audit_recent',\{p_limit:5\}/);assert.match(coach,/p_limit:10,p_offset:historyOffset/);
+assert.match(read('takeover-coach-v2.css'),/#content\.cv2-content\{display:block!important\}/);
+console.log('PASS: Etappe 6b – Feedback sichtbar bis (7 Tage Vorgabe, max. 90), Archiv, Zurückziehen nur durch Verfasser/Admin und für Boxer unsichtbar, Inhalte unverändert; Trainer-Dashboard 2.0 mit Bereichen, Filter bleiben erhalten, 10 pro Seite');

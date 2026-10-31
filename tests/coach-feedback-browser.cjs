@@ -56,32 +56,28 @@ function extra(){
  };
  const shot=async(p,n)=>{if(process.env.SHOTS)await p.screenshot({path:process.env.SHOTS+'/'+n+'.png',fullPage:true})};
 
- // Coach-Dashboard: Reihenfolge, Standard auf/zu, Sprungleiste, nur die letzten 5
+ // Trainer-Dashboard 2.0: Bereiche statt zuklappbarer Abschnitte; Start zuerst, Historie lädt erst beim Öffnen (10 pro Seite)
  let {page,errors}=await open('admin','coach.html');
- await page.waitForFunction(()=>!document.querySelector('#content').classList.contains('hidden')&&document.querySelector('[data-sec="audit"]'));
- const layout=await page.evaluate(()=>[...document.querySelectorAll('#content [data-sec]')].map(s=>({key:s.dataset.sec,order:Number(getComputedStyle(s).order),closed:s.classList.contains('is-closed')})).sort((a,b)=>a.order-b.order));
- assert.deepEqual(layout.map(x=>x.key),['pending','gym','entry','feedback','edit','audit']);
- assert.deepEqual(layout.map(x=>x.closed),[false,false,true,true,true,true],'only open trainings and gym today open by default');
- assert.ok(await page.isHidden('#allEntries'),'edit list hidden while collapsed');assert.ok(await page.isHidden('#coachAuditEntries'),'audit hidden while collapsed');
- assert.match(await page.textContent('.coach-jump'),/Offene Trainings1Gym heute.*Änderungshistorie/);
+ await page.waitForFunction(()=>!document.querySelector('#content').classList.contains('hidden')&&document.querySelector('#cv2Tabs button'));
+ assert.deepEqual(await page.evaluate(()=>[...document.querySelectorAll('#cv2Tabs button')].map(b=>b.dataset.view)),['home','review','gym','boxers','history','more']);
+ assert.ok(await page.isVisible('#viewHome'));assert.ok(await page.isHidden('#allEntries'),'history hidden on start');assert.ok(await page.isHidden('#coachAuditEntries'));
+ await page.click('#cv2Tabs [data-view="gym"]');
  assert.match(await page.textContent('.gym-today'),/Technik \/ Pratzen · Pflichttraining · 90 Min\.\s*läuft/);
  await page.waitForFunction(()=>window.__extraCalls.some(c=>c[0]==='coach_training_audit_recent'));
+ await page.click('#cv2Tabs [data-view="history"]');
+ await page.waitForFunction(()=>window.__extraCalls.some(c=>c[0]==='coach_list_training_history'));
  const ex=await page.evaluate(()=>window.__extraCalls);
- assert.equal(ex.find(c=>c[0]==='coach_list_training_history')[1].p_limit,5);
+ assert.equal(ex.find(c=>c[0]==='coach_list_training_history')[1].p_limit,10);
  assert.equal(ex.find(c=>c[0]==='coach_training_audit_recent')[1].p_limit,5);
+ assert.ok(await page.isVisible('#allEntries'));assert.ok(await page.isHidden('#showMore'),'no «more» when everything is shown');
  await shot(page,'6b-coach-closed');
- // Aufklappen über die Sprungleiste, Zustand wird gemerkt
- await page.click('.coach-jump [data-jump="edit"]');
- assert.ok(await page.isVisible('#allEntries'));assert.ok(await page.isHidden('#showMore'),'no «more» without filter');
- assert.equal(await page.getAttribute('[data-sec="edit"] .tl-col-toggle','aria-expanded'),'true');assert.equal(await page.getAttribute('[data-sec="edit"] .tl-col-toggle','title'),'Zuklappen');
- await page.click('[data-sec="pending"] .tl-col-toggle');
- assert.ok(await page.evaluate(()=>document.querySelector('[data-sec="pending"]').classList.contains('is-closed')));
+ // Bereich wird über die Adresse gemerkt (Zurück-Taste / Neu laden)
  await page.reload();
- await page.waitForFunction(()=>document.querySelector('[data-sec="audit"]'));
- assert.deepEqual(await page.evaluate(()=>['pending','edit'].map(k=>document.querySelector('[data-sec="'+k+'"]').classList.contains('is-closed'))),[true,false],'state remembered');
+ await page.waitForFunction(()=>document.querySelector('#cv2Tabs button[aria-current="page"]'));
+ assert.equal(await page.getAttribute('#cv2Tabs [data-view="history"]','aria-current'),'page','view kept after reload');
 
  // Feedback: senden mit «sichtbar bis», archivieren, zurückziehen, wiederherstellen
- await page.click('.coach-jump [data-jump="feedback"]');
+ await page.click('#cv2Tabs [data-view="boxers"]');
  await page.waitForSelector('.fb-row');
  const vis=page.locator('input[name="feedbackVisibleUntil"]');
  const def=await vis.inputValue(),today=await page.evaluate(()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich'}).format(new Date()));
@@ -121,5 +117,5 @@ function extra(){
  if(process.env.SHOTS){await page.evaluate(()=>{const s=document.getElementById('boxerFeedbackSection');let e=s;while(e){if(e.hidden)e.hidden=false;e.classList&&e.classList.remove('hidden');e=e.parentElement}});await page.locator('#boxerFeedbackSection').screenshot({path:process.env.SHOTS+'/6b-boxer-feedback.png'})}
  assert.deepEqual(errors,[]);
  await context.close();await browser.close();server.close();
- console.log('PASS: Etappe 6b im Browser – Coach-Dashboard geordnet (Offen/Gym offen, Rest zu), Zustand gemerkt, Sprungleiste, nur letzte 5 Trainings/Änderungen, Feedback mit «sichtbar bis» (Vorgabe 7 Tage), archivieren, zurückziehen, wiederherstellen; Boxer sieht aktive Feedbacks und das Archiv');
+ console.log('PASS: Etappe 6b im Browser – Trainer-Dashboard 2.0 mit Bereichen (Start zuerst, Bereich gemerkt), Historie 10 pro Seite, letzte 5 Änderungen, Feedback mit «sichtbar bis» (Vorgabe 7 Tage), archivieren, zurückziehen, wiederherstellen; Boxer sieht aktive Feedbacks und das Archiv');
 })().catch(e=>{console.error(e);server.close();process.exit(1)});
