@@ -26,7 +26,7 @@ test('personal holo and fixed FUT only render on their own sections',()=>{
 });
 test('server-authorized one-tap club request; no direct row mutations',()=>{
   assert.doesNotMatch(js,/\.(?:insert|upsert|update|delete)\s*\(/);
-  assert.match(html,/href="\.\/boxer\.html#trainingFormCard"/);
+  assert.match(js,/\.\/boxer\.html#trainingFormCard/);
   assert.match(html,/id="ex-training-options"/);
   assert.match(js,/get_training_v2_config/);
   assert.match(js,/cfg\?\.enabled!==true/);
