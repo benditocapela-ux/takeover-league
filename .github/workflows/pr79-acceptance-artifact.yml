@@ -1,0 +1,32 @@
+name: PR79 acceptance gallery (no deploy)
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'docs/review/**'
+      - '.github/workflows/pr79-acceptance-artifact.yml'
+permissions:
+  contents: read
+jobs:
+  acceptance-artifact:
+    if: github.event.pull_request.number == 79
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify and unpack the existing acceptance package
+        shell: bash
+        run: |
+          set -euo pipefail
+          echo 'af46b7697581864d2bcb85f95fe6a65c698e021b2433e1cb0d6c7f9bda59f346  docs/review/PR79-Abnahme.zip' | sha256sum --check
+          unzip -q docs/review/PR79-Abnahme.zip -d "$RUNNER_TEMP/pr79-acceptance"
+          for file in index.html abnahme.html geraetetest.html testversion/start.cjs sechs-posen.png handschuhe-vorher-nachher.png; do
+            test -s "$RUNNER_TEMP/pr79-acceptance/$file"
+          done
+      - uses: actions/upload-artifact@v4
+        with:
+          name: PR79-Abnahme-86c5ffa
+          path: ${{ runner.temp }}/pr79-acceptance/
+          if-no-files-found: error
+          retention-days: 30
+          compression-level: 0
