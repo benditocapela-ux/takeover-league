@@ -12,10 +12,18 @@
 <script type="module">
 const P=window.TLPerf,$=id=>document.getElementById(id),app=$('app'),status=$('status');
 const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
-let db,role,types=[],groups=[],sessions=[],current=null,filter='alle',busy=false,cancelArmed=false,form={type:null,min:90,note:'',group:''},sched=null;
+let db,role,types=[],groups=[],sessions=[],current=null,filter='alle',busy=false,cancelArmed=false,form={type:null,min:90,note:'',group:''},sched=null,unifiedScheduleActive=false;
 const tierPill=s=>s&&s.club_tier?`<span class="tlp-pill inl ${s.club_tier==='pflicht'?'gold':'ok'}">${P.esc(s.tier_label||'')}</span>`:'';
 const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich'}).format(new Date());
 function boxerView(list,enabled){
+ // Scheduled Pflicht units use the same unified one-tap RPC displayed above.
+ // Keep additional, non-Pflicht Gym sessions available through the legacy flow.
+ if(unifiedScheduleActive){
+  const pflicht=list.filter(s=>s.club_tier==='pflicht');
+  // With multiple open sessions, keep the detailed Gym choices visible.
+  list=list.filter(s=>s.club_tier!=='pflicht'||pflicht.length>1);
+  if(!list.length)return '';
+ }
  if(!enabled)return '<div class="tlp-panel">Der Gym-Check-in ist noch nicht freigeschaltet.</div>';
  if(!list.length)return `<div class="tlp-panel"><b>Gerade läuft keine Einheit.</b><p class="tlp-note">Sobald dein Coach das Training im Gym startet, kannst du dich hier einchecken.</p></div>`;
  return list.map(s=>`<div class="tlp-panel tlp-session"><div class="tlp-eyebrow">Heute${s.group?' · '+P.esc(s.group):''}</div><h2 class="tlp-h2">${P.esc(s.training_type)} ${tierPill(s)}</h2><p class="tlp-note">${s.duration_minutes} Min. · ${P.esc(s.note)}</p>
@@ -131,7 +139,19 @@ app.addEventListener('change',ev=>{if(ev.target.id==='ciMin')form.min=Number(ev.
   if(!s.data||!s.data.session){say('');app.innerHTML='<div class="tlp-panel">Bitte <a href="./login.html">anmelden</a>.</div>';return}
   const me=await db.rpc('get_my_performance');if(me.error){say(me.error.message,true);return}
   role=me.data.profile.role;say('');
-  if(role==='admin'||role==='coach'){$('pageTitle').textContent='Gym-Check-in';await loadStaff(false)}else{$('pageTitle').textContent='Einchecken';await loadBoxer()}
+  if(role==='admin'||role==='coach'){$('pageTitle').textContent='Gym-Check-in';await loadStaff(false)}else{
+   $('pageTitle').textContent='Vereinstraining & Check-in';
+   await loadBoxer();
+   try{
+    const config=await db.rpc('get_training_v2_config');
+    if(!config.error&&config.data?.enabled===true){
+     const quick=await import('./takeover-club-today.js');
+     quick.mountCheckinSchedule({db,cfg:config.data,role});
+     unifiedScheduleActive=true;
+     await loadBoxer();
+    }
+   }catch(err){console.warn('Vereinsstundenplan nicht verfügbar:',err)}
+  }
  }catch(e){say('Check-in konnte nicht geladen werden: '+(e.message||e),true)}
 })();
 </script>

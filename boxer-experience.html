@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#070b16">
+<meta name="robots" content="noindex,nofollow">
+<title>Mein Takeover · Boxer Experience</title>
+<link rel="stylesheet" href="./takeover-theme.css">
+<link rel="stylesheet" href="./takeover-redesign.css">
+<style>
+:root{--ex-bg:#070b16;--ex-bg2:#0d1829;--ex-gold:#f2c14e;--ex-text:#f4f6fb;--ex-muted:#9fb0c8;--ex-border:#2c3c56}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:#050914}
+body{padding:0!important;color:var(--ex-text);font:14px/1.5 'Inter',system-ui,sans-serif}
+button,a{touch-action:manipulation}
+a{color:inherit}
+button{cursor:pointer}
+[hidden]{display:none!important}
+.ex-app{width:min(100%,1100px);height:100dvh;min-height:420px;margin:auto;display:flex;flex-direction:column;background:linear-gradient(180deg,#081222,#080d1b);overflow:hidden}
+.ex-head{height:63px;flex:none;z-index:2;padding:11px clamp(14px,3vw,30px);border-bottom:1px solid #273650;display:flex;align-items:center;justify-content:space-between;background:#091321}
+.ex-brand{display:flex;align-items:center;gap:9px}
+.ex-logo{display:grid;place-items:center;width:36px;height:36px;border:2px solid var(--ex-gold);border-radius:11px;color:var(--ex-gold);font:900 24px/1 'Barlow Condensed',sans-serif}
+.ex-brand-name{display:flex;flex-direction:column;line-height:1}
+.ex-brand-name b{font:900 24px/1 'Barlow Condensed',sans-serif;letter-spacing:1px}
+.ex-brand-name span{font-size:9px;letter-spacing:3px;color:var(--ex-gold)}
+.ex-head-actions{display:flex;align-items:center;gap:9px}
+.ex-icon-button{display:grid;place-items:center;min-height:43px;min-width:43px;background:#13213a;border:1px solid #354562;border-radius:11px;color:var(--ex-text);font-size:22px}
+.ex-status{color:#a9bbd1;font-size:10px;font-weight:800;letter-spacing:1px}
+.ex-main{min-height:0;flex:1;display:flex;flex-direction:column}
+.ex-figure{position:relative;flex:none;height:238px;overflow:hidden;background:radial-gradient(ellipse 255px 188px at 50% 36%,#3f557142,#0a1527 77%),linear-gradient(180deg,#102039,#0a1528);border-bottom:1px solid #af92494c}
+.ex-figure:before{content:'';position:absolute;inset:0;opacity:.42;background:repeating-linear-gradient(90deg,transparent 0 58px,#bd975b10 59px)}
+.ex-figure-title,.ex-figure-stats{position:absolute;z-index:1;top:50px}
+.ex-figure-title{left:clamp(13px,5vw,65px)}
+.ex-figure-stats{right:clamp(13px,5vw,65px);text-align:right}
+.ex-eyebrow{display:block;color:var(--ex-gold);font-size:10px;font-weight:850;letter-spacing:1.65px;text-transform:uppercase}
+.ex-figure-title h2{margin:7px 0 2px;font:900 clamp(22px,4vw,39px)/.95 'Barlow Condensed',sans-serif;text-transform:uppercase}
+.ex-figure-title p,.ex-figure-stats p{margin:5px 0;color:#b6c5db;font-size:12px}
+.ex-level{font:900 29px/1 'Barlow Condensed',sans-serif}
+.ex-holo{position:absolute;bottom:-51px;left:50%;width:187px;height:281px;transform:translateX(-50%);display:flex;align-items:center;justify-content:center}
+.ex-holo svg{height:100%;max-width:100%;filter:drop-shadow(0 10px 14px #000c)}
+.ex-figure-foot{position:absolute;z-index:1;left:0;right:0;bottom:9px;font-size:10px;font-weight:850;letter-spacing:2px;text-align:center;color:#dde5f2}
+.ex-card-stage{height:268px}
+.ex-card-stage #ex-fut-card{position:absolute;top:9px;left:50%;transform:translateX(-50%);filter:drop-shadow(0 12px 18px #000a)}
+.ex-card-stage .tlp-card{--fw:176px!important}
+.ex-card-stage .tlp-card .tlp-holo{max-height:123px}
+.ex-card-absence{max-width:190px;padding:15px;background:#0c1527e8;border:1px solid #ac8846;border-radius:14px;color:#d5dfed;text-align:center;font-size:12px;line-height:1.5}
+.ex-scroll{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-color:#3e5270 transparent}
+.ex-view{display:none;width:min(100%,820px);margin:auto;padding:20px clamp(14px,3vw,24px) 35px}
+.ex-view.active{display:block}
+.ex-view h1,.ex-view h2,.ex-view h3,.ex-label{font-family:'Barlow Condensed',sans-serif;line-height:1.05;text-transform:uppercase}
+.ex-view h1{font-size:clamp(28px,5vw,39px);margin:5px 0 7px}
+.ex-view h2{font-size:23px;margin:20px 0 10px}
+.ex-view h3{font-size:22px;margin:7px 0}
+.ex-intro{color:var(--ex-muted);margin:0 0 19px;line-height:1.55}
+.ex-card{background:linear-gradient(145deg,#13243c,#0c1629);border:1px solid #30415e;border-top:2px solid #bd994e77;border-radius:15px;padding:16px;margin-bottom:13px}
+.ex-primary-card{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.ex-primary-card p{color:#bbcade;margin:0 0 16px}
+.ex-icon{font-size:28px;flex:none}
+.ex-btn{min-height:44px;border:1px solid #bd994e;color:#121722;background:linear-gradient(120deg,#ffe18b,#d6a641);display:inline-flex;align-items:center;justify-content:center;gap:7px;border-radius:10px;text-decoration:none;padding:10px 15px;font-weight:850;font-size:12px}
+.ex-btn-ghost{color:#f6d991;background:#16243b;border-color:#6e633e}
+.ex-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.ex-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px}
+.ex-stat{margin:0;min-width:0;background:#101d31;padding:13px;border:1px solid #283951;border-radius:12px}
+.ex-stat span{display:block;font-size:10px;color:#a9bbd1;letter-spacing:1px;font-weight:750}
+.ex-stat strong{display:block;font:900 29px/1.15 'Barlow Condensed',sans-serif;color:#f4cf79;margin:4px 0}
+.ex-stat small{color:#a9bbd1;font-size:10px}
+.ex-link-card{display:flex;flex-direction:column;gap:7px;text-align:left;min-height:107px;background:#14243b;color:#f4f6fb;border:1px solid #324761;border-radius:13px;padding:15px;text-decoration:none}
+.ex-link-card b{font:850 19px/1 'Barlow Condensed',sans-serif}
+.ex-link-card small{color:#a9bbd1;line-height:1.4;font-size:11px}
+.ex-list{display:flex;flex-direction:column;gap:6px}
+.ex-list-line{display:flex;align-items:center;justify-content:space-between;gap:10px;border-bottom:1px solid #2c3b53;padding:11px 0}
+.ex-list-line:last-child{border-bottom:0}
+.ex-list-line b{font-size:12px;display:block}
+.ex-list-line small{display:block;color:#a9bbd1;font-size:11px}
+.ex-pill{font-size:10px;color:#f6d58c;border-radius:999px;background:#604c252b;border:1px solid #8e703c72;padding:5px 9px;white-space:nowrap}
+.ex-muted{color:#9fb0c8}
+.ex-podium{height:292px;display:flex;align-items:end;justify-content:center;position:relative;overflow:hidden;padding:10px 8px 0;background:radial-gradient(ellipse 57% 85% at 50% 15%,#d6af4940,transparent),#11213a;border-radius:15px;border:1px solid #4b5167;border-top:2px solid #d2a959}
+.ex-step{height:100%;width:29%;max-width:165px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;min-width:0}
+.ex-step.first{width:34%;max-width:185px}
+.ex-podium-holo{width:100%;max-height:162px;height:45%;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 7px 13px #0009)}
+.ex-step.first .ex-podium-holo{max-height:190px;height:53%}
+.ex-podium-holo svg{height:100%;width:100%}
+.ex-step-name{font:850 15px/1.05 'Barlow Condensed',sans-serif;max-width:100%;overflow-wrap:anywhere;margin:3px 0}
+.ex-step-points{font-size:10px;color:#f9dda0}
+.ex-step-base{width:100%;height:47px;display:grid;place-items:center;color:#eee;font:900 33px 'Barlow Condensed',sans-serif;background:linear-gradient(#879ab1,#334966);margin-top:5px}
+.ex-step.first .ex-step-base{height:76px;background:linear-gradient(#ffe89e,#a57e24);color:#1f1b13}
+.ex-step.third .ex-step-base{height:32px;background:linear-gradient(#ad8a71,#6b483e)}
+.ex-radar-wrap{text-align:center;padding:12px 4px}
+.ex-radar-wrap .tlp-radar{width:min(100%,340px);height:auto}
+.ex-radar-wrap .tlp-radar .tlp-rl{font-size:14px}
+.ex-menu{display:grid;grid-template-columns:repeat(5,1fr);gap:4px;flex:none;padding:8px max(6px,env(safe-area-inset-left)) calc(9px + env(safe-area-inset-bottom));border-top:1px solid #c09a4e56;background:#070f1eec;backdrop-filter:blur(12px)}
+.ex-menu button{min-width:0;min-height:56px;border:1px solid transparent;border-radius:11px;background:transparent;color:#aec0d9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10px}
+.ex-menu button strong{font-size:19px;line-height:1}
+.ex-menu button[aria-current="page"]{background:#17283f;color:#ffd875;border-color:#ae89446e}
+.ex-drawer{position:fixed;z-index:10;inset:0;background:#000a;display:flex;align-items:stretch;justify-content:flex-end}
+.ex-drawer-panel{height:100%;width:min(340px,88vw);background:#0d1a2e;border-left:1px solid #5c5b53;overflow:auto;padding:20px}
+.ex-drawer-panel a{display:block;padding:13px 0;color:#f4f6fb;text-decoration:none;border-bottom:1px solid #273a54}
+.ex-drawer-panel button{float:right}
+.ex-gate{position:fixed;z-index:20;inset:0;display:grid;place-items:center;background:#070b16;padding:18px}
+.ex-gate-card{max-width:430px;padding:26px;background:#101e31;border:1px solid #7b673e;border-radius:17px;text-align:center}
+.ex-gate-card h1{font:900 30px 'Barlow Condensed',sans-serif;margin:9px 0}
+.ex-note{background:#0e1a2e;border:1px solid #30435c;color:#b5c5d8;padding:11px 12px;border-radius:10px;font-size:12px}
+@media(min-width:800px){.ex-figure{height:270px}.ex-holo{height:305px;bottom:-45px}.ex-card-stage{height:292px}.ex-card-stage .tlp-card{--fw:195px!important}}
+@media(max-width:540px){.ex-head{height:58px}.ex-status{display:none}.ex-figure{height:213px}.ex-figure-title,.ex-figure-stats{top:27px}.ex-figure-title h2{font-size:20px;max-width:92px}.ex-figure-title p,.ex-figure-stats p{font-size:10px;max-width:95px}.ex-level{font-size:21px}.ex-holo{height:239px;bottom:-37px;width:160px}.ex-card-stage{height:231px}.ex-card-stage .tlp-card{--fw:151px!important}.ex-card-stage .tlp-card .tlp-holo{max-height:112px}.ex-stats{gap:6px}.ex-stat{padding:10px}.ex-stat strong{font-size:23px}.ex-stat small{font-size:9px}.ex-view{padding-top:15px}.ex-podium{height:246px}.ex-podium-holo{max-height:126px}.ex-step.first .ex-podium-holo{max-height:145px}.ex-step-name{font-size:12px}.ex-menu button{font-size:9px}.ex-menu button strong{font-size:19px}}
+@media(max-width:360px){.ex-figure{height:190px}.ex-card-stage{height:207px}.ex-card-stage .tlp-card{--fw:137px!important}.ex-holo{height:218px}.ex-view h1{font-size:27px}.ex-step-name{font-size:11px}.ex-podium{height:225px}}
+@media(max-height:620px){.ex-figure{height:172px}.ex-holo{height:205px}.ex-card-stage{height:185px}.ex-card-stage .tlp-card{--fw:125px!important}}
+/* Kopfzeile ist gleichzeitig das Bereichsband der App (Screenreader-Kontext); Band-Stile des Redesigns hier neutralisieren */
+.ex-head .tl-screen-ribbon{display:block;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;background:none}
+.ex-logo .tl-screen-symbol{all:unset;font:inherit;color:inherit}
+/* Die Kartenbreite kommt aus dem Stylesheet (!important überschreibt die feste Breite des Karten-Renderers), damit die Karte in die Bühne passt. */
+/* Kleine Displays: Texte neben dem Holo bzw. der FUT-Card überdecken sich nicht */
+@media(max-width:560px){.ex-card-stage .ex-figure-title,.ex-card-stage .ex-figure-stats{display:none}.ex-home-stage .ex-figure-foot{display:none}}
+</style>
+</head>
+<body data-tl-screen="boxer-experience">
+<div id="ex-gate" class="ex-gate" role="status"><div class="ex-gate-card"><span class="ex-eyebrow">TAKEOVER LEAGUE</span><h1 id="ex-gate-title">DEIN BOXER WIRD GELADEN</h1><p id="ex-gate-message">Wir prüfen deine Anmeldung und deine verfügbaren Funktionen.</p><a id="ex-gate-link" class="ex-btn" href="./login.html?next=boxer-experience.html" hidden>ANMELDEN</a></div></div>
+<div id="ex-app" class="ex-app" hidden>
+<header class="ex-head">
+ <div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Mein Takeover – Boxer Experience"><div class="ex-brand"><div class="ex-logo"><span class="tl-screen-symbol" aria-hidden="true">T</span></div><div class="ex-brand-name"><b>TAKEOVER</b><span>LEAGUE</span></div></div></div>
+ <div class="ex-head-actions"><span class="ex-status">BOXER EXPERIENCE · TESTVERSION</span><button id="ex-settings" class="ex-icon-button" aria-label="Weitere Funktionen öffnen" aria-expanded="false">☰</button></div>
+</header>
+<div class="ex-main">
+ <section class="ex-figure ex-home-stage" id="ex-home-stage" aria-label="Dein eigener Boxer">
+  <div class="ex-figure-title"><span class="ex-eyebrow">DEIN BOXER</span><h2 id="ex-home-name">MEIN FIGHTER</h2><p>Trainieren. Aufsteigen. Kämpfen.</p></div>
+  <div id="ex-home-holo" class="ex-holo"><span class="ex-muted">Holo wird geladen</span></div>
+  <div class="ex-figure-stats"><span class="ex-eyebrow">DEIN LEVEL</span><div class="ex-level" id="ex-level">–</div><p id="ex-exp">EXP noch nicht geladen</p></div>
+  <div class="ex-figure-foot">TRAINIEREN · AUFSTEIGEN · KÄMPFEN</div>
+ </section>
+ <section id="ex-card-stage" class="ex-figure ex-card-stage" hidden aria-label="Deine feststehende FUT-Card">
+  <div class="ex-figure-title"><span class="ex-eyebrow">MEIN BOXER</span><h2>DEINE FUT-CARD</h2></div>
+  <div id="ex-fut-card"><div class="ex-card-absence">Deine Spielerkarte wird geladen.</div></div>
+  <div class="ex-figure-stats"><span class="ex-eyebrow">COACH-BEWERTUNG</span><div class="ex-level" id="ex-overall">–</div><p id="ex-pos">BOX</p></div>
+ </section>
+ <main class="ex-scroll" id="ex-scroll" tabindex="-1">
+  <section class="ex-view active" data-view="heute" aria-label="Heute">
+   <span class="ex-eyebrow">MEINE ÜBERSICHT</span><h1>DEIN TAG. DEIN ZIEL.</h1><p class="ex-intro" id="ex-welcome">Dein persönlicher Takeover-Bereich.</p>
+   <div class="ex-card ex-primary-card"><div><span class="ex-eyebrow">DEIN NÄCHSTER SCHRITT</span><h3>TRAINING EINTRAGEN</h3><p>Trage dein Vereinstraining oder deine eigene Einheit ein und lass sie bestätigen.</p><button type="button" class="ex-btn" data-open-tab="training">＋ TRAINING EINREICHEN</button></div><span class="ex-icon">🥊</span></div>
+   <h2>DEIN FORTSCHRITT</h2><div class="ex-stats"><div class="ex-stat"><span>7 TAGE</span><strong id="ex-week-sessions">–</strong><small>Bestätigte Trainings</small></div><div class="ex-stat"><span>DEIN RANG</span><strong id="ex-home-rank">–</strong><small>Monatsranking</small></div><div class="ex-stat"><span>OFFENE</span><strong id="ex-pending">–</strong><small>Trainerbestätigungen</small></div></div>
+   <h2>DEINE NÄCHSTEN WEGE</h2><div class="ex-grid"><button class="ex-link-card" data-open-tab="kaempfe">⚔️ <b>DUELLE & CHALLENGES</b><small>Herausforderungen entdecken</small></button><button class="ex-link-card" data-open-tab="boxer">🃏 <b>MEIN BOXER</b><small>Karte, Boxstil und Ausrüstung</small></button></div>
+  </section>
+  <section class="ex-view" data-view="training" aria-label="Training">
+   <span class="ex-eyebrow">DEIN TRAININGSBEREICH</span><h1>TRAINING.</h1><p class="ex-intro">Weniger Navigation, alle Trainingseinheiten an einem Ort.</p>
+   <div class="ex-card"><span class="ex-eyebrow">TRAINING ERFASSEN</span><h3>WAS HAST DU TRAINIERT?</h3>
+   <p class="ex-muted" style="margin:2px 0 14px">Die Trainingsauswahl und die Gutschrift bleiben im sicheren Trainingsformular. Hier siehst du nur die jeweils freigeschalteten Möglichkeiten.</p>
+   <div id="ex-training-options" aria-live="polite"><p class="ex-muted">Trainingsmöglichkeiten werden geprüft …</p></div>
+   <p class="ex-note" style="margin:12px 0 0">Punkte, EXP und Coins werden erst nach Trainerbestätigung gutgeschrieben. Die tatsächliche Einstufung legt der Server fest.</p>
+   </div>
+   <h2>LETZTE TRAININGS</h2><div id="ex-training-history" class="ex-card ex-list"><p class="ex-muted">Trainings werden geladen.</p></div>
+   <h2>MEHR ZUM TRAINING</h2><div class="ex-grid"><a class="ex-link-card" href="./wochenplan.html">🗓️ <b>WOCHENPLAN</b><small>Dein Rhythmus</small></a><a class="ex-link-card" href="./goals.html">🎯 <b>MEINE ZIELE</b><small>Deine Entwicklung</small></a><a class="ex-link-card" href="./praesenz.html">✅ <b>PRÄSENZ</b><small>Trainingsübersicht</small></a><a class="ex-link-card" href="./checkin.html">📍 <b>GYM CHECK-IN</b><small>Einchecken im Verein</small></a></div>
+  </section>
+  <section class="ex-view" data-view="kaempfe" aria-label="Kämpfe">
+   <span class="ex-eyebrow">DEINE HERAUSFORDERUNGEN</span><h1>ZEIG, WAS DU KANNST.</h1><p class="ex-intro">Duelle, Challenges und Quests sind hier gebündelt.</p>
+   <div class="ex-card ex-primary-card"><div><span class="ex-eyebrow">FIGHT ZONE</span><h3>DUELL STARTEN</h3><p>Fordere einen Boxer heraus.</p><a class="ex-btn" href="./duels.html">DUELLE ANSEHEN</a></div><span class="ex-icon">⚔️</span></div>
+   <div class="ex-grid"><a class="ex-link-card" href="./league-challenges.html">⚡ <b>LIVE CHALLENGES</b><small>Aktuelle Liga-Challenges</small></a><a class="ex-link-card" href="./challenges.html">🎯 <b>CHALLENGES</b><small>Persönliche Aufgaben</small></a><a class="ex-link-card" href="./arena.html">🥊 <b>ARENA</b><small>Mehrgegner-Modus</small></a><a class="ex-link-card" href="./quests.html">🏆 <b>WOCHEN-QUESTS</b><small>Missionen und Belohnungen</small></a></div>
+  </section>
+  <section class="ex-view" data-view="liga" aria-label="Liga">
+   <span class="ex-eyebrow">DEINE LIGA</span><h1>DAS PODIUM.</h1><p class="ex-intro">Die Top 3 des aktuellen Monats – mit ihren Holos, falls freigeschaltet.</p>
+   <div class="ex-podium" id="ex-podium" aria-live="polite"><p class="ex-muted">Rangliste wird geladen.</p></div>
+   <h2>DEINE POSITION</h2><div class="ex-stats"><div class="ex-stat"><span>RANG</span><strong id="ex-league-rank">–</strong><small>Aktueller Monat</small></div><div class="ex-stat"><span>MONATSPUNKTE</span><strong id="ex-league-points">–</strong><small>Bestätigte Punkte</small></div><div class="ex-stat"><span>LIGA</span><strong>🥊</strong><small>TAKEOVER</small></div></div>
+   <h2>LIGA ENTDECKEN</h2><div class="ex-grid"><a class="ex-link-card" href="./index.html#ranking">📊 <b>RANGLISTE</b><small>Alle Boxer</small></a><a class="ex-link-card" href="./boxer-compare.html">⚖️ <b>BOXER-VERGLEICH</b><small>Vergleiche deinen Stil</small></a><a class="ex-link-card" href="./awards.html">🏅 <b>AUSZEICHNUNGEN</b><small>Monatliche Awards</small></a><a class="ex-link-card" href="./league-history.html">👑 <b>HALL OF FAME</b><small>Vergangene Saisons</small></a></div>
+  </section>
+  <section class="ex-view" data-view="boxer" aria-label="Mein Boxer">
+   <span class="ex-eyebrow">DEINE ENTWICKLUNG</span><h1>MEIN BOXSTIL.</h1><p class="ex-intro">Deine FUT-Card bleibt oben stehen, darunter siehst du dein Boxstil-Diagramm.</p>
+   <div class="ex-card"><span class="ex-eyebrow">BOXSTIL-DIAGRAMM</span><div class="ex-radar-wrap" id="ex-radar"><p class="ex-muted">Boxstil wird geladen.</p></div><h3 id="ex-style-title">Noch kein Boxstil</h3><p class="ex-muted" id="ex-style-text">Fülle den Boxstil-Test aus, um deine Stärken zu sehen.</p><a class="ex-btn ex-btn-ghost" href="./stil-test.html">BOXSTIL-TEST ANSEHEN</a></div>
+   <h2>MEIN BOXER & INVENTAR</h2><div class="ex-card ex-primary-card"><div><span class="ex-eyebrow">DEIN BOXER-HOLO</span><h3>AUSSEHEN GESTALTEN</h3><p>Kleidung, Handschuhe, Farben, Posen und Effekte.</p><a class="ex-btn" href="./mein-boxer.html">BOXER GESTALTEN</a></div><span class="ex-icon">🥊</span></div>
+   <div class="ex-grid"><a class="ex-link-card" href="./shop.html">🛍️ <b>KAMPFGEIST-SHOP</b><small>Ausrüstung & Items</small></a><a class="ex-link-card" href="./karten.html">🃏 <b>SPIELERKARTEN</b><small>Karten & Designs</small></a><a class="ex-link-card" href="./bewertung.html">⭐ <b>BEWERTUNG</b><small>Dein Coach-Feedback</small></a><a class="ex-link-card" href="./kampfpfad.html">🗺️ <b>KAMPFPFAD</b><small>Fortschritt und Belohnungen</small></a></div>
+  </section>
+ </main>
+</div>
+<nav class="ex-menu" aria-label="Boxer Hauptnavigation">
+ <button type="button" data-tab="heute" aria-current="page"><strong>⌂</strong>Heute</button>
+ <button type="button" data-tab="training"><strong>♜</strong>Training</button>
+ <button type="button" data-tab="kaempfe"><strong>⚔</strong>Kämpfe</button>
+ <button type="button" data-tab="liga"><strong>🏆</strong>Liga</button>
+ <button type="button" data-tab="boxer"><strong>🥊</strong>Mein Boxer</button>
+</nav>
+</div>
+<div class="ex-drawer" id="ex-drawer" hidden>
+ <aside class="ex-drawer-panel" role="dialog" aria-modal="true" aria-label="Weitere Takeover-Funktionen">
+ <button class="ex-icon-button" id="ex-close" aria-label="Menü schliessen">×</button><span class="ex-eyebrow">ALLE BEREICHE</span><h2>Weitere Funktionen</h2>
+ <a href="./boxer.html">Bisheriges Boxer-Studio</a><a href="./goals.html">Meine Ziele</a><a href="./roadmap.html">Level-Roadmap</a><a href="./feedback.html">Feedback senden</a><a href="./hilfe.html">Hilfe</a><a href="./login.html">Account</a>
+ </aside>
+</div>
+<script src="./takeover-holo.js" defer></script>
+<script src="./takeover-performance.js" defer></script>
+<script src="./boxer-experience.js" defer></script>
+</body></html>
