@@ -1,0 +1,28 @@
+{
+  "approved": false,
+  "enabled": false,
+  "reports": [
+    {
+      "engine": "chromium",
+      "pantsCases": 192,
+      "hoodHairToneCases": 288,
+      "svgHairToneCases": 288,
+      "savedHairTransitions": 36,
+      "roundTrip": "JSON serialization only; no production storage writes",
+      "maxConcurrent": 3,
+      "galleryCount": 64,
+      "passed": true
+    },
+    {
+      "engine": "webkit",
+      "pantsCases": 192,
+      "hoodHairToneCases": 288,
+      "svgHairToneCases": 288,
+      "savedHairTransitions": 36,
+      "roundTrip": "JSON serialization only; no production storage writes",
+      "maxConcurrent": 3,
+      "galleryCount": 64,
+      "passed": true
+    }
+  ]
+}

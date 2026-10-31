@@ -1,0 +1,197 @@
+{
+  "approved": false,
+  "enabled": false,
+  "poses": [
+    "cool",
+    "guard"
+  ],
+  "allowedCoats": [
+    "none"
+  ],
+  "head": [
+    "none"
+  ],
+  "pieces": {
+    "top-guard-hoodie-torso": {
+      "id": "top-guard-hoodie-torso",
+      "slot": "top",
+      "src": "hoodie/guard.png",
+      "uv": [
+        0,
+        0,
+        390,
+        345
+      ],
+      "box": [
+        190,
+        210,
+        390,
+        345
+      ],
+      "origin": "new-guard-cotton-master",
+      "source": "hoodie/guard-down-source.png",
+      "sourceCrop": [
+        41,
+        257,
+        920,
+        889
+      ],
+      "sourceSha256": "8c2bb8ed374e36640a0fa0829bd0086439b9e3d34cad66b44acd3fe563e302d5",
+      "sha256": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df",
+      "bytes": 247841,
+      "approved": false,
+      "enabled": false
+    },
+    "top-guard-hoodie-sleeve-left": {
+      "id": "top-guard-hoodie-sleeve-left",
+      "slot": "top",
+      "src": "hoodie/guard.png",
+      "uv": [
+        0,
+        345,
+        390,
+        345
+      ],
+      "box": [
+        190,
+        210,
+        390,
+        345
+      ],
+      "origin": "new-guard-cotton-master",
+      "source": "hoodie/guard-down-source.png",
+      "sourceCrop": [
+        41,
+        257,
+        920,
+        889
+      ],
+      "sourceSha256": "8c2bb8ed374e36640a0fa0829bd0086439b9e3d34cad66b44acd3fe563e302d5",
+      "sha256": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df",
+      "bytes": 247841,
+      "approved": false,
+      "enabled": false
+    },
+    "top-guard-hoodie-sleeve-right": {
+      "id": "top-guard-hoodie-sleeve-right",
+      "slot": "top",
+      "src": "hoodie/guard.png",
+      "uv": [
+        0,
+        690,
+        390,
+        345
+      ],
+      "box": [
+        190,
+        210,
+        390,
+        345
+      ],
+      "origin": "new-guard-cotton-master",
+      "source": "hoodie/guard-down-source.png",
+      "sourceCrop": [
+        41,
+        257,
+        920,
+        889
+      ],
+      "sourceSha256": "8c2bb8ed374e36640a0fa0829bd0086439b9e3d34cad66b44acd3fe563e302d5",
+      "sha256": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df",
+      "bytes": 247841,
+      "approved": false,
+      "enabled": false
+    },
+    "top-guard-hoodie-up": {
+      "id": "top-guard-hoodie-up",
+      "slot": "top",
+      "src": "hoodie/guard.png",
+      "uv": [
+        0,
+        1037,
+        202,
+        240
+      ],
+      "box": [
+        286,
+        38,
+        202,
+        240
+      ],
+      "origin": "new-raised-hood-master",
+      "source": "hoodie/hood-up-source.png",
+      "sourceCrop": [
+        227,
+        99,
+        696,
+        820
+      ],
+      "sourceSha256": "b257ed56e979b5e3a1279292b4633c6caa730b4583e41d103758075c2d5c4000",
+      "sha256": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df",
+      "bytes": 247841,
+      "approved": false,
+      "enabled": false
+    },
+    "top-cool-hoodie-torso": {
+      "id": "top-cool-hoodie-torso",
+      "slot": "top",
+      "src": "hoodie/cool.png",
+      "uv": [
+        0,
+        0,
+        390,
+        345
+      ],
+      "box": [
+        190,
+        210,
+        390,
+        345
+      ],
+      "source": "hoodie/cool-down-source.png",
+      "sourceCrop": [
+        79,
+        22,
+        1175,
+        1156
+      ],
+      "sourceSha256": "2a99be71e0c88ccf766b8c2ec44e649af21802bf4afd8279f3711625fb4cb4fb",
+      "sha256": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d",
+      "bytes": 182739,
+      "origin": "new-crossed-sleeve-cotton-master",
+      "approved": false,
+      "enabled": false
+    },
+    "top-cool-hoodie-up": {
+      "id": "top-cool-hoodie-up",
+      "slot": "top",
+      "src": "hoodie/guard.png",
+      "uv": [
+        0,
+        1037,
+        202,
+        240
+      ],
+      "box": [
+        286,
+        38,
+        202,
+        240
+      ],
+      "origin": "new-raised-hood-master",
+      "source": "hoodie/hood-up-source.png",
+      "sourceCrop": [
+        227,
+        99,
+        696,
+        820
+      ],
+      "sourceSha256": "b257ed56e979b5e3a1279292b4633c6caa730b4583e41d103758075c2d5c4000",
+      "sha256": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df",
+      "bytes": 247841,
+      "approved": false,
+      "enabled": false
+    }
+  },
+  "partition": "Exact disjoint pixel partition of torso/left sleeve/right sleeve; combined pixels equal the master, no double alpha seams."
+}

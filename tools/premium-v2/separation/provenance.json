@@ -1,0 +1,13 @@
+{
+  "mode": "built-in imagegen",
+  "approved": false,
+  "enabled": false,
+  "originalsUnchanged": true,
+  "base": "b87f0bcfd7dad02bacae5e7f1d7578afc6c2b16d",
+  "prompts": {
+    "boxer": "Remove BOTH outer overlapping hanging side panels with separate crown motifs and diagonal gold borders. Keep ONLY a single coherent pair of boxing shorts: waistband with exact TAKEOVER text, central black satin fabric, two leg openings and gold bottom hems, existing gold crackle decoration on actual shorts. No coat fabric or body. Preserve front view, material and proportions. Transparent RGBA.",
+    "coatBack": "Remove waist belt and shorts/crotch/leg-opening silhouette. ONE continuous flared draped black satin rear mantle panel, smoothly connected unbroken black fabric across middle, broad curved single lower gold hem. No center slit, trouser crotch or separate shorts hems. Preserve outer trapezoidal silhouette, dark anime material and gold side edging. No body, legs, pants or front coat. Transparent RGBA."
+  },
+  "registration": "scripts/build-premium-separation.cjs",
+  "audit": "docs/premium-v2/SPRINT_30.md"
+}

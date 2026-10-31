@@ -1,0 +1,4452 @@
+{
+  "passed": true,
+  "approved": false,
+  "enabled": false,
+  "artisticStatus": "Artistically pending",
+  "hashAlgorithm": "sha256-canonical-text-lf-v1",
+  "hashNotes": "UTF-8 source text normalizes CRLF to LF; PNG and other binaries hash exact raw bytes.",
+  "engines": [
+    "chromium",
+    "webkit"
+  ],
+  "validatedVariants": [
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "stachel",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "lang_glatt",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "undercut",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "buzz",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "glatze",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "dutts",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "zopf",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "bob",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locs",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "box_braids",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "weiss",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "grau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "gruen",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "lila",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "gold",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "weiss",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "grau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "gruen",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "lila",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "gold",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "weiss",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "grau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "gruen",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "lila",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "hijab",
+      "color": "gold",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "weiss",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "grau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "gruen",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "lila",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "gold",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "weiss",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "grau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "gruen",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "lila",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "gold",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "schwarz",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "schwarz",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "schwarz",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "schwarz",
+      "state": "up",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "weiss",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "weiss",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "weiss",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "weiss",
+      "state": "up",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "grau",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "grau",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "grau",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "grau",
+      "state": "up",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "rot",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "rot",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "rot",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "rot",
+      "state": "up",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "blau",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "blau",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "blau",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "blau",
+      "state": "up",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
+      "state": "up",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "lila",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "lila",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "lila",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "lila",
+      "state": "up",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gold",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gold",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gold",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gold",
+      "state": "up",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "weiss",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "grau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "gruen",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "lila",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "boxer",
+      "color": "gold",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "weiss",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "grau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "gruen",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "lila",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "kurz",
+      "color": "gold",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "weiss",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "grau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "gruen",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "lila",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "jogger",
+      "color": "gold",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "weiss",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "grau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "gruen",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "lila",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "bottom",
+      "value": "track",
+      "color": "gold",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "glove",
+      "value": "rot",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "glove",
+      "value": "rot",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "glove",
+      "value": "weiss",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "glove",
+      "value": "weiss",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "glove",
+      "value": "schwarzgold",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "glove",
+      "value": "schwarzgold",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "glove",
+      "value": "eisblau",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "glove",
+      "value": "eisblau",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "glove",
+      "value": "glut",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "glove",
+      "value": "glut",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "weiss",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "grau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "gruen",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "lila",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "boots",
+      "color": "gold",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "weiss",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "grau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "gruen",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "lila",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "feet",
+      "value": "sneaker",
+      "color": "gold",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "coat",
+      "value": "basic",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "coat",
+      "value": "basic",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "coat",
+      "value": "samurai",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "coat",
+      "value": "samurai",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "aura",
+      "value": "flamme",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "aura",
+      "value": "flamme",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "aura",
+      "value": "sakura",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "aura",
+      "value": "sakura",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "aura",
+      "value": "blitz",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "aura",
+      "value": "blitz",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "aura",
+      "value": "schatten",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "aura",
+      "value": "schatten",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyefx",
+      "value": "kristall",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyefx",
+      "value": "kristall",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyefx",
+      "value": "glut",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyefx",
+      "value": "glut",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyefx",
+      "value": "stern",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyefx",
+      "value": "stern",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyefx",
+      "value": "mond",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyefx",
+      "value": "mond",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "scene",
+      "value": "holo",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "scene",
+      "value": "holo",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "scene",
+      "value": "dojo",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "scene",
+      "value": "dojo",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "scene",
+      "value": "neon",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "scene",
+      "value": "neon",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "scene",
+      "value": "arena",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "scene",
+      "value": "arena",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "body",
+      "value": "0",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "body",
+      "value": "0",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "body",
+      "value": "1",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "body",
+      "value": "1",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "body",
+      "value": "2",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "body",
+      "value": "2",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "body",
+      "value": "3",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "body",
+      "value": "3",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "body",
+      "value": "4",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "body",
+      "value": "4",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "body",
+      "value": "5",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "body",
+      "value": "5",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "body",
+      "value": "6",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "body",
+      "value": "6",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "body",
+      "value": "7",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "body",
+      "value": "7",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyes",
+      "value": "braun",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyes",
+      "value": "braun",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyes",
+      "value": "hasel",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyes",
+      "value": "hasel",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyes",
+      "value": "gruen",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyes",
+      "value": "gruen",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyes",
+      "value": "blau",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyes",
+      "value": "blau",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyes",
+      "value": "grau",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyes",
+      "value": "grau",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyes",
+      "value": "gold",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyes",
+      "value": "gold",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyes",
+      "value": "orange",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyes",
+      "value": "orange",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyes",
+      "value": "violett",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyes",
+      "value": "violett",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hands",
+      "value": "wraps",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hands",
+      "value": "wraps",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    }
+  ],
+  "sourceHashes": {
+    "tests/premium-production-browser.cjs": "dddcbef50ac536b4c285fb953a40c2c1d413c76876905cfb8c3a445026e6acc7",
+    "takeover-holo.js": "88b6c6fb4f169138ea91aae6a89026ae5efe620a075f6afb29f45132d818bcc3",
+    "takeover-mein-boxer-items.js": "885c596d61c5d1548f0ca37bb5dc4f0e7aae142ac82e6e169d688c5b07048f21",
+    "tools/premium-v2/production.html": "84c128af74166427ddb2d08fcdd3cf4595af8844031e00911bc347e1989335ef",
+    "tools/premium-v2/production.js": "e74d01726af59d5f16dbdc51cc96e028fd0b3a8d0b8c0db740fdb908611c2968",
+    "tools/premium-v2/materials.js": "6d46ecd6b4dbe87a7152121b49b9808f0340b6cb6a7340306f80b97baa1cd6ed",
+    "tools/premium-v2/materials.json": "329f596b36fd1a5afe85c509e569f8bf03f6b787b2b9851339c9dd325a653204",
+    "tools/premium-v2/streaming.js": "311117f3651f33931cc0c7f499b13c9888d7b64cbbee2a5e9d81e12534503828",
+    "tools/premium-v2/streaming-assets.json": "7ca4e00dbf0575da6f5320159e35805e39e7bcf53624b3e3468b2aeef6df4a2e",
+    "tools/premium-v2/pilot.js": "fac899d0d0bdf5219c0dd6783a0576dd6e4b76d5393c10480abff98d2af50528",
+    "tools/premium-v2/pilot-assets.json": "8db99b0cafc2e7a77551afdb5de67aaedd5f406acbedd24dfa44e165289f53a0",
+    "tools/premium-v2/production-art/manifest.json": "caec9e442fccff2c549571869d153f11a723175a2ed38db57319750c360d9918",
+    "tools/premium-v2/headwear/headwear.js": "90bdeebf76bdab15ed794868c1418122186d62ce8a2899ca847b5b564132c10a",
+    "tools/premium-v2/headwear/manifest.json": "b10d087bc79ab93203b659037304f7aeacc9440df1059c16947d505e04a4875e",
+    "tools/premium-v2/headwear-hijab/hijab.js": "f4e37a469fdc49a293db3a15817dc5bbe122d479bceee6d479edc472471bab00",
+    "tools/premium-v2/headwear-hijab/manifest.json": "66973c10de03e334ef676a250a188842e5e4e47f3f4d6b2c340b34f8386b705d",
+    "tools/premium-v2/long-hair/long-hair.js": "6b0f12310016de75019385c49cc6c22fe3c68c93a8828c31a16405aef424d1e3",
+    "tools/premium-v2/long-hair/manifest.json": "f68e8f7f2df95c2f3385a6a9d39f9b86aa13b4ea738f44b1ea2fbd12f57353d1",
+    "tools/premium-v2/hair-expansion/manifest.json": "6c0d1e1c36c1d6f2a64600618917d73c241132e737d3038be3758131d6592945",
+    "tools/premium-v2/tops/tops.js": "05c4b348ac42265104d1e9a462a4741eea62cbec365ffb91d5584c5d663b9b7b",
+    "tools/premium-v2/tops/manifest.json": "dcf5826d934300358d4e41bc5a2bc7eba516de5c679f60f1d4a464a8c0911326",
+    "tools/premium-v2/wraps/manifest.json": "4a28782cd26f194712e63856fe6323cb784b2ff2598d7ebd89067fe681acd8df",
+    "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66",
+    "tools/premium-v2/effects.json": "d33ca8ef6cac22a29062a4f0382f39abb50be509650493d66f1be29740e67485",
+    "assets/boxer-artpacks/v1/modular-cool/coatback.png": "ad891a408f555ce62ce7114b9e9a8267e9884f54350f2d08643fb8079d55833e",
+    "tools/premium-v2/assets/v1-body.png": "5b9d3961b94b47b041186b38abfdf7c81b1787b6b40dea96a21fa702e9064748",
+    "assets/boxer-artpacks/v1/modular-cool/bottom-black.png": "31b86b8ce22a242cc9a610c079d9120f730723f4bf73e60223403973f5cbf92c",
+    "assets/boxer-artpacks/v1/modular-cool/feet.png": "4aa58b3ad58000a53cd7e05b3f383cc8fcaf3f5965fcfd27b00f78444a30a5f1",
+    "assets/boxer-artpacks/v1/modular-cool/eyes.png": "e75dbe4395de6905d53fdbff6db2dddc8a0d90a59e6b1d114043ef60a363a6ca",
+    "assets/boxer-artpacks/v1/modular-cool/hair-afro.png": "6aef558366445b21afdd60e6e82072ca4193bc29e261dc9961f5aa16538b7bc3",
+    "tools/premium-v2/assets/v1-coat.png": "47e940e6ab32e7f53e0e8f847ea98faa54f6de717427e6c4bbf6946b3489a9c6",
+    "tools/premium-v2/assets/v1-black.png": "c2db79692ba2dcc48a9500eb5b07857bec6cdf10a58e579281733ae9ae42d952",
+    "tools/premium-v2/separation/coat-back.png": "0e7a4764f71a3bb9093dc174f26d57df5ed5af5082a2727b80213057692eb6da",
+    "tools/premium-v2/streaming-assets/base.png": "2bfc7593b6c2b31f9fce5a20fd7583f4436eef9d02391cfe99ce88a6594c56ee",
+    "tools/premium-v2/streaming-assets/body-guard.png": "191333012e99dca1998b078ef468a9c9ec2569fe13696a59cf3939786c097a2f",
+    "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2",
+    "tools/premium-v2/streaming-assets/hair-afro.png": "cbab6c42a98205872d993585f0bf0d54cfa004c8ac3a161906dcd90d4ab0c799",
+    "tools/premium-v2/production-art/coat-guard-v2.png": "cbfe6a9ab7d19fbf44d6d3e518bd9b25be41dd3020d551267df19a655b55dd06",
+    "tools/premium-v2/production-art/hands-master-0.png": "a5a97da42db09bbb5ebfb04bc4e4ee55a42a460b3ee47afe7fdae106adbf33e6",
+    "tools/premium-v2/production-art/hands-master-1.png": "1c0a6143b9b0c8869d117a4701f3396159e5ef73284c4c55f65ef3d29b52d308",
+    "tools/premium-v2/streaming-assets/hair-short.png": "d41d75b3d7af1615e49444f0a57c88f254e46dcfab35afcd01a3471f4836b9a2",
+    "tools/premium-v2/streaming-assets/body-cool.png": "65480b837fde16aaf31969091d8ebecc886de26172904af34a5c730c38156450",
+    "tools/premium-v2/streaming-assets/hands-cool-black.png": "54642b314090895fbcb38150cf7837cde7b921b62332ab8b59811bfa6f7d69f9",
+    "tools/premium-v2/production-art/hair-stachel.png": "007c3cf362825f29dd53ae2f96c8d434c50800b56cc6c024930c68a61b85ecef",
+    "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55",
+    "tools/premium-v2/production-art/hair-undercut.png": "1fcbad84442fc8324780d20c42e9797b1816051a0306e81cc3723340035a608f",
+    "tools/premium-v2/production-art/hair-buzz.png": "b69127e26e7c262dff92c754450af392b736d36391d87b472183de7cd8013129",
+    "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5",
+    "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049",
+    "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c",
+    "tools/premium-v2/hair-expansion/assets/wellig.png": "b14a02f9db1d2406ce9c559e0945640a7095d4bab02166e887a06aea8d8785e2",
+    "tools/premium-v2/hair-expansion/assets/locken.png": "7635cb0c79c43697a366065ac416015f3905f67c61234112fdc9c5e32eb10f29",
+    "tools/premium-v2/hair-expansion/assets/afro_puffs.png": "a6cfbea088f46c47cd08673f86731d2272019b19c1fb144be30996e9c11d6599",
+    "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93",
+    "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb",
+    "tools/premium-v2/hair-expansion/assets/cornrows.png": "8b6456fff707d4f895427ce532c6f6ff04e5556de8b0610863a37b71cb4b006b",
+    "tools/premium-v2/hair-expansion/assets/twists.png": "10ce2f25fcb1abb0594de499b8ec9fbfdffa463503c8d406558acf885c198243",
+    "tools/premium-v2/hair-expansion/assets/high_top.png": "0f3ee89328baae3858dcb6fb17b7380d80015a96bd28b43749a358bdd46e8b3d",
+    "tools/premium-v2/headwear/assets/cap.png": "302ecfad741aaa421529214f1bc9ade16eff8ae96db73e57b642a2546e45a90a",
+    "tools/premium-v2/headwear/assets/band.png": "a3efb6db8ccf7304700e87d170c23df2a7674eae99e6053119f723984533c35b",
+    "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f",
+    "tools/premium-v2/tops/assets/guard-tank.png": "3fbeca7ae1bc8b22fd028172748a2d92ca89fa49db91b7f8459dff6bb9c02967",
+    "assets/boxer-artpacks/v1/modular-cool/top-tank.png": "1d65b893f039bb90bac126d354260ab74402e8025e7894bbede0834555dd1afe",
+    "tools/premium-v2/tops/assets/shirt.png": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6",
+    "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df",
+    "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d",
+    "tools/premium-v2/tops/assets/guard-jacket.png": "646686b0b423bc92530d21bd7f6e9850332188e035efd9d1fe49d5e35e41a6df",
+    "tools/premium-v2/production-art/bottom-kurz.png": "ae5644f7a0e90458097aa27a0a7e0ad1366d54dede3849e5249e119c28d58960",
+    "tools/premium-v2/production-art/bottom-jogger.png": "323049fb9bdd2134f4dc5fc0fc018c31b2ada66384925d2d2aabe0e674b5057a",
+    "tools/premium-v2/production-art/bottom-track.png": "12c4c58ce40c0b2ae600fa821150110bd6c8c1bb1142a228a1433ed8d6546f84",
+    "tools/premium-v2/production-art/feet-sneaker.png": "f3489f5a6c9d8e05dda9f2a54afaa8376ec88b131a58f5fe243b683de1699043",
+    "tools/premium-v2/separation/coat-basic-back.png": "17b6dd269707b77efe59532374a20af97fb5e7a3c8e81eff8f6a950b3f57fb82",
+    "tools/premium-v2/production-art/coat-basic-guard.png": "ef5304546ca09472c1e06d2c559f1be6b1bfc588b62b6f1ae3679ec891f37bac",
+    "tools/premium-v2/production-art/coat-basic-cool.png": "9b2edcfc890470991be6801eb67de37001e23b15c03a76b16529ad9cf7e57130",
+    "tools/premium-v2/streaming-assets/coat-cool.png": "bbd682dd93de36564ea4a16c2809f68ed68fe10eb270404e9b4e62b20a4731c5",
+    "tools/premium-v2/streaming-assets/coat-common.png": "d8e1fce31750abf7c335bdf0b51e9aea7ca127f6f1e46d220f4495b3fc220e6d",
+    "tools/premium-v2/wraps/assets/wrap-guard0.png": "6ff8a27f03230c66d9a874702e441a8079c0c60c4be80684c0c8104126f110e6",
+    "tools/premium-v2/wraps/assets/wrap-guard1.png": "fc2f9a2479fd13c264930f52372e475306f60e3eca165caa50622559636540a5",
+    "tools/premium-v2/wraps/assets/wrap-cool0.png": "f42064a57cfd9da5d48e86de5eddff4a6c0fd84feebbb9e96536742daffffc7e",
+    "tools/premium-v2/wraps/assets/wrap-cool1.png": "117bb462b2c5db219c46be3b68e920bf7e0e742d0d135fa414a1eb2d37d44947",
+    "tools/premium-v2/bench.html": "880db8b7b2a537c7b063065278c48bac3ddd2fa9dbc6d6ee4d5f8996df9418c1",
+    "tools/premium-v2/assets/shared.png": "45d0529d347d3ba28064762702adad373428925974e18829423fc73ff38c4bc5",
+    "tools/premium-v2/assets/guard.png": "cb4c7e87498253e2958202be1b7a0e834f81331750c389832751afb8c79b48e0"
+  },
+  "engineReports": [
+    {
+      "engine": "chromium",
+      "file": "chromium-production-tests.json",
+      "variants": 576,
+      "contactSheets": [
+        {
+          "file": "chromium-production-hair-contact.png",
+          "examples": 26,
+          "crop": [
+            215,
+            30,
+            345,
+            300
+          ]
+        },
+        {
+          "file": "chromium-production-long-hair-contact.png",
+          "examples": 10,
+          "crop": [
+            170,
+            15,
+            430,
+            600
+          ]
+        },
+        {
+          "file": "chromium-production-bottom-contact.png",
+          "examples": 8,
+          "crop": [
+            135,
+            500,
+            510,
+            700
+          ]
+        },
+        {
+          "file": "chromium-production-feet-contact.png",
+          "examples": 4,
+          "crop": [
+            135,
+            800,
+            510,
+            400
+          ]
+        },
+        {
+          "file": "chromium-production-skin-contact.png",
+          "examples": 16,
+          "crop": [
+            190,
+            65,
+            390,
+            520
+          ]
+        },
+        {
+          "file": "chromium-production-eyes-contact.png",
+          "examples": 16,
+          "crop": [
+            330,
+            140,
+            100,
+            45
+          ]
+        },
+        {
+          "file": "chromium-production-hair-colors.png",
+          "examples": 16,
+          "crop": [
+            285,
+            30,
+            200,
+            210
+          ]
+        },
+        {
+          "file": "chromium-production-gloves-contact.png",
+          "examples": 10,
+          "crop": [
+            195,
+            130,
+            390,
+            340
+          ]
+        },
+        {
+          "file": "chromium-production-wraps-contact.png",
+          "examples": 16,
+          "crop": [
+            195,
+            130,
+            390,
+            340
+          ]
+        },
+        {
+          "file": "chromium-production-coat-contact.png",
+          "examples": 6,
+          "crop": [
+            0,
+            0,
+            768,
+            1216
+          ]
+        },
+        {
+          "file": "chromium-production-headwear-contact.png",
+          "examples": 6,
+          "crop": [
+            215,
+            30,
+            345,
+            300
+          ]
+        },
+        {
+          "file": "chromium-production-tops-contact.png",
+          "examples": 4,
+          "crop": [
+            170,
+            170,
+            430,
+            450
+          ]
+        },
+        {
+          "file": "chromium-production-aura-contact.png",
+          "examples": 8,
+          "crop": [
+            0,
+            0,
+            768,
+            1216
+          ]
+        },
+        {
+          "file": "chromium-production-scene-contact.png",
+          "examples": 8,
+          "crop": [
+            0,
+            0,
+            768,
+            1216
+          ]
+        },
+        {
+          "file": "chromium-production-eyefx-contact.png",
+          "examples": 8,
+          "crop": [
+            325,
+            120,
+            115,
+            105
+          ]
+        }
+      ]
+    },
+    {
+      "engine": "webkit",
+      "file": "webkit-production-tests.json",
+      "variants": 576,
+      "contactSheets": [
+        {
+          "file": "webkit-production-hair-contact.png",
+          "examples": 26,
+          "crop": [
+            215,
+            30,
+            345,
+            300
+          ]
+        },
+        {
+          "file": "webkit-production-long-hair-contact.png",
+          "examples": 10,
+          "crop": [
+            170,
+            15,
+            430,
+            600
+          ]
+        },
+        {
+          "file": "webkit-production-bottom-contact.png",
+          "examples": 8,
+          "crop": [
+            135,
+            500,
+            510,
+            700
+          ]
+        },
+        {
+          "file": "webkit-production-feet-contact.png",
+          "examples": 4,
+          "crop": [
+            135,
+            800,
+            510,
+            400
+          ]
+        },
+        {
+          "file": "webkit-production-skin-contact.png",
+          "examples": 16,
+          "crop": [
+            190,
+            65,
+            390,
+            520
+          ]
+        },
+        {
+          "file": "webkit-production-eyes-contact.png",
+          "examples": 16,
+          "crop": [
+            330,
+            140,
+            100,
+            45
+          ]
+        },
+        {
+          "file": "webkit-production-hair-colors.png",
+          "examples": 16,
+          "crop": [
+            285,
+            30,
+            200,
+            210
+          ]
+        },
+        {
+          "file": "webkit-production-gloves-contact.png",
+          "examples": 10,
+          "crop": [
+            195,
+            130,
+            390,
+            340
+          ]
+        },
+        {
+          "file": "webkit-production-wraps-contact.png",
+          "examples": 16,
+          "crop": [
+            195,
+            130,
+            390,
+            340
+          ]
+        },
+        {
+          "file": "webkit-production-coat-contact.png",
+          "examples": 6,
+          "crop": [
+            0,
+            0,
+            768,
+            1216
+          ]
+        },
+        {
+          "file": "webkit-production-headwear-contact.png",
+          "examples": 6,
+          "crop": [
+            215,
+            30,
+            345,
+            300
+          ]
+        },
+        {
+          "file": "webkit-production-tops-contact.png",
+          "examples": 4,
+          "crop": [
+            170,
+            170,
+            430,
+            450
+          ]
+        },
+        {
+          "file": "webkit-production-aura-contact.png",
+          "examples": 8,
+          "crop": [
+            0,
+            0,
+            768,
+            1216
+          ]
+        },
+        {
+          "file": "webkit-production-scene-contact.png",
+          "examples": 8,
+          "crop": [
+            0,
+            0,
+            768,
+            1216
+          ]
+        },
+        {
+          "file": "webkit-production-eyefx-contact.png",
+          "examples": 8,
+          "crop": [
+            325,
+            120,
+            115,
+            105
+          ]
+        }
+      ]
+    }
+  ],
+  "caveats": [
+    "No physical-device or artistic approval.",
+    "Per-variant coverage uses a baseline outfit, not every Cartesian combination.",
+    "Pixel equality checks component identity and thumbnail fidelity, not anatomy or taste."
+  ]
+}

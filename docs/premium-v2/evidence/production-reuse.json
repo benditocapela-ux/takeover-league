@@ -1,0 +1,2594 @@
+{
+  "approved": false,
+  "enabled": false,
+  "evidenceReport": "docs/premium-v2/evidence/production-tests.json",
+  "evidenceSHA256": "6ae00816538200084af47a69ceb60899104ea0110d798efb4a82ede9ffb6fac2",
+  "evidenceCells": 576,
+  "method": "Unique source file + component id + UV + registered box among actual accepted baseline configurations. Palette variants do not multiply unique components. File bytes include packed unused atlas pixels; not visible-pixel reuse or art-production-time savings. Canvas effects reported separately. Unpaired Guard Basic is counted pose-specific, not inferred reusable.",
+  "overall": {
+    "uniqueComponents": {
+      "cool": 47,
+      "guard": 50,
+      "shared": 36
+    },
+    "guardComponentsAlsoUsedByCoolRatio": 0.72,
+    "files": {
+      "cool": [
+        "tools/premium-v2/streaming-assets/base.png",
+        "tools/premium-v2/streaming-assets/body-cool.png",
+        "tools/premium-v2/separation/boxer.png",
+        "tools/premium-v2/streaming-assets/hair-short.png",
+        "tools/premium-v2/streaming-assets/hands-cool-black.png",
+        "tools/premium-v2/production-art/hair-stachel.png",
+        "tools/premium-v2/long-hair/assets/lang_glatt.png",
+        "tools/premium-v2/production-art/hair-undercut.png",
+        "tools/premium-v2/production-art/hair-buzz.png",
+        "tools/premium-v2/hair-expansion/assets/dutts.png",
+        "tools/premium-v2/long-hair/assets/zopf.png",
+        "tools/premium-v2/long-hair/assets/bob.png",
+        "tools/premium-v2/hair-expansion/assets/wellig.png",
+        "tools/premium-v2/hair-expansion/assets/locken.png",
+        "tools/premium-v2/streaming-assets/hair-afro.png",
+        "tools/premium-v2/hair-expansion/assets/afro_puffs.png",
+        "tools/premium-v2/long-hair/assets/locs.png",
+        "tools/premium-v2/long-hair/assets/box_braids.png",
+        "tools/premium-v2/hair-expansion/assets/cornrows.png",
+        "tools/premium-v2/hair-expansion/assets/twists.png",
+        "tools/premium-v2/hair-expansion/assets/high_top.png",
+        "tools/premium-v2/headwear/assets/cap.png",
+        "tools/premium-v2/headwear/assets/band.png",
+        "tools/premium-v2/headwear-hijab/assets/hijab.png",
+        "tools/premium-v2/../../assets/boxer-artpacks/v1/modular-cool/top-tank.png",
+        "tools/premium-v2/tops/assets/shirt.png",
+        "tools/premium-v2/hoodie/cool.png",
+        "tools/premium-v2/hoodie/guard.png",
+        "tools/premium-v2/production-art/bottom-kurz.png",
+        "tools/premium-v2/production-art/bottom-jogger.png",
+        "tools/premium-v2/production-art/bottom-track.png",
+        "tools/premium-v2/production-art/feet-sneaker.png",
+        "tools/premium-v2/separation/coat-basic-back.png",
+        "tools/premium-v2/production-art/coat-basic-cool.png",
+        "tools/premium-v2/separation/coat-back.png",
+        "tools/premium-v2/streaming-assets/coat-common.png",
+        "tools/premium-v2/streaming-assets/coat-cool.png",
+        "tools/premium-v2/wraps/assets/wrap-cool0.png",
+        "tools/premium-v2/wraps/assets/wrap-cool1.png"
+      ],
+      "guard": [
+        "tools/premium-v2/streaming-assets/base.png",
+        "tools/premium-v2/streaming-assets/body-guard.png",
+        "tools/premium-v2/separation/boxer.png",
+        "tools/premium-v2/streaming-assets/hair-short.png",
+        "tools/premium-v2/production-art/hands-master-0.png",
+        "tools/premium-v2/production-art/hands-master-1.png",
+        "tools/premium-v2/production-art/hair-stachel.png",
+        "tools/premium-v2/long-hair/assets/lang_glatt.png",
+        "tools/premium-v2/production-art/hair-undercut.png",
+        "tools/premium-v2/production-art/hair-buzz.png",
+        "tools/premium-v2/hair-expansion/assets/dutts.png",
+        "tools/premium-v2/long-hair/assets/zopf.png",
+        "tools/premium-v2/long-hair/assets/bob.png",
+        "tools/premium-v2/hair-expansion/assets/wellig.png",
+        "tools/premium-v2/hair-expansion/assets/locken.png",
+        "tools/premium-v2/streaming-assets/hair-afro.png",
+        "tools/premium-v2/hair-expansion/assets/afro_puffs.png",
+        "tools/premium-v2/long-hair/assets/locs.png",
+        "tools/premium-v2/long-hair/assets/box_braids.png",
+        "tools/premium-v2/hair-expansion/assets/cornrows.png",
+        "tools/premium-v2/hair-expansion/assets/twists.png",
+        "tools/premium-v2/hair-expansion/assets/high_top.png",
+        "tools/premium-v2/headwear/assets/cap.png",
+        "tools/premium-v2/headwear/assets/band.png",
+        "tools/premium-v2/headwear-hijab/assets/hijab.png",
+        "tools/premium-v2/tops/assets/guard-tank.png",
+        "tools/premium-v2/tops/assets/shirt.png",
+        "tools/premium-v2/hoodie/guard.png",
+        "tools/premium-v2/tops/assets/guard-jacket.png",
+        "tools/premium-v2/production-art/bottom-kurz.png",
+        "tools/premium-v2/production-art/bottom-jogger.png",
+        "tools/premium-v2/production-art/bottom-track.png",
+        "tools/premium-v2/production-art/feet-sneaker.png",
+        "tools/premium-v2/separation/coat-basic-back.png",
+        "tools/premium-v2/production-art/coat-basic-guard.png",
+        "tools/premium-v2/separation/coat-back.png",
+        "tools/premium-v2/production-art/coat-guard-v2.png",
+        "tools/premium-v2/wraps/assets/wrap-guard0.png",
+        "tools/premium-v2/wraps/assets/wrap-guard1.png"
+      ],
+      "shared": [
+        "tools/premium-v2/streaming-assets/base.png",
+        "tools/premium-v2/separation/boxer.png",
+        "tools/premium-v2/streaming-assets/hair-short.png",
+        "tools/premium-v2/production-art/hair-stachel.png",
+        "tools/premium-v2/long-hair/assets/lang_glatt.png",
+        "tools/premium-v2/production-art/hair-undercut.png",
+        "tools/premium-v2/production-art/hair-buzz.png",
+        "tools/premium-v2/hair-expansion/assets/dutts.png",
+        "tools/premium-v2/long-hair/assets/zopf.png",
+        "tools/premium-v2/long-hair/assets/bob.png",
+        "tools/premium-v2/hair-expansion/assets/wellig.png",
+        "tools/premium-v2/hair-expansion/assets/locken.png",
+        "tools/premium-v2/streaming-assets/hair-afro.png",
+        "tools/premium-v2/hair-expansion/assets/afro_puffs.png",
+        "tools/premium-v2/long-hair/assets/locs.png",
+        "tools/premium-v2/long-hair/assets/box_braids.png",
+        "tools/premium-v2/hair-expansion/assets/cornrows.png",
+        "tools/premium-v2/hair-expansion/assets/twists.png",
+        "tools/premium-v2/hair-expansion/assets/high_top.png",
+        "tools/premium-v2/headwear/assets/cap.png",
+        "tools/premium-v2/headwear/assets/band.png",
+        "tools/premium-v2/headwear-hijab/assets/hijab.png",
+        "tools/premium-v2/tops/assets/shirt.png",
+        "tools/premium-v2/hoodie/guard.png",
+        "tools/premium-v2/production-art/bottom-kurz.png",
+        "tools/premium-v2/production-art/bottom-jogger.png",
+        "tools/premium-v2/production-art/bottom-track.png",
+        "tools/premium-v2/production-art/feet-sneaker.png",
+        "tools/premium-v2/separation/coat-basic-back.png",
+        "tools/premium-v2/separation/coat-back.png"
+      ]
+    },
+    "encodedFileBytes": {
+      "cool": 6219039,
+      "guard": 6258868,
+      "shared": 4690777
+    },
+    "sharedComponents": [
+      {
+        "id": "head",
+        "file": "tools/premium-v2/streaming-assets/base.png",
+        "uv": [
+          2,
+          2,
+          156,
+          168
+        ],
+        "box": [
+          309,
+          62,
+          156,
+          168
+        ]
+      },
+      {
+        "id": "lower",
+        "file": "tools/premium-v2/streaming-assets/base.png",
+        "uv": [
+          2,
+          174,
+          445,
+          619
+        ],
+        "box": [
+          174,
+          550,
+          445,
+          619
+        ]
+      },
+      {
+        "id": "bottom-master-boxer-clean",
+        "file": "tools/premium-v2/separation/boxer.png",
+        "uv": [
+          0,
+          0,
+          323,
+          253
+        ],
+        "box": [
+          227,
+          544,
+          323,
+          253
+        ]
+      },
+      {
+        "id": "feet",
+        "file": "tools/premium-v2/streaming-assets/base.png",
+        "uv": [
+          2,
+          797,
+          473,
+          215
+        ],
+        "box": [
+          157,
+          955,
+          473,
+          215
+        ]
+      },
+      {
+        "id": "eyes",
+        "file": "tools/premium-v2/streaming-assets/base.png",
+        "uv": [
+          2,
+          1016,
+          96,
+          25
+        ],
+        "box": [
+          333,
+          144,
+          96,
+          25
+        ]
+      },
+      {
+        "id": "hair-short",
+        "file": "tools/premium-v2/streaming-assets/hair-short.png",
+        "uv": [
+          2,
+          2,
+          124,
+          93
+        ],
+        "box": [
+          324,
+          50,
+          124,
+          93
+        ]
+      },
+      {
+        "id": "hair-stachel",
+        "file": "tools/premium-v2/production-art/hair-stachel.png",
+        "uv": [
+          0,
+          0,
+          137,
+          105
+        ],
+        "box": [
+          318,
+          38,
+          137,
+          105
+        ]
+      },
+      {
+        "id": "hair-lang_glatt-back",
+        "file": "tools/premium-v2/long-hair/assets/lang_glatt.png",
+        "uv": [
+          2,
+          2,
+          384,
+          633
+        ],
+        "box": [
+          292.5,
+          45,
+          185,
+          304.9609375
+        ]
+      },
+      {
+        "id": "hair-lang_glatt-front",
+        "file": "tools/premium-v2/long-hair/assets/lang_glatt.png",
+        "uv": [
+          2,
+          639,
+          384,
+          316
+        ],
+        "box": [
+          308,
+          45,
+          154,
+          126.72916666666667
+        ]
+      },
+      {
+        "id": "hair-undercut",
+        "file": "tools/premium-v2/production-art/hair-undercut.png",
+        "uv": [
+          0,
+          0,
+          120,
+          97
+        ],
+        "box": [
+          324,
+          47,
+          120,
+          97
+        ]
+      },
+      {
+        "id": "hair-buzz",
+        "file": "tools/premium-v2/production-art/hair-buzz.png",
+        "uv": [
+          0,
+          0,
+          117,
+          79
+        ],
+        "box": [
+          326,
+          63,
+          117,
+          79
+        ]
+      },
+      {
+        "id": "hair-dutts",
+        "file": "tools/premium-v2/hair-expansion/assets/dutts.png",
+        "uv": [
+          0,
+          0,
+          188,
+          100
+        ],
+        "box": [
+          290,
+          59,
+          188,
+          100
+        ]
+      },
+      {
+        "id": "hair-zopf-back",
+        "file": "tools/premium-v2/long-hair/assets/zopf.png",
+        "uv": [
+          2,
+          2,
+          384,
+          418
+        ],
+        "box": [
+          316,
+          45,
+          205,
+          223.15104166666666
+        ]
+      },
+      {
+        "id": "hair-zopf-front",
+        "file": "tools/premium-v2/long-hair/assets/zopf.png",
+        "uv": [
+          2,
+          424,
+          384,
+          348
+        ],
+        "box": [
+          314,
+          45,
+          142,
+          128.6875
+        ]
+      },
+      {
+        "id": "hair-bob-back",
+        "file": "tools/premium-v2/long-hair/assets/bob.png",
+        "uv": [
+          2,
+          2,
+          384,
+          358
+        ],
+        "box": [
+          295,
+          45,
+          180,
+          167.8125
+        ]
+      },
+      {
+        "id": "hair-bob-front",
+        "file": "tools/premium-v2/long-hair/assets/bob.png",
+        "uv": [
+          2,
+          364,
+          384,
+          303
+        ],
+        "box": [
+          308,
+          45,
+          154,
+          121.515625
+        ]
+      },
+      {
+        "id": "hair-wellig",
+        "file": "tools/premium-v2/hair-expansion/assets/wellig.png",
+        "uv": [
+          0,
+          0,
+          146,
+          109
+        ],
+        "box": [
+          311,
+          50,
+          146,
+          109
+        ]
+      },
+      {
+        "id": "hair-locken",
+        "file": "tools/premium-v2/hair-expansion/assets/locken.png",
+        "uv": [
+          0,
+          0,
+          150,
+          115
+        ],
+        "box": [
+          309,
+          45,
+          150,
+          115
+        ]
+      },
+      {
+        "id": "hair-afro",
+        "file": "tools/premium-v2/streaming-assets/hair-afro.png",
+        "uv": [
+          2,
+          2,
+          162,
+          124
+        ],
+        "box": [
+          302,
+          43,
+          162,
+          124
+        ]
+      },
+      {
+        "id": "hair-afro_puffs",
+        "file": "tools/premium-v2/hair-expansion/assets/afro_puffs.png",
+        "uv": [
+          0,
+          0,
+          190,
+          101
+        ],
+        "box": [
+          289,
+          54,
+          190,
+          101
+        ]
+      },
+      {
+        "id": "hair-locs-back",
+        "file": "tools/premium-v2/long-hair/assets/locs.png",
+        "uv": [
+          2,
+          2,
+          384,
+          425
+        ],
+        "box": [
+          280,
+          45,
+          210,
+          232.421875
+        ]
+      },
+      {
+        "id": "hair-locs-front",
+        "file": "tools/premium-v2/long-hair/assets/locs.png",
+        "uv": [
+          2,
+          431,
+          384,
+          268
+        ],
+        "box": [
+          306,
+          40,
+          158,
+          110.27083333333333
+        ]
+      },
+      {
+        "id": "hair-box_braids-back",
+        "file": "tools/premium-v2/long-hair/assets/box_braids.png",
+        "uv": [
+          2,
+          2,
+          384,
+          549
+        ],
+        "box": [
+          285,
+          45,
+          200,
+          285.9375
+        ]
+      },
+      {
+        "id": "hair-box_braids-front",
+        "file": "tools/premium-v2/long-hair/assets/box_braids.png",
+        "uv": [
+          2,
+          555,
+          384,
+          337
+        ],
+        "box": [
+          312,
+          45,
+          146,
+          128.13020833333334
+        ]
+      },
+      {
+        "id": "hair-cornrows",
+        "file": "tools/premium-v2/hair-expansion/assets/cornrows.png",
+        "uv": [
+          0,
+          0,
+          124,
+          95
+        ],
+        "box": [
+          322,
+          57,
+          124,
+          95
+        ]
+      },
+      {
+        "id": "hair-twists",
+        "file": "tools/premium-v2/hair-expansion/assets/twists.png",
+        "uv": [
+          0,
+          0,
+          150,
+          109
+        ],
+        "box": [
+          309,
+          48,
+          150,
+          109
+        ]
+      },
+      {
+        "id": "hair-high_top",
+        "file": "tools/premium-v2/hair-expansion/assets/high_top.png",
+        "uv": [
+          0,
+          0,
+          142,
+          107
+        ],
+        "box": [
+          313,
+          50,
+          142,
+          107
+        ]
+      },
+      {
+        "id": "head-cap-schwarz",
+        "file": "tools/premium-v2/headwear/assets/cap.png",
+        "uv": [
+          0,
+          0,
+          384,
+          232
+        ],
+        "box": [
+          307,
+          43,
+          155,
+          93.64583333333333
+        ]
+      },
+      {
+        "id": "head-band-schwarz",
+        "file": "tools/premium-v2/headwear/assets/band.png",
+        "uv": [
+          0,
+          0,
+          384,
+          118
+        ],
+        "box": [
+          326,
+          107,
+          160,
+          49.166666666666664
+        ]
+      },
+      {
+        "id": "head-hijab-schwarz",
+        "file": "tools/premium-v2/headwear-hijab/assets/hijab.png",
+        "uv": [
+          0,
+          0,
+          384,
+          573
+        ],
+        "box": [
+          301,
+          55,
+          168,
+          250.6875
+        ]
+      },
+      {
+        "id": "bottom-kurz",
+        "file": "tools/premium-v2/production-art/bottom-kurz.png",
+        "uv": [
+          0,
+          0,
+          320,
+          220
+        ],
+        "box": [
+          230,
+          545,
+          320,
+          220
+        ]
+      },
+      {
+        "id": "bottom-jogger",
+        "file": "tools/premium-v2/production-art/bottom-jogger.png",
+        "uv": [
+          0,
+          0,
+          350,
+          505
+        ],
+        "box": [
+          215,
+          545,
+          350,
+          505
+        ]
+      },
+      {
+        "id": "bottom-track",
+        "file": "tools/premium-v2/production-art/bottom-track.png",
+        "uv": [
+          0,
+          0,
+          380,
+          505
+        ],
+        "box": [
+          200,
+          545,
+          380,
+          505
+        ]
+      },
+      {
+        "id": "feet-sneaker",
+        "file": "tools/premium-v2/production-art/feet-sneaker.png",
+        "uv": [
+          0,
+          0,
+          475,
+          135
+        ],
+        "box": [
+          155,
+          1040,
+          475,
+          135
+        ]
+      },
+      {
+        "id": "coat-basic-back-clean",
+        "file": "tools/premium-v2/separation/coat-basic-back.png",
+        "uv": [
+          0,
+          0,
+          450,
+          354
+        ],
+        "box": [
+          166,
+          547,
+          450,
+          354
+        ]
+      },
+      {
+        "id": "coat-back-clean",
+        "file": "tools/premium-v2/separation/coat-back.png",
+        "uv": [
+          0,
+          0,
+          450,
+          354
+        ],
+        "box": [
+          166,
+          547,
+          450,
+          354
+        ]
+      }
+    ],
+    "coolSpecific": [
+      {
+        "id": "body-cool",
+        "file": "tools/premium-v2/streaming-assets/body-cool.png",
+        "uv": [
+          2,
+          2,
+          359,
+          320
+        ],
+        "box": [
+          199,
+          230,
+          359,
+          320
+        ]
+      },
+      {
+        "id": "hands-blackgold",
+        "file": "tools/premium-v2/streaming-assets/hands-cool-black.png",
+        "uv": [
+          2,
+          2,
+          282,
+          101
+        ],
+        "box": [
+          244,
+          312,
+          282,
+          101
+        ]
+      },
+      {
+        "id": "top-cool-tank",
+        "file": "tools/premium-v2/../../assets/boxer-artpacks/v1/modular-cool/top-tank.png",
+        "uv": [
+          280,
+          240,
+          215,
+          335
+        ],
+        "box": [
+          280,
+          240,
+          215,
+          335
+        ]
+      },
+      {
+        "id": "top-cool-shirt",
+        "file": "tools/premium-v2/tops/assets/shirt.png",
+        "uv": [
+          0,
+          0,
+          512,
+          448
+        ],
+        "box": [
+          196.5,
+          221.64939024390245,
+          375,
+          328.125
+        ]
+      },
+      {
+        "id": "top-cool-hoodie-torso",
+        "file": "tools/premium-v2/hoodie/cool.png",
+        "uv": [
+          0,
+          0,
+          390,
+          345
+        ],
+        "box": [
+          190,
+          210,
+          390,
+          345
+        ]
+      },
+      {
+        "id": "top-cool-hoodie-up",
+        "file": "tools/premium-v2/hoodie/guard.png",
+        "uv": [
+          0,
+          1037,
+          202,
+          240
+        ],
+        "box": [
+          286,
+          38,
+          202,
+          240
+        ]
+      },
+      {
+        "id": "coat-basic-cool",
+        "file": "tools/premium-v2/production-art/coat-basic-cool.png",
+        "uv": [
+          0,
+          0,
+          475,
+          750
+        ],
+        "box": [
+          155,
+          180,
+          475,
+          750
+        ]
+      },
+      {
+        "id": "coat-tail",
+        "file": "tools/premium-v2/streaming-assets/coat-common.png",
+        "uv": [
+          2,
+          360,
+          485,
+          342
+        ],
+        "box": [
+          147,
+          590,
+          485,
+          342
+        ]
+      },
+      {
+        "id": "coat-cool",
+        "file": "tools/premium-v2/streaming-assets/coat-cool.png",
+        "uv": [
+          2,
+          2,
+          372,
+          410
+        ],
+        "box": [
+          208,
+          180,
+          372,
+          410
+        ]
+      },
+      {
+        "id": "wrap-cool0",
+        "file": "tools/premium-v2/wraps/assets/wrap-cool0.png",
+        "uv": [
+          0,
+          0,
+          256,
+          235
+        ],
+        "box": [
+          247,
+          311,
+          92.59574468085107,
+          85
+        ]
+      },
+      {
+        "id": "wrap-cool1",
+        "file": "tools/premium-v2/wraps/assets/wrap-cool1.png",
+        "uv": [
+          0,
+          0,
+          256,
+          241
+        ],
+        "box": [
+          405,
+          318,
+          101.97510373443983,
+          96
+        ]
+      }
+    ],
+    "guardSpecific": [
+      {
+        "id": "body-guard",
+        "file": "tools/premium-v2/streaming-assets/body-guard.png",
+        "uv": [
+          2,
+          2,
+          371,
+          320
+        ],
+        "box": [
+          199,
+          230,
+          371,
+          320
+        ]
+      },
+      {
+        "id": "hands-master-0",
+        "file": "tools/premium-v2/production-art/hands-master-0.png",
+        "uv": [
+          0,
+          0,
+          85,
+          112
+        ],
+        "box": [
+          280,
+          170,
+          85,
+          112
+        ]
+      },
+      {
+        "id": "hands-master-1",
+        "file": "tools/premium-v2/production-art/hands-master-1.png",
+        "uv": [
+          0,
+          0,
+          85,
+          112
+        ],
+        "box": [
+          405,
+          170,
+          85,
+          112
+        ]
+      },
+      {
+        "id": "top-guard-tank",
+        "file": "tools/premium-v2/tops/assets/guard-tank.png",
+        "uv": [
+          0,
+          0,
+          325,
+          468
+        ],
+        "box": [
+          282.7083333333333,
+          245,
+          214.58333333333334,
+          309
+        ]
+      },
+      {
+        "id": "top-guard-shirt",
+        "file": "tools/premium-v2/tops/assets/shirt.png",
+        "uv": [
+          0,
+          0,
+          512,
+          434
+        ],
+        "box": [
+          196.5,
+          231.64939024390245,
+          375,
+          317.87109375
+        ]
+      },
+      {
+        "id": "top-guard-hoodie-torso",
+        "file": "tools/premium-v2/hoodie/guard.png",
+        "uv": [
+          0,
+          0,
+          390,
+          345
+        ],
+        "box": [
+          190,
+          210,
+          390,
+          345
+        ]
+      },
+      {
+        "id": "top-guard-hoodie-sleeve-left",
+        "file": "tools/premium-v2/hoodie/guard.png",
+        "uv": [
+          0,
+          345,
+          390,
+          345
+        ],
+        "box": [
+          190,
+          210,
+          390,
+          345
+        ]
+      },
+      {
+        "id": "top-guard-hoodie-sleeve-right",
+        "file": "tools/premium-v2/hoodie/guard.png",
+        "uv": [
+          0,
+          690,
+          390,
+          345
+        ],
+        "box": [
+          190,
+          210,
+          390,
+          345
+        ]
+      },
+      {
+        "id": "top-guard-hoodie-up",
+        "file": "tools/premium-v2/hoodie/guard.png",
+        "uv": [
+          0,
+          1037,
+          202,
+          240
+        ],
+        "box": [
+          286,
+          38,
+          202,
+          240
+        ]
+      },
+      {
+        "id": "top-guard-jacke",
+        "file": "tools/premium-v2/tops/assets/guard-jacket.png",
+        "uv": [
+          0,
+          0,
+          390,
+          345
+        ],
+        "box": [
+          190,
+          210,
+          390,
+          345
+        ]
+      },
+      {
+        "id": "coat-basic-guard",
+        "file": "tools/premium-v2/production-art/coat-basic-guard.png",
+        "uv": [
+          0,
+          0,
+          475,
+          750
+        ],
+        "box": [
+          155,
+          180,
+          475,
+          750
+        ]
+      },
+      {
+        "id": "coat-guard-v2",
+        "file": "tools/premium-v2/production-art/coat-guard-v2.png",
+        "uv": [
+          0,
+          0,
+          475,
+          750
+        ],
+        "box": [
+          155,
+          180,
+          475,
+          750
+        ]
+      },
+      {
+        "id": "wrap-guard0",
+        "file": "tools/premium-v2/wraps/assets/wrap-guard0.png",
+        "uv": [
+          0,
+          0,
+          256,
+          293
+        ],
+        "box": [
+          269.1296928327645,
+          175,
+          91.74061433447099,
+          105
+        ]
+      },
+      {
+        "id": "wrap-guard1",
+        "file": "tools/premium-v2/wraps/assets/wrap-guard1.png",
+        "uv": [
+          0,
+          0,
+          256,
+          293
+        ],
+        "box": [
+          408.1296928327645,
+          175,
+          91.74061433447099,
+          105
+        ]
+      }
+    ]
+  },
+  "families": {
+    "hair": {
+      "acceptedRows": {
+        "cool": 144,
+        "guard": 144
+      },
+      "uniqueComponents": {
+        "cool": 22,
+        "guard": 22,
+        "shared": 22
+      },
+      "guardComponentsAlsoUsedByCoolRatio": 1,
+      "files": {
+        "cool": [
+          "tools/premium-v2/streaming-assets/hair-short.png",
+          "tools/premium-v2/production-art/hair-stachel.png",
+          "tools/premium-v2/long-hair/assets/lang_glatt.png",
+          "tools/premium-v2/production-art/hair-undercut.png",
+          "tools/premium-v2/production-art/hair-buzz.png",
+          "tools/premium-v2/hair-expansion/assets/dutts.png",
+          "tools/premium-v2/long-hair/assets/zopf.png",
+          "tools/premium-v2/long-hair/assets/bob.png",
+          "tools/premium-v2/hair-expansion/assets/wellig.png",
+          "tools/premium-v2/hair-expansion/assets/locken.png",
+          "tools/premium-v2/streaming-assets/hair-afro.png",
+          "tools/premium-v2/hair-expansion/assets/afro_puffs.png",
+          "tools/premium-v2/long-hair/assets/locs.png",
+          "tools/premium-v2/long-hair/assets/box_braids.png",
+          "tools/premium-v2/hair-expansion/assets/cornrows.png",
+          "tools/premium-v2/hair-expansion/assets/twists.png",
+          "tools/premium-v2/hair-expansion/assets/high_top.png"
+        ],
+        "guard": [
+          "tools/premium-v2/streaming-assets/hair-short.png",
+          "tools/premium-v2/production-art/hair-stachel.png",
+          "tools/premium-v2/long-hair/assets/lang_glatt.png",
+          "tools/premium-v2/production-art/hair-undercut.png",
+          "tools/premium-v2/production-art/hair-buzz.png",
+          "tools/premium-v2/hair-expansion/assets/dutts.png",
+          "tools/premium-v2/long-hair/assets/zopf.png",
+          "tools/premium-v2/long-hair/assets/bob.png",
+          "tools/premium-v2/hair-expansion/assets/wellig.png",
+          "tools/premium-v2/hair-expansion/assets/locken.png",
+          "tools/premium-v2/streaming-assets/hair-afro.png",
+          "tools/premium-v2/hair-expansion/assets/afro_puffs.png",
+          "tools/premium-v2/long-hair/assets/locs.png",
+          "tools/premium-v2/long-hair/assets/box_braids.png",
+          "tools/premium-v2/hair-expansion/assets/cornrows.png",
+          "tools/premium-v2/hair-expansion/assets/twists.png",
+          "tools/premium-v2/hair-expansion/assets/high_top.png"
+        ],
+        "shared": [
+          "tools/premium-v2/streaming-assets/hair-short.png",
+          "tools/premium-v2/production-art/hair-stachel.png",
+          "tools/premium-v2/long-hair/assets/lang_glatt.png",
+          "tools/premium-v2/production-art/hair-undercut.png",
+          "tools/premium-v2/production-art/hair-buzz.png",
+          "tools/premium-v2/hair-expansion/assets/dutts.png",
+          "tools/premium-v2/long-hair/assets/zopf.png",
+          "tools/premium-v2/long-hair/assets/bob.png",
+          "tools/premium-v2/hair-expansion/assets/wellig.png",
+          "tools/premium-v2/hair-expansion/assets/locken.png",
+          "tools/premium-v2/streaming-assets/hair-afro.png",
+          "tools/premium-v2/hair-expansion/assets/afro_puffs.png",
+          "tools/premium-v2/long-hair/assets/locs.png",
+          "tools/premium-v2/long-hair/assets/box_braids.png",
+          "tools/premium-v2/hair-expansion/assets/cornrows.png",
+          "tools/premium-v2/hair-expansion/assets/twists.png",
+          "tools/premium-v2/hair-expansion/assets/high_top.png"
+        ]
+      },
+      "encodedFileBytes": {
+        "cool": 2257268,
+        "guard": 2257268,
+        "shared": 2257268
+      },
+      "sharedComponents": [
+        {
+          "id": "hair-short",
+          "file": "tools/premium-v2/streaming-assets/hair-short.png",
+          "uv": [
+            2,
+            2,
+            124,
+            93
+          ],
+          "box": [
+            324,
+            50,
+            124,
+            93
+          ]
+        },
+        {
+          "id": "hair-stachel",
+          "file": "tools/premium-v2/production-art/hair-stachel.png",
+          "uv": [
+            0,
+            0,
+            137,
+            105
+          ],
+          "box": [
+            318,
+            38,
+            137,
+            105
+          ]
+        },
+        {
+          "id": "hair-lang_glatt-back",
+          "file": "tools/premium-v2/long-hair/assets/lang_glatt.png",
+          "uv": [
+            2,
+            2,
+            384,
+            633
+          ],
+          "box": [
+            292.5,
+            45,
+            185,
+            304.9609375
+          ]
+        },
+        {
+          "id": "hair-lang_glatt-front",
+          "file": "tools/premium-v2/long-hair/assets/lang_glatt.png",
+          "uv": [
+            2,
+            639,
+            384,
+            316
+          ],
+          "box": [
+            308,
+            45,
+            154,
+            126.72916666666667
+          ]
+        },
+        {
+          "id": "hair-undercut",
+          "file": "tools/premium-v2/production-art/hair-undercut.png",
+          "uv": [
+            0,
+            0,
+            120,
+            97
+          ],
+          "box": [
+            324,
+            47,
+            120,
+            97
+          ]
+        },
+        {
+          "id": "hair-buzz",
+          "file": "tools/premium-v2/production-art/hair-buzz.png",
+          "uv": [
+            0,
+            0,
+            117,
+            79
+          ],
+          "box": [
+            326,
+            63,
+            117,
+            79
+          ]
+        },
+        {
+          "id": "hair-dutts",
+          "file": "tools/premium-v2/hair-expansion/assets/dutts.png",
+          "uv": [
+            0,
+            0,
+            188,
+            100
+          ],
+          "box": [
+            290,
+            59,
+            188,
+            100
+          ]
+        },
+        {
+          "id": "hair-zopf-back",
+          "file": "tools/premium-v2/long-hair/assets/zopf.png",
+          "uv": [
+            2,
+            2,
+            384,
+            418
+          ],
+          "box": [
+            316,
+            45,
+            205,
+            223.15104166666666
+          ]
+        },
+        {
+          "id": "hair-zopf-front",
+          "file": "tools/premium-v2/long-hair/assets/zopf.png",
+          "uv": [
+            2,
+            424,
+            384,
+            348
+          ],
+          "box": [
+            314,
+            45,
+            142,
+            128.6875
+          ]
+        },
+        {
+          "id": "hair-bob-back",
+          "file": "tools/premium-v2/long-hair/assets/bob.png",
+          "uv": [
+            2,
+            2,
+            384,
+            358
+          ],
+          "box": [
+            295,
+            45,
+            180,
+            167.8125
+          ]
+        },
+        {
+          "id": "hair-bob-front",
+          "file": "tools/premium-v2/long-hair/assets/bob.png",
+          "uv": [
+            2,
+            364,
+            384,
+            303
+          ],
+          "box": [
+            308,
+            45,
+            154,
+            121.515625
+          ]
+        },
+        {
+          "id": "hair-wellig",
+          "file": "tools/premium-v2/hair-expansion/assets/wellig.png",
+          "uv": [
+            0,
+            0,
+            146,
+            109
+          ],
+          "box": [
+            311,
+            50,
+            146,
+            109
+          ]
+        },
+        {
+          "id": "hair-locken",
+          "file": "tools/premium-v2/hair-expansion/assets/locken.png",
+          "uv": [
+            0,
+            0,
+            150,
+            115
+          ],
+          "box": [
+            309,
+            45,
+            150,
+            115
+          ]
+        },
+        {
+          "id": "hair-afro",
+          "file": "tools/premium-v2/streaming-assets/hair-afro.png",
+          "uv": [
+            2,
+            2,
+            162,
+            124
+          ],
+          "box": [
+            302,
+            43,
+            162,
+            124
+          ]
+        },
+        {
+          "id": "hair-afro_puffs",
+          "file": "tools/premium-v2/hair-expansion/assets/afro_puffs.png",
+          "uv": [
+            0,
+            0,
+            190,
+            101
+          ],
+          "box": [
+            289,
+            54,
+            190,
+            101
+          ]
+        },
+        {
+          "id": "hair-locs-back",
+          "file": "tools/premium-v2/long-hair/assets/locs.png",
+          "uv": [
+            2,
+            2,
+            384,
+            425
+          ],
+          "box": [
+            280,
+            45,
+            210,
+            232.421875
+          ]
+        },
+        {
+          "id": "hair-locs-front",
+          "file": "tools/premium-v2/long-hair/assets/locs.png",
+          "uv": [
+            2,
+            431,
+            384,
+            268
+          ],
+          "box": [
+            306,
+            40,
+            158,
+            110.27083333333333
+          ]
+        },
+        {
+          "id": "hair-box_braids-back",
+          "file": "tools/premium-v2/long-hair/assets/box_braids.png",
+          "uv": [
+            2,
+            2,
+            384,
+            549
+          ],
+          "box": [
+            285,
+            45,
+            200,
+            285.9375
+          ]
+        },
+        {
+          "id": "hair-box_braids-front",
+          "file": "tools/premium-v2/long-hair/assets/box_braids.png",
+          "uv": [
+            2,
+            555,
+            384,
+            337
+          ],
+          "box": [
+            312,
+            45,
+            146,
+            128.13020833333334
+          ]
+        },
+        {
+          "id": "hair-cornrows",
+          "file": "tools/premium-v2/hair-expansion/assets/cornrows.png",
+          "uv": [
+            0,
+            0,
+            124,
+            95
+          ],
+          "box": [
+            322,
+            57,
+            124,
+            95
+          ]
+        },
+        {
+          "id": "hair-twists",
+          "file": "tools/premium-v2/hair-expansion/assets/twists.png",
+          "uv": [
+            0,
+            0,
+            150,
+            109
+          ],
+          "box": [
+            309,
+            48,
+            150,
+            109
+          ]
+        },
+        {
+          "id": "hair-high_top",
+          "file": "tools/premium-v2/hair-expansion/assets/high_top.png",
+          "uv": [
+            0,
+            0,
+            142,
+            107
+          ],
+          "box": [
+            313,
+            50,
+            142,
+            107
+          ]
+        }
+      ],
+      "coolSpecific": [],
+      "guardSpecific": [],
+      "renderer": "Registered raster components"
+    },
+    "head": {
+      "acceptedRows": {
+        "cool": 24,
+        "guard": 24
+      },
+      "uniqueComponents": {
+        "cool": 3,
+        "guard": 3,
+        "shared": 3
+      },
+      "guardComponentsAlsoUsedByCoolRatio": 1,
+      "files": {
+        "cool": [
+          "tools/premium-v2/headwear/assets/cap.png",
+          "tools/premium-v2/headwear/assets/band.png",
+          "tools/premium-v2/headwear-hijab/assets/hijab.png"
+        ],
+        "guard": [
+          "tools/premium-v2/headwear/assets/cap.png",
+          "tools/premium-v2/headwear/assets/band.png",
+          "tools/premium-v2/headwear-hijab/assets/hijab.png"
+        ],
+        "shared": [
+          "tools/premium-v2/headwear/assets/cap.png",
+          "tools/premium-v2/headwear/assets/band.png",
+          "tools/premium-v2/headwear-hijab/assets/hijab.png"
+        ]
+      },
+      "encodedFileBytes": {
+        "cool": 365687,
+        "guard": 365687,
+        "shared": 365687
+      },
+      "sharedComponents": [
+        {
+          "id": "head-cap-schwarz",
+          "file": "tools/premium-v2/headwear/assets/cap.png",
+          "uv": [
+            0,
+            0,
+            384,
+            232
+          ],
+          "box": [
+            307,
+            43,
+            155,
+            93.64583333333333
+          ]
+        },
+        {
+          "id": "head-band-schwarz",
+          "file": "tools/premium-v2/headwear/assets/band.png",
+          "uv": [
+            0,
+            0,
+            384,
+            118
+          ],
+          "box": [
+            326,
+            107,
+            160,
+            49.166666666666664
+          ]
+        },
+        {
+          "id": "head-hijab-schwarz",
+          "file": "tools/premium-v2/headwear-hijab/assets/hijab.png",
+          "uv": [
+            0,
+            0,
+            384,
+            573
+          ],
+          "box": [
+            301,
+            55,
+            168,
+            250.6875
+          ]
+        }
+      ],
+      "coolSpecific": [],
+      "guardSpecific": [],
+      "renderer": "Registered raster components"
+    },
+    "top": {
+      "acceptedRows": {
+        "cool": 32,
+        "guard": 40
+      },
+      "uniqueComponents": {
+        "cool": 4,
+        "guard": 7,
+        "shared": 0
+      },
+      "guardComponentsAlsoUsedByCoolRatio": 0,
+      "files": {
+        "cool": [
+          "tools/premium-v2/../../assets/boxer-artpacks/v1/modular-cool/top-tank.png",
+          "tools/premium-v2/tops/assets/shirt.png",
+          "tools/premium-v2/hoodie/cool.png",
+          "tools/premium-v2/hoodie/guard.png"
+        ],
+        "guard": [
+          "tools/premium-v2/tops/assets/guard-tank.png",
+          "tools/premium-v2/tops/assets/shirt.png",
+          "tools/premium-v2/hoodie/guard.png",
+          "tools/premium-v2/tops/assets/guard-jacket.png"
+        ],
+        "shared": [
+          "tools/premium-v2/tops/assets/shirt.png",
+          "tools/premium-v2/hoodie/guard.png"
+        ]
+      },
+      "encodedFileBytes": {
+        "cool": 817394,
+        "guard": 916321,
+        "shared": 521593
+      },
+      "sharedComponents": [],
+      "coolSpecific": [
+        {
+          "id": "top-cool-tank",
+          "file": "tools/premium-v2/../../assets/boxer-artpacks/v1/modular-cool/top-tank.png",
+          "uv": [
+            280,
+            240,
+            215,
+            335
+          ],
+          "box": [
+            280,
+            240,
+            215,
+            335
+          ]
+        },
+        {
+          "id": "top-cool-shirt",
+          "file": "tools/premium-v2/tops/assets/shirt.png",
+          "uv": [
+            0,
+            0,
+            512,
+            448
+          ],
+          "box": [
+            196.5,
+            221.64939024390245,
+            375,
+            328.125
+          ]
+        },
+        {
+          "id": "top-cool-hoodie-torso",
+          "file": "tools/premium-v2/hoodie/cool.png",
+          "uv": [
+            0,
+            0,
+            390,
+            345
+          ],
+          "box": [
+            190,
+            210,
+            390,
+            345
+          ]
+        },
+        {
+          "id": "top-cool-hoodie-up",
+          "file": "tools/premium-v2/hoodie/guard.png",
+          "uv": [
+            0,
+            1037,
+            202,
+            240
+          ],
+          "box": [
+            286,
+            38,
+            202,
+            240
+          ]
+        }
+      ],
+      "guardSpecific": [
+        {
+          "id": "top-guard-tank",
+          "file": "tools/premium-v2/tops/assets/guard-tank.png",
+          "uv": [
+            0,
+            0,
+            325,
+            468
+          ],
+          "box": [
+            282.7083333333333,
+            245,
+            214.58333333333334,
+            309
+          ]
+        },
+        {
+          "id": "top-guard-shirt",
+          "file": "tools/premium-v2/tops/assets/shirt.png",
+          "uv": [
+            0,
+            0,
+            512,
+            434
+          ],
+          "box": [
+            196.5,
+            231.64939024390245,
+            375,
+            317.87109375
+          ]
+        },
+        {
+          "id": "top-guard-hoodie-torso",
+          "file": "tools/premium-v2/hoodie/guard.png",
+          "uv": [
+            0,
+            0,
+            390,
+            345
+          ],
+          "box": [
+            190,
+            210,
+            390,
+            345
+          ]
+        },
+        {
+          "id": "top-guard-hoodie-sleeve-left",
+          "file": "tools/premium-v2/hoodie/guard.png",
+          "uv": [
+            0,
+            345,
+            390,
+            345
+          ],
+          "box": [
+            190,
+            210,
+            390,
+            345
+          ]
+        },
+        {
+          "id": "top-guard-hoodie-sleeve-right",
+          "file": "tools/premium-v2/hoodie/guard.png",
+          "uv": [
+            0,
+            690,
+            390,
+            345
+          ],
+          "box": [
+            190,
+            210,
+            390,
+            345
+          ]
+        },
+        {
+          "id": "top-guard-hoodie-up",
+          "file": "tools/premium-v2/hoodie/guard.png",
+          "uv": [
+            0,
+            1037,
+            202,
+            240
+          ],
+          "box": [
+            286,
+            38,
+            202,
+            240
+          ]
+        },
+        {
+          "id": "top-guard-jacke",
+          "file": "tools/premium-v2/tops/assets/guard-jacket.png",
+          "uv": [
+            0,
+            0,
+            390,
+            345
+          ],
+          "box": [
+            190,
+            210,
+            390,
+            345
+          ]
+        }
+      ],
+      "renderer": "Registered raster components"
+    },
+    "bottom": {
+      "acceptedRows": {
+        "cool": 32,
+        "guard": 32
+      },
+      "uniqueComponents": {
+        "cool": 4,
+        "guard": 4,
+        "shared": 4
+      },
+      "guardComponentsAlsoUsedByCoolRatio": 1,
+      "files": {
+        "cool": [
+          "tools/premium-v2/separation/boxer.png",
+          "tools/premium-v2/production-art/bottom-kurz.png",
+          "tools/premium-v2/production-art/bottom-jogger.png",
+          "tools/premium-v2/production-art/bottom-track.png"
+        ],
+        "guard": [
+          "tools/premium-v2/separation/boxer.png",
+          "tools/premium-v2/production-art/bottom-kurz.png",
+          "tools/premium-v2/production-art/bottom-jogger.png",
+          "tools/premium-v2/production-art/bottom-track.png"
+        ],
+        "shared": [
+          "tools/premium-v2/separation/boxer.png",
+          "tools/premium-v2/production-art/bottom-kurz.png",
+          "tools/premium-v2/production-art/bottom-jogger.png",
+          "tools/premium-v2/production-art/bottom-track.png"
+        ]
+      },
+      "encodedFileBytes": {
+        "cool": 715047,
+        "guard": 715047,
+        "shared": 715047
+      },
+      "sharedComponents": [
+        {
+          "id": "bottom-master-boxer-clean",
+          "file": "tools/premium-v2/separation/boxer.png",
+          "uv": [
+            0,
+            0,
+            323,
+            253
+          ],
+          "box": [
+            227,
+            544,
+            323,
+            253
+          ]
+        },
+        {
+          "id": "bottom-kurz",
+          "file": "tools/premium-v2/production-art/bottom-kurz.png",
+          "uv": [
+            0,
+            0,
+            320,
+            220
+          ],
+          "box": [
+            230,
+            545,
+            320,
+            220
+          ]
+        },
+        {
+          "id": "bottom-jogger",
+          "file": "tools/premium-v2/production-art/bottom-jogger.png",
+          "uv": [
+            0,
+            0,
+            350,
+            505
+          ],
+          "box": [
+            215,
+            545,
+            350,
+            505
+          ]
+        },
+        {
+          "id": "bottom-track",
+          "file": "tools/premium-v2/production-art/bottom-track.png",
+          "uv": [
+            0,
+            0,
+            380,
+            505
+          ],
+          "box": [
+            200,
+            545,
+            380,
+            505
+          ]
+        }
+      ],
+      "coolSpecific": [],
+      "guardSpecific": [],
+      "renderer": "Registered raster components"
+    },
+    "glove": {
+      "acceptedRows": {
+        "cool": 5,
+        "guard": 5
+      },
+      "uniqueComponents": {
+        "cool": 1,
+        "guard": 2,
+        "shared": 0
+      },
+      "guardComponentsAlsoUsedByCoolRatio": 0,
+      "files": {
+        "cool": [
+          "tools/premium-v2/streaming-assets/hands-cool-black.png"
+        ],
+        "guard": [
+          "tools/premium-v2/production-art/hands-master-0.png",
+          "tools/premium-v2/production-art/hands-master-1.png"
+        ],
+        "shared": []
+      },
+      "encodedFileBytes": {
+        "cool": 38805,
+        "guard": 40438,
+        "shared": 0
+      },
+      "sharedComponents": [],
+      "coolSpecific": [
+        {
+          "id": "hands-blackgold",
+          "file": "tools/premium-v2/streaming-assets/hands-cool-black.png",
+          "uv": [
+            2,
+            2,
+            282,
+            101
+          ],
+          "box": [
+            244,
+            312,
+            282,
+            101
+          ]
+        }
+      ],
+      "guardSpecific": [
+        {
+          "id": "hands-master-0",
+          "file": "tools/premium-v2/production-art/hands-master-0.png",
+          "uv": [
+            0,
+            0,
+            85,
+            112
+          ],
+          "box": [
+            280,
+            170,
+            85,
+            112
+          ]
+        },
+        {
+          "id": "hands-master-1",
+          "file": "tools/premium-v2/production-art/hands-master-1.png",
+          "uv": [
+            0,
+            0,
+            85,
+            112
+          ],
+          "box": [
+            405,
+            170,
+            85,
+            112
+          ]
+        }
+      ],
+      "renderer": "Registered raster components"
+    },
+    "feet": {
+      "acceptedRows": {
+        "cool": 16,
+        "guard": 16
+      },
+      "uniqueComponents": {
+        "cool": 2,
+        "guard": 2,
+        "shared": 2
+      },
+      "guardComponentsAlsoUsedByCoolRatio": 1,
+      "files": {
+        "cool": [
+          "tools/premium-v2/streaming-assets/base.png",
+          "tools/premium-v2/production-art/feet-sneaker.png"
+        ],
+        "guard": [
+          "tools/premium-v2/streaming-assets/base.png",
+          "tools/premium-v2/production-art/feet-sneaker.png"
+        ],
+        "shared": [
+          "tools/premium-v2/streaming-assets/base.png",
+          "tools/premium-v2/production-art/feet-sneaker.png"
+        ]
+      },
+      "encodedFileBytes": {
+        "cool": 441438,
+        "guard": 441438,
+        "shared": 441438
+      },
+      "sharedComponents": [
+        {
+          "id": "feet",
+          "file": "tools/premium-v2/streaming-assets/base.png",
+          "uv": [
+            2,
+            797,
+            473,
+            215
+          ],
+          "box": [
+            157,
+            955,
+            473,
+            215
+          ]
+        },
+        {
+          "id": "feet-sneaker",
+          "file": "tools/premium-v2/production-art/feet-sneaker.png",
+          "uv": [
+            0,
+            0,
+            475,
+            135
+          ],
+          "box": [
+            155,
+            1040,
+            475,
+            135
+          ]
+        }
+      ],
+      "coolSpecific": [],
+      "guardSpecific": [],
+      "renderer": "Registered raster components"
+    },
+    "coat": {
+      "acceptedRows": {
+        "cool": 2,
+        "guard": 2
+      },
+      "uniqueComponents": {
+        "cool": 5,
+        "guard": 4,
+        "shared": 2
+      },
+      "guardComponentsAlsoUsedByCoolRatio": 0.5,
+      "files": {
+        "cool": [
+          "tools/premium-v2/separation/coat-basic-back.png",
+          "tools/premium-v2/production-art/coat-basic-cool.png",
+          "tools/premium-v2/separation/coat-back.png",
+          "tools/premium-v2/streaming-assets/coat-common.png",
+          "tools/premium-v2/streaming-assets/coat-cool.png"
+        ],
+        "guard": [
+          "tools/premium-v2/separation/coat-basic-back.png",
+          "tools/premium-v2/production-art/coat-basic-guard.png",
+          "tools/premium-v2/separation/coat-back.png",
+          "tools/premium-v2/production-art/coat-guard-v2.png"
+        ],
+        "shared": [
+          "tools/premium-v2/separation/coat-basic-back.png",
+          "tools/premium-v2/separation/coat-back.png"
+        ]
+      },
+      "encodedFileBytes": {
+        "cool": 1231391,
+        "guard": 1092401,
+        "shared": 389744
+      },
+      "sharedComponents": [
+        {
+          "id": "coat-basic-back-clean",
+          "file": "tools/premium-v2/separation/coat-basic-back.png",
+          "uv": [
+            0,
+            0,
+            450,
+            354
+          ],
+          "box": [
+            166,
+            547,
+            450,
+            354
+          ]
+        },
+        {
+          "id": "coat-back-clean",
+          "file": "tools/premium-v2/separation/coat-back.png",
+          "uv": [
+            0,
+            0,
+            450,
+            354
+          ],
+          "box": [
+            166,
+            547,
+            450,
+            354
+          ]
+        }
+      ],
+      "coolSpecific": [
+        {
+          "id": "coat-basic-cool",
+          "file": "tools/premium-v2/production-art/coat-basic-cool.png",
+          "uv": [
+            0,
+            0,
+            475,
+            750
+          ],
+          "box": [
+            155,
+            180,
+            475,
+            750
+          ]
+        },
+        {
+          "id": "coat-tail",
+          "file": "tools/premium-v2/streaming-assets/coat-common.png",
+          "uv": [
+            2,
+            360,
+            485,
+            342
+          ],
+          "box": [
+            147,
+            590,
+            485,
+            342
+          ]
+        },
+        {
+          "id": "coat-cool",
+          "file": "tools/premium-v2/streaming-assets/coat-cool.png",
+          "uv": [
+            2,
+            2,
+            372,
+            410
+          ],
+          "box": [
+            208,
+            180,
+            372,
+            410
+          ]
+        }
+      ],
+      "guardSpecific": [
+        {
+          "id": "coat-basic-guard",
+          "file": "tools/premium-v2/production-art/coat-basic-guard.png",
+          "uv": [
+            0,
+            0,
+            475,
+            750
+          ],
+          "box": [
+            155,
+            180,
+            475,
+            750
+          ]
+        },
+        {
+          "id": "coat-guard-v2",
+          "file": "tools/premium-v2/production-art/coat-guard-v2.png",
+          "uv": [
+            0,
+            0,
+            475,
+            750
+          ],
+          "box": [
+            155,
+            180,
+            475,
+            750
+          ]
+        }
+      ],
+      "renderer": "Registered raster components"
+    },
+    "aura": {
+      "acceptedRows": {
+        "cool": 4,
+        "guard": 4
+      },
+      "uniqueComponents": {
+        "cool": 0,
+        "guard": 0,
+        "shared": 0
+      },
+      "guardComponentsAlsoUsedByCoolRatio": null,
+      "files": {
+        "cool": [],
+        "guard": [],
+        "shared": []
+      },
+      "encodedFileBytes": {
+        "cool": 0,
+        "guard": 0,
+        "shared": 0
+      },
+      "sharedComponents": [],
+      "coolSpecific": [],
+      "guardSpecific": [],
+      "renderer": "Shared code-native Canvas module; zero PNG assets"
+    },
+    "eyefx": {
+      "acceptedRows": {
+        "cool": 4,
+        "guard": 4
+      },
+      "uniqueComponents": {
+        "cool": 0,
+        "guard": 0,
+        "shared": 0
+      },
+      "guardComponentsAlsoUsedByCoolRatio": null,
+      "files": {
+        "cool": [],
+        "guard": [],
+        "shared": []
+      },
+      "encodedFileBytes": {
+        "cool": 0,
+        "guard": 0,
+        "shared": 0
+      },
+      "sharedComponents": [],
+      "coolSpecific": [],
+      "guardSpecific": [],
+      "renderer": "Shared code-native Canvas module; zero PNG assets"
+    },
+    "scene": {
+      "acceptedRows": {
+        "cool": 4,
+        "guard": 4
+      },
+      "uniqueComponents": {
+        "cool": 0,
+        "guard": 0,
+        "shared": 0
+      },
+      "guardComponentsAlsoUsedByCoolRatio": null,
+      "files": {
+        "cool": [],
+        "guard": [],
+        "shared": []
+      },
+      "encodedFileBytes": {
+        "cool": 0,
+        "guard": 0,
+        "shared": 0
+      },
+      "sharedComponents": [],
+      "coolSpecific": [],
+      "guardSpecific": [],
+      "renderer": "Shared code-native Canvas module; zero PNG assets"
+    },
+    "body": {
+      "acceptedRows": {
+        "cool": 8,
+        "guard": 8
+      },
+      "uniqueComponents": {
+        "cool": 3,
+        "guard": 3,
+        "shared": 2
+      },
+      "guardComponentsAlsoUsedByCoolRatio": 0.6666666666666666,
+      "files": {
+        "cool": [
+          "tools/premium-v2/streaming-assets/base.png",
+          "tools/premium-v2/streaming-assets/body-cool.png"
+        ],
+        "guard": [
+          "tools/premium-v2/streaming-assets/base.png",
+          "tools/premium-v2/streaming-assets/body-guard.png"
+        ],
+        "shared": [
+          "tools/premium-v2/streaming-assets/base.png"
+        ]
+      },
+      "encodedFileBytes": {
+        "cool": 510091,
+        "guard": 518432,
+        "shared": 348604
+      },
+      "sharedComponents": [
+        {
+          "id": "head",
+          "file": "tools/premium-v2/streaming-assets/base.png",
+          "uv": [
+            2,
+            2,
+            156,
+            168
+          ],
+          "box": [
+            309,
+            62,
+            156,
+            168
+          ]
+        },
+        {
+          "id": "lower",
+          "file": "tools/premium-v2/streaming-assets/base.png",
+          "uv": [
+            2,
+            174,
+            445,
+            619
+          ],
+          "box": [
+            174,
+            550,
+            445,
+            619
+          ]
+        }
+      ],
+      "coolSpecific": [
+        {
+          "id": "body-cool",
+          "file": "tools/premium-v2/streaming-assets/body-cool.png",
+          "uv": [
+            2,
+            2,
+            359,
+            320
+          ],
+          "box": [
+            199,
+            230,
+            359,
+            320
+          ]
+        }
+      ],
+      "guardSpecific": [
+        {
+          "id": "body-guard",
+          "file": "tools/premium-v2/streaming-assets/body-guard.png",
+          "uv": [
+            2,
+            2,
+            371,
+            320
+          ],
+          "box": [
+            199,
+            230,
+            371,
+            320
+          ]
+        }
+      ],
+      "renderer": "Registered raster components"
+    },
+    "eyes": {
+      "acceptedRows": {
+        "cool": 8,
+        "guard": 8
+      },
+      "uniqueComponents": {
+        "cool": 1,
+        "guard": 1,
+        "shared": 1
+      },
+      "guardComponentsAlsoUsedByCoolRatio": 1,
+      "files": {
+        "cool": [
+          "tools/premium-v2/streaming-assets/base.png"
+        ],
+        "guard": [
+          "tools/premium-v2/streaming-assets/base.png"
+        ],
+        "shared": [
+          "tools/premium-v2/streaming-assets/base.png"
+        ]
+      },
+      "encodedFileBytes": {
+        "cool": 348604,
+        "guard": 348604,
+        "shared": 348604
+      },
+      "sharedComponents": [
+        {
+          "id": "eyes",
+          "file": "tools/premium-v2/streaming-assets/base.png",
+          "uv": [
+            2,
+            1016,
+            96,
+            25
+          ],
+          "box": [
+            333,
+            144,
+            96,
+            25
+          ]
+        }
+      ],
+      "coolSpecific": [],
+      "guardSpecific": [],
+      "renderer": "Registered raster components"
+    },
+    "hands": {
+      "acceptedRows": {
+        "cool": 1,
+        "guard": 1
+      },
+      "uniqueComponents": {
+        "cool": 2,
+        "guard": 2,
+        "shared": 0
+      },
+      "guardComponentsAlsoUsedByCoolRatio": 0,
+      "files": {
+        "cool": [
+          "tools/premium-v2/wraps/assets/wrap-cool0.png",
+          "tools/premium-v2/wraps/assets/wrap-cool1.png"
+        ],
+        "guard": [
+          "tools/premium-v2/wraps/assets/wrap-guard0.png",
+          "tools/premium-v2/wraps/assets/wrap-guard1.png"
+        ],
+        "shared": []
+      },
+      "encodedFileBytes": {
+        "cool": 190522,
+        "guard": 260440,
+        "shared": 0
+      },
+      "sharedComponents": [],
+      "coolSpecific": [
+        {
+          "id": "wrap-cool0",
+          "file": "tools/premium-v2/wraps/assets/wrap-cool0.png",
+          "uv": [
+            0,
+            0,
+            256,
+            235
+          ],
+          "box": [
+            247,
+            311,
+            92.59574468085107,
+            85
+          ]
+        },
+        {
+          "id": "wrap-cool1",
+          "file": "tools/premium-v2/wraps/assets/wrap-cool1.png",
+          "uv": [
+            0,
+            0,
+            256,
+            241
+          ],
+          "box": [
+            405,
+            318,
+            101.97510373443983,
+            96
+          ]
+        }
+      ],
+      "guardSpecific": [
+        {
+          "id": "wrap-guard0",
+          "file": "tools/premium-v2/wraps/assets/wrap-guard0.png",
+          "uv": [
+            0,
+            0,
+            256,
+            293
+          ],
+          "box": [
+            269.1296928327645,
+            175,
+            91.74061433447099,
+            105
+          ]
+        },
+        {
+          "id": "wrap-guard1",
+          "file": "tools/premium-v2/wraps/assets/wrap-guard1.png",
+          "uv": [
+            0,
+            0,
+            256,
+            293
+          ],
+          "box": [
+            408.1296928327645,
+            175,
+            91.74061433447099,
+            105
+          ]
+        }
+      ],
+      "renderer": "Registered raster components"
+    }
+  }
+}

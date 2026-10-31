@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "approved": false,
+  "enabled": false,
+  "artStatus": "Artistically pending",
+  "canvas": [
+    768,
+    1216
+  ],
+  "poses": [
+    "cool",
+    "guard"
+  ],
+  "colors": [
+    "schwarz"
+  ],
+  "pieces": {
+    "cap": {
+      "id": "head-cap-schwarz",
+      "slot": "head",
+      "src": "headwear/assets/cap.png",
+      "uv": [
+        0,
+        0,
+        384,
+        232
+      ],
+      "box": [
+        307,
+        43,
+        155,
+        93.64583333333333
+      ],
+      "sha256": "302ecfad741aaa421529214f1bc9ade16eff8ae96db73e57b642a2546e45a90a",
+      "bytes": 138741,
+      "origin": "new-anime-draft",
+      "itemKey": "cap",
+      "color": "schwarz"
+    },
+    "band": {
+      "id": "head-band-schwarz",
+      "slot": "head",
+      "src": "headwear/assets/band.png",
+      "uv": [
+        0,
+        0,
+        384,
+        118
+      ],
+      "box": [
+        326,
+        107,
+        160,
+        49.166666666666664
+      ],
+      "sha256": "a3efb6db8ccf7304700e87d170c23df2a7674eae99e6053119f723984533c35b",
+      "bytes": 49649,
+      "origin": "new-anime-draft",
+      "itemKey": "band",
+      "color": "schwarz"
+    }
+  },
+  "sources": {
+    "cap": {
+      "file": "source-cap.png",
+      "sha256": "0125f5ac392ec60fb9a9a39726334fade44effa96dab1a08c8407d066f566bf9",
+      "dimensions": [
+        1616,
+        973
+      ],
+      "crop": [
+        87,
+        47,
+        1441,
+        870
+      ]
+    },
+    "band": {
+      "file": "source-band.png",
+      "sha256": "682c4b3c0631ff568997a1f4ebb909954c6c531b547833e9dc16ef8914784c28",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "crop": [
+        88,
+        214,
+        1627,
+        498
+      ]
+    }
+  },
+  "hairMasks": {
+    "cap": {
+      "type": "keepRect",
+      "rect": [
+        0,
+        127,
+        768,
+        1089
+      ],
+      "rationale": "Retain only short-hair temple pixels beneath the cap brim. Afro and long styles are not supported."
+    },
+    "band": {
+      "type": "none",
+      "rationale": "Front band overlays short/afro hairline; existing hair silhouette is retained."
+    }
+  },
+  "supportedHair": {
+    "cap": [
+      "kurz_glatt"
+    ],
+    "band": [
+      "kurz_glatt",
+      "afro"
+    ]
+  },
+  "openArtGates": [
+    "Cap silhouette and forehead contact need user acceptance",
+    "Band tie position and material match remain artistically pending",
+    "Other head colors, long hair, hijab and raised hoods are unsupported"
+  ]
+}

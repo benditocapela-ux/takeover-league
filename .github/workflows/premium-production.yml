@@ -1,0 +1,58 @@
+name: Premium production laboratory (no deploy)
+on:
+  pull_request:
+    paths: ['tools/premium-v2/**', 'scripts/*premium*', 'tests/premium-*', 'docs/premium-v2/**', '.github/workflows/premium-production.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  production:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false playwright@1.56.1
+      - run: npx playwright install --with-deps chromium webkit
+      - name: Original release exclusions and streaming parity
+        run: |
+          node tests/premium-v2-contracts.cjs
+          node tests/premium-v2-streaming.cjs
+      - name: Material and joint contracts
+        run: |
+          node tests/premium-v2-materials.cjs
+          node tests/premium-v2-rig.cjs
+          node tests/premium-v2-headwear.cjs
+      - name: New hair, garments, wraps and procedural effects
+        run: |
+          node tests/premium-v2-hair-expansion.cjs
+          node tests/premium-v2-tops.cjs
+          node tests/premium-v2-wraps.cjs
+          node tests/premium-v2-effects.cjs
+          node tests/premium-v2-hijab.cjs
+          node tests/premium-v2-long-hair.cjs
+          node tests/premium-sprint.cjs
+          node tests/premium-next-clothing.cjs
+          node tests/premium-shirts.cjs
+      - name: Integrated catalogue, exact item tiles and full SVG fallback
+        run: node tests/premium-production-browser.cjs
+      - name: Rebuild source- and evidence-bound coverage
+        run: node scripts/inventory-premium-production.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: premium-production-proof
+          path: |
+            docs/premium-v2/evidence/
+            tools/premium-v2/rig/evidence/
+            tools/premium-v2/headwear/evidence/
+            tools/premium-v2/hair-expansion/evidence/
+            tools/premium-v2/tops/evidence/
+            tools/premium-v2/wraps/evidence/
+            tools/premium-v2/headwear-hijab/evidence/
+            tools/premium-v2/long-hair/evidence/
+            tools/premium-v2/material-assets/*contact.png
+            docs/premium-v2/production-*.json
+

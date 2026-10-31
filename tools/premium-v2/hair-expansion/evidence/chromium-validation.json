@@ -1,0 +1,1159 @@
+{
+  "engine": "chromium",
+  "status": "Technically validated",
+  "artisticStatus": "Artistically pending",
+  "fingerprintScheme": "sha256-canonical-text-lf-v1",
+  "manifestSha256": "6c0d1e1c36c1d6f2a64600618917d73c241132e737d3038be3758131d6592945",
+  "materialRendererSha256": "6d46ecd6b4dbe87a7152121b49b9808f0340b6cb6a7340306f80b97baa1cd6ed",
+  "renderer": "TLPremiumProduction.draw",
+  "checks": [
+    {
+      "pose": "cool",
+      "form": "wellig",
+      "hc": "schwarz",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "wellig",
+      "hc": "braun",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "wellig",
+      "hc": "dunkelbraun",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "wellig",
+      "hc": "blond",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "wellig",
+      "hc": "rot",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "wellig",
+      "hc": "silber",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "wellig",
+      "hc": "blau",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "wellig",
+      "hc": "pink",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "locken",
+      "hc": "schwarz",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "locken",
+      "hc": "braun",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "locken",
+      "hc": "dunkelbraun",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "locken",
+      "hc": "blond",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "locken",
+      "hc": "rot",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "locken",
+      "hc": "silber",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "locken",
+      "hc": "blau",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "locken",
+      "hc": "pink",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "high_top",
+      "hc": "schwarz",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "high_top",
+      "hc": "braun",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "high_top",
+      "hc": "dunkelbraun",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "high_top",
+      "hc": "blond",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "high_top",
+      "hc": "rot",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "high_top",
+      "hc": "silber",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "high_top",
+      "hc": "blau",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "high_top",
+      "hc": "pink",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "cornrows",
+      "hc": "schwarz",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "cool",
+      "form": "cornrows",
+      "hc": "braun",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "cool",
+      "form": "cornrows",
+      "hc": "dunkelbraun",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "cool",
+      "form": "cornrows",
+      "hc": "blond",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "cool",
+      "form": "cornrows",
+      "hc": "rot",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "cool",
+      "form": "cornrows",
+      "hc": "silber",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "cool",
+      "form": "cornrows",
+      "hc": "blau",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "cool",
+      "form": "cornrows",
+      "hc": "pink",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "cool",
+      "form": "twists",
+      "hc": "schwarz",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "twists",
+      "hc": "braun",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "twists",
+      "hc": "dunkelbraun",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "twists",
+      "hc": "blond",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "twists",
+      "hc": "rot",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "twists",
+      "hc": "silber",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "twists",
+      "hc": "blau",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "twists",
+      "hc": "pink",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "afro_puffs",
+      "hc": "schwarz",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "afro_puffs",
+      "hc": "braun",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "afro_puffs",
+      "hc": "dunkelbraun",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "afro_puffs",
+      "hc": "blond",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "afro_puffs",
+      "hc": "rot",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "afro_puffs",
+      "hc": "silber",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "afro_puffs",
+      "hc": "blau",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "afro_puffs",
+      "hc": "pink",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "dutts",
+      "hc": "schwarz",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "dutts",
+      "hc": "braun",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "dutts",
+      "hc": "dunkelbraun",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "dutts",
+      "hc": "blond",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "dutts",
+      "hc": "rot",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "dutts",
+      "hc": "silber",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "dutts",
+      "hc": "blau",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "cool",
+      "form": "dutts",
+      "hc": "pink",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "wellig",
+      "hc": "schwarz",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "wellig",
+      "hc": "braun",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "wellig",
+      "hc": "dunkelbraun",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "wellig",
+      "hc": "blond",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "wellig",
+      "hc": "rot",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "wellig",
+      "hc": "silber",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "wellig",
+      "hc": "blau",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "wellig",
+      "hc": "pink",
+      "src": "hair-expansion/assets/wellig.png",
+      "nearOpaquePixels": 7051,
+      "alphaPixels": 8262,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "locken",
+      "hc": "schwarz",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "locken",
+      "hc": "braun",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "locken",
+      "hc": "dunkelbraun",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "locken",
+      "hc": "blond",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "locken",
+      "hc": "rot",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "locken",
+      "hc": "silber",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "locken",
+      "hc": "blau",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "locken",
+      "hc": "pink",
+      "src": "hair-expansion/assets/locken.png",
+      "nearOpaquePixels": 7574,
+      "alphaPixels": 8651,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "high_top",
+      "hc": "schwarz",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "high_top",
+      "hc": "braun",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "high_top",
+      "hc": "dunkelbraun",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "high_top",
+      "hc": "blond",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "high_top",
+      "hc": "rot",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "high_top",
+      "hc": "silber",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "high_top",
+      "hc": "blau",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "high_top",
+      "hc": "pink",
+      "src": "hair-expansion/assets/high_top.png",
+      "nearOpaquePixels": 8178,
+      "alphaPixels": 9092,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "cornrows",
+      "hc": "schwarz",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "guard",
+      "form": "cornrows",
+      "hc": "braun",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "guard",
+      "form": "cornrows",
+      "hc": "dunkelbraun",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "guard",
+      "form": "cornrows",
+      "hc": "blond",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "guard",
+      "form": "cornrows",
+      "hc": "rot",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "guard",
+      "form": "cornrows",
+      "hc": "silber",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "guard",
+      "form": "cornrows",
+      "hc": "blau",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "guard",
+      "form": "cornrows",
+      "hc": "pink",
+      "src": "hair-expansion/assets/cornrows.png",
+      "nearOpaquePixels": 4161,
+      "alphaPixels": 5943,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 78
+    },
+    {
+      "pose": "guard",
+      "form": "twists",
+      "hc": "schwarz",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "twists",
+      "hc": "braun",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "twists",
+      "hc": "dunkelbraun",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "twists",
+      "hc": "blond",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "twists",
+      "hc": "rot",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "twists",
+      "hc": "silber",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "twists",
+      "hc": "blau",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "twists",
+      "hc": "pink",
+      "src": "hair-expansion/assets/twists.png",
+      "nearOpaquePixels": 7807,
+      "alphaPixels": 9042,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "afro_puffs",
+      "hc": "schwarz",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "afro_puffs",
+      "hc": "braun",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "afro_puffs",
+      "hc": "dunkelbraun",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "afro_puffs",
+      "hc": "blond",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "afro_puffs",
+      "hc": "rot",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "afro_puffs",
+      "hc": "silber",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "afro_puffs",
+      "hc": "blau",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "afro_puffs",
+      "hc": "pink",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "nearOpaquePixels": 10451,
+      "alphaPixels": 12072,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "dutts",
+      "hc": "schwarz",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "dutts",
+      "hc": "braun",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "dutts",
+      "hc": "dunkelbraun",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "dutts",
+      "hc": "blond",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "dutts",
+      "hc": "rot",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "dutts",
+      "hc": "silber",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "dutts",
+      "hc": "blau",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    },
+    {
+      "pose": "guard",
+      "form": "dutts",
+      "hc": "pink",
+      "src": "hair-expansion/assets/dutts.png",
+      "nearOpaquePixels": 10398,
+      "alphaPixels": 11095,
+      "maxCompositeDelta": 0,
+      "scalpGapPixels": 0
+    }
+  ],
+  "opaqueChecks": 889920,
+  "forms": [
+    "wellig",
+    "locken",
+    "high_top",
+    "cornrows",
+    "twists",
+    "afro_puffs",
+    "dutts"
+  ],
+  "variants": 56,
+  "poseVariants": 112,
+  "approved": false,
+  "enabled": false,
+  "loader": {
+    "cachedEntries": 13,
+    "cachedDecodedBytes": 3946056,
+    "maxEntries": 16,
+    "maxBytes": 12582912,
+    "pending": 0,
+    "requests": 13,
+    "hits": 547,
+    "evictions": 0,
+    "failures": 0,
+    "active": 0,
+    "peakActive": 3,
+    "queued": 0
+  }
+}

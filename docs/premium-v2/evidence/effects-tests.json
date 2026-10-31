@@ -1,0 +1,88 @@
+{
+  "passed": true,
+  "approved": false,
+  "enabled": false,
+  "artisticStatus": "Artistically pending",
+  "hashAlgorithm": "sha256-canonical-text-lf-v1",
+  "sourceHashes": {
+    "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66",
+    "tools/premium-v2/effects.json": "d33ca8ef6cac22a29062a4f0382f39abb50be509650493d66f1be29740e67485",
+    "takeover-holo.js": "88b6c6fb4f169138ea91aae6a89026ae5efe620a075f6afb29f45132d818bcc3"
+  },
+  "reports": [
+    {
+      "engine": "chromium",
+      "passed": true,
+      "combinations": 40,
+      "exactPngMatches": 45,
+      "parityMethod": "Exact PNG bytes or exact decoded RGBA; zero tolerance",
+      "eyes": [
+        {
+          "eyefx": "kristall",
+          "visible": 600,
+          "outside": 0
+        },
+        {
+          "eyefx": "glut",
+          "visible": 600,
+          "outside": 0
+        },
+        {
+          "eyefx": "stern",
+          "visible": 600,
+          "outside": 0
+        },
+        {
+          "eyefx": "mond",
+          "visible": 600,
+          "outside": 0
+        }
+      ],
+      "reducedEqual": true,
+      "unsupported": true,
+      "statePreserved": true,
+      "flags": [
+        false,
+        false
+      ],
+      "imageRequests": 0
+    },
+    {
+      "engine": "webkit",
+      "passed": true,
+      "combinations": 40,
+      "exactPngMatches": 45,
+      "parityMethod": "Exact PNG bytes or exact decoded RGBA; zero tolerance",
+      "eyes": [
+        {
+          "eyefx": "kristall",
+          "visible": 600,
+          "outside": 0
+        },
+        {
+          "eyefx": "glut",
+          "visible": 600,
+          "outside": 0
+        },
+        {
+          "eyefx": "stern",
+          "visible": 600,
+          "outside": 0
+        },
+        {
+          "eyefx": "mond",
+          "visible": 600,
+          "outside": 0
+        }
+      ],
+      "reducedEqual": true,
+      "unsupported": true,
+      "statePreserved": true,
+      "flags": [
+        false,
+        false
+      ],
+      "imageRequests": 0
+    }
+  ]
+}

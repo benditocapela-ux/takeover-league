@@ -1,0 +1,611 @@
+{
+  "version": 1,
+  "approved": false,
+  "enabled": false,
+  "artStatus": "Artistically pending",
+  "poses": [
+    "cool",
+    "guard"
+  ],
+  "tops": [
+    "tank",
+    "shirt"
+  ],
+  "colors": [
+    "schwarz"
+  ],
+  "allowedCoats": [
+    "none"
+  ],
+  "canvas": [
+    768,
+    1216
+  ],
+  "pieces": {
+    "top-guard-tank": {
+      "id": "top-guard-tank",
+      "slot": "top",
+      "src": "tops/assets/guard-tank.png",
+      "uv": [
+        0,
+        0,
+        325,
+        468
+      ],
+      "box": [
+        282.7083333333333,
+        245,
+        214.58333333333334,
+        309
+      ],
+      "sha256": "3fbeca7ae1bc8b22fd028172748a2d92ca89fa49db91b7f8459dff6bb9c02967",
+      "bytes": 187694,
+      "origin": "new-anime-draft",
+      "itemKey": "tank",
+      "color": "schwarz"
+    },
+    "top-cool-tank": {
+      "id": "top-cool-tank",
+      "slot": "top",
+      "src": "../../assets/boxer-artpacks/v1/modular-cool/top-tank.png",
+      "uv": [
+        280,
+        240,
+        215,
+        335
+      ],
+      "box": [
+        280,
+        240,
+        215,
+        335
+      ],
+      "sha256": "1d65b893f039bb90bac126d354260ab74402e8025e7894bbede0834555dd1afe",
+      "bytes": 113062,
+      "origin": "existing-cool",
+      "itemKey": "tank",
+      "color": "schwarz"
+    },
+    "top-cool-shirt": {
+      "id": "top-cool-shirt",
+      "slot": "top",
+      "src": "tops/assets/shirt.png",
+      "uv": [
+        0,
+        0,
+        512,
+        448.0
+      ],
+      "box": [
+        196.5,
+        221.64939024390245,
+        375,
+        328.125
+      ],
+      "sha256": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6",
+      "bytes": 273752,
+      "supportStatus": "technically-supported-artistic-pending",
+      "origin": "new-shared-anime-draft",
+      "itemKey": "shirt",
+      "color": "schwarz"
+    },
+    "top-guard-shirt": {
+      "id": "top-guard-shirt",
+      "slot": "top",
+      "src": "tops/assets/shirt.png",
+      "uv": [
+        0,
+        0,
+        512,
+        434.0
+      ],
+      "box": [
+        196.5,
+        231.64939024390245,
+        375,
+        317.87109375
+      ],
+      "sha256": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6",
+      "bytes": 273752,
+      "supportStatus": "technically-supported-artistic-pending",
+      "origin": "new-shared-anime-draft",
+      "itemKey": "shirt",
+      "color": "schwarz"
+    }
+  },
+  "bodyOcclusion": {
+    "guard": {
+      "type": "restoreBodyPolygons",
+      "polygons": [
+        [
+          [
+            282,
+            245
+          ],
+          [
+            314,
+            248
+          ],
+          [
+            316,
+            275
+          ],
+          [
+            309,
+            309
+          ],
+          [
+            301,
+            354
+          ],
+          [
+            299,
+            393
+          ],
+          [
+            290,
+            422
+          ],
+          [
+            275,
+            442
+          ],
+          [
+            250,
+            449
+          ],
+          [
+            230,
+            434
+          ],
+          [
+            216,
+            414
+          ],
+          [
+            219,
+            389
+          ],
+          [
+            236,
+            352
+          ],
+          [
+            253,
+            314
+          ],
+          [
+            270,
+            273
+          ]
+        ],
+        [
+          [
+            447,
+            245
+          ],
+          [
+            480,
+            248
+          ],
+          [
+            497,
+            275
+          ],
+          [
+            515,
+            314
+          ],
+          [
+            534,
+            352
+          ],
+          [
+            550,
+            389
+          ],
+          [
+            553,
+            414
+          ],
+          [
+            539,
+            434
+          ],
+          [
+            517,
+            449
+          ],
+          [
+            493,
+            442
+          ],
+          [
+            478,
+            422
+          ],
+          [
+            469,
+            393
+          ],
+          [
+            467,
+            354
+          ],
+          [
+            459,
+            309
+          ],
+          [
+            450,
+            275
+          ]
+        ]
+      ],
+      "source": "Registered current body layer, with the selected skin material already applied. Never restore raw source skin over a recolored body."
+    },
+    "cool": {
+      "type": "none",
+      "reason": "Original Cool tank alpha already contains the crossed-arm occlusion."
+    },
+    "coolShirt": {
+      "type": "restoreBodyPolygons",
+      "polygons": [
+        [
+          [
+            210,
+            355
+          ],
+          [
+            249,
+            372
+          ],
+          [
+            283,
+            378
+          ],
+          [
+            328,
+            377
+          ],
+          [
+            372,
+            369
+          ],
+          [
+            410,
+            360
+          ],
+          [
+            446,
+            361
+          ],
+          [
+            471,
+            371
+          ],
+          [
+            478,
+            389
+          ],
+          [
+            510,
+            389
+          ],
+          [
+            539,
+            380
+          ],
+          [
+            552,
+            355
+          ],
+          [
+            564,
+            387
+          ],
+          [
+            559,
+            424
+          ],
+          [
+            548,
+            455
+          ],
+          [
+            533,
+            470
+          ],
+          [
+            508,
+            469
+          ],
+          [
+            467,
+            462
+          ],
+          [
+            423,
+            452
+          ],
+          [
+            385,
+            435
+          ],
+          [
+            350,
+            448
+          ],
+          [
+            310,
+            460
+          ],
+          [
+            272,
+            466
+          ],
+          [
+            249,
+            465
+          ],
+          [
+            232,
+            451
+          ],
+          [
+            220,
+            425
+          ],
+          [
+            213,
+            397
+          ]
+        ]
+      ],
+      "rationale": "Registered foreground arm outline; single-coverage composite, no inverse tank alpha. Upper arms beneath sleeves belong to body visibility, not the foreground matte."
+    },
+    "guardShirt": {
+      "type": "restoreBodyPolygons",
+      "polygons": [
+        [
+          [
+            282,
+            245
+          ],
+          [
+            314,
+            248
+          ],
+          [
+            316,
+            275
+          ],
+          [
+            309,
+            309
+          ],
+          [
+            301,
+            354
+          ],
+          [
+            299,
+            393
+          ],
+          [
+            290,
+            422
+          ],
+          [
+            275,
+            442
+          ],
+          [
+            250,
+            455
+          ],
+          [
+            180,
+            480
+          ],
+          [
+            180,
+            389
+          ],
+          [
+            236,
+            352
+          ],
+          [
+            253,
+            314
+          ],
+          [
+            270,
+            273
+          ]
+        ],
+        [
+          [
+            447,
+            245
+          ],
+          [
+            480,
+            248
+          ],
+          [
+            497,
+            275
+          ],
+          [
+            515,
+            314
+          ],
+          [
+            534,
+            352
+          ],
+          [
+            590,
+            389
+          ],
+          [
+            590,
+            480
+          ],
+          [
+            517,
+            455
+          ],
+          [
+            493,
+            442
+          ],
+          [
+            478,
+            422
+          ],
+          [
+            469,
+            393
+          ],
+          [
+            467,
+            354
+          ],
+          [
+            459,
+            309
+          ],
+          [
+            450,
+            275
+          ]
+        ]
+      ]
+    }
+  },
+  "sources": {
+    "guard": {
+      "file": "source-guard-tank.png",
+      "sha256": "7b2f25a0d640a3b6ba511e8c5b47d0a6f2e1e4c7f921f078c48ad0f6c9082a9c",
+      "dimensions": [
+        997,
+        1578
+      ],
+      "crop": [
+        366,
+        331,
+        325,
+        468
+      ]
+    },
+    "cool": {
+      "file": "assets/boxer-artpacks/v1/modular-cool/top-tank.png",
+      "sha256": "1d65b893f039bb90bac126d354260ab74402e8025e7894bbede0834555dd1afe"
+    },
+    "shirt": {
+      "file": "source-shirt-v3.png",
+      "sha256": "5fe998b9907ac680c9cac80fd31487648a2adfa0b1dd4ae6c1c6e0a46bed16d8",
+      "dimensions": [
+        996,
+        1579
+      ],
+      "crop": [
+        6,
+        286,
+        984,
+        981
+      ]
+    }
+  },
+  "openArtGates": [
+    "Guard shoulder/forearm occlusion contour requires personal art acceptance",
+    "New central cloth folds need material-style acceptance",
+    "Coat combinations and other garment families are outside this bounded tank package"
+  ],
+  "draftTops": [],
+  "blocked": {
+    "shirt": []
+  },
+  "supportedPoses": {
+    "shirt": [
+      "cool",
+      "guard"
+    ]
+  },
+  "supportedHeads": {
+    "shirt": [
+      "none"
+    ]
+  },
+  "bodyVisibility": {
+    "shirt": {
+      "region": [
+        180,
+        230,
+        410,
+        320
+      ],
+      "core": [
+        315,
+        230,
+        145,
+        320
+      ],
+      "underSleeves": [
+        [
+          [
+            180,
+            350
+          ],
+          [
+            300,
+            350
+          ],
+          [
+            300,
+            420
+          ],
+          [
+            270,
+            450
+          ],
+          [
+            180,
+            470
+          ]
+        ],
+        [
+          [
+            470,
+            350
+          ],
+          [
+            590,
+            350
+          ],
+          [
+            590,
+            470
+          ],
+          [
+            510,
+            450
+          ],
+          [
+            470,
+            420
+          ]
+        ]
+      ],
+      "rationale": "Hide covered shoulder/body fringes while retaining upper arms beneath short sleeves. Foreground restoration uses a separate arm-only matte."
+    }
+  },
+  "registrationNotes": {
+    "coolShirt": "Collar world Y corrected from 231.64939024390245 to 221.64939024390245 against unchanged head/neck; no CSS translation, no head crop. Sleeves and hem inspected at 100%/200%.",
+    "guardShirt": "Separate forearm outline preserves the original elbow silhouette. Existing Guard tank mask is unchanged.",
+    "sharedItemCrop": "Integer source UVs terminate at the registered waistband. Hero and tile now use the same visible shirt crop, without a longer hidden hem in the tile."
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "approved": false,
+  "enabled": false,
+  "productionReady": false,
+  "scope": "Isolated front-camera Cool/Guard production laboratory; source quality-gates.json retains the PR-81 baseline findings",
+  "gates": [
+    {
+      "id": "coat-waist",
+      "state": "Artistically pending",
+      "implementation": "New continuous Guard front replaces the split upper/tail transition; actual before/after browser images required for review."
+    },
+    {
+      "id": "sleeve-occlusion",
+      "state": "Artistically pending",
+      "implementation": "Registered Guard body masks cover hidden arm pixels under Samurai/Basic sleeves; regression preserves head, chest and lower body."
+    },
+    {
+      "id": "glove-identity",
+      "state": "Artistically pending",
+      "implementation": "New upright glove masters preserve wrist boxes and improve crown detail; exact Cool ornament identity still requires art approval."
+    },
+    {
+      "id": "arm-rig",
+      "state": "Prototype only",
+      "implementation": "Separate upper arm, forearm and hand exercise nine small rotations. Wrist seams, baked lighting and torso attachment remain open; no other full pose is enabled."
+    },
+    {
+      "id": "shirt",
+      "state": "Artistically pending",
+      "implementation": "Registered Cool collar, separate Guard forearm matte and single-coverage restoration. Cool/Guard shirts use the same visible source crop for hero and tile, eight colours; no coat/headwear/hood. Artistic acceptance remains outstanding."
+    },
+    {
+      "id": "material-quality",
+      "state": "Artistically pending",
+      "implementation": "Semantic masks preserve alpha, gold and cotton. Light cloth contrast and skin ramps still need human art acceptance."
+    },
+    {
+      "id": "physical-device",
+      "state": "Not measured",
+      "implementation": "Chromium/WebKit and narrow viewports do not substitute for physical iPhone/Android acceptance or GPU heap measurements."
+    },
+    {
+      "id": "basic-cool",
+      "state": "Artistically pending",
+      "implementation": "Registered hidden-body keep region removes shoulder/elbow skin outside the Basic sleeve silhouette. Both poses and all four pants are covered by dedicated combination tests; no PNG originals or CSS shifts."
+    },
+    {
+      "id": "garment-separation",
+      "state": "Artistically pending",
+      "implementation": "New isolated boxer master and continuous rear coat lining replace ambiguous overlapping sources only in the production laboratory. 192 pants/pose/color/coat cases per browser; pants and coat pixels mutually invariant."
+    },
+    {
+      "id": "hoodie",
+      "state": "Artistically pending",
+      "implementation": "Guard cotton master plus new crossed-sleeve Cool master. Exact shared raised hood. All 18 hair choices hidden without loading hair, restored on hood-down; saved choice not mutated. Coat/headwear combinations remain SVG."
+    }
+  ]
+}

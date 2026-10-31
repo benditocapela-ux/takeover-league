@@ -1,0 +1,117 @@
+{
+  "version": 1,
+  "approved": false,
+  "enabled": false,
+  "artworkStatus": "Artwork draft",
+  "artisticStatus": "Artistically pending",
+  "renderer": "Canvas",
+  "canvas": [
+    768,
+    1216
+  ],
+  "poses": [
+    "cool",
+    "guard"
+  ],
+  "keys": {
+    "aura": [
+      "none",
+      "flamme",
+      "sakura",
+      "blitz",
+      "schatten"
+    ],
+    "eyefx": [
+      "none",
+      "kristall",
+      "glut",
+      "stern",
+      "mond"
+    ],
+    "scene": [
+      "holo",
+      "dojo",
+      "neon",
+      "arena"
+    ]
+  },
+  "palettes": {
+    "flamme": [
+      "#ff6a1f",
+      "#ffd23a"
+    ],
+    "blitz": [
+      "#4fd8ff",
+      "#bff4ff"
+    ],
+    "sakura": [
+      "#ff9ad0",
+      "#ffc2e2",
+      "#d25a96"
+    ],
+    "schatten": [
+      "#5a2bb0",
+      "#14081f"
+    ],
+    "kristall": [
+      "#9ff0ff",
+      "#0b4a6e",
+      "#ffffff",
+      "#4fd8ff"
+    ],
+    "glut": [
+      "#ff3b2f",
+      "#3a0604",
+      "#ffb03a",
+      "#ffd23a"
+    ],
+    "stern": [
+      "#ffe14f",
+      "#6e4a00",
+      "#fff8c8",
+      "#ffffff"
+    ],
+    "mond": [
+      "#c8c2ff",
+      "#1c1450",
+      "#ffffff",
+      "#9b5cff"
+    ]
+  },
+  "eyeAnchors": [
+    [
+      357,
+      155
+    ],
+    [
+      406,
+      155
+    ]
+  ],
+  "source": {
+    "file": "takeover-holo.js",
+    "sha256": "88b6c6fb4f169138ea91aae6a89026ae5efe620a075f6afb29f45132d818bcc3",
+    "audit": "Existing EFX and aura hexadecimal palettes retained; scene wood/neon/rope colours retained inside a darker premium staging treatment. No catalogue changes."
+  },
+  "module": {
+    "file": "effects.js",
+    "sha256": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
+  },
+  "layers": {
+    "scene": "behind aura and all character components",
+    "aura": "behind all character components",
+    "eyefx": "front overlay at registered iris anchors"
+  },
+  "motion": {
+    "defaultTime": 0,
+    "automaticAnimation": false,
+    "reducedMotionHonoured": true
+  },
+  "caveats": [
+    "Not artistically approved.",
+    "Static composition is the default; caller controls time and must respect reduced motion.",
+    "Front-view eye anchors are only verified for Cool/Guard; additional poses require separate registration.",
+    "Procedural effects remain Canvas; these entries do not claim new PNG illustrations."
+  ],
+  "hashAlgorithm": "sha256-canonical-text-lf-v1"
+}

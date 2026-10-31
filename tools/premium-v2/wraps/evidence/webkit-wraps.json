@@ -1,0 +1,32 @@
+{
+  "approved": false,
+  "enabled": false,
+  "pngHashes": true,
+  "aspectPreserved": true,
+  "tileSourceParity": [
+    {
+      "id": "wrap-cool0",
+      "max": 0,
+      "opaque": 34667
+    },
+    {
+      "id": "wrap-cool1",
+      "max": 0,
+      "opaque": 34552
+    },
+    {
+      "id": "wrap-guard0",
+      "max": 0,
+      "opaque": 57812
+    },
+    {
+      "id": "wrap-guard1",
+      "max": 0,
+      "opaque": 57324
+    }
+  ],
+  "imageRequests": 4,
+  "errors": [],
+  "mobileOverflow": false,
+  "visualApproval": false
+}

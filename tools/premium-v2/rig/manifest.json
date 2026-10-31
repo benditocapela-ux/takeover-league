@@ -1,0 +1,137 @@
+{
+  "version": 2,
+  "approved": false,
+  "enabled": false,
+  "status": "Artistically pending",
+  "canvas": [
+    450,
+    500
+  ],
+  "shoulder": [
+    160,
+    180
+  ],
+  "source": {
+    "file": "source-arm-master-v2.png",
+    "sha256": "92a861e86762b3c31635b1eb53b19d362c8b20a90ba1775cec0e75a11a55c74f",
+    "size": [
+      1254,
+      1254
+    ]
+  },
+  "scope": "One right arm, front camera, nine combinations of shoulder/elbow -10/0/+10 degrees; no torso or outfit integration",
+  "parts": {
+    "upper": {
+      "src": "upper.png",
+      "sha256": "a59d805305c9f3b4d15fac6f7d17b117a6c62d60fe572f2207d226332d167f59",
+      "sourceBox": [
+        95,
+        158,
+        418,
+        870
+      ],
+      "sourcePixels": 237450,
+      "size": [
+        98.13333333333334,
+        204.2488038277512
+      ],
+      "scale": 0.23476874003189793,
+      "pivot": [
+        44.3969696969697,
+        22.70653907496013
+      ],
+      "distal": [
+        33.8169696969697,
+        179.33653907496014
+      ],
+      "sourceAnchor": {
+        "proximal": [
+          284.109375,
+          254.71875
+        ],
+        "distal": [
+          239.04375000000002,
+          921.8859375000001
+        ]
+      }
+    },
+    "forearm": {
+      "src": "forearm.png",
+      "sha256": "f55995c75d0adf726840d40bf2ee963a583cf39c8aef1e2e4c858cca97149893",
+      "sourceBox": [
+        449,
+        358,
+        450,
+        685
+      ],
+      "sourcePixels": 141193,
+      "size": [
+        117.1291866028708,
+        178.29665071770333
+      ],
+      "scale": 0.2602870813397129,
+      "pivot": [
+        23.636100478468915,
+        149.57722488038277
+      ],
+      "distal": [
+        99.6261004784689,
+        4.2272248803827805
+      ],
+      "sourceAnchor": {
+        "proximal": [
+          539.8078125000001,
+          932.6625
+        ],
+        "distal": [
+          831.7546875,
+          374.240625
+        ]
+      }
+    },
+    "hand": {
+      "src": "hand.png",
+      "sha256": "a250f31fef7031adcdccc0271c6d57ad5c9953cedb4e8fe3b2eeecdf080c349d",
+      "sourceBox": [
+        913,
+        588,
+        292,
+        424
+      ],
+      "sourcePixels": 74437,
+      "size": [
+        61.10111642743221,
+        88.72216905901115
+      ],
+      "scale": 0.2092503987240829,
+      "pivot": [
+        29.534385964912268,
+        72.94076555023923
+      ],
+      "distal": [
+        26.254385964912277,
+        11.850765550239228
+      ],
+      "sourceAnchor": {
+        "proximal": [
+          1054.14375,
+          936.5812500000001
+        ],
+        "distal": [
+          1038.46875,
+          644.634375
+        ]
+      }
+    }
+  },
+  "quality": {
+    "technicalResults": "evidence/chromium-rig.json and evidence/webkit-rig.json",
+    "artisticallyApproved": false,
+    "open": [
+      "remaining wrist join edge and rotating baked highlights",
+      "shoulder-to-torso connection not authored",
+      "elbow curvature needs full-body acceptance",
+      "no perspective change or clothing deformation"
+    ]
+  }
+}

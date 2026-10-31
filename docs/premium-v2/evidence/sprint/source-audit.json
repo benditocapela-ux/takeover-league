@@ -1,0 +1,154 @@
+{
+  "approved": false,
+  "enabled": false,
+  "inspection": "Direct PNG sources and registered UVs, no supplied screenshot available",
+  "rows": [
+    {
+      "key": "bottom-boxer",
+      "slot": "bottom",
+      "src": "separation/boxer.png",
+      "uv": [
+        0,
+        0,
+        323,
+        253
+      ],
+      "box": [
+        227,
+        544,
+        323,
+        253
+      ],
+      "sha256": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2",
+      "visible": 61045,
+      "transparent": 20674,
+      "visualFinding": "Only selected pants; no coat panels"
+    },
+    {
+      "key": "bottom-kurz",
+      "slot": "bottom",
+      "src": "production-art/bottom-kurz.png",
+      "uv": [
+        0,
+        0,
+        320,
+        220
+      ],
+      "box": [
+        230,
+        545,
+        320,
+        220
+      ],
+      "sha256": "ae5644f7a0e90458097aa27a0a7e0ad1366d54dede3849e5249e119c28d58960",
+      "visible": 56175,
+      "transparent": 14225,
+      "visualFinding": "Only selected pants; no coat panels"
+    },
+    {
+      "key": "bottom-jogger",
+      "slot": "bottom",
+      "src": "production-art/bottom-jogger.png",
+      "uv": [
+        0,
+        0,
+        350,
+        505
+      ],
+      "box": [
+        215,
+        545,
+        350,
+        505
+      ],
+      "sha256": "323049fb9bdd2134f4dc5fc0fc018c31b2ada66384925d2d2aabe0e674b5057a",
+      "visible": 102438,
+      "transparent": 74312,
+      "visualFinding": "Only selected pants; no coat panels"
+    },
+    {
+      "key": "bottom-track",
+      "slot": "bottom",
+      "src": "production-art/bottom-track.png",
+      "uv": [
+        0,
+        0,
+        380,
+        505
+      ],
+      "box": [
+        200,
+        545,
+        380,
+        505
+      ],
+      "sha256": "12c4c58ce40c0b2ae600fa821150110bd6c8c1bb1142a228a1433ed8d6546f84",
+      "visible": 120111,
+      "transparent": 71789,
+      "visualFinding": "Only selected pants; no coat panels"
+    },
+    {
+      "key": "lower",
+      "slot": "body",
+      "src": "streaming-assets/base.png",
+      "uv": [
+        2,
+        174,
+        445,
+        619
+      ],
+      "box": [
+        174,
+        550,
+        445,
+        619
+      ],
+      "sha256": "2bfc7593b6c2b31f9fce5a20fd7583f4436eef9d02391cfe99ce88a6594c56ee",
+      "visible": 118267,
+      "transparent": 157188,
+      "visualFinding": "Leg/body component; no coat cloth"
+    },
+    {
+      "key": "coat-back-clean",
+      "slot": "coatBack",
+      "src": "separation/coat-back.png",
+      "uv": [
+        0,
+        0,
+        450,
+        354
+      ],
+      "box": [
+        166,
+        547,
+        450,
+        354
+      ],
+      "sha256": "0e7a4764f71a3bb9093dc174f26d57df5ed5af5082a2727b80213057692eb6da",
+      "visible": 100055,
+      "transparent": 59245,
+      "visualFinding": "Continuous rear coat lining; no shorts/waistband"
+    },
+    {
+      "key": "coat-basic-back",
+      "slot": "coatBack",
+      "src": "separation/coat-basic-back.png",
+      "uv": [
+        0,
+        0,
+        450,
+        354
+      ],
+      "box": [
+        166,
+        547,
+        450,
+        354
+      ],
+      "sha256": "17b6dd269707b77efe59532374a20af97fb5e7a3c8e81eff8f6a950b3f57fb82",
+      "visible": 100055,
+      "transparent": 59245,
+      "visualFinding": "Continuous rear coat lining; no shorts/waistband"
+    }
+  ]
+}
