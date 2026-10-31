@@ -57,6 +57,14 @@ async function adminScenario(browser,base,width){
  assert.equal(await page.locator('#profilesBody tr').count(),10,'admin starts at ten results');
  assert.ok(await page.locator('[data-staff-more]').isVisible(),'pagination reachable');
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'admin no viewport overflow '+width);
+ if(width<=390){
+  const ribbon=await page.locator('.tl-screen-ribbon').boundingBox();
+  const hero=await page.locator('.stf-admin-hero').boundingBox();
+  const menu=await page.locator('.tl-screen-ribbon [data-stf-global-menu]').boundingBox();
+  assert.ok(ribbon&&ribbon.height<=68,'admin mobile ribbon must be one compact row, got '+ribbon?.height);
+  assert.ok(hero&&hero.height<=60,'admin mobile hero must be condensed, got '+hero?.height);
+  assert.ok(menu&&menu.width>=44&&menu.height>=44,'admin global menu remains touch accessible');
+ }
  await shot(page,'admin-boxer-'+width);
  await page.locator('[data-staff-more]').click();
  assert.equal(await page.locator('#profilesBody tr').count(),15,'more reveals rest of loaded profiles');
@@ -97,6 +105,14 @@ async function coachScenario(browser,base,width){
  assert.ok(await page.locator('.tl-screen-ribbon').isVisible(),'premium trainer topbar visible');
  assert.equal(await page.locator('#cv2Tabs [data-view]').count(),6,'six live trainer views retained');
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'coach no viewport overflow '+width);
+ if(width<=390){
+  const ribbon=await page.locator('.tl-screen-ribbon').boundingBox();
+  const hero=await page.locator('.cv2-hero').boundingBox();
+  const menu=await page.locator('.tl-screen-ribbon [data-stf-global-menu]').boundingBox();
+  assert.ok(ribbon&&ribbon.height<=68,'coach mobile ribbon must be one compact row, got '+ribbon?.height);
+  assert.ok(hero&&hero.height<=76,'coach mobile hero must be condensed, got '+hero?.height);
+  assert.ok(menu&&menu.width>=44&&menu.height>=44,'coach global menu remains touch accessible');
+ }
  if(width<900){
   const nav=await page.locator('#cv2Tabs').boundingBox();
   assert.ok(nav&&nav.y>620,'coach mobile dock remains at bottom');
