@@ -43,6 +43,21 @@ const server=http.createServer((req,res)=>{
  if(!file.startsWith(root+path.sep)){res.writeHead(403);res.end();return}
  fs.readFile(file,(err,bytes)=>{if(err){res.writeHead(404);res.end();return}res.setHeader('content-type',mime[path.extname(file)]||'application/octet-stream');res.end(bytes)});
 });
+async function assertStaffHeaderNotOverlapping(page,role){
+ const state=await page.evaluate(()=>{
+  const ribbon=document.querySelector('.tl-screen-ribbon');
+  const menu=ribbon?.querySelector('[data-stf-global-menu]');
+  const help=ribbon?.querySelector('.tl-help-link');
+  if(!menu||!help)return {ready:false};
+  const a=menu.getBoundingClientRect(),b=help.getBoundingClientRect();
+  const intersectionX=Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left));
+  const intersectionY=Math.max(0,Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top));
+  return {ready:true,overlap:intersectionX*intersectionY,menuWidth:a.width,helpWidth:b.width};
+ });
+ assert.ok(state.ready,role+' menu and help link must exist');
+ assert.equal(state.overlap,0,role+' help link must not overlay the global menu');
+ assert.ok(state.menuWidth>=44&&state.helpWidth>=44,role+' header actions remain touch friendly');
+}
 const shotDir=process.env.STAFF_SHOTS;
 async function shot(page,name){if(!shotDir)return;fs.mkdirSync(shotDir,{recursive:true});await page.screenshot({path:path.join(shotDir,name+'.png')})}
 async function adminScenario(browser,base,width){
@@ -54,6 +69,7 @@ async function adminScenario(browser,base,width){
  await page.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm',r=>r.fulfill({status:200,contentType:'text/javascript',headers:{'access-control-allow-origin':'*'},body:mockAdmin}));
  await page.goto(base+'/admin.html');
  await page.locator('#profilesBody tr').first().waitFor();
+ await assertStaffHeaderNotOverlapping(page,'admin');
  assert.equal(await page.locator('#profilesBody tr').count(),10,'admin starts at ten results');
  assert.ok(await page.locator('[data-staff-more]').isVisible(),'pagination reachable');
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'admin no viewport overflow '+width);
@@ -102,6 +118,7 @@ async function coachScenario(browser,base,width){
  await page.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm',r=>r.fulfill({status:200,contentType:'text/javascript',body:'export const createClient=()=>window.__takeoverMockClient;'}));
  await page.goto(base+'/coach.html');
  await page.locator('#cv2Tabs [data-view="review"]').waitFor();
+ await assertStaffHeaderNotOverlapping(page,'coach');
  assert.ok(await page.locator('.tl-screen-ribbon').isVisible(),'premium trainer topbar visible');
  assert.equal(await page.locator('#cv2Tabs [data-view]').count(),6,'six live trainer views retained');
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'coach no viewport overflow '+width);
