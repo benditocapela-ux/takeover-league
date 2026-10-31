@@ -99,7 +99,7 @@ Eine separate Prüfung der Datenbanklogik fand keine kritischen Lücken. Diese B
 Bewusst offen (Entscheid Owner):
 
 - Ist zusätzlich `club_checkin_only` eingeschaltet, kann Training 2.0 trotzdem aktiv sein: Der gemeinsame Ja-Button registriert die Anwesenheit **nur bei einer vom Trainer geöffneten passenden Pflicht-Gym-Einheit**. Ohne geöffnete Einheit gibt es keinen Selbstantrag und keine Gutschrift. Gym und Training 2.0 sind somit auf UX-Ebene kompatibel, die restriktive Vereinsregel bleibt erhalten.
-- `staff_confirm_gym_session` (Etappe 6a) nimmt den neuen Tages-Lock noch nicht. Die bestehende Prüfung «gleiche Trainingsart am selben Tag» bleibt aktiv, und `staff_review_training` erkennt Gym-Check-ins als Hinweis.
+- ~~`staff_confirm_gym_session` nimmt den Tages-Lock nicht~~ → behoben mit `20261031110000_gym_confirm_day_lock.sql` (siehe Abschnitt 16).
 - `staff_set_training_tier` (Etappe 6a) gibt es weiterhin. Das Dashboard nutzt es mit Training 2.0 nicht mehr; es kann nach der Aktivierung entfernt oder an eine Begründung gebunden werden.
 
 ## 8. Tests
@@ -109,6 +109,8 @@ Bewusst offen (Entscheid Owner):
 | `tests/training-v2-schema.sql` | PostgreSQL, die 20 Funktionsfälle inkl. Rollback |
 | `tests/training-v2-concurrency.sh` | 6 parallele Bestätigungen → 1 Buchung |
 | `tests/training-v2-contracts.cjs` | statische Sicherheitsverträge |
+| `tests/club-today-schema.sql` | PostgreSQL: jeder Status des Ein-Klick-Check-ins gegen das echte DB-Ergebnis, Zusammenspiel mit Gym, Rollbacks |
+| `tests/club-today-concurrency.sh` | 8 parallele Ein-Klick-Anträge → 1; Antrag parallel zur Gym-Bestätigung → keine Doppelbuchung |
 | `tests/training-v2-browser.cjs` | Chromium, in CI zusätzlich WebKit: alle Dashboard- und Formularabläufe, 320–1366 px, erzeugt die Screenshots in `docs/screenshots/training-v2/` |
 
 ## 15. Gemeinsamer Pflichttraining-Einstieg (PR #83 und PR #84)
@@ -123,8 +125,20 @@ Bewusst offen (Entscheid Owner):
 
 **Oberflächen:** `boxer.html`, `boxer-experience.html` und die feste Pflichttrainingsliste auf `checkin.html` verwenden denselben RPC `public.submit_scheduled_club_training_today(integer)`. Bei nur einer offenen Pflichteinheit zeigt `checkin.html` keinen zweiten redundanten Check-in-Button; sonst bleibt die Auswahl mehrerer Gym-Einheiten sowie der Zugang zu Ergänzungstrainings erhalten. «Nein» öffnet das individuelle Training; andere Vereinstrainings bleiben separat erreichbar. Der Erfolgswortlaut unterscheidet ausdrücklich `checked_in` (Anwesenheit registriert) von `submitted` (Training zur Freigabe beantragt).
 
-**Datenintegrität:** Boxer-Authentifizierung/Rolle, aktiver Stundenplan, Wochentag, geschlossene Saisons, Advisory-Lock pro Boxer/Tag, bestehende Trainings und bestehende Gym-Anwesenheit werden vor jedem Schreibvorgang geprüft. Die Gym-Einheit wird `FOR UPDATE` gesperrt, wodurch gleichzeitig ablaufende Gym-Trainerbestätigungen serialisiert werden. Der RPC schreibt **niemals** direkt Punkte oder EXP. Der ältere, separate `gym_check_in` und `staff_confirm_gym_session` bleiben unverändert für nicht-Pflicht-Gym-Einheiten. Deren Race-Verhalten mit gleichzeitigen manuellen Traineraktionen ist vor produktiver Freigabe noch end-to-end zu prüfen.
+**Datenintegrität:** Boxer-Authentifizierung/Rolle, aktiver Stundenplan, Wochentag, geschlossene Saisons, Advisory-Lock pro Boxer/Tag, bestehende Trainings und bestehende Gym-Anwesenheit werden vor jedem Schreibvorgang geprüft. Die Gym-Einheit wird `FOR UPDATE` gesperrt, wodurch gleichzeitig ablaufende Gym-Trainerbestätigungen serialisiert werden. Der RPC schreibt **niemals** direkt Punkte oder EXP. `gym_check_in` bleibt unverändert. `staff_confirm_gym_session` nimmt seit `20261031110000` denselben Tages-Lock (Abschnitt 16).
 
-**Freigabe:** zuerst Backup → Basis-Migration `20261031090000` → Quick-RPC-Migration `20261031100000` → Postflight → Gym-/Antrag-Integrations- und Parallelitätstests → nur mit ausdrücklicher Owner-Freigabe den `training_v2`-Schalter aktivieren. Rollback: `training_v2` deaktivieren, Quick-RPC entfernen, Basis-Migration zurückrollen. Bestehende Buchungen werden nie automatisch zurückgebucht.
+**Freigabe:** zuerst Backup → Basis-Migration `20261031090000` → Quick-RPC-Migration `20261031100000` → Tages-Lock `20261031110000` → Postflight → Gym-/Antrag-Integrations- und Parallelitätstests → nur mit ausdrücklicher Owner-Freigabe den `training_v2`-Schalter aktivieren. Rollback: `training_v2` deaktivieren, Quick-RPC entfernen, Basis-Migration zurückrollen. Bestehende Buchungen werden nie automatisch zurückgebucht.
 
-**Tests:** `node --test tests/club-today-contracts.cjs` (in CI eingebunden) sowie die angepassten Boxer-Browser-Abläufe. Die komplette PostgreSQL-/reale Rollen-/Parallelitätsprüfung ist noch nicht nachgewiesen. Draft, kein Merge, kein Deployment.
+**Tests:** `node --test tests/club-today-contracts.cjs`, `tests/club-today-schema.sql`, `tests/club-today-concurrency.sh` (alle in CI eingebunden) und die Boxer-Browser-Abläufe. Mit echten Konten (Rollen-Logins) ist der Ablauf noch nicht geprüft. Draft, kein Merge, kein Deployment.
+
+## 16. Integrationsprüfung PR #83 + #84 (31.10.2026)
+
+**Gefunden und behoben:**
+
+1. **Doppelbuchung (reproduziert):** Ein Ein-Klick-Antrag lief parallel zur Gym-Bestätigung einer Pflicht-Einheit mit anderer Trainingsart (z. B. Technik als Pflicht). Die Gym-Bestätigung sah den noch nicht festgeschriebenen Antrag nicht und buchte zusätzlich. Ausserdem prüfte sie nur die gleiche Trainingsart.
+   - Fix: `20261031110000_gym_confirm_day_lock.sql` mit Rollback. `staff_confirm_gym_session` nimmt denselben Tages-Lock wie `staff_review_training` und `submit_scheduled_club_training_today` und behandelt einen offenen oder bestätigten Pflicht-Antrag des Tages bei einer Pflicht-Einheit als «schon eingereicht».
+   - Nachweis: Der neue Parallelitätstest schlägt mit der alten Funktion fehl und läuft mit der neuen grün.
+2. **CI-Fehler im Browser-Test:** Der Schritt «neu laden» war nur eine Navigation zu einem anderen #-Anker im selben Dokument. Die Ja/Nein-Frage blieb deshalb ausgeblendet. Der Test lädt jetzt wirklich neu.
+3. **Ja/Nein-Frage für Trainer:** Die Frage wurde auch Trainern im Boxer-Studio gezeigt, obwohl die RPC andere Rollen abweist. Sie erscheint jetzt nur für Boxer.
+
+**Status-Nachweis (echte PostgreSQL-Datenbank):** `disabled`, `submitted` (nur Antrag, keine Buchung), `already_pending` (auch bei Doppelklick), `already_approved`, `no_slot`, `choose_slot` (mit Auswahl), `checked_in`, `already_checked_in` (auch nach `gym_check_in`), `choose_gym_session`, abgebrochene Einheiten ignoriert, `gym_not_open`; Trainer und Gäste abgewiesen, fremde Einheit abgelehnt.
