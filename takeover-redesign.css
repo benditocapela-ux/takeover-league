@@ -1335,3 +1335,5 @@ body[data-tl-screen="mein-boxer"] .mb-shop-item-art svg.tlh .tlh-aura{
 @media(max-width:390px){
  body[data-tl-screen="mein-boxer"] .mb-gear-chip{flex-basis:95px;width:95px}
 }
+/* Boxer Experience (PR #83): eigene App-Hülle mit eigener Bereichsnavigation; keine globale Fusszeile */
+body[data-tl-screen="boxer-experience"]{padding-bottom:0}
