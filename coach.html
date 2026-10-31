@@ -1,38 +1,436 @@
-<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Coach Dashboard · Takeover League</title><style>
-:root{font-family:var(--font);color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);padding:var(--sp-6)}main{max-width:1040px;margin:auto}header,.bar,.line{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);flex-wrap:wrap}.brand{color:var(--gold);letter-spacing:.17em;font-size:var(--fs-xs);font-weight:800}h1{font-size:clamp(26px,4vw,38px);margin:var(--sp-4) 0 6px}p{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--sp-4);margin:var(--sp-7) 0}.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--sp-6)}.value{font-size:var(--fs-2xl);font-weight:800;color:var(--gold)}.muted{color:var(--muted);font-size:var(--fs-sm)}.entry{padding:var(--sp-4) 0;border-top:1px solid var(--line)}.pill{background:var(--line);color:var(--gold);border-radius:var(--r-lg);padding:5px var(--sp-3);font-size:var(--fs-xs)}a,button{color:var(--gold)}.actions{display:flex;gap:9px;margin-top:var(--sp-3)}.approve{background:var(--ok);border-color:var(--ok);color:var(--ok)}.reject{border-color:var(--bad);color:var(--bad)}.status{margin:var(--sp-3) 0;color:var(--muted)}button{border:1px solid var(--gold);background:transparent;border-radius:var(--r-sm);padding:var(--sp-3) var(--sp-4);cursor:pointer}button:disabled{opacity:.5;cursor:default}.hidden{display:none}.editbox{margin-top:var(--sp-3);padding:var(--sp-4);border:1px solid var(--line-strong);border-radius:var(--r-md);display:grid;gap:var(--sp-3)}.editbox label{display:grid;gap:4px;font-size:var(--fs-sm);color:var(--muted)}.editbox input,.editbox select,.editbox textarea{background:var(--bg);color:var(--text);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:var(--sp-3);width:100%}.editbox .buttons{display:flex;gap:var(--sp-3);flex-wrap:wrap}.notice{border-left:3px solid var(--gold);padding:var(--sp-3) var(--sp-4);background:var(--surface);margin:var(--sp-5) 0}.error{color:var(--bad)}.name{font-weight:750}small{color:var(--muted)}
-.account-row{border-top:1px solid var(--line);padding:var(--sp-4) 0;display:grid;gap:var(--sp-3)}.account-row select{background:var(--bg);color:white;border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:var(--sp-3);max-width:100%;width:100%}.account-row .bar{justify-content:flex-start}.account-row button{white-space:nowrap}.account-email{overflow-wrap:anywhere}.account-help{color:var(--muted);font-size:var(--fs-sm)}.filter-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:var(--sp-3);margin:var(--sp-4) 0}.filter-grid label{display:grid;gap:6px;font-size:var(--fs-xs);color:var(--muted)}.filter-grid input,.filter-grid select{width:100%;min-width:0;background:var(--bg);color:var(--text);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:var(--sp-3);font:inherit}.list-footer{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);flex-wrap:wrap;margin-top:var(--sp-3)}.list-footer button{min-width:120px}@media(max-width:520px){body{padding:var(--sp-3)}.card{padding:var(--sp-4)}} 
+<!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Trainer Dashboard · Takeover League</title><style>
+:root{font-family:var(--font);color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text)}main{margin:auto}header,.bar,.line{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-4);flex-wrap:wrap}.brand{color:var(--gold);letter-spacing:.17em;font-size:var(--fs-xs);font-weight:800}p{color:var(--muted)}.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-lg);padding:var(--sp-6)}.muted{color:var(--muted);font-size:var(--fs-sm)}.entry{padding:var(--sp-4) 0;border-top:1px solid var(--line)}.pill{background:var(--line);color:var(--gold);border-radius:var(--r-lg);padding:5px var(--sp-3);font-size:var(--fs-xs)}a,button{color:var(--gold)}.actions{display:flex;gap:9px;margin-top:var(--sp-3)}.approve{background:var(--ok);border-color:var(--ok);color:var(--ok)}.reject{border-color:var(--bad);color:var(--bad)}.status{margin:var(--sp-3) 0;color:var(--muted)}button{border:1px solid var(--gold);background:transparent;border-radius:var(--r-sm);padding:var(--sp-3) var(--sp-4);cursor:pointer}button:disabled{opacity:.5;cursor:default}.hidden{display:none}.editbox{margin-top:var(--sp-3);padding:var(--sp-4);border:1px solid var(--line-strong);border-radius:var(--r-md);display:grid;gap:var(--sp-3)}.editbox label{display:grid;gap:4px;font-size:var(--fs-sm);color:var(--muted)}.editbox input,.editbox select,.editbox textarea{background:var(--bg);color:var(--text);border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:var(--sp-3);width:100%}.editbox .buttons{display:flex;gap:var(--sp-3);flex-wrap:wrap}.notice{border-left:3px solid var(--gold);padding:var(--sp-3) var(--sp-4);background:var(--surface);margin:0}.error{color:var(--bad)}.name{font-weight:750}small{color:var(--muted)}
+.list-footer{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);flex-wrap:wrap;margin-top:var(--sp-3)}.list-footer button{min-width:120px;min-height:44px}
 /* Takeover 2.0 · Coach feedback */
-.feedback-form{display:grid;gap:var(--sp-3)}.feedback-form label{display:grid;gap:5px;color:var(--muted);font-size:var(--fs-sm)}.feedback-form input,.feedback-form select,.feedback-form textarea{width:100%;background:var(--bg);color:white;border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:var(--sp-3);font:inherit}.feedback-note{padding:var(--sp-3);border:1px solid var(--line-strong);border-radius:var(--r-sm);background:var(--surface);margin-top:var(--sp-3);white-space:pre-wrap;overflow-wrap:anywhere}.feedback-note strong{color:var(--gold)}.feedback-note small{display:block;margin-top:5px}.feedback-form button{justify-self:start}
-.coach-jump{display:flex;gap:var(--sp-2);overflow-x:auto;padding:2px 0 var(--sp-1);margin:0 0 var(--sp-2);scrollbar-width:none}.coach-jump::-webkit-scrollbar{display:none}.coach-jump button{flex:none;min-height:40px;padding:6px 14px;border-radius:999px;white-space:nowrap}.coach-jump b{color:var(--gold);margin-left:4px}
-#content:not(.hidden){display:flex;flex-direction:column;gap:var(--sp-4)}#content>*{margin-top:0!important;margin-bottom:0!important}
-.tl-col-head{display:flex;align-items:center;gap:var(--sp-2);cursor:pointer;flex-wrap:nowrap}.tl-col-head h2{margin:0;flex:1;min-width:0}.tl-col-head>button:not(.tl-col-toggle){flex:none}.tl-col-toggle{order:-1;flex:none;min-height:44px;min-width:44px;width:44px;padding:0;border-radius:12px;font-size:18px;font-weight:800;line-height:1}
-.tl-col.is-closed>:not(.tl-col-head){display:none!important}.tl-col.is-closed{padding-bottom:var(--sp-4)}.tl-col-hint{color:var(--muted);font-size:var(--fs-sm);font-weight:600}
+.feedback-form{display:grid;gap:var(--sp-3)}.feedback-form label{display:grid;gap:5px;color:var(--muted);font-size:var(--fs-sm)}.feedback-form input,.feedback-form select,.feedback-form textarea{width:100%;background:var(--bg);color:white;border:1px solid var(--line-strong);border-radius:var(--r-sm);padding:var(--sp-3);font:inherit;min-height:44px}.feedback-form button{justify-self:start;min-height:44px}
 .gym-today .gym-slot{display:flex;justify-content:space-between;align-items:center;gap:var(--sp-3);padding:var(--sp-2) 0;border-top:1px solid var(--line)}.gym-today .gym-slot:first-of-type{border-top:0}
-.fb-row{border-top:1px solid var(--line);padding:var(--sp-3) 0;display:grid;gap:6px}.fb-row:first-child{border-top:0}.fb-row p{margin:0;white-space:pre-wrap}.fb-row .fb-actions{display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:center}.fb-row .fb-actions button{min-height:40px}.fb-row .fb-actions input{min-height:40px}
+.fb-row{border-top:1px solid var(--line);padding:var(--sp-3) 0;display:grid;gap:6px}.fb-row:first-child{border-top:0}.fb-row p{margin:0;white-space:pre-wrap}.fb-row .fb-actions{display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:center}.fb-row .fb-actions button{min-height:44px}.fb-row .fb-actions input{min-height:44px}
 .fb-badge{display:inline-block;padding:2px 9px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid var(--line-strong);margin-left:6px}.fb-badge.active{color:#0b1220;background:var(--ok);border-color:var(--ok)}.fb-badge.archived{color:var(--muted)}.fb-badge.withdrawn{color:#ff9b9b;border-color:#ff9b9b}.fb-row.is-withdrawn p{opacity:.6;text-decoration:line-through}
 .fb-visible{display:grid;gap:5px;color:var(--muted);font-size:var(--fs-sm)}.fb-visible input{max-width:220px}
-</style><style>.staff-entry{margin-bottom:var(--sp-5)}.staff-entry .status.success{color:var(--gold);font-weight:700}.staff-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:var(--sp-3)}.staff-field{display:grid;gap:6px;font-weight:700}.staff-field>span{font-size:var(--fs-sm)}.staff-field select,.staff-field input,.staff-field textarea{width:100%;min-width:0}.staff-presets{display:flex;flex-wrap:wrap;gap:8px;margin:var(--sp-2) 0 var(--sp-3)}.staff-presets button{min-height:40px;padding:6px 12px;border-radius:999px}.staff-form>button[type=submit]{min-height:46px;margin-top:var(--sp-3)}#coachBoxerQuick{background:var(--surface);color:var(--text);border:1px solid var(--muted);border-radius:var(--r-lg);width:min(480px,calc(100% - 24px));max-height:85vh;overflow:auto;padding:var(--sp-6)}#coachBoxerQuick::backdrop{background:color-mix(in srgb,var(--bg) 73%,transparent)}#coachBoxerQuick a{display:inline-block;padding:var(--sp-3);border:1px solid var(--gold);border-radius:var(--r-sm);text-decoration:none}#coachBoxerQuick button{min-height:44px}@media(max-width:620px){#coachBoxerQuick{margin:auto 0 0;width:100%;max-width:none;border-radius:var(--r-lg) 20px 0 0;padding-bottom:max(var(--sp-6),env(safe-area-inset-bottom))}}.coach-recent{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;margin:var(--sp-3) 0}.coach-recent a{padding:7px 9px;border:1px solid var(--line-strong);border-radius:var(--r-sm)}.coach-bulk-controls{display:grid;gap:var(--sp-2);margin:var(--sp-4) 0}.coach-bulk-controls input{width:100%;max-width:480px}.coach-bulk-controls button{min-height:44px}.bulk-select-label{display:inline-flex;align-items:center;gap:var(--sp-2);margin:6px 0;color:var(--muted);font-size:var(--fs-sm)}.bulk-select-label input{width:20px;height:20px}.coach-profile-link{display:inline-block;margin:6px 0}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid var(--gold);outline-offset:2px}</style><link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="coach"><main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Trainerbereich"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🧑‍🏫</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Einreichungen prüfen und Boxer begleiten</div><div class="tl-screen-title">Trainerbereich</div></div></div><div class="tl-screen-links"><a href="#content" class="tl-screen-primary">Offene Trainings</a><a href="./challenges.html">Challenges</a></div></div><header class="tl-subnav"><div class="brand">TAKEOVER LEAGUE / COACH</div><div class="bar"><a href="./index.html">Liga</a><a href="./login.html">Account</a><button id="logout">Abmelden</button></div></header><h1>Coach Dashboard</h1><p id="welcome">Anmeldung wird überprüft …</p><div id="error" class="error" role="alert"></div><section id="content" class="hidden"><div class="grid"><div class="card"><div class="muted">Offene Eingaben</div><div id="pendingCount" class="value">–</div></div><div class="card"><div class="muted">Aktive Boxer</div><div id="boxerCount" class="value">–</div></div><div class="card"><div class="muted">Bestätigte Eingaben</div><div id="approvedCount" class="value">–</div></div></div><a id="selfRatingNotice" class="self-rating-notice" href="./bewertung.html" style="order:1" hidden></a><div class="notice">Bestätigungen laufen geschützt über den Server. Jede Änderung an Trainings und Punkten steht in der Änderungshistorie.</div><section class="card"><div class="line"><h2>Offene Trainings</h2><button id="refresh">Aktualisieren</button></div><div id="status" class="status" role="status"></div><div id="recentBoxers" class="coach-recent" aria-label="Zuletzt geöffnete Boxer"></div><div class="coach-bulk-controls" id="coachBulkControls"><label for="pendingSearch" class="muted">Offene Trainings durchsuchen</label><input type="search" id="pendingSearch" placeholder="Boxer oder Trainingsart"><div class="actions"><button type="button" id="selectPending">Sichtbare auswählen (max. 20)</button><button type="button" id="bulkApprove" class="approve">Ausgewählte bestätigen</button><button type="button" id="bulkReject" class="reject">Ausgewählte ablehnen</button></div><p class="muted small" id="bulkNotice">Sammelaktionen prüfen bis zu 20 Einträge nacheinander. Punkte werden ausschliesslich serverseitig geschützt vergeben. Freigaben lassen sich nicht über diesen Button rückgängig machen.</p></div><div id="entries" aria-live="polite">Lade …</div></section><section class="card" id="coachAuditSection"><div class="line"><h2>Trainings-Änderungshistorie</h2><button type="button" id="refreshCoachAudit">Aktualisieren</button></div><p id="coachAuditStatus" class="muted" role="status">Wird geladen …</p><div id="coachAuditEntries"></div></section><section class="card" style="margin-top:var(--sp-5)"><div class="line"><h2>Alle Trainings bearbeiten</h2><button id="refreshAll">Aktualisieren</button></div><p class="muted">Die letzten 5 Einträge. Ältere findest du über Suche und Filter.</p><div class="filter-grid"><label>Suche<input id="trainingSearch" type="search" placeholder="Boxer, Training, Notiz …" autocomplete="off"></label><label>Boxer<select id="filterBoxer"><option value="">Alle Boxer</option></select></label><label>Trainingsart<select id="filterType"><option value="">Alle Trainingsarten</option></select></label><label>Von Datum<input id="filterFrom" type="date"></label><label>Bis Datum<input id="filterTo" type="date"></label><label>Status<select id="filterStatus"><option value="">Alle Status</option><option value="pending">Offen</option><option value="approved">Bestätigt</option><option value="rejected">Abgelehnt</option></select></label></div><button type="button" id="clearFilters">Filter zurücksetzen</button><div id="allEntries"></div><div class="list-footer"><span id="resultCount" class="muted"></span><button id="showMore" type="button" class="hidden">Weitere 5 Trainings anzeigen ↓</button></div></section><section class="card" id="coachFeedbackSection" style="margin-top:var(--sp-5)"><h2>Coach-Feedback</h2><p id="coachFeedbackStatus" class="muted" role="status">Bald verfügbar: persönliche Rückmeldungen an Boxer.</p><div id="coachFeedbackLive" class="hidden"><form id="coachFeedbackForm" class="feedback-form"><label>Boxer auswählen<select id="coachFeedbackBoxer" required><option value="">Bitte auswählen</option></select></label><label>Titel<input id="coachFeedbackTitle" maxlength="120" required placeholder="z. B. Fokus für die nächste Woche"></label><label>Rückmeldung<textarea id="coachFeedbackMessage" maxlength="4000" rows="5" required placeholder="Deine persönliche Rückmeldung …"></textarea></label><button id="coachFeedbackSend" type="submit">Feedback senden</button></form><h3>Letzte Rückmeldungen</h3><div id="coachFeedbackHistory"></div></div></section></section><dialog id="coachBoxerQuick" aria-labelledby="coachBoxerQuickTitle"><h2 id="coachBoxerQuickTitle">Boxer-Schnellansicht</h2><div id="coachBoxerQuickBody" aria-live="polite"></div><div class="actions"><button type="button" id="closeCoachQuick">Schliessen</button></div></dialog></main><script type="module">
+.staff-entry .status.success{color:var(--gold);font-weight:700}.staff-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:var(--sp-3)}.staff-field{display:grid;gap:6px;font-weight:700}.staff-field>span{font-size:var(--fs-sm)}.staff-field select,.staff-field input,.staff-field textarea{width:100%;min-width:0;min-height:44px}.staff-presets{display:flex;flex-wrap:wrap;gap:8px;margin:var(--sp-2) 0 var(--sp-3)}.staff-presets button{min-height:44px;padding:6px 12px;border-radius:999px}.staff-form>button[type=submit]{min-height:48px;margin-top:var(--sp-3)}
+#coachBoxerQuick{background:var(--surface);color:var(--text);border:1px solid var(--muted);border-radius:var(--r-lg);width:min(480px,calc(100% - 24px));max-height:85vh;overflow:auto;padding:var(--sp-6)}#coachBoxerQuick::backdrop{background:color-mix(in srgb,var(--bg) 73%,transparent)}#coachBoxerQuick a{display:inline-block;padding:var(--sp-3);border:1px solid var(--gold);border-radius:var(--r-sm);text-decoration:none}#coachBoxerQuick button{min-height:44px}#coachBoxerQuick ul{padding-left:18px}@media(max-width:620px){#coachBoxerQuick{margin:auto 0 0;width:100%;max-width:none;border-radius:var(--r-lg) 20px 0 0;padding-bottom:max(var(--sp-6),env(safe-area-inset-bottom))}}
+.coach-recent{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;margin:0 0 var(--sp-3)}.coach-recent a{padding:9px 10px;border:1px solid var(--line-strong);border-radius:var(--r-sm);min-height:44px}.bulk-select-label{display:inline-flex;align-items:center;gap:var(--sp-2);color:var(--muted);font-size:var(--fs-sm)}.coach-profile-link{display:inline-block;margin:6px 0}
+#status.cv2-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom));z-index:60;width:min(560px,calc(100% - 24px));margin:0;padding:12px 16px;border-radius:14px;border:1px solid color-mix(in srgb,var(--gold) 50%,transparent);background:var(--surface-3);color:var(--text);font-weight:700;box-shadow:var(--shadow-card)}#status.cv2-toast:empty{display:none}#status.cv2-toast.bad{border-color:var(--bad);color:#ffd9db}
+.self-rating-notice{display:block;padding:12px 14px;border-radius:14px;border:1px solid color-mix(in srgb,var(--gold) 50%,transparent);text-decoration:none;font-weight:700;min-height:44px}
+</style><link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"><link rel="stylesheet" href="./takeover-coach-v2.css"></head><body data-tl-screen="coach"><main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Trainerbereich"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🧑‍🏫</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Einreichungen prüfen und Boxer begleiten</div><div class="tl-screen-title">Trainerbereich</div></div></div><div class="tl-screen-links"><a href="#bestaetigen" class="tl-screen-primary">Offene Trainings</a><a href="./challenges.html">Challenges</a></div></div><header class="tl-subnav"><div class="brand">TAKEOVER LEAGUE / COACH</div><div class="bar"><a href="./index.html">Liga</a><a href="./login.html">Account</a><button id="logout">Abmelden</button></div></header>
+<div class="cv2-hero"><div><p class="eyebrow">TRAINERBEREICH</p><h1>Trainer Dashboard</h1><p id="welcome">Anmeldung wird überprüft …</p></div><button type="button" id="refresh" class="cv2-btn-sec cv2-refresh" aria-label="Alle Daten neu laden" title="Aktualisieren">↻</button></div>
+<div id="error" class="error" role="alert"></div>
+<nav class="cv2-tabs" id="cv2Tabs" aria-label="Bereiche im Trainer-Dashboard" hidden></nav>
+<section id="content" class="hidden cv2-content" aria-live="off">
+<p id="status" class="status cv2-toast" role="status" aria-live="polite"></p>
+
+<div class="cv2-view" data-view="home" id="viewHome" role="region" aria-label="Übersicht">
+ <a id="selfRatingNotice" class="self-rating-notice" href="./bewertung.html" hidden></a>
+ <div class="cv2-kpis">
+  <button type="button" class="cv2-kpi hero" data-go="review"><span class="t">Offene Trainingsbestätigungen</span><span id="pendingCount" class="n">–</span><span class="go">Jetzt prüfen →</span></button>
+  <div class="cv2-kpi sm"><span id="todayCount" class="n">–</span><span class="t">Heute trainiert</span></div>
+  <div class="cv2-kpi sm"><span id="confirmedTodayCount" class="n">–</span><span class="t">Heute bestätigt</span></div>
+  <div class="cv2-kpi sm"><span id="boxerCount" class="n">–</span><span class="t">Aktive Boxer</span></div>
+ </div>
+ <p class="muted cv2-total">Bestätigte Trainings gesamt: <b id="approvedCount">–</b></p>
+ <section class="card" aria-labelledby="cv2TasksTitle"><div class="cv2-sec-head"><h2 id="cv2TasksTitle">Wichtige Aufgaben</h2></div><ul class="cv2-tasks" id="cv2Tasks"><li class="cv2-task">Wird geladen …</li></ul></section>
+ <div class="cv2-tiles" role="list" aria-label="Hauptbereiche">
+  <button type="button" class="cv2-tile" role="listitem" data-go="review"><span class="ic" aria-hidden="true">✅</span>Trainings bestätigen</button>
+  <button type="button" class="cv2-tile" role="listitem" data-go="gym"><span class="ic" aria-hidden="true">🏟️</span>Gym / Anwesenheit</button>
+  <button type="button" class="cv2-tile" role="listitem" data-go="boxers"><span class="ic" aria-hidden="true">👥</span>Boxer verwalten</button>
+  <button type="button" class="cv2-tile" role="listitem" data-go="history"><span class="ic" aria-hidden="true">🗓️</span>Trainingshistorie</button>
+  <button type="button" class="cv2-tile" role="listitem" data-go="more"><span class="ic" aria-hidden="true">☰</span>Weitere Trainerfunktionen</button>
+ </div>
+ <section class="card" aria-labelledby="cv2RecentTitle"><div class="cv2-sec-head"><h2 id="cv2RecentTitle">Zuletzt bestätigt</h2><button type="button" class="cv2-btn-sec" data-go="history">Alle →</button></div><ul class="cv2-mini" id="cv2Recent"><li>Wird geladen …</li></ul></section>
+ <div class="notice">Bestätigungen laufen geschützt über den Server. Punkte, EXP und Coins berechnet ausschliesslich der Server; jede Änderung an Trainings und Punkten steht in der Änderungshistorie.</div>
+</div>
+
+<div class="cv2-view" data-view="review" id="viewReview" role="region" aria-labelledby="cv2ReviewTitle" hidden>
+ <h2 class="cv2-view-title" id="cv2ReviewTitle">Trainings bestätigen</h2>
+ <section class="card" data-sec="pending">
+  <div id="recentBoxers" class="coach-recent" aria-label="Zuletzt geöffnete Boxer"></div>
+  <div class="cv2-chips" role="group" aria-label="Kategorie filtern" id="cv2PendingChips"></div>
+  <div class="coach-bulk-controls" id="coachBulkControls"><label for="pendingSearch" class="cv2-sr">Offene Trainings durchsuchen</label><div class="cv2-searchrow"><input type="search" id="pendingSearch" placeholder="🔍 Boxer, Trainingsart oder Datum" autocomplete="off"><button type="button" id="selectPending" class="cv2-btn-sec" aria-label="Sichtbare auswählen (max. 20)">☑ Alle</button></div>
+  <div class="cv2-bulkbar" id="cv2BulkBar" hidden><strong id="cv2BulkCount">0 ausgewählt</strong><div class="actions"><button type="button" id="bulkApprove" class="cv2-btn-ok">Prüfen &amp; bestätigen</button><button type="button" id="bulkReject" class="cv2-btn-bad">Ablehnen</button><button type="button" class="cv2-btn-sec" data-bulk="clear">Aufheben</button></div><p class="muted small" id="bulkNotice">Vor dem Bestätigen erscheint eine Zusammenfassung mit dem Wert jedes Trainings (max. 20). Meldungen mit Hinweis werden übersprungen.</p></div></div>
+  <div id="entries" class="cv2-list two" aria-live="polite">Lade …</div>
+  <div class="cv2-more"><span id="cv2PendingCountText" class="muted"></span><button type="button" id="cv2PendingMore" class="cv2-btn-sec" hidden>Mehr anzeigen ↓</button></div>
+ </section>
+</div>
+
+<div class="cv2-view" data-view="history" id="viewHistory" role="region" aria-labelledby="cv2HistoryTitle" hidden>
+ <h2 class="cv2-view-title" id="cv2HistoryTitle">Trainingshistorie</h2>
+ <section class="card" data-sec="edit"><div class="cv2-sec-head"><h3>Alle Trainings</h3><button id="refreshAll" type="button" class="cv2-btn-sec">Aktualisieren</button></div><p class="muted">Neueste zuerst, 10 pro Seite. Ältere findest du über Suche und Filter.</p><div class="cv2-search"><label for="trainingSearch" class="muted">Suche</label><input id="trainingSearch" type="search" placeholder="🔍 Boxer, Training, Notiz …" autocomplete="off"></div><details class="cv2-filters" id="cv2Filters"><summary>Filter: Boxer, Art, Kategorie, Datum, Status</summary><div class="cv2-filter-grid"><label>Boxer<select id="filterBoxer"><option value="">Alle Boxer</option></select></label><label>Trainingsart<select id="filterType"><option value="">Alle Trainingsarten</option></select></label><label>Kategorie<select id="filterCategory"><option value="">Alle Kategorien</option><option value="pflicht">Pflichttraining</option><option value="ergaenzung">Ergänzungstraining</option><option value="individual">Individuell</option></select></label><label>Von Datum<input id="filterFrom" type="date"></label><label>Bis Datum<input id="filterTo" type="date"></label><label>Status<select id="filterStatus"><option value="">Alle Status</option><option value="pending">Offen</option><option value="approved">Bestätigt</option><option value="rejected">Abgelehnt</option></select></label></div><button type="button" id="clearFilters" class="cv2-btn-sec">Filter zurücksetzen</button></details><div id="allEntries" class="cv2-list"></div><div class="list-footer"><span id="resultCount" class="muted"></span><button id="showMore" type="button" class="hidden cv2-btn-sec">Weitere 10 Trainings anzeigen ↓</button></div></section>
+ <section class="card" id="coachAuditSection" data-sec="audit"><div class="cv2-sec-head"><h3>Trainings-Änderungshistorie</h3><button type="button" id="refreshCoachAudit" class="cv2-btn-sec">Aktualisieren</button></div><p id="coachAuditStatus" class="muted" role="status">Wird geladen …</p><div id="coachAuditEntries"></div></section>
+ <section class="card" id="cv2ReviewReport" data-sec="report" hidden><div class="cv2-sec-head"><h3>Prüfbericht: mögliche Fehlbewertungen</h3><button type="button" id="cv2ReportLoad" class="cv2-btn-sec">Bericht laden</button></div><p class="muted">Nur Admin · Dry-Run: zeigt bestätigte Vereinstrainings ohne Stufe mit Vorschlag und Differenz. Es wird nichts gebucht; jede Nachbuchung erfolgt einzeln mit Begründung über «Prüfen».</p><div id="cv2ReportBody"></div></section>
+</div>
+
+<div class="cv2-view" data-view="boxers" id="viewBoxers" role="region" aria-labelledby="cv2BoxersTitle" hidden>
+ <h2 class="cv2-view-title" id="cv2BoxersTitle">Boxer verwalten</h2>
+ <section class="card"><div class="cv2-search"><label for="cv2BoxerSearch" class="muted">Boxer suchen</label><input id="cv2BoxerSearch" type="search" placeholder="Name eingeben" autocomplete="off"></div><ul class="cv2-people" id="cv2People"></ul><div class="cv2-more"><span id="cv2PeopleCount" class="muted"></span><button type="button" id="cv2PeopleMore" class="cv2-btn-sec" hidden>Mehr anzeigen ↓</button></div></section>
+ <section class="card" id="coachFeedbackSection" data-sec="feedback"><h3>Coach-Feedback</h3><p id="coachFeedbackStatus" class="muted" role="status">Bald verfügbar: persönliche Rückmeldungen an Boxer.</p><div id="coachFeedbackLive" class="hidden"><form id="coachFeedbackForm" class="feedback-form"><label>Boxer auswählen<select id="coachFeedbackBoxer" required><option value="">Bitte auswählen</option></select></label><label>Titel<input id="coachFeedbackTitle" maxlength="120" required placeholder="z. B. Fokus für die nächste Woche"></label><label>Rückmeldung<textarea id="coachFeedbackMessage" maxlength="4000" rows="5" required placeholder="Deine persönliche Rückmeldung …"></textarea></label><button id="coachFeedbackSend" type="submit">Feedback senden</button></form><h3>Letzte Rückmeldungen</h3><div id="coachFeedbackHistory"></div></div></section>
+</div>
+
+<div class="cv2-view" data-view="gym" id="viewGym" role="region" aria-labelledby="cv2GymTitle" hidden>
+ <h2 class="cv2-view-title" id="cv2GymTitle">Gym / Anwesenheit</h2>
+ <section class="card gym-today" data-sec="gym"><h3>Gym heute</h3><div class="gym-today-body muted">Wird geladen …</div></section>
+ <div class="cv2-links"><a href="./checkin.html">🏟️ Gym-Check-in<small>Einheit starten, Anwesenheit erfassen, bestätigen</small></a><a href="./praesenz.html">📊 Präsenz &amp; Pflichtquote<small>Wer war wie oft da?</small></a><a href="./wochenplan.html">🗓️ Wochenplan<small>Plan pro Trainingsgruppe</small></a></div>
+ <div id="cv2StaffEntrySlot"></div>
+</div>
+
+<div class="cv2-view" data-view="more" id="viewMore" role="region" aria-labelledby="cv2MoreTitle" hidden>
+ <h2 class="cv2-view-title" id="cv2MoreTitle">Weitere Trainerfunktionen</h2>
+ <div class="cv2-links"><a href="./challenges.html">🎯 Challenges<small>Ziele vergeben und auswerten</small></a><a href="./duels.html">🥊 Duelle<small>Boxer-Duelle begleiten</small></a><a href="./bewertung.html">🃏 Bewertungen<small>Leistungsbewertung und Selbsteinschätzungen</small></a><a href="./quests.html">⭐ Quests<small>Wochen- und Tagesquests</small></a><a href="./league-manager.html">🛠️ League Manager<small>Liga-Challenges und Seasons</small></a><a href="./kampfpfad.html">🛡️ Kampfpfad<small>Belohnungen und Stufen</small></a><a href="./hilfe.html">❔ Hilfe<small>Anleitungen für Trainer</small></a></div>
+</div>
+</section>
+<dialog id="coachBoxerQuick" aria-labelledby="coachBoxerQuickTitle"><h2 id="coachBoxerQuickTitle">Boxer-Schnellansicht</h2><div id="coachBoxerQuickBody" aria-live="polite"></div><div class="actions"><button type="button" id="closeCoachQuick">Schliessen</button></div></dialog>
+<dialog id="cv2Sheet" class="cv2-sheet" aria-labelledby="cv2SheetTitle"><div class="cv2-sheet-inner"><div class="cv2-sheet-head"><div><h2 id="cv2SheetTitle">Training bearbeiten</h2><p id="cv2SheetSub"></p></div><button type="button" class="cv2-btn-sec x" data-close aria-label="Schliessen">✕</button></div><div class="cv2-sheet-body" id="cv2SheetBody"></div><div class="cv2-sheet-foot" id="cv2SheetFoot"></div></div></dialog>
+</main><script type="module">
 import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
 const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
-const $=id=>document.getElementById(id);const fail=m=>{$('error').textContent=m;$('content').classList.add('hidden')};
-function row(s,people,types){const div=document.createElement('div');div.className='entry';const top=document.createElement('div');top.className='line';const name=document.createElement('span');name.className='name';name.textContent=people.get(String(s.boxer_id))||'Unbekannter Boxer';const pill=document.createElement('span');pill.className='pill';pill.textContent='Offen';top.append(name,pill);const details=document.createElement('p');details.textContent=`${types.get(s.training_type_id)||'Training'} · ${s.training_date?new Date(s.training_date+'T12:00:00').toLocaleDateString('de-CH'):'Kein Datum'}`;details.className='coach-entry-detail';const checkLabel=document.createElement('label');checkLabel.className='bulk-select-label';const checkbox=document.createElement('input');checkbox.type='checkbox';checkbox.className='pending-checkbox';checkbox.value=s.id;checkbox.setAttribute('aria-label','Training auswählen: '+name.textContent);checkLabel.append(checkbox);const selectText=document.createElement('span');selectText.textContent='Auswählen';checkLabel.append(selectText);div.append(checkLabel);div.append(top,details);const metrics=document.createElement('small');metrics.textContent=[s.duration_minutes!=null?`Dauer: ${s.duration_minutes} Min.`:'',s.jogging_km!=null?`Jogging: ${s.jogging_km} km`:'',s.technique_minutes!=null&&s.duration_minutes==null?`Technik: ${s.technique_minutes} Min.`:''].filter(Boolean).join(' · ');metrics.className='coach-entry-metrics';if(metrics.textContent)div.append(metrics);if(s.notes){const note=document.createElement('small');note.className='coach-entry-note';note.textContent=s.notes;div.append(note)}
-const profileLink=document.createElement('a');profileLink.textContent='Profil ansehen ↗';profileLink.href='./boxer-profile.html?name='+encodeURIComponent(name.textContent);profileLink.className='coach-profile-link';profileLink.setAttribute('aria-label','Profil von '+name.textContent+' ansehen');profileLink.addEventListener('click',()=>rememberRecentlyViewedBoxer(s.boxer_id));div.append(profileLink);const quick=document.createElement('button');quick.type='button';quick.className='secondary-btn';quick.textContent='Schnellansicht';quick.addEventListener('click',()=>openBoxerQuick(s.boxer_id));div.append(quick);const actions=document.createElement('div');actions.className='actions';
-for(const [decision,label,cls] of [['approved','Bestätigen','approve'],['rejected','Ablehnen','reject']]){
- const btn=document.createElement('button');btn.className=cls;btn.textContent=label;
- btn.addEventListener('click',async()=>{
-  if(!confirm(`${label}: ${name.textContent} – ${details.textContent}?`))return;
-  actions.querySelectorAll('button').forEach(b=>b.disabled=true);
-  $('status').textContent='Wird gespeichert …';
-  const {data,error}=await db.rpc('review_training',{p_submission_id:s.id,p_decision:decision});
-  if(error){$('status').textContent='Fehler: '+error.message;actions.querySelectorAll('button').forEach(b=>b.disabled=false);return}
-  $('status').textContent=decision==='approved'?`Bestätigt: +${data.points_awarded} Punkte und EXP.`:'Training abgelehnt (0 Punkte).';
+const $=id=>document.getElementById(id);const fail=m=>{$('error').textContent=m;$('content').classList.add('hidden');$('cv2Tabs').hidden=true};
+const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n};
+const missingRpc=e=>!!e&&(['PGRST202','42883'].includes(e.code)||/Could not find the function/i.test(String(e.message||'')));
+const DAYS_SHORT=['So','Mo','Di','Mi','Do','Fr','Sa'];
+const fmtDate=d=>{if(!d)return 'Kein Datum';const x=new Date(String(d).slice(0,10)+'T12:00:00Z');return DAYS_SHORT[x.getUTCDay()]+', '+x.toLocaleDateString('de-CH',{timeZone:'UTC',day:'2-digit',month:'2-digit',year:'numeric'})};
+const CAT={pflicht:'Pflichttraining',ergaenzung:'Ergänzungstraining',individual:'Individuell'};
+const STATUS_LABEL={pending:'Offen',approved:'Bestätigt',rejected:'Abgelehnt',corrected:'Korrigiert',failed:'Buchung fehlgeschlagen'};
+const CONFLICT_TEXT={gym_same_day:'Am selben Tag schon per Gym-Check-in erfasst – mögliche Doppelmeldung',same_type_same_day:'Gleiche Trainingsart am selben Tag schon gemeldet',
+ pflicht_already:'An diesem Tag ist schon ein Pflichttraining bestätigt',pflicht_wrong_day:'Pflichttraining beantragt, aber an diesem Tag steht keine Pflichteinheit im Stundenplan',future_date:'Datum liegt in der Zukunft'};
+const rewardText=r=>r?`${r.points} Punkte · ${r.exp} EXP · ${r.coins} Coins`:'';
+let toastTimer=null;
+function say(msg,bad){const s=$('status');s.textContent=msg||'';s.classList.toggle('bad',!!bad);clearTimeout(toastTimer);if(msg)toastTimer=setTimeout(()=>{if(s.textContent===msg)s.textContent=''},bad?9000:5000)}
+
+let currentPeople=[],currentTypes=[],allTrainings=[],currentAdminId=null,currentRole=null;
+let v2List=false,v2Cfg=null,summary=null;
+
+// ---------------------------------------------------------------- Bereiche (Ansichten) und Navigation
+const COACH_VIEWS=[['home','Start','🏠','start'],['review','Prüfen','✅','bestaetigen'],['gym','Gym','🏟️','gym'],['boxers','Boxer','👥','boxer'],['history','Historie','🗓️','historie'],['more','Mehr','☰','mehr']];
+const viewScroll={};let currentView='home';
+function viewEl(key){return document.querySelector('#content .cv2-view[data-view="'+key+'"]')}
+function setupTabs(){
+ const nav=$('cv2Tabs');if(nav.dataset.ready)return;nav.dataset.ready='1';
+ for(const [key,title,icon] of COACH_VIEWS){const b=el('button');b.type='button';b.dataset.view=key;
+  const ic=el('span','ic',icon);ic.setAttribute('aria-hidden','true');b.append(ic,el('span','lb',title));
+  if(key==='review'){const n=el('span','badge');n.dataset.n='0';n.setAttribute('aria-hidden','true');b.append(n)}
+  b.addEventListener('click',()=>go(key,{focus:true}));nav.append(b)}
+ nav.hidden=false;
+}
+function go(key,{focus=false,replace=false}={}){const v=COACH_VIEWS.find(x=>x[0]===key);if(!v)return;
+ const hash='#'+v[3];if(location.hash!==hash){if(replace)history.replaceState(null,'',hash);else history.pushState(null,'',hash)}showView(key,{focus})}
+function showView(key,{focus=false,target=null}={}){
+ if(!viewEl(key))key='home';
+ if(currentView&&currentView!==key)viewScroll[currentView]=window.scrollY;
+ currentView=key;
+ for(const v of document.querySelectorAll('#content .cv2-view'))v.hidden=v.dataset.view!==key;
+ for(const b of document.querySelectorAll('#cv2Tabs button')){if(b.dataset.view===key)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')}
+ if(target){target.scrollIntoView({block:'start'});}else window.scrollTo(0,viewScroll[key]||0);
+ if(focus){const h=viewEl(key).querySelector('h2,h3');if(h){h.tabIndex=-1;h.focus({preventScroll:true})}}
+ try{sessionStorage.setItem('tl.coach.view',key)}catch{}
+ if(key==='history'&&!historyLoadedOnce)renderFilteredTrainings(true);
+ if(key==='boxers')renderPeople();
+}
+function routeFromHash(){
+ const h=decodeURIComponent(location.hash.slice(1));
+ const v=COACH_VIEWS.find(x=>x[3]===h||x[0]===h);if(v){showView(v[0]);return}
+ const t=h&&document.getElementById(h);const host=t&&t.closest('.cv2-view');
+ if(host){showView(host.dataset.view,{target:t});return}
+ showView('home');
+}
+window.addEventListener('hashchange',routeFromHash);window.addEventListener('popstate',routeFromHash);
+document.addEventListener('click',e=>{const g=e.target.closest('[data-go]');if(g){e.preventDefault();go(g.dataset.go,{focus:true})}});
+
+// ---------------------------------------------------------------- Startseite
+function setCount(id,v){const n=$(id);if(n)n.textContent=v==null?'–':String(v)}
+function renderHome(){
+ const pend=summary?summary.pending:pendingTotal;
+ setCount('pendingCount',pend);const badge=document.querySelector('#cv2Tabs .badge');if(badge){badge.textContent=pend>99?'99+':String(pend||'');badge.dataset.n=String(pend||0)}
+ setCount('todayCount',summary?summary.today_trainings:null);setCount('confirmedTodayCount',summary?summary.confirmed_today:null);
+ const tasks=$('cv2Tasks');tasks.replaceChildren();
+ const task=(text,action,label,warn)=>{const li=el('li','cv2-task'+(warn?' warn':''));li.append(el('span','',text));if(action){const b=el('button','cv2-btn-sec',label);b.type='button';b.addEventListener('click',action);li.append(b)}tasks.append(li)};
+ if(pend>0)task(pend===1?'1 Training wartet auf deine Bestätigung.':pend+' Trainings warten auf deine Bestätigung.',()=>go('review',{focus:true}),'Prüfen');
+ if(summary&&summary.pending_conflicts>0)task(summary.pending_conflicts+' Meldung'+(summary.pending_conflicts===1?'':'en')+' mit Hinweis (z. B. Gym-Check-in am selben Tag) – bitte einzeln prüfen.',()=>go('review',{focus:true}),'Ansehen',true);
+ if(summary&&summary.open_gym_sessions>0)task(summary.open_gym_sessions+' Gym-Einheit'+(summary.open_gym_sessions===1?' läuft':'en laufen')+' heute noch.',()=>go('gym',{focus:true}),'Gym');
+ if(v2Cfg&&v2Cfg.preview)task('Vorschau: «Training 2.0» (Pflicht-/Ergänzungstraining) ist noch nicht freigeschaltet. Bestätigungen buchen wie bisher nach Trainingsart.',null,null,true);
+ if(!tasks.children.length)task('Alles erledigt – keine offenen Aufgaben. 👍');
+ const rec=$('cv2Recent');rec.replaceChildren();
+ const list=summary?.recent_confirmed||[];
+ if(!list.length){rec.append(el('li','','Noch keine bestätigten Trainings.'))}
+ for(const r of list){const li=el('li');const left=el('span','',(r.boxer_name||'Boxer')+' · '+(r.requested_label&&r.category!=='individual'?CAT[r.category]:r.training_type_name||'Training')+' · '+fmtDate(r.training_date));li.append(left,el('b','',(r.points??0)+' P'));rec.append(li)}
+}
+async function loadSummary(){
+ try{const r=await db.rpc('staff_training_summary');if(r.error||!r.data||typeof r.data!=='object'||Array.isArray(r.data))throw r.error||new Error('n/a');summary=r.data}catch{summary=null}
+}
+async function loadV2Config(){
+ try{const r=await db.rpc('get_training_v2_config');v2Cfg=!r.error&&r.data&&Array.isArray(r.data.pflicht)?r.data:null}catch{v2Cfg=null}
+}
+const v2On=()=>!!(v2Cfg&&v2Cfg.enabled);
+
+// ---------------------------------------------------------------- Offene Trainings (Karten)
+let pendingItems=[],pendingTotal=0,pendingOffset=0,pendingCat='',pendingLoading=false,pendingReload=false,pendingBatchRows=[],bulkProcessing=false;
+const selected=new Set(),inflight=new Set();
+const PENDING_CHIPS=[['','Alle'],['pflicht','Pflicht'],['ergaenzung','Ergänzung'],['individual','Individuell']];
+function setupChips(){const root=$('cv2PendingChips');if(root.children.length)return;
+ for(const [k,t] of PENDING_CHIPS){const b=el('button','cv2-chip',t);b.type='button';b.dataset.cat=k;b.setAttribute('aria-pressed',String(k===pendingCat));
+  b.addEventListener('click',()=>{pendingCat=k;for(const x of root.children)x.setAttribute('aria-pressed',String(x.dataset.cat===k));saveFilters();loadPending(true)});root.append(b)}
+ root.hidden=!v2List;
+}
+function legacyCard(s){
+ // Ohne Training-2.0-Migration: Daten aus der Tabelle, Werte nach Trainingsart
+ const t=currentTypes.find(x=>String(x.id)===String(s.training_type_id));const p=currentPeople.find(x=>x.id===s.boxer_id);
+ return {...s,boxer_name:p?.display_name||'Unbekannter Boxer',training_type_name:t?.name||'Training',category:'individual',conflicts:[],
+  reward:t?{points:t.points,exp:t.points,coins:null}:null,legacy:true};
+}
+async function loadPending(reset=true){
+ if(pendingLoading){if(reset)pendingReload=true;return}pendingLoading=true;const more=$('cv2PendingMore');more.disabled=true;
+ const q=String($('pendingSearch').value||'').trim();
+ try{
+  if(v2List){
+   const r=await db.rpc('staff_list_trainings',{p_status:'pending',p_category:pendingCat||null,p_search:q||null,p_limit:10,p_offset:reset?0:pendingOffset});
+   if(r.error)throw r.error;
+   const items=Array.isArray(r.data?.items)?r.data.items:[];
+   pendingItems=reset?items:pendingItems.concat(items.filter(i=>!pendingItems.some(x=>x.id===i.id)));
+   pendingOffset=pendingItems.length;const total=Number(r.data?.total_count||0);
+   if(!pendingCat&&!q)pendingTotal=total;
+   $('cv2PendingCountText').textContent=pendingItems.length+' von '+total+' offenen Trainings';
+   more.hidden=pendingItems.length>=total;
+  }else{
+   const people=new Map(currentPeople.map(p=>[p.id,p.display_name])),types=new Map(currentTypes.map(t=>[t.id,t.name]));
+   const ql=q.toLocaleLowerCase('de-CH');
+   const visible=pendingBatchRows.filter(s=>[people.get(s.boxer_id),types.get(s.training_type_id),s.training_date].join(' ').toLocaleLowerCase('de-CH').includes(ql));
+   const n=reset?10:pendingItems.length+10;pendingItems=visible.slice(0,n).map(legacyCard);pendingTotal=pendingBatchRows.length;
+   $('cv2PendingCountText').textContent=pendingItems.length+' von '+visible.length+' offenen Trainings';more.hidden=pendingItems.length>=visible.length;
+  }
+  renderPending();
+ }catch(err){$('entries').replaceChildren(el('p','error','Offene Trainings konnten nicht geladen werden: '+String(err.message||err)))}
+ finally{pendingLoading=false;more.disabled=false;if(pendingReload){pendingReload=false;loadPending(true)}}
+}
+function renderPending(){
+ const root=$('entries');root.replaceChildren();
+ if(!pendingItems.length){root.append(el('p','cv2-empty',pendingTotal?'Keine offenen Trainings für diesen Filter.':'Keine offenen Trainings – alles erledigt. 👍'));updateBulkBar();return}
+ for(const s of pendingItems)root.append(row(s));
+ updateBulkBar();
+}
+function catOf(s){return s.status==='approved'?(s.club_tier||'individual'):(s.suggested_tier||'individual')}
+// Eine Trainingskarte (offen oder Ergebnis)
+function row(s){
+ const card=el('article','cv2-card');card.dataset.sid=s.id;card.dataset.cat=s.legacy?'individual':catOf(s);
+ const top=el('div','cv2-card-top');
+ const selLabel=el('label','sel bulk-select-label');const checkbox=el('input','pending-checkbox');checkbox.type='checkbox';checkbox.value=s.id;checkbox.checked=selected.has(s.id);
+ checkbox.setAttribute('aria-label','Training auswählen: '+(s.boxer_name||'Boxer')+', '+fmtDate(s.training_date));
+ checkbox.addEventListener('change',()=>{if(checkbox.checked){if(selected.size>=20){checkbox.checked=false;say('Aus Sicherheitsgründen maximal 20 Trainings pro Sammelaktion.',true);return}selected.add(s.id)}else selected.delete(s.id);card.classList.toggle('is-selected',checkbox.checked);updateBulkBar()});
+ selLabel.append(checkbox);card.classList.toggle('is-selected',checkbox.checked);
+ const title=el('div','cv2-card-title');
+ title.append(el('h3','',s.requested_label&&s.requested_label!=='Individuelles Training'?s.requested_label:(s.training_type_name||'Training')));
+ const who=el('button','who',(s.boxer_name||'Unbekannter Boxer')+' ›');who.type='button';who.setAttribute('aria-label','Schnellansicht von '+(s.boxer_name||'Boxer')+' öffnen');who.addEventListener('click',()=>openBoxerQuick(s.boxer_id));
+ title.append(who);
+ const pill=el('span','cv2-pill pending',STATUS_LABEL.pending);
+ top.append(selLabel,title,pill);card.append(top);
+ const meta=el('div','cv2-meta');meta.append(el('span','',fmtDate(s.training_date)));
+ if(s.duration_minutes!=null)meta.append(el('span','coach-entry-metrics',`Dauer: ${s.duration_minutes} Min.`));
+ if(s.jogging_km!=null)meta.append(el('span','',`Jogging: ${s.jogging_km} km`));
+ if(s.requested_extra_key&&s.training_type_name)meta.append(el('span','','Art: '+s.training_type_name));
+ card.append(meta);
+ const tags=el('div','cv2-tags');
+ if(!s.legacy){const c=catOf(s);
+  if(s.training_location==='club')tags.append(el('span','cv2-tag','Im Verein'));
+  if(s.requested_tier&&c===s.requested_tier)tags.append(el('span','cv2-tag cat-'+c,CAT[c]+' ✓ Stundenplan'));
+  else if(s.requested_tier){tags.append(el('span','cv2-tag cat-'+s.requested_tier,'Beantragt: '+CAT[s.requested_tier]));tags.append(el('span','cv2-tag','Vorschlag: '+CAT[c]))}
+  else tags.append(el('span','cv2-tag',s.training_location==='individual'?'Individuell':'Individuell (Ort nicht angegeben)'));}
+ if(tags.children.length)card.append(tags);
+ if(Array.isArray(s.conflicts)&&s.conflicts.length){const w=el('ul','cv2-warn');w.setAttribute('aria-label','Hinweise');for(const c of s.conflicts)w.append(el('li','','⚠️ '+(CONFLICT_TEXT[c]||c)));card.append(w)}
+ if(s.reward){const r=el('p','cv2-reward');r.append('Voraussichtlich: ');const b=el('span','',s.legacy?`${s.reward.points} Punkte · ${s.reward.exp} EXP`:rewardText(s.reward));r.append(b);card.append(r)}
+ if(s.notes)card.append(el('p','cv2-note coach-entry-note',s.notes));
+ const result=el('p','cv2-result');result.setAttribute('role','status');
+ const actions=el('div','cv2-actions');
+ const ok=el('button','cv2-btn-ok approve','Bestätigen');ok.type='button';
+ const edit=el('button','cv2-btn-sec','Bearbeiten');edit.type='button';
+ const no=el('button','cv2-btn-bad reject','Ablehnen');no.type='button';
+ const hasConflict=Array.isArray(s.conflicts)&&s.conflicts.length>0;
+ let armTimer=null;
+ ok.addEventListener('click',async()=>{
+  if(hasConflict){openSheet(s,'review');return}
+  if(!ok.classList.contains('arm')){ok.classList.add('arm');ok.textContent=s.reward?`Jetzt bestätigen · ${s.reward.points} P`:'Jetzt bestätigen';clearTimeout(armTimer);armTimer=setTimeout(()=>{ok.classList.remove('arm');ok.textContent='Bestätigen'},4000);return}
+  clearTimeout(armTimer);await decide(s,card,'approved',{},{ok,edit,no,result,pill});
+ });
+ edit.addEventListener('click',()=>openSheet(s,'review'));
+ no.addEventListener('click',()=>openSheet(s,'reject'));
+ actions.append(ok,edit,no);card.append(actions,result);
+ return card;
+}
+// Bestätigen/Ablehnen über den Server. Punkte stehen erst nach der Serverantwort fest.
+async function callReview(s,decision,opt={}){
+ if(v2List){
+  const r=await db.rpc('staff_review_training',{p_submission_id:s.id,p_decision:decision,p_tier:opt.tier||'auto',p_training_type_id:opt.type??null,
+   p_training_date:opt.date??null,p_duration_minutes:opt.duration??null,p_reason:opt.reason||null,p_allow_duplicate:!!opt.allowDuplicate});
+  if(r.error)throw r.error;return r.data;
+ }
+ const r=await db.rpc('review_training',{p_submission_id:s.id,p_decision:decision});if(r.error)throw r.error;
+ return {status:decision,points:r.data?.points_awarded??0,exp:r.data?.points_awarded??0};
+}
+async function decide(s,card,decision,opt,ui){
+ if(inflight.has(s.id))return;inflight.add(s.id);
+ const btns=[ui.ok,ui.edit,ui.no].filter(Boolean);btns.forEach(b=>b.disabled=true);card.setAttribute('aria-busy','true');
+ if(ui.ok&&decision==='approved'){ui.ok.replaceChildren(el('span','cv2-spin'),'Wird gebucht …')}
+ try{
+  const d=await callReview(s,decision,opt);
+  card.classList.add(decision==='approved'?'is-done':'is-rejected');card.classList.remove('is-failed');
+  ui.pill.className='cv2-pill '+(decision==='approved'?(d?.corrected||d?.tier_note?'corrected':'approved'):'rejected');
+  ui.pill.textContent=decision==='approved'?(d?.corrected||d?.tier_note?STATUS_LABEL.corrected:STATUS_LABEL.approved):STATUS_LABEL.rejected;
+  ui.result.className='cv2-result '+(decision==='approved'?'ok':'bad');
+  ui.result.textContent=d?.already?'War bereits erledigt – keine zusätzliche Buchung.':decision==='approved'?`Bestätigt${d?.club_tier?' als '+CAT[d.club_tier]:''}: +${d?.points??0} Punkte und EXP. Keine weitere Aktion nötig.`:'Abgelehnt (0 Punkte).';
+  btns.forEach(b=>b.remove());selected.delete(s.id);
+  pendingItems=pendingItems.filter(x=>x.id!==s.id);pendingBatchRows=pendingBatchRows.filter(x=>x.id!==s.id);
+  pendingTotal=Math.max(0,pendingTotal-1);if(summary){summary.pending=Math.max(0,summary.pending-1);if(decision==='approved')summary.confirmed_today++}
+  renderHome();updateBulkBar();
+  say(decision==='approved'?`${s.boxer_name||'Training'}: bestätigt (+${d?.points??0} Punkte).`:`${s.boxer_name||'Training'}: abgelehnt.`);
+  return d;
+ }catch(err){
+  card.classList.add('is-failed');ui.pill.className='cv2-pill failed';ui.pill.textContent=STATUS_LABEL.failed;
+  ui.result.className='cv2-result bad';ui.result.textContent='Nicht gespeichert: '+String(err.message||err);
+  btns.forEach(b=>b.disabled=false);if(ui.ok){ui.ok.classList.remove('arm');ui.ok.textContent='Erneut versuchen'}
+  say('Nicht gespeichert: '+String(err.message||err),true);return null;
+ }finally{inflight.delete(s.id);card.removeAttribute('aria-busy')}
+}
+$('pendingSearch').addEventListener('input',()=>{clearTimeout(window.__cv2q);window.__cv2q=setTimeout(()=>{saveFilters();loadPending(true)},250)});
+$('cv2PendingMore').addEventListener('click',()=>loadPending(false));
+$('selectPending').addEventListener('click',()=>{for(const box of [...document.querySelectorAll('.pending-checkbox')].slice(0,20)){if(selected.size>=20&&!selected.has(box.value))break;box.checked=true;selected.add(box.value);box.closest('.cv2-card')?.classList.add('is-selected')}updateBulkBar()});
+function updateBulkBar(){const n=selected.size;$('cv2BulkBar').hidden=n===0;$('cv2BulkCount').textContent=n+' ausgewählt'}
+$('cv2BulkBar').addEventListener('click',e=>{const b=e.target.closest('[data-bulk]');if(!b)return;if(b.dataset.bulk==='clear'){selected.clear();renderPending()}});
+
+// Sammelbestätigung: Zusammenfassung mit Wert pro Training; Hinweise werden übersprungen; jede Bestätigung einzeln über den Server.
+async function reviewBatch(decision){
+ if(bulkProcessing)return;
+ const ids=[...selected];
+ if(!ids.length){say('Bitte zuerst mindestens ein Training auswählen.',true);return}
+ if(ids.length>20){say('Aus Sicherheitsgründen maximal 20 Trainings pro Sammelaktion.',true);return}
+ const items=ids.map(id=>pendingItems.find(s=>s.id===id)).filter(Boolean);
+ if(items.length!==ids.length){say('Auswahl veraltet. Bitte neu laden.',true);return}
+ const ready=decision==='approved'?items.filter(s=>!(s.conflicts||[]).length):items,skip=items.filter(s=>!ready.includes(s));
+ const body=el('div');const list=el('ul','cv2-bulk-list');let sum=0;
+ const lines=new Map();
+ for(const s of items){const li=el('li',skip.includes(s)?'skip':'');li.append(el('span','',(s.boxer_name||'Boxer')+' · '+fmtDate(s.training_date)),el('span','r',decision==='approved'&&!skip.includes(s)&&s.reward?'+'+s.reward.points+' P':decision==='rejected'?'0 P':'–'));
+  const sub=el('span','s',skip.includes(s)?'Wird übersprungen: '+(CONFLICT_TEXT[s.conflicts[0]]||'Hinweis')+' – bitte einzeln prüfen.':(s.requested_label||s.training_type_name||'Training')+(s.legacy?'':' · '+CAT[catOf(s)]));li.append(sub);list.append(li);lines.set(s.id,{li,sub});
+  if(decision==='approved'&&!skip.includes(s)&&s.reward)sum+=Number(s.reward.points||0)}
+ const head=el('p','',decision==='approved'?`${ready.length} von ${items.length} Trainings werden bestätigt · zusammen voraussichtlich ${sum} Punkte/EXP (pro Training berechnet).`:`${items.length} Trainings werden abgelehnt (0 Punkte).`);
+ body.append(head,list);
+ let reason=null;
+ if(decision==='rejected'){reason=field('Begründung (optional, für alle)',Object.assign(el('textarea'),{rows:2,maxLength:500}));body.append(reason.wrap)}
+ const msg=el('p','cv2-sheet-msg');msg.setAttribute('role','status');body.append(msg);
+ const goBtn=el('button',decision==='approved'?'cv2-btn-ok':'cv2-btn-bad',decision==='approved'?`${ready.length} Trainings bestätigen`:`${items.length} Trainings ablehnen`);goBtn.type='button';goBtn.disabled=!ready.length;
+ const cancel=el('button','cv2-btn-sec','Abbrechen');cancel.type='button';cancel.addEventListener('click',()=>closeSheet());
+ sheet(decision==='approved'?'Sammelbestätigung prüfen':'Sammelablehnung prüfen','Bitte Auswahl und Werte kontrollieren.',body,[goBtn,cancel]);
+ goBtn.addEventListener('click',async()=>{
+  if(bulkProcessing)return;bulkProcessing=true;goBtn.disabled=true;cancel.disabled=true;
+  let ok=0;const failures=[];
+  for(const s of ready){
+   msg.textContent='Verarbeite '+(ok+failures.length+1)+' von '+ready.length+' …';
+   try{const d=await callReviewSafe(s,decision,{reason:reason?.input.value.trim()||null});lines.get(s.id).li.classList.add('ok');lines.get(s.id).sub.textContent=d?.already?'War bereits erledigt – keine zusätzliche Buchung.':decision==='approved'?`Bestätigt: +${d?.points??0} Punkte${d?.club_tier?' ('+CAT[d.club_tier]+')':''}`:'Abgelehnt';ok++;selected.delete(s.id)}
+   catch(err){failures.push((s.boxer_name||'Boxer')+': '+String(err.message||err));lines.get(s.id).li.classList.add('bad');lines.get(s.id).sub.textContent='Nicht gespeichert: '+String(err.message||err)}
+  }
+  bulkProcessing=false;cancel.disabled=false;cancel.textContent='Schliessen';
+  msg.className='cv2-sheet-msg '+(failures.length?'bad':'ok');
+  msg.textContent=ok+' von '+ready.length+' verarbeitet.'+(failures.length?' Nicht gespeichert: '+failures.length+' (siehe Liste) – diese bleiben offen.':'')+(skip.length?' '+skip.length+' mit Hinweis übersprungen.':'');
+  say(ok+' von '+ready.length+' verarbeitet.'+(failures.length?' Fehler: '+failures.join('; '):''),failures.length>0);
   await load(false);
  });
- actions.append(btn);
 }
-div.append(actions);return div}
+// Sammelaktion ohne Training-2.0-Migration: bisherige geschützte RPC
+async function callReviewSafe(item,decision,opt){if(v2List)return callReview(item,decision,opt);const result=await db.rpc('review_training',{p_submission_id:item.id,p_decision:decision});if(result.error)throw result.error;return {points:result.data?.points_awarded??0}}
+$('bulkApprove').addEventListener('click',()=>reviewBatch('approved'));
+$('bulkReject').addEventListener('click',()=>reviewBatch('rejected'));
 
+// ---------------------------------------------------------------- Bottom Sheet
+const sheetEl=$('cv2Sheet');let sheetReturn=null;
+function field(label,input,hint){const wrap=el('label','cv2-field');wrap.append(el('span','',label),input);if(hint)wrap.append(el('small','',hint));return {wrap,input}}
+function sheet(title,sub,body,buttons){
+ $('cv2SheetTitle').textContent=title;$('cv2SheetSub').textContent=sub||'';$('cv2SheetBody').replaceChildren(body);
+ const foot=$('cv2SheetFoot');foot.replaceChildren();
+ if(buttons.length>2){foot.append(buttons[0]);const r=el('div','row');buttons.slice(1).forEach(b=>r.append(b));foot.append(r)}else buttons.forEach(b=>foot.append(b));
+ sheetReturn=document.activeElement;if(!sheetEl.open)sheetEl.showModal();
+ const first=$('cv2SheetBody').querySelector('input,select,textarea,button');(first||foot.querySelector('button'))?.focus();
+}
+function closeSheet(){if(bulkProcessing)return;if(sheetEl.open)sheetEl.close()}
+sheetEl.addEventListener('close',()=>{try{sheetReturn?.focus()}catch{}renderPending()});
+sheetEl.addEventListener('cancel',e=>{if(bulkProcessing)e.preventDefault()});
+sheetEl.querySelector('[data-close]').addEventListener('click',closeSheet);
+const TIERS=[['pflicht','Pflicht'],['ergaenzung','Ergänzung'],['none','Individuell']];
+// mode: review (offen bestätigen), reject (ablehnen), correct (bestätigt korrigieren)
+function openSheet(s,mode){
+ const body=el('div');body.style.display='grid';body.style.gap='12px';
+ const today=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich'}).format(new Date());
+ const info=el('div','cv2-tags');info.append(el('span','cv2-tag',(s.boxer_name||'Boxer')),el('span','cv2-tag',fmtDate(s.training_date)));
+ if(s.requested_label)info.append(el('span','cv2-tag','Antrag: '+s.requested_label));
+ body.append(info);
+ if(s.notes)body.append(el('p','cv2-note','Bemerkung des Boxers: '+s.notes));
+ if(Array.isArray(s.conflicts)&&s.conflicts.length){const w=el('ul','cv2-warn');for(const c of s.conflicts)w.append(el('li','','⚠️ '+(CONFLICT_TEXT[c]||c)));body.append(w)}
+ const msg=el('p','cv2-sheet-msg');msg.setAttribute('role','status');
+ if(mode==='reject'){
+  const reason=field('Begründung (optional)',Object.assign(el('textarea'),{rows:3,maxLength:500,placeholder:'z. B. nicht anwesend, bereits per Gym-Check-in erfasst'}));body.append(reason.wrap,msg);
+  const b=el('button','cv2-btn-bad','Training ablehnen');b.type='button';const c=el('button','cv2-btn-sec','Abbrechen');c.type='button';c.addEventListener('click',closeSheet);
+  b.addEventListener('click',async()=>{if(inflight.has(s.id))return;b.disabled=true;msg.className='cv2-sheet-msg';msg.textContent='Wird gespeichert …';
+   try{await callReview(s,'rejected',{reason:reason.input.value.trim()||null});msg.className='cv2-sheet-msg ok';msg.textContent='Abgelehnt.';pendingItems=pendingItems.filter(x=>x.id!==s.id);pendingTotal=Math.max(0,pendingTotal-1);if(summary)summary.pending=Math.max(0,summary.pending-1);renderHome();say((s.boxer_name||'Training')+': abgelehnt.');setTimeout(closeSheet,500)}
+   catch(err){msg.className='cv2-sheet-msg bad';msg.textContent='Nicht gespeichert: '+String(err.message||err);b.disabled=false}});
+  sheet('Training ablehnen',(s.requested_label||s.training_type_name||'Training'),body,[b,c]);return;
+ }
+ const type=el('select');for(const t of currentTypes.filter(x=>x.is_active!==false||String(x.id)===String(s.training_type_id)))type.add(new Option(`${t.name} (${t.points} P.)`,String(t.id)));type.value=String(s.training_type_id);
+ const date=el('input');date.type='date';date.max=today;date.value=String(s.training_date||'').slice(0,10);
+ const dur=el('input');dur.type='number';dur.min='1';dur.max='1440';dur.step='1';dur.inputMode='numeric';dur.value=s.duration_minutes??'';
+ const g=el('div','cv2-grid2');g.append(field('Trainingsdatum',date).wrap,field('Dauer (Minuten)',dur).wrap);
+ body.append(field('Trainingsart',type).wrap,g);
+ const startTier=mode==='correct'?(s.club_tier||'none'):(s.suggested_tier||'none');let tier=startTier;
+ const seg=el('div','cv2-seg');seg.setAttribute('role','radiogroup');seg.setAttribute('aria-label','Kategorie');
+ const tierOff=!v2On();
+ for(const [k,t] of TIERS){const b=el('button','',t);b.type='button';b.setAttribute('role','radio');b.dataset.tier=k;b.disabled=tierOff&&k!=='none';b.setAttribute('aria-checked',String(k===tier));
+  b.addEventListener('click',()=>{tier=k;for(const x of seg.children)x.setAttribute('aria-checked',String(x.dataset.tier===k));refresh()});seg.append(b)}
+ const segWrap=el('div','cv2-field');segWrap.append(el('span','','Kategorie'),seg);
+ if(tierOff)segWrap.append(el('small','','Pflicht-/Ergänzungstraining gilt, sobald «Training 2.0» freigeschaltet ist. Bis dahin zählt der Wert der Trainingsart.'));
+ else segWrap.append(el('small','',s.requested_tier?'Beantragt: '+CAT[s.requested_tier]+(s.suggested_tier?' (passt zum Stundenplan)':' (passt nicht zum Stundenplan)'):'Keine Kategorie beantragt (individuell).'));
+ body.append(segWrap);
+ const delta=el('div','cv2-delta');delta.setAttribute('aria-live','polite');body.append(delta);
+ const reason=field('Korrekturbegründung',Object.assign(el('textarea'),{rows:2,maxLength:500,placeholder:'z. B. Training von Mittwoch auf Donnerstag verschoben'}));body.append(reason.wrap);
+ let dup=null;if(Array.isArray(s.conflicts)&&s.conflicts.length){dup=el('input');dup.type='checkbox';const l=el('label','cv2-check');l.append(dup,el('span','','Ich habe geprüft: Das ist keine doppelte Einheit (Begründung nötig).'));body.append(l)}
+ body.append(msg);
+ const before=mode==='correct'?{label:(s.club_tier?CAT[s.club_tier]:'Individuell'),points:s.points}:{label:(s.suggested_tier?CAT[s.suggested_tier]:'Individuell'),points:s.reward?.points};
+ let seq=0;
+ async function refresh(){
+  const my=++seq;const changed=String(type.value)!==String(s.training_type_id)||date.value!==String(s.training_date).slice(0,10)||String(dur.value)!==String(s.duration_minutes??'')||tier!==startTier;
+  const needReason=mode==='correct'||(tier!==startTier)||(dup&&dup.checked)||(!tierOff&&tier==='pflicht'&&!isPflichtDay(date.value));
+  reason.wrap.querySelector('small')?.remove();reason.wrap.append(el('small','',needReason?'Pflicht für diese Änderung.':'Optional.'));
+  delta.replaceChildren(el('span','muted','Neuer Wert wird berechnet …'));
+  let r=null;try{const x=await db.rpc('training_reward_preview',{p_training_type_id:Number(type.value),p_tier:tier==='none'||tierOff?null:tier});if(!x.error)r=x.data}catch{}
+  if(my!==seq)return;
+  if(!r||typeof r!=='object'||r.points==null){const t=currentTypes.find(x=>String(x.id)===type.value);r=t?{points:t.points,exp:t.points}:null}
+  delta.replaceChildren();
+  const toLabel=tier==='none'||tierOff?'Individuell':CAT[tier];
+  if(changed||mode==='correct'){const f=el('span','from',`Vorher: ${before.label} · ${before.points??'–'} EXP`);delta.append(f)}
+  delta.append(el('span','to',`${changed?'Nachher':'Wert'}: ${toLabel} · ${r?r.exp:'–'} EXP${r&&r.coins!=null?' · '+r.coins+' Coins':''}`));
+  if(r&&before.points!=null&&r.points!==before.points)delta.append(el('span','chg',(r.points>before.points?'+':'')+(r.points-before.points)+' Punkte/EXP'));
+  delta.append(el('small','muted','Die Buchung berechnet der Server.'));
+ }
+ for(const x of [type,date,dur])x.addEventListener('input',refresh);dup?.addEventListener('change',refresh);refresh();
+ const save=el('button','cv2-btn-ok',mode==='correct'?'Korrektur speichern':'Speichern & bestätigen');save.type='button';
+ const buttons=[save];
+ if(mode==='review'){const rej=el('button','cv2-btn-bad','Ablehnen');rej.type='button';rej.addEventListener('click',()=>openSheet(s,'reject'));buttons.push(rej)}
+ const cancel=el('button','cv2-btn-sec','Abbrechen');cancel.type='button';cancel.addEventListener('click',closeSheet);buttons.push(cancel);
+ save.addEventListener('click',async()=>{
+  if(inflight.has(s.id))return;
+  const mins=dur.value===''?null:Number(dur.value);if(mins!=null&&(!Number.isInteger(mins)||mins<1||mins>1440)){msg.className='cv2-sheet-msg bad';msg.textContent='Bitte die Dauer in Minuten angeben (1–1440).';dur.focus();return}
+  if(date.value>today){msg.className='cv2-sheet-msg bad';msg.textContent='Das Datum darf nicht in der Zukunft liegen.';date.focus();return}
+  if(dup&&!dup.checked){msg.className='cv2-sheet-msg bad';msg.textContent='Bitte den Hinweis prüfen und bestätigen, dass es keine doppelte Einheit ist – oder das Training ablehnen.';dup.focus();return}
+  inflight.add(s.id);save.disabled=true;save.replaceChildren(el('span','cv2-spin'),'Wird gespeichert …');msg.className='cv2-sheet-msg';msg.textContent='';
+  const opt={type:String(type.value)!==String(s.training_type_id)?Number(type.value):null,date:date.value!==String(s.training_date).slice(0,10)?date.value:null,
+   duration:mins!==(s.duration_minutes??null)?mins:null,tier:tierOff?'auto':tier,reason:reason.input.value.trim()||null,allowDuplicate:!!dup?.checked};
+  try{
+   let d;
+   if(mode==='correct'){const r=await db.rpc('staff_correct_training',{p_submission_id:s.id,p_training_type_id:opt.type,p_training_date:opt.date,p_duration_minutes:opt.duration,p_tier:tierOff?'keep':tier,p_reason:opt.reason});if(r.error)throw r.error;d=r.data}
+   else{if(!v2List){d=await callReview(s,'approved',{})}else{const r=await db.rpc('staff_review_training',{p_submission_id:s.id,p_decision:'approved',p_tier:opt.tier,p_training_type_id:opt.type,p_training_date:opt.date,p_duration_minutes:opt.duration,p_reason:opt.reason,p_allow_duplicate:opt.allowDuplicate});if(r.error)throw r.error;d=r.data}}
+   msg.className='cv2-sheet-msg ok';msg.textContent=(mode==='correct'?'Korrigiert':'Bestätigt')+(d?.club_tier?' als '+CAT[d.club_tier]:'')+': '+(d?.points??0)+' Punkte/EXP.';
+   pendingItems=pendingItems.filter(x=>x.id!==s.id);if(mode!=='correct'){pendingTotal=Math.max(0,pendingTotal-1);if(summary){summary.pending=Math.max(0,summary.pending-1);summary.confirmed_today++}}
+   renderHome();say((s.boxer_name||'Training')+': '+msg.textContent);
+   setTimeout(()=>{closeSheet();if(mode==='correct')renderFilteredTrainings(true)},700);
+  }catch(err){msg.className='cv2-sheet-msg bad';msg.textContent='Nicht gespeichert – deine Angaben bleiben erhalten: '+String(err.message||err);save.disabled=false;save.textContent=mode==='correct'?'Korrektur speichern':'Speichern & bestätigen'}
+  finally{inflight.delete(s.id)}
+ });
+ sheet(mode==='correct'?'Bestätigtes Training korrigieren':'Training prüfen & bestätigen',(s.requested_label||s.training_type_name||'Training')+' · '+(s.boxer_name||''),body,buttons);
+}
+function isPflichtDay(d){if(!v2Cfg||!d)return false;const x=new Date(d+'T12:00:00Z');const dow=((x.getUTCDay()+6)%7)+1;return (v2Cfg.pflicht||[]).some(p=>p.dow===dow)}
 
+// ---------------------------------------------------------------- Änderungshistorie
 async function refreshCoachAudit(){
  const root=$('coachAuditEntries'),label=$('coachAuditStatus');if(!currentPeople.length)return;
  label.textContent='Änderungen werden geladen …';
@@ -56,7 +454,7 @@ async function refreshCoachAudit(){
 }
 $('refreshCoachAudit').addEventListener('click',refreshCoachAudit);
 
-let currentPeople=[],currentTypes=[],allTrainings=[],currentAdminId=null,currentRole=null;
+// ---------------------------------------------------------------- Boxer
 async function openBoxerQuick(id){
  const boxer=currentPeople.find(x=>x.id===id&&['boxer','coach'].includes(x.role));if(!boxer)return;
  rememberRecentlyViewedBoxer(id);
@@ -70,87 +468,75 @@ async function openBoxerQuick(id){
   ]);
   if(approvedResult.error)throw approvedResult.error;if(pendingResult.error)throw pendingResult.error;
   const approved=Array.isArray(approvedResult.data?.items)?approvedResult.data.items:[];
-  const summary=document.createElement('p');summary.textContent='Bestätigt: '+Number(approvedResult.data?.total_count||0)+' · Offen: '+Number(pendingResult.data?.total_count||0);
+  const summaryLine=document.createElement('p');summaryLine.textContent='Bestätigt: '+Number(approvedResult.data?.total_count||0)+' · Offen: '+Number(pendingResult.data?.total_count||0);
   const explanation=document.createElement('p');explanation.className='muted small';explanation.textContent='Die letzten fünf bestätigten Trainings, direkt aus der serverseitig gefilterten Historie.';
   const items=document.createElement('ul');
-  for(const t of approved){const li=document.createElement('li');li.textContent=(t.training_date||'Datum unbekannt')+' · '+(t.training_type_name||'Training')+' · Bestätigt';items.append(li)}
+  for(const t of approved){const li=document.createElement('li');li.textContent=fmtDate(t.training_date)+' · '+(t.training_type_name||'Training')+' · Bestätigt';items.append(li)}
   if(!approved.length){const p=document.createElement('p');p.textContent='Noch keine bestätigten Trainings.';items.append(p)}
   const links=document.createElement('div');links.className='actions';
   for(const [title,url] of [['Profil ansehen','./boxer-profile.html?name='+encodeURIComponent(boxer.display_name)],['Challenge zuweisen','./challenges.html?target='+encodeURIComponent(boxer.display_name)]]){const a=document.createElement('a');a.href=url;a.textContent=title;links.append(a)}
-  target.replaceChildren(summary,explanation,items,links);
+  const all=el('button','cv2-btn-sec','Alle Trainings in der Historie');all.type='button';all.addEventListener('click',()=>{$('coachBoxerQuick').close();$('filterBoxer').value=id;go('history');renderFilteredTrainings(true)});links.append(all);
+  target.replaceChildren(summaryLine,explanation,items,links);
  }catch(err){target.replaceChildren();const p=document.createElement('p');p.className='error';p.textContent='Trainingshistorie konnte nicht geladen werden: '+String(err.message||err);target.append(p)}
 }
 $('closeCoachQuick').addEventListener('click',()=>$('coachBoxerQuick').close());
-
 function rememberRecentlyViewedBoxer(id){
  try{const list=JSON.parse(sessionStorage.getItem('takeover_coach_recent_ids')||'[]');
  sessionStorage.setItem('takeover_coach_recent_ids',JSON.stringify([id,...list.filter(x=>x!==id)].slice(0,5)));
  }catch{}
+ renderRecentBoxers();
 }
 function renderRecentBoxers(){
  const root=$('recentBoxers');if(!root)return;root.replaceChildren();
  let ids=[];try{ids=JSON.parse(sessionStorage.getItem('takeover_coach_recent_ids')||'[]')}catch{}
  const found=ids.map(id=>currentPeople.find(p=>p.id===id&&['boxer','coach'].includes(p.role))).filter(Boolean);
  if(!found.length)return;
- const title=document.createElement('strong');title.textContent='Zuletzt angesehene Boxer: ';root.append(title);
+ const title=document.createElement('strong');title.textContent='Zuletzt angesehen: ';root.append(title);
  for(const p of found){const a=document.createElement('a');a.href='./boxer-profile.html?name='+encodeURIComponent(p.display_name);a.textContent=p.display_name;a.addEventListener('click',()=>rememberRecentlyViewedBoxer(p.id));root.append(a)}
 }
-let pendingBatchRows=[],bulkProcessing=false;
-function renderPending(){
- const rows=pendingBatchRows;const q=String($('pendingSearch').value||'').toLocaleLowerCase('de-CH');
- const people=new Map(currentPeople.map(p=>[p.id,p.display_name]));
- const types=new Map(currentTypes.map(t=>[t.id,t.name]));
- const visible=rows.filter(s=>[people.get(s.boxer_id),types.get(s.training_type_id),s.training_date].join(' ').toLocaleLowerCase('de-CH').includes(q));
- $('entries').replaceChildren();
- if(!visible.length){const note=document.createElement('p');note.className='muted';note.textContent=rows.length?'Keine offenen Trainings für diesen Filter.':'Keine offenen Trainings – alles erledigt.';$('entries').append(note);return}
- for(const s of visible)$('entries').append(row(s,people,types));
+let peopleShown=10;
+function renderPeople(){
+ const q=String($('cv2BoxerSearch').value||'').trim().toLocaleLowerCase('de-CH');
+ const list=currentPeople.filter(p=>['boxer','coach'].includes(p.role)&&p.is_active!==false&&(!q||String(p.display_name).toLocaleLowerCase('de-CH').includes(q))).sort((a,b)=>String(a.display_name).localeCompare(String(b.display_name),'de'));
+ const root=$('cv2People');root.replaceChildren();
+ for(const p of list.slice(0,peopleShown)){const li=el('li');const nm=el('span','nm',p.display_name);nm.append(el('small','',p.role==='coach'?'Trainer':'Boxer'));
+  const b=el('button','cv2-btn-sec','Letzte 5');b.type='button';b.setAttribute('aria-label','Letzte fünf bestätigte Trainings von '+p.display_name);b.addEventListener('click',()=>openBoxerQuick(p.id));
+  const a=el('a','cv2-btn-sec','Profil');a.href='./boxer-profile.html?name='+encodeURIComponent(p.display_name);a.style.display='inline-grid';a.style.placeItems='center';a.style.padding='0 12px';a.style.borderRadius='10px';a.addEventListener('click',()=>rememberRecentlyViewedBoxer(p.id));
+  li.append(nm,b,a);root.append(li)}
+ if(!list.length)root.append(el('li','','Kein Boxer gefunden.'));
+ $('cv2PeopleCount').textContent=Math.min(peopleShown,list.length)+' von '+list.length+' Boxern';$('cv2PeopleMore').hidden=peopleShown>=list.length;
 }
-$('pendingSearch').addEventListener('input',renderPending);
-$('selectPending').addEventListener('click',()=>{for(const box of [...document.querySelectorAll('.pending-checkbox')].slice(0,20))box.checked=true});
-async function reviewBatch(decision){
- if(bulkProcessing)return;
- const selected=[...document.querySelectorAll('.pending-checkbox:checked')].map(x=>x.value);
- if(!selected.length){$('status').textContent='Bitte zuerst mindestens ein Training auswählen.';return}
- if(selected.length>20){$('status').textContent='Aus Sicherheitsgründen maximal 20 Trainings pro Sammelaktion.';return}
- const summary=selected.map(id=>pendingBatchRows.find(s=>s.id===id)).filter(Boolean);
- if(summary.length!==selected.length){$('status').textContent='Auswahl veraltet. Bitte neu laden.';return}
- const who=new Map(currentPeople.map(x=>[x.id,x.display_name]));
- const description=summary.map(s=>who.get(s.boxer_id)+' – '+s.training_date).join('\\n');
- if(!confirm('Diese '+selected.length+' Trainings '+(decision==='approved'?'BESTÄTIGEN':'ABLEHNEN')+'?\\n\\n'+description+'\\n\\nDies vergibt bei Bestätigung Punkte und EXP und ist nicht direkt rückgängig zu machen.'))return;
- bulkProcessing=true;
- for(const id of ['bulkApprove','bulkReject','selectPending'])$(id).disabled=true;
- let successes=0,failures=[];
- try{
-  for(const item of summary){
-   $('status').textContent='Verarbeite '+(successes+1)+' von '+summary.length+' …';
-   try{const result=await db.rpc('review_training',{p_submission_id:item.id,p_decision:decision});if(result.error)throw result.error;successes++}
-   catch(err){failures.push((who.get(item.boxer_id)||'Boxer')+': '+String(err.message||err));break}
-  }
- }finally{
-  for(const id of ['bulkApprove','bulkReject','selectPending'])$(id).disabled=false;
-  bulkProcessing=false;
-  await load(false);
-  $('status').textContent=successes+' von '+summary.length+' verarbeitet.'+(failures.length?' Abbruch: '+failures.join('; '):'');
- }
-}
-$('bulkApprove').addEventListener('click',()=>reviewBatch('approved'));
-$('bulkReject').addEventListener('click',()=>reviewBatch('rejected'));
+$('cv2BoxerSearch').addEventListener('input',()=>{peopleShown=10;renderPeople()});
+$('cv2PeopleMore').addEventListener('click',()=>{peopleShown+=10;renderPeople()});
 
+// ---------------------------------------------------------------- Trainingshistorie (alle Trainings)
 const normalize=v=>String(v??'').toLocaleLowerCase('de-CH');
 function fillFilter(id,rows,label){const select=$(id),previous=select.value;select.replaceChildren(new Option(label,''));rows.forEach(x=>select.add(new Option(x.display_name??x.name,String(x.id))));select.value=previous;}
-let historyOffset=0,historyTotal=0,historyLoading=false,historyReloadRequested=false;
+let historyOffset=0,historyTotal=0,historyLoading=false,historyReloadRequested=false,historyLoadedOnce=false;
+const FILTER_IDS=['trainingSearch','filterBoxer','filterType','filterCategory','filterFrom','filterTo','filterStatus'];
+function saveFilters(){try{sessionStorage.setItem('tl.coach.filters',JSON.stringify({...Object.fromEntries(FILTER_IDS.map(id=>[id,$(id).value])),pendingSearch:$('pendingSearch').value,pendingCat}))}catch{}}
+function syncFilterBox(){const d=$('cv2Filters');if(!d)return;const n=FILTER_IDS.filter(id=>id!=='trainingSearch'&&$(id).value).length;d.querySelector('summary').textContent=n?'Filter ('+n+' aktiv)':'Filter: Boxer, Art, Kategorie, Datum, Status';if(n||window.matchMedia('(min-width:900px)').matches)d.open=true}
+function restoreFilters(){try{const f=JSON.parse(sessionStorage.getItem('tl.coach.filters')||'null');if(!f)return;for(const id of [...FILTER_IDS,'pendingSearch'])if(f[id]!=null&&$(id))$(id).value=f[id];pendingCat=f.pendingCat||''}catch{}}
 async function renderFilteredTrainings(reset=true){
  if(historyLoading){if(reset)historyReloadRequested=true;return}
- historyLoading=true;
+ historyLoading=true;historyLoadedOnce=true;
  const button=$('showMore');button.disabled=true;
  if(reset){historyOffset=0;allTrainings=[];$('allEntries').replaceChildren();$('resultCount').textContent='Lade Trainings …'}
+ syncFilterBox();
  try{
-  const {data,error}=await db.rpc('coach_list_training_history',{
-   p_search:$('trainingSearch').value.trim()||null,p_boxer_id:$('filterBoxer').value||null,
-   p_training_type_id:$('filterType').value?Number($('filterType').value):null,
-   p_from:$('filterFrom').value||null,p_to:$('filterTo').value||null,p_status:$('filterStatus').value||null,
-   p_limit:5,p_offset:historyOffset
-  });
+  let data,error;
+  if(v2List){
+   ({data,error}=await db.rpc('staff_list_trainings',{p_status:$('filterStatus').value||null,p_category:$('filterCategory').value||null,
+    p_search:$('trainingSearch').value.trim()||null,p_boxer_id:$('filterBoxer').value||null,p_from:$('filterFrom').value||null,p_to:$('filterTo').value||null,
+    p_limit:10,p_offset:historyOffset,p_training_type_id:$('filterType').value?Number($('filterType').value):null}));
+  }else{
+   ({data,error}=await db.rpc('coach_list_training_history',{
+    p_search:$('trainingSearch').value.trim()||null,p_boxer_id:$('filterBoxer').value||null,
+    p_training_type_id:$('filterType').value?Number($('filterType').value):null,
+    p_from:$('filterFrom').value||null,p_to:$('filterTo').value||null,p_status:$('filterStatus').value||null,
+    p_limit:10,p_offset:historyOffset
+   }));
+  }
   if(error)throw error;
   const items=Array.isArray(data?.items)?data.items:[];
   if(reset)allTrainings=items;else allTrainings.push(...items);
@@ -162,36 +548,43 @@ async function renderFilteredTrainings(reset=true){
   else allTrainings.forEach(item=>$('allEntries').append(editorRow(item,people,types)));
   decorateTiers();
   $('resultCount').textContent=allTrainings.length+' von '+historyTotal+' Einträgen';
-  button.classList.toggle('hidden',historyOffset>=historyTotal||!historyFiltered());
+  button.classList.toggle('hidden',historyOffset>=historyTotal);
  }catch(err){
   if(reset)$('allEntries').replaceChildren();
   const p=document.createElement('p');p.className='error';p.textContent='Trainingshistorie konnte nicht geladen werden: '+String(err.message||err);$('allEntries').append(p);
   $('resultCount').textContent='Laden fehlgeschlagen';button.classList.add('hidden');
  }finally{historyLoading=false;button.disabled=false;if(historyReloadRequested){historyReloadRequested=false;renderFilteredTrainings(true)}}
 }
-
 function editorRow(s,people,types){
  const div=document.createElement('div');div.className='entry';div.dataset.sid=s.id;div.dataset.status=s.status;
  const line=document.createElement('div');line.className='line';
- const name=document.createElement('strong');name.textContent=people.get(s.boxer_id)||'Unbekannt';
- const detail=document.createElement('span');detail.className='muted';detail.textContent=`${types.get(String(s.training_type_id))||'?'} · ${s.training_date} · ${s.status}`;
- const edit=document.createElement('button');edit.textContent='Bearbeiten';
- const quick=document.createElement('button');quick.type='button';quick.textContent='Schnellansicht';quick.onclick=()=>openBoxerQuick(s.boxer_id);line.append(name,detail,quick,edit);div.append(line);
+ const name=document.createElement('strong');name.textContent=s.boxer_name||people.get(String(s.boxer_id))||'Unbekannt';
+ const statusKey=s.status==='approved'&&(s.corrected||s.tier_note)?'corrected':s.status;
+ const pill=el('span','cv2-pill '+statusKey,STATUS_LABEL[statusKey]||s.status);
+ const detail=document.createElement('span');detail.className='muted';detail.textContent=`${s.training_type_name||types.get(String(s.training_type_id))||'?'} · ${fmtDate(s.training_date)}`+(s.status==='approved'&&s.points!=null?` · ${s.points} P`:'')+(s.category&&s.category!=='individual'?' · '+CAT[s.category]:'');
+ const edit=document.createElement('button');edit.textContent='Alle Felder';edit.type='button';edit.className='cv2-btn-sec';
+ const quick=document.createElement('button');quick.type='button';quick.className='cv2-btn-sec';quick.textContent='Schnellansicht';quick.onclick=()=>openBoxerQuick(s.boxer_id);
+ line.append(name,pill,detail);div.append(line);
+ const acts=el('div','actions');
+ if(s.status==='approved'&&v2List&&s.editable!==false){const c=el('button','cv2-btn-primary','Korrigieren');c.type='button';c.addEventListener('click',()=>openSheet(s,'correct'));acts.append(c)}
+ if(s.status==='pending'&&v2List){const c=el('button','cv2-btn-ok','Prüfen & bestätigen');c.type='button';c.addEventListener('click',()=>openSheet(s,'review'));acts.append(c)}
+ acts.append(quick,edit);div.append(acts);
+ if(s.tier_note)div.append(el('small','muted','Begründung: '+s.tier_note));
  const reviewedAt=s.reviewed_at?new Date(s.reviewed_at).getTime():0;
  if(s.status==='rejected'&&s.reviewed_by===currentAdminId&&reviewedAt>0&&Date.now()-reviewedAt<15*60*1000&&reviewedAt<Date.now()+60000){
-  const undo=document.createElement('button');undo.type='button';undo.textContent='Ablehnung rückgängig';
+  const undo=document.createElement('button');undo.type='button';undo.textContent='Ablehnung rückgängig';undo.className='cv2-btn-sec';
   undo.setAttribute('aria-label','Ablehnung für '+name.textContent+' rückgängig machen');
   undo.onclick=async()=>{
    if(!confirm('Ablehnung von '+name.textContent+' zurücknehmen? Das Training wird wieder als AUSSTEHEND angezeigt. Bestätigte Trainings und Punkte werden nicht zurückgesetzt.'))return;
-   undo.disabled=true;$('status').textContent='Rücknahme wird geprüft …';
+   undo.disabled=true;say('Rücknahme wird geprüft …');
    try{
     const r=await db.rpc('admin_undo_recent_rejection',{p_submission_id:s.id});
     if(r.error)throw r.error;
-    $('status').textContent='Ablehnung rückgängig gemacht. Training wartet wieder auf Prüfung.';
+    say('Ablehnung rückgängig gemacht. Training wartet wieder auf Prüfung.');
     await load(false);
-   }catch(e){$('status').textContent='Rücknahme nicht möglich: '+String(e.message||e);undo.disabled=false}
+   }catch(e){say('Rücknahme nicht möglich: '+String(e.message||e),true);undo.disabled=false}
   };
-  div.append(undo);
+  acts.append(undo);
  }
  edit.onclick=()=>{
   if(div.querySelector('.editbox')){div.querySelector('.editbox').remove();return}
@@ -203,8 +596,8 @@ function editorRow(s,people,types){
   const date=document.createElement('input');date.type='date';date.value=s.training_date;field('Datum',date);
   const notes=document.createElement('textarea');notes.rows=2;notes.value=s.notes||'';field('Bemerkung',notes);
   const km=document.createElement('input');km.type='number';km.min='0';km.max='1000';km.step='0.01';km.placeholder='z. B. 8.50';km.value=s.jogging_km??'';field('Joggingdistanz (km)',km);
-   const minutes=document.createElement('input');minutes.type='number';minutes.min='0';minutes.max='1440';minutes.step='1';minutes.placeholder='z. B. 75';minutes.value=s.technique_minutes??'';field('Techniktraining (Minuten)',minutes);
-   const status=field('Status',select([['pending','Offen'],['approved','Bestätigt'],['rejected','Abgelehnt']],s.status));
+  const minutes=document.createElement('input');minutes.type='number';minutes.min='0';minutes.max='1440';minutes.step='1';minutes.placeholder='z. B. 75';minutes.value=s.technique_minutes??'';field('Techniktraining (Minuten)',minutes);
+  const status=field('Status',select([['pending','Offen'],['approved','Bestätigt'],['rejected','Abgelehnt']],s.status));
   const buttons=document.createElement('div');buttons.className='buttons';
   const save=document.createElement('button');save.type='submit';save.textContent='Änderungen speichern';
   const cancel=document.createElement('button');cancel.type='button';cancel.textContent='Abbrechen';cancel.onclick=()=>form.remove();
@@ -212,25 +605,69 @@ function editorRow(s,people,types){
   form.onsubmit=async e=>{
    e.preventDefault();
    if(km.value!==''&&(!km.validity.valid||!Number.isFinite(Number(km.value)))){alert('Bitte gültige Joggingkilometer eingeben.');return}
-    if(minutes.value!==''&&(!minutes.validity.valid||!Number.isInteger(Number(minutes.value)))){alert('Bitte gültige Technikminuten eingeben.');return}
-    if(!confirm('Änderungen speichern? Punkte und EXP werden neu berechnet.'))return;
-   save.disabled=true;$('status').textContent='Korrektur wird gespeichert …';
+   if(minutes.value!==''&&(!minutes.validity.valid||!Number.isInteger(Number(minutes.value)))){alert('Bitte gültige Technikminuten eingeben.');return}
+   if(!confirm('Änderungen speichern? Punkte und EXP werden neu berechnet.'))return;
+   save.disabled=true;say('Korrektur wird gespeichert …');
    const {data,error}=await db.rpc('admin_edit_training_details',{
     p_submission_id:s.id,p_boxer_id:boxer.value,p_training_type_id:Number(type.value),
     p_training_date:date.value,p_notes:notes.value,p_status:status.value,
-     p_jogging_km:km.value===''?null:Number(km.value),
-     p_technique_minutes:minutes.value===''?null:Number(minutes.value)
+    p_jogging_km:km.value===''?null:Number(km.value),
+    p_technique_minutes:minutes.value===''?null:Number(minutes.value)
    });
-   if(error){$('status').textContent='Korrektur fehlgeschlagen: '+error.message;save.disabled=false;return}
-   $('status').textContent=`Gespeichert: ${data.status}, ${data.points} Punkte/EXP.`;
+   if(error){say('Korrektur fehlgeschlagen: '+error.message,true);save.disabled=false;return}
+   say(`Gespeichert: ${STATUS_LABEL[data.status]||data.status}, ${data.points} Punkte/EXP.`);
    await load(false);
   };
   div.append(form);
  };
  return div;
 }
+for(const id of FILTER_IDS)$(id).addEventListener('input',()=>{saveFilters();renderFilteredTrainings(true)});
+$('showMore').addEventListener('click',()=>renderFilteredTrainings(false));
+$('clearFilters').addEventListener('click',()=>{for(const id of FILTER_IDS)$(id).value='';saveFilters();renderFilteredTrainings(true)});
+$('refreshAll').addEventListener('click',()=>renderFilteredTrainings(true));
 
+// Etappe 6a: Vereinsstufen (Pflicht/Ergänzung) – nur sichtbar, wenn «Training im Gym» freigeschaltet ist.
+let clubSched=null,clubSchedLoaded=false;
+async function loadClubSched(){if(clubSchedLoaded)return clubSched;clubSchedLoaded=true;try{const r=await db.rpc('get_club_schedule');clubSched=r.error||!r.data||!r.data.enabled||r.data.preview?null:r.data}catch{clubSched=null}return clubSched}
+function tierOptions(select,value){select.replaceChildren(new Option('Keine Stufe (Heimtraining / Trainingsart)',''));for(const t of (clubSched?.tiers||[]))select.add(new Option(`${t.label} · ${t.exp} EXP`,t.tier));select.value=value||''}
+function defaultTier(typeId,date){if(!clubSched||!date)return '';const t=currentTypes.find(x=>String(x.id)===String(typeId));const dow=((new Date(date+'T12:00:00Z').getUTCDay()+6)%7)+1;
+ const slot=(clubSched.slots||[]).find(x=>x.is_active&&x.dow===dow&&x.tier&&(t?.club_only||String(x.training_type_id)===String(typeId)));return slot?slot.tier:''}
+async function decorateTiers(){
+ // Mit Training 2.0 übernimmt «Korrigieren» (Begründung + Audit) die Einstufung; sonst Stufenwahl wie bisher.
+ if(v2List&&v2On())return;
+ if(!(await loadClubSched()))return;
+ const rows=[...document.querySelectorAll('#allEntries .entry[data-sid]')].filter(r=>r.dataset.status==='approved'&&!r.querySelector('.tier-ctl'));
+ if(!rows.length)return;
+ const r=await db.rpc('staff_training_tiers',{p_ids:rows.map(x=>x.dataset.sid)});if(r.error)return;
+ const info=new Map((r.data||[]).map(x=>[String(x.id),x]));
+ for(const row of rows){const x=info.get(row.dataset.sid);if(!x)continue;
+  const box=document.createElement('label');box.className='tier-ctl muted small';
+  const sel=document.createElement('select');tierOptions(sel,x.club_tier);sel.disabled=!x.editable;sel.setAttribute('aria-label','Stufe');sel.style.minHeight='44px';
+  const pts=document.createElement('span');pts.textContent=` · ${x.points??0} EXP${x.gym?' · Gym':''}`;
+  box.append('Stufe ',sel,pts);row.querySelector('.line').after(box);
+  sel.addEventListener('change',async()=>{sel.disabled=true;const u=await db.rpc('staff_set_training_tier',{p_submission_id:x.id,p_tier:sel.value||null});sel.disabled=false;
+   if(u.error){say('Stufe nicht geändert: '+u.error.message,true);sel.value=x.club_tier||'';return}
+   x.club_tier=u.data.club_tier;pts.textContent=` · ${u.data.points} EXP${x.gym?' · Gym':''}`;say('Stufe gespeichert: '+(u.data.tier_label||'keine Stufe')+' · '+u.data.points+' EXP');});
+ }
+}
+// Admin: Prüfbericht (Dry-Run)
+async function loadReport(){
+ const root=$('cv2ReportBody');root.replaceChildren(el('p','muted','Wird geladen …'));
+ const r=await db.rpc('admin_training_tier_review',{p_limit:20,p_offset:0});
+ root.replaceChildren();
+ if(r.error){root.append(el('p','error','Bericht nicht verfügbar: '+r.error.message));return}
+ const d=r.data||{};root.append(el('p','',`${d.total_count||0} mögliche Fehlbewertungen · Differenz gesamt ${d.total_delta||0} Punkte (nur Vorschlag, nichts gebucht).`));
+ const list=el('div','cv2-list');
+ for(const i of d.items||[]){const c=el('article','cv2-card');c.dataset.cat=i.proposed_tier;
+  c.append(el('h3','',(i.boxer_name||'Boxer')+' · '+fmtDate(i.training_date)),el('p','cv2-meta',`${i.training_type} · aktuell ${i.current_points} P → Vorschlag ${CAT[i.proposed_tier]} ${i.proposed_points} P (${i.delta>=0?'+':''}${i.delta})`),el('small','muted','Grundlage: '+i.basis));
+  const b=el('button','cv2-btn-primary','Prüfen');b.type='button';b.addEventListener('click',()=>openSheet({id:i.id,boxer_name:i.boxer_name,training_date:i.training_date,training_type_id:currentTypes.find(t=>t.name===i.training_type)?.id,training_type_name:i.training_type,status:'approved',club_tier:null,points:i.current_points,duration_minutes:null},'correct'));
+  c.append(b);list.append(c)}
+ root.append(list);
+}
+$('cv2ReportLoad').addEventListener('click',loadReport);
 
+// ---------------------------------------------------------------- Coach-Feedback
 // Update 2B: Fail-closed. Keine Feedback-Abfragen/Schreibaktionen bei deaktiviertem Flag.
 let coachFeedbackEnabled=false;
 async function setupCoachFeedback(){
@@ -294,41 +731,7 @@ $('coachFeedbackForm').addEventListener('submit',async e=>{
  status.textContent='Feedback gesendet · sichtbar bis '+new Date(visible_until+'T12:00:00Z').toLocaleDateString('de-CH')+'.';$('coachFeedbackForm').reset();if(feedbackUntil)feedbackUntil.value=addDaysIso(swissToday(),7);await loadCoachFeedbackHistory();
 });
 
-// Etappe 6b: kompakte Darstellung – Bereiche ordnen, auf- und zuklappen (merkt sich das Gerät), Sprungleiste, «Gym heute».
-const COACH_SECTIONS=[['pending','Offene Trainings',true],['gym','Gym heute',true],['entry','Training eintragen',false],['feedback','Feedback',false],['edit','Trainings bearbeiten',false],['audit','Änderungshistorie',false]];
-function coachSectionState(){try{return JSON.parse(localStorage.getItem('tl.coach.sections')||'{}')||{}}catch{return {}}}
-function saveCoachSectionState(st){try{localStorage.setItem('tl.coach.sections',JSON.stringify(st))}catch{}}
-function coachSection(key){return document.querySelector('#content [data-sec="'+key+'"]')}
-function setSectionOpen(sec,open,remember){sec.classList.toggle('is-closed',!open);const b=sec.querySelector('.tl-col-toggle');if(b){b.setAttribute('aria-expanded',String(open));b.textContent=open?'▾':'▸';b.title=open?'Zuklappen':'Aufklappen'}
- if(remember){const st=coachSectionState();st[sec.dataset.sec]=open;saveCoachSectionState(st)}}
-function makeCollapsible(sec,key,title,defaultOpen){
- if(!sec||sec.dataset.sec)return;sec.dataset.sec=key;sec.classList.add('tl-col');
- let head=[...sec.children].find(x=>x.classList.contains('line')||x.tagName==='H2');
- if(!head){head=document.createElement('div');sec.prepend(head)}
- if(head.tagName==='H2'){const wrap=document.createElement('div');head.before(wrap);wrap.append(head);head=wrap}
- head.classList.add('tl-col-head');
- const btn=document.createElement('button');btn.type='button';btn.className='secondary-btn tl-col-toggle';btn.setAttribute('aria-label',title+' auf- oder zuklappen');
- head.append(btn);
- head.addEventListener('click',e=>{if(e.target.closest('button,a,input,select')&&e.target!==btn)return;setSectionOpen(sec,sec.classList.contains('is-closed'),true)});
- const st=coachSectionState();setSectionOpen(sec,key in st?!!st[key]:defaultOpen,false);
-}
-function setupCoachLayout(){
- const content=$('content');if(!content||content.dataset.layout)return;content.dataset.layout='1';
- const pending=$('entries')?.closest('section'),edit=$('allEntries')?.closest('section'),audit=$('coachAuditSection'),feedback=$('coachFeedbackSection'),entry=document.querySelector('.staff-entry');
- let gym=document.querySelector('.gym-today');
- if(!gym){gym=document.createElement('section');gym.className='card gym-today';const h=document.createElement('h2');h.textContent='Gym heute';const body=document.createElement('div');body.className='gym-today-body muted';body.textContent='Wird geladen …';gym.append(h,body);content.append(gym)}
- const order={pending:3,gym:4,entry:5,feedback:6,edit:7,audit:8};
- const map={pending,gym,entry,feedback,edit,audit};
- for(const [key,title,open] of COACH_SECTIONS){const sec=map[key];if(!sec)continue;makeCollapsible(sec,key,title,open);sec.style.order=String(order[key])}
- const grid=content.querySelector(':scope>.grid');if(grid)grid.style.order='1';
- const notice=content.querySelector(':scope>.notice');if(notice)notice.style.order='9';
- const jump=document.createElement('nav');jump.className='coach-jump';jump.setAttribute('aria-label','Bereiche im Trainerbereich');jump.style.order='2';
- for(const [key,title] of COACH_SECTIONS){if(!map[key])continue;const b=document.createElement('button');b.type='button';b.className='secondary-btn';b.dataset.jump=key;b.textContent=title;
-  if(key==='pending'){const n=document.createElement('b');n.className='jump-count';b.append(n)}
-  b.addEventListener('click',()=>{const sec=coachSection(key);if(!sec)return;setSectionOpen(sec,true,true);sec.scrollIntoView({behavior:'smooth',block:'start'})});jump.append(b)}
- content.append(jump);
-}
-function updateCoachJumpCount(){const n=document.querySelector('.coach-jump .jump-count');if(n)n.textContent=$('pendingCount')?.textContent||''}
+// ---------------------------------------------------------------- Gym heute und Training eintragen
 async function loadGymToday(){
  const body=document.querySelector('.gym-today-body');if(!body)return;
  let r;try{r=await db.rpc('get_club_schedule')}catch(e){r={error:e}}
@@ -341,31 +744,7 @@ async function loadGymToday(){
   const st=document.createElement('span');st.className='muted';st.textContent=x.today_session?(x.today_session.status==='open'?'läuft':'bestätigt'):'noch nicht gestartet';row.append(t,st);body.append(row)}
  const a=document.createElement('a');a.href='./checkin.html';a.className='coach-profile-link';a.textContent='Zum Gym-Check-in →';body.append(a);
 }
-function historyFiltered(){return ['trainingSearch','filterBoxer','filterType','filterFrom','filterTo','filterStatus'].some(id=>$(id)&&$(id).value)}
-
 const STAFF_CATEGORY_ORDER=['Wettkampf','Boxen','Athletik','Ausdauer','Erholung & Team'];
-// Etappe 6a: Vereinsstufen (Pflicht/Ergänzung) – nur sichtbar, wenn «Training im Gym» freigeschaltet ist.
-let clubSched=null,clubSchedLoaded=false;
-async function loadClubSched(){if(clubSchedLoaded)return clubSched;clubSchedLoaded=true;try{const r=await db.rpc('get_club_schedule');clubSched=r.error||!r.data||!r.data.enabled||r.data.preview?null:r.data}catch{clubSched=null}return clubSched}
-function tierOptions(select,value){select.replaceChildren(new Option('Keine Stufe (Heimtraining / Trainingsart)',''));for(const t of (clubSched?.tiers||[]))select.add(new Option(`${t.label} · ${t.exp} EXP`,t.tier));select.value=value||''}
-function defaultTier(typeId,date){if(!clubSched||!date)return '';const t=currentTypes.find(x=>String(x.id)===String(typeId));const dow=((new Date(date+'T12:00:00Z').getUTCDay()+6)%7)+1;
- const slot=(clubSched.slots||[]).find(x=>x.is_active&&x.dow===dow&&x.tier&&(t?.club_only||String(x.training_type_id)===String(typeId)));return slot?slot.tier:''}
-async function decorateTiers(){
- if(!(await loadClubSched()))return;
- const rows=[...document.querySelectorAll('#allEntries .entry[data-sid]')].filter(r=>r.dataset.status==='approved'&&!r.querySelector('.tier-ctl'));
- if(!rows.length)return;
- const r=await db.rpc('staff_training_tiers',{p_ids:rows.map(x=>x.dataset.sid)});if(r.error)return;
- const info=new Map((r.data||[]).map(x=>[String(x.id),x]));
- for(const row of rows){const x=info.get(row.dataset.sid);if(!x)continue;
-  const box=document.createElement('label');box.className='tier-ctl muted small';
-  const sel=document.createElement('select');tierOptions(sel,x.club_tier);sel.disabled=!x.editable;sel.setAttribute('aria-label','Stufe');
-  const pts=document.createElement('span');pts.textContent=` · ${x.points??0} EXP${x.gym?' · Gym':''}`;
-  box.append('Stufe ',sel,pts);row.querySelector('.line').after(box);
-  sel.addEventListener('change',async()=>{sel.disabled=true;const u=await db.rpc('staff_set_training_tier',{p_submission_id:x.id,p_tier:sel.value||null});sel.disabled=false;
-   if(u.error){$('status').textContent='Stufe nicht geändert: '+u.error.message;sel.value=x.club_tier||'';return}
-   x.club_tier=u.data.club_tier;pts.textContent=` · ${u.data.points} EXP${x.gym?' · Gym':''}`;$('status').textContent='Stufe gespeichert: '+(u.data.tier_label||'keine Stufe')+' · '+u.data.points+' EXP';});
- }
-}
 let staffRequestId=null,staffBusy=false;
 function swissToday(){const parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(new Date());const g=t=>parts.find(x=>x.type===t)?.value||'';return `${g('year')}-${g('month')}-${g('day')}`}
 function setupStaffEntry(){
@@ -374,7 +753,7 @@ function setupStaffEntry(){
   const make=(tag,cls,text)=>{const el=document.createElement(tag);if(cls)el.className=cls;if(text!==undefined)el.textContent=text;return el};
   const field=(label,control)=>{const l=make('label','staff-field');l.append(make('span','',label),control);return l};
   box=make('section','card staff-entry');
-  const head=make('div','line');head.append(make('h2','','Training eintragen'));
+  const head=make('div','line');head.append(make('h3','','Training eintragen'));
   const hint=make('p','muted','Für einen Boxer eintragen – das Training gilt sofort als bestätigt. Punkte, EXP und Mitteilung entstehen wie bei einer normalen Bestätigung. Eigene Trainings bitte normal einreichen.');
   const form=make('form','staff-form');form.noValidate=false;
   const boxer=make('select');boxer.required=true;boxer.name='staffBoxer';
@@ -393,7 +772,7 @@ function setupStaffEntry(){
   const autoTier=()=>{if(clubSched)tier.value=defaultTier(type.value,date.value)};type.addEventListener('change',autoTier);date.addEventListener('change',autoTier);
   form.append(grid,presets,field('Bemerkung',notes),submit,status);
   box.append(head,hint,form);
-  const anchor=document.querySelector('#content > section.card');anchor.parentNode.insertBefore(box,anchor);
+  $('cv2StaffEntrySlot').append(box);
   const isJogging=()=>{const t=currentTypes.find(x=>String(x.id)===type.value);return !!t&&/^joggen$/i.test(String(t.name).trim())};
   type.addEventListener('change',()=>{kmField.hidden=!isJogging();km.required=isJogging();if(!isJogging())km.value=''});
   for(const el of [boxer,type,date,minutes,km,notes])el.addEventListener('input',()=>{staffRequestId=null});
@@ -438,17 +817,43 @@ function setupStaffEntry(){
 }
 // Etappe 10: offene Selbsteinschätzungen der Boxer als Hinweis (Fehler blenden den Hinweis nur aus).
 async function loadSelfRatingNotice(){const el=$('selfRatingNotice');if(!el)return;try{const r=await db.rpc('staff_list_self_ratings');const list=Array.isArray(r.data)?r.data.filter(x=>!x.is_self):[];if(r.error||!list.length){el.hidden=true;return}el.textContent='🃏 '+(list.length===1?'1 Selbsteinschätzung wartet':list.length+' Selbsteinschätzungen warten')+' auf dich: '+list.slice(0,3).map(x=>x.display_name).join(', ')+(list.length>3?' …':'')+' – anpassen oder freigeben →';el.href='./bewertung.html'+(list.length===1?'?selbst='+encodeURIComponent(list[0].id):'');el.hidden=false}catch{el.hidden=true}}
-async function load(clearStatus=true){ if(clearStatus)$('status').textContent='';$('error').textContent='';const {data:{user},error:authError}=await db.auth.getUser();if(authError||!user){fail('Bitte zuerst unter login.html anmelden.');return}const {data:p,error:pe}=await db.from('profiles').select('id,display_name,role,is_active').eq('auth_user_id',user.id).maybeSingle();if(pe||!p||!['admin','coach'].includes(p.role)||!p.is_active){fail('Zugriff verweigert: Nur aktive Trainer-Accounts dürfen dieses Dashboard öffnen.');return}currentAdminId=p.id;currentRole=p.role;$('welcome').textContent=`Willkommen, ${p.display_name}.`;const [pr,tr,sr,ar]=await Promise.all([db.rpc('coach_list_boxers'),db.from('training_types').select('*'),db.from('training_submissions').select('*').eq('status','pending').order('created_at',{ascending:false}).limit(100),db.from('training_submissions').select('id',{count:'exact',head:true}).eq('status','approved')]);for(const r of [pr,tr,sr,ar])if(r.error){fail('Daten konnten nicht geladen werden: '+r.error.message);return}currentPeople=pr.data;currentTypes=tr.data;renderRecentBoxers();const people=new Map(pr.data.map(x=>[x.id,x.display_name]));const types=new Map(tr.data.map(x=>[x.id,x.name]));$('pendingCount').textContent=sr.data.length===100?'100+':String(sr.data.length);$('boxerCount').textContent=pr.data.filter(x=>['boxer','coach'].includes(x.role)&&x.is_active).length;$('approvedCount').textContent=ar.count??'–';pendingBatchRows=sr.data;renderPending();fillFilter('filterBoxer',pr.data.filter(x=>['boxer','coach'].includes(x.role)),'Alle Boxer');fillFilter('filterType',tr.data,'Alle Trainingsarten');setupStaffEntry();loadSelfRatingNotice();await renderFilteredTrainings(true);
-$('content').classList.remove('hidden');setupCoachLayout();updateCoachJumpCount();loadGymToday();await setupCoachFeedback();await refreshCoachAudit()}
-for(const id of ['trainingSearch','filterBoxer','filterType','filterFrom','filterTo','filterStatus'])$(id).addEventListener('input',()=>renderFilteredTrainings(true));
-$('showMore').addEventListener('click',()=>renderFilteredTrainings(false));
-$('clearFilters').addEventListener('click',()=>{for(const id of ['trainingSearch','filterBoxer','filterType','filterFrom','filterTo','filterStatus'])$(id).value='';renderFilteredTrainings(true)});
-$('refresh').addEventListener('click',()=>load());$('refreshAll').addEventListener('click',()=>load());$('logout').addEventListener('click',async()=>{await db.auth.signOut();location.href='./login.html'});await load();
+
+// ---------------------------------------------------------------- Laden
+let firstLoad=true;
+async function load(clearStatus=true){ if(clearStatus)say('');$('error').textContent='';
+ const {data:{user},error:authError}=await db.auth.getUser();if(authError||!user){fail('Bitte zuerst unter login.html anmelden.');return}
+ const {data:p,error:pe}=await db.from('profiles').select('id,display_name,role,is_active').eq('auth_user_id',user.id).maybeSingle();
+ if(pe||!p||!['admin','coach'].includes(p.role)||!p.is_active){fail('Zugriff verweigert: Nur aktive Trainer-Accounts dürfen dieses Dashboard öffnen.');return}
+ currentAdminId=p.id;currentRole=p.role;$('welcome').textContent=`Willkommen, ${p.display_name}.`;
+ // Training 2.0 (Migration 20261031090000) erkennen; ohne Migration bleibt der bisherige Datenweg aktiv.
+ const probe=await db.rpc('staff_list_trainings',{p_status:'pending',p_limit:1,p_offset:0});
+ v2List=!probe.error&&!!probe.data&&!Array.isArray(probe.data)&&Array.isArray(probe.data.items);
+ const [pr,tr,sr,ar]=await Promise.all([db.rpc('coach_list_boxers'),db.from('training_types').select('*'),
+  v2List?Promise.resolve({data:[],error:null}):db.from('training_submissions').select('*').eq('status','pending').order('created_at',{ascending:false}).limit(100),
+  db.from('training_submissions').select('id',{count:'exact',head:true}).eq('status','approved'),loadSummary(),loadV2Config()]);
+ for(const r of [pr,tr,sr,ar])if(r.error){fail('Daten konnten nicht geladen werden: '+r.error.message);return}
+ currentPeople=pr.data;currentTypes=tr.data;pendingBatchRows=sr.data||[];
+ if(!v2List)pendingTotal=pendingBatchRows.length;else if(summary)pendingTotal=summary.pending;else pendingTotal=Number(probe.data.total_count||0);
+ renderRecentBoxers();
+ setCount('boxerCount',summary?summary.active_boxers:pr.data.filter(x=>['boxer','coach'].includes(x.role)&&x.is_active).length);
+ setCount('approvedCount',ar.count??'–');
+ if(firstLoad)restoreFilters();
+ fillFilter('filterBoxer',pr.data.filter(x=>['boxer','coach'].includes(x.role)),'Alle Boxer');fillFilter('filterType',tr.data,'Alle Trainingsarten');
+ $('filterCategory').closest('label').hidden=!v2List;
+ setupTabs();setupChips();setupStaffEntry();loadSelfRatingNotice();renderHome();
+ $('cv2ReviewReport').hidden=!(v2List&&currentRole==='admin');
+ await loadPending(true);
+ $('content').classList.remove('hidden');
+ if(firstLoad){firstLoad=false;routeFromHash()}
+ if(historyLoadedOnce||currentView==='history')await renderFilteredTrainings(true);
+ if(currentView==='boxers')renderPeople();
+ loadGymToday();await setupCoachFeedback();await refreshCoachAudit()}
+$('refresh').addEventListener('click',()=>load());$('logout').addEventListener('click',async()=>{await db.auth.signOut();location.href='./login.html'});await load();
 let coachLastInteraction=Date.now();
 for(const eventName of ['pointerdown','keydown'])document.addEventListener(eventName,()=>{coachLastInteraction=Date.now()},{passive:true});
 setInterval(()=>{
- if(document.hidden||bulkProcessing||Date.now()-coachLastInteraction<120000)return;
- if($('coachBoxerQuick')?.open||document.querySelector('.pending-checkbox:checked'))return;
- load(false).catch(err=>{$('status').textContent='Automatische Aktualisierung fehlgeschlagen: '+String(err.message||err)});
+ if(document.hidden||bulkProcessing||inflight.size||Date.now()-coachLastInteraction<120000)return;
+ if($('coachBoxerQuick')?.open||sheetEl.open||selected.size)return;
+ load(false).catch(err=>{say('Automatische Aktualisierung fehlgeschlagen: '+String(err.message||err),true)});
 },120000);
-</script><aside style="max-width:1040px;margin:var(--sp-4) auto;padding:var(--sp-4);border:1px solid var(--line-strong);border-radius:var(--r-md)"><strong>Challenges &amp; Boxer-Duelle</strong><p>Individuelle Ziele, Trainerbewertungen und Duelle – wähle den gewünschten Bereich.</p><a style="color:var(--gold)" href="./challenges.html">Challenge-Bereich ansehen →</a> · <a style="color:var(--gold)" href="./duels.html">Duell-Bereich ansehen →</a></aside><script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-quick-actions.js" defer></script><script src="./takeover-navigation.js" defer></script></body></html>
+</script><aside class="card" style="max-width:1180px;margin:var(--sp-4) auto;padding:var(--sp-4)"><strong>Challenges &amp; Boxer-Duelle</strong><p>Individuelle Ziele, Trainerbewertungen und Duelle – wähle den gewünschten Bereich.</p><a style="color:var(--gold)" href="./challenges.html">Challenge-Bereich ansehen →</a> · <a style="color:var(--gold)" href="./duels.html">Duell-Bereich ansehen →</a></aside><script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-quick-actions.js" defer></script><script src="./takeover-navigation.js" defer></script></body></html>

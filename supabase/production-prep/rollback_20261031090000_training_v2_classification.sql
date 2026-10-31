@@ -13,7 +13,7 @@ DROP FUNCTION IF EXISTS public.staff_review_training(uuid,text,text,bigint,date,
 DROP FUNCTION IF EXISTS public.staff_correct_training(uuid,bigint,date,integer,text,text);
 DROP FUNCTION IF EXISTS public.get_training_v2_config();
 DROP FUNCTION IF EXISTS public.training_reward_preview(bigint,text);
-DROP FUNCTION IF EXISTS public.staff_list_trainings(text,text,text,uuid,date,date,integer,integer);
+DROP FUNCTION IF EXISTS public.staff_list_trainings(text,text,text,uuid,date,date,integer,integer,bigint);
 DROP FUNCTION IF EXISTS public.staff_training_summary();
 DROP FUNCTION IF EXISTS public.admin_training_tier_review(integer,integer);
 DROP TRIGGER IF EXISTS league_training_request_update_guard ON public.training_submissions;

@@ -441,7 +441,8 @@ $fn$;
 
 -- Trainingsliste fürs Dashboard (serverseitige Suche, Filter und Pagination; höchstens 50 pro Seite).
 CREATE OR REPLACE FUNCTION public.staff_list_trainings(p_status text DEFAULT 'pending', p_category text DEFAULT NULL, p_search text DEFAULT NULL,
- p_boxer_id uuid DEFAULT NULL, p_from date DEFAULT NULL, p_to date DEFAULT NULL, p_limit integer DEFAULT 10, p_offset integer DEFAULT 0)
+ p_boxer_id uuid DEFAULT NULL, p_from date DEFAULT NULL, p_to date DEFAULT NULL, p_limit integer DEFAULT 10, p_offset integer DEFAULT 0,
+ p_training_type_id bigint DEFAULT NULL)
 RETURNS jsonb LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path='' AS $fn$
 DECLARE me public.profiles := league_private.require_staff(); lim integer := LEAST(GREATEST(coalesce(p_limit,10),1),50); off integer := coalesce(p_offset,0);
  q text := NULLIF(pg_catalog.btrim(coalesce(p_search,'')),''); total integer; items jsonb;
@@ -456,6 +457,7 @@ BEGIN
  WHERE (p_status IS NULL OR s.status=p_status) AND (p_boxer_id IS NULL OR s.boxer_id=p_boxer_id)
    AND (p_from IS NULL OR s.training_date>=p_from) AND (p_to IS NULL OR s.training_date<=p_to)
    AND (p_category IS NULL OR league_private.training_category(s)=p_category)
+   AND (p_training_type_id IS NULL OR s.training_type_id=p_training_type_id)
    AND (q IS NULL OR pg_catalog.strpos(pg_catalog.lower(coalesce(p.display_name,'')||' '||coalesce(t.name,'')||' '||coalesce(s.notes,'')||' '||s.training_date::text),pg_catalog.lower(q))>0);
  SELECT coalesce(pg_catalog.jsonb_agg(league_private.training_card(z.r, me.id) ORDER BY z.d DESC, z.c DESC, z.i DESC),'[]'::jsonb) INTO items
  FROM (SELECT s AS r, s.training_date AS d, s.created_at AS c, s.id AS i
@@ -463,6 +465,7 @@ BEGIN
        WHERE (p_status IS NULL OR s.status=p_status) AND (p_boxer_id IS NULL OR s.boxer_id=p_boxer_id)
          AND (p_from IS NULL OR s.training_date>=p_from) AND (p_to IS NULL OR s.training_date<=p_to)
          AND (p_category IS NULL OR league_private.training_category(s)=p_category)
+   AND (p_training_type_id IS NULL OR s.training_type_id=p_training_type_id)
          AND (q IS NULL OR pg_catalog.strpos(pg_catalog.lower(coalesce(p.display_name,'')||' '||coalesce(t.name,'')||' '||coalesce(s.notes,'')||' '||s.training_date::text),pg_catalog.lower(q))>0)
        ORDER BY s.training_date DESC, s.created_at DESC, s.id DESC LIMIT lim OFFSET off) z;
  RETURN pg_catalog.jsonb_build_object('items',items,'total_count',coalesce(total,0),'limit',lim,'offset',off);
@@ -530,11 +533,11 @@ REVOKE ALL ON FUNCTION league_private.training_reward(bigint,text), league_priva
  league_private.training_value(uuid) FROM PUBLIC, anon, authenticated;
 REVOKE ALL ON FUNCTION public.staff_review_training(uuid,text,text,bigint,date,integer,text,boolean),
  public.staff_correct_training(uuid,bigint,date,integer,text,text), public.get_training_v2_config(),
- public.training_reward_preview(bigint,text), public.staff_list_trainings(text,text,text,uuid,date,date,integer,integer),
+ public.training_reward_preview(bigint,text), public.staff_list_trainings(text,text,text,uuid,date,date,integer,integer,bigint),
  public.staff_training_summary(), public.admin_training_tier_review(integer,integer) FROM PUBLIC, anon;
 GRANT EXECUTE ON FUNCTION public.staff_review_training(uuid,text,text,bigint,date,integer,text,boolean),
  public.staff_correct_training(uuid,bigint,date,integer,text,text), public.get_training_v2_config(),
- public.training_reward_preview(bigint,text), public.staff_list_trainings(text,text,text,uuid,date,date,integer,integer),
+ public.training_reward_preview(bigint,text), public.staff_list_trainings(text,text,text,uuid,date,date,integer,integer,bigint),
  public.staff_training_summary(), public.admin_training_tier_review(integer,integer) TO authenticated;
 
 NOTIFY pgrst, 'reload schema';

@@ -18,6 +18,7 @@ jobs:
           node-version: '22'
       - run: npm install --no-save --package-lock=false jsdom@26.1.0
       - run: node tests/release-static-contracts.cjs
+      - run: node tests/training-v2-contracts.cjs
       - run: node tests/holo-emote-podium-contracts.cjs
       - run: node tests/holo-gear-previews-contracts.cjs
       - run: node tests/design-foundation-check.cjs
@@ -89,3 +90,23 @@ jobs:
         timeout-minutes: 5
       - run: node tests/coach-feedback-browser.cjs
         timeout-minutes: 5
+
+  training-v2-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false playwright@1.56.1
+      - run: npx playwright install --with-deps chromium webkit
+      - name: Training 2.0 und Trainer-Dashboard 2.0 (Chromium + WebKit, gemocktes Supabase)
+        run: SHOTS=training-v2-screenshots REQUIRE_WEBKIT=1 node tests/training-v2-browser.cjs
+        timeout-minutes: 10
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: training-v2-screenshots
+          path: training-v2-screenshots
+          if-no-files-found: warn

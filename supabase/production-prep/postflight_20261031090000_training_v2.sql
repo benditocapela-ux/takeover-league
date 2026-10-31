@@ -2,7 +2,7 @@
 SELECT 'Schalter training_v2 aus' AS check_name, (EXISTS (SELECT 1 FROM public.league_feature_flags WHERE feature_key='training_v2' AND NOT is_enabled))::text AS ok
 UNION ALL SELECT 'Neue RPCs nur für angemeldete Nutzer', (has_function_privilege('authenticated','public.staff_review_training(uuid,text,text,bigint,date,integer,text,boolean)','EXECUTE')
   AND NOT has_function_privilege('anon','public.staff_review_training(uuid,text,text,bigint,date,integer,text,boolean)','EXECUTE')
-  AND NOT has_function_privilege('anon','public.staff_list_trainings(text,text,text,uuid,date,date,integer,integer)','EXECUTE'))::text
+  AND NOT has_function_privilege('anon','public.staff_list_trainings(text,text,text,uuid,date,date,integer,integer,bigint)','EXECUTE'))::text
 UNION ALL SELECT 'Hilfsfunktionen für App-Rollen gesperrt', (NOT has_function_privilege('authenticated','league_private.training_reward(bigint,text)','EXECUTE')
   AND NOT has_function_privilege('authenticated','league_private.training_insert_guard()','EXECUTE'))::text
 UNION ALL SELECT 'Trigger aktiv (Einfügen, Ändern)', (SELECT count(*)::text FROM pg_trigger WHERE tgname IN ('league_training_insert_guard','league_training_request_update_guard') AND tgrelid='public.training_submissions'::regclass)
