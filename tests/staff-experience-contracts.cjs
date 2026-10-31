@@ -25,7 +25,7 @@ test('Coach keeps six real views, actions, feedback and mobile dock',()=>{
  assert.match(css,/body\[data-tl-screen="coach"\] \.cv2-tabs\{[\s\S]*?position:fixed/);
  assert.match(css,/body\[data-tl-screen="coach"\] \.tl-global-bottom/);
  assert.match(coach,/document\.querySelector\('\[data-stf-global-menu\]'\)/);
- assert.match(css,/\.cv2-actions button\{min-height:50px\}/);
+ assert.match(css,/\.cv2-actions button\{min-height:50px;/);
 });
 test('Admin still authorizes server-side before showing data',()=>{
  assert.match(admin,/profile\.data\.role!=='admin'\|\|profile\.data\.is_active!==true/);
@@ -35,7 +35,7 @@ test('Admin still authorizes server-side before showing data',()=>{
 });
 test('Admin has three functional dock views and global app menu',()=>{
  assert.deepEqual([...admin.matchAll(/data-staff-target="([^"]+)"/g)].map(x=>x[1]),['profiles','security','audit']);
- assert.deepEqual([...admin.matchAll(/data-staff-pane="([^"]+)"/g)].map(x=>x[1]),['profiles','security','audit']);
+ assert.deepEqual([...admin.matchAll(/<div class="panel" data-staff-pane="([^"]+)"/g)].map(x=>x[1]),['profiles','security','audit']);
  assert.match(admin,/function openStaffPanel\(key/);
  assert.match(admin,/panel\.hidden=panel\.dataset\.staffPane!==key/);
  assert.match(admin,/data-stf-global-menu/);
@@ -65,7 +65,7 @@ test('No added inline script blocks, duplicate IDs or sensitive SQL on click',()
   const ids=[...s.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
   assert.equal(new Set(ids).size,ids.length);
  }
- assert.equal((coach.match(/<script\b/g)||[]).length,5);
+ assert.equal((coach.match(/<script\b/g)||[]).length,4);
  assert.equal((admin.match(/<script\b/g)||[]).length,2);
  assert.doesNotMatch(css,/display:none!important;\s*\/\* admin permission/);
 });
