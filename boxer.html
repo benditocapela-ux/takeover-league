@@ -439,5 +439,5 @@ $('form').addEventListener('submit',async e=>{
   $('notes').value='';$('joggingKm').value='';$('techniqueMinutes').value='';$('kind').value=String(type.id);$('kind').dispatchEvent(new Event('change',{bubbles:true}));updateFields();await load();
  }catch(err){show('Einreichen fehlgeschlagen: '+String(err.message||err)+'. Bitte prüfen, bevor du erneut sendest.','error')}
  finally{trainingSubmitBusy=false;$('submit').disabled=false}
-});$('refresh').addEventListener('click',load);$('logout').addEventListener('click',async()=>{await db.auth.signOut();location.href='./login.html'});await init();
+});document.addEventListener('takeover:club-today-submitted',()=>load().catch(err=>console.warn('Training nach Ein-Klick-Antrag neu laden:',err)));$('refresh').addEventListener('click',load);$('logout').addEventListener('click',async()=>{await db.auth.signOut();location.href='./login.html'});await init();
 </script><script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-quick-actions.js" defer></script><script src="./takeover-choice-cards.js" defer></script><script src="./takeover-training-choices.js" defer></script><script src="./takeover-training-v2.js" defer></script><script src="./takeover-performance.js" defer></script><script src="./takeover-navigation.js" defer></script></body></html>
