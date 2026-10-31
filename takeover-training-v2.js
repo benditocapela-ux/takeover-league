@@ -155,7 +155,7 @@
    const quick=await import('./takeover-club-today.js');
    quick.mountBoxerPrompt({db:ctx.db,cfg:{...state.cfg,enabled:true},onIndividual:()=>{
     state.loc='individual';state.choice=null;remember();render();
-   }});
+   },onClub:()=>{state.loc='club';state.choice=null;remember();render();}});
   }catch(err){console.warn('Club-Today-Prompt nicht geladen:',err)}
  }
  if(window.__tlTrainingCtx)start(window.__tlTrainingCtx);
