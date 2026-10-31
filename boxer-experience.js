@@ -290,6 +290,77 @@
     setText('ex-level','LVL '+String(level).padStart(2,'0'));
     setText('ex-exp',fmt(Math.max(0,xp-threshold))+' / '+fmt(needed)+' EXP');
   }
+  function renderStaffPreview() {
+    // Read-only exhibition of the Boxer UX for active staff. No boxer records,
+    // other users' private data, or training/write RPCs are requested.
+    state.preview=true;
+    document.body.dataset.staffPreview='true';
+    const banner=$('ex-preview-banner');
+    if(banner)banner.hidden=false;
+    const label=document.querySelector('.ex-status');
+    if(label)label.textContent='BOXER EXPERIENCE · DEMOANSICHT';
+    setText('ex-home-name','DEMO BOXER');
+    setText('ex-welcome','So sieht die neue Boxer-Oberfläche aus. Die hier gezeigten Boxerwerte sind Beispieldaten.');
+    setText('ex-level','LVL 12');
+    setText('ex-exp','120 / 375 EXP · BEISPIEL');
+    setText('ex-week-sessions','–');
+    setText('ex-pending','–');
+    setText('ex-home-rank','–');
+    setText('ex-overall','78');
+    setText('ex-pos','KONTER-BOXER');
+    setText('ex-league-rank','–');
+    setText('ex-league-points','–');
+    const P=window.TLPerf,H=window.TLHolo;
+    const makeLook=(tone,color)=>H?{...H.DEF,tone,glove:color,bottomc:color,pose_profile:'guard',pose_card:'guard'}:null;
+    const own=makeLook(2,'rot');
+    const ownHolo=safeHolo(own,{pose:'guard',scene:'none',holo:false,label:'Beispiel-Holo'});
+    $('ex-home-holo').innerHTML=ownHolo||'<span class="ex-note">Beispiel-Holo</span>';
+    const categories={OFF:82,DEF:79,BEI:76,KON:80,TAK:74,MEN:77};
+    if(P&&P.card){
+      $('ex-fut-card').innerHTML=P.card({
+        name:'DEMO BOXER',overall:78,categories,pos:'KTR',width:185,
+        look:{holo:own}
+      });
+    }else{
+      $('ex-fut-card').textContent='FUT-Card · Vorschau ohne Echtwerte';
+    }
+    if(P&&P.radarSVG){
+      const scores={o:72,v:61,c:84,p:43,s:79,a:48};
+      $('ex-radar').innerHTML=P.radarSVG(scores,null,330);
+    }else $('ex-radar').textContent='Boxstil-Diagramm · Beispiel';
+    setText('ex-style-title','KONTER-BOXER · BEISPIEL');
+    setText('ex-style-text','Beispielwerte zur Vorschau. Die echte Karte und das Diagramm werden bei einem Boxer aus seinen eigenen Daten geladen.');
+    const rows=[
+      {boxer_name:'DEMO A',rank_position:1,monthly_points:1260},
+      {boxer_name:'DEMO B',rank_position:2,monthly_points:1140},
+      {boxer_name:'DEMO C',rank_position:3,monthly_points:950}
+    ];
+    renderPodium(rows,{'DEMO A':makeLook(4,'schwarzgold'),'DEMO B':makeLook(1,'blau'),'DEMO C':makeLook(3,'rot')});
+    // All forms and quick requests remain intentionally disabled in staff preview.
+    const host=$('ex-training-options');
+    host.replaceChildren();
+    const text=document.createElement('p');
+    text.className='ex-note';
+    text.textContent='Schreibgeschützte Vorschau. Ein echter Boxer entscheidet hier zwischen «Ja, im Verein» und «Nein, eigenes Training». Der Server prüft den aktuellen Stundenplan. In dieser Vorschau werden keine Trainings erfasst.';
+    host.append(text);
+    const history=$('ex-training-history');
+    history.textContent='Keine realen Trainingsdaten in der Vorschau.';
+    const action=document.querySelector('.ex-view[data-view="heute"] a[href*="boxer.html"]');
+    if(action){
+      const disabled=document.createElement('span');
+      disabled.className='ex-btn ex-btn-ghost ex-preview-no-write';
+      disabled.textContent='TRAININGSANTRAG IN VORSCHAU GESPERRT';
+      action.replaceWith(disabled);
+    }
+    // Prevent navigating into a live submission flow from any preview section.
+    document.querySelectorAll('.ex-view[data-view="training"] a[href*="boxer.html"], .ex-view[data-view="training"] a[href*="checkin.html"]').forEach(anchor=>{
+      anchor.removeAttribute('href');
+      anchor.setAttribute('aria-disabled','true');
+      anchor.classList.add('ex-preview-no-write');
+    });
+    $('ex-gate').hidden=true;
+    $('ex-app').hidden=false;
+  }
   async function init(){
     bindNavigation();
     const P=window.TLPerf;
@@ -302,7 +373,17 @@
       const pr=await state.db.from('profiles').select('id,display_name,role,is_active').eq('auth_user_id',user.id).maybeSingle();
       const profile=pr.data;
       if(pr.error||!profile||!profile.is_active){showGate('KEIN AKTIVES PROFIL','Für dieses Konto ist kein aktiver Boxer freigeschaltet.','ZUM LOGIN');return}
-      if(profile.role!=='boxer'){showGate('BOXER-BEREICH','Diese neue Oberfläche ist für Boxer reserviert. Für Trainer und Admins bleibt das bisherige Dashboard erhalten.','TRAINER-DASHBOARD','./coach.html');return}
+      if(profile.role!=='boxer'){
+        const staff=profile.role==='coach'||profile.role==='admin';
+        const preview=new URLSearchParams(location.search).get('preview')==='1';
+        if(staff&&preview){
+          state.profile=profile;
+          renderStaffPreview();
+          return;
+        }
+        showGate('BOXER-BEREICH','Boxer sehen hier ihre eigenen Daten. Trainer und Admins können die schreibgeschützte Vorschau öffnen.','BOXER-VORSCHAU','./boxer-experience.html?preview=1');
+        return;
+      }
       state.profile=profile;
       setText('ex-home-name',profile.display_name||'MEIN BOXER');
       setText('ex-welcome','Willkommen, '+profile.display_name+'. Dein nächster Schritt ist nur einen Klick entfernt.');
