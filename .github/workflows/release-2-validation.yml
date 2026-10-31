@@ -154,6 +154,7 @@ jobs:
         run: |
           node tests/boxer-holo-browser.cjs
           node tests/boxer-responsive-layout-browser.cjs
+          node tests/premium-live-browser.cjs
         timeout-minutes: 8
       - name: Verify 32 outfits and anatomical glove pixel regressions
         env:
