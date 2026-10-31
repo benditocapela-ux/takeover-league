@@ -267,7 +267,7 @@ async function boxerFlow(browser,engine){
  assert.ok(await page.isVisible('#form'),'No opens individual training');
  assert.equal(await page.getAttribute('#trainingV2 .tl-v2-cards [role="radio"]:last-child','aria-checked'),'true','individual location selected');
  // Reload a fresh mock session to test the one-tap Yes path; RPC does not award points.
- await page.goto(page.url().split('?')[0]+'#trainingFormCard');
+ await page.goto(page.url().split('#')[0].split('?')[0]+'#trainingFormCard');
  await page.waitForSelector('#ct-boxer');
  await page.getByRole('button',{name:/Ja, im Verein/}).click();
  await page.waitForFunction(()=>document.querySelector('#ct-boxer .ct-result')?.textContent &&
@@ -276,7 +276,7 @@ async function boxerFlow(browser,engine){
  assert.match(quickMsg,/eingetragen und zur Trainerfreigabe eingereicht|Heute ist kein Pflichttraining/);
  assert.equal((await page.evaluate(()=>window.__stats.inserted)).length,0,'quick request is RPC only, no client insert');
  // The optional club-form path remains usable for supplementary trainings and legacy validation.
- await page.goto(page.url().split('?')[0]+'?club=1#trainingFormCard');
+ await page.goto(page.url().split('#')[0].split('?')[0]+'?club=1#trainingFormCard');
  await page.waitForSelector('#trainingV2 .tl-v2-card');
  assert.equal(await page.isVisible('#form'),true,'supplementary club form reachable');
  await page.locator('#trainingFormCard').scrollIntoViewIfNeeded();
