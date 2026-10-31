@@ -50,7 +50,7 @@ test('Legacy boxer studio remains discoverable; training deep links are preserve
 test('New static page and its JS are included in Pages release assembly',()=>{
  const builder=fs.readFileSync('./tools/assemble-pages-site.cjs','utf8');
  assert.match(publish,/node tools\/assemble-pages-site\.cjs _site/);
- assert.match(builder,/\.html.*\.js.*\.css/);
+ assert.match(builder,/EXTENSIONS=new Set\(\['\.html','\.js','\.css'/);
  assert.match(builder,/fs\.copyFileSync\(path\.join\(source,entry\.name\)/);
  assert.match(exp,/<script src="\.\/boxer-experience\.js" defer><\/script>/);
 });
