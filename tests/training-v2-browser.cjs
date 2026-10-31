@@ -26,6 +26,10 @@ function injected(cfg){
  const tiers={pflicht:{tier:'pflicht',label:'Pflichttraining',exp:60,coins:15,pass_points:15},ergaenzung:{tier:'ergaenzung',label:'Ergänzungstraining',exp:40,coins:12,pass_points:12}};
  const reward=(typeId,tier)=>{const t=types.find(x=>x.id===Number(typeId));const ct=tier&&tiers[tier];const p=Math.max(ct?ct.exp:0,t?t.points:0);return {tier:tier||null,tier_label:ct?ct.label:null,points:p,exp:p,coins:Math.max(ct?ct.coins:0,10),pass_points:ct?ct.pass_points:10}};
  const slots=[[1,1,'Montag'],[2,3,'Mittwoch'],[3,6,'Samstag']].map(([id,d,n])=>({slot_id:id,dow:d,day_name:n,label:'Reguläres Boxtraining',training_type_id:1,training_type:'Reguläres Boxtraining',duration_minutes:90,reward:reward(1,'pflicht')}));
+ if(cfg.forceTodaySlot&&!slots.some(s=>s.dow===dow(today))){
+  slots.push({slot_id:99,dow:dow(today),day_name:'Heute',label:'Reguläres Boxtraining',training_type_id:1,
+   training_type:'Reguläres Boxtraining',duration_minutes:90,reward:reward(1,'pflicht')});
+ }
  const extras=[['sandsack','Sandsacktraining im Verein',10],['athletik','Athletiktraining im Verein',4],['technik','Techniktraining im Verein',3]].map(([key,label,t])=>({key,label,training_type_id:t,training_type:types.find(x=>x.id===t).name,reward:reward(t,'ergaenzung')}));
  const v2config={enabled:cfg.v2!==false,preview:cfg.v2===false,today,tiers:Object.values(tiers),pflicht:slots,extras,types:types.map(t=>({id:t.id,name:t.name,category:t.category,club_only:t.club_only,reward:reward(t.id,null)}))};
  const names=['Anna','Ben','Bob','Cleo','Dario','Elif','Fynn','Gina','Hugo','Ida','Jon','Kaya'];
@@ -45,7 +49,7 @@ function injected(cfg){
  const card=s=>{const sug=sugg(s),eff=s.status==='approved'?s.club_tier:sug;return {...s,boxer_name:people.find(p=>p.id===s.boxer_id)?.display_name,training_type_name:types.find(t=>t.id===s.training_type_id)?.name,
   requested_label:label(s),suggested_tier:sug,category:eff||'individual',reward:reward(s.training_type_id,eff),points:tx.get(s.id)??null,exp:tx.get(s.id)??null,
   conflicts:s.status==='pending'&&s.gymConflict?['gym_same_day']:[],corrected:!!s.tier_note,editable:true,own:false}};
- const stats={reviews:[],corrections:[],inserted:[],failNext:0};window.__stats=stats;
+ const stats={reviews:[],corrections:[],inserted:[],failNext:0,quickCheckins:0};window.__stats=stats;
  const err=(message,code)=>({data:null,error:{message,code:code||'P0001'}});
  const rpc=async(name,args)=>{
   calls.push([name,args]);
@@ -59,6 +63,12 @@ function injected(cfg){
     if(!todaySlots.length)return {data:{status:'no_slot'},error:null};
     const picked=todaySlots.find(x=>args?.p_slot_id==null||x.slot_id===Number(args.p_slot_id));
     if(!picked)return err('Einheit heute nicht im Stundenplan','22023');
+    if(cfg.gymOnly){
+     if(!cfg.gymOpen)return {data:{status:'gym_not_open',label:picked.label},error:null};
+     if(stats.quickCheckins)return {data:{status:'already_checked_in',label:picked.label},error:null};
+     stats.quickCheckins++;
+     return {data:{status:'checked_in',label:picked.label,session_id:11},error:null};
+    }
     return {data:{status:'submitted',label:picked.label,training_date:today},error:null};
    }
    case 'staff_training_summary':return {data:{today,enabled:true,pending:subs.filter(s=>s.status==='pending').length,pending_conflicts:subs.filter(s=>s.status==='pending'&&s.gymConflict).length,
@@ -104,7 +114,11 @@ function injected(cfg){
    insert:async payload=>{await new Promise(r=>setTimeout(r,60));stats.inserted.push(payload);return {data:payload,error:null}},
    upsert:async()=>({data:null,error:null}),delete:()=>({eq:async()=>({data:null,error:null})}),then:(a,b)=>Promise.resolve(compute()).then(a,b)};
   function compute(){
-   let rows=table==='profiles'?[me]:table==='training_types'?types:table==='training_submissions'?(role==='boxer'?[]:subs):table==='league_feature_flags'?[{feature_key:'coach_feedback',is_enabled:false}]:[];
+   let rows=table==='profiles'?[me]:table==='training_types'?types:table==='training_submissions'?(role==='boxer'?[]:subs):table==='league_feature_flags'?[
+     {feature_key:'coach_feedback',is_enabled:false},
+     {feature_key:'gym_training',is_enabled:!!cfg.gymOnly},
+     {feature_key:'club_checkin_only',is_enabled:!!cfg.gymOnly}
+    ]:[];
    rows=rows.filter(r=>f.every(([k,v,op])=>op==='in'?v.includes(r[k]):k==='auth_user_id'||r[k]===v));
    if(o.opt?.head)return {data:null,count:rows.length,error:null};return {data:rows,error:null};
   }
@@ -317,13 +331,35 @@ async function boxerFlow(browser,engine){
  await context.close();
  console.log('PASS '+engine+': Boxer-Formular – Ort → Einheit → Details → Belohnungsvorschau, Datum gegen Pflichttag geprüft, Antrag ohne Stufe, doppelt = eine Meldung, individuelle Arten ohne Vereinsarten');
 }
+async function gymOnlyFlow(browser,engine){
+ for(const open of [true,false]){
+  const {page,context,errors}=await open(browser,
+   {role:'boxer',gymOnly:true,gymOpen:open,forceTodaySlot:true},'boxer.html');
+  await page.waitForSelector('#ct-boxer');
+  await page.getByRole('button',{name:/Ja, im Verein/}).click();
+  await page.waitForFunction(()=>document.querySelector('#ct-boxer .ct-result')?.textContent
+    && !/wird gespeichert/.test(document.querySelector('#ct-boxer .ct-result').textContent));
+  const msg=await page.textContent('#ct-boxer .ct-result');
+  assert.match(msg,open?/Erfolgreich eingecheckt/:/noch nicht vom Trainer/);
+  assert.equal((await page.evaluate(()=>window.__stats.inserted)).length,0,
+   'Gym one-tap must not insert a training submission in the browser');
+  if(open){
+   await page.getByRole('button',{name:/Ja, im Verein/}).click();
+   await page.waitForFunction(()=>/bereits eingecheckt/.test(document.querySelector('#ct-boxer .ct-result')?.textContent||''));
+   assert.equal(await page.evaluate(()=>window.__stats.quickCheckins),1,'second click is idempotent');
+  }
+  assert.deepEqual(errors.filter(e=>!/Gamification|takeover-gamification/.test(e)),[]);
+  await context.close();
+ }
+ console.log('PASS '+engine+': Gym-only – offener Slot wird eingecheckt, kein offener Slot zeigt Hinweis, wiederholter Klick ohne Doppelbuchung');
+}
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));url='http://127.0.0.1:'+server.address().port;
  const engines=[['chromium',playwright.chromium],['webkit',playwright.webkit]];
  let ran=0;
  for(const [name,type] of engines){
   let browser;try{browser=await type.launch({headless:true})}catch(e){if(name==='chromium')throw e;console.log('SKIP '+name+': nicht installiert ('+e.message.split('\n')[0]+')');continue}
-  try{await coachFlow(browser,name);await boxerFlow(browser,name);ran++}finally{await browser.close()}
+  try{await coachFlow(browser,name);await boxerFlow(browser,name);await gymOnlyFlow(browser,name);ran++}finally{await browser.close()}
  }
  server.close();
  if(process.env.REQUIRE_WEBKIT&&ran<2)throw new Error('WebKit required');
