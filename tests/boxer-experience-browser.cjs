@@ -1,5 +1,5 @@
 'use strict';
-// Boxer Experience V1 (PR #83) im echten Browser mit gemocktem Supabase-SDK (keine echten Konten, keine Schreibzugriffe).
+// Boxer Experience (Takeover 3.0: integriertes Trainingsformular statt iframe) im echten Browser mit gemocktem Supabase-SDK (keine echten Konten, keine Schreibzugriffe).
 // Prüft: Anmeldung/Rollen, fünf Bereiche, Holo nur auf «Heute», Podium mit Top 3, feststehende FUT-Card + Boxstil-Diagramm,
 // scrollbarer Inhalt, Training-Bereich mit dem Ein-Klick-RPC aus PR #84 (alle Status) und Rückfall ohne Training 2.0,
 // Touch/Tastatur, 320/390/1366 px ohne Querscrollen. Chromium; WebKit, wenn installiert (CI). Screenshots mit SHOTS=Ordner.
@@ -34,7 +34,7 @@ function injected(cfg){
      return {data:{status:st,label:'Reguläres Boxtraining',submission_id:'x1',training_date:today},error:null}}
    default:return {data:[],error:null};
   }};
- function query(table){const f=[],o={};const self={select:(x,opt)=>{o.opt=opt;return self},eq:(k,v)=>{f.push([k,v]);return self},in:(k,v)=>{f.push([k,v,'in']);return self},order:()=>self,limit:()=>self,
+ function query(table){const f=[],o={};const self={select:(x,opt)=>{o.opt=opt;return self},eq:(k,v)=>{f.push([k,v]);return self},in:(k,v)=>{f.push([k,v,'in']);return self},order:()=>self,limit:()=>self,range:()=>self,insert:p=>{(window.__inserts=window.__inserts||[]).push([table,p]);return self},upsert:()=>self,delete:()=>self,
    maybeSingle:()=>({then:(a,b)=>Promise.resolve({data:compute().data[0]||null,error:null}).then(a,b)}),then:(a,b)=>Promise.resolve(compute()).then(a,b)};
   // wie postgrest-js: nur «thenable», kein .catch
   function compute(){
@@ -106,63 +106,40 @@ async function run(browser,engine){
  // Training: Ja/Nein, Ein-Klick-RPC aus PR #84, Doppelklick, Status, Ergänzung separat
  await page.click('.ex-menu [data-tab="training"]');
  await page.waitForSelector('text=Warst du heute im Vereinstraining?');
- assert.equal(await page.getAttribute('text=NEIN, EIGENES TRAINING >> xpath=ancestor::a','href'),'./boxer.html?individual=1#trainingFormCard');
- assert.equal(await page.getAttribute('a.ex-link-card:has-text("ERGAENZUNGSTRAINING IM VEREIN")','href'),'./boxer.html?club=1#trainingFormCard');
- const yes=page.getByRole('button',{name:/JA, IM VEREIN/});
+ const yes=page.getByRole('button',{name:/Ja, im Verein/i});
  await yes.dblclick();
  await page.waitForFunction(()=>/zur Trainerfreigabe eingereicht/.test(document.querySelector('#ex-training-options [role=status]').textContent));
  assert.equal(await page.evaluate(()=>window.__quick.length),1,'double click → one request (button disabled while saving)');
  await yes.click();
  await page.waitForFunction(()=>/bereits eingereicht/.test(document.querySelector('#ex-training-options [role=status]').textContent));
  if(engine==='chromium')await shot(page,'83-04-training-ein-klick');
- // Non-club and supplementary actions must stay IN the five-tab application.
- // A small same-origin fixture verifies the navigation shell; the original
- // boxer.html form remains separately covered by training-v2-browser.cjs.
- const fakeTraining='<!doctype html><html><head><title>Training</title></head><body data-tl-screen="boxer"><main><div class="tl-screen-ribbon">Altes Studio</div><div id="content" class="studio-content"><div id="studioPanelOverview" class="studio-pane-overview"><section class="card" id="trainingFormCard"><h2>Training einreichen</h2><form id="form"><label for="kind">Art</label><select id="kind"><option>Joggen</option></select><input id="date" type="date"><button id="submit" type="submit">Training beantragen</button></form></section></div></div></main></body></html>';
- await page.route(/\/boxer\.html(?:\?|$)/,route=>route.fulfill({status:200,contentType:'text/html',body:fakeTraining}));
- const openEmbedded=async(selector,expected)=>{
-  await page.locator(selector).first().click();
-  await page.locator('#ex-flow:not([hidden])').waitFor();
-  await page.waitForFunction(()=>document.getElementById('ex-flow-frame').style.visibility==='visible');
-  assert.match(await page.locator('#ex-flow-frame').getAttribute('src'),expected);
-  assert.match(page.url(),/boxer-experience\.html/,'top-level URL remains boxer experience');
-  assert.equal(await page.locator('.ex-menu [data-tab]').count(),5);
- };
- await openEmbedded('#ex-training-options a:has-text("NEIN, EIGENES TRAINING")',/boxer\.html\?individual=1#trainingFormCard/);
- assert.ok(await page.frameLocator('#ex-flow-frame').locator('#form').isVisible(),'original form is now inside modern shell');
- assert.ok(await page.frameLocator('#ex-flow-frame').locator('.tl-screen-ribbon').isHidden(),'old page header not shown in app');
- assert.ok(await page.frameLocator('#ex-flow-frame').locator('body.tl-ex-embedded.tl-ex-training').count()===1);
- await page.locator('#ex-flow-back').click();
- assert.ok(await page.locator('#ex-flow').isHidden(),'back restores original modern tab');
- await openEmbedded('#ex-training-options a:has-text("ERGAENZUNGSTRAINING IM VEREIN")',/boxer\.html\?club=1#trainingFormCard/);
+ // Takeover 3.0: «Nein, eigenes Training» und Ergänzungstraining öffnen das integrierte Formular (kein iframe, keine alte Seite).
+ assert.equal(await page.locator('iframe').count(),0,'no iframe in Boxer Experience');
+ await page.getByRole('button',{name:/Nein, eigenes Training/i}).click();
+ await page.locator('#ex-training-form:not([hidden]) .tf-form').waitFor();
+ assert.match(page.url(),/boxer-experience\.html#training\/eigenes$/);
+ assert.equal(await page.locator('.ex-menu [data-tab]').count(),5);
+ await page.locator('.tf-close').click();
+ assert.ok(await page.locator('#ex-training-form').isHidden(),'close restores the training tab');
+ await page.getByRole('button',{name:/Ergänzungstraining im Verein/i}).click();
+ await page.locator('.tf-card[aria-checked="true"]:has-text("Im Verein")').waitFor();
+ assert.match(page.url(),/#training\/verein$/);
  await page.locator('.ex-menu [data-tab="kaempfe"]').click();
- assert.ok(await page.locator('#ex-flow').isHidden(),'main tab closes embedded area');
  assert.ok(await page.locator('[data-view="kaempfe"]').isVisible());
-
- // Representative internal route and nested route stay framed.
- const simple=(label)=>'<!doctype html><html><head><title>'+label+'</title></head><body data-tl-screen="shop"><div class="tl-screen-ribbon">Alte Navigation</div><main><h1>'+label+'</h1><a href="./goals.html">Meine Ziele</a></main></body></html>';
- await page.route(/\/shop\.html(?:\?|$)/,route=>route.fulfill({status:200,contentType:'text/html',body:simple('Shop')}));
- await page.route(/\/goals\.html(?:\?|$)/,route=>route.fulfill({status:200,contentType:'text/html',body:simple('Ziele')}));
+ // Weitere Bereiche sind normale Seiten in der gemeinsamen App-Shell (keine Einbettung).
  await page.locator('.ex-menu [data-tab="boxer"]').click();
- await openEmbedded('.ex-view[data-view="boxer"] a[href="./shop.html"]',/shop\.html$/);
- await page.frameLocator('#ex-flow-frame').getByRole('link',{name:'Meine Ziele'}).click();
- await page.waitForFunction(()=>document.getElementById('ex-flow-frame').src.endsWith('shop.html')&&
-  document.getElementById('ex-flow-frame').contentWindow.location.pathname.endsWith('/goals.html')&&
-  document.getElementById('ex-flow-frame').style.visibility==='visible');
- assert.match(page.url(),/boxer-experience\.html/,'nested navigation does not replace the new app');
- await page.locator('#ex-flow-back').click();
- assert.ok(await page.locator('#ex-flow').isHidden());
+ assert.equal(await page.getAttribute('.ex-view[data-view="boxer"] a[href="./shop.html"]','href'),'./shop.html');
  await page.locator('.ex-menu [data-tab="training"]').click();
 
  // Tastatur: Tabs per Enter
  await page.focus('.ex-menu [data-tab="heute"]');await page.keyboard.press('Enter');
  assert.ok(await page.isVisible('#ex-home-holo'));
  // Drawer: Escape schliesst und gibt den Fokus zurück
- await page.click('#ex-settings');assert.ok(await page.isVisible('#ex-drawer'));await page.keyboard.press('Escape');assert.ok(await page.isHidden('#ex-drawer'));
+ await page.click('#ex-settings');assert.ok(await page.isVisible('#tla-drawer'));assert.match(await page.textContent('#tla-drawer'),/MEIN ACCOUNT/i);await page.keyboard.press('Escape');assert.ok(await page.isHidden('#tla-drawer'));
  // Simulate iPhone standalone status-bar inset even on desktop CI runners.
  // The top-right menu and drawer close must be below that reserved area.
  const simulatedInset=58;
- const safeStyle=await page.addStyleTag({content:':root{--ex-safe-top:'+simulatedInset+'px!important}'});
+ const safeStyle=await page.addStyleTag({content:':root{--ex-safe-top:'+simulatedInset+'px!important;--tla-safe-top:'+simulatedInset+'px!important}'});
  const headBounds=await page.locator('.ex-head').boundingBox();
  const menuBounds=await page.locator('#ex-settings').boundingBox();
  assert.ok(headBounds&&headBounds.height>=simulatedInset+62,'iPhone safe area must increase header height');
@@ -174,15 +151,15 @@ async function run(browser,engine){
    return button.contains(document.elementFromPoint(r.left+r.width/2,r.top+r.height/2));
  }),true,'menu is topmost hit target, not covered by another element');
  await page.click('#ex-settings');
- const closeBounds=await page.locator('#ex-close').boundingBox();
+ const closeBounds=await page.locator('#tla-drawer-close').boundingBox();
  assert.ok(closeBounds&&closeBounds.y>=simulatedInset,'drawer close button must sit below iPhone status bar');
- await page.click('#ex-close');
- assert.ok(await page.isHidden('#ex-drawer'),'menu still closes under safe-area inset');
+ await page.click('#tla-drawer-close');
+ assert.ok(await page.isHidden('#tla-drawer'),'menu still closes under safe-area inset');
  await safeStyle.evaluate(node=>node.remove());
  assert.deepEqual(errors,[],'no page errors: '+JSON.stringify(errors));await context.close();
  // Weitere Status, Check-in-only, zwei Einheiten, Rückfall ohne Training 2.0 bzw. ohne Migration
  const statusCase=async(cfg,re,extra)=>{const o=await open(browser,cfg,'#training');await o.page.waitForSelector('text=Warst du heute im Vereinstraining?');
-  await o.page.getByRole('button',{name:/JA, IM VEREIN/}).click();
+  await o.page.getByRole('button',{name:/Ja, im Verein/i}).click();
   await o.page.waitForFunction(r=>new RegExp(r).test(document.querySelector('#ex-training-options [role=status]').textContent),re.source);
   if(extra)await extra(o.page);assert.deepEqual(o.errors,[]);await o.context.close()};
  await statusCase({statuses:['checked_in']},/Erfolgreich eingecheckt/);
@@ -193,14 +170,15 @@ async function run(browser,engine){
  await statusCase({statuses:['choose_gym_session']},/Mehrere Gym-Einheiten/,async p=>assert.ok(await p.locator('#ex-training-options a[href="./checkin.html"]').count()>=1));
  await statusCase({checkinOnly:true,statuses:['gym_not_open']},/noch nicht zum Check-in geöffnet/,async p=>{
   assert.match(await p.textContent('#ex-training-options'),/betreuten Gym-Check-in/);
-  assert.equal(await p.getAttribute('a.ex-link-card:has-text("ERGAENZUNGSTRAINING IM VEREIN")','href'),'./checkin.html')});
+  assert.equal(await p.getAttribute('a.ex-link-card:has-text("ERGÄNZUNGSTRAINING IM VEREIN")','href'),'./checkin.html')});
  await statusCase({twoSlots:true,statuses:['choose_slot']},/Mehrere Vereinseinheiten/,async p=>{
   await p.getByRole('button',{name:'Abendtraining'}).click();
   await p.waitForFunction(()=>window.__quick.some(x=>x.p_slot_id===8));
   await p.waitForFunction(()=>/zur Trainerfreigabe eingereicht/.test(document.querySelector('#ex-training-options [role=status]').textContent))});
  for(const v of [false,'missing']){const o=await open(browser,{v2:v},'#training');
-  await o.page.waitForFunction(()=>/noch nicht freigeschaltet/.test(document.getElementById('ex-training-options').textContent));
-  assert.equal(await o.page.getAttribute('#ex-training-options a','href'),'./boxer.html#trainingFormCard');
+  await o.page.waitForFunction(()=>/Trage dein Training ein/.test(document.getElementById('ex-training-options').textContent));
+  await o.page.getByRole('button',{name:/Training eintragen/i}).click();await o.page.locator('#ex-training-form:not([hidden]) .tf-form').waitFor();
+  assert.equal(await o.page.locator('.tf-legend:has-text("Wo hast du")').count(),0,'without Training 2.0 no location/unit step');
   assert.equal(await o.page.evaluate(()=>window.__quick.length),0);await o.context.close()}
  // Grössen
  for(const vp of [{width:320,height:640},{width:1366,height:900}]){const o=await open(browser,{},'#boxer',vp);
@@ -211,7 +189,7 @@ async function run(browser,engine){
   for(const b of await o.page.locator('.ex-menu button').all()){const bb=await b.boundingBox();assert.ok(bb.height>=44&&bb.width>=44,'touch target')}
   if(engine==='chromium'&&vp.width===1366)await shot(o.page,'83-05-desktop');
   await o.context.close()}
- console.log('PASS '+engine+': Boxer Experience – Gast/Trainer gesperrt, 5 Bereiche, Holo nur auf Heute, Podium Top 3 mit Holos, feststehende FUT-Card + Boxstil, scrollbarer Inhalt, Ein-Klick-RPC (alle Status, Doppelklick, Check-in-only, Einheitenwahl), Rückfall ohne Training 2.0, Tastatur, 320/390/1366 px');
+ console.log('PASS '+engine+': Boxer Experience – Gast/Trainer gesperrt, 5 Bereiche, Holo nur auf Heute, Podium Top 3 mit Holos, feststehende FUT-Card + Boxstil, scrollbarer Inhalt, Ein-Klick-RPC (alle Status, Doppelklick, Check-in-only, Einheitenwahl), integriertes Formular ohne iframe, Rückfall ohne Training 2.0, Tastatur, 320/390/1366 px');
 }
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));url='http://127.0.0.1:'+server.address().port;

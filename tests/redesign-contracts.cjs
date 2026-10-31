@@ -31,7 +31,8 @@ for(const [path,b] of Object.entries(baseline)){
  assert.deepEqual(addedRpc,[...(allowedRpc[path]||[])].sort(),`${path}: unexpected additional RPC literal`);
  const choiceCardPages=new Set(['arena.html','boxer.html','boxer-compare.html','challenges.html','duels.html','goals.html','league-manager.html','league-challenges.html']);
  const allowedScriptAdditions=(choiceCardPages.has(path)?1:0)+(path==='boxer.html'?2:0)+(['boxer.html','boxer-profile.html','duels.html','index.html','boxer-compare.html'].includes(path)?1:0); // boxer.html +1 takeover-training-v2.js (Training 2.0) · +1 takeover-performance.js (Bewertung/Boxstil, Etappe 5: Duell-Emotes, Kampfgeist-Podium, Etappe 7a: Boxervergleich)
- assert.equal((s.match(/<script\b/gi)||[]).length,b.scriptCount+allowedScriptAdditions,`${path}: unexpected script change`);
+ const shellScripts=2+(path==='boxer.html'?1:0); // Takeover 3.0: takeover-account.js + takeover-app-shell.js; boxer.html: früher Weiterleitungsschutz
+ assert.equal((s.match(/<script\b/gi)||[]).length,b.scriptCount+allowedScriptAdditions+shellScripts,`${path}: unexpected script change`);
  assert.match(s,/takeover-redesign\.css/,`${path}: must import production stylesheet`);
  ids+=gotIds.length;rpcCount+=gotRpc.length;
 }

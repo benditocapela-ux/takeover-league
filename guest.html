@@ -109,7 +109,7 @@ h2{font-size:var(--fs-xl);margin:0 0 var(--sp-1);letter-spacing:-.01em}
 .page{display:none}
 .page.on{display:block}
 </style>
-<link rel="stylesheet" href="./takeover-redesign.css"></head>
+<link rel="stylesheet" href="./takeover-redesign.css"><link rel="stylesheet" href="./takeover-app-shell.css"></head>
 <body data-tl-screen="guest">
 
 <header class="top wrap">
@@ -546,5 +546,5 @@ new MutationObserver(()=>{if(lookMap.size&&document.querySelector('[data-tl-boxe
   }));
 })();
 </script>
-</body>
+<script src="./takeover-account.js" defer></script><script src="./takeover-app-shell.js" defer></script></body>
 </html>

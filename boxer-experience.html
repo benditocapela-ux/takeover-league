@@ -8,6 +8,7 @@
 <title>Mein Takeover · Boxer Experience</title>
 <link rel="stylesheet" href="./takeover-theme.css">
 <link rel="stylesheet" href="./takeover-redesign.css">
+<link rel="stylesheet" href="./takeover-experience.css">
 <style>
 :root{--ex-bg:#070b16;--ex-bg2:#0d1829;--ex-gold:#f2c14e;--ex-text:#f4f6fb;--ex-muted:#9fb0c8;--ex-border:#2c3c56;--ex-safe-top:env(safe-area-inset-top, 0px)}
 *{box-sizing:border-box}
@@ -93,10 +94,6 @@ button{cursor:pointer}
 .ex-menu button{min-width:0;min-height:56px;border:1px solid transparent;border-radius:11px;background:transparent;color:#aec0d9;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:10px}
 .ex-menu button strong{font-size:19px;line-height:1}
 .ex-menu button[aria-current="page"]{background:#17283f;color:#ffd875;border-color:#ae89446e}
-.ex-drawer{position:fixed;z-index:10;inset:0;background:#000a;display:flex;align-items:stretch;justify-content:flex-end}
-.ex-drawer-panel{height:100%;width:min(340px,88vw);background:#0d1a2e;border-left:1px solid #5c5b53;overflow:auto;padding:calc(20px + var(--ex-safe-top)) 20px calc(20px + env(safe-area-inset-bottom, 0px))}
-.ex-drawer-panel a{display:block;padding:13px 0;color:#f4f6fb;text-decoration:none;border-bottom:1px solid #273a54}
-.ex-drawer-panel button{float:right}
 .ex-gate{position:fixed;z-index:20;inset:0;display:grid;place-items:center;background:#070b16;padding:18px}
 .ex-gate-card{max-width:430px;padding:26px;background:#101e31;border:1px solid #7b673e;border-radius:17px;text-align:center}
 .ex-gate-card h1{font:900 30px 'Barlow Condensed',sans-serif;margin:9px 0}
@@ -112,34 +109,15 @@ button{cursor:pointer}
 /* Kleine Displays: Texte neben dem Holo bzw. der FUT-Card überdecken sich nicht */
 @media(max-width:560px){.ex-card-stage .ex-figure-title,.ex-card-stage .ex-figure-stats{display:none}.ex-home-stage .ex-figure-foot{display:none}}
 
-/* Original five-tab shell stays visible while canonical subpages open inside it. */
-.ex-flow{flex:1;min-height:0;display:flex;flex-direction:column;background:#090f1e}
-.ex-flow[hidden]{display:none!important}
-.ex-flow-head{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:8px;
- padding:8px clamp(9px,2.4vw,18px);border-bottom:1px solid #394965;
- background:linear-gradient(110deg,#1a2b46,#0c1829);min-height:55px;flex:none}
-.ex-flow-head h2{min-width:0;margin:0;font:900 clamp(17px,3vw,23px)/1.1 'Barlow Condensed',system-ui,sans-serif;
- color:#f6d585;text-transform:uppercase;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ex-flow-back{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:44px;
- padding:6px 11px;border-radius:10px;background:#182942;border:1px solid #60728a;color:#f6e2ae;
- font:800 12px system-ui;cursor:pointer}
-.ex-flow-direct{font-size:10px;color:#aebfd6;text-decoration:underline;min-height:44px;display:inline-flex;align-items:center;padding:3px 7px}
-.ex-flow-content{flex:1;min-height:0;position:relative;background:#08101e}
-.ex-flow-frame,#ex-flow-frame{display:block;width:100%;height:100%;border:0;background:#08101e}
-.ex-flow-loading{position:absolute;z-index:1;inset:10px 12px auto;padding:11px 13px;border-radius:12px;
- border:1px solid #4f607c;background:#112039;color:#dce8fc;font-size:12px}
-.ex-flow-loading[hidden]{display:none!important}
-.ex-flow-loading[data-error="true"]{border-color:#a85b5b;color:#ffbbbb}
-@media(max-width:380px){.ex-flow-head{grid-template-columns:auto minmax(0,1fr)}.ex-flow-direct{display:none}}
 
 </style>
-</head>
+<link rel="stylesheet" href="./takeover-app-shell.css"></head>
 <body data-tl-screen="boxer-experience">
 <div id="ex-gate" class="ex-gate" role="status"><div class="ex-gate-card"><span class="ex-eyebrow">TAKEOVER LEAGUE</span><h1 id="ex-gate-title">DEIN BOXER WIRD GELADEN</h1><p id="ex-gate-message">Wir prüfen deine Anmeldung und deine verfügbaren Funktionen.</p><a id="ex-gate-link" class="ex-btn" href="./login.html?next=boxer-experience.html" hidden>ANMELDEN</a></div></div>
 <div id="ex-app" class="ex-app" hidden>
 <header class="ex-head">
  <div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Mein Takeover – Boxer Experience"><div class="ex-brand"><div class="ex-logo"><span class="tl-screen-symbol" aria-hidden="true">T</span></div><div class="ex-brand-name"><b>TAKEOVER</b><span>LEAGUE</span></div></div></div>
- <div class="ex-head-actions"><span class="ex-status">BOXER EXPERIENCE · TESTVERSION</span><button id="ex-settings" class="ex-icon-button" aria-label="Weitere Funktionen öffnen" aria-expanded="false">☰</button></div>
+ <div class="ex-head-actions"><a class="ex-icon-button ex-help" href="./hilfe.html#experience" aria-label="Hilfe zu Mein Takeover">?</a><button type="button" id="ex-settings" class="tla-account-btn" aria-label="Menü und Mein Account öffnen" aria-haspopup="dialog" aria-expanded="false"><span class="tla-avatar" id="ex-account-avatar">👤</span><span class="tla-burger">☰</span></button></div>
 </header>
 <div class="ex-main">
  <section class="ex-figure ex-home-stage" id="ex-home-stage" aria-label="Dein eigener Boxer">
@@ -158,16 +136,27 @@ button{cursor:pointer}
    <span class="ex-eyebrow">MEINE ÜBERSICHT</span><h1>DEIN TAG. DEIN ZIEL.</h1><p class="ex-intro" id="ex-welcome">Dein persönlicher Takeover-Bereich.</p>
    <div class="ex-card ex-primary-card"><div><span class="ex-eyebrow">DEIN NÄCHSTER SCHRITT</span><h3>TRAINING EINTRAGEN</h3><p>Trage dein Vereinstraining oder deine eigene Einheit ein und lass sie bestätigen.</p><button type="button" class="ex-btn" data-open-tab="training">＋ TRAINING EINREICHEN</button></div><span class="ex-icon">🥊</span></div>
    <h2>DEIN FORTSCHRITT</h2><div class="ex-stats"><div class="ex-stat"><span>7 TAGE</span><strong id="ex-week-sessions">–</strong><small>Bestätigte Trainings</small></div><div class="ex-stat"><span>DEIN RANG</span><strong id="ex-home-rank">–</strong><small>Monatsranking</small></div><div class="ex-stat"><span>OFFENE</span><strong id="ex-pending">–</strong><small>Trainerbestätigungen</small></div></div>
+   <div id="ex-studio-tiles" class="ex-studio-tiles" aria-label="Deine Bereiche auf einen Blick"></div>
+   <section class="ex-card" id="ex-notify-card" aria-labelledby="ex-notify-title"><div class="ex-card-head"><h2 id="ex-notify-title" class="ex-h2">MITTEILUNGEN <span class="ex-badge" id="ex-notify-badge" hidden>0</span></h2><button type="button" class="ex-mini" id="ex-notifications-refresh">Aktualisieren</button></div><p class="ex-muted" id="ex-notifications-status" role="status">Mitteilungen werden geprüft …</p><div id="ex-notifications" class="ex-notices"></div></section>
+   <section class="ex-card" id="studioPulseSection" aria-labelledby="ex-pulse-title"><h2 id="ex-pulse-title" class="ex-h2">DEIN RHYTHMUS</h2><div class="ex-stats"><div class="ex-stat"><span>SERIE</span><strong id="ex-streak">–</strong><small>Trainingstage in Folge</small></div><div class="ex-stat"><span>7 TAGE</span><strong id="ex-last7">–</strong><small>Bestätigt</small></div><div class="ex-stat"><span>30 TAGE</span><strong id="ex-last30">–</strong><small>Bestätigt</small></div></div></section>
    <h2>DEINE NÄCHSTEN WEGE</h2><div class="ex-grid"><button class="ex-link-card" data-open-tab="kaempfe">⚔️ <b>DUELLE & CHALLENGES</b><small>Herausforderungen entdecken</small></button><button class="ex-link-card" data-open-tab="boxer">🃏 <b>MEIN BOXER</b><small>Karte, Boxstil und Ausrüstung</small></button></div>
   </section>
   <section class="ex-view" data-view="training" aria-label="Training">
    <span class="ex-eyebrow">DEIN TRAININGSBEREICH</span><h1>TRAINING.</h1><p class="ex-intro">Weniger Navigation, alle Trainingseinheiten an einem Ort.</p>
    <div class="ex-card"><span class="ex-eyebrow">TRAINING ERFASSEN</span><h3>WAS HAST DU TRAINIERT?</h3>
-   <p class="ex-muted" style="margin:2px 0 14px">Die Trainingsauswahl und die Gutschrift bleiben im sicheren Trainingsformular. Hier siehst du nur die jeweils freigeschalteten Möglichkeiten.</p>
+   <p class="ex-muted" style="margin:2px 0 14px">Vereinstraining mit einem Tipp, eigenes Training direkt hier erfassen. Die Gutschrift legt dein Trainer bei der Bestätigung fest.</p>
    <div id="ex-training-options" aria-live="polite"><p class="ex-muted">Trainingsmöglichkeiten werden geprüft …</p></div>
+   <div id="ex-training-form" class="ex-training-form" hidden></div>
    <p class="ex-note" style="margin:12px 0 0">Punkte, EXP und Coins werden erst nach Trainerbestätigung gutgeschrieben. Die tatsächliche Einstufung legt der Server fest.</p>
    </div>
-   <h2>LETZTE TRAININGS</h2><div id="ex-training-history" class="ex-card ex-list"><p class="ex-muted">Trainings werden geladen.</p></div>
+   <section class="ex-card" id="ex-history-card" aria-labelledby="ex-history-title"><div class="ex-card-head"><h2 id="ex-history-title" class="ex-h2">TRAININGSHISTORIE</h2><button type="button" class="ex-mini" id="ex-history-refresh">Aktualisieren</button></div>
+   <p class="ex-muted" id="ex-history-status" role="status">Trainings werden geladen.</p>
+   <label class="ex-filter"><span>Status filtern</span><select id="ex-history-filter"><option value="all">Alle Trainings</option><option value="pending">In Prüfung</option><option value="approved">Bestätigt</option><option value="rejected">Abgelehnt</option></select></label>
+   <div id="ex-history" class="ex-list"></div><button type="button" class="ex-btn ex-btn-ghost ex-more" id="ex-history-more" hidden>Mehr anzeigen</button>
+   <p class="ex-muted ex-small">Nach dem Einreichen können Trainings nur vom Trainer geändert werden.</p></section>
+   <div id="ex-training-history" hidden></div>
+   <section class="ex-card" aria-labelledby="ex-cal-title"><h2 id="ex-cal-title" class="ex-h2">KALENDER & FORTSCHRITT</h2><p class="ex-muted ex-small">Nur bestätigte Trainings zählen.</p><div class="ex-week-chart" id="ex-week-chart" role="img" aria-label="Bestätigte Trainings pro Woche"></div><div class="ex-calendar" id="ex-calendar" aria-label="Kalender der letzten 30 Tage"></div></section>
+   <details class="ex-card ex-details"><summary>Änderungshistorie</summary><div id="ex-audit" class="ex-list"></div></details>
    <h2>MEHR ZUM TRAINING</h2><div class="ex-grid"><a class="ex-link-card" href="./wochenplan.html">🗓️ <b>WOCHENPLAN</b><small>Dein Rhythmus</small></a><a class="ex-link-card" href="./goals.html">🎯 <b>MEINE ZIELE</b><small>Deine Entwicklung</small></a><a class="ex-link-card" href="./praesenz.html">✅ <b>PRÄSENZ</b><small>Trainingsübersicht</small></a><a class="ex-link-card" href="./checkin.html">📍 <b>GYM CHECK-IN</b><small>Einchecken im Verein</small></a></div>
   </section>
   <section class="ex-view" data-view="kaempfe" aria-label="Kämpfe">
@@ -184,22 +173,18 @@ button{cursor:pointer}
   <section class="ex-view" data-view="boxer" aria-label="Mein Boxer">
    <span class="ex-eyebrow">DEINE ENTWICKLUNG</span><h1>MEIN BOXSTIL.</h1><p class="ex-intro">Deine FUT-Card bleibt oben stehen, darunter siehst du dein Boxstil-Diagramm.</p>
    <div class="ex-card"><span class="ex-eyebrow">BOXSTIL-DIAGRAMM</span><div class="ex-radar-wrap" id="ex-radar"><p class="ex-muted">Boxstil wird geladen.</p></div><h3 id="ex-style-title">Noch kein Boxstil</h3><p class="ex-muted" id="ex-style-text">Fülle den Boxstil-Test aus, um deine Stärken zu sehen.</p><a class="ex-btn ex-btn-ghost" href="./stil-test.html">BOXSTIL-TEST ANSEHEN</a></div>
+   <section class="ex-card" id="ex-profile" aria-labelledby="ex-profile-title"><span class="ex-eyebrow">PROFIL & STATISTIK</span><div class="ex-profile-head"><div class="ex-avatar" id="ex-avatar" aria-label="Profilbild"></div><div><h3 id="ex-profile-title"><span id="ex-profile-name">Mein Profil</span></h3><p class="ex-muted ex-small">Takeover League · Boxer</p></div></div>
+   <details class="ex-details"><summary>Profilbild ändern</summary><p class="ex-muted ex-small">Wähle einen der 14 Boxer-Avatare oder lade ein eigenes Foto hoch (JPG, PNG oder WebP, max. 3 MB). Dein Bild ist für andere Liga-Besucher sichtbar.</p><div class="ex-avatar-options" id="ex-avatar-options"></div><label class="ex-filter"><span>Eigenes Foto</span><input id="ex-photo" type="file" accept="image/jpeg,image/png,image/webp"></label><button type="button" class="ex-btn" id="ex-avatar-save">Profilbild speichern</button><p class="ex-muted" id="ex-profile-msg" role="status"></p></details>
+   <div class="ex-stats ex-stats-compact"><div class="ex-stat"><span>JOGGING</span><strong id="ex-total-km">–</strong></div><div class="ex-stat"><span>SPRINT</span><strong id="ex-total-sprints">–</strong></div><div class="ex-stat"><span>TECHNIK</span><strong id="ex-total-technique">–</strong></div></div>
+   <h3 class="ex-h3">Trainingsarten</h3><div id="ex-type-breakdown" class="ex-list"><p class="ex-muted">Wird geladen …</p></div></section>
+   <section class="ex-card" id="expRankSection" aria-labelledby="ex-rank-title"><h2 id="ex-rank-title" class="ex-h2">EXP · LEVEL · RANG</h2><div class="ex-stats"><div class="ex-stat"><span>RANG</span><strong id="ex-rank-letter">–</strong></div><div class="ex-stat"><span>LEVEL</span><strong id="ex-rank-level">–</strong></div><div class="ex-stat"><span>GESAMT-EXP</span><strong id="ex-rank-exp">–</strong></div></div><div class="ex-progress" id="ex-rank-bar" role="progressbar" aria-label="EXP-Fortschritt zum nächsten Level" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><p class="ex-muted ex-small" id="ex-rank-status" role="status">Wird geladen …</p><p class="ex-muted ex-small" id="ex-perf-status" role="status"></p></section>
+   <section class="ex-card" id="ex-feedback-card" aria-labelledby="ex-feedback-title"><h2 id="ex-feedback-title" class="ex-h2">FEEDBACK VOM COACH</h2><div id="ex-feedback"><p class="ex-muted">Wird geladen …</p></div></section>
    <h2>MEIN BOXER & INVENTAR</h2><div class="ex-card ex-primary-card"><div><span class="ex-eyebrow">DEIN BOXER-HOLO</span><h3>AUSSEHEN GESTALTEN</h3><p>Kleidung, Handschuhe, Farben, Posen und Effekte.</p><a class="ex-btn" href="./mein-boxer.html">BOXER GESTALTEN</a></div><span class="ex-icon">🥊</span></div>
    <div class="ex-grid"><a class="ex-link-card" href="./shop.html">🛍️ <b>KAMPFGEIST-SHOP</b><small>Ausrüstung & Items</small></a><a class="ex-link-card" href="./karten.html">🃏 <b>SPIELERKARTEN</b><small>Karten & Designs</small></a><a class="ex-link-card" href="./bewertung.html">⭐ <b>BEWERTUNG</b><small>Dein Coach-Feedback</small></a><a class="ex-link-card" href="./kampfpfad.html">🗺️ <b>KAMPFPFAD</b><small>Fortschritt und Belohnungen</small></a></div>
   </section>
  </main>
 </div>
-<section id="ex-flow" class="ex-flow" hidden aria-label="Takeover Funktionsbereich">
- <div class="ex-flow-head">
-  <button type="button" id="ex-flow-back" class="ex-flow-back" aria-label="Zurück zur Boxer Experience">‹ <span>Zurück</span></button>
-  <h2 id="ex-flow-title">Takeover</h2>
-  <a id="ex-flow-direct" class="ex-flow-direct" href="./boxer.html" target="_blank" rel="noopener noreferrer">Separat öffnen</a>
- </div>
- <div class="ex-flow-content">
-  <p id="ex-flow-loading" class="ex-flow-loading" role="status" aria-live="polite">Bereich wird geöffnet …</p>
-  <iframe id="ex-flow-frame" title="Takeover Funktionsbereich" referrerpolicy="strict-origin-when-cross-origin"></iframe>
- </div>
-</section>
+
 <nav class="ex-menu" aria-label="Boxer Hauptnavigation">
  <button type="button" data-tab="heute" aria-current="page"><strong>⌂</strong>Heute</button>
  <button type="button" data-tab="training"><strong>♜</strong>Training</button>
@@ -208,14 +193,11 @@ button{cursor:pointer}
  <button type="button" data-tab="boxer"><strong>🥊</strong>Mein Boxer</button>
 </nav>
 </div>
-<div class="ex-drawer" id="ex-drawer" hidden>
- <aside class="ex-drawer-panel" role="dialog" aria-modal="true" aria-label="Weitere Takeover-Funktionen">
- <button class="ex-icon-button" id="ex-close" aria-label="Menü schliessen">×</button><span class="ex-eyebrow">ALLE BEREICHE</span><h2>Weitere Funktionen</h2>
- <a href="./boxer.html">Bisheriges Boxer-Studio</a><a href="./goals.html">Meine Ziele</a><a href="./roadmap.html">Level-Roadmap</a><a href="./feedback.html">Feedback senden</a><a href="./hilfe.html">Hilfe</a><a href="./login.html">Account</a>
- </aside>
-</div>
+
 <script src="./takeover-holo.js" defer></script>
 <script src="./takeover-performance.js" defer></script>
+<script src="./takeover-training-form.js" defer></script>
+<script src="./boxer-experience-studio.js" defer></script>
 <script src="./boxer-experience.js" defer></script>
-<script src="./takeover-boxer-flow.js" defer></script>
-</body></html>
+<script src="./takeover-help.js" defer></script>
+<script src="./takeover-account.js" defer></script><script src="./takeover-app-shell.js" defer></script></body></html>

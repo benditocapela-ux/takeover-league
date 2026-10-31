@@ -222,7 +222,7 @@ async function mountProfile(){
  if(ca){ca.hidden=true;const duel=document.getElementById('duelAction');if(duel)duel.style.gridColumn='1 / -1'}
 }
 async function mountStudio(){
- const host=document.getElementById('studioPanelOverview');if(!host)return;
+ const host=document.getElementById('studioPanelOverview')||document.getElementById('ex-studio-tiles');if(!host)return; // Takeover 3.0: auch in Mein Takeover
  const db=await client();
  const s=await db.auth.getSession();if(!s.data||!s.data.session)return;
  const [perf,wk,qs,kg,kp]=await Promise.all([db.rpc('get_my_performance'),db.rpc('get_my_week_plan'),db.rpc('get_my_quests'),db.rpc('get_my_kampfgeist',{p_full:false}),db.rpc('get_my_kampfpfad')]);
@@ -740,7 +740,7 @@ function boot(){
  const screen=document.body&&document.body.dataset.tlScreen;
  const run=fn=>fn().catch(e=>console.warn('Bewertung/Boxstil nicht verfügbar:',e));
  if(screen==='boxer-profile')run(mountProfile);
- if(screen==='boxer')run(mountStudio);
+ if(screen==='boxer'||screen==='boxer-experience')run(mountStudio);
  if(screen==='duels')run(mountDuels);
  if(screen==='index'){run(mountPodium);run(mountAwards);run(mountPodiumCards);run(mountPodiumHolos)}
  run(mountLooks);

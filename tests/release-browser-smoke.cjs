@@ -48,10 +48,10 @@ async function main(){
   // The Fight-Night design shows names in capitals (CSS text-transform); compare the real text.
   assert.match(await page.locator('#profileName').textContent(),/Boxer Alpha/);
   assert.match(await page.locator('#compareAction').getAttribute('href'),/boxer-compare.html/);
-  await page.locator('#takeover-menu-open').click();
-  assert.equal(await page.locator('#tl-menu-panel').getAttribute('aria-hidden'),'false');
+  await page.locator('#tla-account-btn').click(); // Takeover 3.0: Menü + Mein Account der App-Shell
+  assert.equal(await page.locator('#tla-drawer').isVisible(),true);
   await page.keyboard.press('Escape');
-  assert.equal(await page.locator('#tl-menu-panel').getAttribute('aria-hidden'),'true');
+  assert.equal(await page.locator('#tla-drawer').isHidden(),true);
   const b=await page.evaluate(()=>document.documentElement.scrollWidth-window.innerWidth);
   assert.ok(b<=4,'Unexpected profile horizontal overflow at '+width+': '+b);
   await context.close();

@@ -54,22 +54,17 @@ async function html(path){
    'Coach page still serves the old look (new staff stylesheet missing)');
  assert.match(admin,/takeover-staff-experience\.css\?v=/,
    'Admin page still serves the old look (new staff stylesheet missing)');
- assert.match(boxerExperience,/takeover-boxer-flow\.js\?v=/,
-   'Boxer Experience does not load the new in-app routing');
- assert.match(boxerExperience,/id="ex-flow-frame"/,
-   'Boxer Experience missing in-app secure functional view');
+ assert.match(boxerExperience,/takeover-training-form\.js/,
+   'Boxer Experience does not load the integrated training form');
+ assert.doesNotMatch(boxerExperience,/<iframe/,'Boxer Experience must not embed legacy pages');
  const staffStyle=await html('takeover-staff-experience.css');
- const boxerFlow=await html('takeover-boxer-flow.js');
- const embeddedStyle=await html('takeover-boxer-embedded-flow.css');
+ const shell=await html('takeover-app-shell.js');
  assert.match(staffStyle,/Small-screen staff header:/,
    'Compact staff mobile header missing from production stylesheet');
  assert.match(staffStyle,/tl-screen-ribbon>\.tl-help-link/,
    'Staff menu/help overlap fix missing from production stylesheet');
- assert.match(boxerFlow,/frame\.src=url\.href/,
-   'In-app navigation code missing from release');
- assert.match(embeddedStyle,/tl-ex-training #trainingFormCard/,
-   'Embedded safe training form styling missing');
- console.log('LIVE COMBINED RELEASE OK: PR #86 staff and PR #88 boxer in-app navigation assets');
+ assert.match(shell,/function legacyTarget/,'Central legacy redirect missing from release');
+ console.log('LIVE COMBINED RELEASE OK: staff experience and Takeover 3.0 app shell assets');
  const profile=await html('boxer-profile.html');
  assert.ok(profile.includes('boxer-profile.js'),'Public 2.1 boxer profile script missing');
  assert.ok(profile.includes('takeover-navigation.js'),'Public boxer profile menu missing');

@@ -46,18 +46,18 @@ function injected(cfg){
 
  // A: Tour beim nächsten Login (Boxer: ohne Trainer-Schritt), einmal pro Version
  let {p,errors,context}=await page({role:'boxer',signedIn:true});
- await p.goto(base+'boxer.html');await p.waitForSelector('.tl-tour',{timeout:8000});
+ await p.goto(base+'boxer-experience.html');await p.waitForSelector('.tl-tour',{timeout:8000}); // Takeover 3.0: Tour in Mein Takeover
  assert.match(await p.textContent('.tl-tour'),/Willkommen in der Takeover League/);assert.match(await p.textContent('.tl-tour-count'),/1 \/ 5/);
  await p.click('[data-tour="next"]');assert.match(await p.textContent('.tl-tour'),/Training eintragen/);
  await p.click('[data-tour="back"]');assert.match(await p.textContent('.tl-tour'),/Willkommen/);
  for(let i=0;i<3;i++)await p.click('[data-tour="next"]');
- assert.match(await p.textContent('.tl-tour'),/Alle Bereiche im Menü/);assert.equal(await p.locator('#takeover-menu-open.tl-tour-focus').count(),1,'menu highlighted');
+ assert.match(await p.textContent('.tl-tour'),/Alle Bereiche im Menü/);assert.equal(await p.locator('#ex-settings.tl-tour-focus').count(),1,'menu highlighted');
  await shot(p,'7c-tour');
  await p.click('[data-tour="next"]');assert.match(await p.textContent('.tl-tour'),/Hilfe auf jeder Seite/);
  assert.doesNotMatch(await p.textContent('.tl-tour'),/Für Trainer/);
  await p.click('[data-tour="next"]');await p.waitForSelector('.tl-tour',{state:'detached'});
  await p.waitForFunction(()=>window.__calls.some(c=>c[0]==='mark_tour_seen'&&c[1].p_version===1));
- assert.equal(await p.locator('.tl-help-link').getAttribute('href'),'./hilfe.html#studio');
+ assert.equal(await p.locator('.ex-help').getAttribute('href'),'./hilfe.html#experience');
  await p.reload();await p.waitForTimeout(1500);assert.equal(await p.locator('.tl-tour').count(),0,'tour only once');
  await noOverflow(p);assert.deepEqual(errors,[]);await context.close();
 
@@ -70,8 +70,8 @@ function injected(cfg){
 
  // C: «?» auf einer Seite → passendes Register offen; Flag-Register ausgeblendet; Suche über Register und FAQ
  ({p,errors,context}=await page({role:'boxer',signedIn:true,seen:1},['coach_ratings']));
- await p.goto(base+'boxer-compare.html');await p.waitForSelector('.tl-help-link');
- await p.click('.tl-help-link');await p.waitForURL(/hilfe\.html#vergleich$/);await p.waitForSelector('[data-key="vergleich"][open]');
+ await p.goto(base+'boxer-compare.html');await p.waitForSelector('#tla-header .tla-help');
+ await p.click('#tla-header .tla-help');await p.waitForURL(/hilfe\.html#vergleich$/);await p.waitForSelector('[data-key="vergleich"][open]');
  const help=await p.textContent('#app');
  assert.match(help,/Mein Studio/);assert.match(help,/Bewertung & Spielerkarte/,'flag on → shown');
  assert.doesNotMatch(help,/Kampfgeist-Shop|Wochen-Quests/,'flag off → hidden');assert.doesNotMatch(help,/Trainer-Dashboard/,'staff only');

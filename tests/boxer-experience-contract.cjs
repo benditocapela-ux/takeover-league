@@ -1,5 +1,5 @@
 /* Run with: node --test tests/boxer-experience-contract.cjs
- * Contract tests: only the approved scheduled-training RPC may create a pending request; no direct row or point writes.
+ * Contract tests (Takeover 3.0): the experience shell itself never writes rows; requests go through the scheduled-training RPC or the integrated form module.
  */
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -24,30 +24,31 @@ test('personal holo and fixed FUT only render on their own sections',()=>{
   assert.match(html,/data-view="boxer"/);
   assert.match(html,/id="ex-radar"/);
 });
-test('server-authorized one-tap club request; no direct row mutations',()=>{
+test('server-authorized one-tap club request; integrated form; no direct row mutations in the shell',()=>{
   assert.doesNotMatch(js,/\.(?:insert|upsert|update|delete)\s*\(/);
-  assert.match(js,/\.\/boxer\.html#trainingFormCard/);
+  assert.doesNotMatch(js,/boxer\.html/,'no route back to the old studio');
   assert.match(html,/id="ex-training-options"/);
+  assert.match(html,/id="ex-training-form"/);
+  assert.match(js,/TLTrainingForm\.mount/);
   assert.match(js,/get_training_v2_config/);
-  assert.match(js,/cfg\?\.enabled!==true/);
+  assert.match(js,/cfg\?\.enabled===true/);
   assert.match(js,/club_checkin_only/);
   assert.match(js,/submit_scheduled_club_training_today/);
   assert.match(js,/Warst du heute im Vereinstraining\?/);
-  assert.match(js,/JA, IM VEREIN/);
-  assert.match(js,/NEIN, EIGENES TRAINING/);
-  assert.match(js,/\?club=1#trainingFormCard/);
-  assert.match(js,/\?individual=1#trainingFormCard/);
+  assert.match(js,/Ja, im Verein/);
+  assert.match(js,/Nein, eigenes Training/);
+  assert.match(js,/go\('training','eigenes',true\)/);
+  assert.match(js,/go\('training','verein',true\)/);
   assert.match(js,/already_pending/);
   assert.match(js,/already_checked_in/);
   assert.match(js,/checked_in/);
   assert.match(js,/gym_not_open/);
   assert.match(js,/choose_gym_session/);
-  assert.match(js,/\['submitted','checked_in'\]/);
   assert.match(js,/choose_slot/);
   assert.match(js,/\['submitted','checked_in'\]\.includes\(r\.data\?\.status\)/);
   assert.match(js,/trainingFallback\(host\)/);
   assert.match(js,/\.\/checkin\.html/);
-  assert.doesNotMatch(js,/Object\.assign\(payload|training_location\s*:/,'Trainingseintrag und Tier bleiben in boxer.html');
+  assert.match(js,/if\(state\.quickBusy\)return/,'one-tap request cannot be sent twice');
 });
 test('real data reads, no imaginary scores or podium participants',()=>{
   for(const key of ['get_my_performance','get_public_leaderboard','get_holo_looks','get_boxer_exp_level_rank','training_submissions']) assert.ok(js.includes(key),key);

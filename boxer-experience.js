@@ -1,12 +1,13 @@
-/* Boxer Experience V1: isolated, authenticated views plus a single server-controlled
- * pending club-training request RPC (only when Training 2.0 is enabled).
- * No direct training table writes, rating mutations or point/EXP transactions.
- * Individual and supplementary submissions use the canonical boxer.html form.
+/* Takeover League 3.0 · Boxer Experience: die einzige Boxer-Oberfläche (Heute, Training, Kämpfe, Liga, Mein Boxer).
+ * Vereinstraining per Ein-Klick-RPC (submit_scheduled_club_training_today), eigenes Training im integrierten
+ * Formular (takeover-training-form.js, gleiche Regeln wie das bisherige Formular), Studio-Funktionen in
+ * boxer-experience-studio.js. Keine Punkte-, EXP- oder Coin-Buchungen im Browser; kein iframe.
+ * Unteransichten per Hash: #training/eigenes, #training/verein, #training/historie, #heute/mitteilungen, #boxer/profil.
  */
 (function () {
   'use strict';
   const $ = id => document.getElementById(id);
-  const state = { db:null, profile:null, current:'heute', leaderboard:[] };
+  const state = { db:null, profile:null, current:'heute', leaderboard:[], types:[], cfg:null, checkinOnly:false, form:false, formApi:null, pendingSub:'', quickBusy:false };
   const navTabs = ['heute','training','kaempfe','liga','boxer'];
   const fmt = n => Number(n).toLocaleString('de-CH',{maximumFractionDigits:0});
   const empty = (selector,message) => { const node=$(selector); if(node)node.textContent=message; };
@@ -20,8 +21,10 @@
     const a=$('ex-gate-link');a.hidden=!link;
     if(link){a.textContent=link;a.href=href||'./login.html?next=boxer-experience.html';}
   }
-  function selectTab(name){
+  const SUB_TARGET={historie:'ex-history-card',mitteilungen:'ex-notify-card',profil:'ex-profile'};
+  function selectTab(name,sub){
     if(!navTabs.includes(name))return;
+    const changed=state.current!==name;
     state.current=name;
     for(const section of document.querySelectorAll('[data-view]')){
       const current=section.dataset.view===name;
@@ -34,18 +37,23 @@
     }
     $('ex-home-stage').hidden=name!=='heute';
     $('ex-card-stage').hidden=name!=='boxer';
-    $('ex-scroll').scrollTop=0;
-    try{history.replaceState(null,'','#'+name)}catch(_){}
+    if(changed||!sub)$('ex-scroll').scrollTop=0;
+    if(sub==='eigenes'||sub==='verein')openForm(sub==='verein'?'club':'individual');
+    else if(name==='training'&&state.form&&!sub)closeForm(false);
+    const target=SUB_TARGET[sub]&&$(SUB_TARGET[sub]);
+    if(target)requestAnimationFrame(()=>target.scrollIntoView({block:'start'}));
+  }
+  function parseHash(){const [tab,sub]=decodeURIComponent(location.hash.replace(/^#/,'')).split('/');return {tab:navTabs.includes(tab)?tab:'heute',sub:sub||''}}
+  function go(tab,sub,push){
+    const hash='#'+tab+(sub?'/'+sub:'');
+    try{if(location.hash!==hash){if(push)history.pushState(null,'',hash);else history.replaceState(null,'',hash)}}catch(_){}
+    selectTab(tab,sub);
   }
   function bindNavigation(){
-    document.querySelectorAll('[data-tab],[data-open-tab]').forEach(node=>node.addEventListener('click',()=>selectTab(node.dataset.tab||node.dataset.openTab)));
-    $('ex-settings').addEventListener('click',()=>{ $('ex-drawer').hidden=false;$('ex-settings').setAttribute('aria-expanded','true');$('ex-close').focus(); });
-    const closeDrawer=()=>{$('ex-drawer').hidden=true;$('ex-settings').setAttribute('aria-expanded','false');$('ex-settings').focus()};
-    $('ex-close').addEventListener('click',closeDrawer);
-    $('ex-drawer').addEventListener('click',e=>{if(e.target===$('ex-drawer'))closeDrawer()});
-    document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('ex-drawer').hidden)closeDrawer()});
-    const initial=location.hash.replace('#','');
-    selectTab(navTabs.includes(initial)?initial:'heute');
+    document.querySelectorAll('[data-tab],[data-open-tab]').forEach(node=>node.addEventListener('click',()=>go(node.dataset.tab||node.dataset.openTab,'',true)));
+    window.addEventListener('popstate',()=>{const h=parseHash();selectTab(h.tab,h.sub)});
+    window.addEventListener('hashchange',()=>{const h=parseHash();selectTab(h.tab,h.sub)});
+    const h=parseHash();state.pendingSub=h.sub;selectTab(h.tab,'');
   }
   async function safeRpc(name,args){
     try{const r=await state.db.rpc(name,args||{});return r.error?null:r.data}catch(_){return null}
@@ -142,12 +150,9 @@
     const looks=top.length?await safeRpc('get_holo_looks',{p_display_names:top.map(r=>r.boxer_name)}):null;
     renderPodium(rows,looks);
   }
-  /* PR #84 integration contract:
-   * Config is read from public.get_training_v2_config, not duplicated locally.
-   * Render only server-advertised options while enabled. The existing
-   * boxer.html form (with takeover-training-v2.js) owns the actual selection,
-   * payload, validation and rewards. No preview implies a confirmed credit.
-   */
+  /* Training 2.0: Die Konfiguration kommt aus public.get_training_v2_config (keine lokale Kopie der Regeln).
+   * «Ja, im Verein» → submit_scheduled_club_training_today (Server entscheidet: Check-in oder Antrag).
+   * «Nein, eigenes Training» → integriertes Formular (takeover-training-form.js). Keine Vorschau ist eine Gutschrift. */
   function trainingOption(title,detail,href,subtitle){
     const a=document.createElement('a');
     a.className='ex-link-card';a.href=href;
@@ -157,17 +162,41 @@
     if(subtitle){const more=document.createElement('small');more.textContent=subtitle;more.style.color='#f2c14e';a.append(more)}
     return a;
   }
+  function choiceButton(title,detail,primary,onClick){
+    const b=document.createElement('button');b.type='button';b.className='ex-choice'+(primary?' primary':'');
+    const h=document.createElement('b');h.textContent=title;const sub=document.createElement('small');sub.textContent=detail;
+    b.append(h,sub);b.addEventListener('click',onClick);return b;
+  }
   function trainingReward(value){
     const points=Number(value?.points),exp=Number(value?.exp),coins=Number(value?.coins);
     return [Number.isFinite(points)?fmt(points)+' Punkte':null,
             Number.isFinite(exp)?fmt(exp)+' EXP':null,
             Number.isFinite(coins)?fmt(coins)+' Coins':null].filter(Boolean).join(' · ');
   }
+  function openForm(mode){
+    if(!state.formApi){state.pendingSub=mode==='club'?'verein':'eigenes';return}
+    $('ex-training-form').hidden=false;state.form=true;
+    state.formApi.open(mode);
+  }
+  function closeForm(navigate){
+    const host=$('ex-training-form');if(host)host.hidden=true;state.form=false;
+    if(navigate)go('training','',false);
+    const head=document.querySelector('[data-view="training"] .ex-card h3');if(navigate&&head){head.tabIndex=-1;head.focus({preventScroll:true})}
+  }
+  function mountForm(){
+    if(!window.TLTrainingForm||state.formApi)return;
+    state.formApi=window.TLTrainingForm.mount($('ex-training-form'),{db:state.db,profile:state.profile,cfg:state.cfg,types:state.types,
+      checkinOnly:state.checkinOnly,onSubmitted:()=>{void loadTraining();if(window.TLStudio)void window.TLStudio.refresh()},onClose:()=>closeForm(true)});
+    if(state.pendingSub==='eigenes'||state.pendingSub==='verein'){const sub=state.pendingSub;state.pendingSub='';go('training',sub,false)}
+    else if(state.pendingSub){const sub=state.pendingSub;state.pendingSub='';selectTab(state.current,sub)}
+  }
   function trainingFallback(host){
     host.replaceChildren();
     const p=document.createElement('p');p.className='ex-muted';
-    p.textContent='Training 2.0 ist noch nicht freigeschaltet. Verwende das bewährte Formular.';
-    host.append(p,trainingOption('🥊 TRAINING EINREICHEN','Zum bisherigen Formular','./boxer.html#trainingFormCard'));
+    p.textContent='Trage dein Training ein. Dein Trainer bestätigt es und legt die Gutschrift fest.';
+    const actions=document.createElement('div');actions.className='ex-choice-actions';
+    actions.append(choiceButton('＋ Training eintragen','Trainingsart, Datum, Dauer und Bemerkung',true,()=>go('training','eigenes',true)));
+    host.append(p,actions);
   }
   function todayDow(){
     const day=new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Zurich',weekday:'long'}).format(new Date()).toLowerCase();
@@ -184,7 +213,7 @@
       case 'choose_gym_session':return 'Mehrere Gym-Einheiten sind geöffnet. Bitte wähle die richtige im Gym-Check-in.';
       case 'no_slot':return 'Heute ist kein Pflichttraining hinterlegt. Du kannst ein individuelles Training erfassen.';
       case 'choose_slot':return 'Mehrere Vereinseinheiten sind heute geplant. Bitte wähle die richtige Einheit.';
-      case 'disabled':return 'Der Ein-Klick-Antrag ist derzeit nicht aktiviert. Das bisherige Formular bleibt verfügbar.';
+      case 'disabled':return 'Der Ein-Klick-Antrag ist derzeit nicht aktiviert. Erfasse dein Training im Formular.';
       default:return 'Die Einreichung konnte nicht bestätigt werden. Bitte prüfe deine Trainingshistorie.';
     }
   }
@@ -192,32 +221,35 @@
     const host=$('ex-training-options');if(!host)return;
     // Supabase-Abfragen sind nur «thenable» (kein .catch): Fehler deshalb mit try/await abfangen.
     const flags=async()=>{try{return await state.db.from('league_feature_flags').select('feature_key,is_enabled').in('feature_key',['gym_training','club_checkin_only'])}catch(_){return {error:true}}};
-    const [cfg,checkin]=await Promise.all([safeRpc('get_training_v2_config'),flags()]);
-    if(cfg?.enabled!==true||!Array.isArray(cfg.pflicht)||!Array.isArray(cfg.extras)){
-      trainingFallback(host);return;
-    }
+    const types=async()=>{try{return await state.db.from('training_types').select('*').eq('is_active',true).order('name')}catch(_){return {error:true}}};
+    const [cfg,checkin,typeRows]=await Promise.all([safeRpc('get_training_v2_config'),flags(),types()]);
+    state.types=typeRows&&!typeRows.error&&Array.isArray(typeRows.data)?typeRows.data:[];
     // Nur betreuter Check-in gilt wie in PR #84 erst, wenn gym_training UND club_checkin_only an sind.
     const checkinOnly=!checkin.error&&Array.isArray(checkin.data)&&['gym_training','club_checkin_only'].every(k=>checkin.data.some(x=>x.feature_key===k&&x.is_enabled===true));
+    state.checkinOnly=checkinOnly;
+    state.cfg=cfg?.enabled===true&&Array.isArray(cfg.pflicht)&&Array.isArray(cfg.extras)?cfg:null;
+    mountForm();
+    if(!state.cfg){trainingFallback(host);return}
     host.replaceChildren();
     const title=document.createElement('h3');title.textContent='Warst du heute im Vereinstraining?';
     host.append(title);
     const help=document.createElement('p');help.className='ex-muted';
     help.textContent='Mit Ja wird die heutige Pflichteinheit automatisch erfasst: bei einer geöffneten Gym-Einheit per Check-in, ansonsten bei erlaubter Selbstmeldung als Antrag zur Freigabe.';
     host.append(help);
-    const actions=document.createElement('div');actions.className='ex-grid';
-    const yes=document.createElement('button');yes.type='button';yes.className='ex-link-card';
-    yes.textContent='✓ JA, IM VEREIN';
-    const no=trainingOption('✕ NEIN, EIGENES TRAINING','Zum individuellen Trainingsformular','./boxer.html?individual=1#trainingFormCard');
+    const actions=document.createElement('div');actions.className='ex-choice-actions';
+    const yes=choiceButton('✓ Ja, im Verein','Heutige Pflichteinheit mit einem Tipp melden',true,()=>submit(null,yes));
+    const no=choiceButton('✕ Nein, eigenes Training','Training hier im Formular erfassen',false,()=>go('training','eigenes',true));
     actions.append(yes,no);host.append(actions);
     const status=document.createElement('div');status.className='ex-note';status.setAttribute('role','status');status.setAttribute('aria-live','polite');status.hidden=true;status.style.marginTop='10px';host.append(status);
     const dow=todayDow();
-    const slots=cfg.pflicht.filter(x=>Number(x.dow)===dow);
+    const slots=state.cfg.pflicht.filter(x=>Number(x.dow)===dow);
     const schedule=document.createElement('p');schedule.className='ex-muted';
     schedule.textContent=slots.length?
       'Heute geplant: '+slots.map(x=>String(x.label||'Vereinstraining')).join(' / '):
       'Heute ist keine Pflichteinheit im Stundenplan eingeplant.';
     host.append(schedule);
     async function submit(slotId,button){
+      if(state.quickBusy)return;state.quickBusy=true;
       if(button)button.disabled=true;status.hidden=false;status.textContent='Dein Training wird erfasst …';
       try{
         const r=await state.db.rpc('submit_scheduled_club_training_today',{p_slot_id:slotId==null?null:Number(slotId)});
@@ -234,49 +266,32 @@
         }
         if(['gym_not_open','choose_gym_session'].includes(r.data?.status))
           status.append(trainingOption('ZUM GYM-CHECK-IN','Geöffnete Vereinseinheit auswählen','./checkin.html'));
-        if(['submitted','checked_in'].includes(r.data?.status))await loadTraining();
+        if(['no_slot','disabled'].includes(r.data?.status)){const b=document.createElement('button');b.type='button';b.className='ex-btn ex-btn-ghost';b.style.marginTop='9px';b.textContent='Eigenes Training erfassen';b.addEventListener('click',()=>go('training','eigenes',true));status.append(b)}
+        if(['submitted','checked_in'].includes(r.data?.status)){await loadTraining();if(window.TLStudio)void window.TLStudio.refresh()}
       }catch(err){
         status.textContent='Antrag nicht gespeichert: '+String(err.message||err)+'. Bitte nicht blind erneut einreichen.';
-      }finally{if(button)button.disabled=false}
+      }finally{state.quickBusy=false;if(button)button.disabled=false}
     }
-    yes.addEventListener('click',()=>submit(null,yes));
     if(checkinOnly){
       const notice=document.createElement('p');notice.className='ex-note';
       notice.textContent='Dein Verein verwendet den betreuten Gym-Check-in. Mit Ja wirst du bei einer vom Trainer geöffneten Pflicht-Einheit angemeldet; ohne geöffnete Einheit ist keine Selbstmeldung möglich.';
       host.append(notice);
     }
     const extra=document.createElement('p');extra.className='ex-muted';
-    extra.textContent='Ergänzungstrainings kannst du weiterhin im regulären Formular nach Trainingsart auswählen.';
+    extra.textContent='Ergänzungstraining im Verein (Sandsack, Athletik, Technik) meldest du mit Trainerfreigabe:';
     host.append(extra);
-    host.append(trainingOption('ERGAENZUNGSTRAINING IM VEREIN',
-      'Sandsack, Athletik oder Technik mit Trainerfreigabe',
-      checkinOnly?'./checkin.html':'./boxer.html?club=1#trainingFormCard'));
+    if(checkinOnly)host.append(trainingOption('ERGÄNZUNGSTRAINING IM VEREIN','Sandsack, Athletik oder Technik per Gym-Check-in','./checkin.html'));
+    else{const g=document.createElement('div');g.className='ex-choice-actions';g.append(choiceButton('Ergänzungstraining im Verein','Sandsack, Athletik oder Technik mit Trainerfreigabe',false,()=>go('training','verein',true)));host.append(g)}
   }
   async function loadTraining(){
     const db=state.db, id=state.profile.id;
-    const [entries,types]=await Promise.all([
-      db.from('training_submissions').select('training_date,status,training_type_id,created_at').eq('boxer_id',id).order('created_at',{ascending:false}).limit(50),
-      db.from('training_types').select('id,name').eq('is_active',true)
-    ]);
-    const host=$('ex-training-history');host.replaceChildren();
-    if(entries.error){const p=document.createElement('p');p.className='ex-muted';p.textContent='Trainingshistorie konnte nicht geladen werden.';host.append(p);return;}
+    const entries=await db.from('training_submissions').select('training_date,status,training_type_id,created_at').eq('boxer_id',id).order('created_at',{ascending:false}).limit(200);
+    if(entries.error)return;
     const rows=Array.isArray(entries.data)?entries.data:[];
-    const names=new Map((types.data||[]).map(t=>[String(t.id),t.name]));
     const current=dateZurich(new Date()),start=new Date(current+'T12:00:00Z');start.setUTCDate(start.getUTCDate()-6);const from=dateZurich(start);
     const approved=rows.filter(r=>r.status==='approved'&&r.training_date>=from&&r.training_date<=current).length;
     const pending=rows.filter(r=>r.status==='pending').length;
     setText('ex-week-sessions',approved);setText('ex-pending',pending);
-    for(const item of rows.slice(0,5)){
-      const line=document.createElement('div');line.className='ex-list-line';
-      const copy=document.createElement('span'),title=document.createElement('b'),sub=document.createElement('small');
-      title.textContent=names.get(String(item.training_type_id))||'Training';
-      sub.textContent=dayLabel(item.training_date);
-      copy.append(title,sub);
-      const status=document.createElement('span');status.className='ex-pill';
-      status.textContent={approved:'Bestätigt',pending:'In Prüfung',rejected:'Abgelehnt'}[item.status]||item.status||'Offen';
-      line.append(copy,status);host.append(line);
-    }
-    if(!rows.length){const p=document.createElement('p');p.className='ex-muted';p.textContent='Noch keine Trainingseinträge vorhanden.';host.append(p)}
   }
   async function loadLevel(){
     const flag=await state.db.from('league_feature_flags').select('is_enabled').eq('feature_key','performance_dashboard').maybeSingle();
@@ -299,24 +314,22 @@
       const auth=await state.db.auth.getUser();
       const user=auth.data?.user;
       if(auth.error||!user){showGate('BITTE ANMELDEN','Melde dich mit deinem Boxer-Konto an, um dein Dashboard und deine Daten zu sehen.','ANMELDEN');return}
-      const pr=await state.db.from('profiles').select('id,display_name,role,is_active').eq('auth_user_id',user.id).maybeSingle();
+      const pr=await state.db.from('profiles').select('id,display_name,role,is_active,avatar_key,avatar_url').eq('auth_user_id',user.id).maybeSingle();
       const profile=pr.data;
       if(pr.error||!profile||!profile.is_active){showGate('KEIN AKTIVES PROFIL','Für dieses Konto ist kein aktiver Boxer freigeschaltet.','ZUM LOGIN');return}
-      if(profile.role!=='boxer'){showGate('BOXER-BEREICH','Diese neue Oberfläche ist für Boxer reserviert. Für Trainer und Admins bleibt das bisherige Dashboard erhalten.','TRAINER-DASHBOARD','./coach.html');return}
+      if(profile.role!=='boxer'){const home=profile.role==='admin'?'./admin.html':'./coach.html';showGate('BOXER-BEREICH','Mein Takeover ist der Bereich für Boxer. Dein Konto hat eine eigene Oberfläche.',profile.role==='admin'?'ZUR CLUBVERWALTUNG':'ZUM TRAINER-DASHBOARD',home);return}
       state.profile=profile;
       setText('ex-home-name',profile.display_name||'MEIN BOXER');
       setText('ex-welcome','Willkommen, '+profile.display_name+'. Dein nächster Schritt ist nur einen Klick entfernt.');
       $('ex-gate').hidden=true;$('ex-app').hidden=false;
+      const av=$('ex-account-avatar');if(av)av.textContent=String(profile.display_name||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'👤';
       await Promise.allSettled([loadMyPerformance(),loadLeaderboard(),loadTraining(),loadLevel(),loadTrainingConfiguration()]);
+      if(window.TLStudio)await window.TLStudio.mount({db:state.db,profile:state.profile,types:state.types});
+      if(state.pendingSub){const sub=state.pendingSub;state.pendingSub='';selectTab(state.current,sub)}
     }catch(error){
       console.error('[boxer-experience] init failed',error);
       showGate('VERBINDUNGSPROBLEM','Deine Daten konnten nicht geladen werden. Bitte lade die Seite neu.','ERNEUT VERSUCHEN','./boxer-experience.html');
     }
   }
-  // Returning from the secure canonical training form refreshes the live
-  // history and pending counters without constructing a second form.
-  document.addEventListener('takeover:flow-closed',()=>{
-    if(state.db&&state.profile)void loadTraining().catch(e=>console.warn('[boxer-experience] training refresh after flow:',e));
-  });
   init();
 })();

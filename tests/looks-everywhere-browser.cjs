@@ -38,7 +38,7 @@ function injected(cfg){
   return {data:null,error:{message:'unexpected rpc '+name}};
  };
  const q={select(){return q},eq(){return q},order(){return q},limit(){return q},in(){return q},gte(){return q},lte(){return q},range(){return q},
-  maybeSingle:async()=>({data:{id:'p-me',role:'boxer',is_active:true,display_name:me,avatar_key:'avatar-03'},error:null}),single:async()=>({data:null,error:null}),then:(r)=>Promise.resolve({data:[],error:null}).then(r)};
+  maybeSingle:async()=>({data:{id:'p-me',role:cfg.studioRole||'boxer',is_active:true,display_name:me,avatar_key:'avatar-03'},error:null}),single:async()=>({data:null,error:null}),then:(r)=>Promise.resolve({data:[],error:null}).then(r)};
  window.__takeoverMockClient={auth:{getSession:async()=>({data:{session:cfg.signedIn?{access_token:'x'}:null}}),getUser:async()=>({data:{user:cfg.signedIn?{id:'u1'}:null},error:null}),
   onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}})},from:()=>q,rpc,channel:()=>({on(){return this},subscribe(){return this}}),removeChannel(){}};
 }
@@ -146,7 +146,7 @@ function injected(cfg){
  assert.deepEqual(errors,[]);
 
  // G: Mein Studio – eigenes Profilbild mit Rahmen, Titel beim Namen
- ({p,errors}=await page({signedIn:true,me:'Ben'},'boxer.html'));
+ ({p,errors}=await page({signedIn:true,me:'Ben',studioRole:'coach'},'boxer.html')); // Takeover 3.0: boxer.html bleibt die Trainingsseite für Trainer; Boxer nutzen Mein Takeover
  await p.waitForSelector('#avatarPreview.tl-framed.kg-fr-glut',{state:'attached',timeout:15000});
  assert.equal(await p.locator('#profileName + .tl-look-title .kg-title').textContent(),'<b>Der Unermüdliche</b>');
 
