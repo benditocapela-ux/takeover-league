@@ -39,3 +39,7 @@ Final full-catalogue proof: 284 technically validated keys (+8), 560 pose/item c
 
 The expanded contact-sheet test initially closed its browser while transferring the combined base64 gallery through the automation protocol. The gallery now stays within the page; only the finished contact PNG crosses that boundary. No cases, comparisons or tolerances were removed.
 
+
+## Subsequent CI and shirt correction
+The shirt blockage described above is historical. The subsequent registered correction is documented in TOPS.md and CI_AND_SHIRT_FIX.md; artistic approval and productive activation remain off.
+

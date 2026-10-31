@@ -2468,6 +2468,118 @@
     },
     {
       "slot": "top",
+      "value": "shirt",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "weiss",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "grau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "gruen",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "lila",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "shirt",
+      "color": "gold",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
       "value": "hoodie",
       "color": "schwarz",
       "state": "down",
@@ -9493,6 +9605,270 @@
       "itemMaxDelta": 0
     },
     {
+      "variant": "top|shirt|schwarz|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|shirt|schwarz|default|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|shirt|weiss|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|shirt|weiss|default|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|shirt|grau|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|shirt|grau|default|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|shirt|rot|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|shirt|rot|default|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|shirt|blau|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|shirt|blau|default|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|shirt|gruen|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|shirt|gruen|default|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|shirt|lila|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|shirt|lila|default|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|shirt|gold|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|shirt|gold|default|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-shirt",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
       "variant": "top|hoodie|schwarz|down|guard",
       "sources": [
         "head",
@@ -13182,7 +13558,7 @@
       "patch": {
         "top": "shirt",
         "topc": "schwarz",
-        "coat": "none",
+        "coat": "basic",
         "pose_profile": "cool"
       },
       "renderer": "svg",
@@ -13195,6 +13571,7 @@
         "top": "shirt",
         "topc": "schwarz",
         "coat": "none",
+        "head": "cap",
         "pose_profile": "guard"
       },
       "renderer": "svg",
@@ -13333,7 +13710,7 @@
     },
     {
       "file": "chromium-production-tops-contact.png",
-      "examples": 2,
+      "examples": 4,
       "crop": [
         170,
         170,
@@ -13376,49 +13753,49 @@
     "cold": [
       {
         "mode": "v1",
-        "loadDecodeFirstDrawMs": 143.5,
+        "loadDecodeFirstDrawMs": 127.70000004768372,
         "imageRequests": 8,
         "imageEncodedBytes": 1513231,
         "decodedRGBABytes": 29884416
       },
       {
         "mode": "v1",
-        "loadDecodeFirstDrawMs": 113.30000001192093,
+        "loadDecodeFirstDrawMs": 175.5,
         "imageRequests": 8,
         "imageEncodedBytes": 1513231,
         "decodedRGBABytes": 29884416
       },
       {
         "mode": "v1",
-        "loadDecodeFirstDrawMs": 182,
+        "loadDecodeFirstDrawMs": 129.30000001192093,
         "imageRequests": 8,
         "imageEncodedBytes": 1513231,
         "decodedRGBABytes": 29884416
       },
       {
         "mode": "v2",
-        "loadDecodeFirstDrawMs": 63.10000002384186,
+        "loadDecodeFirstDrawMs": 79.5,
         "imageRequests": 2,
         "imageEncodedBytes": 2024127,
         "decodedRGBABytes": 11149312
       },
       {
         "mode": "v2",
-        "loadDecodeFirstDrawMs": 67.5,
+        "loadDecodeFirstDrawMs": 116.39999997615814,
         "imageRequests": 2,
         "imageEncodedBytes": 2024127,
         "decodedRGBABytes": 11149312
       },
       {
         "mode": "v2",
-        "loadDecodeFirstDrawMs": 62.90000003576279,
+        "loadDecodeFirstDrawMs": 84.09999996423721,
         "imageRequests": 2,
         "imageEncodedBytes": 2024127,
         "decodedRGBABytes": 11149312
       },
       {
         "mode": "production-new-art",
-        "loadDecodeFirstDrawMs": 63.39999997615814,
+        "loadDecodeFirstDrawMs": 73.60000002384186,
         "imageRequests": 8,
         "imageEncodedBytes": 1291832,
         "decodedRGBABytes": 5026272,
@@ -13447,7 +13824,7 @@
       },
       {
         "mode": "production-new-art",
-        "loadDecodeFirstDrawMs": 59.200000047683716,
+        "loadDecodeFirstDrawMs": 84.59999996423721,
         "imageRequests": 8,
         "imageEncodedBytes": 1291832,
         "decodedRGBABytes": 5026272,
@@ -13476,7 +13853,7 @@
       },
       {
         "mode": "production-new-art",
-        "loadDecodeFirstDrawMs": 95.79999995231628,
+        "loadDecodeFirstDrawMs": 72.5,
         "imageRequests": 8,
         "imageEncodedBytes": 1291832,
         "decodedRGBABytes": 5026272,
@@ -13506,8 +13883,8 @@
     ],
     "warm": {
       "mode": "production-new-art",
-      "p50ms": 9.899999976158142,
-      "p95ms": 20.19999998807907,
+      "p50ms": 11.5,
+      "p95ms": 24.5,
       "samples": 100,
       "warmups": 10
     },

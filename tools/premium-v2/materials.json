@@ -1307,7 +1307,7 @@
         "top-cool-tank"
       ],
       "newVariantKeys": 7,
-      "restrictions": "No coat; shirt Cool only. Hoodie both poses and jacket Guard use separate production manifests."
+      "restrictions": "Tank and shirt: no coat; shirt no headwear. Hoodie both poses and jacket Guard use separate production manifests."
     },
     "wrapSkin": {
       "keys": [

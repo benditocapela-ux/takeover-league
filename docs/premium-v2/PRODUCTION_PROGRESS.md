@@ -2,15 +2,15 @@
 
 Automatisch aus vorhandenem Inventar, tatsächlichen PNG-Dateien, Registrierungen, SHA-256 und aktuellem Browser-Testbericht erzeugt. Keine Live-Datenbankabfrage. Der historische PR-81-Stand bleibt in `coverage.csv`; die aktuelle Produktionsmatrix steht in `production-coverage.csv` und `production-coverage.json`.
 
-**52 Ausrüstungs-/Effekteinträge + 6 Pose-Metadateneinträge = 58 Katalogeinträge. 50/52 Ausrüstungs-/Effekteinträge mit Grafikquellen; 49/52 technisch geprüft; 0 freigegeben.**
+**52 Ausrüstungs-/Effekteinträge + 6 Pose-Metadateneinträge = 58 Katalogeinträge. 50/52 Ausrüstungs-/Effekteinträge mit Grafikquellen; 50/52 technisch geprüft; 0 freigegeben.**
 
 Premium-Profile mit registrierter Körperbasis: cool, guard (jeweils nur nachgewiesene Ausrüstungskombinationen). Aktuell technisch belegte Profile: cool, guard. Pose-Zeilen sind Metadaten und erhöhen weder Item-Abdeckung noch Grafikvarianten.
 
-Gesamtmatrix: 1800 Zeilen. Grafikquellen für 292 unterschiedliche Varianten-Schlüssel bzw. 576 Posezellen. Technisch integriert und geprüft: 284 Varianten-Schlüssel / 560 Posezellen. Gegenüber dem historischen SVG-only-Stand neu: 539 Posezellen; 274 Schlüssel gewinnen neue Poseabdeckung, davon waren 273 vorher in keiner Premium-Pose vorhanden. Haut- und Augenfarben sind zusätzlich enthalten, aber keine neuen Shop-Items.
+Gesamtmatrix: 1800 Zeilen. Grafikquellen für 292 unterschiedliche Varianten-Schlüssel bzw. 576 Posezellen. Technisch integriert und geprüft: 292 Varianten-Schlüssel / 576 Posezellen. Gegenüber dem historischen SVG-only-Stand neu: 555 Posezellen; 282 Schlüssel gewinnen neue Poseabdeckung, davon waren 281 vorher in keiner Premium-Pose vorhanden. Haut- und Augenfarben sind zusätzlich enthalten, aber keine neuen Shop-Items.
 
 **Zählweise:** Varianten-Schlüssel = Slot, Itemwert, Farbe und Zustand; jede Pose wird zusätzlich als Posezelle gezählt. Das ist keine Anzahl aller kombinierbaren Outfits und keine Anzahl neuer PNGs. Ein Teil mit zwei Posen zählt nur einmal als Varianten-Schlüssel.
 
-Technisch geprüft sind 272 Raster-/Materialvarianten und 12 prozedurale Canvas-Varianten. Effekte/Szenen werden ausdrücklich nicht als neue PNG-Illustrationen gezählt. Glatze entfernt die Haare; die acht zulässigen Haarfarbwerte erzeugen dabei dasselbe Bild.
+Technisch geprüft sind 280 Raster-/Materialvarianten und 12 prozedurale Canvas-Varianten. Effekte/Szenen werden ausdrücklich nicht als neue PNG-Illustrationen gezählt. Glatze entfernt die Haare; die acht zulässigen Haarfarbwerte erzeugen dabei dasselbe Bild.
 
 Technische Evidenz: aktueller, hashgebundener Chromium-/WebKit-Bericht vorhanden.
 
@@ -40,7 +40,7 @@ Status getrennt: `SVG only` = keine verifizierte passende Grafik; `Artwork draft
 | head_band | Stirnband | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | head_hijab | Sport-Hijab | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | top_tank | Tanktop | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
-| top_shirt | T-Shirt | 8/8 | 0/8 | – | Artwork draft; Not validated; Artistically pending |
+| top_shirt | T-Shirt | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | top_hoodie | Hoodie | 16/16 | 16/16 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | top_jacke | Trainingsjacke | 8/8 | 8/8 | guard | Artwork draft; Technically validated; Artistically pending |
 | bottom_boxer | Boxershorts | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |

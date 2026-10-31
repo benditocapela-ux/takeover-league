@@ -3,7 +3,7 @@
     "equipmentCatalogueEntries": 52,
     "poseCatalogueEntries": 6,
     "equipmentItemsWithArtwork": 50,
-    "equipmentItemsTechnicallyValidated": 49,
+    "equipmentItemsTechnicallyValidated": 50,
     "supportedPremiumPoseProfiles": [
       "cool",
       "guard"
@@ -15,16 +15,16 @@
     "catalogueEntries": 58,
     "matrixRows": 1800,
     "catalogueItemsWithArtwork": 50,
-    "catalogueItemsTechnicallyValidated": 49,
+    "catalogueItemsTechnicallyValidated": 50,
     "artworkVariantKeys": 292,
     "artworkPoseCells": 576,
-    "technicallyValidatedVariantKeys": 284,
-    "technicallyValidatedPoseCells": 560,
+    "technicallyValidatedVariantKeys": 292,
+    "technicallyValidatedPoseCells": 576,
     "canvasVariantKeys": 12,
-    "rasterVariantKeys": 272,
-    "newlySupportedVariantKeys": 274,
-    "newlySupportedPoseCells": 539,
-    "brandNewVariantKeys": 273,
+    "rasterVariantKeys": 280,
+    "newlySupportedVariantKeys": 282,
+    "newlySupportedPoseCells": 555,
+    "brandNewVariantKeys": 281,
     "approvedItems": 0,
     "hashAlgorithm": "sha256-canonical-text-lf-v1",
     "evidenceValid": true,
@@ -704,14 +704,17 @@
       "totalPoseCells": 48,
       "artworkVariantKeys": 8,
       "artworkPoseCells": 16,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
       "availability": "Artwork draft",
-      "technicalStatus": "Not validated",
+      "technicalStatus": "Technically validated",
       "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
       "artworkPoses": [
         "guard",
         "cool"
@@ -719,7 +722,7 @@
       "sourceFiles": [
         "tools/premium-v2/tops/assets/shirt.png"
       ],
-      "note": "Files exist; no current matching dual-browser production evidence for this item."
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
     },
     {
       "key": "top_hoodie",

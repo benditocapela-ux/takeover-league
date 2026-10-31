@@ -74,23 +74,17 @@
         0,
         0,
         512,
-        510
+        448.0
       ],
       "box": [
         196.5,
-        231.64939024390245,
+        221.64939024390245,
         375,
-        373.53515625
-      ],
-      "bodyClipRect": [
-        0,
-        0,
-        768,
-        550
+        328.125
       ],
       "sha256": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6",
       "bytes": 273752,
-      "supportStatus": "blocked-artwork-draft",
+      "supportStatus": "technically-supported-artistic-pending",
       "origin": "new-shared-anime-draft",
       "itemKey": "shirt",
       "color": "schwarz"
@@ -103,23 +97,17 @@
         0,
         0,
         512,
-        510
+        434.0
       ],
       "box": [
         196.5,
         231.64939024390245,
         375,
-        373.53515625
-      ],
-      "bodyClipRect": [
-        0,
-        0,
-        768,
-        550
+        317.87109375
       ],
       "sha256": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6",
       "bytes": 273752,
-      "supportStatus": "blocked-artwork-draft",
+      "supportStatus": "technically-supported-artistic-pending",
       "origin": "new-shared-anime-draft",
       "itemKey": "shirt",
       "color": "schwarz"
@@ -266,7 +254,7 @@
         [
           [
             210,
-            365
+            355
           ],
           [
             249,
@@ -310,7 +298,7 @@
           ],
           [
             552,
-            365
+            355
           ],
           [
             564,
@@ -342,15 +330,15 @@
           ],
           [
             385,
-            443
+            435
           ],
           [
             350,
-            451
+            448
           ],
           [
             310,
-            461
+            460
           ],
           [
             272,
@@ -374,7 +362,128 @@
           ]
         ]
       ],
-      "rationale": "Dedicated registered foreground-arm contour; excludes the chest and abdomen previously restored from inverse tank alpha. Draft pending visual acceptance."
+      "rationale": "Registered foreground arm outline; single-coverage composite, no inverse tank alpha. Upper arms beneath sleeves belong to body visibility, not the foreground matte."
+    },
+    "guardShirt": {
+      "type": "restoreBodyPolygons",
+      "polygons": [
+        [
+          [
+            282,
+            245
+          ],
+          [
+            314,
+            248
+          ],
+          [
+            316,
+            275
+          ],
+          [
+            309,
+            309
+          ],
+          [
+            301,
+            354
+          ],
+          [
+            299,
+            393
+          ],
+          [
+            290,
+            422
+          ],
+          [
+            275,
+            442
+          ],
+          [
+            250,
+            455
+          ],
+          [
+            180,
+            480
+          ],
+          [
+            180,
+            389
+          ],
+          [
+            236,
+            352
+          ],
+          [
+            253,
+            314
+          ],
+          [
+            270,
+            273
+          ]
+        ],
+        [
+          [
+            447,
+            245
+          ],
+          [
+            480,
+            248
+          ],
+          [
+            497,
+            275
+          ],
+          [
+            515,
+            314
+          ],
+          [
+            534,
+            352
+          ],
+          [
+            590,
+            389
+          ],
+          [
+            590,
+            480
+          ],
+          [
+            517,
+            455
+          ],
+          [
+            493,
+            442
+          ],
+          [
+            478,
+            422
+          ],
+          [
+            469,
+            393
+          ],
+          [
+            467,
+            354
+          ],
+          [
+            459,
+            309
+          ],
+          [
+            450,
+            275
+          ]
+        ]
+      ]
     }
   },
   "sources": {
@@ -416,15 +525,87 @@
     "New central cloth folds need material-style acceptance",
     "Coat combinations and other garment families are outside this bounded tank package"
   ],
-  "draftTops": [
-    "shirt"
-  ],
+  "draftTops": [],
   "blocked": {
-    "shirt": [
-      "Cool: remaining neck triangle and under-arm skin wedge at 200%; Guard: elbow silhouette needs exact contour. Both remain SVG."
-    ]
+    "shirt": []
   },
   "supportedPoses": {
-    "shirt": []
+    "shirt": [
+      "cool",
+      "guard"
+    ]
+  },
+  "supportedHeads": {
+    "shirt": [
+      "none"
+    ]
+  },
+  "bodyVisibility": {
+    "shirt": {
+      "region": [
+        180,
+        230,
+        410,
+        320
+      ],
+      "core": [
+        315,
+        230,
+        145,
+        320
+      ],
+      "underSleeves": [
+        [
+          [
+            180,
+            350
+          ],
+          [
+            300,
+            350
+          ],
+          [
+            300,
+            420
+          ],
+          [
+            270,
+            450
+          ],
+          [
+            180,
+            470
+          ]
+        ],
+        [
+          [
+            470,
+            350
+          ],
+          [
+            590,
+            350
+          ],
+          [
+            590,
+            470
+          ],
+          [
+            510,
+            450
+          ],
+          [
+            470,
+            420
+          ]
+        ]
+      ],
+      "rationale": "Hide covered shoulder/body fringes while retaining upper arms beneath short sleeves. Foreground restoration uses a separate arm-only matte."
+    }
+  },
+  "registrationNotes": {
+    "coolShirt": "Collar world Y corrected from 231.64939024390245 to 221.64939024390245 against unchanged head/neck; no CSS translation, no head crop. Sleeves and hem inspected at 100%/200%.",
+    "guardShirt": "Separate forearm outline preserves the original elbow silhouette. Existing Guard tank mask is unchanged.",
+    "sharedItemCrop": "Integer source UVs terminate at the registered waistband. Hero and tile now use the same visible shirt crop, without a longer hidden hem in the tile."
   }
 }

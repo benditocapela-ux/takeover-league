@@ -26,8 +26,8 @@
     },
     {
       "id": "shirt",
-      "state": "Blocked",
-      "implementation": "Real draft sources exist but shoulder and crossed-arm masks fail visual inspection. Default resolver rejects shirt and uses full SVG fallback."
+      "state": "Artistically pending",
+      "implementation": "Registered Cool collar, separate Guard forearm matte and single-coverage restoration. Cool/Guard shirts use the same visible source crop for hero and tile, eight colours; no coat/headwear/hood. Artistic acceptance remains outstanding."
     },
     {
       "id": "material-quality",
@@ -56,4 +56,3 @@
     }
   ]
 }
-

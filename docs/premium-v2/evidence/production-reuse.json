@@ -2,16 +2,16 @@
   "approved": false,
   "enabled": false,
   "evidenceReport": "docs/premium-v2/evidence/production-tests.json",
-  "evidenceSHA256": "93eabe711993240e91b802e9c630b9f03307acd140aca82432e857c275620a26",
-  "evidenceCells": 560,
+  "evidenceSHA256": "6ae00816538200084af47a69ceb60899104ea0110d798efb4a82ede9ffb6fac2",
+  "evidenceCells": 576,
   "method": "Unique source file + component id + UV + registered box among actual accepted baseline configurations. Palette variants do not multiply unique components. File bytes include packed unused atlas pixels; not visible-pixel reuse or art-production-time savings. Canvas effects reported separately. Unpaired Guard Basic is counted pose-specific, not inferred reusable.",
   "overall": {
     "uniqueComponents": {
-      "cool": 46,
-      "guard": 49,
+      "cool": 47,
+      "guard": 50,
       "shared": 36
     },
-    "guardComponentsAlsoUsedByCoolRatio": 0.7346938775510204,
+    "guardComponentsAlsoUsedByCoolRatio": 0.72,
     "files": {
       "cool": [
         "tools/premium-v2/streaming-assets/base.png",
@@ -39,6 +39,7 @@
         "tools/premium-v2/headwear/assets/band.png",
         "tools/premium-v2/headwear-hijab/assets/hijab.png",
         "tools/premium-v2/../../assets/boxer-artpacks/v1/modular-cool/top-tank.png",
+        "tools/premium-v2/tops/assets/shirt.png",
         "tools/premium-v2/hoodie/cool.png",
         "tools/premium-v2/hoodie/guard.png",
         "tools/premium-v2/production-art/bottom-kurz.png",
@@ -80,6 +81,7 @@
         "tools/premium-v2/headwear/assets/band.png",
         "tools/premium-v2/headwear-hijab/assets/hijab.png",
         "tools/premium-v2/tops/assets/guard-tank.png",
+        "tools/premium-v2/tops/assets/shirt.png",
         "tools/premium-v2/hoodie/guard.png",
         "tools/premium-v2/tops/assets/guard-jacket.png",
         "tools/premium-v2/production-art/bottom-kurz.png",
@@ -116,6 +118,7 @@
         "tools/premium-v2/headwear/assets/cap.png",
         "tools/premium-v2/headwear/assets/band.png",
         "tools/premium-v2/headwear-hijab/assets/hijab.png",
+        "tools/premium-v2/tops/assets/shirt.png",
         "tools/premium-v2/hoodie/guard.png",
         "tools/premium-v2/production-art/bottom-kurz.png",
         "tools/premium-v2/production-art/bottom-jogger.png",
@@ -126,9 +129,9 @@
       ]
     },
     "encodedFileBytes": {
-      "cool": 5945287,
-      "guard": 5985116,
-      "shared": 4417025
+      "cool": 6219039,
+      "guard": 6258868,
+      "shared": 4690777
     },
     "sharedComponents": [
       {
@@ -758,6 +761,22 @@
         ]
       },
       {
+        "id": "top-cool-shirt",
+        "file": "tools/premium-v2/tops/assets/shirt.png",
+        "uv": [
+          0,
+          0,
+          512,
+          448
+        ],
+        "box": [
+          196.5,
+          221.64939024390245,
+          375,
+          328.125
+        ]
+      },
+      {
         "id": "top-cool-hoodie-torso",
         "file": "tools/premium-v2/hoodie/cool.png",
         "uv": [
@@ -933,6 +952,22 @@
           245,
           214.58333333333334,
           309
+        ]
+      },
+      {
+        "id": "top-guard-shirt",
+        "file": "tools/premium-v2/tops/assets/shirt.png",
+        "uv": [
+          0,
+          0,
+          512,
+          434
+        ],
+        "box": [
+          196.5,
+          231.64939024390245,
+          375,
+          317.87109375
         ]
       },
       {
@@ -1604,34 +1639,37 @@
     },
     "top": {
       "acceptedRows": {
-        "cool": 24,
-        "guard": 32
+        "cool": 32,
+        "guard": 40
       },
       "uniqueComponents": {
-        "cool": 3,
-        "guard": 6,
+        "cool": 4,
+        "guard": 7,
         "shared": 0
       },
       "guardComponentsAlsoUsedByCoolRatio": 0,
       "files": {
         "cool": [
           "tools/premium-v2/../../assets/boxer-artpacks/v1/modular-cool/top-tank.png",
+          "tools/premium-v2/tops/assets/shirt.png",
           "tools/premium-v2/hoodie/cool.png",
           "tools/premium-v2/hoodie/guard.png"
         ],
         "guard": [
           "tools/premium-v2/tops/assets/guard-tank.png",
+          "tools/premium-v2/tops/assets/shirt.png",
           "tools/premium-v2/hoodie/guard.png",
           "tools/premium-v2/tops/assets/guard-jacket.png"
         ],
         "shared": [
+          "tools/premium-v2/tops/assets/shirt.png",
           "tools/premium-v2/hoodie/guard.png"
         ]
       },
       "encodedFileBytes": {
-        "cool": 543642,
-        "guard": 642569,
-        "shared": 247841
+        "cool": 817394,
+        "guard": 916321,
+        "shared": 521593
       },
       "sharedComponents": [],
       "coolSpecific": [
@@ -1649,6 +1687,22 @@
             240,
             215,
             335
+          ]
+        },
+        {
+          "id": "top-cool-shirt",
+          "file": "tools/premium-v2/tops/assets/shirt.png",
+          "uv": [
+            0,
+            0,
+            512,
+            448
+          ],
+          "box": [
+            196.5,
+            221.64939024390245,
+            375,
+            328.125
           ]
         },
         {
@@ -1699,6 +1753,22 @@
             245,
             214.58333333333334,
             309
+          ]
+        },
+        {
+          "id": "top-guard-shirt",
+          "file": "tools/premium-v2/tops/assets/shirt.png",
+          "uv": [
+            0,
+            0,
+            512,
+            434
+          ],
+          "box": [
+            196.5,
+            231.64939024390245,
+            375,
+            317.87109375
           ]
         },
         {

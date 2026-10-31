@@ -1,7 +1,7 @@
 {
   "engine": "chromium",
   "rendererSha256": "6d46ecd6b4dbe87a7152121b49b9808f0340b6cb6a7340306f80b97baa1cd6ed",
-  "materialManifestSha256": "2621af906d47eaa6f102f2827223cde3dc9fae64cd40a43a933bf6820c822827",
+  "materialManifestSha256": "329f596b36fd1a5afe85c509e569f8bf03f6b787b2b9851339c9dd325a653204",
   "status": "Technically validated",
   "artisticStatus": "Artistically pending",
   "productionChecks": [

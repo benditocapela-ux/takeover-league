@@ -1,0 +1,26 @@
+{
+  "approved": false,
+  "enabled": false,
+  "reports": [
+    {
+      "engine": "chromium",
+      "materialCases": 128,
+      "pantsGloves": 16,
+      "edgeChecks": 2,
+      "hairCases": 36,
+      "approved": false,
+      "enabled": false,
+      "passed": true
+    },
+    {
+      "engine": "webkit",
+      "materialCases": 128,
+      "pantsGloves": 16,
+      "edgeChecks": 2,
+      "hairCases": 36,
+      "approved": false,
+      "enabled": false,
+      "passed": true
+    }
+  ]
+}

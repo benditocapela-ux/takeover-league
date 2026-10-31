@@ -1,31 +1,29 @@
-# Bounded tops production
+# Registered tank and shirt production
 
-All approved/enabled flags remain false. This is local art inspection, not release approval.
+All approved/enabled flags remain false. Technical support in the isolated laboratory is not artistic approval or release activation.
 
-## Supported tank pilot
+## Current support
 
-One newly generated Guard tank front, plus the unchanged existing Cool tank. Black only, Cool/Guard, no coat or hood. This adds **one** item/color/pose cell (Guard tank); Cool tank is existing reuse. The garment contains no skin or hands. Manifest boxes preserve native aspect ratio on the 768×1216 registration canvas.
+Tank retains the original Cool garment and existing Guard garment. Shirt uses the existing transparent source, registered separately for Cool and Guard. Both families use eight colours in the production material renderer. Shirt requires no coat, headwear or raised hood. Unsupported poses/configurations use the complete SVG fallback. The standalone tops page deliberately tests the black source; the production page supplies all eight colours.
 
-Integration order: registered current body and lower clothing, top, restore foreground arms from the **current materialized body**, then gloves. Never restore raw source skin after skin recoloring. `TLPremiumTops.resolve(config, manifest)` is the default support gate. `draw` uses the same source/UV as the item tile. Guard restoration uses explicit polygons; Cool tank retains its original alpha gaps.
+## Corrected causes
 
-## Shirt: blocked artwork draft
+The Cool collar was registered ten world pixels too low. Its Y position is now 221.64939024390245, with unchanged source pixels and proportions. The original head is preserved; there is no CSS translation or rectangular neck cutout. Integer UV heights end at the waistband, so the tile no longer includes a longer hidden hem than the actual figure.
 
-One genuine shared shirt master was generated and corrected twice. All three raw sources are retained. It is **not supported** by the default resolver: selecting shirt returns full SVG. Only the isolated comparison gallery calls `resolve(...,{inspectDraft:true})` to expose failures honestly. This is zero supported shirt cells, despite two pose inspection examples.
+The inverse-tank-alpha experiment restored chest and abdomen together with the arms. A dedicated Cool foreground contour now restores only the crossed arms. Guard has a separate shirt contour preserving the complete elbow outline; the existing Guard tank contour remains separate.
 
-Remaining visible defects: Guard shoulder skin crescents above the sleeve caps; Cool foreground mask exposes chest/abdomen strips. The neckline correction improved the open collar but did not solve pose occlusion. Next production request: redraw the shoulder cap outline against the actual registered Guard shoulder and author an exact Cool arm-only mask; inspect the complete contour at 1:1 before changing support status.
+Visibility behind the garment and restoration in front are separate registrations. The former retains upper arms beneath the short sleeves while hiding covered shoulders and torso fringes. The latter follows the actual foreground arms. No coat/pants pixels are edited or incorporated into the shirt.
 
-The experimental Cool mask is packed beneath the shirt sprite in the same PNG atlas. UVs exclude the mask from equipment thumbnails. This saves a network request but does not constitute an artistic solution or proven pose reuse.
+Clipped clear followed by clipped draw applied antialias coverage twice, producing a dark seam where the same skin was already behind the mask. Polygon and bitmap mattes now use one coverage-weighted composite. A regression requires byte-for-byte preservation when the original semi-transparent skin already occupies the target, including every polygon edge. Restoration uses the currently materialized body, preserving the chosen skin tone.
 
-## Evidence and validation
+## Sources and validation
 
-`node tests/premium-v2-tops.cjs` exercises Chromium and WebKit. It checks RGBA PNGs, hashes, registration aspect, identical tile/source pixels, sampled foreground arm centers, restoration of current skin material, full SVG for unsupported configurations and missing assets, local-only requests, three deduplicated art requests for the complete inspection gallery, and 390px layout. Sampling arm centers cannot prove a clean anatomical contour; the shirt fails visual inspection despite passing these technical checks.
+The shirt PNG and its source hash are unchanged. Figure and tile use the same registered UV/box and material function. No new thumbnails or colour PNGs were generated; no additional artwork requests were introduced.
 
-Real browser captures and before/after detail canvases live in `tools/premium-v2/tops/evidence/`. The earlier `*-tank-contact.png` captures show the tank family; `*-tops-contact.png` also show the explicitly blocked shirt drafts. `*-shirt-*-detail.png` retain the visible defects. Source hashes and crop coordinates are in the manifest; generation prompts are in provenance files.
+premium-v2-tops.cjs checks both poses, original arm pixels, current skin material, exact source/tile pixels, missing-asset and unsupported-configuration fallbacks, three deduplicated source requests and mobile layout.
 
-## Integrated production palette
+premium-shirts.cjs checks Chromium and WebKit: 128 pose/colour/skin cases, 16 pants/glove combinations, 36 hairstyle/pose combinations and two full-raster mask-edge regressions per engine. Actual 100%/200% crops and contact sheets are in docs/premium-v2/evidence/shirts/.
 
-The production resolver uses the black tank registration and applies the shared material system for all eight existing topc values. The standalone tops resolver remains black-master only. Shirt stays blocked in both paths; coat/hood restrictions remain.
+premium-production-browser.cjs remains the full catalogue integration and exact item-parity gate. premium-v2-hair-expansion.cjs deliberately omits the Tops module: hair-only rendering must not acquire a mandatory clothing dependency.
 
-## Next sprint correction
-The inverse-tank mask is now replaced by a registered arm-only polygon and explicit covered-body clipping. Both shirt poses remain blocked after 200% review: Cool neckline/under-arm remnants and Guard elbow outline. See NEXT_CLOTHING.md; the old atlas mask is retained but no longer used.
-
+Artist acceptance of anatomy, cloth style and fit remains outstanding. Premium remains disabled and PR #82 remains Draft.

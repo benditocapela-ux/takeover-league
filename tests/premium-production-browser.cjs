@@ -143,7 +143,7 @@ async function saveContact(page, entries, file, crop = [0, 0, 768, 1216], column
         });
         assert.ok(bodyMask.sleeveSkinRemoved > 1000, 'Guard coat applies actual body occlusion'); assert.equal(bodyMask.chestChanges, 0); assert.equal(bodyMask.headLowerChanges, 0);
         const fallback = [];
-        for (const patch of [{ head: 'hijab', coat: 'samurai' }, { pose_profile: 'jab' }, { top: 'hoodie', hood: true }, { top: 'shirt', topc: 'schwarz', coat: 'none', pose_profile: 'cool' }, { top: 'shirt', topc: 'schwarz', coat: 'none', pose_profile: 'guard' }, { coat: 'basic', pose_profile: 'flex', top: 'none' }]) {
+        for (const patch of [{ head: 'hijab', coat: 'samurai' }, { pose_profile: 'jab' }, { top: 'hoodie', hood: true }, { top: 'shirt', topc: 'schwarz', coat: 'basic', pose_profile: 'cool' }, { top: 'shirt', topc: 'schwarz', coat: 'none', head: 'cap', pose_profile: 'guard' }, { coat: 'basic', pose_profile: 'flex', top: 'none' }]) {
           await set(page, patch); const result = await page.evaluate(() => ({ renderer: document.body.dataset.renderer, heroPNG: !!document.querySelector('#hero canvas'), heroSVG: !!document.querySelector('#hero svg'), animeBadges: [...document.querySelectorAll('.item small')].filter(x => /Anime|Canvas/.test(x.textContent)).length }));
           assert.deepEqual(result, { renderer: 'svg', heroPNG: false, heroSVG: true, animeBadges: 0 }); fallback.push({ patch, ...result });
         }
