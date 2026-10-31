@@ -1,0 +1,38 @@
+{
+  "invalid": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "mask": [
+    0,
+    255
+  ],
+  "sources": [
+    "headwear/assets/cap.png",
+    "headwear/assets/band.png"
+  ],
+  "parity": [
+    {
+      "key": "cap",
+      "maxChannelDelta": 0
+    },
+    {
+      "key": "band",
+      "maxChannelDelta": 0
+    }
+  ],
+  "combinations": 6,
+  "flags": [
+    false,
+    false,
+    false,
+    false
+  ],
+  "assetFailureFallback": true,
+  "imageRequests": 2,
+  "artifacts": "Actual browser render, not artistic approval"
+}

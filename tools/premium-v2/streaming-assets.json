@@ -745,5 +745,6 @@
       "bytes": 42972,
       "sha256": "86c71bd5f23968899146bb5e377ded81da2eb6492c1a441f68d37f7b4b26e910"
     }
-  }
+  },
+  "sourceManifestHashAlgorithm": "sha256-canonical-text-lf-v1"
 }

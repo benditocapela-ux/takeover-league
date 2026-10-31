@@ -1,0 +1,286 @@
+{
+  "states": [
+    {
+      "s": -10,
+      "e": -10,
+      "shoulder": [
+        160,
+        180
+      ],
+      "elbow": [
+        176.77924804110214,
+        336.0876360740183
+      ],
+      "wrist": [
+        198.47386246223735,
+        173.51320295146894
+      ],
+      "upperAngle": -0.17453292519943295,
+      "forearmAngle": -0.3490658503988659,
+      "handAngle": 0.1863002276553971,
+      "shoulderDegrees": -10,
+      "elbowDegrees": -10,
+      "upperLength": 156.98692079278453,
+      "forearmLength": 164.01555596954822,
+      "jointAlpha": [
+        253,
+        255,
+        255
+      ],
+      "occupied": 18119,
+      "edgeAlpha": 0
+    },
+    {
+      "s": -10,
+      "e": 0,
+      "shoulder": [
+        160,
+        180
+      ],
+      "elbow": [
+        176.77924804110214,
+        336.0876360740183
+      ],
+      "wrist": [
+        226.37502656861147,
+        179.75030415278383
+      ],
+      "upperAngle": -0.17453292519943295,
+      "forearmAngle": -0.17453292519943295,
+      "handAngle": 0.36083315285483003,
+      "shoulderDegrees": -10,
+      "elbowDegrees": 0,
+      "upperLength": 156.98692079278453,
+      "forearmLength": 164.01555596954816,
+      "jointAlpha": [
+        253,
+        255,
+        255
+      ],
+      "occupied": 20467,
+      "edgeAlpha": 0
+    },
+    {
+      "s": -10,
+      "e": 10,
+      "shoulder": [
+        160,
+        180
+      ],
+      "elbow": [
+        176.77924804110214,
+        336.0876360740183
+      ],
+      "wrist": [
+        252.76924804110212,
+        190.7376360740183
+      ],
+      "upperAngle": -0.17453292519943295,
+      "forearmAngle": 0,
+      "handAngle": 0.5353660780542631,
+      "shoulderDegrees": -10,
+      "elbowDegrees": 10,
+      "upperLength": 156.98692079278453,
+      "forearmLength": 164.0155559695482,
+      "jointAlpha": [
+        253,
+        255,
+        255
+      ],
+      "occupied": 21375,
+      "edgeAlpha": 0
+    },
+    {
+      "s": 0,
+      "e": -10,
+      "shoulder": [
+        160,
+        180
+      ],
+      "elbow": [
+        149.42000000000002,
+        336.63
+      ],
+      "wrist": [
+        199.01577852750935,
+        180.29266807876553
+      ],
+      "upperAngle": 0,
+      "forearmAngle": -0.17453292519943295,
+      "handAngle": 0.36083315285483003,
+      "shoulderDegrees": 0,
+      "elbowDegrees": -10,
+      "upperLength": 156.9869207927845,
+      "forearmLength": 164.01555596954816,
+      "jointAlpha": [
+        253,
+        255,
+        255
+      ],
+      "occupied": 18117,
+      "edgeAlpha": 0
+    },
+    {
+      "s": 0,
+      "e": 0,
+      "shoulder": [
+        160,
+        180
+      ],
+      "elbow": [
+        149.42000000000002,
+        336.63
+      ],
+      "wrist": [
+        225.41,
+        191.28
+      ],
+      "upperAngle": 0,
+      "forearmAngle": 0,
+      "handAngle": 0.5353660780542631,
+      "shoulderDegrees": 0,
+      "elbowDegrees": 0,
+      "upperLength": 156.9869207927845,
+      "forearmLength": 164.0155559695482,
+      "jointAlpha": [
+        253,
+        255,
+        255
+      ],
+      "occupied": 20462,
+      "edgeAlpha": 0
+    },
+    {
+      "s": 0,
+      "e": 10,
+      "shoulder": [
+        160,
+        180
+      ],
+      "elbow": [
+        149.42000000000002,
+        336.63
+      ],
+      "wrist": [
+        249.495303775286,
+        206.68371812058558
+      ],
+      "upperAngle": 0,
+      "forearmAngle": 0.17453292519943295,
+      "handAngle": 0.709899003253696,
+      "shoulderDegrees": 0,
+      "elbowDegrees": 10,
+      "upperLength": 156.9869207927845,
+      "forearmLength": 164.0155559695482,
+      "jointAlpha": [
+        253,
+        255,
+        255
+      ],
+      "occupied": 21361,
+      "edgeAlpha": 0
+    },
+    {
+      "s": 10,
+      "e": -10,
+      "shoulder": [
+        160,
+        180
+      ],
+      "elbow": [
+        122.38221990515953,
+        332.41324063458603
+      ],
+      "wrist": [
+        198.3722199051595,
+        187.06324063458604
+      ],
+      "upperAngle": 0.17453292519943295,
+      "forearmAngle": 0,
+      "handAngle": 0.5353660780542631,
+      "shoulderDegrees": 10,
+      "elbowDegrees": -10,
+      "upperLength": 156.98692079278453,
+      "forearmLength": 164.0155559695482,
+      "jointAlpha": [
+        253,
+        255,
+        255
+      ],
+      "occupied": 18135,
+      "edgeAlpha": 0
+    },
+    {
+      "s": 10,
+      "e": 0,
+      "shoulder": [
+        160,
+        180
+      ],
+      "elbow": [
+        122.38221990515953,
+        332.41324063458603
+      ],
+      "wrist": [
+        222.45752368044552,
+        202.46695875517162
+      ],
+      "upperAngle": 0.17453292519943295,
+      "forearmAngle": 0.17453292519943295,
+      "handAngle": 0.709899003253696,
+      "shoulderDegrees": 10,
+      "elbowDegrees": 0,
+      "upperLength": 156.98692079278453,
+      "forearmLength": 164.0155559695482,
+      "jointAlpha": [
+        253,
+        255,
+        255
+      ],
+      "occupied": 20473,
+      "edgeAlpha": 0
+    },
+    {
+      "s": 10,
+      "e": 10,
+      "shoulder": [
+        160,
+        180
+      ],
+      "elbow": [
+        122.38221990515953,
+        332.41324063458603
+      ],
+      "wrist": [
+        243.50208999106664,
+        221.81902889467182
+      ],
+      "upperAngle": 0.17453292519943295,
+      "forearmAngle": 0.3490658503988659,
+      "handAngle": 0.8844319284531289,
+      "shoulderDegrees": 10,
+      "elbowDegrees": 10,
+      "upperLength": 156.98692079278453,
+      "forearmLength": 164.0155559695482,
+      "jointAlpha": [
+        253,
+        255,
+        255
+      ],
+      "occupied": 21358,
+      "edgeAlpha": 0
+    }
+  ],
+  "rejected": true,
+  "flags": [
+    false,
+    false,
+    false,
+    false
+  ],
+  "sourceFiles": [
+    "upper.png",
+    "forearm.png",
+    "hand.png"
+  ]
+}

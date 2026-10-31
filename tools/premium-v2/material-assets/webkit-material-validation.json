@@ -1,0 +1,134 @@
+{
+  "engine": "webkit",
+  "rendererSha256": "7277088f5914f7a8c31ad0e176193ce2b1bb827f7ec5e63c4b7f4303dfa106ea",
+  "materialManifestSha256": "bebc12a4093a0e4929515c171ecf10539765de736aebed97abaa068a75537ea3",
+  "status": "Technically validated",
+  "artisticStatus": "Artistically pending",
+  "checks": [
+    {
+      "id": "head",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "lower",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "body-cool",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "body-guard",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "eyes",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "feet",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "hair-afro",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "hair-short",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "bottom-black",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "hands-blackgold",
+      "variants": 5,
+      "changedVariants": 4
+    },
+    {
+      "id": "guard-black-0",
+      "variants": 5,
+      "changedVariants": 4
+    },
+    {
+      "id": "guard-black-1",
+      "variants": 5,
+      "changedVariants": 4
+    },
+    {
+      "id": "hands-master-0",
+      "variants": 5,
+      "changedVariants": 4
+    },
+    {
+      "id": "hands-master-1",
+      "variants": 5,
+      "changedVariants": 4
+    },
+    {
+      "id": "hair-stachel",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "hair-undercut",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "hair-buzz",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "bottom-jogger",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "bottom-kurz",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "bottom-track",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "feet-sneaker",
+      "variants": 8,
+      "changedVariants": 7
+    }
+  ],
+  "protectedForehead": 873,
+  "hairIsolation": {
+    "removedFacePixels": 1024,
+    "retainedHairPixels": 9983
+  },
+  "cache": {
+    "entries": 24,
+    "bytes": 3974400,
+    "hits": 1,
+    "misses": 41,
+    "maxEntries": 24,
+    "maxBytes": 8388608
+  },
+  "distinct": {
+    "eyes": 8,
+    "hair": 8,
+    "skin": 8
+  },
+  "approved": false,
+  "enabled": false
+}

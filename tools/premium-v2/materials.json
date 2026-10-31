@@ -1,0 +1,1228 @@
+{
+  "version": 1,
+  "approved": false,
+  "enabled": false,
+  "artworkStatus": "Artwork draft",
+  "artisticStatus": "Artistically pending",
+  "sourceBase": "02414c9a3fd538198aa7b7c948b980fa6df27825",
+  "method": "Registered semantic masks and calibrated channel/luminance ramps; no CSS hue filter; no new silhouette drawing",
+  "sourcePalettes": {
+    "skin": [
+      [
+        "#fbe3d2",
+        "#e8b8a2"
+      ],
+      [
+        "#f6d0b4",
+        "#e0a98c"
+      ],
+      [
+        "#eab995",
+        "#cc9270"
+      ],
+      [
+        "#d39b72",
+        "#b07650"
+      ],
+      [
+        "#b07a52",
+        "#8c5a38"
+      ],
+      [
+        "#8a5638",
+        "#683e25"
+      ],
+      [
+        "#6a3f28",
+        "#4e2c1a"
+      ],
+      [
+        "#4a2a1b",
+        "#341c11"
+      ]
+    ],
+    "hair": {
+      "schwarz": [
+        "#221c26",
+        "#0e0a12",
+        "#5d4f72"
+      ],
+      "braun": [
+        "#5a3420",
+        "#2e180c",
+        "#a8714a"
+      ],
+      "dunkelbraun": [
+        "#3a2216",
+        "#1c0f08",
+        "#7a5038"
+      ],
+      "blond": [
+        "#e8c46a",
+        "#b8913a",
+        "#fff0b8"
+      ],
+      "rot": [
+        "#b8322a",
+        "#6a1410",
+        "#f08a6a"
+      ],
+      "silber": [
+        "#d8dce8",
+        "#8e98b4",
+        "#ffffff"
+      ],
+      "blau": [
+        "#2f6bff",
+        "#12256e",
+        "#9cc0ff"
+      ],
+      "pink": [
+        "#ff7ac0",
+        "#a3286a",
+        "#ffd0ea"
+      ]
+    },
+    "eyes": {
+      "braun": [
+        "#7a4a22",
+        "#2a1408",
+        "#c89a6a"
+      ],
+      "hasel": [
+        "#9a7a32",
+        "#3a2a08",
+        "#e0c88a"
+      ],
+      "gruen": [
+        "#3a9a5a",
+        "#0b4a26",
+        "#b8f0c8"
+      ],
+      "blau": [
+        "#3a8ad8",
+        "#0b2a5e",
+        "#c8e4ff"
+      ],
+      "grau": [
+        "#8a96a8",
+        "#2e3644",
+        "#e0e6ee"
+      ],
+      "gold": [
+        "#f2c14e",
+        "#6e4a00",
+        "#fff1b8"
+      ],
+      "orange": [
+        "#ff6a2a",
+        "#7a1606",
+        "#ffd27a"
+      ],
+      "violett": [
+        "#9b5cff",
+        "#2e1166",
+        "#e2c8ff"
+      ]
+    },
+    "clothing": {
+      "schwarz": [
+        "#24222c",
+        "#0e0d12",
+        "#f2c14e"
+      ],
+      "weiss": [
+        "#eef0f5",
+        "#b8bfcc",
+        "#c0162f"
+      ],
+      "grau": [
+        "#7a8194",
+        "#4a5062",
+        "#eef0f5"
+      ],
+      "rot": [
+        "#c0162f",
+        "#6e0a1a",
+        "#ffffff"
+      ],
+      "blau": [
+        "#1f4fc8",
+        "#0e2468",
+        "#ffffff"
+      ],
+      "gruen": [
+        "#1f8a5a",
+        "#0c4a2e",
+        "#ffffff"
+      ],
+      "lila": [
+        "#6a2bd6",
+        "#3a127a",
+        "#ffffff"
+      ],
+      "gold": [
+        "#f2c14e",
+        "#a4781c",
+        "#24222c"
+      ]
+    },
+    "gloves": {
+      "rot": [
+        "#e0263a",
+        "#8e0f1e",
+        "#f6f2ea"
+      ],
+      "weiss": [
+        "#f4f4f6",
+        "#b8bfcc",
+        "#c0162f"
+      ],
+      "schwarzgold": [
+        "#2a2830",
+        "#0c0b10",
+        "#f2c14e"
+      ],
+      "eisblau": [
+        "#4fd8ff",
+        "#1a7aa8",
+        "#ffffff"
+      ],
+      "glut": [
+        "#ff6a1f",
+        "#a3220f",
+        "#ffd23a"
+      ]
+    }
+  },
+  "calibratedSkinMid": [
+    [
+      246,
+      220,
+      199
+    ],
+    [
+      240,
+      206,
+      179
+    ],
+    [
+      230,
+      190,
+      155
+    ],
+    [
+      220,
+      170,
+      130
+    ],
+    [
+      208,
+      151,
+      106
+    ],
+    [
+      196,
+      133,
+      88
+    ],
+    [
+      185,
+      112,
+      64
+    ],
+    [
+      131,
+      74,
+      40
+    ]
+  ],
+  "sourceAtlases": {
+    "shared": {
+      "file": "shared.png",
+      "width": 1024,
+      "height": 2149,
+      "bytes": 1545380,
+      "sha256": "45d0529d347d3ba28064762702adad373428925974e18829423fc73ff38c4bc5"
+    },
+    "guard": {
+      "file": "guard.png",
+      "width": 1024,
+      "height": 573,
+      "bytes": 478747,
+      "sha256": "cb4c7e87498253e2958202be1b7a0e834f81331750c389832751afb8c79b48e0"
+    }
+  },
+  "masks": {
+    "head": {
+      "file": "material-assets/mask-head.png",
+      "box": [
+        270,
+        50,
+        230,
+        180
+      ],
+      "channels": {
+        "r": "skin",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 15301,
+        "iris": 0,
+        "hair": 0,
+        "leather": 0
+      },
+      "sha256": "d23e521d8c9e8d8d55cc66d54ea3ad2f64f75e3e25546a879370e57dc8733248",
+      "sourceAtlas": "shared",
+      "sourceUV": [
+        2,
+        2,
+        230,
+        180
+      ]
+    },
+    "lower": {
+      "file": "material-assets/mask-lower.png",
+      "box": [
+        155,
+        550,
+        465,
+        625
+      ],
+      "channels": {
+        "r": "skin",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 104389,
+        "iris": 0,
+        "hair": 0,
+        "leather": 0
+      },
+      "sha256": "e24241174871f359233605d6a02d2bde6af7cb9b771623f40d96a565d32ab560",
+      "sourceAtlas": "shared",
+      "sourceUV": [
+        236,
+        2,
+        465,
+        625
+      ]
+    },
+    "body-cool": {
+      "file": "material-assets/mask-body-cool.png",
+      "box": [
+        195,
+        230,
+        380,
+        320
+      ],
+      "channels": {
+        "r": "skin",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 86457,
+        "iris": 0,
+        "hair": 0,
+        "leather": 0
+      },
+      "sha256": "ef4fa21b7ba76f7a7af3dba3dabc8ecd6542ccba407619c0ee0bfc30c70a4ebb",
+      "sourceAtlas": "shared",
+      "sourceUV": [
+        2,
+        631,
+        380,
+        320
+      ]
+    },
+    "body-guard": {
+      "file": "material-assets/mask-body-guard.png",
+      "box": [
+        195,
+        230,
+        380,
+        320
+      ],
+      "channels": {
+        "r": "skin",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 86147,
+        "iris": 0,
+        "hair": 0,
+        "leather": 0
+      },
+      "sha256": "7b0dd4a0f764200ac6ab9a0f5946d197e14f02e7c7cc47090619a5c727fcd640",
+      "sourceAtlas": "guard",
+      "sourceUV": [
+        2,
+        2,
+        380,
+        320
+      ]
+    },
+    "eyes": {
+      "file": "material-assets/mask-eyes.png",
+      "box": [
+        330,
+        140,
+        100,
+        35
+      ],
+      "channels": {
+        "r": "skin",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 423,
+        "iris": 87,
+        "hair": 0,
+        "leather": 0
+      },
+      "sha256": "090b2c88333cbf530b43221fc572bf40dd95f96f70c75160048ab58096aecbca",
+      "sourceAtlas": "shared",
+      "sourceUV": [
+        486,
+        1439,
+        100,
+        35
+      ]
+    },
+    "feet": {
+      "file": "material-assets/mask-feet.png",
+      "box": [
+        150,
+        945,
+        480,
+        235
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 23671
+      },
+      "sha256": "78d2ea1f2e82223a78a2f015446e82e21b3faf9cb0b96359a576d9724621eb9c",
+      "sourceAtlas": "shared",
+      "sourceUV": [
+        2,
+        1439,
+        480,
+        235
+      ]
+    },
+    "hair-afro": {
+      "file": "material-assets/mask-hair-afro.png",
+      "box": [
+        300,
+        40,
+        170,
+        145
+      ],
+      "channels": {
+        "r": "skin",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 1898,
+        "iris": 0,
+        "hair": 12626,
+        "leather": 0
+      },
+      "sha256": "c75af6cab54f411ed8afce815c56c11435756a3fa44c47505528b7195418738e",
+      "sourceAtlas": "shared",
+      "sourceUV": [
+        590,
+        1439,
+        170,
+        145
+      ]
+    },
+    "hair-short": {
+      "file": "material-assets/mask-hair-short.png",
+      "box": [
+        300,
+        40,
+        170,
+        145
+      ],
+      "channels": {
+        "r": "skin",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 6640,
+        "leather": 0
+      },
+      "sha256": "197862356b6ddd96a254ea3804118cfc32c1d99a0555f950d606837b502d0bad",
+      "sourceAtlas": "shared",
+      "sourceUV": [
+        764,
+        1439,
+        170,
+        145
+      ]
+    },
+    "bottom-black": {
+      "file": "material-assets/mask-bottom-black.png",
+      "box": [
+        220,
+        540,
+        340,
+        265
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 34127
+      },
+      "sha256": "3d65640f8c818ed97680c892d68d31ae56a048df1e1637b61830c87978b48e7a",
+      "sourceAtlas": "shared",
+      "sourceUV": [
+        2,
+        1678,
+        340,
+        265
+      ]
+    },
+    "hands-blackgold": {
+      "file": "material-assets/mask-hands-blackgold.png",
+      "box": [
+        230,
+        300,
+        310,
+        130
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 9484
+      },
+      "sha256": "36869556274a18498da4b2a094aeadbae2b6034e3b419f4f52390beee4401b06",
+      "sourceAtlas": "shared",
+      "sourceUV": [
+        2,
+        2017,
+        310,
+        130
+      ]
+    },
+    "guard-black-0": {
+      "file": "material-assets/mask-guard-black-0.png",
+      "box": [
+        260,
+        160,
+        110,
+        135
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 4907
+      },
+      "sha256": "206bb78c4d122edb8402fb89debf694ab63760eaab75af0f278c0a5f0e565705",
+      "sourceAtlas": "guard",
+      "sourceUV": [
+        810,
+        2,
+        110,
+        135
+      ]
+    },
+    "guard-black-1": {
+      "file": "material-assets/mask-guard-black-1.png",
+      "box": [
+        405,
+        160,
+        110,
+        135
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 4905
+      },
+      "sha256": "ba1a571f1501d56d711a7c040ecdb91919557ad2e73faec0e26cd5efb4522a33",
+      "sourceAtlas": "guard",
+      "sourceUV": [
+        2,
+        436,
+        110,
+        135
+      ]
+    },
+    "hands-master-0": {
+      "file": "material-assets/mask-hands-master-0.png",
+      "box": [
+        280,
+        170,
+        85,
+        112
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 4890
+      },
+      "sha256": "e228732c8e371ac99d11faada1fba59af779f528ee23172a126e586e9f552236",
+      "sourceUV": [
+        0,
+        0,
+        85,
+        112
+      ],
+      "sourceFile": "production-art/hands-master-0.png",
+      "sourceHash": "a5a97da42db09bbb5ebfb04bc4e4ee55a42a460b3ee47afe7fdae106adbf33e6"
+    },
+    "hands-master-1": {
+      "file": "material-assets/mask-hands-master-1.png",
+      "box": [
+        405,
+        170,
+        85,
+        112
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 4882
+      },
+      "sha256": "03abf89579aedd7f06d64400805d7c9ca7b93c55f765e7e6edd686510f3f7970",
+      "sourceUV": [
+        0,
+        0,
+        85,
+        112
+      ],
+      "sourceFile": "production-art/hands-master-1.png",
+      "sourceHash": "1c0a6143b9b0c8869d117a4701f3396159e5ef73284c4c55f65ef3d29b52d308"
+    },
+    "hair-stachel": {
+      "file": "material-assets/mask-hair-stachel.png",
+      "box": [
+        318,
+        38,
+        137,
+        105
+      ],
+      "channels": {
+        "r": "skin",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 8435,
+        "leather": 0
+      },
+      "sha256": "f54eb3073c81bd7306ee5fa51b3d6390d09683718bf205d8f756093cdf074056",
+      "sourceUV": [
+        0,
+        0,
+        137,
+        105
+      ],
+      "sourceFile": "production-art/hair-stachel.png",
+      "sourceHash": "007c3cf362825f29dd53ae2f96c8d434c50800b56cc6c024930c68a61b85ecef"
+    },
+    "hair-undercut": {
+      "file": "material-assets/mask-hair-undercut.png",
+      "box": [
+        324,
+        47,
+        120,
+        97
+      ],
+      "channels": {
+        "r": "skin",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 6962,
+        "leather": 0
+      },
+      "sha256": "85a5b94c54fe2b1083feec3b6f82ebcbaf6972c64acfd6220db9d5a67a8e3c93",
+      "sourceUV": [
+        0,
+        0,
+        120,
+        97
+      ],
+      "sourceFile": "production-art/hair-undercut.png",
+      "sourceHash": "1fcbad84442fc8324780d20c42e9797b1816051a0306e81cc3723340035a608f"
+    },
+    "hair-buzz": {
+      "file": "material-assets/mask-hair-buzz.png",
+      "box": [
+        326,
+        63,
+        117,
+        79
+      ],
+      "channels": {
+        "r": "skin",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 5685,
+        "leather": 0
+      },
+      "sha256": "71680d5c9750dc2ffeb62eef04f7ef60d4ed81a373f6313c7a4ed2b5fb70853e",
+      "sourceUV": [
+        0,
+        0,
+        117,
+        79
+      ],
+      "sourceFile": "production-art/hair-buzz.png",
+      "sourceHash": "b69127e26e7c262dff92c754450af392b736d36391d87b472183de7cd8013129"
+    },
+    "bottom-jogger": {
+      "file": "material-assets/mask-bottom-jogger.png",
+      "box": [
+        215,
+        545,
+        350,
+        505
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 85276
+      },
+      "sha256": "e46af77cc68418cd8faa8aa2ec7562d9c3dfbab1d0e60acef08cf680603fe435",
+      "sourceUV": [
+        0,
+        0,
+        350,
+        505
+      ],
+      "sourceFile": "production-art/bottom-jogger.png",
+      "sourceHash": "323049fb9bdd2134f4dc5fc0fc018c31b2ada66384925d2d2aabe0e674b5057a"
+    },
+    "bottom-kurz": {
+      "file": "material-assets/mask-bottom-kurz.png",
+      "box": [
+        230,
+        545,
+        320,
+        220
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 43609
+      },
+      "sha256": "4acd34952e9811a43b84f97e77ac3dcd0957b57d7eaa18bcc26d39d13e96e5c9",
+      "sourceUV": [
+        0,
+        0,
+        320,
+        220
+      ],
+      "sourceFile": "production-art/bottom-kurz.png",
+      "sourceHash": "ae5644f7a0e90458097aa27a0a7e0ad1366d54dede3849e5249e119c28d58960"
+    },
+    "bottom-track": {
+      "file": "material-assets/mask-bottom-track.png",
+      "box": [
+        215,
+        545,
+        350,
+        505
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 85786
+      },
+      "sha256": "cf07741e9001bf72469e8165d76f3d2ccb64a45430b35b8e91a04b682cf96515",
+      "sourceUV": [
+        0,
+        0,
+        350,
+        505
+      ],
+      "sourceFile": "production-art/bottom-track.png",
+      "sourceHash": "c51ea48910d9f4b0bd782f992a70b3709017891a929d574a6d66b06f56f87240"
+    },
+    "feet-sneaker": {
+      "file": "material-assets/mask-feet-sneaker.png",
+      "box": [
+        155,
+        1040,
+        475,
+        135
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 27353
+      },
+      "sha256": "20ac8aabddcdef5600c4a87ba9f3d1e2a9ae9c8b499368a279c7d36a82d8f578",
+      "sourceUV": [
+        0,
+        0,
+        475,
+        135
+      ],
+      "sourceFile": "production-art/feet-sneaker.png",
+      "sourceHash": "f3489f5a6c9d8e05dda9f2a54afaa8376ec88b131a58f5fe243b683de1699043"
+    }
+  },
+  "families": {
+    "skin": {
+      "keys": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "newVariantKeys": 7
+    },
+    "eyes": {
+      "keys": [
+        "braun",
+        "hasel",
+        "gruen",
+        "blau",
+        "grau",
+        "gold",
+        "orange",
+        "violett"
+      ],
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "newVariantKeys": 7
+    },
+    "hair": {
+      "forms": [
+        "afro",
+        "kurz_glatt",
+        "stachel",
+        "undercut",
+        "buzz"
+      ],
+      "keys": [
+        "schwarz",
+        "braun",
+        "dunkelbraun",
+        "blond",
+        "rot",
+        "silber",
+        "blau",
+        "pink"
+      ],
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "newVariantKeys": 38,
+      "sourcePieces": [
+        "hair-afro",
+        "hair-short",
+        "hair-stachel",
+        "hair-undercut",
+        "hair-buzz"
+      ]
+    },
+    "gloves": {
+      "keys": [
+        "rot",
+        "weiss",
+        "schwarzgold",
+        "eisblau",
+        "glut"
+      ],
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "sourcePieces": [
+        "hands-blackgold",
+        "guard-black-0",
+        "guard-black-1",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "newVariantKeys": 3,
+      "technique": "Masked black leather ramp; gold ornament unchanged. White uses shared black master instead of independent artwork."
+    },
+    "bottom": {
+      "forms": [
+        "boxer",
+        "jogger",
+        "kurz",
+        "track"
+      ],
+      "keys": [
+        "schwarz",
+        "weiss",
+        "grau",
+        "rot",
+        "blau",
+        "gruen",
+        "lila",
+        "gold"
+      ],
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "sourcePieces": [
+        "bottom-black",
+        "bottom-jogger",
+        "bottom-kurz",
+        "bottom-track"
+      ],
+      "newVariantKeys": 30
+    },
+    "feet": {
+      "forms": [
+        "boots",
+        "sneaker"
+      ],
+      "keys": [
+        "schwarz",
+        "weiss",
+        "grau",
+        "rot",
+        "blau",
+        "gruen",
+        "lila",
+        "gold"
+      ],
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "sourcePieces": [
+        "feet",
+        "feet-sneaker"
+      ],
+      "newVariantKeys": 15
+    }
+  },
+  "caveats": [
+    "No artist approval.",
+    "Cool tone 6 is existing art, not a literal reproduction of catalogue hex. Other tones use explicitly calibrated premium ramps.",
+    "Material masks are registered to these source views, not generic segmentation for arbitrary new body poses.",
+    "Hair masks require hair-only source components; headwear and hidden hair layers are not covered.",
+    "Gold accent material is preserved across all garment variants; existing SVG palette secondary/accent differences are not silently treated as the same design.",
+    "Only black-base source pieces support leather recolouring; independent red/white drawings must not be passed as black masters."
+  ],
+  "afroIsolation": {
+    "method": "Registered curl-edge alpha mask, after material rendering; same part for figure and tile",
+    "polyline": [
+      [
+        300,
+        135
+      ],
+      [
+        318,
+        137
+      ],
+      [
+        322,
+        140
+      ],
+      [
+        326,
+        141
+      ],
+      [
+        332,
+        146
+      ],
+      [
+        336,
+        149
+      ],
+      [
+        339,
+        141
+      ],
+      [
+        342,
+        132
+      ],
+      [
+        344,
+        128
+      ],
+      [
+        347,
+        128
+      ],
+      [
+        350,
+        126
+      ],
+      [
+        353,
+        128
+      ],
+      [
+        355,
+        133
+      ],
+      [
+        358,
+        134
+      ],
+      [
+        360,
+        132
+      ],
+      [
+        362,
+        127
+      ],
+      [
+        367,
+        126
+      ],
+      [
+        369,
+        130
+      ],
+      [
+        370,
+        135
+      ],
+      [
+        373,
+        135
+      ],
+      [
+        376,
+        131
+      ],
+      [
+        379,
+        126
+      ],
+      [
+        383,
+        128
+      ],
+      [
+        386,
+        129
+      ],
+      [
+        389,
+        128
+      ],
+      [
+        391,
+        133
+      ],
+      [
+        394,
+        135
+      ],
+      [
+        396,
+        134
+      ],
+      [
+        399,
+        128
+      ],
+      [
+        402,
+        127
+      ],
+      [
+        406,
+        128
+      ],
+      [
+        409,
+        131
+      ],
+      [
+        410,
+        135
+      ],
+      [
+        413,
+        134
+      ],
+      [
+        415,
+        131
+      ],
+      [
+        417,
+        127
+      ],
+      [
+        420,
+        128
+      ],
+      [
+        423,
+        131
+      ],
+      [
+        425,
+        134
+      ],
+      [
+        428,
+        139
+      ],
+      [
+        430,
+        143
+      ],
+      [
+        433,
+        145
+      ],
+      [
+        436,
+        145
+      ],
+      [
+        440,
+        140
+      ],
+      [
+        445,
+        137
+      ],
+      [
+        450,
+        135
+      ],
+      [
+        470,
+        135
+      ]
+    ],
+    "status": "Artistically pending",
+    "originalSourceUnchanged": true
+  },
+  "contactSheets": [
+    {
+      "file": "material-assets/hair-isolation-contact.png",
+      "bytes": 375209,
+      "sha256": "effc2e4606231a50f79fe63257395e56904bba86e3472676e6761d26cd4a2e26"
+    },
+    {
+      "file": "material-assets/skin-contact.png",
+      "bytes": 1051573,
+      "sha256": "c9b9c937b821408d69b2af70ad24399852be90c586ca2439b3bb89cb7616a3e8"
+    },
+    {
+      "file": "material-assets/hair-contact.png",
+      "bytes": 1112452,
+      "sha256": "0940ff5276605bf6d99bc5f10ac85b47c808ec4f9ff17ce0d5d56235e12fdfb0"
+    },
+    {
+      "file": "material-assets/eyes-contact.png",
+      "bytes": 12829,
+      "sha256": "71cff1ff460d15660678c800c743d208d90aea4165e9a818005c4a86ae6bacdc"
+    },
+    {
+      "file": "material-assets/equipment-contact.png",
+      "bytes": 2090049,
+      "sha256": "29e501264623bfa628b0dedc1c4e0d29aae74dc3d40bdbf3d42e4a3798ab0048"
+    }
+  ]
+}

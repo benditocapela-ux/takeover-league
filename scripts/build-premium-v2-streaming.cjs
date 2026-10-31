@@ -31,7 +31,7 @@ function pack(parts, width) {
   const images = {};
   for (const [id, asset] of Object.entries(source.atlases)) images[id] = await loadImage(path.join(lab, 'assets', asset.file));
   const directory = path.join(lab, 'streaming-assets'); fs.mkdirSync(directory, { recursive: true });
-  const output = { version: 1, approved: false, enabled: false, sourceManifestSha256: sha(fs.readFileSync(path.join(lab, 'pilot-assets.json'))), canvas: source.canvas, pieces: {}, atlases: {} };
+  const output = { version: 1, approved: false, enabled: false, sourceManifestHashAlgorithm: 'sha256-canonical-text-lf-v1', sourceManifestSha256: sha(Buffer.from(fs.readFileSync(path.join(lab, 'pilot-assets.json'), 'utf8').replace(/\r\n/g, '\n'))), canvas: source.canvas, pieces: {}, atlases: {} };
   for (const [name, ids] of Object.entries(groups)) {
     const parts = ids.map(id => {
       const p = source.pieces[id], c = createCanvas(p.uv[2], p.uv[3]), g = c.getContext('2d');

@@ -1,0 +1,369 @@
+{
+  "version": 1,
+  "base": "02414c9a3fd538198aa7b7c948b980fa6df27825",
+  "approved": false,
+  "enabled": false,
+  "artisticStatus": "Artistically pending",
+  "canvas": [
+    768,
+    1216
+  ],
+  "pieces": {
+    "coat-guard-v2": {
+      "id": "coat-guard-v2",
+      "slot": "coatFront",
+      "origin": "production-art-draft",
+      "src": "production-art/coat-guard-v2.png",
+      "uv": [
+        0,
+        0,
+        475,
+        750
+      ],
+      "box": [
+        155,
+        180,
+        475,
+        750
+      ],
+      "bytes": 346827,
+      "sha256": "cbfe6a9ab7d19fbf44d6d3e518bd9b25be41dd3020d551267df19a655b55dd06",
+      "source": "coat-guard",
+      "sourceCrop": [
+        146,
+        111,
+        705,
+        1129
+      ],
+      "status": "Artwork draft",
+      "approved": false,
+      "enabled": false
+    },
+    "hands-master-0": {
+      "id": "hands-master-0",
+      "slot": "hands",
+      "origin": "production-art-draft",
+      "src": "production-art/hands-master-0.png",
+      "uv": [
+        0,
+        0,
+        85,
+        112
+      ],
+      "box": [
+        280,
+        170,
+        85,
+        112
+      ],
+      "bytes": 20374,
+      "sha256": "a5a97da42db09bbb5ebfb04bc4e4ee55a42a460b3ee47afe7fdae106adbf33e6",
+      "source": "gloves-guard",
+      "sourceCrop": [
+        333,
+        369,
+        150,
+        195
+      ],
+      "status": "Artwork draft",
+      "approved": false,
+      "enabled": false
+    },
+    "hands-master-1": {
+      "id": "hands-master-1",
+      "slot": "hands",
+      "origin": "production-art-draft",
+      "src": "production-art/hands-master-1.png",
+      "uv": [
+        0,
+        0,
+        85,
+        112
+      ],
+      "box": [
+        405,
+        170,
+        85,
+        112
+      ],
+      "bytes": 20064,
+      "sha256": "1c0a6143b9b0c8869d117a4701f3396159e5ef73284c4c55f65ef3d29b52d308",
+      "source": "gloves-guard",
+      "sourceCrop": [
+        514,
+        369,
+        151,
+        195
+      ],
+      "status": "Artwork draft",
+      "approved": false,
+      "enabled": false
+    },
+    "hair-stachel": {
+      "id": "hair-stachel",
+      "slot": "hair",
+      "origin": "production-art-draft",
+      "src": "production-art/hair-stachel.png",
+      "uv": [
+        0,
+        0,
+        137,
+        105
+      ],
+      "box": [
+        318,
+        38,
+        137,
+        105
+      ],
+      "bytes": 24845,
+      "sha256": "007c3cf362825f29dd53ae2f96c8d434c50800b56cc6c024930c68a61b85ecef",
+      "source": "hair-stachel",
+      "sourceCrop": [
+        388,
+        40,
+        245,
+        198
+      ],
+      "status": "Artwork draft",
+      "approved": false,
+      "enabled": false
+    },
+    "hair-undercut": {
+      "id": "hair-undercut",
+      "slot": "hair",
+      "origin": "production-art-draft",
+      "src": "production-art/hair-undercut.png",
+      "uv": [
+        0,
+        0,
+        120,
+        97
+      ],
+      "box": [
+        324,
+        47,
+        120,
+        97
+      ],
+      "bytes": 20281,
+      "sha256": "1fcbad84442fc8324780d20c42e9797b1816051a0306e81cc3723340035a608f",
+      "source": "hair-undercut",
+      "sourceCrop": [
+        375,
+        76,
+        249,
+        203
+      ],
+      "status": "Artwork draft",
+      "approved": false,
+      "enabled": false
+    },
+    "hair-buzz": {
+      "id": "hair-buzz",
+      "slot": "hair",
+      "origin": "production-art-draft",
+      "src": "production-art/hair-buzz.png",
+      "uv": [
+        0,
+        0,
+        117,
+        79
+      ],
+      "box": [
+        326,
+        63,
+        117,
+        79
+      ],
+      "bytes": 17141,
+      "sha256": "b69127e26e7c262dff92c754450af392b736d36391d87b472183de7cd8013129",
+      "source": "hair-buzz",
+      "sourceCrop": [
+        357,
+        87,
+        283,
+        213
+      ],
+      "status": "Artwork draft",
+      "approved": false,
+      "enabled": false
+    },
+    "bottom-jogger": {
+      "id": "bottom-jogger",
+      "slot": "bottom",
+      "origin": "production-art-draft",
+      "src": "production-art/bottom-jogger.png",
+      "uv": [
+        0,
+        0,
+        350,
+        505
+      ],
+      "box": [
+        215,
+        545,
+        350,
+        505
+      ],
+      "bytes": 202180,
+      "sha256": "323049fb9bdd2134f4dc5fc0fc018c31b2ada66384925d2d2aabe0e674b5057a",
+      "source": "bottom-jogger",
+      "sourceCrop": [
+        150,
+        202,
+        718,
+        1207
+      ],
+      "status": "Artwork draft",
+      "approved": false,
+      "enabled": false
+    },
+    "bottom-kurz": {
+      "id": "bottom-kurz",
+      "slot": "bottom",
+      "origin": "production-art-draft",
+      "src": "production-art/bottom-kurz.png",
+      "uv": [
+        0,
+        0,
+        320,
+        220
+      ],
+      "box": [
+        230,
+        545,
+        320,
+        220
+      ],
+      "bytes": 128644,
+      "sha256": "ae5644f7a0e90458097aa27a0a7e0ad1366d54dede3849e5249e119c28d58960",
+      "source": "bottom-kurz",
+      "sourceCrop": [
+        134,
+        571,
+        725,
+        495
+      ],
+      "status": "Artwork draft",
+      "approved": false,
+      "enabled": false
+    },
+    "bottom-track": {
+      "id": "bottom-track",
+      "slot": "bottom",
+      "origin": "production-art-draft",
+      "src": "production-art/bottom-track.png",
+      "uv": [
+        0,
+        0,
+        350,
+        505
+      ],
+      "box": [
+        215,
+        545,
+        350,
+        505
+      ],
+      "bytes": 218671,
+      "sha256": "c51ea48910d9f4b0bd782f992a70b3709017891a929d574a6d66b06f56f87240",
+      "source": "bottom-track",
+      "sourceCrop": [
+        186,
+        385,
+        643,
+        1115
+      ],
+      "status": "Artwork draft",
+      "approved": false,
+      "enabled": false
+    },
+    "feet-sneaker": {
+      "id": "feet-sneaker",
+      "slot": "feet",
+      "origin": "production-art-draft",
+      "src": "production-art/feet-sneaker.png",
+      "uv": [
+        0,
+        0,
+        475,
+        135
+      ],
+      "box": [
+        155,
+        1040,
+        475,
+        135
+      ],
+      "bytes": 92834,
+      "sha256": "f3489f5a6c9d8e05dda9f2a54afaa8376ec88b131a58f5fe243b683de1699043",
+      "source": "feet-sneaker",
+      "sourceCrop": [
+        121,
+        1277,
+        786,
+        253
+      ],
+      "status": "Artwork draft",
+      "approved": false,
+      "enabled": false
+    }
+  },
+  "sources": {
+    "coat-guard": {
+      "file": "production-art/sources/coat-guard.png",
+      "sha256": "51de678b1103dc1167bd767e6820cc2774709aefe7dfcf495919817c499363a3",
+      "width": 997,
+      "height": 1578
+    },
+    "gloves-guard": {
+      "file": "production-art/sources/gloves-guard.png",
+      "sha256": "c7fc7249450aa1798f76c7a0bdefbafc2359be5b38b6fb4f45f77da897036ed2",
+      "width": 997,
+      "height": 1578
+    },
+    "hair-stachel": {
+      "file": "production-art/sources/hair-stachel.png",
+      "sha256": "27d9fbdaf9eff6b1e38398c8be80703b5e0621e4f7a31163309e15ea0c7ea630",
+      "width": 997,
+      "height": 1578
+    },
+    "hair-undercut": {
+      "file": "production-art/sources/hair-undercut.png",
+      "sha256": "191ea90b544aa6c1b8caf4d2cfafd0e6c20f5a0065bf3a13127cf3c81eac385d",
+      "width": 997,
+      "height": 1578
+    },
+    "hair-buzz": {
+      "file": "production-art/sources/hair-buzz.png",
+      "sha256": "15a1af3b795657ca4ef51f70d620e0618f4f0947d6e96592f5d0104f78a723d0",
+      "width": 997,
+      "height": 1578
+    },
+    "bottom-jogger": {
+      "file": "production-art/sources/bottom-jogger.png",
+      "sha256": "779579f6128048046aa946ec1394c9d3141336ae679605b2f929ed2da6e8e8e3",
+      "width": 997,
+      "height": 1578
+    },
+    "bottom-kurz": {
+      "file": "production-art/sources/bottom-kurz.png",
+      "sha256": "7a02d42abdcb2586b2ce24bbc5976247fe52a363a4e9f413578967258349373c",
+      "width": 996,
+      "height": 1578
+    },
+    "bottom-track": {
+      "file": "production-art/sources/bottom-track.png",
+      "sha256": "009000113738ede945176db3be494fa0d8d565600b1a5fe1fefc48c886d592bb",
+      "width": 997,
+      "height": 1577
+    },
+    "feet-sneaker": {
+      "file": "production-art/sources/feet-sneaker.png",
+      "sha256": "e95cdd69b2fa1aeaa442e4bbefcee4c4b758023fb7df93ad5ac6faa9c1b2cf29",
+      "width": 996,
+      "height": 1578
+    }
+  }
+}
