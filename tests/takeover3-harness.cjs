@@ -73,7 +73,7 @@ export function createClient(){
   async signInWithPassword({email,password}){const u=(cfg().users||[]).find(x=>x.email===email);
    if(!u||password!==(u.password||'pw'))return {data:{user:null,session:null},error:{message:'Invalid login credentials'}};
    const s=issue(u);localStorage.setItem(KEY,JSON.stringify(s));emit('SIGNED_IN',s);return {data:{user:u,session:s},error:null}},
-  async setSession({access_token,refresh_token}){if(!access_token||!refresh_token)return {data:{session:null},error:{message:'Auth session missing!'}};
+  async setSession({access_token,refresh_token}){if(localStorage.getItem('__tl_mock_offline'))return {data:{session:null},error:{name:'AuthRetryableFetchError',status:0,message:'Failed to fetch'}};if(!access_token||!refresh_token)return {data:{session:null},error:{message:'Auth session missing!'}};
    const srv=S();const uid=srv.valid&&srv.valid[refresh_token];if(!uid){log('setSession:fail',refresh_token);return {data:{session:null,user:null},error:{message:'Invalid Refresh Token: Refresh Token Not Found'}}}
    delete srv.valid[refresh_token];saveS(srv);const s=issue(userById(uid));localStorage.setItem(KEY,JSON.stringify(s));log('setSession:ok',uid);emit('SIGNED_IN',s);return {data:{session:s,user:s.user},error:null}},
   async signOut(){const s=read();if(s){const srv=S();for(const [rt,uid] of Object.entries(srv.valid||{}))if(uid===s.user.id)delete srv.valid[rt];saveS(srv)}

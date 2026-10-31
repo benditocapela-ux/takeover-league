@@ -205,8 +205,9 @@
       // PWA/start URL opens index.html. Boxer default home is now their experience;
       // explicit public sections (#ranking, #podium, #levels, #history) remain accessible.
       if(role==='boxer'&&atHome&&!location.hash){location.replace('./boxer-experience.html');return;}
-      // Takeover 3.0: auch Trainer und Admins landen beim Öffnen der installierten App in ihrem Bereich.
-      if((role==='coach'||role==='admin')&&atHome&&!location.hash){location.replace(ROLE_NAV[role].href);return;}
+      // Takeover 3.0: Trainer und Admins landen beim Öffnen der installierten App (nicht im Browser) in ihrem Bereich.
+      const standalone=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true;
+      if((role==='coach'||role==='admin')&&standalone&&atHome&&!location.hash){location.replace(ROLE_NAV[role].href);return;}
     }catch{
       if(adminEntry) adminEntry.hidden=true;
       privateEntries.forEach(a=>a.hidden=true);

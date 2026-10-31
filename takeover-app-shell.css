@@ -111,3 +111,4 @@ html.tla-typing .tla-nav{transform:translateY(110%);visibility:hidden}
 html.tla-on body[data-tl-screen="coach"] .cv2-bulkbar{top:calc(var(--tla-head) + var(--tla-safe-top) + 8px)!important}
 html.tla-on .studio-tabs{top:calc(var(--tla-head) + var(--tla-safe-top))!important}
 @media(min-width:900px){html.tla-on body[data-tl-screen="coach"] .cv2-tabs,html.tla-on body[data-tl-screen="admin"] .stf-admin-tabs{top:calc(var(--tla-head) + var(--tla-safe-top) + 6px)!important}}
+html.tla-drawer-open,html.tla-drawer-open body{overflow:hidden!important;overscroll-behavior:none}

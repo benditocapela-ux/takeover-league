@@ -20,7 +20,7 @@
  const ROLE_LABEL={admin:'Admin',coach:'Trainer',boxer:'Boxer'};
  const HOME={boxer:'./boxer-experience.html',coach:'./coach.html',admin:'./admin.html'};
  const SAFE_NEXT=/^(?:\.\/)?([a-z0-9-]+\.html)(?:[?#][\w\-=&%.#/]*)?$/i;
- let tracked=null,lastUserId=null;
+ let tracked=null,lastUserId=null,switching=false;
 
  const now=()=>Date.now();
  function parse(raw){try{const v=JSON.parse(raw||'null');return v}catch{return null}}
@@ -56,7 +56,7 @@
    name:(profile&&profile.display_name)||old.name||session.user.email,role:(profile&&profile.role)||old.role,
    at:session.access_token,rt:session.refresh_token,exp:session.expires_at,savedAt:now()});
   const rest=list.filter(a=>a.id!==entry.id);
-  write(front===false?[...list.map(a=>a.id===entry.id?entry:a),...(old.id?[]:[entry])]:[entry,...rest]);
+  write(front===false&&old.id?list.map(a=>a.id===entry.id?entry:a):[entry,...rest]);
   return entry;
  }
  function homeFor(role){return HOME[role]||'./index.html'}
@@ -84,7 +84,9 @@
     if(session&&session.user)lastUserId=session.user.id;
     if((event==='TOKEN_REFRESHED'||event==='SIGNED_IN'||event==='USER_UPDATED')&&session&&read().some(a=>a.id===session.user.id))
      upsertFromSession(session,null,false);
-    if(event==='SIGNED_OUT'&&lastUserId&&!window.__tlAddingAccount){write(read().filter(a=>a.id!==lastUserId));lastUserId=null}
+    if(event==='SIGNED_OUT'&&lastUserId&&!window.__tlAddingAccount&&!switching){
+     // Nur entfernen, wenn wirklich abgemeldet (ein misslungener Wechsel in einem anderen Tab stellt die Sitzung sofort wieder her).
+     const gone=lastUserId;setTimeout(()=>{sessionOf(db).then(s=>{if(!s)write(read().filter(a=>a.id!==gone))})},1200);lastUserId=null}
    })}catch{}
   }
   return sessionOf(db).then(s=>{if(!s)return null;lastUserId=s.user.id;return upsertFromSession(s,profile,true)});
@@ -97,36 +99,51 @@
  function finishAdd(){window.__tlAddingAccount=false}
 
  /** Wechsel zu einem gespeicherten Konto. Liefert {ok,home} oder {error,needsLogin}. */
+ // Netzwerk- oder Zeitüberschreitung: Anmeldung behalten (kein erneutes Passwort nötig), nur endgültige Fehler gelten als abgelaufen.
+ function retryable(err){
+  if(!err)return false;const m=String(err.message||err);
+  return err.name==='AuthRetryableFetchError'||err.status===0||err.status>=500||/fetch|network|netzwerk|timeout|offline|load failed/i.test(m);
+ }
+ /** Wechsel zu einem gespeicherten Konto. Liefert {ok,home} oder {error,needsLogin}. */
  async function switchTo(db,id,opts){
   const list=read(),target=list.find(a=>a.id===id);
   if(!target)return {error:new Error('Dieses Konto ist nicht mehr gespeichert.')};
   const current=await sessionOf(db);
-  if(current&&current.user.id===id)return {ok:true,home:homeFor(target.role),same:true};
-  if(current)upsertFromSession(current,null,false);
+  const navigate=!opts||opts.navigate!==false;
+  if(current&&current.user.id===id){const home=homeFor(target.role);if(navigate)location.replace(home);return {ok:true,home,same:true}}
+  if(current)upsertFromSession(current,null,true);
+  const restore=async()=>{if(current)try{await db.auth.setSession({access_token:current.access_token,refresh_token:current.refresh_token})}catch{}};
   const relogin=()=>{const l=read().map(a=>a.id===id?{...a,expired:true,at:'',rt:''}:a);write(l);
    return {error:new Error('Die gespeicherte Anmeldung von '+target.name+' ist abgelaufen. Bitte melde dich erneut an.'),needsLogin:true,email:target.email}};
   if(target.expired||!target.rt)return relogin();
-  let set;try{set=await db.auth.setSession({access_token:target.at||'',refresh_token:target.rt})}catch(err){set={error:err}}
-  if(set.error||!set.data||!set.data.session){
-   // Zurück zum vorherigen Konto, damit niemand unbemerkt abgemeldet zurückbleibt.
-   if(current)try{await db.auth.setSession({access_token:current.access_token,refresh_token:current.refresh_token})}catch{}
-   return relogin();
-  }
-  const checked=await profileOf(db);
-  if(checked.error||!checked.profile){return {error:new Error('Für dieses Konto ist kein Profil verknüpft.'),home:'./index.html'}}
-  upsertFromSession(set.data.session,checked.profile,true);
-  lastUserId=checked.user.id;
-  try{for(const k of Object.keys(sessionStorage))if(/^takeover_(?:draft|submission_request|flow)_/.test(k))sessionStorage.removeItem(k)}catch{}
-  const p=checked.profile;
-  const home=p.is_active?homeFor(p.role):'./login.html';
-  if(!opts||opts.navigate!==false)location.replace(home);
-  return {ok:true,home,profile:p};
+  switching=true;
+  try{
+   let set;try{set=await db.auth.setSession({access_token:target.at||'',refresh_token:target.rt})}catch(err){set={error:err}}
+   if(set.error||!set.data||!set.data.session){
+    // Zurück zum vorherigen Konto, damit niemand unbemerkt im falschen Konto bleibt.
+    await restore();
+    if(retryable(set.error))return {error:new Error('Keine Verbindung. Der Wechsel zu '+target.name+' hat nicht geklappt – bitte gleich nochmals versuchen.')};
+    return relogin();
+   }
+   const checked=await profileOf(db);
+   if(checked.error||!checked.profile){
+    await restore();
+    return {error:new Error(checked.error&&retryable(checked.error)?'Keine Verbindung. Bitte gleich nochmals versuchen.':'Für '+target.name+' ist kein aktives Profil verknüpft. Du bleibst im bisherigen Konto.')};
+   }
+   upsertFromSession(set.data.session,checked.profile,true);
+   lastUserId=checked.user.id;
+   try{for(const k of Object.keys(sessionStorage))if(/^takeover_(?:draft|submission_request|flow)_/.test(k))sessionStorage.removeItem(k)}catch{}
+   const p=checked.profile;
+   const home=p.is_active?homeFor(p.role):'./login.html';
+   if(navigate)location.replace(home);
+   return {ok:true,home,profile:p};
+  }finally{switching=false}
  }
  function forget(id){return write(read().filter(a=>a.id!==id))}
  async function signOut(db){
   const s=await sessionOf(db);
   if(s)write(read().filter(a=>a.id!==s.user.id));
-  let r;try{r=await db.auth.signOut()}catch(err){r={error:err}}
+  let r;try{r=await db.auth.signOut({scope:'local'})}catch(err){r={error:err}}
   return r||{};
  }
 
@@ -168,6 +185,7 @@
      if(!db){say('Keine Verbindung.',true);return}
      host.querySelectorAll('button').forEach(b=>b.disabled=true);say('Wechsel zu '+acc.name+' …');
      const r=await switchTo(db,acc.id);
+     if(r&&r.ok)return;
      if(r&&r.error){
       host.querySelectorAll('button').forEach(b=>b.disabled=false);say(r.error.message,true);
       if(r.needsLogin)location.assign('./login.html?add=1&account='+encodeURIComponent(r.email||''));

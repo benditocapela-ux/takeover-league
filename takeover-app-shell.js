@@ -205,6 +205,7 @@
   if(window.TLAccount)window.TLAccount.render(acc,{db:state.db,profile:state.profile,user:state.user});
   restoreFocus=document.activeElement;
   d.hidden=false;document.documentElement.classList.add('tla-drawer-open');
+  for(const n of document.body.children)if(n!==d&&!n.inert){n.inert=true;n.dataset.tlaInert='1'}
   document.querySelectorAll('#tla-account-btn,#ex-settings').forEach(b=>b.setAttribute('aria-expanded','true'));
   d.querySelector('#tla-drawer-close').focus();
   // Konto-Daten nachladen, falls die Verbindung erst jetzt bereit ist
@@ -213,6 +214,7 @@
  function closeDrawer(focus){
   const d=document.getElementById('tla-drawer');if(!d||d.hidden)return;
   d.hidden=true;document.documentElement.classList.remove('tla-drawer-open');
+  document.querySelectorAll('[data-tla-inert]').forEach(n=>{n.inert=false;delete n.dataset.tlaInert});
   document.querySelectorAll('#tla-account-btn,#ex-settings').forEach(b=>b.setAttribute('aria-expanded','false'));
   if(focus&&restoreFocus&&typeof restoreFocus.focus==='function')restoreFocus.focus();
  }
@@ -227,6 +229,7 @@
   if(cfg.native!=='full')document.querySelectorAll('a[href]:not([data-tla-done])').forEach(a=>{
    if(a.closest('#tla-drawer,.tla-nav,#tla-header'))return;
    if(/^\s*←/.test(a.textContent||'')){a.dataset.tlaDone='1';a.hidden=true;a.classList.add('tla-legacy-back')}
+   else if(!/boxer\.html/.test(a.getAttribute('href')||''))a.dataset.tlaDone='1';
   });
   document.querySelectorAll('a[href*="boxer.html"]:not([data-tla-done])').forEach(a=>{
    const raw=a.getAttribute('href')||'';if(!/(^|\/)boxer\.html([?#]|$)/.test(raw))return;
@@ -257,6 +260,15 @@
   document.addEventListener('focusin',e=>{if(field(e.target))document.documentElement.classList.add('tla-typing')});
   document.addEventListener('focusout',e=>{if(field(e.target))setTimeout(()=>{if(!field(document.activeElement))document.documentElement.classList.remove('tla-typing')},60)});
  }
+ // Konto in einem anderen Tab gewechselt oder abgemeldet bzw. Seite aus dem Zurück-Cache: neu laden,
+ // damit nie Daten eines anderen Kontos unter dem falschen Namen stehen.
+ function sessionUser(){try{const x=JSON.parse(localStorage.getItem(SESSION_KEY)||'null');return x&&x.user&&x.user.id||null}catch{return null}}
+ let loadedUser;
+ function watchAccount(){
+  loadedUser=sessionUser();
+  addEventListener('storage',e=>{if(e.key===SESSION_KEY&&sessionUser()!==loadedUser)location.reload()});
+  addEventListener('pageshow',e=>{if(e.persisted&&sessionUser()!==loadedUser)location.reload()});
+ }
  async function resolve(){
   try{
    const db=await client();
@@ -282,7 +294,7 @@
   if(page==='index.html'||document.querySelector('body > .bottom, .bottom [data-tab]'))document.documentElement.classList.add('tla-index-tabs');
   state.role=hintRole();
   if(page==='boxer.html'&&state.role==='boxer'&&redirectLegacy())return;
-  renderHeader();renderNav();bindNative();trackTyping();void checkNews();
+  renderHeader();renderNav();bindNative();trackTyping();void checkNews();watchAccount();
   let queued=false;new MutationObserver(()=>{if(queued)return;queued=true;requestAnimationFrame(()=>{queued=false;bindNative()})}).observe(document.body,{childList:true,subtree:true});
   // Auch dynamisch erzeugte Links (z. B. Mitteilungen) auf alte Boxer-Ansichten landen in der neuen Oberfläche.
   document.addEventListener('click',e=>{

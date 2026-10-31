@@ -50,6 +50,9 @@ Gewählt wurde deshalb eine **gemeinsame App-Shell**. Jede Seite lädt dieselben
 | keine Prüfung der Zielsitzung | widerrufene oder abgelaufene Sitzung: Konto wird als «Anmeldung abgelaufen» markiert, das bisherige Konto bleibt angemeldet, weiter geht es zur erneuten Anmeldung (`login.html?add=1&account=…`) |
 | Boxer landeten nach dem Wechsel in `boxer.html` | rollenbezogene neue Oberfläche, Profil und Rolle frisch vom Server |
 | Daten des vorherigen Kontos konnten im Speicher bleiben | nach jedem Wechsel lädt die Seite neu; Formularentwürfe und Anfrage-IDs der Sitzung werden gelöscht |
+| Netzausfall beim Wechsel | Anmeldung bleibt gespeichert («Keine Verbindung»), nur endgültig ungültige Tokens führen zur erneuten Anmeldung; schlägt die Profilprüfung fehl, bleibt das bisherige Konto aktiv |
+| andere Tabs / Zurück-Cache zeigten evtl. das alte Konto | Kontowechsel oder Abmeldung in einem anderen Tab sowie Rückkehr aus dem Zurück-Cache lädt die Seite neu |
+| Abmelden widerrief alle Geräte des Kontos | Abmelden beendet die Sitzung auf diesem Gerät (`scope:'local'`, serverseitig widerrufen) |
 
 **Verbleibender Kompromiss (bewusst, dokumentiert):**
 - Für einen Wechsel ohne Passworteingabe muss das Refresh-Token der weiteren Konten auf dem Gerät liegen. Das ist dieselbe Vertrauensstufe wie die Sitzung, die supabase-js selbst im `localStorage` speichert.

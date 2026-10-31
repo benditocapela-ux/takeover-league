@@ -23,6 +23,8 @@
  const isTechnique=t=>!!t&&/^techniktraining$/i.test(String(t.name).trim());
  function sortTypes(list){const rank=c=>{const i=CATEGORY_ORDER.indexOf(c||'');return i<0?99:i};
   return [...list].sort((a,b)=>rank(a.category)-rank(b.category)||(a.sort_order??9999)-(b.sort_order??9999)||String(a.name).localeCompare(String(b.name),'de'))}
+ function uuid(){if(crypto.randomUUID)return crypto.randomUUID();const b=crypto.getRandomValues(new Uint8Array(16));b[6]=b[6]&15|64;b[8]=b[8]&63|128;
+  const h=[...b].map(x=>x.toString(16).padStart(2,'0')).join('');return h.slice(0,8)+'-'+h.slice(8,12)+'-'+h.slice(12,16)+'-'+h.slice(16,20)+'-'+h.slice(20)}
  const store={get(k,s){try{return (s||localStorage).getItem(k)}catch{return null}},set(k,v,s){try{(s||localStorage).setItem(k,v);return true}catch{return false}},del(k,s){try{(s||localStorage).removeItem(k)}catch{}}};
 
  /** Baut die Logik (ohne DOM) – auch für Tests nutzbar. */
@@ -60,8 +62,8 @@
   const keys={draft:'takeover_draft_'+profile.id,request:'takeover_submission_request_'+profile.id,last:'takeover_last_training_'+profile.id,
    lastType:'takeover_last_type_'+profile.id,choice:'takeover_v2_choice_'+profile.id};
   let types=sortTypes((opts.types||[]).filter(t=>t&&t.is_active!==false));
-  if(!cfg&&opts.checkinOnly)types=types.filter(t=>!t.club_only);
-  const st={loc:null,choice:null,busy:false,requestIdSupported:false,cloud:false,cloudTimer:null,cloudSeq:0,cloudFlight:Promise.resolve()};
+  if(opts.checkinOnly)types=types.filter(t=>!t.club_only); // Server lehnt Vereinsarten bei «nur per Gym-Check-in» ab
+  const st={loc:null,choice:null,busy:false,requestIdSupported:true,probe:Promise.resolve(),cloud:false,cloudTimer:null,cloudSeq:0,cloudFlight:Promise.resolve()};
   const slotOf=()=>cfg&&st.choice&&st.choice.kind==='slot'?cfg.pflicht.find(x=>String(x.slot_id)===String(st.choice.id))||null:null;
   const extraOf=()=>cfg&&st.choice&&st.choice.kind==='extra'?cfg.extras.find(x=>x.key===st.choice.key)||null:null;
 
@@ -125,10 +127,13 @@
   function render(){
    if(cfg){
     locBox.replaceChildren(
-     card({icon:'🏟️',title:'Im Verein / Gym',sub:'Pflicht- oder Ergänzungstraining',checked:st.loc==='club',onPick:()=>{st.loc='club';if(!slotOf()&&!extraOf())st.choice=null;rememberChoice();render();remember();focusStep(2)}}),
+     card({icon:'🏟️',title:'Im Verein / Gym',sub:opts.checkinOnly?'Per Gym-Check-in beim Trainer':'Pflicht- oder Ergänzungstraining',checked:st.loc==='club',onPick:()=>{st.loc='club';if(!slotOf()&&!extraOf())st.choice=null;rememberChoice();render();remember();focusStep(2)}}),
      card({icon:'🏠',title:'Individuell',sub:'Ausserhalb des Vereins: Joggen, Kraft, Heimtraining …',checked:st.loc==='individual',onPick:()=>{st.loc='individual';st.choice=null;rememberChoice();render();remember();kind.focus()}}));
     s2.hidden=st.loc!=='club';unitBox.replaceChildren();
-    if(st.loc==='club'){
+    if(st.loc==='club'&&opts.checkinOnly){
+     unitBox.append(el('p','tf-hint','Dein Verein erfasst Vereinstrainings ausschliesslich per Gym-Check-in. Eine Selbstmeldung ist dafür nicht möglich.'));
+     const a=el('a','tf-submit tf-secondary tf-link','Zum Gym-Check-in');a.href='./checkin.html';unitBox.append(a);
+    }else if(st.loc==='club'){
      const mk=(label,list,make)=>{if(!list.length)return;unitBox.append(el('div','tf-group',label));const g=el('div','tf-cards');g.setAttribute('role','radiogroup');g.setAttribute('aria-label',label);list.forEach(x=>g.append(make(x)));unitBox.append(g)};
      mk('PFLICHTTRAINING · FESTER WOCHENTAG',cfg.pflicht,x=>card({icon:'🥊',title:(x.day_name||DAYS[x.dow-1])+' – '+x.label,sub:rewardText(x.reward),
       label:'Pflichttraining '+(x.day_name||DAYS[x.dow-1])+' – '+x.label+', '+rewardText(x.reward),checked:st.choice?.kind==='slot'&&String(st.choice.id)===String(x.slot_id),
@@ -137,9 +142,8 @@
      mk('ERGÄNZUNGSTRAINING · AN JEDEM TAG',cfg.extras,x=>card({icon:x.key==='athletik'?'💪':x.key==='technik'?'🎯':'🥊',title:x.label,sub:rewardText(x.reward),
       label:'Ergänzungstraining '+x.label+', '+rewardText(x.reward),checked:st.choice?.kind==='extra'&&st.choice.key===x.key,
       onPick:()=>{st.choice={kind:'extra',key:x.key};setKind(x.training_type_id);rememberChoice();render();remember()}}));
-     if(opts.checkinOnly)unitBox.append(el('p','tf-hint','Dein Verein erfasst Vereinseinheiten per Gym-Check-in. Eine Meldung hier geht als Antrag an deinen Trainer.'));
     }
-    s3.hidden=!st.loc;
+    s3.hidden=!st.loc||(st.loc==='club'&&!!opts.checkinOnly);submit.hidden=s3.hidden&&!!cfg;reward.hidden=reward.hidden||s3.hidden;
     const s=slotOf(),e=extraOf();if(s)setKind(s.training_type_id);if(e)setKind(e.training_type_id);
     kindWrap.hidden=st.loc==='club';
    }
@@ -169,6 +173,7 @@
    updateFields();if(d.joggingKm!=null&&!kmWrap.hidden)km.value=String(d.joggingKm);
   }
   function remember(){
+   if(st.busy)return;
    store.del(keys.request,sessionStorage);scheduleCloud();
    if(store.set(keys.draft,JSON.stringify(values()),sessionStorage))draftStatus.textContent='Entwurf auf diesem Gerät für diese Sitzung gesichert.';
   }
@@ -213,10 +218,11 @@
    const t=typeOf();const v={date:date.value,minutes:minutes.value,km:km.value,notes:notes.value};
    const problem=validate({type:t,values:v,v2:!!cfg,loc:st.loc,slot:slotOf(),extra:extraOf(),today:swissToday()});
    if(problem){showError(problem);return}
-   st.busy=true;submit.disabled=true;submit.textContent='Wird eingereicht …';status.textContent='Training wird eingereicht …';
+   st.busy=true;submit.disabled=true;form.querySelectorAll('input,select,textarea,button').forEach(n=>{if(n!==submit){n.dataset.tfWas=n.disabled?'1':'';n.disabled=true}});submit.textContent='Wird eingereicht …';status.textContent='Training wird eingereicht …';
    if(st.cloudTimer){clearTimeout(st.cloudTimer);st.cloudTimer=null}st.cloudSeq++;
    let requestId=null;
-   if(st.requestIdSupported){requestId=store.get(keys.request,sessionStorage);if(!requestId){requestId=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+Math.random());store.set(keys.request,requestId,sessionStorage)}}
+   await st.probe;
+   if(st.requestIdSupported){requestId=store.get(keys.request,sessionStorage);if(!requestId){requestId=uuid();store.set(keys.request,requestId,sessionStorage)}}
    let duplicate=false;
    try{
     const payload=buildPayload({profile,type:t,values:v,v2:!!cfg,loc:st.loc,slot:slotOf(),extra:extraOf(),requestId});
@@ -235,7 +241,7 @@
     if(typeof opts.onSubmitted==='function')opts.onSubmitted({duplicate});
    }catch(err){
     status.textContent='';error.hidden=false;error.textContent='Einreichen fehlgeschlagen: '+String(err&&err.message||err)+'. Bitte prüfe deine Trainingshistorie, bevor du erneut sendest.';
-   }finally{st.busy=false;submit.disabled=false;submit.textContent='Training einreichen'}
+   }finally{st.busy=false;submit.disabled=false;submit.textContent='Training einreichen';form.querySelectorAll('[data-tf-was]').forEach(n=>{n.disabled=n.dataset.tfWas==='1';delete n.dataset.tfWas})}
   });
   function showDone(text){
    form.hidden=true;tools.hidden=true;help.hidden=true;done.hidden=false;done.replaceChildren();
@@ -257,8 +263,8 @@
   if(saved){applyDraft(saved);draftStatus.textContent='Letzten Sitzungsentwurf wiederhergestellt.'}
   else{const k=store.get(keys.lastType);if(k&&types.some(t=>String(t.id)===k)&&!(cfg&&st.loc==='club'))setKind(k);updateFields()}
   if(!types.length){submit.disabled=true;status.textContent='Es sind noch keine Trainingsarten hinterlegt. Bitte den Trainer informieren.'}
+  st.probe=(async()=>{try{const probe=await db.from('training_submissions').select('client_request_id').eq('boxer_id',profile.id).limit(1);st.requestIdSupported=!probe.error}catch{st.requestIdSupported=true}})();
   (async()=>{
-   try{const probe=await db.from('training_submissions').select('client_request_id').eq('boxer_id',profile.id).limit(1);st.requestIdSupported=!probe.error}catch{}
    try{const r=await db.from('training_drafts_v2').select('training_type_id,training_date,notes,jogging_km,technique_minutes,duration_minutes').eq('boxer_id',profile.id).maybeSingle();
     if(!r.error){st.cloud=true;cloudSave.hidden=false;
      if(r.data&&!saved){applyDraft({kind:String(r.data.training_type_id||''),date:r.data.training_date,notes:r.data.notes,joggingKm:r.data.jogging_km,techniqueMinutes:r.data.duration_minutes??r.data.technique_minutes});draftStatus.textContent='Privater Entwurf wiederhergestellt.'}}}catch{}

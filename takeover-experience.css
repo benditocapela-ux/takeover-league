@@ -106,3 +106,4 @@ textarea.tf-input{min-height:96px;resize:vertical}
 .tf-done p{margin:0;color:#d8e8de}
 .tf-done .tf-submit{width:100%}
 .ex-studio-tiles .tlp-tiles{margin:0 0 13px}
+.tf-link{display:flex;align-items:center;justify-content:center;text-decoration:none;margin-top:10px}

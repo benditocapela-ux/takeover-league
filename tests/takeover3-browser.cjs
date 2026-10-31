@@ -16,7 +16,7 @@ const config=(opts={})=>`{
    {id:'p-coach',auth_user_id:'u-coach',display_name:'Coach Kim',role:'coach',is_active:true},{id:'p-ana',auth_user_id:'u-ana',display_name:'Ana',role:'boxer',is_active:true}],
   training_types:[{id:1,name:'Reguläres Boxtraining',points:30,is_active:true,club_only:true,category:'Boxen'},{id:2,name:'Joggen',points:20,is_active:true,category:'Ausdauer'},
    {id:3,name:'Techniktraining',points:30,is_active:true,club_only:true,category:'Boxen'},{id:4,name:'Krafttraining',points:30,is_active:true,category:'Athletik'}],
-  league_feature_flags:[{feature_key:'notifications',is_enabled:true},{feature_key:'gym_training',is_enabled:true},{feature_key:'club_checkin_only',is_enabled:false}],
+  league_feature_flags:[{feature_key:'notifications',is_enabled:true},{feature_key:'gym_training',is_enabled:true},{feature_key:'club_checkin_only',is_enabled:${opts.checkinOnly?'true':'false'}}],
   training_submissions:[{id:'old-1',boxer_id:'p-ben',training_type_id:2,training_date:'2026-10-20',status:'approved',notes:'Vita Parcours',jogging_km:5,duration_minutes:40,created_at:'2026-10-20T10:00:00Z'},
    {id:'old-ana',boxer_id:'p-ana',training_type_id:4,training_date:'2026-10-21',status:'pending',notes:'Ana privat',duration_minutes:60,created_at:'2026-10-21T10:00:00Z'}],
   boxer_notifications:[{id:'n1',recipient_id:'p-ben',notification_type:'training',title:'Training bestätigt',message:'Dein Training wurde bestätigt.',target_path:'/boxer.html',created_at:'2026-10-30T10:00:00Z',read_at:null}],
@@ -92,6 +92,19 @@ async function accountFlows(browser,base,name){
  await openAccount(page);await page.click('.tla-switch:has-text("Ben")');await page.waitForURL(/coach\.html/);
  assert.equal((await accounts(page)).find(a=>a.id==='u-ben').role,'coach','Rolle nach dem Wechsel serverseitig aktualisiert');
  await page.evaluate(()=>{const db=JSON.parse(localStorage.getItem('__tl_mock_db')||'{}');delete db.profiles;localStorage.setItem('__tl_mock_db',JSON.stringify(db))});
+ // 6b) Kurzer Netzausfall: Anmeldung bleibt gespeichert, kein erneutes Passwort, aktuelles Konto bleibt aktiv
+ await page.evaluate(()=>localStorage.setItem('__tl_mock_offline','1'));
+ await openAccount(page);await page.click('.tla-switch:has-text("Bendo")');
+ await page.locator('.tla-status.tla-bad:has-text("Keine Verbindung")').waitFor();
+ assert.match(page.url(),/coach\.html/);assert.equal(await session(page),'u-ben');
+ assert.equal((await accounts(page)).find(a=>a.id==='u-admin').expired,false,'Netzfehler markiert das Konto nicht als abgelaufen');
+ await page.evaluate(()=>localStorage.removeItem('__tl_mock_offline'));await page.keyboard.press('Escape');
+ // 6c) Wechsel in einem anderen Tab → dieser Tab lädt neu und zeigt nie fremde Daten unter falschem Namen
+ const other=await ctx.newPage();await other.goto(base+'/goals.html');await other.locator('#tla-header').waitFor();
+ await other.evaluate(()=>{window.__stale=1});
+ await openAccount(page);await page.click('.tla-switch:has-text("Coach Kim")');await page.waitForURL(/coach\.html/);
+ await other.waitForFunction(()=>!window.__stale);await other.close();
+ await openAccount(page);await page.click('.tla-switch:has-text("Ben")');await page.waitForURL(/boxer-experience\.html/);
  // 7) Abgelaufene / widerrufene Sitzung → erneute Anmeldung, aktuelles Konto bleibt angemeldet
  await page.evaluate(()=>{const s=JSON.parse(localStorage.getItem('__tl_mock_server'));for(const [rt,uid] of Object.entries(s.valid))if(uid==='u-admin')delete s.valid[rt];localStorage.setItem('__tl_mock_server',JSON.stringify(s))});
  await openAccount(page);await page.click('.tla-switch:has-text("Bendo")');
@@ -194,9 +207,9 @@ async function trainingFlows(browser,base,name){
  // Alte Deep Links
  for(const [legacy,expect] of [['/boxer.html?individual=1#trainingFormCard',/#training\/eigenes$/],['/boxer.html?club=1#trainingFormCard',/#training\/verein$/],
   ['/boxer.html#entriesCard',/#training\/historie$/],['/boxer.html',/#training$/],['/boxer.html#profileCard',/#boxer\/profil$/]]){
-  await page.goto(base+legacy);await page.waitForURL(expect);await page.locator('#ex-app:not([hidden])').waitFor();
+  // je Aufruf eine frische Seite (wie ein Klick aus einer Mitteilung oder einem Lesezeichen)
+  const tab=await ctx.newPage();await tab.goto(base+legacy);await tab.waitForURL(expect);await tab.locator('#ex-app:not([hidden])').waitFor();await tab.close();
  }
- await page.locator('#ex-training-form:not([hidden])').waitFor({state:'detached'}).catch(()=>{});
  await page.goto(base+'/boxer.html?individual=1#trainingFormCard');await page.waitForURL(/#training\/eigenes$/);
  await page.locator('#ex-training-form:not([hidden]) .tf-form').waitFor();
  // Reload behält die Ansicht
@@ -215,6 +228,17 @@ async function trainingFlows(browser,base,name){
  const ins=(await log(p)).filter(([k])=>k==='insert:training_submissions');
  assert.equal(ins.length,1);assert.equal('training_location' in ins[0][1],false);
  await ctx2.close();
+
+ // Nur betreuter Gym-Check-in: keine Selbstmeldung von Vereinstrainings (der Server würde sie ablehnen)
+ const ctx3=await H.context(browser,{config:config({checkinOnly:true})});const q=await ctx3.newPage();
+ await login(q,base,'ben@test.invalid');await q.waitForURL(/boxer-experience\.html/);
+ await q.goto(base+'/boxer-experience.html#training/verein');await q.locator('#ex-training-form:not([hidden]) .tf-form').waitFor();
+ await q.locator('.tf-form a[href="./checkin.html"]').waitFor();
+ assert.equal(await q.locator('.tf-form button.tf-submit').isHidden(),true,'kein Einreichen-Knopf für Vereinstraining');
+ await q.click('.tf-card:has-text("Individuell")');
+ const kinds=await q.locator('#tf-kind option').allTextContents();
+ assert.ok(!kinds.includes('Reguläres Boxtraining')&&!kinds.includes('Techniktraining'),'keine Vereinsarten bei individuellem Training');
+ await ctx3.close();
 }
 
 async function shellFlows(browser,base,name){
