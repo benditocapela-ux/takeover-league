@@ -124,7 +124,7 @@ function svg(cfg,opts){
   ?window.TLStudioLayers.render(c,{id:u,skin,shade:sd,hair:hc,top:tc,bottom:bc,feet:fc,coat:co,
    paths:{top:top?top.d:'',bottom:bt.d,feet:ft.d,coat:co?co.body:'',hair:H.front||H.back||''}})
   :null;
- const showHair=!hijab,clipY=hoodUp?104:cap?64:null;
+ const showHair=!hijab&&!hoodUp,clipY=hoodUp?104:cap?64:null;
  const p=(d,a)=>d?`<path d="${d}" ${a}/>`:'';
  const clipA=clipY!==null?` clip-path="url(#${u}cl)"`:'';
  const arm=pts=>{const [s,e,w]=pts,dx=w[0]-e[0],dy=w[1]-e[1],len=Math.hypot(dx,dy)||1,ux=dx/len,uy=dy/len,ang=f1(Math.atan2(dy,dx)*180/Math.PI);
@@ -234,7 +234,7 @@ function svg(cfg,opts){
    +p(H.tex,`fill="none" stroke="${H.dash?hc[2]:hc[1]}" stroke-width="2" stroke-linecap="round"${H.dash?' stroke-dasharray="3 2"':''} opacity=".8"`)
    +(H.hi&&!cap&&!hoodUp?p(H.hi,H.hiSkin?'fill="#fff" opacity=".35"':`fill="${hc[2]}" opacity=".85"`):''):'')
   +premiumHairDetails()
-  +(layers?layers.hair:'')
+  +(showHair&&layers?layers.hair:'')
   +(hijab?`<path d="M60 108 C56 66 78 46 100 46 C122 46 144 66 140 108" fill="none" stroke="${INK}" stroke-width="13" stroke-linecap="round"/><path d="M60 108 C56 66 78 46 100 46 C122 46 144 66 140 108" fill="none" stroke="${hd[0]}" stroke-width="8.5" stroke-linecap="round"/><path d="M64 136 C80 160 120 160 136 136 L156 178 C130 198 70 198 44 178Z" fill="${hd[0]}" stroke="${INK}" stroke-width="3"/><path d="M76 162 C92 170 108 170 124 162" fill="none" stroke="${hd[1]}" stroke-width="3"/>`:'')
   +(cap?`<path d="M58 80 C56 42 80 30 100 30 C120 30 144 42 142 80 C122 72 78 72 58 80Z" fill="${hd[0]}" stroke="${INK}" stroke-width="3.2" stroke-linejoin="round"/><path d="M100 30 L100 74" stroke="${hd[1]}" stroke-width="2.4"/><path d="M52 80 C78 70 122 70 148 80 C156 88 140 96 100 94 C60 96 44 88 52 80Z" fill="${hd[1]}" stroke="${INK}" stroke-width="3.2" stroke-linejoin="round"/><path d="M84 46 C92 40 104 40 112 44" stroke="#fff" stroke-width="3" fill="none" opacity=".35" stroke-linecap="round"/>`:'')
   +(hoodUp?`<path d="M56 120 C48 62 76 36 100 36 C124 36 152 62 144 120" fill="none" stroke="${INK}" stroke-width="15" stroke-linecap="round"/><path d="M56 120 C48 62 76 36 100 36 C124 36 152 62 144 120" fill="none" stroke="${tc[1]}" stroke-width="10" stroke-linecap="round"/>`:'')

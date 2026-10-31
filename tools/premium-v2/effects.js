@@ -12,6 +12,23 @@
   });
   const keys = Object.freeze({ aura: ['none', 'flamme', 'sakura', 'blitz', 'schatten'], eyefx: ['none', 'kristall', 'glut', 'stern', 'mond'], scene: ['holo', 'dojo', 'neon', 'arena'] });
   const eyeAnchors = Object.freeze([[357, 155], [406, 155]]);
+  // A static aura is one materialized component, shared by hero and item views.
+  // Re-rasterizing translucent fractional paths on fresh vs reused WebKit
+  // contexts produced different edge pixels. Keep only the current aura (3.56 MiB).
+  let staticAura = null;
+  function auraComponent(g, c, time) {
+    if(c.aura==='none')return;
+    if(phase(c,time)!==0||!root.document){drawAura(g,c,time);return;}
+    if(!staticAura||staticAura.key!==c.aura){
+      if(staticAura){staticAura.canvas.width=0;staticAura.canvas.height=0;}
+      const canvas=root.document.createElement('canvas');canvas.width=W;canvas.height=H;
+      const ctx=canvas.getContext('2d',{willReadFrequently:true});drawAura(ctx,c,0);
+      // Materialize once; every consumer subsequently copies the same pixels.
+      ctx.putImageData(ctx.getImageData(0,0,W,H),0,0);
+      staticAura={key:c.aura,canvas};
+    }
+    g.drawImage(staticAura.canvas,0,0);
+  }
   function config(c = {}) { return { aura: c.aura || 'none', eyefx: c.eyefx || 'none', scene: c.scene || 'holo', pose_profile: c.pose_profile || 'guard', reducedMotion: c.reducedMotion }; }
   function supports(input) { const c = config(input); return ['cool', 'guard'].includes(c.pose_profile) && Object.entries(keys).every(([key, list]) => list.includes(c[key])); }
   function phase(c, time) {
@@ -120,11 +137,11 @@
   function drawSlot(g, input, slot, time = 0) {
     const c = config(input); if (!supports(c)) return false; g.save();
     if (slot === 'scene') drawScene(g, c);
-    else if (slot === 'aura') drawAura(g, c, time);
+    else if (slot === 'aura') auraComponent(g, c, time);
     else if (slot === 'eyefx') { g.restore(); return drawEyes(g, c, time); }
     else { g.restore(); return false; }
     g.restore(); return true;
   }
-  const api = Object.freeze({ approved: false, enabled: false, artisticStatus: 'Artistically pending', renderer: 'Canvas', keys, palette, eyeAnchors, supports, drawBack, drawEyes, drawSlot });
+  const api = Object.freeze({ approved: false, enabled: false, artisticStatus: 'Artistically pending', renderer: 'Canvas', keys, palette, eyeAnchors, supports, drawBack, drawEyes, drawSlot, stats:()=>({entries:staticAura?1:0,decodedBytes:staticAura?W*H*4:0,maxEntries:1,maxBytes:W*H*4}) });
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.TLPremiumEffects = api;
 })(typeof window === 'undefined' ? globalThis : window);

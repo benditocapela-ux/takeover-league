@@ -2,8 +2,8 @@
   "summary": {
     "equipmentCatalogueEntries": 52,
     "poseCatalogueEntries": 6,
-    "equipmentItemsWithArtwork": 48,
-    "equipmentItemsTechnicallyValidated": 47,
+    "equipmentItemsWithArtwork": 49,
+    "equipmentItemsTechnicallyValidated": 48,
     "supportedPremiumPoseProfiles": [
       "cool",
       "guard"
@@ -14,17 +14,17 @@
     ],
     "catalogueEntries": 58,
     "matrixRows": 1800,
-    "catalogueItemsWithArtwork": 48,
-    "catalogueItemsTechnicallyValidated": 47,
-    "artworkVariantKeys": 261,
-    "artworkPoseCells": 522,
-    "technicallyValidatedVariantKeys": 260,
-    "technicallyValidatedPoseCells": 519,
+    "catalogueItemsWithArtwork": 49,
+    "catalogueItemsTechnicallyValidated": 48,
+    "artworkVariantKeys": 277,
+    "artworkPoseCells": 538,
+    "technicallyValidatedVariantKeys": 276,
+    "technicallyValidatedPoseCells": 536,
     "canvasVariantKeys": 12,
-    "rasterVariantKeys": 248,
-    "newlySupportedVariantKeys": 250,
-    "newlySupportedPoseCells": 498,
-    "brandNewVariantKeys": 249,
+    "rasterVariantKeys": 264,
+    "newlySupportedVariantKeys": 266,
+    "newlySupportedPoseCells": 515,
+    "brandNewVariantKeys": 265,
     "approvedItems": 0,
     "hashAlgorithm": "sha256-canonical-text-lf-v1",
     "evidenceValid": true,
@@ -729,19 +729,25 @@
       "entryKind": "equipment",
       "totalVariantKeys": 16,
       "totalPoseCells": 96,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 16,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 16,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "No verified premium artwork in this production package."
+      "supportedPoses": [
+        "guard"
+      ],
+      "artworkPoses": [
+        "guard"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
     },
     {
       "key": "top_jacke",
@@ -791,7 +797,7 @@
         "cool"
       ],
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
     },
@@ -1116,21 +1122,22 @@
       "artworkVariantKeys": 1,
       "artworkPoseCells": 2,
       "technicallyValidatedVariantKeys": 1,
-      "technicallyValidatedPoseCells": 1,
-      "newTechnicallySupportedPoseCells": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
       "availability": "Artwork draft",
       "technicalStatus": "Technically validated",
       "artisticStatus": "Artistically pending",
       "approved": false,
       "supportedPoses": [
-        "guard"
+        "guard",
+        "cool"
       ],
       "artworkPoses": [
         "guard",
         "cool"
       ],
       "sourceFiles": [
-        "tools/premium-v2/production-art/coat-basic-back.png",
+        "tools/premium-v2/separation/coat-basic-back.png",
         "tools/premium-v2/production-art/coat-basic-guard.png",
         "tools/premium-v2/production-art/coat-basic-cool.png"
       ],
@@ -1162,8 +1169,9 @@
         "cool"
       ],
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/coat-common.png",
+        "tools/premium-v2/separation/coat-back.png",
         "tools/premium-v2/production-art/coat-guard-v2.png",
+        "tools/premium-v2/streaming-assets/coat-common.png",
         "tools/premium-v2/streaming-assets/coat-cool.png"
       ],
       "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."

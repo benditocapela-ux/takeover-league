@@ -41,8 +41,18 @@
     },
     {
       "id": "basic-cool",
-      "state": "Blocked",
-      "implementation": "Two targeted source corrections reduced exposed arms but a left shoulder crescent and outer elbow rim remain. Cool Basic uses full SVG; Guard Basic remains draft-compatible."
+      "state": "Artistically pending",
+      "implementation": "Registered hidden-body keep region removes shoulder/elbow skin outside the Basic sleeve silhouette. Both poses and all four pants are covered by dedicated combination tests; no PNG originals or CSS shifts."
+    },
+    {
+      "id": "garment-separation",
+      "state": "Artistically pending",
+      "implementation": "New isolated boxer master and continuous rear coat lining replace ambiguous overlapping sources only in the production laboratory. 192 pants/pose/color/coat cases per browser; pants and coat pixels mutually invariant."
+    },
+    {
+      "id": "hoodie",
+      "state": "Artistically pending",
+      "implementation": "Guard cotton master, separately owned torso/sleeve pixels and raised hood. All 18 hair choices hidden without loading hair, restored on hood-down; saved choice not mutated. Cool remains SVG."
     }
   ]
 }

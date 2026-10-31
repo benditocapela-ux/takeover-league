@@ -1,0 +1,94 @@
+{
+  "approved": false,
+  "enabled": false,
+  "pieces": {
+    "boxer": {
+      "id": "bottom-master-boxer-clean",
+      "slot": "bottom",
+      "src": "separation/boxer.png",
+      "uv": [
+        0,
+        0,
+        323,
+        253
+      ],
+      "box": [
+        227,
+        544,
+        323,
+        253
+      ],
+      "sha256": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2",
+      "bytes": 149015,
+      "source": "separation/boxer-source.png",
+      "sourceSha256": "097544e23a2ff40f2e2485f365d63adde2620bd0737a58529df770804ffc70cd",
+      "sourceCrop": [
+        16,
+        19,
+        1382,
+        1060
+      ],
+      "approved": false,
+      "enabled": false
+    },
+    "coat-back": {
+      "id": "coat-back-clean",
+      "slot": "coatBack",
+      "src": "separation/coat-back.png",
+      "uv": [
+        0,
+        0,
+        450,
+        354
+      ],
+      "box": [
+        166,
+        547,
+        450,
+        354
+      ],
+      "sha256": "0e7a4764f71a3bb9093dc174f26d57df5ed5af5082a2727b80213057692eb6da",
+      "bytes": 198810,
+      "source": "separation/coat-back-source.png",
+      "sourceSha256": "ad06dc030285ecec062f8d6bc7ce13809214ef5c62fc9bda45956842c00760ba",
+      "sourceCrop": [
+        15,
+        348,
+        1121,
+        785
+      ],
+      "approved": false,
+      "enabled": false
+    },
+    "basic": {
+      "id": "coat-basic-back-clean",
+      "slot": "coatBack",
+      "src": "separation/coat-basic-back.png",
+      "uv": [
+        0,
+        0,
+        450,
+        354
+      ],
+      "box": [
+        166,
+        547,
+        450,
+        354
+      ],
+      "sha256": "17b6dd269707b77efe59532374a20af97fb5e7a3c8e81eff8f6a950b3f57fb82",
+      "bytes": 190934,
+      "source": "separation/coat-back-source.png",
+      "sourceSha256": "ad06dc030285ecec062f8d6bc7ce13809214ef5c62fc9bda45956842c00760ba",
+      "sourceCrop": [
+        15,
+        348,
+        1121,
+        785
+      ],
+      "approved": false,
+      "enabled": false,
+      "material": "Gold trim to neutral silver, fabric and alpha preserved"
+    }
+  }
+}

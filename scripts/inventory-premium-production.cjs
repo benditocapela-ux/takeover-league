@@ -119,14 +119,14 @@ function available(row) {
     const file = image(lab + h.src, h.sha256, h); return file ? [file] : [];
   }
   if (slot === 'bottom') {
-    if (value === 'boxer' && cloth(slot, value, color, pose)) return pieces(['bottom-black']);
+    if (value === 'boxer' && cloth(slot, value, color, pose)) return pieces(['bottom-boxer']);
     if (value === 'boxer' && ['schwarz', 'rot'].includes(color)) return pieces(['bottom-' + (color === 'rot' ? 'red' : 'black')]);
     const id = value === 'boxer' ? 'bottom-black' : 'bottom-' + value;
     return color === 'schwarz' || cloth(slot, value, color, pose) ? pieces([id]) : [];
   }
   if (slot === 'feet') return color === 'schwarz' || cloth(slot, value, color, pose) ? pieces([value === 'boots' ? 'feet' : 'feet-' + value]) : [];
   if (slot === 'coat' && value === 'samurai') {
-    if (pose === 'guard' && piece('coat-guard-v2')) return pieces(['coat-back', 'coat-guard-v2']);
+    if (pose === 'guard' && piece('coat-guard-v2')) return pieces(['coat-back-clean', 'coat-guard-v2']);
     return pieces(['coat-back', 'coat-tail', 'coat-' + pose]);
   }
   if (slot === 'coat' && value === 'basic') return pieces(['coat-basic-back', 'coat-basic-' + pose]);
@@ -139,6 +139,7 @@ function available(row) {
     return [];
   }
   if (slot === 'top') {
+    if(value==='hoodie'&&pose==='guard'&&art.hoodie?.supported&&inventory.domains.topc.includes(color))return pieces(Object.keys(art.pieces).filter(id=>id.startsWith('top-guard-hoodie-')&&(id!=='top-guard-hoodie-up'||row.state==='up')));
     const colored = has('tops', color, pose) && materials.families.tops.forms?.includes(value);
     if ([...tops.tops, ...(tops.draftTops || [])].includes(value) && (tops.colors.includes(color) || colored) && tops.poses.includes(pose) && row.state === 'default') return pieces(['top-' + pose + '-' + value]);
     if (value === 'tank' && color === 'schwarz' && pose === 'cool') return pieces(['top-tank']);

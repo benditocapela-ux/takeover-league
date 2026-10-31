@@ -2,21 +2,21 @@
   "approved": false,
   "enabled": false,
   "evidenceReport": "docs/premium-v2/evidence/production-tests.json",
-  "evidenceSHA256": "8efb71448cae204983fdd8f3b888379ff9e549f839c3838301b25cad80bf9f38",
-  "evidenceCells": 519,
+  "evidenceSHA256": "7033a20f8b74abcc975c98b4f6d6ff5258130b8b36be20427bfd5225ba4dbe8f",
+  "evidenceCells": 536,
   "method": "Unique source file + component id + UV + registered box among actual accepted baseline configurations. Palette variants do not multiply unique components. File bytes include packed unused atlas pixels; not visible-pixel reuse or art-production-time savings. Canvas effects reported separately. Unpaired Guard Basic is counted pose-specific, not inferred reusable.",
   "overall": {
     "uniqueComponents": {
-      "cool": 42,
-      "guard": 44,
-      "shared": 35
+      "cool": 44,
+      "guard": 48,
+      "shared": 36
     },
-    "guardComponentsAlsoUsedByCoolRatio": 0.7954545454545454,
+    "guardComponentsAlsoUsedByCoolRatio": 0.75,
     "files": {
       "cool": [
         "tools/premium-v2/streaming-assets/base.png",
         "tools/premium-v2/streaming-assets/body-cool.png",
-        "tools/premium-v2/streaming-assets/bottom-black.png",
+        "tools/premium-v2/separation/boxer.png",
         "tools/premium-v2/streaming-assets/hair-short.png",
         "tools/premium-v2/streaming-assets/hands-cool-black.png",
         "tools/premium-v2/production-art/hair-stachel.png",
@@ -43,6 +43,9 @@
         "tools/premium-v2/production-art/bottom-jogger.png",
         "tools/premium-v2/production-art/bottom-track.png",
         "tools/premium-v2/production-art/feet-sneaker.png",
+        "tools/premium-v2/separation/coat-basic-back.png",
+        "tools/premium-v2/production-art/coat-basic-cool.png",
+        "tools/premium-v2/separation/coat-back.png",
         "tools/premium-v2/streaming-assets/coat-common.png",
         "tools/premium-v2/streaming-assets/coat-cool.png",
         "tools/premium-v2/wraps/assets/wrap-cool0.png",
@@ -51,7 +54,7 @@
       "guard": [
         "tools/premium-v2/streaming-assets/base.png",
         "tools/premium-v2/streaming-assets/body-guard.png",
-        "tools/premium-v2/streaming-assets/bottom-black.png",
+        "tools/premium-v2/separation/boxer.png",
         "tools/premium-v2/streaming-assets/hair-short.png",
         "tools/premium-v2/production-art/hands-master-0.png",
         "tools/premium-v2/production-art/hands-master-1.png",
@@ -75,20 +78,21 @@
         "tools/premium-v2/headwear/assets/band.png",
         "tools/premium-v2/headwear-hijab/assets/hijab.png",
         "tools/premium-v2/tops/assets/guard-tank.png",
+        "tools/premium-v2/hoodie/guard.png",
         "tools/premium-v2/production-art/bottom-kurz.png",
         "tools/premium-v2/production-art/bottom-jogger.png",
         "tools/premium-v2/production-art/bottom-track.png",
         "tools/premium-v2/production-art/feet-sneaker.png",
-        "tools/premium-v2/production-art/coat-basic-back.png",
+        "tools/premium-v2/separation/coat-basic-back.png",
         "tools/premium-v2/production-art/coat-basic-guard.png",
-        "tools/premium-v2/streaming-assets/coat-common.png",
+        "tools/premium-v2/separation/coat-back.png",
         "tools/premium-v2/production-art/coat-guard-v2.png",
         "tools/premium-v2/wraps/assets/wrap-guard0.png",
         "tools/premium-v2/wraps/assets/wrap-guard1.png"
       ],
       "shared": [
         "tools/premium-v2/streaming-assets/base.png",
-        "tools/premium-v2/streaming-assets/bottom-black.png",
+        "tools/premium-v2/separation/boxer.png",
         "tools/premium-v2/streaming-assets/hair-short.png",
         "tools/premium-v2/production-art/hair-stachel.png",
         "tools/premium-v2/long-hair/assets/lang_glatt.png",
@@ -113,13 +117,14 @@
         "tools/premium-v2/production-art/bottom-jogger.png",
         "tools/premium-v2/production-art/bottom-track.png",
         "tools/premium-v2/production-art/feet-sneaker.png",
-        "tools/premium-v2/streaming-assets/coat-common.png"
+        "tools/premium-v2/separation/coat-basic-back.png",
+        "tools/premium-v2/separation/coat-back.png"
       ]
     },
     "encodedFileBytes": {
-      "cool": 4780268,
-      "guard": 5653492,
-      "shared": 4090242
+      "cool": 5514707,
+      "guard": 5778082,
+      "shared": 4169184
     },
     "sharedComponents": [
       {
@@ -155,11 +160,11 @@
         ]
       },
       {
-        "id": "bottom-black",
-        "file": "tools/premium-v2/streaming-assets/bottom-black.png",
+        "id": "bottom-master-boxer-clean",
+        "file": "tools/premium-v2/separation/boxer.png",
         "uv": [
-          2,
-          2,
+          0,
+          0,
           323,
           253
         ],
@@ -667,11 +672,27 @@
         ]
       },
       {
-        "id": "coat-back",
-        "file": "tools/premium-v2/streaming-assets/coat-common.png",
+        "id": "coat-basic-back-clean",
+        "file": "tools/premium-v2/separation/coat-basic-back.png",
         "uv": [
-          2,
-          2,
+          0,
+          0,
+          450,
+          354
+        ],
+        "box": [
+          166,
+          547,
+          450,
+          354
+        ]
+      },
+      {
+        "id": "coat-back-clean",
+        "file": "tools/premium-v2/separation/coat-back.png",
+        "uv": [
+          0,
+          0,
           450,
           354
         ],
@@ -730,6 +751,22 @@
           240,
           215,
           335
+        ]
+      },
+      {
+        "id": "coat-basic-cool",
+        "file": "tools/premium-v2/production-art/coat-basic-cool.png",
+        "uv": [
+          0,
+          0,
+          475,
+          750
+        ],
+        "box": [
+          155,
+          180,
+          475,
+          750
         ]
       },
       {
@@ -863,19 +900,67 @@
         ]
       },
       {
-        "id": "coat-basic-back",
-        "file": "tools/premium-v2/production-art/coat-basic-back.png",
+        "id": "top-guard-hoodie-torso",
+        "file": "tools/premium-v2/hoodie/guard.png",
         "uv": [
           0,
           0,
-          440,
-          350
+          390,
+          345
         ],
         "box": [
-          176,
-          550,
-          440,
-          350
+          190,
+          210,
+          390,
+          345
+        ]
+      },
+      {
+        "id": "top-guard-hoodie-sleeve-left",
+        "file": "tools/premium-v2/hoodie/guard.png",
+        "uv": [
+          0,
+          345,
+          390,
+          345
+        ],
+        "box": [
+          190,
+          210,
+          390,
+          345
+        ]
+      },
+      {
+        "id": "top-guard-hoodie-sleeve-right",
+        "file": "tools/premium-v2/hoodie/guard.png",
+        "uv": [
+          0,
+          690,
+          390,
+          345
+        ],
+        "box": [
+          190,
+          210,
+          390,
+          345
+        ]
+      },
+      {
+        "id": "top-guard-hoodie-up",
+        "file": "tools/premium-v2/hoodie/guard.png",
+        "uv": [
+          0,
+          1037,
+          202,
+          240
+        ],
+        "box": [
+          286,
+          38,
+          202,
+          240
         ]
       },
       {
@@ -1468,11 +1553,11 @@
     "top": {
       "acceptedRows": {
         "cool": 8,
-        "guard": 8
+        "guard": 24
       },
       "uniqueComponents": {
         "cool": 1,
-        "guard": 1,
+        "guard": 5,
         "shared": 0
       },
       "guardComponentsAlsoUsedByCoolRatio": 0,
@@ -1481,13 +1566,14 @@
           "tools/premium-v2/../../assets/boxer-artpacks/v1/modular-cool/top-tank.png"
         ],
         "guard": [
-          "tools/premium-v2/tops/assets/guard-tank.png"
+          "tools/premium-v2/tops/assets/guard-tank.png",
+          "tools/premium-v2/hoodie/guard.png"
         ],
         "shared": []
       },
       "encodedFileBytes": {
         "cool": 113062,
-        "guard": 187694,
+        "guard": 435535,
         "shared": 0
       },
       "sharedComponents": [],
@@ -1525,6 +1611,70 @@
             214.58333333333334,
             309
           ]
+        },
+        {
+          "id": "top-guard-hoodie-torso",
+          "file": "tools/premium-v2/hoodie/guard.png",
+          "uv": [
+            0,
+            0,
+            390,
+            345
+          ],
+          "box": [
+            190,
+            210,
+            390,
+            345
+          ]
+        },
+        {
+          "id": "top-guard-hoodie-sleeve-left",
+          "file": "tools/premium-v2/hoodie/guard.png",
+          "uv": [
+            0,
+            345,
+            390,
+            345
+          ],
+          "box": [
+            190,
+            210,
+            390,
+            345
+          ]
+        },
+        {
+          "id": "top-guard-hoodie-sleeve-right",
+          "file": "tools/premium-v2/hoodie/guard.png",
+          "uv": [
+            0,
+            690,
+            390,
+            345
+          ],
+          "box": [
+            190,
+            210,
+            390,
+            345
+          ]
+        },
+        {
+          "id": "top-guard-hoodie-up",
+          "file": "tools/premium-v2/hoodie/guard.png",
+          "uv": [
+            0,
+            1037,
+            202,
+            240
+          ],
+          "box": [
+            286,
+            38,
+            202,
+            240
+          ]
         }
       ],
       "renderer": "Registered raster components"
@@ -1542,36 +1692,36 @@
       "guardComponentsAlsoUsedByCoolRatio": 1,
       "files": {
         "cool": [
-          "tools/premium-v2/streaming-assets/bottom-black.png",
+          "tools/premium-v2/separation/boxer.png",
           "tools/premium-v2/production-art/bottom-kurz.png",
           "tools/premium-v2/production-art/bottom-jogger.png",
           "tools/premium-v2/production-art/bottom-track.png"
         ],
         "guard": [
-          "tools/premium-v2/streaming-assets/bottom-black.png",
+          "tools/premium-v2/separation/boxer.png",
           "tools/premium-v2/production-art/bottom-kurz.png",
           "tools/premium-v2/production-art/bottom-jogger.png",
           "tools/premium-v2/production-art/bottom-track.png"
         ],
         "shared": [
-          "tools/premium-v2/streaming-assets/bottom-black.png",
+          "tools/premium-v2/separation/boxer.png",
           "tools/premium-v2/production-art/bottom-kurz.png",
           "tools/premium-v2/production-art/bottom-jogger.png",
           "tools/premium-v2/production-art/bottom-track.png"
         ]
       },
       "encodedFileBytes": {
-        "cool": 705701,
-        "guard": 705701,
-        "shared": 705701
+        "cool": 715047,
+        "guard": 715047,
+        "shared": 715047
       },
       "sharedComponents": [
         {
-          "id": "bottom-black",
-          "file": "tools/premium-v2/streaming-assets/bottom-black.png",
+          "id": "bottom-master-boxer-clean",
+          "file": "tools/premium-v2/separation/boxer.png",
           "uv": [
-            2,
-            2,
+            0,
+            0,
             323,
             253
           ],
@@ -1786,42 +1936,62 @@
     },
     "coat": {
       "acceptedRows": {
-        "cool": 1,
+        "cool": 2,
         "guard": 2
       },
       "uniqueComponents": {
-        "cool": 3,
+        "cool": 5,
         "guard": 4,
-        "shared": 1
+        "shared": 2
       },
-      "guardComponentsAlsoUsedByCoolRatio": 0.25,
+      "guardComponentsAlsoUsedByCoolRatio": 0.5,
       "files": {
         "cool": [
+          "tools/premium-v2/separation/coat-basic-back.png",
+          "tools/premium-v2/production-art/coat-basic-cool.png",
+          "tools/premium-v2/separation/coat-back.png",
           "tools/premium-v2/streaming-assets/coat-common.png",
           "tools/premium-v2/streaming-assets/coat-cool.png"
         ],
         "guard": [
-          "tools/premium-v2/production-art/coat-basic-back.png",
+          "tools/premium-v2/separation/coat-basic-back.png",
           "tools/premium-v2/production-art/coat-basic-guard.png",
-          "tools/premium-v2/streaming-assets/coat-common.png",
+          "tools/premium-v2/separation/coat-back.png",
           "tools/premium-v2/production-art/coat-guard-v2.png"
         ],
         "shared": [
-          "tools/premium-v2/streaming-assets/coat-common.png"
+          "tools/premium-v2/separation/coat-basic-back.png",
+          "tools/premium-v2/separation/coat-back.png"
         ]
       },
       "encodedFileBytes": {
-        "cool": 506298,
-        "guard": 1224998,
-        "shared": 320148
+        "cool": 1231391,
+        "guard": 1092401,
+        "shared": 389744
       },
       "sharedComponents": [
         {
-          "id": "coat-back",
-          "file": "tools/premium-v2/streaming-assets/coat-common.png",
+          "id": "coat-basic-back-clean",
+          "file": "tools/premium-v2/separation/coat-basic-back.png",
           "uv": [
-            2,
-            2,
+            0,
+            0,
+            450,
+            354
+          ],
+          "box": [
+            166,
+            547,
+            450,
+            354
+          ]
+        },
+        {
+          "id": "coat-back-clean",
+          "file": "tools/premium-v2/separation/coat-back.png",
+          "uv": [
+            0,
+            0,
             450,
             354
           ],
@@ -1834,6 +2004,22 @@
         }
       ],
       "coolSpecific": [
+        {
+          "id": "coat-basic-cool",
+          "file": "tools/premium-v2/production-art/coat-basic-cool.png",
+          "uv": [
+            0,
+            0,
+            475,
+            750
+          ],
+          "box": [
+            155,
+            180,
+            475,
+            750
+          ]
+        },
         {
           "id": "coat-tail",
           "file": "tools/premium-v2/streaming-assets/coat-common.png",
@@ -1868,22 +2054,6 @@
         }
       ],
       "guardSpecific": [
-        {
-          "id": "coat-basic-back",
-          "file": "tools/premium-v2/production-art/coat-basic-back.png",
-          "uv": [
-            0,
-            0,
-            440,
-            350
-          ],
-          "box": [
-            176,
-            550,
-            440,
-            350
-          ]
-        },
         {
           "id": "coat-basic-guard",
           "file": "tools/premium-v2/production-art/coat-basic-guard.png",

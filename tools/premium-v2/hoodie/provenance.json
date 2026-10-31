@@ -1,0 +1,12 @@
+{
+  "mode": "built-in imagegen",
+  "approved": false,
+  "enabled": false,
+  "prompts": {
+    "down": "Use registered Guard body as exact anatomical fit reference. Black technical cotton pullover hoodie, hood down, two upright Guard sleeves, realistic knit folds, small gold crown, ribbed cuffs/waist. Fabric only, no body/skin/head/hair/hands/gloves/pants. Hollow neck opening; shoulders and wrists fitted to reference. Transparent RGBA.",
+    "up": "Use hoodie cotton material and bald registered head as references. Separate raised hood only, close fitted around head, transparent face opening. Fabric covers scalp crown, sides and back neck. No face/skin/hair/hands/torso/sleeves. Natural head size, soft cotton folds, upper-left light. Transparent RGBA."
+  },
+  "registration": "scripts/build-premium-hoodie.cjs",
+  "partition": "Exact disjoint alpha ownership of torso/left sleeve/right sleeve in a single atlas; no extra request per sleeve.",
+  "limits": "Guard only, coat none, head none. Cool and coat combinations remain full SVG. No activation."
+}

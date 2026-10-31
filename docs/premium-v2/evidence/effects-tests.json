@@ -5,9 +5,9 @@
   "artisticStatus": "Artistically pending",
   "hashAlgorithm": "sha256-canonical-text-lf-v1",
   "sourceHashes": {
-    "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18",
-    "tools/premium-v2/effects.json": "2208e21f39bbc5529e8de6c2676969c2bff6c08bb00c8cbb38fe12e9cbf2e39d",
-    "takeover-holo.js": "02fc4f0c408f526f469a7abbaeb74cd2ce603737a5d88dc9d7125c10b0871b54"
+    "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66",
+    "tools/premium-v2/effects.json": "d33ca8ef6cac22a29062a4f0382f39abb50be509650493d66f1be29740e67485",
+    "takeover-holo.js": "88b6c6fb4f169138ea91aae6a89026ae5efe620a075f6afb29f45132d818bcc3"
   },
   "reports": [
     {

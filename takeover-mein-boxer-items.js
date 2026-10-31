@@ -43,7 +43,7 @@ function supports(field,value){
  const slot=field==='coatPick'?'coat':field;
  return !!(ALLOWED[slot]&&ALLOWED[slot].has(String(value)));
 }
-function mainShape(slot,value,accent,base,edge,id){
+function mainShape(slot,value,accent,base,edge,id,config={}){
  const p=(d,fill,stroke,sw)=>'<path d="'+d+'" fill="'+(fill||'none')+'"'+(stroke?' stroke="'+stroke+'" stroke-width="'+(sw||2)+'" stroke-linejoin="round" stroke-linecap="round"':'')+'/>';
  const crown='<path d="M-12 -4 L-6 1 L0 -8 L6 1 L12 -4 L9 8 L-9 8Z" fill="'+accent+'" opacity=".95"/><path d="M-9 10 H9" stroke="'+accent+'" stroke-width="2"/>';
  const trim=p('M-25 8 Q0 15 25 8','none',accent,2.3);
@@ -59,7 +59,8 @@ function mainShape(slot,value,accent,base,edge,id){
   let art=p(sleeves,'url(#'+id+'cloth)','#080d16',3)+p(body,'url(#'+id+'cloth)','#080d16',3);
   art+=p('M45 40 L47 91 M85 40 L83 91','none',edge,2.2)+p('M43 94 Q65 98 87 94','none',accent,2.2);
   if(value==='hoodie'||value==='jacke'){
-   art+=p('M39 28 Q44 13 59 16 Q65 19 71 16 Q88 13 92 28 L82 41 Q65 31 48 41Z','url(#'+id+'edge)','#090e16',3);
+   const hoodUp=value==='hoodie'&&config.hood===true;
+   art+='<g data-hood-state="'+(hoodUp?'up':'down')+'">'+p(hoodUp?'M39 35 C34 8 48 2 65 2 C82 2 96 8 91 35 L82 42 C80 22 77 14 65 14 C53 14 50 22 48 42Z':'M39 28 Q44 13 59 16 Q65 19 71 16 Q88 13 92 28 L82 41 Q65 31 48 41Z','url(#'+id+'edge)','#090e16',3)+'</g>';
    art+=p('M62 36 L62 101','none',accent,value==='jacke'?3:1.3);
    if(value==='hoodie')art+=p('M56 36 L55 59 M72 36 L74 59','none','#e2d9c3',2);
    if(value==='jacke')art+=p('M48 73 H57 M69 73 H82','none',accent,2);
@@ -123,7 +124,7 @@ function svg(field,value,config){
  if(slot==='coat'&&value!=='none')palette=MANTLES[value]||MANTLES.basic;
  const base=safe(palette[0],'#262b35'),edge=safe(palette[1],'#10131d'),accent=safe(palette[2],'#f2c14e');
  const defs='<defs><linearGradient id="'+id+'cloth" x1=".1" y1="0" x2=".9" y2="1"><stop stop-color="'+accent+'" stop-opacity=".68"/><stop offset=".12" stop-color="'+base+'"/><stop offset=".56" stop-color="'+base+'"/><stop offset=".89" stop-color="'+edge+'"/><stop offset="1" stop-color="#080b13"/></linearGradient><linearGradient id="'+id+'edge" x1="0" y1="0" x2=".9" y2=".9"><stop stop-color="#fff4be"/><stop offset=".3" stop-color="'+accent+'"/><stop offset=".8" stop-color="'+edge+'"/><stop offset="1" stop-color="#f2d07e"/></linearGradient></defs>';
- const art=mainShape(slot,value,accent,base,edge,id);
+ const art=mainShape(slot,value,accent,base,edge,id,c);
  return '<svg class="mb-item-svg" viewBox="0 0 130 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">'+defs+'<ellipse cx="65" cy="105" rx="46" ry="6" fill="#050b13" opacity=".6"/>'+art+'</svg>';
 }
 // Reuse the runtime's selected PNG URLs and registration; no new image requests

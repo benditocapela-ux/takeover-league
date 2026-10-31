@@ -340,34 +340,34 @@
       "enabled": false
     },
     "coat-basic-back": {
-      "id": "coat-basic-back",
+      "id": "coat-basic-back-clean",
       "slot": "coatBack",
-      "origin": "production-art-draft",
-      "src": "production-art/coat-basic-back.png",
+      "src": "separation/coat-basic-back.png",
       "uv": [
         0,
         0,
-        440,
-        350
+        450,
+        354
       ],
       "box": [
-        176,
-        550,
-        440,
-        350
+        166,
+        547,
+        450,
+        354
       ],
-      "bytes": 202193,
-      "sha256": "14fa771446941360e258b7a6ebb60d995bec959bc0332d9534f517753f770ff7",
-      "source": "coat-basic-back",
+      "sha256": "17b6dd269707b77efe59532374a20af97fb5e7a3c8e81eff8f6a950b3f57fb82",
+      "bytes": 190934,
+      "source": "separation/coat-back-source.png",
+      "sourceSha256": "ad06dc030285ecec062f8d6bc7ce13809214ef5c62fc9bda45956842c00760ba",
       "sourceCrop": [
-        72,
-        494,
-        863,
-        667
+        15,
+        348,
+        1121,
+        785
       ],
-      "status": "Artwork draft",
       "approved": false,
-      "enabled": false
+      "enabled": false,
+      "material": "Gold trim to neutral silver, fabric and alpha preserved"
     },
     "feet-sneaker": {
       "id": "feet-sneaker",
@@ -396,6 +396,184 @@
         253
       ],
       "status": "Artwork draft",
+      "approved": false,
+      "enabled": false
+    },
+    "bottom-boxer": {
+      "id": "bottom-master-boxer-clean",
+      "slot": "bottom",
+      "src": "separation/boxer.png",
+      "uv": [
+        0,
+        0,
+        323,
+        253
+      ],
+      "box": [
+        227,
+        544,
+        323,
+        253
+      ],
+      "sha256": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2",
+      "bytes": 149015,
+      "source": "separation/boxer-source.png",
+      "sourceSha256": "097544e23a2ff40f2e2485f365d63adde2620bd0737a58529df770804ffc70cd",
+      "sourceCrop": [
+        16,
+        19,
+        1382,
+        1060
+      ],
+      "approved": false,
+      "enabled": false
+    },
+    "coat-back-clean": {
+      "id": "coat-back-clean",
+      "slot": "coatBack",
+      "src": "separation/coat-back.png",
+      "uv": [
+        0,
+        0,
+        450,
+        354
+      ],
+      "box": [
+        166,
+        547,
+        450,
+        354
+      ],
+      "sha256": "0e7a4764f71a3bb9093dc174f26d57df5ed5af5082a2727b80213057692eb6da",
+      "bytes": 198810,
+      "source": "separation/coat-back-source.png",
+      "sourceSha256": "ad06dc030285ecec062f8d6bc7ce13809214ef5c62fc9bda45956842c00760ba",
+      "sourceCrop": [
+        15,
+        348,
+        1121,
+        785
+      ],
+      "approved": false,
+      "enabled": false
+    },
+    "top-guard-hoodie-torso": {
+      "id": "top-guard-hoodie-torso",
+      "slot": "top",
+      "src": "hoodie/guard.png",
+      "uv": [
+        0,
+        0,
+        390,
+        345
+      ],
+      "box": [
+        190,
+        210,
+        390,
+        345
+      ],
+      "origin": "new-guard-cotton-master",
+      "source": "hoodie/guard-down-source.png",
+      "sourceCrop": [
+        41,
+        257,
+        920,
+        889
+      ],
+      "sourceSha256": "8c2bb8ed374e36640a0fa0829bd0086439b9e3d34cad66b44acd3fe563e302d5",
+      "sha256": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df",
+      "bytes": 247841,
+      "approved": false,
+      "enabled": false
+    },
+    "top-guard-hoodie-sleeve-left": {
+      "id": "top-guard-hoodie-sleeve-left",
+      "slot": "top",
+      "src": "hoodie/guard.png",
+      "uv": [
+        0,
+        345,
+        390,
+        345
+      ],
+      "box": [
+        190,
+        210,
+        390,
+        345
+      ],
+      "origin": "new-guard-cotton-master",
+      "source": "hoodie/guard-down-source.png",
+      "sourceCrop": [
+        41,
+        257,
+        920,
+        889
+      ],
+      "sourceSha256": "8c2bb8ed374e36640a0fa0829bd0086439b9e3d34cad66b44acd3fe563e302d5",
+      "sha256": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df",
+      "bytes": 247841,
+      "approved": false,
+      "enabled": false
+    },
+    "top-guard-hoodie-sleeve-right": {
+      "id": "top-guard-hoodie-sleeve-right",
+      "slot": "top",
+      "src": "hoodie/guard.png",
+      "uv": [
+        0,
+        690,
+        390,
+        345
+      ],
+      "box": [
+        190,
+        210,
+        390,
+        345
+      ],
+      "origin": "new-guard-cotton-master",
+      "source": "hoodie/guard-down-source.png",
+      "sourceCrop": [
+        41,
+        257,
+        920,
+        889
+      ],
+      "sourceSha256": "8c2bb8ed374e36640a0fa0829bd0086439b9e3d34cad66b44acd3fe563e302d5",
+      "sha256": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df",
+      "bytes": 247841,
+      "approved": false,
+      "enabled": false
+    },
+    "top-guard-hoodie-up": {
+      "id": "top-guard-hoodie-up",
+      "slot": "top",
+      "src": "hoodie/guard.png",
+      "uv": [
+        0,
+        1037,
+        202,
+        240
+      ],
+      "box": [
+        286,
+        38,
+        202,
+        240
+      ],
+      "origin": "new-raised-hood-master",
+      "source": "hoodie/hood-up-source.png",
+      "sourceCrop": [
+        227,
+        99,
+        696,
+        820
+      ],
+      "sourceSha256": "b257ed56e979b5e3a1279292b4633c6caa730b4583e41d103758075c2d5c4000",
+      "sha256": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df",
+      "bytes": 247841,
       "approved": false,
       "enabled": false
     }
@@ -473,5 +651,29 @@
       "width": 996,
       "height": 1578
     }
-  }
+  },
+  "hoodie": {
+    "poses": [
+      "guard"
+    ],
+    "head": [
+      "none"
+    ],
+    "coats": [
+      "none"
+    ],
+    "bodyKeep": [
+      300,
+      230,
+      175,
+      325
+    ],
+    "supported": true
+  },
+  "basicCoolBodyKeep": [
+    315,
+    230,
+    145,
+    320
+  ]
 }

@@ -2,8 +2,8 @@
   "summary": {
     "equipmentCatalogueEntries": 52,
     "poseCatalogueEntries": 6,
-    "equipmentItemsWithArtwork": 48,
-    "equipmentItemsTechnicallyValidated": 47,
+    "equipmentItemsWithArtwork": 49,
+    "equipmentItemsTechnicallyValidated": 48,
     "supportedPremiumPoseProfiles": [
       "cool",
       "guard"
@@ -14,17 +14,17 @@
     ],
     "catalogueEntries": 58,
     "matrixRows": 1800,
-    "catalogueItemsWithArtwork": 48,
-    "catalogueItemsTechnicallyValidated": 47,
-    "artworkVariantKeys": 261,
-    "artworkPoseCells": 522,
-    "technicallyValidatedVariantKeys": 260,
-    "technicallyValidatedPoseCells": 519,
+    "catalogueItemsWithArtwork": 49,
+    "catalogueItemsTechnicallyValidated": 48,
+    "artworkVariantKeys": 277,
+    "artworkPoseCells": 538,
+    "technicallyValidatedVariantKeys": 276,
+    "technicallyValidatedPoseCells": 536,
     "canvasVariantKeys": 12,
-    "rasterVariantKeys": 248,
-    "newlySupportedVariantKeys": 250,
-    "newlySupportedPoseCells": 498,
-    "brandNewVariantKeys": 249,
+    "rasterVariantKeys": 264,
+    "newlySupportedVariantKeys": 266,
+    "newlySupportedPoseCells": 515,
+    "brandNewVariantKeys": 265,
     "approvedItems": 0,
     "hashAlgorithm": "sha256-canonical-text-lf-v1",
     "evidenceValid": true,
@@ -24640,20 +24640,24 @@
       "color": "schwarz",
       "state": "down",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -24766,20 +24770,24 @@
       "color": "schwarz",
       "state": "up",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -24892,20 +24900,24 @@
       "color": "weiss",
       "state": "down",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -25018,20 +25030,24 @@
       "color": "weiss",
       "state": "up",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -25144,20 +25160,24 @@
       "color": "grau",
       "state": "down",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -25270,20 +25290,24 @@
       "color": "grau",
       "state": "up",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -25396,20 +25420,24 @@
       "color": "rot",
       "state": "down",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -25522,20 +25550,24 @@
       "color": "rot",
       "state": "up",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -25648,20 +25680,24 @@
       "color": "blau",
       "state": "down",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -25774,20 +25810,24 @@
       "color": "blau",
       "state": "up",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -25878,132 +25918,6 @@
       "value": "hoodie",
       "color": "blau",
       "state": "up",
-      "pose": "ansage",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
-      "approved": false,
-      "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
-      "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
-      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
-    },
-    {
-      "slot": "top",
-      "value": "hoodie",
-      "color": "gruen",
-      "state": "down",
-      "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
-      "approved": false,
-      "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
-      "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
-      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
-    },
-    {
-      "slot": "top",
-      "value": "hoodie",
-      "color": "gruen",
-      "state": "down",
-      "pose": "jab",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
-      "approved": false,
-      "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
-      "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
-      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
-    },
-    {
-      "slot": "top",
-      "value": "hoodie",
-      "color": "gruen",
-      "state": "down",
-      "pose": "sieg",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
-      "approved": false,
-      "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
-      "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
-      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
-    },
-    {
-      "slot": "top",
-      "value": "hoodie",
-      "color": "gruen",
-      "state": "down",
-      "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
-      "approved": false,
-      "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
-      "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
-      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
-    },
-    {
-      "slot": "top",
-      "value": "hoodie",
-      "color": "gruen",
-      "state": "down",
-      "pose": "flex",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
-      "approved": false,
-      "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
-      "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
-      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
-    },
-    {
-      "slot": "top",
-      "value": "hoodie",
-      "color": "gruen",
-      "state": "down",
       "pose": "ansage",
       "availability": "SVG only",
       "technicalStatus": "Not validated",
@@ -26024,8 +25938,33 @@
       "slot": "top",
       "value": "hoodie",
       "color": "gruen",
-      "state": "up",
+      "state": "down",
       "pose": "guard",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
+      "approved": false,
+      "enabled": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
+      "previousStatus": "svg-only",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
+      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
+      "state": "down",
+      "pose": "jab",
       "availability": "SVG only",
       "technicalStatus": "Not validated",
       "artisticStatus": "Not applicable",
@@ -26040,6 +25979,115 @@
       "evidence": "",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
       "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
+      "state": "down",
+      "pose": "sieg",
+      "availability": "SVG only",
+      "technicalStatus": "Not validated",
+      "artisticStatus": "Not applicable",
+      "renderer": "SVG",
+      "approved": false,
+      "enabled": false,
+      "integratedAndTested": false,
+      "newlySupported": false,
+      "previousStatus": "svg-only",
+      "sourceFiles": [],
+      "sourceHashes": {},
+      "evidence": "",
+      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
+      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
+      "state": "down",
+      "pose": "cool",
+      "availability": "SVG only",
+      "technicalStatus": "Not validated",
+      "artisticStatus": "Not applicable",
+      "renderer": "SVG",
+      "approved": false,
+      "enabled": false,
+      "integratedAndTested": false,
+      "newlySupported": false,
+      "previousStatus": "svg-only",
+      "sourceFiles": [],
+      "sourceHashes": {},
+      "evidence": "",
+      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
+      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
+      "state": "down",
+      "pose": "flex",
+      "availability": "SVG only",
+      "technicalStatus": "Not validated",
+      "artisticStatus": "Not applicable",
+      "renderer": "SVG",
+      "approved": false,
+      "enabled": false,
+      "integratedAndTested": false,
+      "newlySupported": false,
+      "previousStatus": "svg-only",
+      "sourceFiles": [],
+      "sourceHashes": {},
+      "evidence": "",
+      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
+      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
+      "state": "down",
+      "pose": "ansage",
+      "availability": "SVG only",
+      "technicalStatus": "Not validated",
+      "artisticStatus": "Not applicable",
+      "renderer": "SVG",
+      "approved": false,
+      "enabled": false,
+      "integratedAndTested": false,
+      "newlySupported": false,
+      "previousStatus": "svg-only",
+      "sourceFiles": [],
+      "sourceHashes": {},
+      "evidence": "",
+      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
+      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
+      "state": "up",
+      "pose": "guard",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
+      "approved": false,
+      "enabled": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
+      "previousStatus": "svg-only",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
+      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -26152,20 +26200,24 @@
       "color": "lila",
       "state": "down",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -26278,20 +26330,24 @@
       "color": "lila",
       "state": "up",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -26404,20 +26460,24 @@
       "color": "gold",
       "state": "down",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -26530,20 +26590,24 @@
       "color": "gold",
       "state": "up",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -27674,10 +27738,10 @@
       "newlySupported": false,
       "previousStatus": "pilot-shared-exact",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -27741,10 +27805,10 @@
       "newlySupported": false,
       "previousStatus": "premium-v1-unapproved",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -27808,10 +27872,10 @@
       "newlySupported": true,
       "previousStatus": "svg-only",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -27875,10 +27939,10 @@
       "newlySupported": true,
       "previousStatus": "svg-only",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -27942,10 +28006,10 @@
       "newlySupported": true,
       "previousStatus": "svg-only",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -28009,10 +28073,10 @@
       "newlySupported": true,
       "previousStatus": "svg-only",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -28076,10 +28140,10 @@
       "newlySupported": false,
       "previousStatus": "pilot-shared-exact",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -28143,10 +28207,10 @@
       "newlySupported": false,
       "previousStatus": "premium-v1-unapproved",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -28210,10 +28274,10 @@
       "newlySupported": true,
       "previousStatus": "svg-only",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -28277,10 +28341,10 @@
       "newlySupported": true,
       "previousStatus": "svg-only",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -28344,10 +28408,10 @@
       "newlySupported": true,
       "previousStatus": "svg-only",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -28411,10 +28475,10 @@
       "newlySupported": true,
       "previousStatus": "svg-only",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -28478,10 +28542,10 @@
       "newlySupported": true,
       "previousStatus": "svg-only",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -28545,10 +28609,10 @@
       "newlySupported": true,
       "previousStatus": "svg-only",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -28612,10 +28676,10 @@
       "newlySupported": true,
       "previousStatus": "svg-only",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -28679,10 +28743,10 @@
       "newlySupported": true,
       "previousStatus": "svg-only",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/bottom-black.png"
+        "tools/premium-v2/separation/boxer.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+        "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared while hips/legs/camera remain fixed",
@@ -34786,11 +34850,11 @@
       "newlySupported": true,
       "previousStatus": "svg-only",
       "sourceFiles": [
-        "tools/premium-v2/production-art/coat-basic-back.png",
+        "tools/premium-v2/separation/coat-basic-back.png",
         "tools/premium-v2/production-art/coat-basic-guard.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/production-art/coat-basic-back.png": "14fa771446941360e258b7a6ebb60d995bec959bc0332d9534f517753f770ff7",
+        "tools/premium-v2/separation/coat-basic-back.png": "17b6dd269707b77efe59532374a20af97fb5e7a3c8e81eff8f6a950b3f57fb82",
         "tools/premium-v2/production-art/coat-basic-guard.png": "ef5304546ca09472c1e06d2c559f1be6b1bfc588b62b6f1ae3679ec891f37bac"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
@@ -34846,23 +34910,23 @@
       "state": "default",
       "pose": "cool",
       "availability": "Artwork draft",
-      "technicalStatus": "Not validated",
+      "technicalStatus": "Technically validated",
       "artisticStatus": "Artistically pending",
       "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
       "sourceFiles": [
-        "tools/premium-v2/production-art/coat-basic-back.png",
+        "tools/premium-v2/separation/coat-basic-back.png",
         "tools/premium-v2/production-art/coat-basic-cool.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/production-art/coat-basic-back.png": "14fa771446941360e258b7a6ebb60d995bec959bc0332d9534f517753f770ff7",
+        "tools/premium-v2/separation/coat-basic-back.png": "17b6dd269707b77efe59532374a20af97fb5e7a3c8e81eff8f6a950b3f57fb82",
         "tools/premium-v2/production-art/coat-basic-cool.png": "9b2edcfc890470991be6801eb67de37001e23b15c03a76b16529ad9cf7e57130"
       },
-      "evidence": "",
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared lower tails/back conditionally; collar, sleeve and fold corrections per pose",
       "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
@@ -34924,11 +34988,11 @@
       "newlySupported": false,
       "previousStatus": "pilot-partial-or-new-unapproved",
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/coat-common.png",
+        "tools/premium-v2/separation/coat-back.png",
         "tools/premium-v2/production-art/coat-guard-v2.png"
       ],
       "sourceHashes": {
-        "tools/premium-v2/streaming-assets/coat-common.png": "d8e1fce31750abf7c335bdf0b51e9aea7ca127f6f1e46d220f4495b3fc220e6d",
+        "tools/premium-v2/separation/coat-back.png": "0e7a4764f71a3bb9093dc174f26d57df5ed5af5082a2727b80213057692eb6da",
         "tools/premium-v2/production-art/coat-guard-v2.png": "cbfe6a9ab7d19fbf44d6d3e518bd9b25be41dd3020d551267df19a655b55dd06"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
@@ -35317,7 +35381,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "One procedural overlay family; pose-specific silhouette masks",
@@ -35384,7 +35448,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "One procedural overlay family; pose-specific silhouette masks",
@@ -35451,7 +35515,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "One procedural overlay family; pose-specific silhouette masks",
@@ -35518,7 +35582,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "One procedural overlay family; pose-specific silhouette masks",
@@ -35585,7 +35649,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "One procedural overlay family; pose-specific silhouette masks",
@@ -35652,7 +35716,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "One procedural overlay family; pose-specific silhouette masks",
@@ -35719,7 +35783,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "One procedural overlay family; pose-specific silhouette masks",
@@ -35786,7 +35850,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "One procedural overlay family; pose-specific silhouette masks",
@@ -35853,7 +35917,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local overlay with eye anchors",
@@ -35920,7 +35984,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local overlay with eye anchors",
@@ -35987,7 +36051,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local overlay with eye anchors",
@@ -36054,7 +36118,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local overlay with eye anchors",
@@ -36121,7 +36185,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local overlay with eye anchors",
@@ -36188,7 +36252,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local overlay with eye anchors",
@@ -36255,7 +36319,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local overlay with eye anchors",
@@ -36322,7 +36386,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local overlay with eye anchors",
@@ -36389,7 +36453,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Pose-independent background, retain procedural SVG initially",
@@ -36456,7 +36520,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Pose-independent background, retain procedural SVG initially",
@@ -36523,7 +36587,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Pose-independent background, retain procedural SVG initially",
@@ -36590,7 +36654,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Pose-independent background, retain procedural SVG initially",
@@ -36657,7 +36721,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Pose-independent background, retain procedural SVG initially",
@@ -36724,7 +36788,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Pose-independent background, retain procedural SVG initially",
@@ -36791,7 +36855,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Pose-independent background, retain procedural SVG initially",
@@ -36858,7 +36922,7 @@
         "tools/premium-v2/effects.js"
       ],
       "sourceHashes": {
-        "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+        "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
       },
       "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Pose-independent background, retain procedural SVG initially",

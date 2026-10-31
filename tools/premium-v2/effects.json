@@ -90,12 +90,12 @@
   ],
   "source": {
     "file": "takeover-holo.js",
-    "sha256": "02fc4f0c408f526f469a7abbaeb74cd2ce603737a5d88dc9d7125c10b0871b54",
+    "sha256": "88b6c6fb4f169138ea91aae6a89026ae5efe620a075f6afb29f45132d818bcc3",
     "audit": "Existing EFX and aura hexadecimal palettes retained; scene wood/neon/rope colours retained inside a darker premium staging treatment. No catalogue changes."
   },
   "module": {
     "file": "effects.js",
-    "sha256": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18"
+    "sha256": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66"
   },
   "layers": {
     "scene": "behind aura and all character components",

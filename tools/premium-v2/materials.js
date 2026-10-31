@@ -9,7 +9,7 @@ const glovePart=id=>id==='hands-blackgold'||id.startsWith('hands-master-')||id.s
 const bottomPart=id=>['bottom-black','bottom-jogger','bottom-kurz','bottom-track'].includes(id)||id.startsWith('bottom-master-');
 const feetPart=id=>id==='feet'||id==='feet-sneaker'||id.startsWith('feet-master-');
 const headPart=id=>id==='head-cap-schwarz'||id==='head-band-schwarz'||id==='head-hijab-schwarz';
-const topPart=id=>id==='top-cool-tank'||id==='top-guard-tank';
+const topPart=id=>id==='top-cool-tank'||id==='top-guard-tank'||id.startsWith('top-guard-hoodie-');
 const hex=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16));
 const mix=(a,b,t)=>a.map((v,i)=>v+(b[i]-v)*Math.min(1,Math.max(0,t)));
 function ramp(v,points){for(let i=1;i<points.length;i++)if(v<=points[i][0])return mix(points[i-1][1],points[i][1],(v-points[i-1][0])/(points[i][0]-points[i-1][0]));return points.at(-1)[1]}

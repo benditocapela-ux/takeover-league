@@ -2,15 +2,15 @@
 
 Automatisch aus vorhandenem Inventar, tatsächlichen PNG-Dateien, Registrierungen, SHA-256 und aktuellem Browser-Testbericht erzeugt. Keine Live-Datenbankabfrage. Der historische PR-81-Stand bleibt in `coverage.csv`; die aktuelle Produktionsmatrix steht in `production-coverage.csv` und `production-coverage.json`.
 
-**52 Ausrüstungs-/Effekteinträge + 6 Pose-Metadateneinträge = 58 Katalogeinträge. 48/52 Ausrüstungs-/Effekteinträge mit Grafikquellen; 47/52 technisch geprüft; 0 freigegeben.**
+**52 Ausrüstungs-/Effekteinträge + 6 Pose-Metadateneinträge = 58 Katalogeinträge. 49/52 Ausrüstungs-/Effekteinträge mit Grafikquellen; 48/52 technisch geprüft; 0 freigegeben.**
 
 Premium-Profile mit registrierter Körperbasis: cool, guard (jeweils nur nachgewiesene Ausrüstungskombinationen). Aktuell technisch belegte Profile: cool, guard. Pose-Zeilen sind Metadaten und erhöhen weder Item-Abdeckung noch Grafikvarianten.
 
-Gesamtmatrix: 1800 Zeilen. Grafikquellen für 261 unterschiedliche Varianten-Schlüssel bzw. 522 Posezellen. Technisch integriert und geprüft: 260 Varianten-Schlüssel / 519 Posezellen. Gegenüber dem historischen SVG-only-Stand neu: 498 Posezellen; 250 Schlüssel gewinnen neue Poseabdeckung, davon waren 249 vorher in keiner Premium-Pose vorhanden. Haut- und Augenfarben sind zusätzlich enthalten, aber keine neuen Shop-Items.
+Gesamtmatrix: 1800 Zeilen. Grafikquellen für 277 unterschiedliche Varianten-Schlüssel bzw. 538 Posezellen. Technisch integriert und geprüft: 276 Varianten-Schlüssel / 536 Posezellen. Gegenüber dem historischen SVG-only-Stand neu: 515 Posezellen; 266 Schlüssel gewinnen neue Poseabdeckung, davon waren 265 vorher in keiner Premium-Pose vorhanden. Haut- und Augenfarben sind zusätzlich enthalten, aber keine neuen Shop-Items.
 
 **Zählweise:** Varianten-Schlüssel = Slot, Itemwert, Farbe und Zustand; jede Pose wird zusätzlich als Posezelle gezählt. Das ist keine Anzahl aller kombinierbaren Outfits und keine Anzahl neuer PNGs. Ein Teil mit zwei Posen zählt nur einmal als Varianten-Schlüssel.
 
-Technisch geprüft sind 248 Raster-/Materialvarianten und 12 prozedurale Canvas-Varianten. Effekte/Szenen werden ausdrücklich nicht als neue PNG-Illustrationen gezählt. Glatze entfernt die Haare; die acht zulässigen Haarfarbwerte erzeugen dabei dasselbe Bild.
+Technisch geprüft sind 264 Raster-/Materialvarianten und 12 prozedurale Canvas-Varianten. Effekte/Szenen werden ausdrücklich nicht als neue PNG-Illustrationen gezählt. Glatze entfernt die Haare; die acht zulässigen Haarfarbwerte erzeugen dabei dasselbe Bild.
 
 Technische Evidenz: aktueller, hashgebundener Chromium-/WebKit-Bericht vorhanden.
 
@@ -41,7 +41,7 @@ Status getrennt: `SVG only` = keine verifizierte passende Grafik; `Artwork draft
 | head_hijab | Sport-Hijab | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | top_tank | Tanktop | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | top_shirt | T-Shirt | 1/8 | 0/8 | – | Artwork draft; Not validated; Artistically pending |
-| top_hoodie | Hoodie | 0/16 | 0/16 | – | SVG only; Not validated; Not applicable |
+| top_hoodie | Hoodie | 16/16 | 16/16 | guard | Artwork draft; Technically validated; Artistically pending |
 | top_jacke | Trainingsjacke | 0/8 | 0/8 | – | SVG only; Not validated; Not applicable |
 | bottom_boxer | Boxershorts | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | bottom_kurz | Kurze Hose | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
@@ -54,7 +54,7 @@ Status getrennt: `SVG only` = keine verifizierte passende Grafik; `Artwork draft
 | glove_glut | Glut | 1/1 | 1/1 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | feet_boots | Boxstiefel | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | feet_sneaker | Sneaker | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
-| coat_basic | Trainer-Mantel | 1/1 | 1/1 | guard | Artwork draft; Technically validated; Artistically pending |
+| coat_basic | Trainer-Mantel | 1/1 | 1/1 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | coat_samurai | Samurai-Jacke | 1/1 | 1/1 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | coat_neon | Neon-Mantel | 0/1 | 0/1 | – | SVG only; Not validated; Not applicable |
 | coat_drache | Drachen-Mantel | 0/1 | 0/1 | – | SVG only; Not validated; Not applicable |

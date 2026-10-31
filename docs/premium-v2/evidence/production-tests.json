@@ -2475,6 +2475,118 @@
       "pose": "cool"
     },
     {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "schwarz",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "schwarz",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "weiss",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "weiss",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "grau",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "grau",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "rot",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "rot",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "blau",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "blau",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "lila",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "lila",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gold",
+      "state": "down",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gold",
+      "state": "up",
+      "pose": "guard"
+    },
+    {
       "slot": "bottom",
       "value": "boxer",
       "color": "schwarz",
@@ -3225,6 +3337,13 @@
     },
     {
       "slot": "coat",
+      "value": "basic",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "coat",
       "value": "samurai",
       "color": "fixed",
       "state": "default",
@@ -3645,18 +3764,18 @@
     }
   ],
   "sourceHashes": {
-    "tests/premium-production-browser.cjs": "5a9f8e7980403e3b9c23aea44cba678670a0f96b0d74abe1e3cb72ffd58dd0ea",
-    "takeover-holo.js": "02fc4f0c408f526f469a7abbaeb74cd2ce603737a5d88dc9d7125c10b0871b54",
-    "takeover-mein-boxer-items.js": "81bcc0461bfbd586d39da2421fe8b37c4e644888ba81c6c86909d3a48dbd1b7e",
-    "tools/premium-v2/production.html": "ee59f625fd1a58142a3e93f51783615e2178597114802b6af2b8451e98559d9f",
-    "tools/premium-v2/production.js": "96e1fd1b3d8d752bfc57b6b7a6239e8d5fcd48ce3a8c4f2f8a674b23abaf0aed",
-    "tools/premium-v2/materials.js": "7a43fea897488cd118d274362c266016dd22303c13d722ac35d5c54b38d49fca",
+    "tests/premium-production-browser.cjs": "a55568ebaacd580b517224d0cb24d35a25cebcd7862d6292669c1eea1724118c",
+    "takeover-holo.js": "88b6c6fb4f169138ea91aae6a89026ae5efe620a075f6afb29f45132d818bcc3",
+    "takeover-mein-boxer-items.js": "885c596d61c5d1548f0ca37bb5dc4f0e7aae142ac82e6e169d688c5b07048f21",
+    "tools/premium-v2/production.html": "16b913f411923a2de8f2b07df3cd24a494f779ca712f3188c4027d2ac0caefd7",
+    "tools/premium-v2/production.js": "935998f4b531d1dfcc2023dc523949fb4608c3c3528740a3002b16cdd7b4dd8b",
+    "tools/premium-v2/materials.js": "4960cfb016e248f3926570f1e706f1f2c124cb5b0ac3e1586b08194c37ae9e1e",
     "tools/premium-v2/materials.json": "694360f385126a3f6867368e9602245cc1af73053effd4cbc886b865c7053c60",
     "tools/premium-v2/streaming.js": "311117f3651f33931cc0c7f499b13c9888d7b64cbbee2a5e9d81e12534503828",
     "tools/premium-v2/streaming-assets.json": "7ca4e00dbf0575da6f5320159e35805e39e7bcf53624b3e3468b2aeef6df4a2e",
     "tools/premium-v2/pilot.js": "fac899d0d0bdf5219c0dd6783a0576dd6e4b76d5393c10480abff98d2af50528",
     "tools/premium-v2/pilot-assets.json": "8db99b0cafc2e7a77551afdb5de67aaedd5f406acbedd24dfa44e165289f53a0",
-    "tools/premium-v2/production-art/manifest.json": "435fac3a27bfbdaef0f2b8939be9e0932c1da912fae3fa02a675a932325ddb10",
+    "tools/premium-v2/production-art/manifest.json": "d8c874559b5a9537fd45f35e2bdd01d45090e98bc2ff24d792305832c1090d11",
     "tools/premium-v2/headwear/headwear.js": "90bdeebf76bdab15ed794868c1418122186d62ce8a2899ca847b5b564132c10a",
     "tools/premium-v2/headwear/manifest.json": "b10d087bc79ab93203b659037304f7aeacc9440df1059c16947d505e04a4875e",
     "tools/premium-v2/headwear-hijab/hijab.js": "f4e37a469fdc49a293db3a15817dc5bbe122d479bceee6d479edc472471bab00",
@@ -3667,8 +3786,8 @@
     "tools/premium-v2/tops/tops.js": "18c0c41e0c853e28e4a12343f12a1480908d0babcc60865aa3a957b4af876021",
     "tools/premium-v2/tops/manifest.json": "88dbcc1b85b81b2e0ba7da13a64364ac3b167b0e349ac2e24048472ee6f75cef",
     "tools/premium-v2/wraps/manifest.json": "4a28782cd26f194712e63856fe6323cb784b2ff2598d7ebd89067fe681acd8df",
-    "tools/premium-v2/effects.js": "fcf11c85f8cd5833f14741c75087e321904af7864059a6948e58ea34c2199f18",
-    "tools/premium-v2/effects.json": "2208e21f39bbc5529e8de6c2676969c2bff6c08bb00c8cbb38fe12e9cbf2e39d",
+    "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66",
+    "tools/premium-v2/effects.json": "d33ca8ef6cac22a29062a4f0382f39abb50be509650493d66f1be29740e67485",
     "assets/boxer-artpacks/v1/modular-cool/coatback.png": "ad891a408f555ce62ce7114b9e9a8267e9884f54350f2d08643fb8079d55833e",
     "tools/premium-v2/assets/v1-body.png": "5b9d3961b94b47b041186b38abfdf7c81b1787b6b40dea96a21fa702e9064748",
     "assets/boxer-artpacks/v1/modular-cool/bottom-black.png": "31b86b8ce22a242cc9a610c079d9120f730723f4bf73e60223403973f5cbf92c",
@@ -3677,10 +3796,10 @@
     "assets/boxer-artpacks/v1/modular-cool/hair-afro.png": "6aef558366445b21afdd60e6e82072ca4193bc29e261dc9961f5aa16538b7bc3",
     "tools/premium-v2/assets/v1-coat.png": "47e940e6ab32e7f53e0e8f847ea98faa54f6de717427e6c4bbf6946b3489a9c6",
     "tools/premium-v2/assets/v1-black.png": "c2db79692ba2dcc48a9500eb5b07857bec6cdf10a58e579281733ae9ae42d952",
-    "tools/premium-v2/streaming-assets/coat-common.png": "d8e1fce31750abf7c335bdf0b51e9aea7ca127f6f1e46d220f4495b3fc220e6d",
-    "tools/premium-v2/streaming-assets/base.png": "2bfc7593b6c2b31f9fce5a20fd7583f4436eef9d02391cfe99ce88a6594c56ee",
+    "tools/premium-v2/separation/coat-back.png": "0e7a4764f71a3bb9093dc174f26d57df5ed5af5082a2727b80213057692eb6da",
     "tools/premium-v2/streaming-assets/body-guard.png": "191333012e99dca1998b078ef468a9c9ec2569fe13696a59cf3939786c097a2f",
-    "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c",
+    "tools/premium-v2/streaming-assets/base.png": "2bfc7593b6c2b31f9fce5a20fd7583f4436eef9d02391cfe99ce88a6594c56ee",
+    "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2",
     "tools/premium-v2/streaming-assets/hair-afro.png": "cbab6c42a98205872d993585f0bf0d54cfa004c8ac3a161906dcd90d4ab0c799",
     "tools/premium-v2/production-art/coat-guard-v2.png": "cbfe6a9ab7d19fbf44d6d3e518bd9b25be41dd3020d551267df19a655b55dd06",
     "tools/premium-v2/production-art/hands-master-0.png": "a5a97da42db09bbb5ebfb04bc4e4ee55a42a460b3ee47afe7fdae106adbf33e6",
@@ -3708,12 +3827,15 @@
     "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f",
     "tools/premium-v2/tops/assets/guard-tank.png": "3fbeca7ae1bc8b22fd028172748a2d92ca89fa49db91b7f8459dff6bb9c02967",
     "assets/boxer-artpacks/v1/modular-cool/top-tank.png": "1d65b893f039bb90bac126d354260ab74402e8025e7894bbede0834555dd1afe",
+    "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df",
     "tools/premium-v2/production-art/bottom-kurz.png": "ae5644f7a0e90458097aa27a0a7e0ad1366d54dede3849e5249e119c28d58960",
     "tools/premium-v2/production-art/bottom-jogger.png": "323049fb9bdd2134f4dc5fc0fc018c31b2ada66384925d2d2aabe0e674b5057a",
     "tools/premium-v2/production-art/bottom-track.png": "12c4c58ce40c0b2ae600fa821150110bd6c8c1bb1142a228a1433ed8d6546f84",
     "tools/premium-v2/production-art/feet-sneaker.png": "f3489f5a6c9d8e05dda9f2a54afaa8376ec88b131a58f5fe243b683de1699043",
+    "tools/premium-v2/separation/coat-basic-back.png": "17b6dd269707b77efe59532374a20af97fb5e7a3c8e81eff8f6a950b3f57fb82",
     "tools/premium-v2/production-art/coat-basic-guard.png": "ef5304546ca09472c1e06d2c559f1be6b1bfc588b62b6f1ae3679ec891f37bac",
-    "tools/premium-v2/production-art/coat-basic-back.png": "14fa771446941360e258b7a6ebb60d995bec959bc0332d9534f517753f770ff7",
+    "tools/premium-v2/production-art/coat-basic-cool.png": "9b2edcfc890470991be6801eb67de37001e23b15c03a76b16529ad9cf7e57130",
+    "tools/premium-v2/streaming-assets/coat-common.png": "d8e1fce31750abf7c335bdf0b51e9aea7ca127f6f1e46d220f4495b3fc220e6d",
     "tools/premium-v2/streaming-assets/coat-cool.png": "bbd682dd93de36564ea4a16c2809f68ed68fe10eb270404e9b4e62b20a4731c5",
     "tools/premium-v2/wraps/assets/wrap-guard0.png": "6ff8a27f03230c66d9a874702e441a8079c0c60c4be80684c0c8104126f110e6",
     "tools/premium-v2/wraps/assets/wrap-guard1.png": "fc2f9a2479fd13c264930f52372e475306f60e3eca165caa50622559636540a5",
@@ -3727,7 +3849,7 @@
     {
       "engine": "chromium",
       "file": "chromium-production-tests.json",
-      "variants": 519,
+      "variants": 536,
       "contactSheets": [
         {
           "file": "chromium-production-hair-contact.png",
@@ -3821,7 +3943,7 @@
         },
         {
           "file": "chromium-production-coat-contact.png",
-          "examples": 5,
+          "examples": 6,
           "crop": [
             0,
             0,
@@ -3884,7 +4006,7 @@
     {
       "engine": "webkit",
       "file": "webkit-production-tests.json",
-      "variants": 519,
+      "variants": 536,
       "contactSheets": [
         {
           "file": "webkit-production-hair-contact.png",
@@ -3978,7 +4100,7 @@
         },
         {
           "file": "webkit-production-coat-contact.png",
-          "examples": 5,
+          "examples": 6,
           "crop": [
             0,
             0,
