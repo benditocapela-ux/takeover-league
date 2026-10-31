@@ -69,7 +69,7 @@ test('theme hides redundant old chrome, not the training form or permissions',()
  assert.match(css,/\.studio-pane-overview>.card:not\(#trainingFormCard\)/);
  assert.match(css,/tl-ex-training #trainingFormCard #submit/);
  assert.match(css,/\.tl-v2-step/);
- assert.doesNotMatch(css,/\#trainingFormCard[^{]*\{[^}]*display:none/);
+ assert.doesNotMatch(css,/tl-ex-training #trainingFormCard\s*\{[^}]*display:none/);
  assert.match(page,/class="ex-menu"/);
  assert.match(nav,/boxer:\{href:'\.\/boxer-experience\.html'/);
 });
