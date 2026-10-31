@@ -151,7 +151,8 @@
   document.addEventListener('takeover:training-fields-updated',updatePreview);
   const help=$('trainingHelp');if(help)help.textContent='Wähle zuerst, wo du trainiert hast. Vereinstrainings stuft dein Trainer beim Bestätigen ein – Punkte, EXP und Coins gibt es erst nach seiner Bestätigung.';
   render();
-  try{
+  // Ein-Klick-Antrag nur für Boxer (die RPC weist andere Rollen ab; Trainer melden eigene Trainings über das Formular)
+  if(ctx.profile&&ctx.profile.role==='boxer')try{
    const quick=await import('./takeover-club-today.js');
    let checkinOnly=false;
    try{

@@ -281,7 +281,8 @@ async function boxerFlow(browser,engine){
  assert.ok(await page.isVisible('#form'),'No opens individual training');
  assert.equal(await page.getAttribute('#trainingV2 .tl-v2-cards [role="radio"]:last-child','aria-checked'),'true','individual location selected');
  // Reload a fresh mock session to test the one-tap Yes path; RPC does not award points.
- await page.goto(page.url().split('#')[0].split('?')[0]+'#trainingFormCard');
+ // Neues Dokument laden (nur ein anderer #-Anker wäre eine Navigation im selben Dokument und lädt nicht neu)
+ await page.goto(page.url().split('#')[0].split('?')[0]+'?ja=1#trainingFormCard');
  await page.waitForSelector('#ct-boxer');
  await page.getByRole('button',{name:/Ja, im Verein/}).click();
  await page.waitForFunction(()=>document.querySelector('#ct-boxer .ct-result')?.textContent &&

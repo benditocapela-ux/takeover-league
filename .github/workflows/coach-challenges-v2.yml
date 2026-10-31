@@ -43,6 +43,8 @@ on:
       - 'tests/card-scale-*'
       - 'tests/club-types-selfservice-*'
       - 'tests/training-v2-*'
+      - 'tests/club-today-*'
+      - 'takeover-club-today.js'
       - 'takeover-training-v2.js'
       - 'takeover-coach-v2.js'
       - 'takeover-coach-v2.css'
@@ -135,6 +137,8 @@ on:
       - 'tests/card-scale-*'
       - 'tests/club-types-selfservice-*'
       - 'tests/training-v2-*'
+      - 'tests/club-today-*'
+      - 'takeover-club-today.js'
       - 'takeover-training-v2.js'
       - 'takeover-coach-v2.js'
       - 'takeover-coach-v2.css'
@@ -1473,6 +1477,44 @@ jobs:
         env:
           PGPASSWORD: postgres
         run: bash tests/training-v2-concurrency.sh training_v2_probe
+
+  club-today-schema:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        postgres: ['16','17']
+    permissions:
+      contents: read
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Create isolated unified club check-in fixture database
+        env:
+          PGPASSWORD: postgres
+        run: createdb -h localhost -U postgres club_today_probe
+      - name: Verify unified club check-in statuses, Gym interplay, day lock and rollback on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: psql -X -h localhost -U postgres -d club_today_probe -v ON_ERROR_STOP=1 -f tests/club-today-schema.sql
+      - name: Verify concurrent one-tap requests and Gym confirmation book exactly once on PostgreSQL ${{ matrix.postgres }}
+        env:
+          PGPASSWORD: postgres
+        run: bash tests/club-today-concurrency.sh club_today_probe
 
   card-gallery-schema:
     runs-on: ubuntu-latest
