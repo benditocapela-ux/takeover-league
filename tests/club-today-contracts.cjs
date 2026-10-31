@@ -29,8 +29,15 @@ test('No duplicate request or Gym confirmation',()=>{
  assert.match(migration,/g\.status<>'cancelled'/);
  assert.match(migration,/already_pending/);
  assert.match(migration,/already_approved/);
- assert.match(migration,/gym_registered/);
- assert.match(migration,/checkin_required/);
+ assert.match(migration,/already_checked_in/);
+ assert.match(migration,/checked_in/);
+ assert.match(migration,/gym_not_open/);
+ assert.match(migration,/choose_gym_session/);
+ assert.match(migration,/INSERT INTO public\.gym_attendance\(session_id,profile_id,source\)/);
+ assert.match(migration,/FOR UPDATE/,'Gym session row lock serializes with staff confirmation');
+ assert.match(migration,/x\.club_tier='pflicht'/,'Only a matching planned Pflicht unit is auto checked-in');
+ assert.match(migration,/league_private\.flag_on\('club_checkin_only'\)/);
+ assert.doesNotMatch(migration,/status','checkin_required'/,'No unconditional redirect from the unified RPC');
  assert.match(migration,/choose_slot/);
 });
 test('Question is optional and keeps three training routes',()=>{
@@ -55,5 +62,10 @@ test('Check-in keeps fixed weekly slots and existing supervised check-ins',()=>{
  assert.match(checkin,/my_gym_sessions_today/);
  assert.match(checkin,/gym_check_in/);
  assert.match(ui,/FIXER VEREINSSTUNDENPLAN/);
+ assert.match(checkin,/unifiedScheduleActive/);
+ assert.match(checkin,/list\.filter\(s=>s\.club_tier!=='pflicht'\)/);
+ assert.match(ui,/case 'checked_in'|checked_in:/);
+ assert.match(ui,/case 'gym_not_open'|gym_not_open:/);
+
  assert.match(ui,/Number\(x\.dow\)===isoDow\(\)/);
 });
