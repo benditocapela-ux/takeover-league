@@ -147,6 +147,14 @@ jobs:
           node-version: '22'
       - run: npm install --no-save --package-lock=false playwright@1.56.1
       - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Verify editor and responsive SVG behavior in both browsers
+        env:
+          BROWSER: ${{ matrix.browser }}
+          EDITOR_ONLY: '1'
+        run: |
+          node tests/boxer-holo-browser.cjs
+          node tests/boxer-responsive-layout-browser.cjs
+        timeout-minutes: 8
       - name: Verify 32 outfits and anatomical glove pixel regressions
         env:
           BROWSER: ${{ matrix.browser }}
@@ -173,3 +181,23 @@ jobs:
             ${{ runner.temp }}/modular-art-shots/*-glove-pixels.json
           if-no-files-found: ignore
           retention-days: 14
+
+  training-v2-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false playwright@1.56.1
+      - run: npx playwright install --with-deps chromium webkit
+      - name: Training 2.0 und Trainer-Dashboard 2.0 (Chromium + WebKit, gemocktes Supabase)
+        run: SHOTS=training-v2-screenshots REQUIRE_WEBKIT=1 node tests/training-v2-browser.cjs
+        timeout-minutes: 10
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: training-v2-screenshots
+          path: training-v2-screenshots
+          if-no-files-found: warn

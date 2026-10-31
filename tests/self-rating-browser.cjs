@@ -155,8 +155,8 @@ function coachExtra(n){
  await p.waitForSelector('#selfRatingNotice:not([hidden])');
  assert.equal(await p.textContent('#selfRatingNotice'),'🃏 2 Selbsteinschätzungen warten auf dich: Anna, Ben – anpassen oder freigeben →');
  assert.match(await p.getAttribute('#selfRatingNotice','href'),/^\.\/bewertung\.html$/);
- // Hinweis steht direkt unter den Kennzahlen, der bisherige Server-Hinweis bleibt unten (Reihenfolge 9)
- assert.deepEqual(await p.evaluate(()=>[getComputedStyle(document.getElementById('selfRatingNotice')).order,getComputedStyle(document.querySelector('#content>.notice')).order]),['1','9']);
+ // Trainer-Dashboard 2.0: Hinweis steht ganz oben auf der Startseite, der Server-Hinweis bleibt am Ende der Startseite
+ assert.deepEqual(await p.evaluate(()=>{const h=document.getElementById('viewHome');const k=[...h.children];return [k.indexOf(document.getElementById('selfRatingNotice')),k.indexOf(h.querySelector('.notice'))===k.length-1]}),[0,true]);
  await shot(p,'10-coach-dashboard');
  assert.deepEqual(errors,[]);
  ({p,errors}=await open({coachDash:true,n:1},'coach.html'));

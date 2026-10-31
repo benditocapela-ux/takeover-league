@@ -56,8 +56,10 @@ const mime={'.html':'text/html','.css':'text/css','.js':'text/javascript','.svg'
   await page.locator('#loginView:not(.hide)').waitFor();
   assert.match(await page.locator('#message').textContent(),/Weiteres Konto hinzufügen/);
   await page.fill('#email','ben@test.invalid');await page.fill('#password','x');await page.click('#loginBtn');
-  await page.waitForURL(/boxer\.html/);
-  await page.goto(base+'/index.html');await openMenu();
+  await page.waitForURL(/boxer-experience\.html/);
+  // Public league with an explicit hash stays accessible to boxers.
+  // Without a hash, the app opens the new Boxer Experience.
+  await page.goto(base+'/index.html#ranking');await openMenu();
   assert.match(await page.locator('.tl-account-current').textContent(),/Angemeldet als Ben \(Boxer\)/);
   assert.deepEqual((await accounts()).sort(),['Ben:boxer','Bendo:admin']);
   assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth<=390),true,'Menü mit Konten ohne horizontalen Scroll');
