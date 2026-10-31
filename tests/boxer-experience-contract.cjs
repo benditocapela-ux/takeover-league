@@ -1,5 +1,5 @@
 /* Run with: node --test tests/boxer-experience-contract.cjs
- * Read-only smoke tests: the new shell must not add mutations or fictional data.
+ * Contract tests: only the approved scheduled-training RPC may create a pending request; no direct row or point writes.
  */
 const test = require('node:test');
 const assert = require('node:assert/strict');
@@ -24,7 +24,7 @@ test('personal holo and fixed FUT only render on their own sections',()=>{
   assert.match(html,/data-view="boxer"/);
   assert.match(html,/id="ex-radar"/);
 });
-test('read-only: all training mutations remain in canonical studio',()=>{
+test('server-authorized one-tap club request; no direct row mutations',()=>{
   assert.doesNotMatch(js,/\.(?:insert|upsert|update|delete)\s*\(/);
   assert.match(html,/href="\.\/boxer\.html#trainingFormCard"/);
   assert.match(html,/id="ex-training-options"/);
