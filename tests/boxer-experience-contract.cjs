@@ -27,7 +27,14 @@ test('personal holo and fixed FUT only render on their own sections',()=>{
 test('read-only: all training mutations remain in canonical studio',()=>{
   assert.doesNotMatch(js,/\.(?:insert|upsert|update|delete)\s*\(/);
   assert.match(html,/href="\.\/boxer\.html#trainingFormCard"/);
-  assert.match(html,/parallel entwickelte Trainingslogik/);
+  assert.match(html,/id="ex-training-options"/);
+  assert.match(js,/get_training_v2_config/);
+  assert.match(js,/cfg\?\.enabled!==true/);
+  assert.match(js,/club_checkin_only/);
+  assert.match(js,/trainingReward\(x\.reward\)/);
+  assert.match(js,/trainingFallback\(host\)/);
+  assert.match(js,/\.{2}\/checkin\.html/);
+  assert.doesNotMatch(js,/Object\.assign\(payload|training_location\s*:/,'Trainingseintrag und Tier bleiben in boxer.html');
 });
 test('real data reads, no imaginary scores or podium participants',()=>{
   for(const key of ['get_my_performance','get_public_leaderboard','get_holo_looks','get_boxer_exp_level_rank','training_submissions']) assert.ok(js.includes(key),key);
