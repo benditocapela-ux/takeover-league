@@ -19,7 +19,7 @@ Branch: feature/boxer-experience-redesign (based on main @ 8176e8014d134136ba210
 2. Mobile Touch-/Responsiveness-/Accessibility-/Leistungstests mit verbundenem Supabase und realen nicht freigeschalteten Profileinstellungen.
 3. **PR #84 abgeglichen:** `get_training_v2_config` wird vom Boxer-Redesign nur gelesen. Sobald `enabled=true`, zeigt der Tab «Training» die durch den Server definierten Pflicht- und Ergänzungseinheiten und die voraussichtliche Belohnung aus `reward`. Ist die Funktion deaktiviert oder fehlt die Migration, bleibt ein einziger Zugang zum bisherigen Formular.
    - Der eigentliche Antrag (training_location, requested_slot_id, requested_extra_key), der Kategorie-/Wochentagscheck und die Punkte-/EXP-/Coins-Buchung bleiben vollständig in Claudes `boxer.html` + `takeover-training-v2.js` + Server.
-   - Bei `club_checkin_only=true` führt der Vereinsweg zu `checkin.html`, nicht zur Selbstmeldung.
+   - Bei gleichzeitigem `club_checkin_only` und `gym_training` prüft der **gemeinsame Ja-Button**, ob der Trainer eine passende Pflichteinheit geöffnet hat: dann Check-in über denselben RPC, sonst klare Meldung `gym_not_open`. Eine Selbstmeldung ist in diesem Modus weiterhin gesperrt.
    - **Keine Vorauswahl** aus dem neuen Dashboard, weil Claudes Formular derzeit keinen unterstützten Deep-Link zur Kategorie bereitstellt. Die Auswahl erfolgt dort.
    - Mit PR #84 wurden keine gemeinsamen Dateien geändert: PR #83 kann nach Erfüllung der Gates eigenständig reviewed werden.
 4. Echte Integration/Feature-Flag-/Gym-Check-in-Tests mit PR #84 und nach dessen produktiver Migration sind erforderlich, bevor die neue Route aktiv verlinkt wird.
@@ -49,15 +49,19 @@ Keine produktive Route wurde ersetzt. Ein nicht gemergter PR kann ohne Auswirkun
 | Gym | erkennt `club_checkin_only` für Zielroute | bei aktivem Check-in-Only keine Vereins-Selbstmeldungen | berücksichtigt |
 | Aktivierung | noch nicht als Boxer-Standard verlinkt | Migration und Aktivierung durch Owner | keine produktiven Eingriffe |
 
-**Wichtig:** Die optische Zusammenführung in ein einziges eingebettetes Formular ist noch nicht fertig. Bis dahin öffnet der Training-Tab die kanonische Trainingsseite, damit genau eine serverseitige Validierungs- und Buchungslogik existiert. Die Doku von PR #84 nennt zudem offene Risiken bei `club_checkin_only` und Gym-Duplikaten; diese werden durch das Redesign nicht behoben.
+**Wichtig:** Die optische Zusammenführung in ein einziges eingebettetes Formular ist noch nicht fertig. Bis dahin öffnet der Training-Tab die kanonische Trainingsseite, damit genau eine serverseitige Validierungs- und Buchungslogik existiert. Der frühere Check-in-only-Redirect wurde durch einen gemeinsamen serverseitigen RPC ersetzt. Weitere Tests für gleichzeitige Traineraktionen und Gym-Buchungen bleiben vor dem Merge erforderlich.
 
 ## Ein-Klick-Vereinstraining – Abstimmung mit PR #84
 
 - Die Startseiten-Aktion «Training einreichen» wechselt jetzt zum Trainingstab, statt die Ja/Nein-Frage zu überspringen.
 - Bei `get_training_v2_config.enabled=true` erscheint die Frage «Warst du heute im Vereinstraining?». «Ja» nutzt ausschliesslich den serverseitigen RPC `submit_scheduled_club_training_today` von PR #84. Es werden weder Trainingsart noch Stufe, Punkte, EXP oder Coins vom Boxer gesetzt.
 - «Nein» öffnet `boxer.html?individual=1#trainingFormCard` mit individueller Vorauswahl. Für Ergänzungstrainings im Verein ist `?club=1` vorgesehen.
-- Der RPC unterscheidet `submitted`, `already_pending`, `already_approved`, `gym_registered`, `no_slot`, `choose_slot`, `checkin_required` und `disabled`. Nur `submitted` zeigt eine tatsächliche neue Einreichung an.
+- Der RPC unterscheidet `submitted` (ein neuer offener Antrag), `checked_in` (neuer Gym-Anwesenheitseintrag), `already_pending`, `already_approved`, `already_checked_in`, `gym_not_open`, `choose_gym_session`, `no_slot`, `choose_slot` und `disabled`. Nur bei `submitted` bzw. `checked_in` wird die jeweils passende Erfolgsmeldung angezeigt.
 - Mit deaktiviertem `training_v2` oder fehlender Migration fällt das UI auf das alte Formular zurück. Bei verpflichtendem Gym-Check-in wird keine zusätzliche Selbstmeldung erzwungen.
 - Check-in-Seite und Server-RPC werden ausschliesslich in PR #84 bearbeitet. PR #83 verwendet sie nur nach dessen Integration.
 
 **Gate:** Beide PRs müssen zusammen gegen die Basis-Migration und die zusätzliche `20261031100000_scheduled_club_training_quick_request.sql` getestet werden, bevor sie produktiv verlinkt oder aktiviert werden. Die jetzige Umsetzung ist weiterhin Draft und hat weder Merge noch Deployment ausgelöst.
+
+## Vereinheitlichung (31.10.2026)
+
+`submit_scheduled_club_training_today` aus PR #84 entscheidet anhand der tatsächlichen offenen Gym-Einheit und der Vereins-Flags zwischen `checked_in` (Gym-Anwesenheit, Trainer bestätigt später) und `submitted` (ausstehender Trainingsantrag, Trainer prüft später). Auch bei Check-in-only bleibt im neuen Dashboard der **Ja**-Button sichtbar; ohne geöffnete Gym-Einheit erscheint `gym_not_open` statt einer falschen Erfolgsnachricht. Separate Punkte- oder EXP-Buchungen durch das Dashboard gibt es nicht. Mehrere passende Gym-Einheiten werden in der Check-in-Seite auswählbar angezeigt. Beide Draft-PRs sind weiterhin voneinander abhängig und dürfen erst nach gemeinsamem Test freigegeben werden.
