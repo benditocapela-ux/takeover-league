@@ -31,7 +31,16 @@ test('read-only: all training mutations remain in canonical studio',()=>{
   assert.match(js,/get_training_v2_config/);
   assert.match(js,/cfg\?\.enabled!==true/);
   assert.match(js,/club_checkin_only/);
-  assert.match(js,/trainingReward\(x\.reward\)/);
+  assert.match(js,/submit_scheduled_club_training_today/);
+  assert.match(js,/Warst du heute im Vereinstraining\?/);
+  assert.match(js,/JA, IM VEREIN/);
+  assert.match(js,/NEIN, EIGENES TRAINING/);
+  assert.match(js,/\?club=1#trainingFormCard/);
+  assert.match(js,/\?individual=1#trainingFormCard/);
+  assert.match(js,/already_pending/);
+  assert.match(js,/gym_registered/);
+  assert.match(js,/choose_slot/);
+  assert.match(js,/status==='submitted'/);
   assert.match(js,/trainingFallback\(host\)/);
   assert.match(js,/\.\/checkin\.html/);
   assert.doesNotMatch(js,/Object\.assign\(payload|training_location\s*:/,'Trainingseintrag und Tier bleiben in boxer.html');
