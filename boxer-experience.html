@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="./takeover-theme.css">
 <link rel="stylesheet" href="./takeover-redesign.css">
 <style>
-:root{--ex-bg:#070b16;--ex-bg2:#0d1829;--ex-gold:#f2c14e;--ex-text:#f4f6fb;--ex-muted:#9fb0c8;--ex-border:#2c3c56}
+:root{--ex-bg:#070b16;--ex-bg2:#0d1829;--ex-gold:#f2c14e;--ex-text:#f4f6fb;--ex-muted:#9fb0c8;--ex-border:#2c3c56;--ex-safe-top:env(safe-area-inset-top, 0px)}
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;background:#050914}
 body{padding:0!important;color:var(--ex-text);font:14px/1.5 'Inter',system-ui,sans-serif}
@@ -18,14 +18,14 @@ a{color:inherit}
 button{cursor:pointer}
 [hidden]{display:none!important}
 .ex-app{width:min(100%,1100px);height:100dvh;min-height:420px;margin:auto;display:flex;flex-direction:column;background:linear-gradient(180deg,#081222,#080d1b);overflow:hidden}
-.ex-head{height:63px;flex:none;z-index:2;padding:11px clamp(14px,3vw,30px);border-bottom:1px solid #273650;display:flex;align-items:center;justify-content:space-between;background:#091321}
+.ex-head{height:calc(63px + var(--ex-safe-top));flex:none;z-index:2;padding:calc(11px + var(--ex-safe-top)) clamp(14px,3vw,30px) 11px;border-bottom:1px solid #273650;display:flex;align-items:center;justify-content:space-between;background:#091321}
 .ex-brand{display:flex;align-items:center;gap:9px}
 .ex-logo{display:grid;place-items:center;width:36px;height:36px;border:2px solid var(--ex-gold);border-radius:11px;color:var(--ex-gold);font:900 24px/1 'Barlow Condensed',sans-serif}
 .ex-brand-name{display:flex;flex-direction:column;line-height:1}
 .ex-brand-name b{font:900 24px/1 'Barlow Condensed',sans-serif;letter-spacing:1px}
 .ex-brand-name span{font-size:9px;letter-spacing:3px;color:var(--ex-gold)}
 .ex-head-actions{display:flex;align-items:center;gap:9px}
-.ex-icon-button{display:grid;place-items:center;min-height:43px;min-width:43px;background:#13213a;border:1px solid #354562;border-radius:11px;color:var(--ex-text);font-size:22px}
+ .ex-icon-button{display:grid;place-items:center;min-height:44px;min-width:44px;background:#13213a;border:1px solid #354562;border-radius:11px;color:var(--ex-text);font-size:22px}
 .ex-status{color:#a9bbd1;font-size:10px;font-weight:800;letter-spacing:1px}
 .ex-main{min-height:0;flex:1;display:flex;flex-direction:column}
 .ex-figure{position:relative;flex:none;height:238px;overflow:hidden;background:radial-gradient(ellipse 255px 188px at 50% 36%,#3f557142,#0a1527 77%),linear-gradient(180deg,#102039,#0a1528);border-bottom:1px solid #af92494c}
@@ -94,7 +94,7 @@ button{cursor:pointer}
 .ex-menu button strong{font-size:19px;line-height:1}
 .ex-menu button[aria-current="page"]{background:#17283f;color:#ffd875;border-color:#ae89446e}
 .ex-drawer{position:fixed;z-index:10;inset:0;background:#000a;display:flex;align-items:stretch;justify-content:flex-end}
-.ex-drawer-panel{height:100%;width:min(340px,88vw);background:#0d1a2e;border-left:1px solid #5c5b53;overflow:auto;padding:20px}
+.ex-drawer-panel{height:100%;width:min(340px,88vw);background:#0d1a2e;border-left:1px solid #5c5b53;overflow:auto;padding:calc(20px + var(--ex-safe-top)) 20px calc(20px + env(safe-area-inset-bottom, 0px))}
 .ex-drawer-panel a{display:block;padding:13px 0;color:#f4f6fb;text-decoration:none;border-bottom:1px solid #273a54}
 .ex-drawer-panel button{float:right}
 .ex-gate{position:fixed;z-index:20;inset:0;display:grid;place-items:center;background:#070b16;padding:18px}
@@ -102,7 +102,7 @@ button{cursor:pointer}
 .ex-gate-card h1{font:900 30px 'Barlow Condensed',sans-serif;margin:9px 0}
 .ex-note{background:#0e1a2e;border:1px solid #30435c;color:#b5c5d8;padding:11px 12px;border-radius:10px;font-size:12px}
 @media(min-width:800px){.ex-figure{height:270px}.ex-holo{height:305px;bottom:-45px}.ex-card-stage{height:292px}.ex-card-stage .tlp-card{--fw:195px!important}}
-@media(max-width:540px){.ex-head{height:58px}.ex-status{display:none}.ex-figure{height:213px}.ex-figure-title,.ex-figure-stats{top:27px}.ex-figure-title h2{font-size:20px;max-width:92px}.ex-figure-title p,.ex-figure-stats p{font-size:10px;max-width:95px}.ex-level{font-size:21px}.ex-holo{height:239px;bottom:-37px;width:160px}.ex-card-stage{height:231px}.ex-card-stage .tlp-card{--fw:151px!important}.ex-card-stage .tlp-card .tlp-holo{max-height:112px}.ex-stats{gap:6px}.ex-stat{padding:10px}.ex-stat strong{font-size:23px}.ex-stat small{font-size:9px}.ex-view{padding-top:15px}.ex-podium{height:246px}.ex-podium-holo{max-height:126px}.ex-step.first .ex-podium-holo{max-height:145px}.ex-step-name{font-size:12px}.ex-menu button{font-size:9px}.ex-menu button strong{font-size:19px}}
+@media(max-width:540px){.ex-head{height:calc(58px + var(--ex-safe-top))}.ex-status{display:none}.ex-figure{height:213px}.ex-figure-title,.ex-figure-stats{top:27px}.ex-figure-title h2{font-size:20px;max-width:92px}.ex-figure-title p,.ex-figure-stats p{font-size:10px;max-width:95px}.ex-level{font-size:21px}.ex-holo{height:239px;bottom:-37px;width:160px}.ex-card-stage{height:231px}.ex-card-stage .tlp-card{--fw:151px!important}.ex-card-stage .tlp-card .tlp-holo{max-height:112px}.ex-stats{gap:6px}.ex-stat{padding:10px}.ex-stat strong{font-size:23px}.ex-stat small{font-size:9px}.ex-view{padding-top:15px}.ex-podium{height:246px}.ex-podium-holo{max-height:126px}.ex-step.first .ex-podium-holo{max-height:145px}.ex-step-name{font-size:12px}.ex-menu button{font-size:9px}.ex-menu button strong{font-size:19px}}
 @media(max-width:360px){.ex-figure{height:190px}.ex-card-stage{height:207px}.ex-card-stage .tlp-card{--fw:137px!important}.ex-holo{height:218px}.ex-view h1{font-size:27px}.ex-step-name{font-size:11px}.ex-podium{height:225px}}
 @media(max-height:620px){.ex-figure{height:172px}.ex-holo{height:205px}.ex-card-stage{height:185px}.ex-card-stage .tlp-card{--fw:125px!important}}
 /* Kopfzeile ist gleichzeitig das Bereichsband der App (Screenreader-Kontext); Band-Stile des Redesigns hier neutralisieren */
