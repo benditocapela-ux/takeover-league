@@ -1,0 +1,330 @@
+{
+  "version": 1,
+  "approved": false,
+  "enabled": false,
+  "artStatus": "Artistically pending",
+  "poses": [
+    "cool",
+    "guard"
+  ],
+  "tops": [
+    "tank"
+  ],
+  "colors": [
+    "schwarz"
+  ],
+  "allowedCoats": [
+    "none"
+  ],
+  "canvas": [
+    768,
+    1216
+  ],
+  "pieces": {
+    "top-guard-tank": {
+      "id": "top-guard-tank",
+      "slot": "top",
+      "src": "tops/assets/guard-tank.png",
+      "uv": [
+        0,
+        0,
+        325,
+        468
+      ],
+      "box": [
+        282.7083333333333,
+        245,
+        214.58333333333334,
+        309
+      ],
+      "sha256": "3fbeca7ae1bc8b22fd028172748a2d92ca89fa49db91b7f8459dff6bb9c02967",
+      "bytes": 187694,
+      "origin": "new-anime-draft",
+      "itemKey": "tank",
+      "color": "schwarz"
+    },
+    "top-cool-tank": {
+      "id": "top-cool-tank",
+      "slot": "top",
+      "src": "../../assets/boxer-artpacks/v1/modular-cool/top-tank.png",
+      "uv": [
+        280,
+        240,
+        215,
+        335
+      ],
+      "box": [
+        280,
+        240,
+        215,
+        335
+      ],
+      "sha256": "1d65b893f039bb90bac126d354260ab74402e8025e7894bbede0834555dd1afe",
+      "bytes": 113062,
+      "origin": "existing-cool",
+      "itemKey": "tank",
+      "color": "schwarz"
+    },
+    "top-cool-shirt": {
+      "id": "top-cool-shirt",
+      "slot": "top",
+      "src": "tops/assets/shirt.png",
+      "uv": [
+        0,
+        0,
+        512,
+        510
+      ],
+      "box": [
+        196.5,
+        231.64939024390245,
+        375,
+        373.53515625
+      ],
+      "bodyClipRect": [
+        0,
+        0,
+        768,
+        550
+      ],
+      "sha256": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6",
+      "bytes": 273752,
+      "supportStatus": "blocked-artwork-draft",
+      "origin": "new-shared-anime-draft",
+      "itemKey": "shirt",
+      "color": "schwarz"
+    },
+    "top-guard-shirt": {
+      "id": "top-guard-shirt",
+      "slot": "top",
+      "src": "tops/assets/shirt.png",
+      "uv": [
+        0,
+        0,
+        512,
+        510
+      ],
+      "box": [
+        196.5,
+        231.64939024390245,
+        375,
+        373.53515625
+      ],
+      "bodyClipRect": [
+        0,
+        0,
+        768,
+        550
+      ],
+      "sha256": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6",
+      "bytes": 273752,
+      "supportStatus": "blocked-artwork-draft",
+      "origin": "new-shared-anime-draft",
+      "itemKey": "shirt",
+      "color": "schwarz"
+    }
+  },
+  "bodyOcclusion": {
+    "guard": {
+      "type": "restoreBodyPolygons",
+      "polygons": [
+        [
+          [
+            282,
+            245
+          ],
+          [
+            314,
+            248
+          ],
+          [
+            316,
+            275
+          ],
+          [
+            309,
+            309
+          ],
+          [
+            301,
+            354
+          ],
+          [
+            299,
+            393
+          ],
+          [
+            290,
+            422
+          ],
+          [
+            275,
+            442
+          ],
+          [
+            250,
+            449
+          ],
+          [
+            230,
+            434
+          ],
+          [
+            216,
+            414
+          ],
+          [
+            219,
+            389
+          ],
+          [
+            236,
+            352
+          ],
+          [
+            253,
+            314
+          ],
+          [
+            270,
+            273
+          ]
+        ],
+        [
+          [
+            447,
+            245
+          ],
+          [
+            480,
+            248
+          ],
+          [
+            497,
+            275
+          ],
+          [
+            515,
+            314
+          ],
+          [
+            534,
+            352
+          ],
+          [
+            550,
+            389
+          ],
+          [
+            553,
+            414
+          ],
+          [
+            539,
+            434
+          ],
+          [
+            517,
+            449
+          ],
+          [
+            493,
+            442
+          ],
+          [
+            478,
+            422
+          ],
+          [
+            469,
+            393
+          ],
+          [
+            467,
+            354
+          ],
+          [
+            459,
+            309
+          ],
+          [
+            450,
+            275
+          ]
+        ]
+      ],
+      "source": "Registered current body layer, with the selected skin material already applied. Never restore raw source skin over a recolored body."
+    },
+    "cool": {
+      "type": "none",
+      "reason": "Original Cool tank alpha already contains the crossed-arm occlusion."
+    },
+    "coolShirt": {
+      "type": "restoreBodyMask",
+      "src": "tops/assets/shirt.png",
+      "uv": [
+        0,
+        512,
+        380,
+        134
+      ],
+      "box": [
+        195,
+        333,
+        380,
+        134
+      ],
+      "sourceTemplate": "assets/boxer-artpacks/v1/modular-cool/top-tank.png",
+      "sourceTemplateSha256": "1d65b893f039bb90bac126d354260ab74402e8025e7894bbede0834555dd1afe",
+      "rationale": "Small derived arm mask shares the shirt atlas, so no extra image request. Derived from original Cool tank alpha and bounded forearm polygon."
+    }
+  },
+  "sources": {
+    "guard": {
+      "file": "source-guard-tank.png",
+      "sha256": "7b2f25a0d640a3b6ba511e8c5b47d0a6f2e1e4c7f921f078c48ad0f6c9082a9c",
+      "dimensions": [
+        997,
+        1578
+      ],
+      "crop": [
+        366,
+        331,
+        325,
+        468
+      ]
+    },
+    "cool": {
+      "file": "assets/boxer-artpacks/v1/modular-cool/top-tank.png",
+      "sha256": "1d65b893f039bb90bac126d354260ab74402e8025e7894bbede0834555dd1afe"
+    },
+    "shirt": {
+      "file": "source-shirt-v3.png",
+      "sha256": "5fe998b9907ac680c9cac80fd31487648a2adfa0b1dd4ae6c1c6e0a46bed16d8",
+      "dimensions": [
+        996,
+        1579
+      ],
+      "crop": [
+        6,
+        286,
+        984,
+        981
+      ]
+    }
+  },
+  "openArtGates": [
+    "Guard shoulder/forearm occlusion contour requires personal art acceptance",
+    "New central cloth folds need material-style acceptance",
+    "Coat combinations and other garment families are outside this bounded tank package"
+  ],
+  "draftTops": [
+    "shirt"
+  ],
+  "blocked": {
+    "shirt": [
+      "Guard shoulder skin crescents remain visible",
+      "Cool experimental mask exposes chest/abdomen bands"
+    ]
+  }
+}

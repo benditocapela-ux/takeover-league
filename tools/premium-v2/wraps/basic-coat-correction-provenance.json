@@ -1,0 +1,8 @@
+{
+  "tool": "image_gen.imagegen",
+  "prompt": "Precise-object-edit. IMAGE1 is the EDIT TARGET transparent navy-silver long coat sprite. IMAGE2 shows exact VISUAL DEFECT on the equipped Cool boxer, IMAGE3 is original body anatomy reference only. Correct ONLY the sleeve outer silhouettes on Image1 so they completely cover the muscular upper arms and elbows shown protruding as skin strips in Image2. The largest defect is viewer-LEFT: add matching navy fabric outward along entire shoulder cap, upper-arm side and elbow side. At Image1 1024px canvas, extend left upper-arm contour about65pixels LEFT from current contour, from y280 through y580, smoothly joining existing shoulder and elbow. Also extend bottom-left elbow contour downward about15pixels; viewer-RIGHT elbow bottom needs about20pixels additional fabric downward around y610..650. Keep BOTH sleeve cuffs, hands gaps, central chest opening, collar, lapels, waist, long tails, pockets, silver trim, lower hem EXACTLY where they are. Do not move or scale whole coat. Keep existing sleeve stripe intact, adding plain matching navy material outside it. Preserve pose and folds; outer sleeve now naturally accommodates larger muscular arms. NO body, skin, hands, gloves, face, background. True transparent isolated equipment sprite only. Same canvas and existing locations, only specified outer-sleeve contour expands. Professional premium anime fabric shading. No gold, no text.",
+  "source": "production-art/sources/coat-basic-cool.png",
+  "before": "wraps/evidence/coat-basic-cool-before-source.png",
+  "approved": false,
+  "enabled": false
+}

@@ -2,20 +2,23 @@
   "summary": {
     "catalogueEntries": 58,
     "matrixRows": 1800,
-    "catalogueItemsWithArtwork": 21,
-    "catalogueItemsTechnicallyValidated": 20,
-    "artworkVariantKeys": 121,
-    "artworkPoseCells": 241,
-    "technicallyValidatedVariantKeys": 120,
-    "technicallyValidatedPoseCells": 240,
-    "newlySupportedVariantKeys": 110,
-    "newlySupportedPoseCells": 220,
+    "catalogueItemsWithArtwork": 41,
+    "catalogueItemsTechnicallyValidated": 40,
+    "artworkVariantKeys": 205,
+    "artworkPoseCells": 410,
+    "technicallyValidatedVariantKeys": 204,
+    "technicallyValidatedPoseCells": 407,
+    "canvasVariantKeys": 12,
+    "rasterVariantKeys": 192,
+    "newlySupportedVariantKeys": 194,
+    "newlySupportedPoseCells": 386,
+    "brandNewVariantKeys": 193,
     "approvedItems": 0,
     "hashAlgorithm": "sha256-canonical-text-lf-v1",
     "evidenceValid": true,
     "evidenceReport": "docs/premium-v2/evidence/production-tests.json",
     "countsIncludeNonShopBodyEyesWraps": true,
-    "note": "Variant keys count slot/value/colour/state once, independently of pose; pose cells count each supported pose. Neither count is a Cartesian full-outfit total."
+    "note": "Variant keys count slot/value/colour/state once; pose cells count each pose. newlySupportedVariantKeys includes keys gaining any previously SVG-only pose; brandNewVariantKeys excludes keys already present in any historical premium pose. Neither count is a Cartesian full-outfit total."
   },
   "entries": [
     {
@@ -254,19 +257,27 @@
       "value": "wellig",
       "totalVariantKeys": 8,
       "totalPoseCells": 48,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "No verified premium artwork in this production package."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/wellig.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
     },
     {
       "key": "hair_locken",
@@ -275,19 +286,27 @@
       "value": "locken",
       "totalVariantKeys": 8,
       "totalPoseCells": 48,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "No verified premium artwork in this production package."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/locken.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
     },
     {
       "key": "hair_afro",
@@ -325,19 +344,27 @@
       "value": "afro_puffs",
       "totalVariantKeys": 8,
       "totalPoseCells": 48,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "No verified premium artwork in this production package."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/afro_puffs.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
     },
     {
       "key": "hair_locs",
@@ -388,19 +415,27 @@
       "value": "cornrows",
       "totalVariantKeys": 8,
       "totalPoseCells": 48,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "No verified premium artwork in this production package."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/cornrows.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
     },
     {
       "key": "hair_twists",
@@ -409,19 +444,27 @@
       "value": "twists",
       "totalVariantKeys": 8,
       "totalPoseCells": 48,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "No verified premium artwork in this production package."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/twists.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
     },
     {
       "key": "hair_high_top",
@@ -430,19 +473,27 @@
       "value": "high_top",
       "totalVariantKeys": 8,
       "totalPoseCells": 48,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "No verified premium artwork in this production package."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/high_top.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
     },
     {
       "key": "head_cap",
@@ -451,11 +502,11 @@
       "value": "cap",
       "totalVariantKeys": 8,
       "totalPoseCells": 48,
-      "artworkVariantKeys": 1,
-      "artworkPoseCells": 2,
-      "technicallyValidatedVariantKeys": 1,
-      "technicallyValidatedPoseCells": 2,
-      "newTechnicallySupportedPoseCells": 2,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
       "availability": "Artwork draft",
       "technicalStatus": "Technically validated",
       "artisticStatus": "Artistically pending",
@@ -480,11 +531,11 @@
       "value": "band",
       "totalVariantKeys": 8,
       "totalPoseCells": 48,
-      "artworkVariantKeys": 1,
-      "artworkPoseCells": 2,
-      "technicallyValidatedVariantKeys": 1,
-      "technicallyValidatedPoseCells": 2,
-      "newTechnicallySupportedPoseCells": 2,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
       "availability": "Artwork draft",
       "technicalStatus": "Technically validated",
       "artisticStatus": "Artistically pending",
@@ -530,8 +581,38 @@
       "value": "tank",
       "totalVariantKeys": 8,
       "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 15,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/guard-tank.png",
+        "assets/boxer-artpacks/v1/modular-cool/top-tank.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "top_shirt",
+      "name": "T-Shirt",
+      "slot": "top",
+      "value": "shirt",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
       "artworkVariantKeys": 1,
-      "artworkPoseCells": 1,
+      "artworkPoseCells": 2,
       "technicallyValidatedVariantKeys": 0,
       "technicallyValidatedPoseCells": 0,
       "newTechnicallySupportedPoseCells": 0,
@@ -541,33 +622,13 @@
       "approved": false,
       "supportedPoses": [],
       "artworkPoses": [
+        "guard",
         "cool"
       ],
       "sourceFiles": [
-        "tools/premium-v2/streaming-assets/top-tank.png"
+        "tools/premium-v2/tops/assets/shirt.png"
       ],
       "note": "Files exist; no current matching dual-browser production evidence for this item."
-    },
-    {
-      "key": "top_shirt",
-      "name": "T-Shirt",
-      "slot": "top",
-      "value": "shirt",
-      "totalVariantKeys": 8,
-      "totalPoseCells": 48,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "No verified premium artwork in this production package."
     },
     {
       "key": "top_hoodie",
@@ -947,19 +1008,28 @@
       "value": "basic",
       "totalVariantKeys": 1,
       "totalPoseCells": 6,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 1,
+      "newTechnicallySupportedPoseCells": 1,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "No verified premium artwork in this production package."
+      "supportedPoses": [
+        "guard"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/production-art/coat-basic-back.png",
+        "tools/premium-v2/production-art/coat-basic-guard.png",
+        "tools/premium-v2/production-art/coat-basic-cool.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
     },
     {
       "key": "coat_samurai",
@@ -1041,19 +1111,27 @@
       "value": "flamme",
       "totalVariantKeys": 1,
       "totalPoseCells": 6,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
     },
     {
       "key": "aura_sakura",
@@ -1062,19 +1140,27 @@
       "value": "sakura",
       "totalVariantKeys": 1,
       "totalPoseCells": 6,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
     },
     {
       "key": "aura_blitz",
@@ -1083,19 +1169,27 @@
       "value": "blitz",
       "totalVariantKeys": 1,
       "totalPoseCells": 6,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
     },
     {
       "key": "aura_schatten",
@@ -1104,19 +1198,27 @@
       "value": "schatten",
       "totalVariantKeys": 1,
       "totalPoseCells": 6,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
     },
     {
       "key": "eyefx_kristall",
@@ -1125,19 +1227,27 @@
       "value": "kristall",
       "totalVariantKeys": 1,
       "totalPoseCells": 6,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
     },
     {
       "key": "eyefx_glut",
@@ -1146,19 +1256,27 @@
       "value": "glut",
       "totalVariantKeys": 1,
       "totalPoseCells": 6,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
     },
     {
       "key": "eyefx_stern",
@@ -1167,19 +1285,27 @@
       "value": "stern",
       "totalVariantKeys": 1,
       "totalPoseCells": 6,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
     },
     {
       "key": "eyefx_mond",
@@ -1188,19 +1314,27 @@
       "value": "mond",
       "totalVariantKeys": 1,
       "totalPoseCells": 6,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
     },
     {
       "key": "scene_holo",
@@ -1209,19 +1343,27 @@
       "value": "holo",
       "totalVariantKeys": 1,
       "totalPoseCells": 6,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
     },
     {
       "key": "scene_dojo",
@@ -1230,19 +1372,27 @@
       "value": "dojo",
       "totalVariantKeys": 1,
       "totalPoseCells": 6,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
     },
     {
       "key": "scene_neon",
@@ -1251,19 +1401,27 @@
       "value": "neon",
       "totalVariantKeys": 1,
       "totalPoseCells": 6,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
     },
     {
       "key": "scene_arena",
@@ -1272,19 +1430,27 @@
       "value": "arena",
       "totalVariantKeys": 1,
       "totalPoseCells": 6,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
     },
     {
       "key": "pose_guard",
@@ -1305,7 +1471,7 @@
       "supportedPoses": [],
       "artworkPoses": [],
       "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "note": "Pose catalogue metadata; not an independent equipment layer or a new full-body image for every matrix cell."
     },
     {
       "key": "pose_jab",
@@ -1326,7 +1492,7 @@
       "supportedPoses": [],
       "artworkPoses": [],
       "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "note": "Pose catalogue metadata; not an independent equipment layer or a new full-body image for every matrix cell."
     },
     {
       "key": "pose_sieg",
@@ -1347,7 +1513,7 @@
       "supportedPoses": [],
       "artworkPoses": [],
       "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "note": "Pose catalogue metadata; not an independent equipment layer or a new full-body image for every matrix cell."
     },
     {
       "key": "pose_cool",
@@ -1368,7 +1534,7 @@
       "supportedPoses": [],
       "artworkPoses": [],
       "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "note": "Pose catalogue metadata; not an independent equipment layer or a new full-body image for every matrix cell."
     },
     {
       "key": "pose_flex",
@@ -1389,7 +1555,7 @@
       "supportedPoses": [],
       "artworkPoses": [],
       "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "note": "Pose catalogue metadata; not an independent equipment layer or a new full-body image for every matrix cell."
     },
     {
       "key": "pose_ansage",
@@ -1410,7 +1576,7 @@
       "supportedPoses": [],
       "artworkPoses": [],
       "sourceFiles": [],
-      "note": "Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata."
+      "note": "Pose catalogue metadata; not an independent equipment layer or a new full-body image for every matrix cell."
     }
   ]
 }

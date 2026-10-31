@@ -47,3 +47,10 @@ Der interne LRU-Cache ist auf **24 Oberflächen und 8 MiB RGBA** begrenzt. `stat
 Der Builder erzeugt Masken, Manifest sowie Kontaktbögen für Haut, Augen, Haare und Ausrüstung. Die Browserprüfung läuft in Chromium und WebKit: alle Materialwerte pro vorhandenem Teil, unverändertes Alpha, geschützte Nichtmaterialpixel, identische Basisvariante, unterschiedliche echte Farbvarianten, Stirnschutz, Ablehnung unbekannter Werte, Cachegrenzen und tatsächliche zusammengesetzte Charakterbilder.
 
 Berichte: `material-assets/{chromium,webkit}-material-validation.json`. Reale Browserkontaktbögen: `material-assets/{chromium,webkit}-material-characters.png`. Diese belegen technische Funktion; Hautmasken an feinen Gesichts-/Haargrenzen, Weißmaterial-Kontrast und exakte Premium-Farbentscheidungen bleiben künstlerisch abzunehmen. Keine Behauptung einer Prüfung auf physischen Mobilgeräten.
+
+## Headwear, tank and wrap material extension
+
+The source-backed cap and band masters support all eight existing headc values. The Cool and Guard tank masters support all eight topc values. Gold trim is protected pixel-for-pixel. Shirt sources remain blocked; resolver restrictions on coats and hair still apply. Runtime gates are headMaterials and topMaterials.
+
+All four wrap components support tone 0–7 with the existing warm-skin mask and calibrated skin ramp. Neutral white cotton is excluded from recoloring. Runtime gate: wrapSkin. No additional PNG color variants or network requests. Tests include exact baseline/alpha/nonmaterial protection for 29 real source components, plus production-rendered Cool/Guard cap/band and tank contacts in all eight colors. Artistic approval remains pending.
+

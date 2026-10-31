@@ -14,7 +14,10 @@ function bounds(im,x0=0,x1=im.width){const c=createCanvas(im.width,im.height),g=
  await add('hair-buzz','hair-buzz','hair',[326,63,117,79]);
  await add('bottom-jogger','bottom-jogger','bottom',[215,545,350,505]);
  await add('bottom-kurz','bottom-kurz','bottom',[230,545,320,220]);
- await add('bottom-track','bottom-track','bottom',[215,545,350,505]);
+ await add('bottom-track','bottom-track','bottom',[200,545,380,505]);
+ await add('coat-basic-guard','coat-basic-guard','coatFront',[155,180,475,750]);
+ await add('coat-basic-cool','coat-basic-cool','coatFront',[155,180,475,750]);
+ await add('coat-basic-back','coat-basic-back','coatBack',[176,550,440,350]);
  await add('feet-sneaker','feet-sneaker','feet',[155,1040,475,135]);
  fs.writeFileSync(dir+'/manifest.json',JSON.stringify(out,null,2)+'\n');console.log(JSON.stringify({pieces:Object.keys(out.pieces),bytes:Object.values(out.pieces).reduce((s,p)=>s+p.bytes,0)}));
 })();

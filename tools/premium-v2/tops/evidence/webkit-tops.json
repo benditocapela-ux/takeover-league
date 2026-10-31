@@ -1,0 +1,241 @@
+{
+  "invalid": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "checks": [
+    {
+      "pose": "cool",
+      "top": "tank",
+      "arms": [
+        {
+          "before": [
+            228,
+            172,
+            133,
+            253
+          ],
+          "after": [
+            228,
+            172,
+            133,
+            253
+          ]
+        },
+        {
+          "before": [
+            200,
+            126,
+            82,
+            253
+          ],
+          "after": [
+            200,
+            126,
+            82,
+            253
+          ]
+        }
+      ],
+      "abdomen": {
+        "before": [
+          192,
+          114,
+          72,
+          253
+        ],
+        "after": [
+          33,
+          32,
+          38,
+          255
+        ]
+      }
+    },
+    {
+      "pose": "guard",
+      "top": "tank",
+      "arms": [
+        {
+          "before": [
+            172,
+            91,
+            54,
+            253
+          ],
+          "after": [
+            172,
+            91,
+            54,
+            253
+          ]
+        },
+        {
+          "before": [
+            210,
+            131,
+            82,
+            253
+          ],
+          "after": [
+            210,
+            131,
+            82,
+            253
+          ]
+        }
+      ],
+      "abdomen": {
+        "before": [
+          204,
+          126,
+          77,
+          253
+        ],
+        "after": [
+          44,
+          43,
+          48,
+          255
+        ]
+      }
+    },
+    {
+      "pose": "cool",
+      "top": "shirt",
+      "arms": [
+        {
+          "before": [
+            228,
+            172,
+            133,
+            253
+          ],
+          "after": [
+            228,
+            172,
+            133,
+            253
+          ]
+        },
+        {
+          "before": [
+            200,
+            126,
+            82,
+            253
+          ],
+          "after": [
+            200,
+            126,
+            82,
+            253
+          ]
+        }
+      ],
+      "abdomen": {
+        "before": [
+          192,
+          114,
+          72,
+          253
+        ],
+        "after": [
+          40,
+          38,
+          38,
+          255
+        ]
+      }
+    },
+    {
+      "pose": "guard",
+      "top": "shirt",
+      "arms": [
+        {
+          "before": [
+            172,
+            91,
+            54,
+            253
+          ],
+          "after": [
+            172,
+            91,
+            54,
+            253
+          ]
+        },
+        {
+          "before": [
+            210,
+            131,
+            82,
+            253
+          ],
+          "after": [
+            210,
+            131,
+            82,
+            253
+          ]
+        }
+      ],
+      "abdomen": {
+        "before": [
+          204,
+          126,
+          77,
+          253
+        ],
+        "after": [
+          40,
+          38,
+          38,
+          255
+        ]
+      }
+    }
+  ],
+  "currentMaterial": [
+    255,
+    0,
+    255,
+    255
+  ],
+  "parity": [
+    {
+      "pose": "cool",
+      "top": "tank",
+      "max": 0
+    },
+    {
+      "pose": "guard",
+      "top": "tank",
+      "max": 0
+    },
+    {
+      "pose": "cool",
+      "top": "shirt",
+      "max": 0
+    },
+    {
+      "pose": "guard",
+      "top": "shirt",
+      "max": 0
+    }
+  ],
+  "flags": [
+    false,
+    false,
+    false,
+    false
+  ],
+  "imageRequests": 3,
+  "assetFailureFallback": true,
+  "artifacts": "Actual browser render, not artistic approval"
+}

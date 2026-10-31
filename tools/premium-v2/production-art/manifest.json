@@ -257,23 +257,113 @@
       "uv": [
         0,
         0,
-        350,
+        380,
         505
       ],
       "box": [
-        215,
+        200,
         545,
-        350,
+        380,
         505
       ],
-      "bytes": 218671,
-      "sha256": "c51ea48910d9f4b0bd782f992a70b3709017891a929d574a6d66b06f56f87240",
+      "bytes": 235208,
+      "sha256": "12c4c58ce40c0b2ae600fa821150110bd6c8c1bb1142a228a1433ed8d6546f84",
       "source": "bottom-track",
       "sourceCrop": [
         186,
         385,
         643,
         1115
+      ],
+      "status": "Artwork draft",
+      "approved": false,
+      "enabled": false
+    },
+    "coat-basic-guard": {
+      "id": "coat-basic-guard",
+      "slot": "coatFront",
+      "origin": "production-art-draft",
+      "src": "production-art/coat-basic-guard.png",
+      "uv": [
+        0,
+        0,
+        475,
+        750
+      ],
+      "box": [
+        155,
+        180,
+        475,
+        750
+      ],
+      "bytes": 355830,
+      "sha256": "ef5304546ca09472c1e06d2c559f1be6b1bfc588b62b6f1ae3679ec891f37bac",
+      "source": "coat-basic-guard",
+      "sourceCrop": [
+        133,
+        108,
+        732,
+        1147
+      ],
+      "status": "Artwork draft",
+      "approved": false,
+      "enabled": false
+    },
+    "coat-basic-cool": {
+      "id": "coat-basic-cool",
+      "slot": "coatFront",
+      "origin": "production-art-draft",
+      "src": "production-art/coat-basic-cool.png",
+      "uv": [
+        0,
+        0,
+        475,
+        750
+      ],
+      "box": [
+        155,
+        180,
+        475,
+        750
+      ],
+      "bytes": 335349,
+      "sha256": "9b2edcfc890470991be6801eb67de37001e23b15c03a76b16529ad9cf7e57130",
+      "source": "coat-basic-cool",
+      "sourceCrop": [
+        56,
+        128,
+        894,
+        1332
+      ],
+      "status": "Artwork draft",
+      "approved": false,
+      "enabled": false
+    },
+    "coat-basic-back": {
+      "id": "coat-basic-back",
+      "slot": "coatBack",
+      "origin": "production-art-draft",
+      "src": "production-art/coat-basic-back.png",
+      "uv": [
+        0,
+        0,
+        440,
+        350
+      ],
+      "box": [
+        176,
+        550,
+        440,
+        350
+      ],
+      "bytes": 202193,
+      "sha256": "14fa771446941360e258b7a6ebb60d995bec959bc0332d9534f517753f770ff7",
+      "source": "coat-basic-back",
+      "sourceCrop": [
+        72,
+        494,
+        863,
+        667
       ],
       "status": "Artwork draft",
       "approved": false,
@@ -358,6 +448,24 @@
       "sha256": "009000113738ede945176db3be494fa0d8d565600b1a5fe1fefc48c886d592bb",
       "width": 997,
       "height": 1577
+    },
+    "coat-basic-guard": {
+      "file": "production-art/sources/coat-basic-guard.png",
+      "sha256": "3f62cac70f6ad327e77bcb4c3541907150d08e342c83747722af60d4687b1cbe",
+      "width": 996,
+      "height": 1580
+    },
+    "coat-basic-cool": {
+      "file": "production-art/sources/coat-basic-cool.png",
+      "sha256": "6d19ca56d373f6ae49e426fa08b4f24c231b0d6ca3b5a73f2ed082d511dc84b1",
+      "width": 997,
+      "height": 1578
+    },
+    "coat-basic-back": {
+      "file": "production-art/sources/coat-basic-back.png",
+      "sha256": "b6233674cb5b9c6baf764b087c4346ed8ba169955bad36cb984ec9a222b41209",
+      "width": 997,
+      "height": 1578
     },
     "feet-sneaker": {
       "file": "production-art/sources/feet-sneaker.png",

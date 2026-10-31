@@ -1,0 +1,291 @@
+{
+  "version": 1,
+  "approved": false,
+  "enabled": false,
+  "artisticStatus": "Artistically pending",
+  "canvas": [
+    768,
+    1216
+  ],
+  "forms": [
+    "wellig",
+    "locken",
+    "high_top",
+    "cornrows",
+    "twists",
+    "afro_puffs"
+  ],
+  "poses": [
+    "cool",
+    "guard"
+  ],
+  "materialKeys": [
+    "schwarz",
+    "braun",
+    "dunkelbraun",
+    "blond",
+    "rot",
+    "silber",
+    "blau",
+    "pink"
+  ],
+  "pieces": {
+    "hair-wellig": {
+      "id": "hair-wellig",
+      "slot": "hair",
+      "shapeId": "wellig",
+      "src": "hair-expansion/assets/wellig.png",
+      "uv": [
+        0,
+        0,
+        146,
+        109
+      ],
+      "box": [
+        311,
+        50,
+        146,
+        109
+      ],
+      "bytes": 26102,
+      "sha256": "b14a02f9db1d2406ce9c559e0945640a7095d4bab02166e887a06aea8d8785e2",
+      "approved": false,
+      "enabled": false,
+      "status": "Artwork draft",
+      "source": "wellig",
+      "sourceCrop": [
+        79,
+        30,
+        1319,
+        986
+      ],
+      "sourceHairline": 553,
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "materialKind": "hair"
+    },
+    "hair-locken": {
+      "id": "hair-locken",
+      "slot": "hair",
+      "shapeId": "locken",
+      "src": "hair-expansion/assets/locken.png",
+      "uv": [
+        0,
+        0,
+        150,
+        115
+      ],
+      "box": [
+        309,
+        45,
+        150,
+        115
+      ],
+      "bytes": 28377,
+      "sha256": "7635cb0c79c43697a366065ac416015f3905f67c61234112fdc9c5e32eb10f29",
+      "approved": false,
+      "enabled": false,
+      "status": "Artwork draft",
+      "source": "locken",
+      "sourceCrop": [
+        76,
+        52,
+        1292,
+        990
+      ],
+      "sourceHairline": 573,
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "materialKind": "hair"
+    },
+    "hair-high_top": {
+      "id": "hair-high_top",
+      "slot": "hair",
+      "shapeId": "high_top",
+      "src": "hair-expansion/assets/high_top.png",
+      "uv": [
+        0,
+        0,
+        142,
+        107
+      ],
+      "box": [
+        313,
+        50,
+        142,
+        107
+      ],
+      "bytes": 27914,
+      "sha256": "0f3ee89328baae3858dcb6fb17b7380d80015a96bd28b43749a358bdd46e8b3d",
+      "approved": false,
+      "enabled": false,
+      "status": "Artwork draft",
+      "source": "high_top",
+      "sourceCrop": [
+        132,
+        82,
+        1171,
+        885
+      ],
+      "sourceHairline": 504,
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "materialKind": "hair"
+    },
+    "hair-cornrows": {
+      "id": "hair-cornrows",
+      "slot": "hair",
+      "shapeId": "cornrows",
+      "src": "hair-expansion/assets/cornrows.png",
+      "uv": [
+        0,
+        0,
+        124,
+        95
+      ],
+      "box": [
+        322,
+        57,
+        124,
+        95
+      ],
+      "bytes": 19391,
+      "sha256": "8b6456fff707d4f895427ce532c6f6ff04e5556de8b0610863a37b71cb4b006b",
+      "approved": false,
+      "enabled": false,
+      "status": "Artwork draft",
+      "source": "cornrows",
+      "sourceCrop": [
+        95,
+        81,
+        1244,
+        952
+      ],
+      "sourceHairline": 551,
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "materialKind": "hair"
+    },
+    "hair-twists": {
+      "id": "hair-twists",
+      "slot": "hair",
+      "shapeId": "twists",
+      "src": "hair-expansion/assets/twists.png",
+      "uv": [
+        0,
+        0,
+        150,
+        109
+      ],
+      "box": [
+        309,
+        48,
+        150,
+        109
+      ],
+      "bytes": 29636,
+      "sha256": "10ce2f25fcb1abb0594de499b8ec9fbfdffa463503c8d406558acf885c198243",
+      "approved": false,
+      "enabled": false,
+      "status": "Artwork draft",
+      "source": "twists",
+      "sourceCrop": [
+        79,
+        56,
+        1274,
+        926
+      ],
+      "sourceHairline": 546,
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "materialKind": "hair"
+    },
+    "hair-afro_puffs": {
+      "id": "hair-afro_puffs",
+      "slot": "hair",
+      "shapeId": "afro_puffs",
+      "src": "hair-expansion/assets/afro_puffs.png",
+      "uv": [
+        0,
+        0,
+        190,
+        101
+      ],
+      "box": [
+        289,
+        54,
+        190,
+        101
+      ],
+      "bytes": 37713,
+      "sha256": "a6cfbea088f46c47cd08673f86731d2272019b19c1fb144be30996e9c11d6599",
+      "approved": false,
+      "enabled": false,
+      "status": "Artwork draft",
+      "source": "afro_puffs",
+      "sourceCrop": [
+        28,
+        90,
+        1487,
+        793
+      ],
+      "sourceHairline": 463,
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "materialKind": "hair"
+    }
+  },
+  "sources": {
+    "wellig": {
+      "file": "hair-expansion/sources/wellig.png",
+      "sha256": "d178f51377691b4eebeaecbf5c8f9b154ac8c12a4ae2ac10eebcdc22be4599df",
+      "width": 1433,
+      "height": 1098
+    },
+    "locken": {
+      "file": "hair-expansion/sources/locken.png",
+      "sha256": "2d9fdb460ceebe8c181efc70d718a5d2d7ff75954e7f6c8e64456ba38c24a03f",
+      "width": 1433,
+      "height": 1098
+    },
+    "high_top": {
+      "file": "hair-expansion/sources/high_top.png",
+      "sha256": "7d62314e480ec9f32d7d3d6b250c00c5a01fadac65716f94c812b07ed239748b",
+      "width": 1433,
+      "height": 1098
+    },
+    "cornrows": {
+      "file": "hair-expansion/sources/cornrows.png",
+      "sha256": "096e615dd2aac96749ff560f00d5a3ee2183cbc9e99ea261e941a06122cd22eb",
+      "width": 1433,
+      "height": 1098
+    },
+    "twists": {
+      "file": "hair-expansion/sources/twists.png",
+      "sha256": "3eb1c54b2ed249780dafa63a34d5c6ab582d075de2561b93ba54b1096eb16e51",
+      "width": 1433,
+      "height": 1098
+    },
+    "afro_puffs": {
+      "file": "hair-expansion/sources/afro_puffs-v2.png",
+      "sha256": "6b9f8b6b5013106f03181db50556206d17981eb1f77486a5c98886b764e7aabf",
+      "width": 1536,
+      "height": 1024
+    }
+  },
+  "generationMode": "built-in imagegen",
+  "prompts": "hair-expansion/prompts.json",
+  "registrationMethod": "Uniform source-alpha crop scaling; common head centre x384 and measured central hairline y111/112. No body pixels are copied into the equipment."
+}

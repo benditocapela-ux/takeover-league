@@ -572,6 +572,230 @@
     },
     {
       "slot": "hair",
+      "value": "wellig",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "wellig",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "locken",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
       "value": "afro",
       "color": "schwarz",
       "state": "default",
@@ -683,6 +907,454 @@
       "pose": "cool"
     },
     {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "afro_puffs",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "cornrows",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "twists",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "braun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "braun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "dunkelbraun",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "blond",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "blond",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "silber",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "silber",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "pink",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hair",
+      "value": "high_top",
+      "color": "pink",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
       "slot": "head",
       "value": "cap",
       "color": "schwarz",
@@ -698,6 +1370,104 @@
     },
     {
       "slot": "head",
+      "value": "cap",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "weiss",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "grau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "gruen",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "lila",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "cap",
+      "color": "gold",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
       "value": "band",
       "color": "schwarz",
       "state": "default",
@@ -707,6 +1477,216 @@
       "slot": "head",
       "value": "band",
       "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "weiss",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "grau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "gruen",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "lila",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "head",
+      "value": "band",
+      "color": "gold",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "weiss",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "grau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "rot",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "blau",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "gruen",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "lila",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "gold",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "tank",
+      "color": "gold",
       "state": "default",
       "pose": "cool"
     },
@@ -1454,6 +2434,13 @@
     },
     {
       "slot": "coat",
+      "value": "basic",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "coat",
       "value": "samurai",
       "color": "fixed",
       "state": "default",
@@ -1467,6 +2454,174 @@
       "pose": "cool"
     },
     {
+      "slot": "aura",
+      "value": "flamme",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "aura",
+      "value": "flamme",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "aura",
+      "value": "sakura",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "aura",
+      "value": "sakura",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "aura",
+      "value": "blitz",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "aura",
+      "value": "blitz",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "aura",
+      "value": "schatten",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "aura",
+      "value": "schatten",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyefx",
+      "value": "kristall",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyefx",
+      "value": "kristall",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyefx",
+      "value": "glut",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyefx",
+      "value": "glut",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyefx",
+      "value": "stern",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyefx",
+      "value": "stern",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "eyefx",
+      "value": "mond",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "eyefx",
+      "value": "mond",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "scene",
+      "value": "holo",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "scene",
+      "value": "holo",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "scene",
+      "value": "dojo",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "scene",
+      "value": "dojo",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "scene",
+      "value": "neon",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "scene",
+      "value": "neon",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "scene",
+      "value": "arena",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "scene",
+      "value": "arena",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
       "slot": "body",
       "value": "0",
       "color": "fixed",
@@ -1686,26 +2841,46 @@
     {
       "slot": "eyes",
       "value": "violett",
+      "color": "fixed",
+      "state": "default",
+      "pose": "cool"
+    },
+    {
+      "slot": "hands",
+      "value": "wraps",
+      "color": "fixed",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "hands",
+      "value": "wraps",
       "color": "fixed",
       "state": "default",
       "pose": "cool"
     }
   ],
   "sourceHashes": {
-    "tests/premium-production-browser.cjs": "7c6e68500002edaf34634a594e65a5112956c9e6ed22a73e07f2ae7bc564dee3",
+    "tests/premium-production-browser.cjs": "809821f8f85ff39494ac10f4843df4a8b577a14e4a4f452e5aa31475ef04638b",
     "takeover-holo.js": "02fc4f0c408f526f469a7abbaeb74cd2ce603737a5d88dc9d7125c10b0871b54",
     "takeover-mein-boxer-items.js": "81bcc0461bfbd586d39da2421fe8b37c4e644888ba81c6c86909d3a48dbd1b7e",
-    "tools/premium-v2/production.html": "76b62db8b1cec74bcdea77bab8cd5d363692cab9247dbc5ce4cf26a2e2c1e65c",
-    "tools/premium-v2/production.js": "318bd65df0fef61126265c106b0a3ae2b3340587e6d74ada5db759590bbb6ec3",
-    "tools/premium-v2/materials.js": "7277088f5914f7a8c31ad0e176193ce2b1bb827f7ec5e63c4b7f4303dfa106ea",
-    "tools/premium-v2/materials.json": "bebc12a4093a0e4929515c171ecf10539765de736aebed97abaa068a75537ea3",
+    "tools/premium-v2/production.html": "d93fe1b78ed0473fb0eaa1fbb2d673604aaf64b58d6a0a51783ba8e0ea1eeac7",
+    "tools/premium-v2/production.js": "8bad3f62cbe03db50f48e00afb98dc6fd0ea0105e4a370bb45e40d39959452ce",
+    "tools/premium-v2/materials.js": "cb345fadb5009c7d2ad450364cda74d964534004d4adf1588e75f4f195e2f381",
+    "tools/premium-v2/materials.json": "82c3a3f0be65e44834ca64a4dd90c74798f8a063699aa7fe7bf73751a2ef7495",
     "tools/premium-v2/streaming.js": "311117f3651f33931cc0c7f499b13c9888d7b64cbbee2a5e9d81e12534503828",
     "tools/premium-v2/streaming-assets.json": "7ca4e00dbf0575da6f5320159e35805e39e7bcf53624b3e3468b2aeef6df4a2e",
     "tools/premium-v2/pilot.js": "fac899d0d0bdf5219c0dd6783a0576dd6e4b76d5393c10480abff98d2af50528",
     "tools/premium-v2/pilot-assets.json": "8db99b0cafc2e7a77551afdb5de67aaedd5f406acbedd24dfa44e165289f53a0",
-    "tools/premium-v2/production-art/manifest.json": "35610da0d2b905e449c7ecf6f7977205b7a037473676d2a4fdf80e231aa7baa2",
+    "tools/premium-v2/production-art/manifest.json": "435fac3a27bfbdaef0f2b8939be9e0932c1da912fae3fa02a675a932325ddb10",
     "tools/premium-v2/headwear/headwear.js": "90bdeebf76bdab15ed794868c1418122186d62ce8a2899ca847b5b564132c10a",
     "tools/premium-v2/headwear/manifest.json": "b10d087bc79ab93203b659037304f7aeacc9440df1059c16947d505e04a4875e",
+    "tools/premium-v2/hair-expansion/manifest.json": "5146c61488dcff8c671ef867624a7d68a025239bded2ddafe6b69c42646c114a",
+    "tools/premium-v2/tops/tops.js": "18c0c41e0c853e28e4a12343f12a1480908d0babcc60865aa3a957b4af876021",
+    "tools/premium-v2/tops/manifest.json": "88dbcc1b85b81b2e0ba7da13a64364ac3b167b0e349ac2e24048472ee6f75cef",
+    "tools/premium-v2/wraps/manifest.json": "4a28782cd26f194712e63856fe6323cb784b2ff2598d7ebd89067fe681acd8df",
+    "tools/premium-v2/effects.js": "f4b5e6fac84186ed37fb78a937f9f7ca05870a9a5d491e0effb4dec738467e22",
+    "tools/premium-v2/effects.json": "3f5cb452df15ca12f45f54a978f9a6c9532ff4d1a69f31965b6b053ccf8aafe2",
     "assets/boxer-artpacks/v1/modular-cool/coatback.png": "ad891a408f555ce62ce7114b9e9a8267e9884f54350f2d08643fb8079d55833e",
     "tools/premium-v2/assets/v1-body.png": "5b9d3961b94b47b041186b38abfdf7c81b1787b6b40dea96a21fa702e9064748",
     "assets/boxer-artpacks/v1/modular-cool/bottom-black.png": "31b86b8ce22a242cc9a610c079d9120f730723f4bf73e60223403973f5cbf92c",
@@ -1714,8 +2889,8 @@
     "assets/boxer-artpacks/v1/modular-cool/hair-afro.png": "6aef558366445b21afdd60e6e82072ca4193bc29e261dc9961f5aa16538b7bc3",
     "tools/premium-v2/assets/v1-coat.png": "47e940e6ab32e7f53e0e8f847ea98faa54f6de717427e6c4bbf6946b3489a9c6",
     "tools/premium-v2/assets/v1-black.png": "c2db79692ba2dcc48a9500eb5b07857bec6cdf10a58e579281733ae9ae42d952",
-    "tools/premium-v2/streaming-assets/body-guard.png": "191333012e99dca1998b078ef468a9c9ec2569fe13696a59cf3939786c097a2f",
     "tools/premium-v2/streaming-assets/coat-common.png": "d8e1fce31750abf7c335bdf0b51e9aea7ca127f6f1e46d220f4495b3fc220e6d",
+    "tools/premium-v2/streaming-assets/body-guard.png": "191333012e99dca1998b078ef468a9c9ec2569fe13696a59cf3939786c097a2f",
     "tools/premium-v2/streaming-assets/base.png": "2bfc7593b6c2b31f9fce5a20fd7583f4436eef9d02391cfe99ce88a6594c56ee",
     "tools/premium-v2/streaming-assets/bottom-black.png": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c",
     "tools/premium-v2/streaming-assets/hair-afro.png": "cbab6c42a98205872d993585f0bf0d54cfa004c8ac3a161906dcd90d4ab0c799",
@@ -1728,13 +2903,27 @@
     "tools/premium-v2/production-art/hair-stachel.png": "007c3cf362825f29dd53ae2f96c8d434c50800b56cc6c024930c68a61b85ecef",
     "tools/premium-v2/production-art/hair-undercut.png": "1fcbad84442fc8324780d20c42e9797b1816051a0306e81cc3723340035a608f",
     "tools/premium-v2/production-art/hair-buzz.png": "b69127e26e7c262dff92c754450af392b736d36391d87b472183de7cd8013129",
+    "tools/premium-v2/hair-expansion/assets/wellig.png": "b14a02f9db1d2406ce9c559e0945640a7095d4bab02166e887a06aea8d8785e2",
+    "tools/premium-v2/hair-expansion/assets/locken.png": "7635cb0c79c43697a366065ac416015f3905f67c61234112fdc9c5e32eb10f29",
+    "tools/premium-v2/hair-expansion/assets/afro_puffs.png": "a6cfbea088f46c47cd08673f86731d2272019b19c1fb144be30996e9c11d6599",
+    "tools/premium-v2/hair-expansion/assets/cornrows.png": "8b6456fff707d4f895427ce532c6f6ff04e5556de8b0610863a37b71cb4b006b",
+    "tools/premium-v2/hair-expansion/assets/twists.png": "10ce2f25fcb1abb0594de499b8ec9fbfdffa463503c8d406558acf885c198243",
+    "tools/premium-v2/hair-expansion/assets/high_top.png": "0f3ee89328baae3858dcb6fb17b7380d80015a96bd28b43749a358bdd46e8b3d",
     "tools/premium-v2/headwear/assets/cap.png": "302ecfad741aaa421529214f1bc9ade16eff8ae96db73e57b642a2546e45a90a",
     "tools/premium-v2/headwear/assets/band.png": "a3efb6db8ccf7304700e87d170c23df2a7674eae99e6053119f723984533c35b",
+    "tools/premium-v2/tops/assets/guard-tank.png": "3fbeca7ae1bc8b22fd028172748a2d92ca89fa49db91b7f8459dff6bb9c02967",
+    "assets/boxer-artpacks/v1/modular-cool/top-tank.png": "1d65b893f039bb90bac126d354260ab74402e8025e7894bbede0834555dd1afe",
     "tools/premium-v2/production-art/bottom-kurz.png": "ae5644f7a0e90458097aa27a0a7e0ad1366d54dede3849e5249e119c28d58960",
     "tools/premium-v2/production-art/bottom-jogger.png": "323049fb9bdd2134f4dc5fc0fc018c31b2ada66384925d2d2aabe0e674b5057a",
-    "tools/premium-v2/production-art/bottom-track.png": "c51ea48910d9f4b0bd782f992a70b3709017891a929d574a6d66b06f56f87240",
+    "tools/premium-v2/production-art/bottom-track.png": "12c4c58ce40c0b2ae600fa821150110bd6c8c1bb1142a228a1433ed8d6546f84",
     "tools/premium-v2/production-art/feet-sneaker.png": "f3489f5a6c9d8e05dda9f2a54afaa8376ec88b131a58f5fe243b683de1699043",
+    "tools/premium-v2/production-art/coat-basic-back.png": "14fa771446941360e258b7a6ebb60d995bec959bc0332d9534f517753f770ff7",
+    "tools/premium-v2/production-art/coat-basic-guard.png": "ef5304546ca09472c1e06d2c559f1be6b1bfc588b62b6f1ae3679ec891f37bac",
     "tools/premium-v2/streaming-assets/coat-cool.png": "bbd682dd93de36564ea4a16c2809f68ed68fe10eb270404e9b4e62b20a4731c5",
+    "tools/premium-v2/wraps/assets/wrap-guard0.png": "6ff8a27f03230c66d9a874702e441a8079c0c60c4be80684c0c8104126f110e6",
+    "tools/premium-v2/wraps/assets/wrap-guard1.png": "fc2f9a2479fd13c264930f52372e475306f60e3eca165caa50622559636540a5",
+    "tools/premium-v2/wraps/assets/wrap-cool1.png": "117bb462b2c5db219c46be3b68e920bf7e0e742d0d135fa414a1eb2d37d44947",
+    "tools/premium-v2/wraps/assets/wrap-cool0.png": "f42064a57cfd9da5d48e86de5eddff4a6c0fd84feebbb9e96536742daffffc7e",
     "tools/premium-v2/bench.html": "880db8b7b2a537c7b063065278c48bac3ddd2fa9dbc6d6ee4d5f8996df9418c1",
     "tools/premium-v2/assets/shared.png": "45d0529d347d3ba28064762702adad373428925974e18829423fc73ff38c4bc5",
     "tools/premium-v2/assets/guard.png": "cb4c7e87498253e2958202be1b7a0e834f81331750c389832751afb8c79b48e0"
@@ -1743,11 +2932,11 @@
     {
       "engine": "chromium",
       "file": "chromium-production-tests.json",
-      "variants": 240,
+      "variants": 407,
       "contactSheets": [
         {
           "file": "chromium-production-hair-contact.png",
-          "examples": 12,
+          "examples": 24,
           "crop": [
             215,
             30,
@@ -1816,8 +3005,18 @@
           ]
         },
         {
+          "file": "chromium-production-wraps-contact.png",
+          "examples": 16,
+          "crop": [
+            195,
+            130,
+            390,
+            340
+          ]
+        },
+        {
           "file": "chromium-production-coat-contact.png",
-          "examples": 4,
+          "examples": 5,
           "crop": [
             0,
             0,
@@ -1834,17 +3033,57 @@
             345,
             300
           ]
+        },
+        {
+          "file": "chromium-production-tops-contact.png",
+          "examples": 2,
+          "crop": [
+            170,
+            170,
+            430,
+            450
+          ]
+        },
+        {
+          "file": "chromium-production-aura-contact.png",
+          "examples": 8,
+          "crop": [
+            0,
+            0,
+            768,
+            1216
+          ]
+        },
+        {
+          "file": "chromium-production-scene-contact.png",
+          "examples": 8,
+          "crop": [
+            0,
+            0,
+            768,
+            1216
+          ]
+        },
+        {
+          "file": "chromium-production-eyefx-contact.png",
+          "examples": 8,
+          "crop": [
+            325,
+            120,
+            115,
+            105
+          ]
         }
       ]
     },
     {
       "engine": "webkit",
       "file": "webkit-production-tests.json",
-      "variants": 240,
+      "variants": 407,
       "contactSheets": [
         {
           "file": "webkit-production-hair-contact.png",
-          "examples": 12,
+          "examples": 24,
           "crop": [
             215,
             30,
@@ -1913,8 +3152,18 @@
           ]
         },
         {
+          "file": "webkit-production-wraps-contact.png",
+          "examples": 16,
+          "crop": [
+            195,
+            130,
+            390,
+            340
+          ]
+        },
+        {
           "file": "webkit-production-coat-contact.png",
-          "examples": 4,
+          "examples": 5,
           "crop": [
             0,
             0,
@@ -1930,6 +3179,46 @@
             30,
             345,
             300
+          ]
+        },
+        {
+          "file": "webkit-production-tops-contact.png",
+          "examples": 2,
+          "crop": [
+            170,
+            170,
+            430,
+            450
+          ]
+        },
+        {
+          "file": "webkit-production-aura-contact.png",
+          "examples": 8,
+          "crop": [
+            0,
+            0,
+            768,
+            1216
+          ]
+        },
+        {
+          "file": "webkit-production-scene-contact.png",
+          "examples": 8,
+          "crop": [
+            0,
+            0,
+            768,
+            1216
+          ]
+        },
+        {
+          "file": "webkit-production-eyefx-contact.png",
+          "examples": 8,
+          "crop": [
+            325,
+            120,
+            115,
+            105
           ]
         }
       ]

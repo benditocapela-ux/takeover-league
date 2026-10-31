@@ -796,9 +796,9 @@
     "bottom-track": {
       "file": "material-assets/mask-bottom-track.png",
       "box": [
-        215,
+        200,
         545,
-        350,
+        380,
         505
       ],
       "channels": {
@@ -810,17 +810,17 @@
         "skin": 0,
         "iris": 0,
         "hair": 0,
-        "leather": 85786
+        "leather": 93151
       },
-      "sha256": "cf07741e9001bf72469e8165d76f3d2ccb64a45430b35b8e91a04b682cf96515",
+      "sha256": "5ba34502406c9e702356d9b388e1ed40e94515118d3807818aa42fb3f153e3c4",
       "sourceUV": [
         0,
         0,
-        350,
+        380,
         505
       ],
       "sourceFile": "production-art/bottom-track.png",
-      "sourceHash": "c51ea48910d9f4b0bd782f992a70b3709017891a929d574a6d66b06f56f87240"
+      "sourceHash": "12c4c58ce40c0b2ae600fa821150110bd6c8c1bb1142a228a1433ed8d6546f84"
     },
     "feet-sneaker": {
       "file": "material-assets/mask-feet-sneaker.png",
@@ -850,6 +850,238 @@
       ],
       "sourceFile": "production-art/feet-sneaker.png",
       "sourceHash": "f3489f5a6c9d8e05dda9f2a54afaa8376ec88b131a58f5fe243b683de1699043"
+    },
+    "head-cap-schwarz": {
+      "file": "material-assets/mask-head-cap-schwarz.png",
+      "box": [
+        307,
+        43,
+        155,
+        93.64583333333333
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 58325
+      },
+      "sha256": "552bd8a63f8a92c152a2eb4251efe45eb73501756b94b2a005af8fff5890e3b6",
+      "sourceUV": [
+        0,
+        0,
+        384,
+        232
+      ],
+      "sourceFile": "headwear/assets/cap.png",
+      "sourceHash": "302ecfad741aaa421529214f1bc9ade16eff8ae96db73e57b642a2546e45a90a"
+    },
+    "head-band-schwarz": {
+      "file": "material-assets/mask-head-band-schwarz.png",
+      "box": [
+        326,
+        107,
+        160,
+        49.166666666666664
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 18817
+      },
+      "sha256": "d4d7103185354d5519f0c327d129b6764fa0e2c53d6f84263adebbf9408cfd6a",
+      "sourceUV": [
+        0,
+        0,
+        384,
+        118
+      ],
+      "sourceFile": "headwear/assets/band.png",
+      "sourceHash": "a3efb6db8ccf7304700e87d170c23df2a7674eae99e6053119f723984533c35b"
+    },
+    "top-guard-tank": {
+      "file": "material-assets/mask-top-guard-tank.png",
+      "box": [
+        282.7083333333333,
+        245,
+        214.58333333333334,
+        309
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 107005
+      },
+      "sha256": "02b9789cb94e3f8b6f2b9d6bfe082252033c9da3594fe9ecf7ed63eab4c1115f",
+      "sourceUV": [
+        0,
+        0,
+        325,
+        468
+      ],
+      "sourceFile": "tops/assets/guard-tank.png",
+      "sourceHash": "3fbeca7ae1bc8b22fd028172748a2d92ca89fa49db91b7f8459dff6bb9c02967"
+    },
+    "top-cool-tank": {
+      "file": "material-assets/mask-top-cool-tank.png",
+      "box": [
+        280,
+        240,
+        215,
+        335
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 33022
+      },
+      "sha256": "b51d883539dd6baac4144c71e83a75fb606ca7bc3c0ba26544658e8f4ceb3db1",
+      "sourceUV": [
+        280,
+        240,
+        215,
+        335
+      ],
+      "sourceFile": "../../assets/boxer-artpacks/v1/modular-cool/top-tank.png",
+      "sourceHash": "1d65b893f039bb90bac126d354260ab74402e8025e7894bbede0834555dd1afe"
+    },
+    "wrap-cool0": {
+      "file": "material-assets/mask-wrap-cool0.png",
+      "box": [
+        247,
+        311,
+        92.59574468085107,
+        85
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 4602,
+        "iris": 0,
+        "hair": 0,
+        "leather": 0
+      },
+      "sha256": "2500a9d8703a09c91bccdde4fa6fda1ea4f4ae11587dc74ca70c8e81eaf37847",
+      "sourceUV": [
+        0,
+        0,
+        256,
+        235
+      ],
+      "sourceFile": "wraps/assets/wrap-cool0.png",
+      "sourceHash": "f42064a57cfd9da5d48e86de5eddff4a6c0fd84feebbb9e96536742daffffc7e"
+    },
+    "wrap-cool1": {
+      "file": "material-assets/mask-wrap-cool1.png",
+      "box": [
+        405,
+        318,
+        101.97510373443983,
+        96
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 4862,
+        "iris": 0,
+        "hair": 0,
+        "leather": 0
+      },
+      "sha256": "02642eacaa4e2e26f1531d4d321eebc23aef63842b244c3cccdd5bc0af5f7ae7",
+      "sourceUV": [
+        0,
+        0,
+        256,
+        241
+      ],
+      "sourceFile": "wraps/assets/wrap-cool1.png",
+      "sourceHash": "117bb462b2c5db219c46be3b68e920bf7e0e742d0d135fa414a1eb2d37d44947"
+    },
+    "wrap-guard0": {
+      "file": "material-assets/mask-wrap-guard0.png",
+      "box": [
+        269.1296928327645,
+        175,
+        91.74061433447099,
+        105
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 8850,
+        "iris": 0,
+        "hair": 0,
+        "leather": 0
+      },
+      "sha256": "dd00a7d4e884ae07891ba23d74e1ea0e1a33ade786ca63fd101b654d9a5ea725",
+      "sourceUV": [
+        0,
+        0,
+        256,
+        293
+      ],
+      "sourceFile": "wraps/assets/wrap-guard0.png",
+      "sourceHash": "6ff8a27f03230c66d9a874702e441a8079c0c60c4be80684c0c8104126f110e6"
+    },
+    "wrap-guard1": {
+      "file": "material-assets/mask-wrap-guard1.png",
+      "box": [
+        408.1296928327645,
+        175,
+        91.74061433447099,
+        105
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 9336,
+        "iris": 0,
+        "hair": 0,
+        "leather": 0
+      },
+      "sha256": "ef8679065d84b530d4a3f10ad6906c1bece14586532a32869e0e882c5963a8b3",
+      "sourceUV": [
+        0,
+        0,
+        256,
+        293
+      ],
+      "sourceFile": "wraps/assets/wrap-guard1.png",
+      "sourceHash": "fc2f9a2479fd13c264930f52372e475306f60e3eca165caa50622559636540a5"
     }
   },
   "families": {
@@ -993,6 +1225,81 @@
         "feet-sneaker"
       ],
       "newVariantKeys": 15
+    },
+    "head": {
+      "forms": [
+        "cap",
+        "band"
+      ],
+      "keys": [
+        "schwarz",
+        "weiss",
+        "grau",
+        "rot",
+        "blau",
+        "gruen",
+        "lila",
+        "gold"
+      ],
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "sourcePieces": [
+        "head-cap-schwarz",
+        "head-band-schwarz"
+      ],
+      "newVariantKeys": 14,
+      "restrictions": "Existing headwear resolver hair compatibility still applies"
+    },
+    "tops": {
+      "forms": [
+        "tank"
+      ],
+      "keys": [
+        "schwarz",
+        "weiss",
+        "grau",
+        "rot",
+        "blau",
+        "gruen",
+        "lila",
+        "gold"
+      ],
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "sourcePieces": [
+        "top-guard-tank",
+        "top-cool-tank"
+      ],
+      "newVariantKeys": 7,
+      "restrictions": "No coat; shirt blocked"
+    },
+    "wrapSkin": {
+      "keys": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "sourcePieces": [
+        "wrap-cool0",
+        "wrap-cool1",
+        "wrap-guard0",
+        "wrap-guard1"
+      ],
+      "newVariantKeys": 0,
+      "technique": "Warm skin only; neutral cotton unchanged"
     }
   },
   "caveats": [
@@ -1221,8 +1528,8 @@
     },
     {
       "file": "material-assets/equipment-contact.png",
-      "bytes": 2090049,
-      "sha256": "29e501264623bfa628b0dedc1c4e0d29aae74dc3d40bdbf3d42e4a3798ab0048"
+      "bytes": 3952912,
+      "sha256": "dd48f9ad76fc04fa0006c68cbb4367c9bc05cc6781e9a2432f0c75573dced62e"
     }
   ]
 }

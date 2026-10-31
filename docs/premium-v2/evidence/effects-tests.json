@@ -1,0 +1,84 @@
+{
+  "passed": true,
+  "approved": false,
+  "enabled": false,
+  "artisticStatus": "Artistically pending",
+  "hashAlgorithm": "sha256-canonical-text-lf-v1",
+  "sourceHashes": {
+    "tools/premium-v2/effects.js": "f4b5e6fac84186ed37fb78a937f9f7ca05870a9a5d491e0effb4dec738467e22",
+    "tools/premium-v2/effects.json": "3f5cb452df15ca12f45f54a978f9a6c9532ff4d1a69f31965b6b053ccf8aafe2",
+    "takeover-holo.js": "02fc4f0c408f526f469a7abbaeb74cd2ce603737a5d88dc9d7125c10b0871b54"
+  },
+  "reports": [
+    {
+      "engine": "chromium",
+      "passed": true,
+      "combinations": 40,
+      "eyes": [
+        {
+          "eyefx": "kristall",
+          "visible": 600,
+          "outside": 0
+        },
+        {
+          "eyefx": "glut",
+          "visible": 600,
+          "outside": 0
+        },
+        {
+          "eyefx": "stern",
+          "visible": 600,
+          "outside": 0
+        },
+        {
+          "eyefx": "mond",
+          "visible": 600,
+          "outside": 0
+        }
+      ],
+      "reducedEqual": true,
+      "unsupported": true,
+      "statePreserved": true,
+      "flags": [
+        false,
+        false
+      ],
+      "imageRequests": 0
+    },
+    {
+      "engine": "webkit",
+      "passed": true,
+      "combinations": 40,
+      "eyes": [
+        {
+          "eyefx": "kristall",
+          "visible": 600,
+          "outside": 0
+        },
+        {
+          "eyefx": "glut",
+          "visible": 600,
+          "outside": 0
+        },
+        {
+          "eyefx": "stern",
+          "visible": 600,
+          "outside": 0
+        },
+        {
+          "eyefx": "mond",
+          "visible": 600,
+          "outside": 0
+        }
+      ],
+      "reducedEqual": true,
+      "unsupported": true,
+      "statePreserved": true,
+      "flags": [
+        false,
+        false
+      ],
+      "imageRequests": 0
+    }
+  ]
+}

@@ -41,3 +41,7 @@ Manifest: `tools/premium-v2/headwear/manifest.json`. Jedes Teil enthält `id`, `
 Die visuelle Prüfung zeigt freie Augen/Ohren, keinen durch die Kappe ragenden Haarberg und dieselbe Registrierung beider Posen. Beide Master bleiben **Artistically pending**. Materialwirkung, Goldkanten, Kappensilhouette und Stirnbandknoten benötigen persönliche Designabnahme. Andere Frisuren können andere Verdeckungen benötigen. Für weitere Farben zunächst eine Stoffmaske kalibrieren, die goldene Kanten und Schatten schützt; keine globale Hue-Rotation.
 
 `approved:false` und `enabled:false` bleiben unverändert. Die Galerie ist isoliert; normaler Editor, Besitz, Coins und Item-Katalog werden nicht verändert.
+
+## Integrated production palette
+
+The production resolver uses cap/band black-master registration, then applies eight existing headc materials while preserving gold. Its hair compatibility restrictions remain unchanged. The standalone headwear gallery still validates its original black-master contract.

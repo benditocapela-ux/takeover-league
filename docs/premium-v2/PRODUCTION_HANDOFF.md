@@ -1,22 +1,41 @@
 # Autonome Premium-Produktion
 
-Arbeitsbasis PR #81 `02414c9`, eigener Branch `art/premium-v2-catalog-production-20261031`, Draft PR #82. Die bisherigen PRs, Cool-Originale, Editor, Katalog und Datenbank bleiben unverändert. Alle `approved`/`enabled`-Flags bleiben aus.
+Arbeitsbasis PR #81 `02414c9`, eigener Branch `art/premium-v2-catalog-production-20261031`, Draft PR #82 gegen PR #81. PR #79/#80/#81, Cool-Originale, normaler Editor, Katalog und Datenbank bleiben unverändert. Alle Freigabe-/Aktivierungsflags bleiben aus.
 
-## Erstes Art-/Materialpaket
+## Erzeugt und integriert
 
-Neue registrierte PNG-Master: durchgehende Guard-Mantelfront, Guard-Handschuhpaar, Stachel/Undercut/Buzz, Kurz/Jogger/Track und Sneaker. Körper, Augen, Haare und getrennt maskierte Leder-/Stoffflächen besitzen wiederverwendbare Materialvarianten. Gold und Alpha werden nicht global mitgefärbt. Die alte Afro-Grafik wird im Labor von eingebrannten Gesichtsteilen getrennt. Masken und Figur-/Kachelausgabe verwenden dieselben Quellen.
+Die neue durchgehende Guard-Mantelfront ersetzt den fehlerhaften Übergang. Registrierte Verdeckungsmasken entfernen verborgene Hautreste unter Ärmeln. Neue Guard-Handschuhmaster erhalten die bisherigen Handgelenkboxen; exakte Ornamentidentität bleibt offen.
 
-Kappe und Stirnband haben eigene eingeschränkte Haar-Kompatibilität. Ein separater Arm-Master testet neun kleine Schulter-/Ellbogenbewegungen. Das ist kein freigegebenes Ganzkörper-Rig.
+Gemeinsame Masken unterstützen acht Hauttöne, acht Augenfarben, acht Haarfarben, fünf Handschuhmaterialien und acht Kleidungsfarben. Gold, Alpha und neutraler Bandagenstoff bleiben geschützt. Die alte Afro-Grafik wird für Figur und Kachel von eingebrannten Gesichtsteilen getrennt. Es handelt sich nicht um globale CSS-Einfärbung.
 
-Die neue Mantelfront ersetzt die fehlerhafte Überblendung. Explizite Verdeckungsmasken entfernen Hautreste unter Guard-Ärmeln. Die Krone ist verbessert, aber die exakte Ornamentidentität und neue Mantelfalten bleiben künstlerisch offen. Der Track-Hosenumfang und helle Stoffkontraste sind gezielte Sichtprüfpunkte des nächsten Passes.
+Neue Haarformen ergänzen Kurz/Afro/Glatze. Alle vier Hosenformen und beide Schuhformen besitzen tatsächliche Quellen und Materialvarianten. Kappe/Stirnband, Tanktops und poseabhängige Bandagen sind integriert. Die aktuelle vollständige Aufzählung und geprüften Zahlen stehen in der automatisch erzeugten [58-Item-Übersicht](PRODUCTION_PROGRESS.md). Die [Produktionsmatrix](production-coverage.csv) enthält alle sechs Posen, auch nicht unterstützte Fälle. Zwölf vorhandene Auren/Augeneffekte/Szenen verwenden Canvas, keine vorgetäuschten PNGs.
 
-## Nachweise und Bedienung
+Figur und Kacheln benutzen dieselben Quellen, Varianten und Materialfunktionen. Nicht kompatible Gesamtkonfigurationen fallen vollständig auf SVG zurück. Die Vorschau speichert kein Profil und führt keine Käufe aus.
 
-- `tools/premium-v2/production.html`: isoliertes Labor mit echtem vollständigem SVG-Fallback, Materialauswahl, Figur und identischen Item-Kacheln.
-- [Automatische Übersicht aller 58 Items](PRODUCTION_PROGRESS.md), [vollständige Produktionsmatrix](production-coverage.csv).
-- [Material-Master](MATERIALS.md), [Ladepipeline](STREAMING.md), [Arm-Prototyp](RIG.md), [Kopfbedeckungen](HEADWEAR.md).
-- Neue Bildquellen und exakte integrierte Imagegen-Prompts: `tools/premium-v2/production-art/provenance.json`; Registrierung/Hashes: `manifest.json` daneben. Projektdateien bleiben lokal und im Arbeitsbranch reproduzierbar.
+## Gesperrt und offen
 
-Technischer Status wird nur aus tatsächlich vorhandenen Dateien, passenden Hashes und Chromium-/WebKit-Berichten abgeleitet. Texthashes normalisieren CRLF zu LF; PNG-Hashes bleiben bytegenau. Künstlerische Freigabe bleibt aus. Die Browserautomation ersetzt keine persönliche Abnahme auf physischen Geräten.
+- Shirt: echte Entwurfsquellen vorhanden, Schulter-/Armverdeckung visuell fehlerhaft. Vollständiger SVG-Fallback.
+- Basic Cool: zwei Korrekturzeichnungen verbessern die Ärmel, Schulter-/Ellbogenkontur bleibt fehlerhaft. Gesperrt. Basic Guard bleibt Entwurf.
+- Die hintere Samurai-Mantelbahn ist eine eigene Mantelquelle, wirkt in kleinen Kacheln aber hosenähnlich. Keine zusätzliche Hose wird eingeblendet; die Faltenlesbarkeit benötigt Art-Abnahme.
+- Helle Stoffkontraste, Hautrampen, Kronenidentität und neue Mantelfalten benötigen persönliche Designfreigabe.
+- Arm-Master: neun kleine Schulter-/Ellbogenbewegungen geprüft. Gelenknähte, gebackenes Licht und Torsoanschluss offen. Kein fertiges Ganzkörper-Rig, keine weiteren Premium-Posen.
+- Keine physische iPhone-/Android-Prüfung und keine reale GPU-Heap-Messung.
 
-Der verlustfreie Streaming-Vergleich nutzt unveränderte PR-81-Grafiken: 1.267.216 Byte / 4,83 MiB dekodiert statt 2.024.127 Byte / 10,6 MiB beim Sammelatlas. Maximal drei parallele Bildanfragen, begrenzter LRU-Cache. WebKit war bei der ersten Ladung mit mehr Gruppen langsamer; die Bilddatenersparnis ist keine pauschale Latenzgarantie. Das Produktionslabor mit neuen Grafiken wird gesondert gemessen.
+Der alte `quality-gates.json` dokumentiert PR #81. `production-quality-gates.json` dokumentiert die neuen Entwürfe und Sperren separat.
+
+## Nachweise und Performance
+
+`tools/premium-v2/production.html` ist das isolierte Labor. Reale Vorher-/Nachher-Bilder und Kontaktbögen liegen in `docs/premium-v2/evidence/`, familienbezogene Nachweise in den jeweiligen Unterordnern. Prompts, Originalquellen, PNG-Hashes und Registrierung bleiben im Branch nachvollziehbar.
+
+Technischer Status folgt vorhandenen transparenten Grafiken, passenden Quellenhashes und bestandenen Chromium-/WebKit-Berichten. Text-Hashes normalisieren CRLF zu LF; PNG-Hashes bleiben bytegenau. Veränderte Quellen ohne passenden Nachweis werden nicht als technisch geprüft ausgegeben. Varianten-/Pose-Zellen zählen keine kartesischen Komplett-Outfits.
+
+Der verlustfreie Vergleich mit unveränderter PR-81-Kunst reduziert den Sammelatlas von 2.024.127 auf 1.267.216 Bildbytes und von 10,63 auf 4,83 MiB dekodiertes RGBA. Maximal drei parallele Bildanfragen, Deduplizierung und begrenzte LRU-Caches. WebKit kann wegen zusätzlicher Gruppen beim Kaltladen langsamer sein. Neue Produktionskunst wird separat im aktuellen Browserbericht gemessen; Materialien und Canvas-Effekte kosten zusätzliche Wechselzeit. Keine pauschale 60-FPS- oder GPU-Speicherbehauptung.
+
+## Nächster konkreter Produktionsauftrag
+
+1. Shirt und Basic Cool anhand gespeicherter Körper-/Maskenansichten korrigieren. Erst nach sauberer Schulterkontur und Armverdeckung freischalten; anschließend Kachelparität und beide Browser erneut prüfen.
+2. Fehlende lange Haarformen in Vorder-/Hinterkomponenten trennen; Kopf-/Ohrenanker, Mantel und Guard-Fäuste prüfen. Gleiche Frontansicht soll keine unabhängigen Neuzeichnungen pro Pose erhalten.
+3. Hoodie/Jacke sowie Neon/Drache mit eigenen Materialien und Ärmeln produzieren. Kapuzenzustände separat abdecken; keine Samurai-Grafik als Ersatz ausgeben.
+4. Erst nach Gelenk-/Lichtkorrekturen einen begrenzten Flex-Pilot aufbauen. Kopf, Haare, Unterkörper und Materialien weiterverwenden; poseabhängige Arme/Kleidung gezielt neu zeichnen.
+
+Künstlerische Abnahme und reale Mobilgeräteprüfung bleiben Voraussetzung einer späteren Aktivierung. Kein Merge, kein Deployment.

@@ -1,0 +1,12 @@
+{
+  "mode": "built-in imagegen",
+  "generatedFile": "exec-068a7447-43f2-4d0f-b66b-cb799956bb24.png",
+  "sourceFile": "source-guard-tank.png",
+  "references": [
+    "assets/boxer-artpacks/v1/modular-cool/top-tank.png",
+    "tools/premium-v2/assets/v1-body.png"
+  ],
+  "prompt": "Precise-object-edit. Image1 is the EDIT TARGET: a registered black-and-gold sleeveless tank-top sprite with an unwanted transparent crossed-arm gap across its middle. Image2 is ANATOMY/POSE REFERENCE ONLY for the same boxer with raised guard arms. Output ONLY the isolated tank top on genuine transparency, no boxer or human pixels. Fill the missing diagonal middle band of image1 with continuous black premium athletic fabric, subtle vertical tension/folds suited to upright guard posture. Preserve the exact existing narrow gold piping, scoop neckline, shoulder-strap positions, outer silhouette, cloth material, bottom hem, and scale/position within the full portrait canvas. The hole across the abdomen must be completely closed with matching cloth; neckline and armholes stay genuinely transparent. No embedded arms, hands, skin, muscles, shorts, hair or face. Keep the cloth restrained dark painted anime/game art with soft upper-left glints, not plastic, no extra logos or ornaments, no new text. Existing canvas is768x1216 and garment spans approximately x298..484,y246..553; preserve those proportions and all surrounding transparency. This is the complete Guard-specific torso master, not a screenshot.",
+  "approved": false,
+  "enabled": false
+}

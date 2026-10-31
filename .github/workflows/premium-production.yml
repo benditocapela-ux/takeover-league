@@ -25,6 +25,12 @@ jobs:
           node tests/premium-v2-materials.cjs
           node tests/premium-v2-rig.cjs
           node tests/premium-v2-headwear.cjs
+      - name: New hair, garments, wraps and procedural effects
+        run: |
+          node tests/premium-v2-hair-expansion.cjs
+          node tests/premium-v2-tops.cjs
+          node tests/premium-v2-wraps.cjs
+          node tests/premium-v2-effects.cjs
       - name: Integrated catalogue, exact item tiles and full SVG fallback
         run: node tests/premium-production-browser.cjs
       - name: Rebuild source- and evidence-bound coverage
@@ -37,5 +43,8 @@ jobs:
             docs/premium-v2/evidence/
             tools/premium-v2/rig/evidence/
             tools/premium-v2/headwear/evidence/
+            tools/premium-v2/hair-expansion/evidence/
+            tools/premium-v2/tops/evidence/
+            tools/premium-v2/wraps/evidence/
             tools/premium-v2/material-assets/*contact.png
             docs/premium-v2/production-*.json

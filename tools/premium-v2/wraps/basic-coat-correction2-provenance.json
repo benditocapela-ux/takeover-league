@@ -1,0 +1,6 @@
+{
+  "tool": "image_gen.imagegen",
+  "prompt": "Precise-object-edit, isolated transparent coat. Image1 is EDIT TARGET, Image2 is problem evidence. Almost fixed! Image2 still shows thin orange skin crescents OUTSIDE the VIEWER-LEFT shoulder and upper arm, from y260 to390 in768x1216 figure. Add another 50pixels of matching navy fabric outward to the VIEWER-LEFT outer shoulder/upper-arm silhouette of Image1 (1000pixel canvas), spanning y270..530 of source. At source y270start smooth rounded shoulder cap bulge farther LEFT, at y330..480 outer left contour needs50pixels extra navy fabric, taper to current outline by y580. Keep silver stripe where it is, add fabric outside it. Do NOT change right sleeve, cuff positions, elbow bottoms, collar, lapels, chest opening, waist, tail, pocket or hem. No overall move/scale. Only viewer-left sleeve outer upper contour gains material so no body shoulder rim can show. Preserve same matte navy fabric highlights and polished anime style, transparent background. Only garment, NO human pixels, no skin, no hands. Preserve all other source geometry as exactly as possible.",
+  "approved": false,
+  "enabled": false
+}

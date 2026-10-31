@@ -10,6 +10,10 @@ const art = read(lab + 'production-art/manifest.json', { pieces: {} });
 const split = read(lab + 'streaming-assets.json', { pieces: {}, atlases: {} });
 const materials = read(lab + 'materials.json', { families: {}, masks: {} });
 const headwear = read(lab + 'headwear/manifest.json', { pieces: {}, colors: [], poses: [] });
+const expansion = read(lab + 'hair-expansion/manifest.json', { pieces: {}, materialKeys: [], poses: [] });
+const tops = read(lab + 'tops/manifest.json', { pieces: {}, tops: [], colors: [], poses: [] });
+const effects = read(lab + 'effects.json', { keys: {}, poses: [], module: {} });
+const wraps = read(lab + 'wraps/manifest.json', { pieces: {}, poses: [] });
 const reportFile = 'docs/premium-v2/evidence/production-tests.json', report = read(reportFile);
 const checks = new Map(), issues = [];
 function alphaPopulation(bytes) {
@@ -43,7 +47,7 @@ function fileHash(file) {
   return digest(/\.(?:[cm]?js|json|html?|css|csv|md|ya?ml|txt)$/i.test(file) ? Buffer.from(bytes.toString('utf8').replace(/\r\n/g, '\n')) : bytes);
 }
 function image(file, expected, registration) {
-  const cacheKey = file + ':' + expected + ':' + JSON.stringify(registration?.uv || null);
+  const cacheKey = file + ':' + expected + ':' + JSON.stringify([registration?.uv || null, registration?.box || null]);
   if (checks.has(cacheKey)) return checks.get(cacheKey);
   let value = null;
   const actual = fileHash(file);
@@ -52,16 +56,17 @@ function image(file, expected, registration) {
     if (b.subarray(0, 8).equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))) {
       const width = b.readUInt32BE(16), height = b.readUInt32BE(20), colorType = b[25];
       const uv = registration && registration.uv;
+      const box = registration && registration.box, validBox = !registration || Array.isArray(box) && box.length === 4 && box.every(Number.isFinite) && box[0] >= 0 && box[1] >= 0 && box[2] > 0 && box[3] > 0 && box[0] + box[2] <= 768 && box[1] + box[3] <= 1216;
       let alpha; try { alpha = [4, 6].includes(colorType) && alphaPopulation(b); } catch { alpha = null; }
-      if (alpha && alpha.visiblePixels > 0 && (!uv || uv.length === 4 && uv[0] >= 0 && uv[1] >= 0 && uv[2] > 0 && uv[3] > 0 && uv[0] + uv[2] <= width && uv[1] + uv[3] <= height)) value = { file, sha256: actual, width, height, alphaChannel: true, ...alpha };
+      if (alpha && alpha.visiblePixels > 0 && validBox && (!uv || uv.length === 4 && uv.every(Number.isFinite) && uv[0] >= 0 && uv[1] >= 0 && uv[2] > 0 && uv[3] > 0 && uv[0] + uv[2] <= width && uv[1] + uv[3] <= height)) value = { file, sha256: actual, width, height, alphaChannel: true, ...alpha };
     }
   }
   if (!value) issues.push({ file, issue: actual ? 'Hash/PNG/registration mismatch' : 'Missing source file' });
   checks.set(cacheKey, value); return value;
 }
 function piece(id) {
-  const p = art.pieces[id];
-  if (p) return image(lab + p.src, p.sha256, p);
+  const p = art.pieces[id] || expansion.pieces[id] || tops.pieces[id] || wraps.pieces[id];
+  if (p) return image(path.posix.normalize(lab + p.src), p.sha256, p);
   const s = split.pieces[id], a = s && split.atlases[s.atlas];
   return a ? image(lab + a.file, a.sha256, s) : null;
 }
@@ -94,11 +99,13 @@ function available(row) {
     if (value === 'glatze') return pieces(['head']);
     const id = value === 'kurz_glatt' ? 'hair-short' : 'hair-' + value;
     // Every additional form still requires a real registered PNG; a palette alone is not a hairstyle.
-    return color === 'schwarz' || has('hair', color, pose) ? pieces([id]) : [];
+    const expanded = expansion.pieces[id] && expansion.poses.includes(pose) && expansion.materialKeys.includes(color);
+    return color === 'schwarz' || has('hair', color, pose) || expanded ? pieces([id]) : [];
   }
   if (slot === 'head') {
     const h = headwear.pieces[value];
-    if (!h || !headwear.colors.includes(color) || !headwear.poses.includes(pose)) return [];
+    const colored = has('head', color, pose) && materials.families.head.forms?.includes(value);
+    if (!h || !headwear.colors.includes(color) && !colored || !headwear.poses.includes(pose)) return [];
     const file = image(lab + h.src, h.sha256, h); return file ? [file] : [];
   }
   if (slot === 'bottom') {
@@ -112,6 +119,7 @@ function available(row) {
     if (pose === 'guard' && piece('coat-guard-v2')) return pieces(['coat-back', 'coat-guard-v2']);
     return pieces(['coat-back', 'coat-tail', 'coat-' + pose]);
   }
+  if (slot === 'coat' && value === 'basic') return pieces(['coat-basic-back', 'coat-basic-' + pose]);
   if (slot === 'glove') {
     if (pose === 'guard' && piece('hands-master-0') && piece('hands-master-1')) {
       if (value === 'schwarzgold' || has('gloves', value, pose) || has('glove', value, pose)) return pieces(['hands-master-0', 'hands-master-1']);
@@ -120,7 +128,16 @@ function available(row) {
     if (['schwarzgold', 'weiss'].includes(value)) return pieces(pose === 'cool' ? ['hands-' + (value === 'weiss' ? 'white' : 'blackgold')] : ['guard-' + (value === 'weiss' ? 'white' : 'black') + '-0', 'guard-' + (value === 'weiss' ? 'white' : 'black') + '-1']);
     return [];
   }
-  if (slot === 'top' && value === 'tank' && color === 'schwarz' && pose === 'cool') return pieces(['top-tank']);
+  if (slot === 'top') {
+    const colored = has('tops', color, pose) && materials.families.tops.forms?.includes(value);
+    if ([...tops.tops, ...(tops.draftTops || [])].includes(value) && (tops.colors.includes(color) || colored) && tops.poses.includes(pose) && row.state === 'default') return pieces(['top-' + pose + '-' + value]);
+    if (value === 'tank' && color === 'schwarz' && pose === 'cool') return pieces(['top-tank']);
+  }
+  if (slot === 'hands' && value === 'wraps' && wraps.poses.includes(pose)) return pieces(['wrap-' + pose + '0', 'wrap-' + pose + '1']);
+  if (['aura', 'eyefx', 'scene'].includes(slot) && effects.keys[slot]?.includes(value) && effects.poses.includes(pose)) {
+    const file = lab + effects.module.file, hash = fileHash(file);
+    if (hash && hash === effects.module.sha256 && effects.source && fileHash(effects.source.file) === effects.source.sha256) return [{ file, sha256: hash, renderer: 'Canvas' }];
+  }
   return [];
 }
 const key = r => [r.slot, String(r.value), r.color || 'fixed', r.state || 'default', r.pose].join('|');
@@ -128,6 +145,11 @@ const tested = new Set((report?.validatedVariants || []).map(key));
 const evidenceHashes = report?.sourceHashes || {};
 const requiredCode = [lab + 'production.js', lab + 'materials.js', lab + 'materials.json', lab + 'streaming.js', lab + 'streaming-assets.json', lab + 'production-art/manifest.json'];
 if (Object.keys(headwear.pieces).length) requiredCode.push(lab + 'headwear/headwear.js', lab + 'headwear/manifest.json');
+const productionCode = fs.existsSync(path.join(root, lab + 'production.js')) ? fs.readFileSync(path.join(root, lab + 'production.js'), 'utf8') : '';
+if (productionCode.includes('hair-expansion/manifest.json')) requiredCode.push(lab + 'hair-expansion/manifest.json');
+if (productionCode.includes('tops/manifest.json')) requiredCode.push(lab + 'tops/tops.js', lab + 'tops/manifest.json');
+if (productionCode.includes('TLPremiumEffects')) requiredCode.push(lab + 'effects.js', lab + 'effects.json');
+if (productionCode.includes('wraps/manifest.json')) requiredCode.push(lab + 'wraps/manifest.json');
 const evidenceValid = !!report && report.passed === true && report.hashAlgorithm === 'sha256-canonical-text-lf-v1' && ['chromium', 'webkit'].every(e => report.engines?.includes(e)) && Object.keys(evidenceHashes).length > 0 && Object.entries(evidenceHashes).every(([file, hash]) => fileHash(file) === hash) && requiredCode.every(file => evidenceHashes[file] && fileHash(file) === evidenceHashes[file]);
 const uniqueFiles = list => [...new Map(list.map(a => [a.file, a])).values()];
 const matrix = historical.map(old => {
@@ -138,6 +160,7 @@ const matrix = historical.map(old => {
     availability: exists ? 'Artwork draft' : 'SVG only',
     technicalStatus: validated ? 'Technically validated' : 'Not validated',
     artisticStatus: exists ? 'Artistically pending' : 'Not applicable',
+    renderer: files.some(a => a.renderer === 'Canvas') ? 'Canvas' : exists ? 'PNG + material' : 'SVG',
     approved: false, enabled: false, integratedAndTested: validated,
     newlySupported: validated && old.status === 'svg-only',
     previousStatus: old.status, sourceFiles: files.map(a => a.file), sourceHashes: Object.fromEntries(files.map(a => [a.file, a.sha256])),
@@ -159,22 +182,26 @@ const itemRows = inventory.catalogue.map(item => {
     artisticStatus: artwork.length ? 'Artistically pending' : 'Not applicable',
     approved: false, supportedPoses: [...new Set(technical.map(r => r.pose))],
     artworkPoses: [...new Set(artwork.map(r => r.pose))], sourceFiles: [...new Set(artwork.flatMap(r => r.sourceFiles))],
-    note: item.slot === 'hair' && item.value === 'glatze' ? 'Bald uses the existing complete head and removes the hair layer. Eight allowed hair-colour keys have identical output; they are not eight new artworks.' : ['pose', 'scene', 'aura', 'eyefx'].includes(item.slot) ? 'Existing procedural/SVG catalogue entry; not a new independently authored PNG. Pose items are metadata.' : technical.length ? 'Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate.' : artwork.length ? 'Files exist; no current matching dual-browser production evidence for this item.' : 'No verified premium artwork in this production package.'
+    note: item.slot === 'hair' && item.value === 'glatze' ? 'Bald uses the existing complete head and removes the hair layer. Eight allowed hair-colour keys have identical output; they are not eight new artworks.' : artwork.some(r => r.renderer === 'Canvas') ? 'Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile.' : item.slot === 'pose' ? 'Pose catalogue metadata; not an independent equipment layer or a new full-body image for every matrix cell.' : technical.length ? 'Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate.' : artwork.length ? 'Files exist; no current matching dual-browser production evidence for this item.' : 'No verified premium artwork in this production package.'
   };
 });
 const technical = matrix.filter(r => r.integratedAndTested), newRows = technical.filter(r => r.newlySupported), artwork = matrix.filter(r => r.availability === 'Artwork draft');
 const unique = list => new Set(list.map(r => [r.slot, r.value, r.color, r.state].join('|'))).size;
+const priorAvailableKeys = new Set(historical.filter(r => r.status !== 'svg-only').map(r => [r.slot, r.value, r.color, r.state].join('|')));
+const brandNewVariantKeys = new Set(technical.map(r => [r.slot, r.value, r.color, r.state].join('|')).filter(k => !priorAvailableKeys.has(k))).size;
 const summary = {
   catalogueEntries: itemRows.length, matrixRows: matrix.length, catalogueItemsWithArtwork: itemRows.filter(i => i.artworkPoseCells > 0).length,
   catalogueItemsTechnicallyValidated: itemRows.filter(i => i.technicallyValidatedPoseCells > 0).length,
   artworkVariantKeys: unique(artwork), artworkPoseCells: artwork.length,
   technicallyValidatedVariantKeys: unique(technical), technicallyValidatedPoseCells: technical.length,
+  canvasVariantKeys: unique(technical.filter(r => r.renderer === 'Canvas')), rasterVariantKeys: unique(technical.filter(r => r.renderer !== 'Canvas')),
   newlySupportedVariantKeys: unique(newRows), newlySupportedPoseCells: newRows.length,
+  brandNewVariantKeys,
   approvedItems: 0, hashAlgorithm: 'sha256-canonical-text-lf-v1', evidenceValid, evidenceReport: report ? reportFile : null,
   countsIncludeNonShopBodyEyesWraps: true,
-  note: 'Variant keys count slot/value/colour/state once, independently of pose; pose cells count each supported pose. Neither count is a Cartesian full-outfit total.'
+  note: 'Variant keys count slot/value/colour/state once; pose cells count each pose. newlySupportedVariantKeys includes keys gaining any previously SVG-only pose; brandNewVariantKeys excludes keys already present in any historical premium pose. Neither count is a Cartesian full-outfit total.'
 };
-const csvCols = ['slot', 'value', 'color', 'state', 'pose', 'availability', 'technicalStatus', 'artisticStatus', 'integratedAndTested', 'newlySupported', 'previousStatus', 'sourceFiles', 'evidence'];
+const csvCols = ['slot', 'value', 'color', 'state', 'pose', 'renderer', 'availability', 'technicalStatus', 'artisticStatus', 'integratedAndTested', 'newlySupported', 'previousStatus', 'sourceFiles', 'evidence'];
 const csv = [csvCols.join(','), ...matrix.map(r => csvCols.map(k => '"' + String(Array.isArray(r[k]) ? r[k].join(';') : r[k]).replaceAll('"', '""') + '"').join(','))].join('\n') + '\n';
 fs.writeFileSync(path.join(dir, 'production-coverage.json'), JSON.stringify({ summary, issues, matrix }, null, 2) + '\n');
 fs.writeFileSync(path.join(dir, 'production-coverage.csv'), csv);
@@ -183,16 +210,17 @@ const md = [
   '# Premium-Produktion: überprüfbarer Stand aller 58 Katalogeinträge', '',
   'Automatisch aus vorhandenem Inventar, tatsächlichen PNG-Dateien, Registrierungen, SHA-256 und aktuellem Browser-Testbericht erzeugt. Keine Live-Datenbankabfrage. Der historische PR-81-Stand bleibt in `coverage.csv`; die aktuelle Produktionsmatrix steht in `production-coverage.csv` und `production-coverage.json`.', '',
   `**${summary.catalogueItemsWithArtwork}/58 Katalogeinträge mit nachgewiesenen Grafikquellen; ${summary.catalogueItemsTechnicallyValidated}/58 mit aktueller technischer Testabdeckung; 0 freigegeben.**`, '',
-  `Gesamtmatrix: ${summary.matrixRows} Zeilen. Grafikquellen für ${summary.artworkVariantKeys} unterschiedliche Varianten-Schlüssel bzw. ${summary.artworkPoseCells} Posezellen. Technisch integriert und geprüft: ${summary.technicallyValidatedVariantKeys} Varianten-Schlüssel / ${summary.technicallyValidatedPoseCells} Posezellen. Gegenüber dem historischen SVG-only-Stand neu: ${summary.newlySupportedVariantKeys} Varianten-Schlüssel / ${summary.newlySupportedPoseCells} Posezellen. Haut- und Augenfarben sind zusätzlich enthalten, aber keine neuen Shop-Items.`, '',
+  `Gesamtmatrix: ${summary.matrixRows} Zeilen. Grafikquellen für ${summary.artworkVariantKeys} unterschiedliche Varianten-Schlüssel bzw. ${summary.artworkPoseCells} Posezellen. Technisch integriert und geprüft: ${summary.technicallyValidatedVariantKeys} Varianten-Schlüssel / ${summary.technicallyValidatedPoseCells} Posezellen. Gegenüber dem historischen SVG-only-Stand neu: ${summary.newlySupportedPoseCells} Posezellen; ${summary.newlySupportedVariantKeys} Schlüssel gewinnen neue Poseabdeckung, davon waren ${summary.brandNewVariantKeys} vorher in keiner Premium-Pose vorhanden. Haut- und Augenfarben sind zusätzlich enthalten, aber keine neuen Shop-Items.`, '',
   '**Zählweise:** Varianten-Schlüssel = Slot, Itemwert, Farbe und Zustand; jede Pose wird zusätzlich als Posezelle gezählt. Das ist keine Anzahl aller kombinierbaren Outfits und keine Anzahl neuer PNGs. Ein Teil mit zwei Posen zählt nur einmal als Varianten-Schlüssel.', '',
+  `Technisch geprüft sind ${summary.rasterVariantKeys} Raster-/Materialvarianten und ${summary.canvasVariantKeys} prozedurale Canvas-Varianten. Effekte/Szenen werden ausdrücklich nicht als neue PNG-Illustrationen gezählt. Glatze entfernt die Haare; die acht zulässigen Haarfarbwerte erzeugen dabei dasselbe Bild.`, '',
   `Technische Evidenz: ${evidenceValid ? 'aktueller, hashgebundener Chromium-/WebKit-Bericht vorhanden' : 'noch kein vollständiger aktueller, hashgebundener Chromium-/WebKit-Bericht; technische Freigabe wird deshalb nicht behauptet'}.`, '',
   'Status getrennt: `SVG only` = keine verifizierte passende Grafik; `Artwork draft` = Datei und Registrierung vorhanden; `Technically validated` = passende Variante im aktuellen Bericht beider Engines und gültige Quellhashes; `Artistically pending` = persönliche Designabnahme offen. `Approved` wird durch dieses Skript niemals gesetzt. Auch ein technisch geprüfter Entwurf bleibt deaktiviert.', '',
   '| Item-Key | Name | Grafikvarianten / vorhanden | Technisch geprüft | geprüfte Posen | Status |',
   '|---|---|---:|---:|---|---|',
   ...itemRows.map(i => `| ${i.key} | ${i.name.replaceAll('|', '/')} | ${i.artworkVariantKeys}/${i.totalVariantKeys} | ${i.technicallyValidatedVariantKeys}/${i.totalVariantKeys} | ${i.supportedPoses.join(', ') || '–'} | ${i.availability}; ${i.technicalStatus}; ${i.artisticStatus} |`), '',
-  'Posen, Szenen und Effekte behalten die vorhandene prozedurale/SVG-Darstellung, solange keine tatsächlich integrierte Premium-Familie nachgewiesen ist. Ein Guard-Pilot macht nicht sämtliche sechs Pose-Items zu fertigen Illustrationen.', '',
+  'Posen, Szenen und Effekte behalten die vorhandene prozedurale/SVG-Darstellung, solange keine tatsächlich integrierte Premium-Familie nachgewiesen ist. Neue Canvas-Effekte sind separat als Canvas ausgewiesen. Ein Guard-Pilot macht nicht sämtliche sechs Pose-Items zu fertigen Illustrationen.', '',
   'Reproduktion: `node scripts/inventory-premium-production.cjs`. Der technische Bericht liegt unter `docs/premium-v2/evidence/production-tests.json`; er muss `passed:true`, beide Engines, `validatedVariants` und passende `sourceHashes` enthalten. Hashverfahren `sha256-canonical-text-lf-v1`: UTF-8-Text normalisiert CRLF zu LF, PNG-/Binärdateien verwenden unveränderte Bytes. Damit lassen sich Windows- und Linux-Checkouts vergleichen. Fehlender oder veralteter Bericht fällt automatisch auf Entwurfsstatus zurück. Noch nicht kompatible vollständige Outfits müssen im Labor und im normalen Editor vollständig SVG bleiben.', '',
-  issues.length ? `**Quellprobleme:** ${issues.length} Datei-/Hash-/Registrierungsfehler wurden nicht als vorhandene Grafik gezählt; Details in production-coverage.json.` : 'Alle gezählten Quellbilder haben passende PNG-Abmessungen, Alphakanal und SHA-256. Dieser Dateicheck ersetzt keine Sichtprüfung von Anatomie, Stoff, Verdeckung oder Materialien.', ''
+  issues.length ? `**Quellprobleme:** ${issues.length} Datei-/Hash-/Registrierungsfehler wurden nicht als vorhandene Grafik gezählt; Details in production-coverage.json.` : 'Alle gezählten Rasterquellen haben passende PNG-Abmessungen, nichtleere Alpha-Pixel und SHA-256; Canvas-Quellen sind als Code separat verifiziert. Diese Checks ersetzen keine Sichtprüfung von Anatomie, Stoff, Verdeckung oder Materialien.', ''
 ].join('\n');
 fs.writeFileSync(path.join(dir, 'PRODUCTION_PROGRESS.md'), md);
 console.log(JSON.stringify(summary));

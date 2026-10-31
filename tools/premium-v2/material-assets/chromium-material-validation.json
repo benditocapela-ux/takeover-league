@@ -1,9 +1,235 @@
 {
   "engine": "chromium",
-  "rendererSha256": "7277088f5914f7a8c31ad0e176193ce2b1bb827f7ec5e63c4b7f4303dfa106ea",
-  "materialManifestSha256": "bebc12a4093a0e4929515c171ecf10539765de736aebed97abaa068a75537ea3",
+  "rendererSha256": "cb345fadb5009c7d2ad450364cda74d964534004d4adf1588e75f4f195e2f381",
+  "materialManifestSha256": "82c3a3f0be65e44834ca64a4dd90c74798f8a063699aa7fe7bf73751a2ef7495",
   "status": "Technically validated",
   "artisticStatus": "Artistically pending",
+  "productionChecks": [
+    {
+      "pose": "cool",
+      "head": "cap",
+      "color": "schwarz",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "cool",
+      "head": "cap",
+      "color": "weiss",
+      "tone": 0,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "cool",
+      "head": "cap",
+      "color": "grau",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "cool",
+      "head": "cap",
+      "color": "rot",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "cool",
+      "head": "cap",
+      "color": "blau",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "cool",
+      "head": "cap",
+      "color": "gruen",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "cool",
+      "head": "cap",
+      "color": "lila",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "cool",
+      "head": "cap",
+      "color": "gold",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "cool",
+      "head": "band",
+      "color": "schwarz",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "cool",
+      "head": "band",
+      "color": "weiss",
+      "tone": 0,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "cool",
+      "head": "band",
+      "color": "grau",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "cool",
+      "head": "band",
+      "color": "rot",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "cool",
+      "head": "band",
+      "color": "blau",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "cool",
+      "head": "band",
+      "color": "gruen",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "cool",
+      "head": "band",
+      "color": "lila",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "cool",
+      "head": "band",
+      "color": "gold",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "cap",
+      "color": "schwarz",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "cap",
+      "color": "weiss",
+      "tone": 0,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "cap",
+      "color": "grau",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "cap",
+      "color": "rot",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "cap",
+      "color": "blau",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "cap",
+      "color": "gruen",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "cap",
+      "color": "lila",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "cap",
+      "color": "gold",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "band",
+      "color": "schwarz",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "band",
+      "color": "weiss",
+      "tone": 0,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "band",
+      "color": "grau",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "band",
+      "color": "rot",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "band",
+      "color": "blau",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "band",
+      "color": "gruen",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "band",
+      "color": "lila",
+      "tone": 6,
+      "renderer": "anime-draft"
+    },
+    {
+      "pose": "guard",
+      "head": "band",
+      "color": "gold",
+      "tone": 6,
+      "renderer": "anime-draft"
+    }
+  ],
   "checks": [
     {
       "id": "head",
@@ -107,6 +333,46 @@
     },
     {
       "id": "feet-sneaker",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "head-cap-schwarz",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "head-band-schwarz",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "top-guard-tank",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "top-cool-tank",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "wrap-cool0",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "wrap-cool1",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "wrap-guard0",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "wrap-guard1",
       "variants": 8,
       "changedVariants": 7
     }
