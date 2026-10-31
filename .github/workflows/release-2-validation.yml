@@ -147,6 +147,14 @@ jobs:
           node-version: '22'
       - run: npm install --no-save --package-lock=false playwright@1.56.1
       - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Verify editor and responsive SVG behavior in both browsers
+        env:
+          BROWSER: ${{ matrix.browser }}
+          EDITOR_ONLY: '1'
+        run: |
+          node tests/boxer-holo-browser.cjs
+          node tests/boxer-responsive-layout-browser.cjs
+        timeout-minutes: 8
       - name: Verify 32 outfits and anatomical glove pixel regressions
         env:
           BROWSER: ${{ matrix.browser }}

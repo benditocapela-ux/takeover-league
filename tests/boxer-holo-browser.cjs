@@ -3,7 +3,8 @@
 // toggles, try-on of locked items, buying item and bundle with confirmation, poses for profile and card, saving,
 // flag off, holo on the profile and on the FUT card, no horizontal scroll on a phone.
 const assert=require('node:assert/strict'),fs=require('node:fs'),http=require('node:http'),path=require('node:path');
-const {chromium}=require('playwright');
+const engine=process.env.BROWSER||'chromium';
+const browserType=require('playwright')[engine];
 const root=process.cwd();
 const sql=fs.readFileSync('supabase/migrations/20261029140000_boxer_holo.sql','utf8');
 const ins=sql.slice(sql.indexOf('INSERT INTO public.holo_items'),sql.indexOf('ON CONFLICT (key) DO NOTHING;'));
@@ -57,12 +58,13 @@ function injected(cfg){
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const base='http://127.0.0.1:'+server.address().port+'/';
- const browser=await chromium.launch();
+ const browser=await browserType.launch();
  const shot=async(p,n,full)=>{if(process.env.SHOTS)await p.screenshot({path:process.env.SHOTS+'/'+n+'.png',fullPage:full!==false})};
  async function page(cfg){
   const context=await browser.newContext({viewport:{width:cfg.testWidth||390,height:cfg.testHeight||844},reducedMotion:'reduce'});
   await context.addInitScript({content:'('+injected.toString()+')('+JSON.stringify(Object.assign({items:ITEMS},cfg))+')'});
   const p=await context.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
+  await p.route('**/*',r=>r.request().url().startsWith(base)?r.continue():r.fulfill({contentType:'application/json',body:'[]'}));
   await p.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm',r=>r.fulfill({status:200,contentType:'text/javascript',body:'export const createClient=()=>window.__takeoverMockClient;'}));
   await p.route('https://iqarjivcrddcixrvqbfb.supabase.co/**',r=>{const u=r.request().url();
    const body=u.includes('get_public_levels')?[{boxer_name:'Anna',lifetime_exp:500},{boxer_name:'Ben',lifetime_exp:300}]:u.includes('get_public_leaderboard')?[{boxer_name:'Anna',rank_position:1,monthly_points:100,approved_sessions:4,points_training:100,points_bonus:0},{boxer_name:'Ben',rank_position:2,monthly_points:80,approved_sessions:3,points_training:80,points_bonus:0}]:[];
@@ -144,12 +146,14 @@ function injected(cfg){
   'shorts are a separate configurable layer');
  assert.equal(await x.p.locator('.mb-preview svg.tlh .tl-layer-shoes').count(),1,
   'shoes are a separate configurable layer');
- await x.p.click('[data-set="hair"][data-val="locs"]');
+ await x.p.locator('[data-set="hair"][data-val="locs"]').focus();
+ await x.p.keyboard.press('Enter');
  assert.equal(await x.p.locator('.mb-save-state').getAttribute('data-save-status'),'dirty',
   'visual status changes when a hairstyle selection is unsaved');
  assert.equal(await x.p.evaluate(()=>document.activeElement?.dataset.val),'locs',
   'a selection remains keyboard-focused after changing a hairstyle');
- await x.p.click('[data-set="tone"][data-val="6"]');
+ await x.p.locator('[data-set="tone"][data-val="6"]').focus();
+ await x.p.keyboard.press('Enter');
  assert.equal(await x.p.evaluate(()=>document.activeElement?.dataset.val),'6',
   'skin-tone selection preserves keyboard focus');
  await x.p.click('[data-set="hc"][data-val="dunkelbraun"]');
@@ -195,7 +199,8 @@ function injected(cfg){
 
 
  assert.equal(await x.p.locator('[data-toggle="hood"]').count(),0,'no hood toggle without hoodie');
- await x.p.click('[data-set="top"][data-val="hoodie"]');
+ await x.p.locator('[data-set="top"][data-val="hoodie"]').focus();
+ await x.p.keyboard.press('Enter');
  assert.equal(await x.p.evaluate(()=>document.activeElement?.dataset.val),'hoodie',
   'changing clothing preserves focus for keyboard and assistive input');
  assert.notEqual(await x.p.locator('.mb-preview svg.tlh').first().evaluate(el=>el.outerHTML),stageBefore,'Gear selection updates the full boxer');

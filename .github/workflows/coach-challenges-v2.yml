@@ -247,7 +247,8 @@ jobs:
       - run: node tests/hosted-v2-anon-http.cjs
       - run: node tests/hosted-v2-pages-readonly.cjs
       - name: Verify live published V2 Pages after main release
-        if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+        # No publication is permitted during the merge-only integration.
+        if: github.ref == 'refs/heads/main' && github.event_name == 'push' && false
         run: |
           set -euo pipefail
           for attempt in 1 2 3 4 5 6; do
