@@ -6,8 +6,14 @@ const navScript=fs.readFileSync('takeover-navigation.js','utf8');
 const navCss=fs.readFileSync('takeover-navigation.css','utf8');
 const deploy=fs.readFileSync('.github/workflows/takeover-pages-deploy.yml','utf8');
 
-assert.match(deploy,/name '.*\.js'/,'Pages deployment must copy shared JavaScript');
-assert.match(deploy,/name '.*\.css'/,'Pages deployment must copy shared CSS');
+assert.ok(deploy.includes('node tools/assemble-pages-site.cjs _site'),'Pages must use the tested assembler');
+const os=require('node:os'),path=require('node:path');
+const staging=fs.mkdtempSync(path.join(os.tmpdir(),'navigation-pages-'));
+try{
+ require('../tools/assemble-pages-site.cjs').assemble(process.cwd(),staging);
+ for(const name of ['takeover-navigation.js','takeover-navigation.css'])
+  assert.deepEqual(fs.readFileSync(path.join(staging,name)),fs.readFileSync(name),'Pages navigation '+name);
+}finally{fs.rmSync(staging,{recursive:true,force:true})}
 for(const fragment of ['.tl-menu-panel','.tl-menu-backdrop','.tl-global-bottom','--tl-nav-gold:var(--gold)']) {
  assert.ok(navCss.includes(fragment),'Shared original-color styling missing: '+fragment);
 }

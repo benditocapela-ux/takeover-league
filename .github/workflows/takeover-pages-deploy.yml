@@ -11,6 +11,7 @@ on:
       - 'manifest.webmanifest'
       - 'avatars/**'
       - 'tools/build-news.cjs'
+      - 'tools/assemble-pages-site.cjs'
       - '.github/workflows/takeover-pages-deploy.yml'
   workflow_dispatch:
 
@@ -40,8 +41,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          mkdir -p _site
-          find . -maxdepth 1 -type f \( -name '*.html' -o -name '*.js' -o -name '*.css' -o -name '*.svg' -o -name '*.png' -o -name '*.woff' -o -name '*.webmanifest' \) -exec cp '{}' _site/ \;
+          node tools/assemble-pages-site.cjs _site
           # Broken CSS (e.g. a missing "}") must never be published.
           node tests/css-structure.cjs
           node tests/js-regex-guard.cjs
@@ -49,7 +49,6 @@ jobs:
           for font in takeover-inter takeover-barlow-condensed-700 takeover-barlow-condensed-800; do
             test -s "_site/${font}.woff"
           done
-          cp -R avatars _site/avatars
           rm -f _site/challenges-v2-preview.html _site/duels-v2-preview.html _site/league2-preview.html
           touch _site/.nojekyll
           # Etappe 7b: Neuigkeiten aus den «## News»-Abschnitten gemergter PRs (Fehler hier stoppen das Deployment nicht).
