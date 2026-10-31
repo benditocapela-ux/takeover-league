@@ -12,6 +12,8 @@ on:
       - 'avatars/**'
       - 'assets/boxer-artpacks/v1/**'
       - 'tools/publish-boxer-artpack.cjs'
+      - 'tools/publish-premium-character.cjs'
+      - 'tools/premium-character-release.json'
       - 'tools/assemble-pages-site.cjs'
       - 'scripts/validate-boxer-artpack.cjs'
       - 'tools/build-news.cjs'
@@ -30,7 +32,7 @@ concurrency:
 
 jobs:
   publish:
-    # Owner-approved release: publish merged PR #86 (Staff) and PR #88 (Boxer).
+    # Owner-approved release: Premium activation plus merged Staff and Boxer updates.
     if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15

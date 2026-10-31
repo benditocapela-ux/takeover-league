@@ -773,3 +773,6 @@ body[data-tl-screen="mein-boxer"] .mb-item-status[data-renderer="anime"]{color:#
 body[data-tl-screen="mein-boxer"] :is(.mb-gear-art,.mb-shop-item-art){container-type:size;display:grid;place-items:center}
 body[data-tl-screen="mein-boxer"] .mb-item-png{display:block;position:relative;overflow:hidden;width:min(100cqw,calc(100cqh * var(--item-ratio)));height:auto;margin:auto;isolation:isolate}
 body[data-tl-screen="mein-boxer"] .mb-item-png img{position:absolute;display:block;max-width:none;max-height:none;object-fit:fill;pointer-events:none}
+
+/* Same registered renderer for the live figure and equipment tiles. */
+.mb-premium-item{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;margin:auto}

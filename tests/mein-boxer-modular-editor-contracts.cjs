@@ -20,6 +20,7 @@ function setup(mode){
  const H=window.TLHolo,A=window.TLBoxerArtPacks;
  const modularReview=${mode==='modular'},modularPack=modularReview?A.createDraft(window.TLBoxerModularDraftManifest):null;
  const draftReview=false,draftPack=null,draftVisible=false,referenceReview=false,referenceVisible=false,referenceSrc=null;
+ const liveCharacter=null; // This fixture exercises the isolated legacy draft renderer.
  const usePremiumArt=false,compareSvg=false,tryPremiumArt=false;
  const esc=s=>String(s).replace(/[&<>"']/g,'_');
  let cfg=H.normalize({}),previewPose='profile';

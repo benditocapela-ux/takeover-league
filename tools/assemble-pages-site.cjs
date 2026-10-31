@@ -29,7 +29,8 @@ function assemble(sourceRoot,destinationRoot){
  avatars(path.join(source,'avatars'),path.join(destination,'avatars'));
  const artwork=publish(loadManifest(path.join(source,'takeover-mein-boxer-artpack-manifest.js')),
   path.join(source,'assets/boxer-artpacks/v1'),destination);
- return {rootFiles,avatarFiles,artwork};
+ const premium=require('./publish-premium-character.cjs').publish(source,destination);
+ return {rootFiles,avatarFiles,artwork,premium};
 }
 if(require.main===module)console.log(JSON.stringify(assemble(process.cwd(),process.argv[2]||'_site')));
 module.exports={assemble};

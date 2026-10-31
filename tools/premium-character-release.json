@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "enabled": true,
+  "deploymentAuthorized": true,
+  "manualAcceptance": "waived-by-owner",
+  "scope": "Supported Cool and Guard configurations; complete SVG fallback otherwise"
+}
