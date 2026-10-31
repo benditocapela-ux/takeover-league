@@ -53,6 +53,14 @@ function injected(cfg){
   switch(name){
    case 'coach_list_boxers':return {data:people,error:null};
    case 'get_training_v2_config':return {data:v2config,error:null};
+   case 'submit_scheduled_club_training_today':{
+    if(cfg.v2===false)return {data:{status:'disabled'},error:null};
+    const todaySlots=slots.filter(x=>x.dow===dow(today));
+    if(!todaySlots.length)return {data:{status:'no_slot'},error:null};
+    const picked=todaySlots.find(x=>args?.p_slot_id==null||x.slot_id===Number(args.p_slot_id));
+    if(!picked)return err('Einheit heute nicht im Stundenplan','22023');
+    return {data:{status:'submitted',label:picked.label,training_date:today},error:null};
+   }
    case 'staff_training_summary':return {data:{today,enabled:true,pending:subs.filter(s=>s.status==='pending').length,pending_conflicts:subs.filter(s=>s.status==='pending'&&s.gymConflict).length,
      today_trainings:4,confirmed_today:subs.filter(s=>s.status==='approved'&&s.reviewed_at&&s.reviewed_at.slice(0,10)===today).length,active_boxers:12,open_gym_sessions:1,
      recent_confirmed:subs.filter(s=>s.status==='approved').sort((a,b)=>String(b.reviewed_at).localeCompare(String(a.reviewed_at))).slice(0,5).map(card)},error:null};
@@ -252,7 +260,25 @@ async function coachFlow(browser,engine){
 }
 async function boxerFlow(browser,engine){
  const {page,context,errors}=await open(browser,{role:'boxer'},'boxer.html');
+ await page.waitForSelector('#ct-boxer');
+ assert.match(await page.textContent('#ct-boxer'),/Warst du heute im Vereinstraining/);
+ assert.equal(await page.isHidden('#form'),true,'form hidden until boxer answers');
+ await page.getByRole('button',{name:/Nein, eigenes Training/}).click();
+ assert.ok(await page.isVisible('#form'),'No opens individual training');
+ assert.equal(await page.getAttribute('#trainingV2 .tl-v2-cards [role="radio"]:last-child','aria-checked'),'true','individual location selected');
+ // Reload a fresh mock session to test the one-tap Yes path; RPC does not award points.
+ await page.goto(page.url().split('?')[0]+'#trainingFormCard');
+ await page.waitForSelector('#ct-boxer');
+ await page.getByRole('button',{name:/Ja, im Verein/}).click();
+ await page.waitForFunction(()=>document.querySelector('#ct-boxer .ct-result')?.textContent &&
+  !/Antrag wird gespeichert/.test(document.querySelector('#ct-boxer .ct-result').textContent));
+ const quickMsg=await page.textContent('#ct-boxer .ct-result');
+ assert.match(quickMsg,/eingetragen und zur Trainerfreigabe eingereicht|Heute ist kein Pflichttraining/);
+ assert.equal((await page.evaluate(()=>window.__stats.inserted)).length,0,'quick request is RPC only, no client insert');
+ // The optional club-form path remains usable for supplementary trainings and legacy validation.
+ await page.goto(page.url().split('?')[0]+'?club=1#trainingFormCard');
  await page.waitForSelector('#trainingV2 .tl-v2-card');
+ assert.equal(await page.isVisible('#form'),true,'supplementary club form reachable');
  await page.locator('#trainingFormCard').scrollIntoViewIfNeeded();
  await page.getByRole('radio',{name:/Im Verein \/ Gym/}).click();
  await page.waitForSelector('text=PFLICHTTRAINING');await page.waitForSelector('text=ERGÄNZUNGSTRAINING');
