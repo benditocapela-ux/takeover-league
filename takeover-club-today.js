@@ -25,8 +25,10 @@ const messages={
  submitted:r=>'Dein heutiges Vereinstraining «'+r.label+'» wurde automatisch eingetragen und zur Trainerfreigabe eingereicht.',
  already_pending:()=>'Dein heutiges Vereinstraining ist bereits zur Freigabe eingereicht. Kein doppelter Eintrag.',
  already_approved:()=>'Dein heutiges Vereinstraining ist bereits bestätigt. Kein doppelter Eintrag.',
- gym_registered:()=>'Du bist heute bereits im Gym eingecheckt. Es wurde kein zweiter Antrag erstellt.',
- checkin_required:()=>'Dein Verein verwendet den verpflichtenden Gym-Check-in. Melde dich bei der vom Trainer gestarteten Einheit an.',
+ already_checked_in:()=>'Du bist für das heutige Vereinstraining bereits eingecheckt. Dein Trainer bestätigt deine Anwesenheit; es wurde nichts doppelt erfasst.',
+ checked_in:()=>'Erfolgreich eingecheckt! Dein heutiges Vereinstraining ist beim Trainer als Anwesenheit erfasst. Die Punkte folgen nach seiner Bestätigung.',
+ gym_not_open:()=>'Das heutige Vereinstraining ist noch nicht vom Trainer zum Check-in geöffnet. Sobald er die Einheit startet, kannst du dich mit «Ja» einchecken.',
+ choose_gym_session:()=>'Für heute laufen mehrere passende Gym-Einheiten. Bitte wähle die richtige im Gym-Check-in.',
  no_slot:()=>'Heute ist kein Pflichttraining im Stundenplan hinterlegt. Du kannst dein eigenes Training eintragen.',
  choose_slot:()=>'Heute gibt es mehrere Vereinseinheiten. Bitte wähle die passende Einheit.',
  disabled:()=>'Training 2.0 ist noch nicht freigeschaltet. Verwende das bisherige Formular.'
@@ -46,11 +48,12 @@ async function submit(db,slot,btn,output,cfg){
    }
    output.append(list);
   }
-  if(result.status==='checkin_required'){
-   const link=e('a','','Zum Gym-Check-in');link.href='./checkin.html';output.append(link);
+  if(['gym_not_open','choose_gym_session'].includes(result.status)){
+   const link=e('a','','Gym-Check-in öffnen');link.href='./checkin.html';output.append(link);
   }
-  if(['no_slot','disabled'].includes(result.status))output.classList.add('ct-error');
-  if(result.status==='submitted')document.dispatchEvent(new CustomEvent('takeover:club-today-submitted',{detail:result}));
+  if(['no_slot','disabled','gym_not_open'].includes(result.status))output.classList.add('ct-error');
+  if(['submitted','checked_in'].includes(result.status))
+   document.dispatchEvent(new CustomEvent('takeover:club-today-submitted',{detail:result}));
  }catch(error){
   output.replaceChildren(e('p','','Antrag nicht gespeichert: '+String(error.message||error)));
   output.classList.add('ct-error');
@@ -62,7 +65,7 @@ export function mountBoxerPrompt({db,cfg,onIndividual,onClub}){
  styles();
  const panel=e('section','ct-panel');panel.id='ct-boxer';
  panel.append(e('span','ct-kicker','HEUTIGES TRAINING'),e('h2','','Warst du heute im Vereinstraining?'),
-  e('p','','Bei Ja wird das heutige Pflichttraining mit den Vereinsvorgaben zur Trainerfreigabe beantragt.'));
+  e('p','','Bei Ja wird die heutige Pflichteinheit automatisch erfasst: bei einer geöffneten Gym-Einheit als Check-in, sonst – falls erlaubt – als Antrag zur Freigabe.'));
  const choices=e('div','ct-actions');
  const yes=e('button','','Ja, im Verein');const no=e('button','ct-secondary','Nein, eigenes Training');
  yes.type='button';no.type='button';choices.append(yes,no);panel.append(choices);
