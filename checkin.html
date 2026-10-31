@@ -12,10 +12,16 @@
 <script type="module">
 const P=window.TLPerf,$=id=>document.getElementById(id),app=$('app'),status=$('status');
 const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
-let db,role,types=[],groups=[],sessions=[],current=null,filter='alle',busy=false,cancelArmed=false,form={type:null,min:90,note:'',group:''},sched=null;
+let db,role,types=[],groups=[],sessions=[],current=null,filter='alle',busy=false,cancelArmed=false,form={type:null,min:90,note:'',group:''},sched=null,unifiedScheduleActive=false;
 const tierPill=s=>s&&s.club_tier?`<span class="tlp-pill inl ${s.club_tier==='pflicht'?'gold':'ok'}">${P.esc(s.tier_label||'')}</span>`:'';
 const today=()=>new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich'}).format(new Date());
 function boxerView(list,enabled){
+ // Scheduled Pflicht units use the same unified one-tap RPC displayed above.
+ // Keep additional, non-Pflicht Gym sessions available through the legacy flow.
+ if(unifiedScheduleActive){
+  list=list.filter(s=>s.club_tier!=='pflicht');
+  if(!list.length)return '';
+ }
  if(!enabled)return '<div class="tlp-panel">Der Gym-Check-in ist noch nicht freigeschaltet.</div>';
  if(!list.length)return `<div class="tlp-panel"><b>Gerade läuft keine Einheit.</b><p class="tlp-note">Sobald dein Coach das Training im Gym startet, kannst du dich hier einchecken.</p></div>`;
  return list.map(s=>`<div class="tlp-panel tlp-session"><div class="tlp-eyebrow">Heute${s.group?' · '+P.esc(s.group):''}</div><h2 class="tlp-h2">${P.esc(s.training_type)} ${tierPill(s)}</h2><p class="tlp-note">${s.duration_minutes} Min. · ${P.esc(s.note)}</p>
@@ -139,6 +145,8 @@ app.addEventListener('change',ev=>{if(ev.target.id==='ciMin')form.min=Number(ev.
     if(!config.error&&config.data?.enabled===true){
      const quick=await import('./takeover-club-today.js');
      quick.mountCheckinSchedule({db,cfg:config.data,role});
+     unifiedScheduleActive=true;
+     await loadBoxer();
     }
    }catch(err){console.warn('Vereinsstundenplan nicht verfügbar:',err)}
   }
