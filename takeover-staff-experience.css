@@ -241,3 +241,89 @@ body[data-tl-screen="admin"] .tl-subnav{justify-content:flex-end;gap:8px}
 body[data-tl-screen="coach"] .tl-subnav .brand,
 body[data-tl-screen="admin"] .tl-subnav .brand{display:none}
 body[data-tl-screen="admin"] .tl-screen-ribbon .tl-screen-links a[href="./coach.html"]{display:none}
+
+
+/* Small-screen staff header: one compact identity row and one utility row.
+   Keep keyboard targets, account/logout access, role actions and all content.
+   Main role navigation stays in its independent bottom dock. */
+@media(max-width:650px){
+ body[data-tl-screen="coach"] .tl-screen-ribbon,
+ body[data-tl-screen="admin"] .tl-screen-ribbon{
+  display:grid!important;grid-template-columns:minmax(0,1fr) 44px;
+  align-items:center;gap:7px;min-height:58px;margin:0 0 5px;
+  padding:6px 9px;border-radius:12px;
+ }
+ body[data-tl-screen="coach"] .tl-screen-identity,
+ body[data-tl-screen="admin"] .tl-screen-identity{gap:8px;min-width:0}
+ body[data-tl-screen="coach"] .tl-screen-symbol,
+ body[data-tl-screen="admin"] .tl-screen-symbol{
+  width:36px;height:36px;font-size:20px;border-radius:10px
+ }
+ body[data-tl-screen="coach"] .tl-screen-eyebrow,
+ body[data-tl-screen="admin"] .tl-screen-eyebrow{display:none}
+ body[data-tl-screen="coach"] .tl-screen-title,
+ body[data-tl-screen="admin"] .tl-screen-title{
+  font-size:clamp(18px,5vw,22px);margin:0;line-height:1.04;
+ }
+ body[data-tl-screen="coach"] .tl-screen-links,
+ body[data-tl-screen="admin"] .tl-screen-links{
+  display:contents!important;
+ }
+ body[data-tl-screen="coach"] .tl-screen-links a,
+ body[data-tl-screen="admin"] .tl-screen-links a{display:none!important}
+ body[data-tl-screen="coach"] .tl-screen-links button[data-stf-global-menu],
+ body[data-tl-screen="admin"] .tl-screen-links button[data-stf-global-menu]{
+  grid-column:2;grid-row:1;min-width:44px;width:44px;min-height:44px;
+  padding:0;font-size:0;line-height:0;border-radius:11px;
+ }
+ body[data-tl-screen="coach"] .tl-screen-links button[data-stf-global-menu]::before,
+ body[data-tl-screen="admin"] .tl-screen-links button[data-stf-global-menu]::before{
+  content:"☰";font:700 23px/1 var(--font,system-ui);
+ }
+ body[data-tl-screen="coach"] .tl-subnav,
+ body[data-tl-screen="admin"] .tl-subnav{
+  display:flex;justify-content:flex-start;gap:6px;
+  flex-wrap:nowrap;min-height:43px;padding:0 0 5px;
+  margin:0 0 7px;border-bottom-color:#2f425b;
+ }
+ body[data-tl-screen="coach"] .tl-subnav .bar{gap:6px;flex-wrap:nowrap}
+ body[data-tl-screen="coach"] .tl-subnav :where(a,button),
+ body[data-tl-screen="admin"] .tl-subnav a{
+  min-height:40px;padding:7px 10px;white-space:nowrap;
+  font-size:11px;
+ }
+ body[data-tl-screen="coach"] .cv2-hero{
+  min-height:0;margin:0 0 10px;padding:3px 1px 5px;
+  border:0;border-bottom:1px solid #344963;
+  border-radius:0;background:transparent;
+  align-items:center;gap:8px;
+ }
+ body[data-tl-screen="coach"] .cv2-hero .eyebrow{display:none}
+ body[data-tl-screen="coach"] .cv2-hero h1{
+  margin:0 0 2px;font-size:clamp(23px,6vw,29px);
+  line-height:1.02;
+ }
+ body[data-tl-screen="coach"] .cv2-hero #welcome{
+  font-size:11px;line-height:1.25;max-width:270px;
+ }
+ body[data-tl-screen="coach"] .cv2-refresh{
+  width:44px;min-width:44px;height:44px;min-height:44px;
+  border-radius:11px;
+ }
+ body[data-tl-screen="admin"] .stf-admin-hero{
+  padding:5px 1px 7px;margin:0 0 9px;
+  border:0;border-bottom:1px solid #344963;
+  border-radius:0;background:transparent;
+ }
+ body[data-tl-screen="admin"] .stf-admin-headline,
+ body[data-tl-screen="admin"] .stf-admin-hero p{display:none}
+ body[data-tl-screen="admin"] .stf-admin-hero h1{
+  margin:0;font-size:clamp(23px,6vw,29px);line-height:1.05;
+ }
+}
+@media(max-width:360px){
+ body[data-tl-screen="coach"] .tl-subnav :where(a,button),
+ body[data-tl-screen="admin"] .tl-subnav a{padding-inline:7px;font-size:10px}
+ body[data-tl-screen="coach"] .cv2-hero h1,
+ body[data-tl-screen="admin"] .stf-admin-hero h1{font-size:23px}
+}
