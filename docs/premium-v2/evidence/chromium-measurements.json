@@ -1,0 +1,515 @@
+{
+  "engine": "chromium",
+  "combinations": 16,
+  "invariants": {
+    "unsupported": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "flags": [
+      false,
+      false,
+      false,
+      false
+    ],
+    "shared": [
+      "coat-back",
+      "head",
+      "lower",
+      "bottom-black",
+      "feet",
+      "eyes",
+      "hair-afro",
+      "coat-tail"
+    ],
+    "total": 12
+  },
+  "reuse": {
+    "sharedComponents": 8,
+    "totalComponents": 12,
+    "sharedRectangleTexels": 904775,
+    "totalRectangleTexels": 1236675,
+    "checks": [
+      {
+        "id": "coat-back",
+        "maxAlpha": 0,
+        "maxOpaque": 0
+      },
+      {
+        "id": "head",
+        "maxAlpha": 0,
+        "maxOpaque": 0
+      },
+      {
+        "id": "lower",
+        "maxAlpha": 0,
+        "maxOpaque": 0
+      },
+      {
+        "id": "bottom-black",
+        "maxAlpha": 0,
+        "maxOpaque": 0
+      },
+      {
+        "id": "feet",
+        "maxAlpha": 0,
+        "maxOpaque": 0
+      },
+      {
+        "id": "eyes",
+        "maxAlpha": 0,
+        "maxOpaque": 0
+      },
+      {
+        "id": "hair-afro",
+        "maxAlpha": 0,
+        "maxOpaque": 0
+      },
+      {
+        "id": "coat-tail",
+        "maxAlpha": 0,
+        "maxOpaque": 0
+      }
+    ]
+  },
+  "hands": {
+    "alphaIoU": 0.991580310880829,
+    "wrists": [
+      [
+        254,
+        253
+      ],
+      [
+        254,
+        254
+      ]
+    ]
+  },
+  "cold": [
+    {
+      "mode": "v1",
+      "loadDecodeFirstDrawMs": 346.89999997615814,
+      "imageRequests": 8,
+      "imageEncodedBytes": 1513231,
+      "decodedRGBABytes": 29884416
+    },
+    {
+      "mode": "v1",
+      "loadDecodeFirstDrawMs": 299.5999999642372,
+      "imageRequests": 8,
+      "imageEncodedBytes": 1513231,
+      "decodedRGBABytes": 29884416
+    },
+    {
+      "mode": "v1",
+      "loadDecodeFirstDrawMs": 284.80000001192093,
+      "imageRequests": 8,
+      "imageEncodedBytes": 1513231,
+      "decodedRGBABytes": 29884416
+    },
+    {
+      "mode": "v2",
+      "loadDecodeFirstDrawMs": 166,
+      "imageRequests": 2,
+      "imageEncodedBytes": 2024127,
+      "decodedRGBABytes": 11149312
+    },
+    {
+      "mode": "v2",
+      "loadDecodeFirstDrawMs": 169,
+      "imageRequests": 2,
+      "imageEncodedBytes": 2024127,
+      "decodedRGBABytes": 11149312
+    },
+    {
+      "mode": "v2",
+      "loadDecodeFirstDrawMs": 179.5999999642372,
+      "imageRequests": 2,
+      "imageEncodedBytes": 2024127,
+      "decodedRGBABytes": 11149312
+    }
+  ],
+  "benchmarks": {
+    "v1": {
+      "p50ms": 9,
+      "p95ms": 12.5
+    },
+    "v2": {
+      "p50ms": 4,
+      "p95ms": 6.800000011920929
+    }
+  },
+  "reports": [
+    {
+      "coat": "samurai",
+      "glove": "schwarzgold",
+      "hair": "afro",
+      "bottom": "schwarz",
+      "v1": {
+        "images": 8,
+        "decodedRGBABytes": 29884416,
+        "drawP50ms": 9.400000035762787,
+        "drawP95ms": 12.199999988079071
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 4.100000023841858,
+        "drawP95ms": 7.5
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 0.000004550866913377193,
+        "channelsOver2": 0
+      }
+    },
+    {
+      "coat": "samurai",
+      "glove": "schwarzgold",
+      "hair": "afro",
+      "bottom": "rot",
+      "v1": {
+        "images": 8,
+        "decodedRGBABytes": 29884416,
+        "drawP50ms": 9.099999964237213,
+        "drawP95ms": 12.5
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 3.899999976158142,
+        "drawP95ms": 6.700000047683716
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 0.000004550866913377193,
+        "channelsOver2": 0
+      }
+    },
+    {
+      "coat": "samurai",
+      "glove": "schwarzgold",
+      "hair": "kurz_glatt",
+      "bottom": "schwarz",
+      "v1": {
+        "images": 8,
+        "decodedRGBABytes": 29884416,
+        "drawP50ms": 9.600000023841858,
+        "drawP95ms": 12.599999964237213
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 4.400000035762787,
+        "drawP95ms": 7.5
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 0.000004550866913377193,
+        "channelsOver2": 0
+      }
+    },
+    {
+      "coat": "samurai",
+      "glove": "schwarzgold",
+      "hair": "kurz_glatt",
+      "bottom": "rot",
+      "v1": {
+        "images": 8,
+        "decodedRGBABytes": 29884416,
+        "drawP50ms": 8.899999976158142,
+        "drawP95ms": 15.699999988079071
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 4.099999964237213,
+        "drawP95ms": 6.5
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 0.000004550866913377193,
+        "channelsOver2": 0
+      }
+    },
+    {
+      "coat": "samurai",
+      "glove": "weiss",
+      "hair": "afro",
+      "bottom": "schwarz",
+      "v1": {
+        "images": 8,
+        "decodedRGBABytes": 29884416,
+        "drawP50ms": 8.800000011920929,
+        "drawP95ms": 13.399999976158142
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 4.5,
+        "drawP95ms": 7.399999976158142
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 0.000004550866913377193,
+        "channelsOver2": 0
+      }
+    },
+    {
+      "coat": "samurai",
+      "glove": "weiss",
+      "hair": "afro",
+      "bottom": "rot",
+      "v1": {
+        "images": 8,
+        "decodedRGBABytes": 29884416,
+        "drawP50ms": 8.800000011920929,
+        "drawP95ms": 11.5
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 3.800000011920929,
+        "drawP95ms": 6.899999976158142
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 0.000004550866913377193,
+        "channelsOver2": 0
+      }
+    },
+    {
+      "coat": "samurai",
+      "glove": "weiss",
+      "hair": "kurz_glatt",
+      "bottom": "schwarz",
+      "v1": {
+        "images": 8,
+        "decodedRGBABytes": 29884416,
+        "drawP50ms": 9.199999988079071,
+        "drawP95ms": 12.600000023841858
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 4.100000023841858,
+        "drawP95ms": 5.900000035762787
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 0.000004550866913377193,
+        "channelsOver2": 0
+      }
+    },
+    {
+      "coat": "samurai",
+      "glove": "weiss",
+      "hair": "kurz_glatt",
+      "bottom": "rot",
+      "v1": {
+        "images": 8,
+        "decodedRGBABytes": 29884416,
+        "drawP50ms": 8.5,
+        "drawP95ms": 11.900000035762787
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 4.399999976158142,
+        "drawP95ms": 6.5
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 0.000004550866913377193,
+        "channelsOver2": 0
+      }
+    },
+    {
+      "coat": "none",
+      "glove": "schwarzgold",
+      "hair": "afro",
+      "bottom": "schwarz",
+      "v1": {
+        "images": 6,
+        "decodedRGBABytes": 22413312,
+        "drawP50ms": 6.300000011920929,
+        "drawP95ms": 9.100000023841858
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 2,
+        "drawP95ms": 4.800000011920929
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 5.353961074561403e-7,
+        "channelsOver2": 0
+      }
+    },
+    {
+      "coat": "none",
+      "glove": "schwarzgold",
+      "hair": "afro",
+      "bottom": "rot",
+      "v1": {
+        "images": 6,
+        "decodedRGBABytes": 22413312,
+        "drawP50ms": 6.5,
+        "drawP95ms": 10.199999988079071
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 2.199999988079071,
+        "drawP95ms": 4.299999952316284
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 5.353961074561403e-7,
+        "channelsOver2": 0
+      }
+    },
+    {
+      "coat": "none",
+      "glove": "schwarzgold",
+      "hair": "kurz_glatt",
+      "bottom": "schwarz",
+      "v1": {
+        "images": 6,
+        "decodedRGBABytes": 22413312,
+        "drawP50ms": 6.5,
+        "drawP95ms": 10.300000011920929
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 2,
+        "drawP95ms": 4.400000035762787
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 5.353961074561403e-7,
+        "channelsOver2": 0
+      }
+    },
+    {
+      "coat": "none",
+      "glove": "schwarzgold",
+      "hair": "kurz_glatt",
+      "bottom": "rot",
+      "v1": {
+        "images": 6,
+        "decodedRGBABytes": 22413312,
+        "drawP50ms": 6.5,
+        "drawP95ms": 8.599999964237213
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 2.600000023841858,
+        "drawP95ms": 4.5
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 5.353961074561403e-7,
+        "channelsOver2": 0
+      }
+    },
+    {
+      "coat": "none",
+      "glove": "weiss",
+      "hair": "afro",
+      "bottom": "schwarz",
+      "v1": {
+        "images": 6,
+        "decodedRGBABytes": 22413312,
+        "drawP50ms": 6.399999976158142,
+        "drawP95ms": 9.300000011920929
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 2.399999976158142,
+        "drawP95ms": 4.300000011920929
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 5.353961074561403e-7,
+        "channelsOver2": 0
+      }
+    },
+    {
+      "coat": "none",
+      "glove": "weiss",
+      "hair": "afro",
+      "bottom": "rot",
+      "v1": {
+        "images": 6,
+        "decodedRGBABytes": 22413312,
+        "drawP50ms": 6.5,
+        "drawP95ms": 9.599999964237213
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 2.199999988079071,
+        "drawP95ms": 4
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 5.353961074561403e-7,
+        "channelsOver2": 0
+      }
+    },
+    {
+      "coat": "none",
+      "glove": "weiss",
+      "hair": "kurz_glatt",
+      "bottom": "schwarz",
+      "v1": {
+        "images": 6,
+        "decodedRGBABytes": 22413312,
+        "drawP50ms": 6.300000011920929,
+        "drawP95ms": 9.699999988079071
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 2.5,
+        "drawP95ms": 5
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 5.353961074561403e-7,
+        "channelsOver2": 0
+      }
+    },
+    {
+      "coat": "none",
+      "glove": "weiss",
+      "hair": "kurz_glatt",
+      "bottom": "rot",
+      "v1": {
+        "images": 6,
+        "decodedRGBABytes": 22413312,
+        "drawP50ms": 7.199999988079071,
+        "drawP95ms": 11.199999988079071
+      },
+      "v2": {
+        "images": 2,
+        "decodedRGBABytes": 11149312,
+        "drawP50ms": 2.400000035762787,
+        "drawP95ms": 4.400000035762787
+      },
+      "pixels": {
+        "maxChannelDelta": 1,
+        "meanChannelDelta": 5.353961074561403e-7,
+        "channelsOver2": 0
+      }
+    }
+  ]
+}

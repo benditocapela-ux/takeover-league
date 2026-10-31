@@ -1,0 +1,1276 @@
+{
+  "base": "1a55e0516c45ee3c457fc7f073cd8e412721b83e",
+  "scope": "Repository catalogue, not a live database query. Optional/none controls are configuration states, not new shop items.",
+  "configKeys": [
+    "tone",
+    "hair",
+    "hc",
+    "eye",
+    "eyefx",
+    "head",
+    "headc",
+    "top",
+    "hood",
+    "topc",
+    "bottom",
+    "bottomc",
+    "hands",
+    "glove",
+    "feet",
+    "feetc",
+    "coat",
+    "aura",
+    "scene",
+    "pose_profile",
+    "pose_card"
+  ],
+  "defaults": {
+    "tone": 2,
+    "hair": "kurz_glatt",
+    "hc": "schwarz",
+    "eye": "braun",
+    "eyefx": "none",
+    "head": "none",
+    "headc": "schwarz",
+    "top": "none",
+    "hood": false,
+    "topc": "grau",
+    "bottom": "boxer",
+    "bottomc": "rot",
+    "hands": "wraps",
+    "glove": "rot",
+    "feet": "boots",
+    "feetc": "weiss",
+    "coat": "none",
+    "aura": "none",
+    "scene": "holo",
+    "pose_profile": "guard",
+    "pose_card": "guard"
+  },
+  "domains": {
+    "tone": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "hair": [
+      "kurz_glatt",
+      "stachel",
+      "lang_glatt",
+      "undercut",
+      "buzz",
+      "glatze",
+      "dutts",
+      "zopf",
+      "bob",
+      "wellig",
+      "locken",
+      "afro",
+      "afro_puffs",
+      "locs",
+      "box_braids",
+      "cornrows",
+      "twists",
+      "high_top"
+    ],
+    "hc": [
+      "schwarz",
+      "braun",
+      "dunkelbraun",
+      "blond",
+      "rot",
+      "silber",
+      "blau",
+      "pink"
+    ],
+    "eye": [
+      "braun",
+      "hasel",
+      "gruen",
+      "blau",
+      "grau",
+      "gold",
+      "orange",
+      "violett"
+    ],
+    "eyefx": [
+      "none",
+      "kristall",
+      "glut",
+      "stern",
+      "mond"
+    ],
+    "head": [
+      "none",
+      "cap",
+      "band",
+      "hijab"
+    ],
+    "headc": [
+      "schwarz",
+      "weiss",
+      "grau",
+      "rot",
+      "blau",
+      "gruen",
+      "lila",
+      "gold"
+    ],
+    "top": [
+      "none",
+      "tank",
+      "shirt",
+      "hoodie",
+      "jacke"
+    ],
+    "hood": [
+      false,
+      true
+    ],
+    "topc": [
+      "schwarz",
+      "weiss",
+      "grau",
+      "rot",
+      "blau",
+      "gruen",
+      "lila",
+      "gold"
+    ],
+    "bottom": [
+      "boxer",
+      "kurz",
+      "jogger",
+      "track"
+    ],
+    "bottomc": [
+      "schwarz",
+      "weiss",
+      "grau",
+      "rot",
+      "blau",
+      "gruen",
+      "lila",
+      "gold"
+    ],
+    "hands": [
+      "wraps",
+      "gloves"
+    ],
+    "glove": [
+      "rot",
+      "weiss",
+      "schwarzgold",
+      "eisblau",
+      "glut"
+    ],
+    "feet": [
+      "boots",
+      "sneaker"
+    ],
+    "feetc": [
+      "schwarz",
+      "weiss",
+      "grau",
+      "rot",
+      "blau",
+      "gruen",
+      "lila",
+      "gold"
+    ],
+    "coat": [
+      "none",
+      "basic",
+      "samurai",
+      "neon",
+      "drache"
+    ],
+    "aura": [
+      "none",
+      "flamme",
+      "sakura",
+      "blitz",
+      "schatten"
+    ],
+    "scene": [
+      "holo",
+      "dojo",
+      "neon",
+      "arena"
+    ],
+    "pose_profile": [
+      "guard",
+      "jab",
+      "sieg",
+      "cool",
+      "flex",
+      "ansage"
+    ],
+    "pose_card": [
+      "guard",
+      "jab",
+      "sieg",
+      "cool",
+      "flex",
+      "ansage"
+    ]
+  },
+  "palettes": {
+    "skin": [
+      [
+        "#fbe3d2",
+        "#e8b8a2"
+      ],
+      [
+        "#f6d0b4",
+        "#e0a98c"
+      ],
+      [
+        "#eab995",
+        "#cc9270"
+      ],
+      [
+        "#d39b72",
+        "#b07650"
+      ],
+      [
+        "#b07a52",
+        "#8c5a38"
+      ],
+      [
+        "#8a5638",
+        "#683e25"
+      ],
+      [
+        "#6a3f28",
+        "#4e2c1a"
+      ],
+      [
+        "#4a2a1b",
+        "#341c11"
+      ]
+    ],
+    "hair": {
+      "schwarz": [
+        "#221c26",
+        "#0e0a12",
+        "#5d4f72"
+      ],
+      "braun": [
+        "#5a3420",
+        "#2e180c",
+        "#a8714a"
+      ],
+      "dunkelbraun": [
+        "#3a2216",
+        "#1c0f08",
+        "#7a5038"
+      ],
+      "blond": [
+        "#e8c46a",
+        "#b8913a",
+        "#fff0b8"
+      ],
+      "rot": [
+        "#b8322a",
+        "#6a1410",
+        "#f08a6a"
+      ],
+      "silber": [
+        "#d8dce8",
+        "#8e98b4",
+        "#ffffff"
+      ],
+      "blau": [
+        "#2f6bff",
+        "#12256e",
+        "#9cc0ff"
+      ],
+      "pink": [
+        "#ff7ac0",
+        "#a3286a",
+        "#ffd0ea"
+      ]
+    },
+    "eyes": {
+      "braun": [
+        "#7a4a22",
+        "#2a1408",
+        "#c89a6a"
+      ],
+      "hasel": [
+        "#9a7a32",
+        "#3a2a08",
+        "#e0c88a"
+      ],
+      "gruen": [
+        "#3a9a5a",
+        "#0b4a26",
+        "#b8f0c8"
+      ],
+      "blau": [
+        "#3a8ad8",
+        "#0b2a5e",
+        "#c8e4ff"
+      ],
+      "grau": [
+        "#8a96a8",
+        "#2e3644",
+        "#e0e6ee"
+      ],
+      "gold": [
+        "#f2c14e",
+        "#6e4a00",
+        "#fff1b8"
+      ],
+      "orange": [
+        "#ff6a2a",
+        "#7a1606",
+        "#ffd27a"
+      ],
+      "violett": [
+        "#9b5cff",
+        "#2e1166",
+        "#e2c8ff"
+      ]
+    },
+    "clothing": {
+      "schwarz": [
+        "#24222c",
+        "#0e0d12",
+        "#f2c14e"
+      ],
+      "weiss": [
+        "#eef0f5",
+        "#b8bfcc",
+        "#c0162f"
+      ],
+      "grau": [
+        "#7a8194",
+        "#4a5062",
+        "#eef0f5"
+      ],
+      "rot": [
+        "#c0162f",
+        "#6e0a1a",
+        "#ffffff"
+      ],
+      "blau": [
+        "#1f4fc8",
+        "#0e2468",
+        "#ffffff"
+      ],
+      "gruen": [
+        "#1f8a5a",
+        "#0c4a2e",
+        "#ffffff"
+      ],
+      "lila": [
+        "#6a2bd6",
+        "#3a127a",
+        "#ffffff"
+      ],
+      "gold": [
+        "#f2c14e",
+        "#a4781c",
+        "#24222c"
+      ]
+    },
+    "gloves": {
+      "rot": [
+        "#e0263a",
+        "#8e0f1e",
+        "#f6f2ea"
+      ],
+      "weiss": [
+        "#f4f4f6",
+        "#b8bfcc",
+        "#c0162f"
+      ],
+      "schwarzgold": [
+        "#2a2830",
+        "#0c0b10",
+        "#f2c14e"
+      ],
+      "eisblau": [
+        "#4fd8ff",
+        "#1a7aa8",
+        "#ffffff"
+      ],
+      "glut": [
+        "#ff6a1f",
+        "#a3220f",
+        "#ffd23a"
+      ]
+    }
+  },
+  "catalogue": [
+    {
+      "key": "hair_kurz_glatt",
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "name": "Kurz glatt",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_stachel",
+      "slot": "hair",
+      "value": "stachel",
+      "name": "Stachel",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_lang_glatt",
+      "slot": "hair",
+      "value": "lang_glatt",
+      "name": "Lang glatt",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_undercut",
+      "slot": "hair",
+      "value": "undercut",
+      "name": "Undercut",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_buzz",
+      "slot": "hair",
+      "value": "buzz",
+      "name": "Buzzcut",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_glatze",
+      "slot": "hair",
+      "value": "glatze",
+      "name": "Glatze",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_dutts",
+      "slot": "hair",
+      "value": "dutts",
+      "name": "Zwei Dutts",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_zopf",
+      "slot": "hair",
+      "value": "zopf",
+      "name": "Pferdeschwanz",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_bob",
+      "slot": "hair",
+      "value": "bob",
+      "name": "Bob",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_wellig",
+      "slot": "hair",
+      "value": "wellig",
+      "name": "Wellig",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_locken",
+      "slot": "hair",
+      "value": "locken",
+      "name": "Locken",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_afro",
+      "slot": "hair",
+      "value": "afro",
+      "name": "Afro",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_afro_puffs",
+      "slot": "hair",
+      "value": "afro_puffs",
+      "name": "Afro-Puffs",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_locs",
+      "slot": "hair",
+      "value": "locs",
+      "name": "Locs",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_box_braids",
+      "slot": "hair",
+      "value": "box_braids",
+      "name": "Box Braids",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_cornrows",
+      "slot": "hair",
+      "value": "cornrows",
+      "name": "Cornrows",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_twists",
+      "slot": "hair",
+      "value": "twists",
+      "name": "Twists",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "hair_high_top",
+      "slot": "hair",
+      "value": "high_top",
+      "name": "High-Top Fade",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "head_cap",
+      "slot": "head",
+      "value": "cap",
+      "name": "Kappe",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "head_band",
+      "slot": "head",
+      "value": "band",
+      "name": "Stirnband",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "head_hijab",
+      "slot": "head",
+      "value": "hijab",
+      "name": "Sport-Hijab",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "top_tank",
+      "slot": "top",
+      "value": "tank",
+      "name": "Tanktop",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "top_shirt",
+      "slot": "top",
+      "value": "shirt",
+      "name": "T-Shirt",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "top_hoodie",
+      "slot": "top",
+      "value": "hoodie",
+      "name": "Hoodie",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "top_jacke",
+      "slot": "top",
+      "value": "jacke",
+      "name": "Trainingsjacke",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "bottom_boxer",
+      "slot": "bottom",
+      "value": "boxer",
+      "name": "Boxershorts",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "bottom_kurz",
+      "slot": "bottom",
+      "value": "kurz",
+      "name": "Kurze Hose",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "bottom_jogger",
+      "slot": "bottom",
+      "value": "jogger",
+      "name": "Jogginghose",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "bottom_track",
+      "slot": "bottom",
+      "value": "track",
+      "name": "Trainingshose",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "glove_rot",
+      "slot": "glove",
+      "value": "rot",
+      "name": "Rot",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "glove_weiss",
+      "slot": "glove",
+      "value": "weiss",
+      "name": "Weiss",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "glove_schwarzgold",
+      "slot": "glove",
+      "value": "schwarzgold",
+      "name": "Schwarz-Gold",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "glove_eisblau",
+      "slot": "glove",
+      "value": "eisblau",
+      "name": "Eisblau",
+      "rarity": "rare",
+      "unlock": "shop",
+      "price": 450,
+      "reward": null
+    },
+    {
+      "key": "glove_glut",
+      "slot": "glove",
+      "value": "glut",
+      "name": "Glut",
+      "rarity": "epic",
+      "unlock": "reward",
+      "price": null,
+      "reward": {
+        "type": "level",
+        "min": 15
+      }
+    },
+    {
+      "key": "feet_boots",
+      "slot": "feet",
+      "value": "boots",
+      "name": "Boxstiefel",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "feet_sneaker",
+      "slot": "feet",
+      "value": "sneaker",
+      "name": "Sneaker",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "coat_basic",
+      "slot": "coat",
+      "value": "basic",
+      "name": "Trainer-Mantel",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "coat_samurai",
+      "slot": "coat",
+      "value": "samurai",
+      "name": "Samurai-Jacke",
+      "rarity": "epic",
+      "unlock": "reward",
+      "price": null,
+      "reward": {
+        "type": "level",
+        "min": 25
+      }
+    },
+    {
+      "key": "coat_neon",
+      "slot": "coat",
+      "value": "neon",
+      "name": "Neon-Mantel",
+      "rarity": "epic",
+      "unlock": "shop",
+      "price": 1200,
+      "reward": null
+    },
+    {
+      "key": "coat_drache",
+      "slot": "coat",
+      "value": "drache",
+      "name": "Drachen-Mantel",
+      "rarity": "leg",
+      "unlock": "shop",
+      "price": 1800,
+      "reward": null
+    },
+    {
+      "key": "aura_flamme",
+      "slot": "aura",
+      "value": "flamme",
+      "name": "Flamme",
+      "rarity": "epic",
+      "unlock": "shop",
+      "price": 900,
+      "reward": null
+    },
+    {
+      "key": "aura_sakura",
+      "slot": "aura",
+      "value": "sakura",
+      "name": "Sakura",
+      "rarity": "epic",
+      "unlock": "shop",
+      "price": 900,
+      "reward": null
+    },
+    {
+      "key": "aura_blitz",
+      "slot": "aura",
+      "value": "blitz",
+      "name": "Blitz",
+      "rarity": "epic",
+      "unlock": "reward",
+      "price": null,
+      "reward": {
+        "type": "level",
+        "min": 20
+      }
+    },
+    {
+      "key": "aura_schatten",
+      "slot": "aura",
+      "value": "schatten",
+      "name": "Schatten",
+      "rarity": "leg",
+      "unlock": "reward",
+      "price": null,
+      "reward": {
+        "type": "level",
+        "min": 30
+      }
+    },
+    {
+      "key": "eyefx_kristall",
+      "slot": "eyefx",
+      "value": "kristall",
+      "name": "Kristall",
+      "rarity": "epic",
+      "unlock": "shop",
+      "price": 1200,
+      "reward": null
+    },
+    {
+      "key": "eyefx_glut",
+      "slot": "eyefx",
+      "value": "glut",
+      "name": "Glut-Flamme",
+      "rarity": "leg",
+      "unlock": "shop",
+      "price": 1500,
+      "reward": null
+    },
+    {
+      "key": "eyefx_stern",
+      "slot": "eyefx",
+      "value": "stern",
+      "name": "Stern",
+      "rarity": "leg",
+      "unlock": "reward",
+      "price": null,
+      "reward": {
+        "type": "award",
+        "kind": "cotw"
+      }
+    },
+    {
+      "key": "eyefx_mond",
+      "slot": "eyefx",
+      "value": "mond",
+      "name": "Mond",
+      "rarity": "myth",
+      "unlock": "reward",
+      "price": null,
+      "reward": {
+        "type": "rank",
+        "min": "A"
+      }
+    },
+    {
+      "key": "scene_holo",
+      "slot": "scene",
+      "value": "holo",
+      "name": "Holo-Plattform",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "scene_dojo",
+      "slot": "scene",
+      "value": "dojo",
+      "name": "Dojo",
+      "rarity": "rare",
+      "unlock": "shop",
+      "price": 700,
+      "reward": null
+    },
+    {
+      "key": "scene_neon",
+      "slot": "scene",
+      "value": "neon",
+      "name": "Neon-Stadt",
+      "rarity": "rare",
+      "unlock": "shop",
+      "price": 700,
+      "reward": null
+    },
+    {
+      "key": "scene_arena",
+      "slot": "scene",
+      "value": "arena",
+      "name": "Arena",
+      "rarity": "rare",
+      "unlock": "reward",
+      "price": null,
+      "reward": {
+        "type": "duel_win"
+      }
+    },
+    {
+      "key": "pose_guard",
+      "slot": "pose",
+      "value": "guard",
+      "name": "Kampfstellung",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "pose_jab",
+      "slot": "pose",
+      "value": "jab",
+      "name": "Jab",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "pose_sieg",
+      "slot": "pose",
+      "value": "sieg",
+      "name": "Siegerpose",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "pose_cool",
+      "slot": "pose",
+      "value": "cool",
+      "name": "Cool",
+      "rarity": "common",
+      "unlock": "start",
+      "price": null,
+      "reward": null
+    },
+    {
+      "key": "pose_flex",
+      "slot": "pose",
+      "value": "flex",
+      "name": "Bizeps",
+      "rarity": "rare",
+      "unlock": "reward",
+      "price": null,
+      "reward": {
+        "type": "level",
+        "min": 10
+      }
+    },
+    {
+      "key": "pose_ansage",
+      "slot": "pose",
+      "value": "ansage",
+      "name": "Ansage",
+      "rarity": "rare",
+      "unlock": "shop",
+      "price": 500,
+      "reward": null
+    }
+  ],
+  "bundles": [
+    {
+      "key": "drachen_bundle",
+      "name": "Drachen-Bundle",
+      "price": 3400,
+      "items": [
+        "coat_drache",
+        "aura_flamme",
+        "eyefx_glut",
+        "pose_ansage"
+      ]
+    },
+    {
+      "key": "neon_bundle",
+      "name": "Neon-Bundle",
+      "price": 2400,
+      "items": [
+        "coat_neon",
+        "scene_neon",
+        "eyefx_kristall"
+      ]
+    },
+    {
+      "key": "sakura_bundle",
+      "name": "Kirschblüten-Bundle",
+      "price": 1600,
+      "items": [
+        "aura_sakura",
+        "scene_dojo",
+        "glove_eisblau"
+      ]
+    }
+  ],
+  "poses": {
+    "guard": {
+      "id": "guard",
+      "coordinateSpace": "svg-240x380",
+      "imageLeft": {
+        "shoulder": {
+          "x": 78,
+          "y": 110
+        },
+        "elbow": {
+          "x": 66,
+          "y": 150
+        },
+        "wrist": {
+          "x": 96,
+          "y": 106
+        }
+      },
+      "imageRight": {
+        "shoulder": {
+          "x": 162,
+          "y": 110
+        },
+        "elbow": {
+          "x": 174,
+          "y": 150
+        },
+        "wrist": {
+          "x": 146,
+          "y": 108
+        }
+      },
+      "armDrawOrder": [
+        "imageRight",
+        "imageLeft"
+      ]
+    },
+    "jab": {
+      "id": "jab",
+      "coordinateSpace": "svg-240x380",
+      "imageLeft": {
+        "shoulder": {
+          "x": 78,
+          "y": 110
+        },
+        "elbow": {
+          "x": 50,
+          "y": 108
+        },
+        "wrist": {
+          "x": 24,
+          "y": 104
+        }
+      },
+      "imageRight": {
+        "shoulder": {
+          "x": 162,
+          "y": 110
+        },
+        "elbow": {
+          "x": 174,
+          "y": 150
+        },
+        "wrist": {
+          "x": 146,
+          "y": 106
+        }
+      },
+      "armDrawOrder": [
+        "imageRight",
+        "imageLeft"
+      ]
+    },
+    "sieg": {
+      "id": "sieg",
+      "coordinateSpace": "svg-240x380",
+      "imageLeft": {
+        "shoulder": {
+          "x": 78,
+          "y": 110
+        },
+        "elbow": {
+          "x": 66,
+          "y": 150
+        },
+        "wrist": {
+          "x": 72,
+          "y": 184
+        }
+      },
+      "imageRight": {
+        "shoulder": {
+          "x": 162,
+          "y": 110
+        },
+        "elbow": {
+          "x": 182,
+          "y": 76
+        },
+        "wrist": {
+          "x": 188,
+          "y": 42
+        }
+      },
+      "armDrawOrder": [
+        "imageRight",
+        "imageLeft"
+      ]
+    },
+    "cool": {
+      "id": "cool",
+      "coordinateSpace": "svg-240x380",
+      "imageLeft": {
+        "shoulder": {
+          "x": 78,
+          "y": 110
+        },
+        "elbow": {
+          "x": 70,
+          "y": 150
+        },
+        "wrist": {
+          "x": 134,
+          "y": 142
+        }
+      },
+      "imageRight": {
+        "shoulder": {
+          "x": 162,
+          "y": 110
+        },
+        "elbow": {
+          "x": 170,
+          "y": 150
+        },
+        "wrist": {
+          "x": 106,
+          "y": 138
+        }
+      },
+      "armDrawOrder": [
+        "imageRight",
+        "imageLeft"
+      ]
+    },
+    "flex": {
+      "id": "flex",
+      "coordinateSpace": "svg-240x380",
+      "imageLeft": {
+        "shoulder": {
+          "x": 78,
+          "y": 110
+        },
+        "elbow": {
+          "x": 46,
+          "y": 104
+        },
+        "wrist": {
+          "x": 58,
+          "y": 70
+        }
+      },
+      "imageRight": {
+        "shoulder": {
+          "x": 162,
+          "y": 110
+        },
+        "elbow": {
+          "x": 194,
+          "y": 104
+        },
+        "wrist": {
+          "x": 182,
+          "y": 70
+        }
+      },
+      "armDrawOrder": [
+        "imageRight",
+        "imageLeft"
+      ]
+    },
+    "ansage": {
+      "id": "ansage",
+      "coordinateSpace": "svg-240x380",
+      "imageLeft": {
+        "shoulder": {
+          "x": 78,
+          "y": 110
+        },
+        "elbow": {
+          "x": 66,
+          "y": 150
+        },
+        "wrist": {
+          "x": 74,
+          "y": 186
+        }
+      },
+      "imageRight": {
+        "shoulder": {
+          "x": 162,
+          "y": 110
+        },
+        "elbow": {
+          "x": 196,
+          "y": 120
+        },
+        "wrist": {
+          "x": 222,
+          "y": 102
+        }
+      },
+      "armDrawOrder": [
+        "imageRight",
+        "imageLeft"
+      ]
+    }
+  },
+  "counts": {
+    "catalogue": 58,
+    "bundles": 3,
+    "configKeys": 21,
+    "variants": 300,
+    "matrixRows": 1800
+  },
+  "sourceHash": "748033364cebd5411130cfa6e816a515528e762b116839de9d5f2654354145ee"
+}
