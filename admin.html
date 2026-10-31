@@ -30,7 +30,7 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:13px;background:var(--bg
 .warn{border-left:3px solid var(--gold);padding:var(--sp-4);background:var(--surface-2)}
 @media(max-width:700px){body{padding:var(--sp-3)}.panel{padding:var(--sp-4)}.table-wrap{overflow:visible}table,thead,tbody,tr,td{display:block;width:100%;min-width:0}thead{position:absolute;clip:rect(0,0,0,0);width:1px;height:1px;overflow:hidden}tr{border:1px solid var(--line);border-radius:var(--r-md);margin:12px 0;padding:8px 11px}td{border:none;border-bottom:1px dashed var(--line);padding:9px 0}td:last-child{border-bottom:0}td::before{content:attr(data-label);display:block;color:var(--muted);font-size:11px;font-weight:800;margin-bottom:5px}td input[type="email"],td select{max-width:100%}}
 </style><link rel="stylesheet" href="./takeover-redesign.css"><link rel="stylesheet" href="./takeover-staff-experience.css"></head><body data-tl-screen="admin">
-<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Clubverwaltung"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🛡️</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Konten, Rollen und Freigaben</div><div class="tl-screen-title">Clubverwaltung</div></div></div><div class="tl-screen-links"><a href="#adminContent" class="tl-screen-primary">Profile verwalten</a><a href="./coach.html">Trainerbereich</a></div></div><header class="tl-subnav"><div class="brand">TAKEOVER LEAGUE / ADMIN</div><a href="./coach.html">Trainerbereich</a><a href="./login.html">Mein Account</a></header>
+<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Clubverwaltung"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🛡️</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Konten, Rollen und Freigaben</div><div class="tl-screen-title">Clubverwaltung</div></div></div><div class="tl-screen-links"><a href="#adminContent" class="tl-screen-primary">Profile verwalten</a><a href="./coach.html">Trainerbereich</a><button type="button" data-stf-global-menu aria-haspopup="dialog">☰ Menü</button></div></div><header class="tl-subnav"><div class="brand">TAKEOVER LEAGUE / ADMIN</div><a href="./coach.html">Trainerbereich</a><a href="./login.html">Mein Account</a></header>
 <div class="stf-admin-hero"><span class="stf-admin-headline">TAKEOVER · CLUB CONTROL</span><h1>CLUBVERWALTUNG</h1>
 <p>Alle Boxer, Zugänge und Freigaben übersichtlich verwalten. Rollen und Berechtigungen bleiben serverseitig geschützt.</p></div>
 <div id="adminStatus" class="status" role="status" aria-live="polite">Admin-Berechtigung wird überprüft …</div>
@@ -39,7 +39,7 @@ pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:13px;background:var(--bg
    <button type="button" data-staff-target="profiles" aria-current="page"><span class="stf-ic" aria-hidden="true">👥</span><span>Boxer</span></button>
    <button type="button" data-staff-target="security" aria-current="false"><span class="stf-ic" aria-hidden="true">🔐</span><span>Zugänge</span></button>
    <button type="button" data-staff-target="audit" aria-current="false"><span class="stf-ic" aria-hidden="true">🗓️</span><span>Protokoll</span></button>
-   <a href="./coach.html"><span class="stf-ic" aria-hidden="true">🥊</span><span>Trainer</span></a>
+   <button type="button" data-stf-global-menu aria-haspopup="dialog"><span class="stf-ic" aria-hidden="true">☰</span><span>Menü</span></button>
  </nav>
 <div class="panel" data-staff-pane="profiles" role="region" aria-label="Boxerprofile"><div class="inline-actions" style="justify-content:space-between;align-items:center">
 <div><h2>Boxerprofile &amp; Zugänge</h2><div id="profileTotals" class="summary" aria-live="polite"></div></div>
@@ -242,6 +242,7 @@ $('showArchived').addEventListener('change',()=>{adminShown=10;renderProfileRows
 document.querySelector('[data-staff-search]').addEventListener('input',e=>{adminSearch=e.target.value;adminShown=10;renderProfileRows()});
 document.querySelector('[data-staff-more]').addEventListener('click',()=>{adminShown+=10;renderProfileRows()});
 document.querySelectorAll('[data-staff-target]').forEach(b=>b.addEventListener('click',()=>openStaffPanel(b.dataset.staffTarget,{focus:true})));
+document.querySelectorAll('[data-stf-global-menu]').forEach(b=>b.addEventListener('click',()=>document.getElementById('takeover-menu-open')?.click()));
 document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener('click',async()=>{
  try{await navigator.clipboard.writeText($(button.dataset.copy).textContent);msg('SQL-Hinweis kopiert. Er wurde nicht ausgeführt.')}
  catch{msg('Kopieren nicht möglich. SQL-Text oben manuell markieren.',true)}
