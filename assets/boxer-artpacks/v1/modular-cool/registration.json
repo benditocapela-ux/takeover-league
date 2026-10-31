@@ -154,7 +154,28 @@
     ],
     "scale": 0.6168831168831169,
     "dx": 84.36688311688309,
-    "dy": 83.63636363636363
+    "dy": 83.63636363636363,
+    "localizedCorrection": {
+      "region": [
+        0,
+        0,
+        768,
+        310
+      ],
+      "blendRows": [
+        270,
+        310
+      ],
+      "sourceSize": [
+        997,
+        1578
+      ],
+      "scale": 0.63,
+      "dx": 72,
+      "dy": 114,
+      "method": "Imagegen collar/shoulder edit registered onto original sprite; original decoded pixels retained from row 310 downward. Body, back coat, cuffs and gloves unchanged.",
+      "sourceSha256": "21278fda63282108d64261e4fb4ed01996449b1be0e1d075822587dd939966ce"
+    }
   },
   {
     "name": "coatback",

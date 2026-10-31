@@ -86,6 +86,8 @@ const server=http.createServer((req,res)=>{
    assert.equal(x.images.length,0,'normal URL does not request modular art');
    assert.equal(await x.p.locator('[data-artpack-draft],.mb-art-debug').count(),0,'normal editor has no experimental image or badge');
    assert.equal(await x.p.locator('#saveBtn').isDisabled(),true,'saved outfit unchanged on normal URL');
+   await x.p.locator('.mb-tabs [data-tab="kleidung"]').click();
+   assert.equal(await x.p.locator('.mb-item-status[data-renderer="anime"]').count(),0,'normal SVG editor never advertises anime item art');
    await noWrites(x.p);await x.context.close();
 
    x=await page();await x.p.goto(base+'/mein-boxer.html?art=modular');
@@ -128,6 +130,17 @@ const server=http.createServer((req,res)=>{
     const expected=['body.png','eyes.png','feet.png',bottom==='rot'?'bottom-red.png':'bottom-black.png',hair==='afro'?'hair-afro.png':'hair-short.png',glove==='weiss'?'hands-white.png':'hands-blackgold.png',...(top==='tank'?['top-tank.png']:[]),...(coat?['coatback.png','coatfront.png']:[])].sort();
     const sources=await x.p.locator('.mb-preview .mb-artpack-img').evaluateAll(imgs=>imgs.map(i=>i.getAttribute('src').split('/').pop()).sort());
     assert.deepEqual(sources,expected,'exact selected layers '+JSON.stringify({coat,top,bottom,hair,glove}));
+    // An equipped item's thumbnail must reuse precisely its hero layer(s).
+    for(const [field,value,slots] of [['glove',glove,['hands']],['feet','boots',['feet']],['bottom','boxer',['bottom']],...(top==='tank'?[['top','tank',['top']]]:[]),...(coat?[['coatPick','samurai',['coatBack','coatFront']]]:[])]){
+     const tile=x.p.locator(`[data-set="${field}"][data-val="${value}"]`);
+     await tile.locator('[data-renderer="anime"]').waitFor();
+     assert.equal(await tile.getAttribute('aria-description'),'Anime');
+     const actual=await tile.locator('img').evaluateAll(imgs=>imgs.map(i=>[i.dataset.itemArtSlot,i.getAttribute('src')]));
+     const hero=await x.p.locator('.mb-preview .mb-artpack-img').evaluateAll((imgs,slots)=>imgs.filter(i=>slots.includes(i.dataset.artSlot)).map(i=>[i.dataset.artSlot,i.getAttribute('src')]),slots);
+     assert.deepEqual(actual,hero,'tile reuses exact equipped files: '+field);
+     const shape=await tile.locator('.mb-item-png').evaluate(el=>{const b=el.getBoundingClientRect();return {ratio:b.width/b.height,expected:Number(el.style.getPropertyValue('--item-ratio')),width:b.width,height:b.height}});
+     assert.ok(shape.width>10&&shape.height>10&&Math.abs(shape.ratio-shape.expected)<.01,'thumbnail preserves sprite proportions: '+JSON.stringify(shape));
+    }
     assert.match(await x.p.locator('.mb-art-debug').innerText(),/Entwurf – nicht freigegeben/);
     await badgeClearOfHead(x.p);
     assert.equal(await x.p.locator('.mb-preview svg.tlh').count(),0,'complete outfit replaces SVG atomically');
@@ -143,6 +156,21 @@ const server=http.createServer((req,res)=>{
      image:(await x.p.locator('.mb-stage').screenshot()).toString('base64')});
    }
    assert.equal(combinations,32);await noWrites(x.p);
+   assert.ok(new Set(x.images).size<=12,'tiles use only existing twelve sprite files');
+   // An unsupported piece changes the entire renderer, including other tiles.
+   await x.p.locator('[data-set="top"][data-val="shirt"]').click();
+   await x.p.waitForSelector('.mb-preview svg.tlh');
+   assert.equal(await x.p.locator('[data-set="coatPick"][data-val="samurai"] img').count(),0,'no premium coat promise while shirt forces SVG');
+   assert.equal(await x.p.locator('[data-set="coatPick"][data-val="samurai"] [data-renderer="svg"]').count(),1);
+   assert.equal(await x.p.locator('[data-set="top"][data-val="tank"] [data-renderer="anime"]').count(),1,'candidate that restores supported outfit correctly advertises anime');
+   await x.p.locator('[data-set="top"][data-val="tank"]').click();await ready(x.p);
+   const coatTile=x.p.locator('[data-set="coatPick"][data-val="samurai"]');
+   await coatTile.focus();
+   await coatTile.locator('img').first().dispatchEvent('error');
+   await x.p.waitForSelector('.mb-preview svg.tlh');
+   assert.equal(await coatTile.locator('img').count(),0,'render-time item failure clears misleading PNG');
+   assert.equal(await coatTile.locator('[data-renderer="svg"]').count(),1,'render-time item failure updates status');
+   assert.equal(await coatTile.evaluate(el=>document.activeElement===el),true,'async refresh preserves focused tile');
    assert.deepEqual(x.errors,[]);await x.context.close();
    if(contact.length){
     const sheet=await browser.newPage({viewport:{width:1000,height:900},deviceScaleFactor:1});

@@ -109,6 +109,16 @@ function build(manifest,draftPreview){
   if(!selected.length)return {state:'missing-layer'};
   return {state:selected.every(x=>loaded.has(x.src))?'ready':'loading',layers:selected};
  }
+ // Item art is permitted only when the entire resulting outfit is supported.
+ function item(config,pose,slot){
+  const found=selection(config,pose),frames=m.itemFrames&&m.itemFrames[pose];
+  const frame=frames&&frames[slot];
+  if(!found.layers||!Array.isArray(frame)||frame.length!==4||!frame.every(Number.isFinite)||frame[2]<=0||frame[3]<=0)return null;
+  const slots=slot==='coat'?['coatBack','coatFront']:slot==='glove'?['hands']:[slot];
+  const layers=found.layers.filter(layer=>slots.includes(layer.slot));
+  if(!layers.length)return null;
+  return {state:found.state,layers,frame:frame.slice()};
+ }
  function choose(config,pose){
   stats.attempted++;
   const found=selection(config,pose);
@@ -157,7 +167,7 @@ function build(manifest,draftPreview){
   failed.add(url);
   return true;
  }
- return Object.freeze({render,choose,prepare,inspect,markFailed,stats});
+ return Object.freeze({render,choose,prepare,inspect,markFailed,item,stats});
 }
 function create(manifest){return build(manifest,false)}
 function createDraft(manifest){

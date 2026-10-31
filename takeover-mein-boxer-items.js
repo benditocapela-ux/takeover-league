@@ -126,5 +126,14 @@ function svg(field,value,config){
  const art=mainShape(slot,value,accent,base,edge,id);
  return '<svg class="mb-item-svg" viewBox="0 0 130 116" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" focusable="false">'+defs+'<ellipse cx="65" cy="105" rx="46" ry="6" fill="#050b13" opacity=".6"/>'+art+'</svg>';
 }
-window.TLGearArt=Object.freeze({svg,supports});
+// Reuse the runtime's selected PNG URLs and registration; no new image requests
+// beyond the shared loader and the browser cache, no independent thumbnails.
+function png(item){
+ if(!item||item.state!=='ready')return '';
+ const [x,y,w,h]=item.frame;
+ if(![x,y,w,h].every(Number.isFinite)||w<=0||h<=0)return '';
+ if(!item.layers.every(l=>/^\.\/assets\/boxer-artpacks\/v1\/[a-z0-9_/-]+\.(png|webp)$/.test(l.src)))return '';
+ return '<span class="mb-item-png" style="--item-ratio:'+(w/h)+';aspect-ratio:'+w+'/'+h+'">'+item.layers.map(l=>'<img src="'+l.src+'" alt="" data-item-art-slot="'+l.slot+'" decoding="sync" draggable="false" style="left:'+(-x/w*100)+'%;top:'+(-y/h*100)+'%;width:'+(768/w*100)+'%;height:'+(1216/h*100)+'%">').join('')+'</span>';
+}
+window.TLGearArt=Object.freeze({svg,supports,png});
 })();

@@ -136,6 +136,7 @@ function refreshHero(){
  if(!preview||!cfg)return;
  const pose=previewPose==='card'?cfg.pose_card:cfg.pose_profile;
  preview.innerHTML=heroArt(cfg,pose)+artDebugLabel(cfg,pose);
+ if(typeof refreshItemPreviews==='function')refreshItemPreviews();
 }
 // Diagnostics are only exposed to editors explicitly using ?art=preview.
 // Nothing is added to public cards, profiles or normal Studio operation.
@@ -191,6 +192,7 @@ function itemLook(slot,value){
  const look=Object.assign({},cfg,{scene:'holo',aura:'none'});
  if(['head','top','bottom','hands','feet'].includes(slot))look.coat='none';
  if(slot==='head'){look.head=value;look.hood=false;look.top='none'}
+ else if(slot==='hair'){look.hair=value;look.head='none';look.hood=false;look.top='none';look.coat='none'}
  else if(slot==='top'){look.top=value;look.hood=value==='hoodie'&&cfg.hood}
  else if(slot==='bottom'){look.bottom=value;look.top='none'}
  else if(slot==='hands'){look.hands=value}
@@ -203,13 +205,48 @@ function itemLook(slot,value){
  else if(slot==='pose')look.pose_profile=value;
  return look;
 }
+// Apply precisely the same field change as the delegated outfit controls.
+function selectionLook(field,value){
+ const next={...cfg};
+ if(field==='coatPick')next.coat=value;
+ else if(field==='pose')next[previewPose==='card'?'pose_card':'pose_profile']=value;
+ else if(field==='tone')next.tone=Number(value);
+ else next[field]=value;
+ if(field==='top'&&value!=='hoodie')next.hood=false;
+ return H.normalize(next);
+}
+function itemPreview(field,value){
+ const slot=field==='coatPick'?'coat':field;
+ // Removal controls have no equipment artwork to classify.
+ if(value==='none'&&['head','top','coat'].includes(slot))return {html:G&&G.svg?G.svg(field,value,itemLook(field,value)):'',kind:'none'};
+ const next=selectionLook(field,value),pose=previewPose==='card'?next.pose_card:next.pose_profile;
+ const runtime=modularReview?modularPack:usePremiumArt&&!compareSvg?A&&A.active:null;
+ const descriptor=runtime&&runtime.item&&runtime.item(next,pose,slot);
+ if(descriptor&&G&&G.png){
+  if(runtime.prepare(next,pose,refreshItemPreviews)){
+   const png=G.png(runtime.item(next,pose,slot));
+   if(png)return {html:png,kind:'anime'};
+  }
+ }
+ const look=itemLook(field,value),scene=slot==='scene'?value:'none';
+ return {html:G&&G.supports(field,value)?G.svg(field,value,look):H.svg(look,{pose,scene,holo:false}),kind:'svg'};
+}
+const itemStatus=kind=>kind==='none'?'':'<span class="mb-item-status" data-renderer="'+kind+'">'+(kind==='anime'?'Anime':'SVG')+'</span>';
+function refreshItemPreviews(){
+ if(!cfg||!app.querySelectorAll)return;
+ for(const tile of app.querySelectorAll('[data-preview-field]')){
+  const result=itemPreview(tile.dataset.previewField,tile.dataset.previewValue);
+  const art=tile.querySelector('.mb-gear-art,.mb-shop-item-art'),badge=tile.querySelector('.mb-item-status');
+  if(art)art.innerHTML=result.html;
+  if(badge){badge.textContent=result.kind==='anime'?'Anime':'SVG';badge.dataset.renderer=result.kind}
+  if(tile.matches('button'))tile.setAttribute('aria-description',result.kind==='none'?'Kein Ausrüstungsgegenstand':result.kind==='anime'?'Anime':'SVG');
+ }
+}
 function gearChip(field,v,label,on,extra){
  const slot=field==='coatPick'?'coat':field;
- const look=itemLook(field,v);
  const klass=slot==='glove'||slot==='hands'?'hands':slot;
- const scene=slot==='scene'?v:'none';
- const content=G&&G.supports(field,v)?G.svg(field,v,look):H.svg(look,{pose:'guard',scene,holo:false});
- return `<button type="button" class="mb-chip mb-gear-chip" data-set="${field}" data-val="${esc(v)}" aria-label="${esc(label)}" aria-pressed="${on}"><span class="mb-gear-art mb-gear-${klass}" aria-hidden="true">${content}</span><span class="mb-gear-name">${esc(label)}</span>${extra||''}</button>`;
+ const result=itemPreview(field,v);
+ return `<button type="button" class="mb-chip mb-gear-chip" data-set="${field}" data-val="${esc(v)}" data-preview-field="${field}" data-preview-value="${esc(v)}" aria-label="${esc(label)}" aria-description="${result.kind==='none'?'Kein Ausrüstungsgegenstand':result.kind==='anime'?'Anime':'SVG'}" aria-pressed="${on}"><span class="mb-gear-art mb-gear-${klass}" aria-hidden="true">${result.html}</span><span class="mb-gear-name">${esc(label)}</span>${itemStatus(result.kind)}${extra||''}</button>`;
 }
 const sw=(field,v,color,label,on)=>`<button type="button" class="mb-sw" data-set="${field}" data-val="${esc(v)}" aria-pressed="${on}" aria-label="${esc(label)}" style="--c:${color}"></button>`;
 const toggle=(id,label,on)=>`<div class="mb-toggle"><span>${label}</span><button type="button" class="mb-switch" data-toggle="${id}" aria-pressed="${on}" aria-label="${label}"><i></i></button></div>`;
@@ -221,7 +258,7 @@ function itemChips(slot,field,withNone){
 function colorRow(field,map,labels){return `<div class="mb-row">${Object.keys(map).map(k=>sw(field,k,map[k][0],labels[k]||k,cfg[field]===k)).join('')}</div>`}
 function viewKoerper(){
  return sec('Hautfarbe',`<div class="mb-row">${H.TONES.map((t,i)=>sw('tone',i,t[0],'Hautton '+(i+1),cfg.tone===i)).join('')}</div>`)
-  +sec('Frisur',`<div class="mb-row">${items().filter(i=>i.slot==='hair').map(i=>chip('hair',i.value,esc(i.name),cfg.hair===i.value,lockTag(i))).join('')}</div>`)
+  +sec('Frisur',`<div class="mb-row">${items().filter(i=>i.slot==='hair').map(i=>gearChip('hair',i.value,i.name,cfg.hair===i.value,lockTag(i))).join('')}</div>`)
   +sec('Haarfarbe',colorRow('hc',H.HC,H.LABEL.hc))+sec('Augenfarbe',colorRow('eye',H.EYE,H.LABEL.eye));
 }
 function viewKleidung(){
@@ -260,7 +297,7 @@ function viewShop(){
    <div class="mb-price">${COIN}${fmt(b.price)} <s>${fmt(b.value)}</s></div>${buyBtn('bundle',b.key,b.price,b.owned_all)}
    <button type="button" class="mb-btn ghost" data-try-bundle="${esc(b.key)}">Anprobieren</button></div></article>`}).join('');
  const shopItems=items().filter(i=>i.unlock==='shop');
- const groups=['coat','glove','aura','eyefx','scene','pose'].map(s=>{const l=shopItems.filter(i=>i.slot===s);return l.length?sec(SLOT_TITLE[s],`<div class="mb-list">${l.map(i=>`<div class="mb-li"><span class="mb-shop-item-art" aria-hidden="true">${(G&&G.supports(i.slot,i.value)?G.svg(i.slot,i.value,itemLook(i.slot,i.value)):H.svg(itemLook(i.slot,i.value),{pose:'guard',scene:i.slot==='scene'?i.value:'none',holo:false}))}</span><span><b>${esc(i.name)}</b><span class="mb-rar r-${esc(i.rarity)}">${esc(({common:'Gewöhnlich',rare:'Selten',epic:'Episch',leg:'Legendär',myth:'Mythisch'})[i.rarity]||'')}</span></span>${buyBtn('item',i.key,i.price,i.owned)}</div>`).join('')}</div>`):''}).join('');
+ const groups=['coat','glove','aura','eyefx','scene','pose'].map(s=>{const l=shopItems.filter(i=>i.slot===s);return l.length?sec(SLOT_TITLE[s],`<div class="mb-list">${l.map(i=>`<div class="mb-li" data-preview-field="${i.slot}" data-preview-value="${esc(i.value)}"><span class="mb-shop-item-art" aria-hidden="true">${itemPreview(i.slot,i.value).html}</span><span><b>${esc(i.name)}</b>${itemStatus(itemPreview(i.slot,i.value).kind)}<span class="mb-rar r-${esc(i.rarity)}">${esc(({common:'Gewöhnlich',rare:'Selten',epic:'Episch',leg:'Legendär',myth:'Mythisch'})[i.rarity]||'')}</span></span>${buyBtn('item',i.key,i.price,i.owned)}</div>`).join('')}</div>`):''}).join('');
  const rewards=items().filter(i=>i.unlock==='reward');
  return `<div class="mb-wallet">${COIN}<b>${fmt(data.coins)}</b> Coins</div>${bundles?sec('Bundles',`<div class="mb-bundles">${bundles}</div>`):''}${groups}`
   +sec('Belohnungen',`<div class="mb-list">${rewards.map(i=>`<div class="mb-li"><span><b>${esc(i.name)}</b><span class="mb-note">${esc(SLOT_TITLE[i.slot]||'')} · ${esc(i.reward||'')}</span></span>${i.owned?'<span class="mb-owned">Freigeschaltet</span>':'<span class="mb-lockedtxt">Noch gesperrt</span>'}</div>`).join('')}</div>`);
@@ -345,7 +382,7 @@ async function load(){
 // If even one approved artwork file fails, redraw the complete SVG hero.
 app.addEventListener('error',e=>{
  const img=e.target;
- if(!img||!img.matches||!img.matches('.mb-preview .mb-artpack-img'))return;
+ if(!img||!img.matches||!img.matches('.mb-preview .mb-artpack-img,.mb-item-png img'))return;
  const runtime=modularReview?modularPack:A&&A.active;
  if(runtime&&runtime.markFailed(img.getAttribute('src')))refreshHero();
 },true);

@@ -766,3 +766,10 @@ body[data-tl-screen="mein-boxer"] .mb-draft-anatomy input{
  body[data-tl-screen="mein-boxer"] .mb-stage-title{flex-basis:100%}
  body[data-tl-screen="mein-boxer"] .mb-stage :is(.mb-draft-tools,.mb-reference-tools,.mb-art-compare){top:88px}
 }
+/* Equipment artwork follows the prospective full-outfit renderer. */
+body[data-tl-screen="mein-boxer"] .mb-gear-hair svg.tlh{width:168px;top:-14px}
+body[data-tl-screen="mein-boxer"] .mb-item-status{display:block;font:700 10px/1.3 system-ui;color:#b9c9dd;letter-spacing:.03em;margin-top:3px}
+body[data-tl-screen="mein-boxer"] .mb-item-status[data-renderer="anime"]{color:#f0cc72}
+body[data-tl-screen="mein-boxer"] :is(.mb-gear-art,.mb-shop-item-art){container-type:size;display:grid;place-items:center}
+body[data-tl-screen="mein-boxer"] .mb-item-png{display:block;position:relative;overflow:hidden;width:min(100cqw,calc(100cqh * var(--item-ratio)));height:auto;margin:auto;isolation:isolate}
+body[data-tl-screen="mein-boxer"] .mb-item-png img{position:absolute;display:block;max-width:none;max-height:none;object-fit:fill;pointer-events:none}
