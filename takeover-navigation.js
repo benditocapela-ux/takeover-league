@@ -55,7 +55,7 @@
    }
    addSectionWayfinders();
    // Etappe 7c: «?» oben auf jeder Seite öffnet das passende Hilfe-Register; Tour beim nächsten Login in Mein Studio.
-   const HELP_KEY={'boxer.html':'studio','goals.html':'ziele','bewertung.html':'bewertung','stil-test.html':'stil','wochenplan.html':'wochenplan','quests.html':'quests',
+   const HELP_KEY={'boxer.html':'studio','boxer-experience.html':'experience','goals.html':'ziele','bewertung.html':'bewertung','stil-test.html':'stil','wochenplan.html':'wochenplan','quests.html':'quests',
      'praesenz.html':'praesenz','checkin.html':'checkin','shop.html':'shop','mein-boxer.html':'meinboxer','kampfpfad.html':'kampfpfad','roadmap.html':'roadmap','duels.html':'duelle','arena.html':'arena',
      'league-challenges.html':'challenges','challenges.html':'challenges','index.html':'ranking','boxer-compare.html':'vergleich','awards.html':'awards',
      'league-history.html':'awards','boxer-profile.html':'profil','news.html':'news','feedback.html':'feedback','karten.html':'karten','coach.html':'coach','league-manager.html':'manager','admin.html':'manager'};
