@@ -164,13 +164,29 @@
   }
   function trainingFallback(host){
     host.replaceChildren();
-    const intro=document.createElement('p');intro.className='ex-muted';
-    intro.textContent='Training 2.0 ist noch nicht freigeschaltet. Du kannst weiterhin das bisherige Trainingsformular verwenden.';
-    host.append(intro,trainingOption('🥊 TRAINING EINREICHEN','Das bewährte Formular öffnen','./boxer.html#trainingFormCard'));
+    const p=document.createElement('p');p.className='ex-muted';
+    p.textContent='Training 2.0 ist noch nicht freigeschaltet. Verwende das bewährte Formular.';
+    host.append(p,trainingOption('🥊 TRAINING EINREICHEN','Zum bisherigen Formular','./boxer.html#trainingFormCard'));
+  }
+  function todayDow(){
+    const day=new Intl.DateTimeFormat('en-US',{timeZone:'Europe/Zurich',weekday:'long'}).format(new Date()).toLowerCase();
+    return {monday:1,tuesday:2,wednesday:3,thursday:4,friday:5,saturday:6,sunday:7}[day]||0;
+  }
+  function clubResponseMessage(r){
+    switch(r?.status){
+      case 'submitted':return 'Dein heutiges Vereinstraining «'+r.label+'» wurde automatisch eingetragen und zur Trainerfreigabe eingereicht.';
+      case 'already_pending':return 'Dein heutiges Vereinstraining wurde bereits eingereicht und wartet auf Freigabe. Kein Doppeleintrag.';
+      case 'already_approved':return 'Dein heutiges Vereinstraining wurde bereits bestätigt. Kein Doppeleintrag.';
+      case 'gym_registered':return 'Du bist heute bereits in einer Gym-Einheit eingecheckt. Kein Doppeleintrag.';
+      case 'checkin_required':return 'Dein Verein verlangt den Gym-Check-in. Bitte melde dich dort zur laufenden Einheit an.';
+      case 'no_slot':return 'Heute ist kein Pflichttraining hinterlegt. Du kannst ein individuelles Training erfassen.';
+      case 'choose_slot':return 'Mehrere Vereinseinheiten sind heute geplant. Bitte wähle die richtige Einheit.';
+      case 'disabled':return 'Der Ein-Klick-Antrag ist derzeit nicht aktiviert. Das bisherige Formular bleibt verfügbar.';
+      default:return 'Die Einreichung konnte nicht bestätigt werden. Bitte prüfe deine Trainingshistorie.';
+    }
   }
   async function loadTrainingConfiguration(){
     const host=$('ex-training-options');if(!host)return;
-    // No SQL migration or disabled flag? Remain usable with the old form.
     const [cfg,checkin]=await Promise.all([
       safeRpc('get_training_v2_config'),
       state.db.from('league_feature_flags').select('is_enabled').eq('feature_key','club_checkin_only').maybeSingle().catch(()=>({error:true}))
@@ -180,35 +196,54 @@
     }
     const checkinOnly=!checkin.error&&checkin.data?.is_enabled===true;
     host.replaceChildren();
-    const headline=document.createElement('p');headline.className='ex-eyebrow';
-    headline.textContent='TRAINING 2.0 · AKTIV';
-    host.append(headline);
-    const grid=document.createElement('div');grid.className='ex-grid';
-    const clubHref=checkinOnly?'./checkin.html':'./boxer.html#trainingFormCard';
-    if(cfg.pflicht.length){
-      const info=cfg.pflicht.map(x=>String(x.day_name||'')+' · '+String(x.label||'')).join(' / ');
-      // Rewards may differ per schedule slot; never hardcode 60/40.
-      const reward=cfg.pflicht.map(x=>trainingReward(x.reward)).filter(Boolean);
-      grid.append(trainingOption('📅 PFLICHTTRAINING',info,clubHref,
-        checkinOnly?'Nur via Gym-Check-in':reward.length&&reward.every(x=>x===reward[0])?'Voraussichtlich: '+reward[0]:'Wert wird im Formular angezeigt'));
+    const title=document.createElement('h3');title.textContent='Warst du heute im Vereinstraining?';
+    host.append(title);
+    const help=document.createElement('p');help.className='ex-muted';
+    help.textContent='Mit Ja wird die heutige Pflichteinheit aus dem Vereinsstundenplan automatisch zur Trainerfreigabe beantragt.';
+    host.append(help);
+    const actions=document.createElement('div');actions.className='ex-grid';
+    const yes=document.createElement('button');yes.type='button';yes.className='ex-link-card';
+    yes.textContent='✓ JA, IM VEREIN';
+    const no=trainingOption('✕ NEIN, EIGENES TRAINING','Zum individuellen Trainingsformular','./boxer.html?individual=1#trainingFormCard');
+    actions.append(yes,no);host.append(actions);
+    const status=document.createElement('div');status.className='ex-note';status.setAttribute('role','status');status.setAttribute('aria-live','polite');status.hidden=true;status.style.marginTop='10px';host.append(status);
+    const dow=todayDow();
+    const slots=cfg.pflicht.filter(x=>Number(x.dow)===dow);
+    const schedule=document.createElement('p');schedule.className='ex-muted';
+    schedule.textContent=slots.length?
+      'Heute geplant: '+slots.map(x=>String(x.label||'Vereinstraining')).join(' / '):
+      'Heute ist keine Pflichteinheit im Stundenplan eingeplant.';
+    host.append(schedule);
+    async function submit(slotId,button){
+      if(button)button.disabled=true;status.hidden=false;status.textContent='Dein Antrag wird gespeichert …';
+      try{
+        const r=await state.db.rpc('submit_scheduled_club_training_today',{p_slot_id:slotId==null?null:Number(slotId)});
+        if(r.error)throw r.error;
+        status.replaceChildren(document.createTextNode(clubResponseMessage(r.data)));
+        if(r.data?.status==='choose_slot'){
+          const options=document.createElement('div');options.className='ex-grid';options.style.marginTop='9px';
+          for(const slot of slots){
+            const b=document.createElement('button');b.type='button';b.className='ex-link-card';
+            b.textContent=String(slot.label||'Vereinstraining');
+            b.addEventListener('click',()=>submit(slot.slot_id,b));options.append(b);
+          }
+          status.append(options);
+        }
+        if(r.data?.status==='checkin_required')status.append(trainingOption('ZUM GYM-CHECK-IN','Vereinstraining vor Ort einchecken','./checkin.html'));
+        if(r.data?.status==='submitted')await loadTraining();
+      }catch(err){
+        status.textContent='Antrag nicht gespeichert: '+String(err.message||err)+'. Bitte nicht blind erneut einreichen.';
+      }finally{if(button)button.disabled=false}
     }
-    if(cfg.extras.length){
-      const info=cfg.extras.map(x=>String(x.label||'')).join(' / ');
-      const reward=cfg.extras.map(x=>trainingReward(x.reward)).filter(Boolean);
-      grid.append(trainingOption('💪 ERGÄNZUNGSTRAINING',info,clubHref,
-        checkinOnly?'Nur via Gym-Check-in':reward.length&&reward.every(x=>x===reward[0])?'Voraussichtlich: '+reward[0]:'Wert wird im Formular angezeigt'));
-    }
-    const individual=(Array.isArray(cfg.types)?cfg.types:[]).filter(x=>x.club_only!==true);
-    if(individual.length)grid.append(trainingOption('🏃 INDIVIDUELLES TRAINING',
-      'Joggen, Kraft, Heimtraining und weitere Trainingsarten','./boxer.html#trainingFormCard',
-      'Wert abhängig von der gewählten Trainingsart'));
-    if(grid.childElementCount)host.append(grid);
-    else trainingFallback(host);
+    yes.addEventListener('click',()=>submit(null,yes));
     if(checkinOnly){
-      const warning=document.createElement('p');warning.className='ex-note';
-      warning.textContent='Dein Verein verlangt für Vereinstrainings derzeit den Gym-Check-in. Das direkte Formular wird dafür nicht angeboten.';
-      host.append(warning);
+      const notice=document.createElement('p');notice.className='ex-note';
+      notice.textContent='Der Verein verlangt einen Gym-Check-in. Eine separate Selbstmeldung ist in diesem Modus gesperrt.';
+      host.append(notice);
     }
+    const extra=document.createElement('p');extra.className='ex-muted';
+    extra.textContent='Ergänzungstrainings kannst du weiterhin im regulären Formular nach Trainingsart auswählen.';
+    host.append(extra);
   }
   async function loadTraining(){
     const db=state.db, id=state.profile.id;
