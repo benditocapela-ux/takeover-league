@@ -44,7 +44,7 @@ test('server-authorized one-tap club request; no direct row mutations',()=>{
   assert.match(js,/choose_gym_session/);
   assert.match(js,/\['submitted','checked_in'\]/);
   assert.match(js,/choose_slot/);
-  assert.match(js,/status==='submitted'/);
+  assert.match(js,/\['submitted','checked_in'\]\.includes\(r\.data\?\.status\)/);
   assert.match(js,/trainingFallback\(host\)/);
   assert.match(js,/\.\/checkin\.html/);
   assert.doesNotMatch(js,/Object\.assign\(payload|training_location\s*:/,'Trainingseintrag und Tier bleiben in boxer.html');
