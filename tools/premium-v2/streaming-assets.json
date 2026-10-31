@@ -1,0 +1,750 @@
+{
+  "version": 1,
+  "approved": false,
+  "enabled": false,
+  "sourceManifestSha256": "8db99b0cafc2e7a77551afdb5de67aaedd5f406acbedd24dfa44e165289f53a0",
+  "canvas": [
+    768,
+    1216
+  ],
+  "pieces": {
+    "head": {
+      "slot": "body",
+      "origin": "cool-exact",
+      "atlas": "base",
+      "uv": [
+        2,
+        2,
+        156,
+        168
+      ],
+      "box": [
+        309,
+        62,
+        156,
+        168
+      ],
+      "sourceBox": [
+        270,
+        50,
+        230,
+        180
+      ],
+      "sourceUv": [
+        2,
+        2,
+        230,
+        180
+      ],
+      "sourceAtlas": "shared"
+    },
+    "lower": {
+      "slot": "body",
+      "origin": "cool-exact",
+      "atlas": "base",
+      "uv": [
+        2,
+        174,
+        445,
+        619
+      ],
+      "box": [
+        174,
+        550,
+        445,
+        619
+      ],
+      "sourceBox": [
+        155,
+        550,
+        465,
+        625
+      ],
+      "sourceUv": [
+        236,
+        2,
+        465,
+        625
+      ],
+      "sourceAtlas": "shared"
+    },
+    "feet": {
+      "slot": "feet",
+      "origin": "cool-exact",
+      "atlas": "base",
+      "uv": [
+        2,
+        797,
+        473,
+        215
+      ],
+      "box": [
+        157,
+        955,
+        473,
+        215
+      ],
+      "sourceBox": [
+        150,
+        945,
+        480,
+        235
+      ],
+      "sourceUv": [
+        2,
+        1439,
+        480,
+        235
+      ],
+      "sourceAtlas": "shared"
+    },
+    "eyes": {
+      "slot": "eyes",
+      "origin": "cool-exact",
+      "atlas": "base",
+      "uv": [
+        2,
+        1016,
+        96,
+        25
+      ],
+      "box": [
+        333,
+        144,
+        96,
+        25
+      ],
+      "sourceBox": [
+        330,
+        140,
+        100,
+        35
+      ],
+      "sourceUv": [
+        486,
+        1439,
+        100,
+        35
+      ],
+      "sourceAtlas": "shared"
+    },
+    "body-cool": {
+      "slot": "body",
+      "origin": "cool-exact",
+      "atlas": "body-cool",
+      "uv": [
+        2,
+        2,
+        359,
+        320
+      ],
+      "box": [
+        199,
+        230,
+        359,
+        320
+      ],
+      "sourceBox": [
+        195,
+        230,
+        380,
+        320
+      ],
+      "sourceUv": [
+        2,
+        631,
+        380,
+        320
+      ],
+      "sourceAtlas": "shared"
+    },
+    "body-guard": {
+      "slot": "body",
+      "origin": "guard-new",
+      "atlas": "body-guard",
+      "uv": [
+        2,
+        2,
+        371,
+        320
+      ],
+      "box": [
+        199,
+        230,
+        371,
+        320
+      ],
+      "sourceBox": [
+        195,
+        230,
+        380,
+        320
+      ],
+      "sourceUv": [
+        2,
+        2,
+        380,
+        320
+      ],
+      "sourceAtlas": "guard"
+    },
+    "coat-back": {
+      "slot": "coatBack",
+      "origin": "cool-exact",
+      "atlas": "coat-common",
+      "uv": [
+        2,
+        2,
+        450,
+        354
+      ],
+      "box": [
+        166,
+        547,
+        450,
+        354
+      ],
+      "sourceBox": [
+        165,
+        540,
+        460,
+        370
+      ],
+      "sourceUv": [
+        386,
+        631,
+        460,
+        370
+      ],
+      "sourceAtlas": "shared"
+    },
+    "coat-tail": {
+      "slot": "coatFront",
+      "origin": "cool-exact",
+      "atlas": "coat-common",
+      "uv": [
+        2,
+        360,
+        485,
+        342
+      ],
+      "box": [
+        147,
+        590,
+        485,
+        342
+      ],
+      "sourceBox": [
+        145,
+        590,
+        490,
+        350
+      ],
+      "sourceUv": [
+        2,
+        1005,
+        490,
+        350
+      ],
+      "sourceAtlas": "shared"
+    },
+    "coat-cool": {
+      "slot": "coatFront",
+      "origin": "cool-exact",
+      "atlas": "coat-cool",
+      "uv": [
+        2,
+        2,
+        372,
+        410
+      ],
+      "box": [
+        208,
+        180,
+        372,
+        410
+      ],
+      "sourceBox": [
+        195,
+        160,
+        390,
+        430
+      ],
+      "sourceUv": [
+        496,
+        1005,
+        390,
+        430
+      ],
+      "sourceAtlas": "shared"
+    },
+    "coat-guard": {
+      "slot": "coatFront",
+      "origin": "guard-new",
+      "atlas": "coat-guard",
+      "uv": [
+        2,
+        2,
+        410,
+        422
+      ],
+      "box": [
+        172,
+        168,
+        410,
+        422
+      ],
+      "sourceBox": [
+        165,
+        160,
+        420,
+        430
+      ],
+      "sourceUv": [
+        386,
+        2,
+        420,
+        430
+      ],
+      "sourceAtlas": "guard"
+    },
+    "hair-afro": {
+      "slot": "hair",
+      "origin": "cool-exact",
+      "atlas": "hair-afro",
+      "uv": [
+        2,
+        2,
+        162,
+        124
+      ],
+      "box": [
+        302,
+        43,
+        162,
+        124
+      ],
+      "sourceBox": [
+        300,
+        40,
+        170,
+        145
+      ],
+      "sourceUv": [
+        590,
+        1439,
+        170,
+        145
+      ],
+      "sourceAtlas": "shared"
+    },
+    "hair-short": {
+      "slot": "hair",
+      "origin": "cool-exact",
+      "atlas": "hair-short",
+      "uv": [
+        2,
+        2,
+        124,
+        93
+      ],
+      "box": [
+        324,
+        50,
+        124,
+        93
+      ],
+      "sourceBox": [
+        300,
+        40,
+        170,
+        145
+      ],
+      "sourceUv": [
+        764,
+        1439,
+        170,
+        145
+      ],
+      "sourceAtlas": "shared"
+    },
+    "bottom-black": {
+      "slot": "bottom",
+      "origin": "cool-exact",
+      "atlas": "bottom-black",
+      "uv": [
+        2,
+        2,
+        323,
+        253
+      ],
+      "box": [
+        227,
+        544,
+        323,
+        253
+      ],
+      "sourceBox": [
+        220,
+        540,
+        340,
+        265
+      ],
+      "sourceUv": [
+        2,
+        1678,
+        340,
+        265
+      ],
+      "sourceAtlas": "shared"
+    },
+    "bottom-red": {
+      "slot": "bottom",
+      "origin": "cool-exact",
+      "atlas": "bottom-red",
+      "uv": [
+        2,
+        2,
+        322,
+        252
+      ],
+      "box": [
+        227,
+        544,
+        322,
+        252
+      ],
+      "sourceBox": [
+        220,
+        540,
+        340,
+        265
+      ],
+      "sourceUv": [
+        346,
+        1678,
+        340,
+        265
+      ],
+      "sourceAtlas": "shared"
+    },
+    "top-tank": {
+      "slot": "top",
+      "origin": "cool-exact",
+      "atlas": "top-tank",
+      "uv": [
+        2,
+        2,
+        198,
+        334
+      ],
+      "box": [
+        289,
+        240,
+        198,
+        334
+      ],
+      "sourceBox": [
+        280,
+        240,
+        215,
+        335
+      ],
+      "sourceUv": [
+        690,
+        1678,
+        215,
+        335
+      ],
+      "sourceAtlas": "shared"
+    },
+    "hands-blackgold": {
+      "slot": "hands",
+      "origin": "cool-exact",
+      "atlas": "hands-cool-black",
+      "uv": [
+        2,
+        2,
+        282,
+        101
+      ],
+      "box": [
+        244,
+        312,
+        282,
+        101
+      ],
+      "sourceBox": [
+        230,
+        300,
+        310,
+        130
+      ],
+      "sourceUv": [
+        2,
+        2017,
+        310,
+        130
+      ],
+      "sourceAtlas": "shared"
+    },
+    "hands-white": {
+      "slot": "hands",
+      "origin": "cool-exact",
+      "atlas": "hands-cool-white",
+      "uv": [
+        2,
+        2,
+        282,
+        103
+      ],
+      "box": [
+        245,
+        311,
+        282,
+        103
+      ],
+      "sourceBox": [
+        230,
+        300,
+        310,
+        130
+      ],
+      "sourceUv": [
+        316,
+        2017,
+        310,
+        130
+      ],
+      "sourceAtlas": "shared"
+    },
+    "guard-black-0": {
+      "slot": "hands",
+      "origin": "guard-new",
+      "atlas": "hands-guard-black",
+      "uv": [
+        2,
+        2,
+        88,
+        112
+      ],
+      "box": [
+        278,
+        170,
+        88,
+        112
+      ],
+      "sourceBox": [
+        260,
+        160,
+        110,
+        135
+      ],
+      "sourceUv": [
+        810,
+        2,
+        110,
+        135
+      ],
+      "sourceAtlas": "guard"
+    },
+    "guard-black-1": {
+      "slot": "hands",
+      "origin": "guard-new",
+      "atlas": "hands-guard-black",
+      "uv": [
+        2,
+        118,
+        87,
+        112
+      ],
+      "box": [
+        405,
+        170,
+        87,
+        112
+      ],
+      "sourceBox": [
+        405,
+        160,
+        110,
+        135
+      ],
+      "sourceUv": [
+        2,
+        436,
+        110,
+        135
+      ],
+      "sourceAtlas": "guard"
+    },
+    "guard-white-0": {
+      "slot": "hands",
+      "origin": "guard-new",
+      "atlas": "hands-guard-white",
+      "uv": [
+        2,
+        2,
+        87,
+        112
+      ],
+      "box": [
+        278,
+        170,
+        87,
+        112
+      ],
+      "sourceBox": [
+        260,
+        160,
+        110,
+        135
+      ],
+      "sourceUv": [
+        116,
+        436,
+        110,
+        135
+      ],
+      "sourceAtlas": "guard"
+    },
+    "guard-white-1": {
+      "slot": "hands",
+      "origin": "guard-new",
+      "atlas": "hands-guard-white",
+      "uv": [
+        2,
+        118,
+        86,
+        112
+      ],
+      "box": [
+        405,
+        170,
+        86,
+        112
+      ],
+      "sourceBox": [
+        405,
+        160,
+        110,
+        135
+      ],
+      "sourceUv": [
+        230,
+        436,
+        110,
+        135
+      ],
+      "sourceAtlas": "guard"
+    }
+  },
+  "atlases": {
+    "base": {
+      "file": "streaming-assets/base.png",
+      "width": 477,
+      "height": 1043,
+      "bytes": 348604,
+      "sha256": "2bfc7593b6c2b31f9fce5a20fd7583f4436eef9d02391cfe99ce88a6594c56ee"
+    },
+    "body-cool": {
+      "file": "streaming-assets/body-cool.png",
+      "width": 363,
+      "height": 324,
+      "bytes": 161487,
+      "sha256": "65480b837fde16aaf31969091d8ebecc886de26172904af34a5c730c38156450"
+    },
+    "body-guard": {
+      "file": "streaming-assets/body-guard.png",
+      "width": 375,
+      "height": 324,
+      "bytes": 169828,
+      "sha256": "191333012e99dca1998b078ef468a9c9ec2569fe13696a59cf3939786c097a2f"
+    },
+    "coat-common": {
+      "file": "streaming-assets/coat-common.png",
+      "width": 489,
+      "height": 704,
+      "bytes": 320148,
+      "sha256": "d8e1fce31750abf7c335bdf0b51e9aea7ca127f6f1e46d220f4495b3fc220e6d"
+    },
+    "coat-cool": {
+      "file": "streaming-assets/coat-cool.png",
+      "width": 376,
+      "height": 414,
+      "bytes": 186150,
+      "sha256": "bbd682dd93de36564ea4a16c2809f68ed68fe10eb270404e9b4e62b20a4731c5"
+    },
+    "coat-guard": {
+      "file": "streaming-assets/coat-guard.png",
+      "width": 414,
+      "height": 426,
+      "bytes": 207835,
+      "sha256": "9832a378f4a84733c950cba7a64eb7860513604c4a03f9c3a4225d975d3e1936"
+    },
+    "hair-afro": {
+      "file": "streaming-assets/hair-afro.png",
+      "width": 166,
+      "height": 128,
+      "bytes": 38310,
+      "sha256": "cbab6c42a98205872d993585f0bf0d54cfa004c8ac3a161906dcd90d4ab0c799"
+    },
+    "hair-short": {
+      "file": "streaming-assets/hair-short.png",
+      "width": 128,
+      "height": 97,
+      "bytes": 19527,
+      "sha256": "d41d75b3d7af1615e49444f0a57c88f254e46dcfab35afcd01a3471f4836b9a2"
+    },
+    "bottom-black": {
+      "file": "streaming-assets/bottom-black.png",
+      "width": 327,
+      "height": 257,
+      "bytes": 139669,
+      "sha256": "fc1111b6fb918ac2b675344ee506c9939e984db33533575b9cd318421abeba6c"
+    },
+    "bottom-red": {
+      "file": "streaming-assets/bottom-red.png",
+      "width": 326,
+      "height": 256,
+      "bytes": 141464,
+      "sha256": "3b25bd57fb1de7021745a4689e3afef9085f515cf106d2474d221de1f5fc8342"
+    },
+    "top-tank": {
+      "file": "streaming-assets/top-tank.png",
+      "width": 202,
+      "height": 338,
+      "bytes": 62282,
+      "sha256": "0a47fcda7bea3f146ca05145ba27f037395c30e3a99e24c7d6cbeac02af6857a"
+    },
+    "hands-cool-black": {
+      "file": "streaming-assets/hands-cool-black.png",
+      "width": 286,
+      "height": 105,
+      "bytes": 38805,
+      "sha256": "54642b314090895fbcb38150cf7837cde7b921b62332ab8b59811bfa6f7d69f9"
+    },
+    "hands-cool-white": {
+      "file": "streaming-assets/hands-cool-white.png",
+      "width": 286,
+      "height": 107,
+      "bytes": 37993,
+      "sha256": "2138281ca461ef91ef278ea723151f1000210dca8eed10a2e2bc32229f24b2b0"
+    },
+    "hands-guard-black": {
+      "file": "streaming-assets/hands-guard-black.png",
+      "width": 92,
+      "height": 232,
+      "bytes": 42822,
+      "sha256": "b0b1efb87bee5c700abcf77e0daf5096ea841c3d9043ce8c410fc0d71206e269"
+    },
+    "hands-guard-white": {
+      "file": "streaming-assets/hands-guard-white.png",
+      "width": 91,
+      "height": 232,
+      "bytes": 42972,
+      "sha256": "86c71bd5f23968899146bb5e377ded81da2eb6492c1a441f68d37f7b4b26e910"
+    }
+  },
+  "sourceManifestHashAlgorithm": "sha256-canonical-text-lf-v1"
+}

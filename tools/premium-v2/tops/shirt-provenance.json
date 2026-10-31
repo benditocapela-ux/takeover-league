@@ -1,0 +1,24 @@
+{
+  "tool": "image_gen.imagegen",
+  "approved": false,
+  "enabled": false,
+  "status": "blocked-artwork-draft",
+  "steps": [
+    {
+      "file": "source-shirt.png",
+      "prompt": "Use case: stylized-concept. Create one transparent equipment overlay for the adult anime boxer in the references. Image1 is the same muscular body in crossed-arm Cool pose, image2 is same body in Guard; these are PROPORTION and STYLE REFERENCES only. OUTPUT ONLY A BLACK SHORT-SLEEVE CREW-NECK T-SHIRT, NO BODY/SKIN/ARMS/HANDS/HEAD/SHORTS. It is a complete front-facing fitted shirt master for the shared torso and upper shoulders: wide rounded shoulders, short sleeves ending just below the deltoids at upper-bicep level, narrow fitted waist and straight lower hem. The raised/crossed FOREARMS will be composited in front separately, so draw continuous uninterrupted chest/abdomen fabric, no arm-shaped gap. Dark premium painted anime game-art, fine black athletic fabric, natural folds, upper-left soft highlights, restrained thin gold piping at crew neck, sleeve hems and side seams. No logo, no text, no decorative emblem, no gold chest print. Transparent neckline and openings, no embedded human pixels. Both reference poses have nearly identical torso/shoulder camera; render straight-on orthographic front view with no body rotation and no perspective skew. In768x1216 design coordinates the garment bounds should be approximately x205..565,y245..555, sleeve outercaps x205..275 and495..565,y260..340, fitted torso width190 at waist. Preserve the full portrait canvas proportions with generous transparency surrounding the registered garment. Do not produce a worn-character screenshot or a hanger; ONLY the clothing sprite."
+    },
+    {
+      "file": "source-shirt-v2.png",
+      "prompt": "Precise-object-edit of the black-gold shirt sprite in Image1. Keep black fabric, gold piping, folds on chest/waist, lower hem, front camera and overall placement. Image2 is anatomy reference ONLY. Correct only upper fit: RAISE and broaden both rounded shoulder/sleeve caps so the shoulder-top contour starts nearly at the collar-top height rather than sloping far downward; the sleeve silhouette must cover the reference boxer's rounded deltoids fully, leaving no bare shoulder rim above the sleeve. Make sleeve caps about8percent wider outward and their outer upper contour about50pixels higher on this1024x1600 image, retaining natural cloth tension. Also remove ALL the solid black backing INSIDE the neckline: the crew-neck opening must be a genuine transparent U-shaped hole down to the inner gold neckline edge, no black insert, no shirt-back fabric visible in the hole. Its gold front border remains. Do NOT change lower torso/waist proportions; no extra fabric over a face. Output only the clothing garment, true transparent background and transparent neck opening, no skin, no arms, no hands, no head, no mannequin. Professional anime game sprite, no text or logos."
+    },
+    {
+      "file": "source-shirt-v3.png",
+      "prompt": "Precise-object-edit. Image1 is the EDIT TARGET isolated shirt sprite. Image2 is PROBLEM EVIDENCE only: the composite has an unwanted orange skin crescent visible above BOTH black shoulder caps. DO NOT output a human or composite; output only the isolated transparent shirt from image1. Make one precise correction: extend and raise the OUTER UPPER SHOULDER CAPS of image1 about45pixels upward (on its current1000pixelwide sheet) to cover those orange shoulder crescents in image2. Add matching black woven fabric with the same natural highlight. The inner neckline and gold neckline MUST STAY in exactly the same position, size and transparent U opening. Keep lower torso, waist, sleeve cuffs, gold trim and all other geometry unchanged. Only the outer shoulder cap upper contours gain fabric above their current outline; do not move the entire shirt, do not make collar higher. Both outer shoulder caps should bulge up naturally like fitted cloth over large deltoids. Preserve true transparency and the empty neckline. No skin, no person, no hair, no glove, no logos, no text. Retain the high-quality dark anime game fabric and upper-left lighting."
+    }
+  ],
+  "knownDefects": [
+    "Guard shoulder skin crescents",
+    "Cool chest/abdomen strips from experimental mask"
+  ]
+}

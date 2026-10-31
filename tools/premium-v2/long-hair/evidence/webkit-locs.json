@@ -1,0 +1,115 @@
+{
+  "invalid": [
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "variants": [
+    {
+      "hc": "schwarz",
+      "alphaChanged": 0,
+      "rgbChanged": 0
+    },
+    {
+      "hc": "braun",
+      "alphaChanged": 0,
+      "rgbChanged": 165290
+    },
+    {
+      "hc": "dunkelbraun",
+      "alphaChanged": 0,
+      "rgbChanged": 163755
+    },
+    {
+      "hc": "blond",
+      "alphaChanged": 0,
+      "rgbChanged": 165300
+    },
+    {
+      "hc": "rot",
+      "alphaChanged": 0,
+      "rgbChanged": 165300
+    },
+    {
+      "hc": "silber",
+      "alphaChanged": 0,
+      "rgbChanged": 165300
+    },
+    {
+      "hc": "blau",
+      "alphaChanged": 0,
+      "rgbChanged": 165300
+    },
+    {
+      "hc": "pink",
+      "alphaChanged": 0,
+      "rgbChanged": 165300
+    }
+  ],
+  "eyePixels": [
+    {
+      "pose": "cool",
+      "x": 356,
+      "y": 158,
+      "same": true,
+      "max": 0
+    },
+    {
+      "pose": "cool",
+      "x": 405,
+      "y": 158,
+      "same": true,
+      "max": 0
+    },
+    {
+      "pose": "cool",
+      "x": 384,
+      "y": 182,
+      "same": false,
+      "max": 2
+    },
+    {
+      "pose": "cool",
+      "x": 383,
+      "y": 201,
+      "same": false,
+      "max": 2
+    },
+    {
+      "pose": "guard",
+      "x": 356,
+      "y": 158,
+      "same": true,
+      "max": 0
+    },
+    {
+      "pose": "guard",
+      "x": 405,
+      "y": 158,
+      "same": true,
+      "max": 0
+    },
+    {
+      "pose": "guard",
+      "x": 384,
+      "y": 182,
+      "same": false,
+      "max": 2
+    },
+    {
+      "pose": "guard",
+      "x": 383,
+      "y": 201,
+      "same": false,
+      "max": 2
+    }
+  ],
+  "flags": [
+    false,
+    false
+  ],
+  "requests": 1,
+  "artApproval": false
+}

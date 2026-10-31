@@ -1,0 +1,20 @@
+{
+  "mode": "built-in imagegen",
+  "reference": "assets/boxer-artpacks/v1/modular-cool/body.png",
+  "assets": [
+    {
+      "id": "cap",
+      "file": "source-cap.png",
+      "generatedFile": "exec-797c558f-e968-4662-acfc-394901dd462d.png",
+      "prompt": "Use case: stylized-concept. Create one high-quality transparent 2D game equipment sprite: front-facing black baseball cap for the SAME adult anime boxer shown in the reference. Reference image is style/proportions only; OUTPUT ONLY THE CAP, no person, no skin, no head, no hair, no mannequin. Orthographic straight-on front camera at forehead height, centered symmetrical snug six-panel crown and short curved forward visor, the visor seen as a shallow horizontal ellipse below crown, not side view or overhead view. Dark premium anime/game painted fabric with fine woven texture, subtle panel stitches, controlled upper-left highlight, deep black shadows and very narrow elegant gold piping around brim; no logo, no text, no crown emblem. Main cloth must remain neutral charcoal so future masked material variants preserve gold trim. Rounded domed crown height approximately two thirds of total asset height, shallow brim lower third, width approximately1.7times total height. Shape should fit the reference boxer's forehead and not cover his eyes. Entire cap isolated on genuine transparent background with generous margin, no background shadow, no glow, no frame. Crisp polished anime rendering, never photographic."
+    },
+    {
+      "id": "band",
+      "file": "source-band.png",
+      "generatedFile": "exec-5c20df3e-07e3-426f-984c-0a789fae6a92.png",
+      "prompt": "Use case: stylized-concept. Create one high-quality transparent 2D game equipment sprite: a front-facing black martial-arts/sports cloth headband for the SAME adult anime boxer shown in reference. Reference is style and anatomy only; OUTPUT ONLY THE HEADBAND, no person, no skin, no face, no head, no hair, no mannequin. Straight-on orthographic front camera, narrow cloth band following a shallow arc around a forehead; the front strip is broad horizontally and thin vertically, subtle fabric fold and upper-left soft highlight. A small knot and two short tapered trailing fabric tails extend to VIEWER RIGHT, entirely outside the front forehead strip. The main front band should take approximately70percent of total image width and the tails30percent. Dark charcoal woven cloth, refined dark anime/game-art painted shading, subtle thin gold stitching along upper and lower borders, no emblem, no logo, no text. Main fabric neutral charcoal for future material-mask variants, gold edging distinct. Maintain complete connected headband silhouette, two elegant fabric tails not hair or ribbons on both sides. Centered on true transparent background with generous margin, no shadow outside cloth, no glow, no frame, no photographic product lighting. This is a usable wearable sprite with no human parts embedded."
+    }
+  ],
+  "approved": false,
+  "enabled": false
+}

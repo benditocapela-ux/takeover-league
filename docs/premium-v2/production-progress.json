@@ -1,0 +1,1740 @@
+{
+  "summary": {
+    "equipmentCatalogueEntries": 52,
+    "poseCatalogueEntries": 6,
+    "equipmentItemsWithArtwork": 48,
+    "equipmentItemsTechnicallyValidated": 47,
+    "supportedPremiumPoseProfiles": [
+      "cool",
+      "guard"
+    ],
+    "technicallyValidatedPoseProfiles": [
+      "cool",
+      "guard"
+    ],
+    "catalogueEntries": 58,
+    "matrixRows": 1800,
+    "catalogueItemsWithArtwork": 48,
+    "catalogueItemsTechnicallyValidated": 47,
+    "artworkVariantKeys": 261,
+    "artworkPoseCells": 522,
+    "technicallyValidatedVariantKeys": 260,
+    "technicallyValidatedPoseCells": 519,
+    "canvasVariantKeys": 12,
+    "rasterVariantKeys": 248,
+    "newlySupportedVariantKeys": 250,
+    "newlySupportedPoseCells": 498,
+    "brandNewVariantKeys": 249,
+    "approvedItems": 0,
+    "hashAlgorithm": "sha256-canonical-text-lf-v1",
+    "evidenceValid": true,
+    "evidenceReport": "docs/premium-v2/evidence/production-tests.json",
+    "countsIncludeNonShopBodyEyesWraps": true,
+    "note": "Variant keys count slot/value/colour/state once; pose cells count each pose. newlySupportedVariantKeys includes keys gaining any previously SVG-only pose; brandNewVariantKeys excludes keys already present in any historical premium pose. Neither count is a Cartesian full-outfit total."
+  },
+  "entries": [
+    {
+      "key": "hair_kurz_glatt",
+      "name": "Kurz glatt",
+      "slot": "hair",
+      "value": "kurz_glatt",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 14,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/streaming-assets/hair-short.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_stachel",
+      "name": "Stachel",
+      "slot": "hair",
+      "value": "stachel",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/production-art/hair-stachel.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_lang_glatt",
+      "name": "Lang glatt",
+      "slot": "hair",
+      "value": "lang_glatt",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_undercut",
+      "name": "Undercut",
+      "slot": "hair",
+      "value": "undercut",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/production-art/hair-undercut.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_buzz",
+      "name": "Buzzcut",
+      "slot": "hair",
+      "value": "buzz",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/production-art/hair-buzz.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_glatze",
+      "name": "Glatze",
+      "slot": "hair",
+      "value": "glatze",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/streaming-assets/base.png"
+      ],
+      "note": "Bald uses the existing complete head and removes the hair layer. Eight allowed hair-colour keys have identical output; they are not eight new artworks."
+    },
+    {
+      "key": "hair_dutts",
+      "name": "Zwei Dutts",
+      "slot": "hair",
+      "value": "dutts",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_zopf",
+      "name": "Pferdeschwanz",
+      "slot": "hair",
+      "value": "zopf",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_bob",
+      "name": "Bob",
+      "slot": "hair",
+      "value": "bob",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_wellig",
+      "name": "Wellig",
+      "slot": "hair",
+      "value": "wellig",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/wellig.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_locken",
+      "name": "Locken",
+      "slot": "hair",
+      "value": "locken",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/locken.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_afro",
+      "name": "Afro",
+      "slot": "hair",
+      "value": "afro",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 14,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/streaming-assets/hair-afro.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_afro_puffs",
+      "name": "Afro-Puffs",
+      "slot": "hair",
+      "value": "afro_puffs",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/afro_puffs.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_locs",
+      "name": "Locs",
+      "slot": "hair",
+      "value": "locs",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_box_braids",
+      "name": "Box Braids",
+      "slot": "hair",
+      "value": "box_braids",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_cornrows",
+      "name": "Cornrows",
+      "slot": "hair",
+      "value": "cornrows",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/cornrows.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_twists",
+      "name": "Twists",
+      "slot": "hair",
+      "value": "twists",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/twists.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "hair_high_top",
+      "name": "High-Top Fade",
+      "slot": "hair",
+      "value": "high_top",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/high_top.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "head_cap",
+      "name": "Kappe",
+      "slot": "head",
+      "value": "cap",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/headwear/assets/cap.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "head_band",
+      "name": "Stirnband",
+      "slot": "head",
+      "value": "band",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/headwear/assets/band.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "head_hijab",
+      "name": "Sport-Hijab",
+      "slot": "head",
+      "value": "hijab",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "top_tank",
+      "name": "Tanktop",
+      "slot": "top",
+      "value": "tank",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 15,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/guard-tank.png",
+        "assets/boxer-artpacks/v1/modular-cool/top-tank.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "top_shirt",
+      "name": "T-Shirt",
+      "slot": "top",
+      "value": "shirt",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 0,
+      "technicallyValidatedPoseCells": 0,
+      "newTechnicallySupportedPoseCells": 0,
+      "availability": "Artwork draft",
+      "technicalStatus": "Not validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/shirt.png"
+      ],
+      "note": "Files exist; no current matching dual-browser production evidence for this item."
+    },
+    {
+      "key": "top_hoodie",
+      "name": "Hoodie",
+      "slot": "top",
+      "value": "hoodie",
+      "entryKind": "equipment",
+      "totalVariantKeys": 16,
+      "totalPoseCells": 96,
+      "artworkVariantKeys": 0,
+      "artworkPoseCells": 0,
+      "technicallyValidatedVariantKeys": 0,
+      "technicallyValidatedPoseCells": 0,
+      "newTechnicallySupportedPoseCells": 0,
+      "availability": "SVG only",
+      "technicalStatus": "Not validated",
+      "artisticStatus": "Not applicable",
+      "approved": false,
+      "supportedPoses": [],
+      "artworkPoses": [],
+      "sourceFiles": [],
+      "note": "No verified premium artwork in this production package."
+    },
+    {
+      "key": "top_jacke",
+      "name": "Trainingsjacke",
+      "slot": "top",
+      "value": "jacke",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 0,
+      "artworkPoseCells": 0,
+      "technicallyValidatedVariantKeys": 0,
+      "technicallyValidatedPoseCells": 0,
+      "newTechnicallySupportedPoseCells": 0,
+      "availability": "SVG only",
+      "technicalStatus": "Not validated",
+      "artisticStatus": "Not applicable",
+      "approved": false,
+      "supportedPoses": [],
+      "artworkPoses": [],
+      "sourceFiles": [],
+      "note": "No verified premium artwork in this production package."
+    },
+    {
+      "key": "bottom_boxer",
+      "name": "Boxershorts",
+      "slot": "bottom",
+      "value": "boxer",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 12,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/streaming-assets/bottom-black.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "bottom_kurz",
+      "name": "Kurze Hose",
+      "slot": "bottom",
+      "value": "kurz",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/production-art/bottom-kurz.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "bottom_jogger",
+      "name": "Jogginghose",
+      "slot": "bottom",
+      "value": "jogger",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/production-art/bottom-jogger.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "bottom_track",
+      "name": "Trainingshose",
+      "slot": "bottom",
+      "value": "track",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/production-art/bottom-track.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "glove_rot",
+      "name": "Rot",
+      "slot": "glove",
+      "value": "rot",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/production-art/hands-master-0.png",
+        "tools/premium-v2/production-art/hands-master-1.png",
+        "tools/premium-v2/streaming-assets/hands-cool-black.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "glove_weiss",
+      "name": "Weiss",
+      "slot": "glove",
+      "value": "weiss",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 0,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/production-art/hands-master-0.png",
+        "tools/premium-v2/production-art/hands-master-1.png",
+        "tools/premium-v2/streaming-assets/hands-cool-black.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "glove_schwarzgold",
+      "name": "Schwarz-Gold",
+      "slot": "glove",
+      "value": "schwarzgold",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 0,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/production-art/hands-master-0.png",
+        "tools/premium-v2/production-art/hands-master-1.png",
+        "tools/premium-v2/streaming-assets/hands-cool-black.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "glove_eisblau",
+      "name": "Eisblau",
+      "slot": "glove",
+      "value": "eisblau",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/production-art/hands-master-0.png",
+        "tools/premium-v2/production-art/hands-master-1.png",
+        "tools/premium-v2/streaming-assets/hands-cool-black.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "glove_glut",
+      "name": "Glut",
+      "slot": "glove",
+      "value": "glut",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/production-art/hands-master-0.png",
+        "tools/premium-v2/production-art/hands-master-1.png",
+        "tools/premium-v2/streaming-assets/hands-cool-black.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "feet_boots",
+      "name": "Boxstiefel",
+      "slot": "feet",
+      "value": "boots",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 14,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/streaming-assets/base.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "feet_sneaker",
+      "name": "Sneaker",
+      "slot": "feet",
+      "value": "sneaker",
+      "entryKind": "equipment",
+      "totalVariantKeys": 8,
+      "totalPoseCells": 48,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 16,
+      "newTechnicallySupportedPoseCells": 16,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/production-art/feet-sneaker.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "coat_basic",
+      "name": "Trainer-Mantel",
+      "slot": "coat",
+      "value": "basic",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 1,
+      "newTechnicallySupportedPoseCells": 1,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/production-art/coat-basic-back.png",
+        "tools/premium-v2/production-art/coat-basic-guard.png",
+        "tools/premium-v2/production-art/coat-basic-cool.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "coat_samurai",
+      "name": "Samurai-Jacke",
+      "slot": "coat",
+      "value": "samurai",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 0,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/streaming-assets/coat-common.png",
+        "tools/premium-v2/production-art/coat-guard-v2.png",
+        "tools/premium-v2/streaming-assets/coat-cool.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
+    },
+    {
+      "key": "coat_neon",
+      "name": "Neon-Mantel",
+      "slot": "coat",
+      "value": "neon",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 0,
+      "artworkPoseCells": 0,
+      "technicallyValidatedVariantKeys": 0,
+      "technicallyValidatedPoseCells": 0,
+      "newTechnicallySupportedPoseCells": 0,
+      "availability": "SVG only",
+      "technicalStatus": "Not validated",
+      "artisticStatus": "Not applicable",
+      "approved": false,
+      "supportedPoses": [],
+      "artworkPoses": [],
+      "sourceFiles": [],
+      "note": "No verified premium artwork in this production package."
+    },
+    {
+      "key": "coat_drache",
+      "name": "Drachen-Mantel",
+      "slot": "coat",
+      "value": "drache",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 0,
+      "artworkPoseCells": 0,
+      "technicallyValidatedVariantKeys": 0,
+      "technicallyValidatedPoseCells": 0,
+      "newTechnicallySupportedPoseCells": 0,
+      "availability": "SVG only",
+      "technicalStatus": "Not validated",
+      "artisticStatus": "Not applicable",
+      "approved": false,
+      "supportedPoses": [],
+      "artworkPoses": [],
+      "sourceFiles": [],
+      "note": "No verified premium artwork in this production package."
+    },
+    {
+      "key": "aura_flamme",
+      "name": "Flamme",
+      "slot": "aura",
+      "value": "flamme",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
+    },
+    {
+      "key": "aura_sakura",
+      "name": "Sakura",
+      "slot": "aura",
+      "value": "sakura",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
+    },
+    {
+      "key": "aura_blitz",
+      "name": "Blitz",
+      "slot": "aura",
+      "value": "blitz",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
+    },
+    {
+      "key": "aura_schatten",
+      "name": "Schatten",
+      "slot": "aura",
+      "value": "schatten",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
+    },
+    {
+      "key": "eyefx_kristall",
+      "name": "Kristall",
+      "slot": "eyefx",
+      "value": "kristall",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
+    },
+    {
+      "key": "eyefx_glut",
+      "name": "Glut-Flamme",
+      "slot": "eyefx",
+      "value": "glut",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
+    },
+    {
+      "key": "eyefx_stern",
+      "name": "Stern",
+      "slot": "eyefx",
+      "value": "stern",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
+    },
+    {
+      "key": "eyefx_mond",
+      "name": "Mond",
+      "slot": "eyefx",
+      "value": "mond",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
+    },
+    {
+      "key": "scene_holo",
+      "name": "Holo-Plattform",
+      "slot": "scene",
+      "value": "holo",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
+    },
+    {
+      "key": "scene_dojo",
+      "name": "Dojo",
+      "slot": "scene",
+      "value": "dojo",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
+    },
+    {
+      "key": "scene_neon",
+      "name": "Neon-Stadt",
+      "slot": "scene",
+      "value": "neon",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
+    },
+    {
+      "key": "scene_arena",
+      "name": "Arena",
+      "slot": "scene",
+      "value": "arena",
+      "entryKind": "equipment",
+      "totalVariantKeys": 1,
+      "totalPoseCells": 6,
+      "artworkVariantKeys": 1,
+      "artworkPoseCells": 2,
+      "technicallyValidatedVariantKeys": 1,
+      "technicallyValidatedPoseCells": 2,
+      "newTechnicallySupportedPoseCells": 2,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "supportedPoses": [
+        "guard",
+        "cool"
+      ],
+      "artworkPoses": [
+        "guard",
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/effects.js"
+      ],
+      "note": "Code-native Canvas effect/background using existing catalogue keys; not a PNG illustration. Same effect source must serve figure and tile."
+    },
+    {
+      "key": "pose_guard",
+      "name": "Kampfstellung",
+      "slot": "pose",
+      "value": "guard",
+      "entryKind": "pose-metadata",
+      "totalVariantKeys": 0,
+      "totalPoseCells": 0,
+      "artworkVariantKeys": 0,
+      "artworkPoseCells": 0,
+      "technicallyValidatedVariantKeys": 0,
+      "technicallyValidatedPoseCells": 0,
+      "newTechnicallySupportedPoseCells": 0,
+      "availability": "Metadata",
+      "profileSupported": true,
+      "profileStatus": "Premium profile supported (partial equipment coverage)",
+      "technicalStatus": "Profile technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "enabled": false,
+      "supportedPoses": [
+        "guard"
+      ],
+      "artworkPoses": [
+        "guard"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/streaming-assets/base.png",
+        "tools/premium-v2/streaming-assets/body-guard.png"
+      ],
+      "note": "Pose catalogue metadata: this premium profile has registered base components and partial equipment coverage. It is not an additional item, image or variant key; unsupported full outfits still use SVG."
+    },
+    {
+      "key": "pose_jab",
+      "name": "Jab",
+      "slot": "pose",
+      "value": "jab",
+      "entryKind": "pose-metadata",
+      "totalVariantKeys": 0,
+      "totalPoseCells": 0,
+      "artworkVariantKeys": 0,
+      "artworkPoseCells": 0,
+      "technicallyValidatedVariantKeys": 0,
+      "technicallyValidatedPoseCells": 0,
+      "newTechnicallySupportedPoseCells": 0,
+      "availability": "Metadata",
+      "profileSupported": false,
+      "profileStatus": "SVG fallback",
+      "technicalStatus": "SVG fallback",
+      "artisticStatus": "Not applicable",
+      "approved": false,
+      "enabled": false,
+      "supportedPoses": [],
+      "artworkPoses": [],
+      "sourceFiles": [],
+      "note": "Pose catalogue metadata: no premium profile is integrated for this pose; retain the complete existing SVG renderer. This row does not add artwork variants."
+    },
+    {
+      "key": "pose_sieg",
+      "name": "Siegerpose",
+      "slot": "pose",
+      "value": "sieg",
+      "entryKind": "pose-metadata",
+      "totalVariantKeys": 0,
+      "totalPoseCells": 0,
+      "artworkVariantKeys": 0,
+      "artworkPoseCells": 0,
+      "technicallyValidatedVariantKeys": 0,
+      "technicallyValidatedPoseCells": 0,
+      "newTechnicallySupportedPoseCells": 0,
+      "availability": "Metadata",
+      "profileSupported": false,
+      "profileStatus": "SVG fallback",
+      "technicalStatus": "SVG fallback",
+      "artisticStatus": "Not applicable",
+      "approved": false,
+      "enabled": false,
+      "supportedPoses": [],
+      "artworkPoses": [],
+      "sourceFiles": [],
+      "note": "Pose catalogue metadata: no premium profile is integrated for this pose; retain the complete existing SVG renderer. This row does not add artwork variants."
+    },
+    {
+      "key": "pose_cool",
+      "name": "Cool",
+      "slot": "pose",
+      "value": "cool",
+      "entryKind": "pose-metadata",
+      "totalVariantKeys": 0,
+      "totalPoseCells": 0,
+      "artworkVariantKeys": 0,
+      "artworkPoseCells": 0,
+      "technicallyValidatedVariantKeys": 0,
+      "technicallyValidatedPoseCells": 0,
+      "newTechnicallySupportedPoseCells": 0,
+      "availability": "Metadata",
+      "profileSupported": true,
+      "profileStatus": "Premium profile supported (partial equipment coverage)",
+      "technicalStatus": "Profile technically validated",
+      "artisticStatus": "Artistically pending",
+      "approved": false,
+      "enabled": false,
+      "supportedPoses": [
+        "cool"
+      ],
+      "artworkPoses": [
+        "cool"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/streaming-assets/base.png",
+        "tools/premium-v2/streaming-assets/body-cool.png"
+      ],
+      "note": "Pose catalogue metadata: this premium profile has registered base components and partial equipment coverage. It is not an additional item, image or variant key; unsupported full outfits still use SVG."
+    },
+    {
+      "key": "pose_flex",
+      "name": "Bizeps",
+      "slot": "pose",
+      "value": "flex",
+      "entryKind": "pose-metadata",
+      "totalVariantKeys": 0,
+      "totalPoseCells": 0,
+      "artworkVariantKeys": 0,
+      "artworkPoseCells": 0,
+      "technicallyValidatedVariantKeys": 0,
+      "technicallyValidatedPoseCells": 0,
+      "newTechnicallySupportedPoseCells": 0,
+      "availability": "Metadata",
+      "profileSupported": false,
+      "profileStatus": "SVG fallback",
+      "technicalStatus": "SVG fallback",
+      "artisticStatus": "Not applicable",
+      "approved": false,
+      "enabled": false,
+      "supportedPoses": [],
+      "artworkPoses": [],
+      "sourceFiles": [],
+      "note": "Pose catalogue metadata: no premium profile is integrated for this pose; retain the complete existing SVG renderer. This row does not add artwork variants."
+    },
+    {
+      "key": "pose_ansage",
+      "name": "Ansage",
+      "slot": "pose",
+      "value": "ansage",
+      "entryKind": "pose-metadata",
+      "totalVariantKeys": 0,
+      "totalPoseCells": 0,
+      "artworkVariantKeys": 0,
+      "artworkPoseCells": 0,
+      "technicallyValidatedVariantKeys": 0,
+      "technicallyValidatedPoseCells": 0,
+      "newTechnicallySupportedPoseCells": 0,
+      "availability": "Metadata",
+      "profileSupported": false,
+      "profileStatus": "SVG fallback",
+      "technicalStatus": "SVG fallback",
+      "artisticStatus": "Not applicable",
+      "approved": false,
+      "enabled": false,
+      "supportedPoses": [],
+      "artworkPoses": [],
+      "sourceFiles": [],
+      "note": "Pose catalogue metadata: no premium profile is integrated for this pose; retain the complete existing SVG renderer. This row does not add artwork variants."
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "approved": false,
+  "enabled": false,
+  "artStatus": "Artistically pending",
+  "canvas": [
+    768,
+    1216
+  ],
+  "poses": [
+    "cool",
+    "guard"
+  ],
+  "hands": "wraps",
+  "tone": 6,
+  "pieces": {
+    "wrap-cool0": {
+      "id": "wrap-cool0",
+      "slot": "hands",
+      "src": "wraps/assets/wrap-cool0.png",
+      "uv": [
+        0,
+        0,
+        256,
+        235
+      ],
+      "box": [
+        247,
+        311,
+        92.59574468085107,
+        85
+      ],
+      "sha256": "f42064a57cfd9da5d48e86de5eddff4a6c0fd84feebbb9e96536742daffffc7e",
+      "bytes": 96229,
+      "pose": "cool",
+      "crop": [
+        272,
+        198,
+        520,
+        478
+      ],
+      "skinMaterial": "Warm skin only; white cotton must remain untinted"
+    },
+    "wrap-cool1": {
+      "id": "wrap-cool1",
+      "slot": "hands",
+      "src": "wraps/assets/wrap-cool1.png",
+      "uv": [
+        0,
+        0,
+        256,
+        241
+      ],
+      "box": [
+        405,
+        318,
+        101.97510373443983,
+        96
+      ],
+      "sha256": "117bb462b2c5db219c46be3b68e920bf7e0e742d0d135fa414a1eb2d37d44947",
+      "bytes": 94293,
+      "pose": "cool",
+      "crop": [
+        1004,
+        197,
+        540,
+        508
+      ],
+      "skinMaterial": "Warm skin only; white cotton must remain untinted"
+    },
+    "wrap-guard0": {
+      "id": "wrap-guard0",
+      "slot": "hands",
+      "src": "wraps/assets/wrap-guard0.png",
+      "uv": [
+        0,
+        0,
+        256,
+        293
+      ],
+      "box": [
+        269.1296928327645,
+        175,
+        91.74061433447099,
+        105
+      ],
+      "sha256": "6ff8a27f03230c66d9a874702e441a8079c0c60c4be80684c0c8104126f110e6",
+      "bytes": 130299,
+      "pose": "guard",
+      "crop": [
+        157,
+        466,
+        295,
+        338
+      ],
+      "skinMaterial": "Warm skin only; white cotton must remain untinted"
+    },
+    "wrap-guard1": {
+      "id": "wrap-guard1",
+      "slot": "hands",
+      "src": "wraps/assets/wrap-guard1.png",
+      "uv": [
+        0,
+        0,
+        256,
+        293
+      ],
+      "box": [
+        408.1296928327645,
+        175,
+        91.74061433447099,
+        105
+      ],
+      "sha256": "fc2f9a2479fd13c264930f52372e475306f60e3eca165caa50622559636540a5",
+      "bytes": 130141,
+      "pose": "guard",
+      "crop": [
+        556,
+        466,
+        295,
+        338
+      ],
+      "skinMaterial": "Warm skin only; white cotton must remain untinted"
+    }
+  },
+  "sources": {
+    "cool": {
+      "file": "source-cool.png",
+      "sha256": "2912004aa59e0b8cb4fa69bec253adac5d8a074266be4542ac9ed3137b9d79d4",
+      "bytes": 843096
+    },
+    "guard": {
+      "file": "source-guard.png",
+      "sha256": "7a6a7f69fcedf7cf692eb0693fc23b97ca09c5d07797361b20a52310cb3c4951",
+      "bytes": 450362
+    }
+  }
+}
