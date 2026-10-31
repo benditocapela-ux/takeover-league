@@ -59,7 +59,7 @@ async function submit(db,slot,btn,output,cfg){
   output.classList.add('ct-error');
  }finally{if(btn)btn.disabled=false}
 }
-export function mountBoxerPrompt({db,cfg,onIndividual,onClub}){
+export function mountBoxerPrompt({db,cfg,onIndividual,onClub,checkinOnly=false}){
  const form=document.getElementById('form');
  if(!form||!db||cfg?.enabled!==true||document.getElementById('ct-boxer'))return;
  styles();
@@ -71,7 +71,7 @@ export function mountBoxerPrompt({db,cfg,onIndividual,onClub}){
  yes.type='button';no.type='button';choices.append(yes,no);panel.append(choices);
  const result=e('div','ct-result');result.hidden=true;result.setAttribute('role','status');result.setAttribute('aria-live','polite');panel.append(result);
  const other=e('div','ct-actions'),extra=e('a','ct-secondary','Anderes Vereinstraining / Ergänzung');
- extra.href='./boxer.html?club=1#trainingFormCard';other.append(extra);panel.append(other);
+ extra.href=checkinOnly?'./checkin.html':'./boxer.html?club=1#trainingFormCard';other.append(extra);panel.append(other);
  form.before(panel);form.hidden=true;
  yes.addEventListener('click',()=>submit(db,null,yes,result,cfg));
  no.addEventListener('click',()=>{
