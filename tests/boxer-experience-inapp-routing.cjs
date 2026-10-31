@@ -67,7 +67,7 @@ test('same-origin allowlist and login separation are mandatory',()=>{
 test('theme hides redundant old chrome, not the training form or permissions',()=>{
  assert.match(css,/\.tl-screen-ribbon,.tl-subnav,.tl-global-bottom/);
  assert.match(css,/\.studio-pane-overview>.card:not\(#trainingFormCard\)/);
- assert.match(css,/tl-ex-training #submit/);
+ assert.match(css,/tl-ex-training #trainingFormCard #submit/);
  assert.match(css,/\.tl-v2-step/);
  assert.doesNotMatch(css,/\#trainingFormCard[^{]*\{[^}]*display:none/);
  assert.match(page,/class="ex-menu"/);
