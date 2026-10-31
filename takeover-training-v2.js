@@ -153,7 +153,16 @@
   render();
   try{
    const quick=await import('./takeover-club-today.js');
-   quick.mountBoxerPrompt({db:ctx.db,cfg:{...state.cfg,enabled:true},onIndividual:()=>{
+   let checkinOnly=false;
+   try{
+    const flags=await ctx.db.from('league_feature_flags').select('feature_key,is_enabled')
+      .in('feature_key',['gym_training','club_checkin_only']);
+    if(!flags.error&&Array.isArray(flags.data)){
+     checkinOnly=['gym_training','club_checkin_only'].every(key=>
+      flags.data.some(x=>x.feature_key===key&&x.is_enabled===true));
+    }
+   }catch(_){}
+   quick.mountBoxerPrompt({db:ctx.db,cfg:{...state.cfg,enabled:true},checkinOnly,onIndividual:()=>{
     state.loc='individual';state.choice=null;remember();render();
    },onClub:()=>{state.loc='club';state.choice=null;remember();render();}});
   }catch(err){console.warn('Club-Today-Prompt nicht geladen:',err)}
