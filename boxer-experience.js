@@ -1,6 +1,7 @@
-/* Boxer Experience V1: isolated, read-only view backed by the existing RPCs.
- * No training mutation or duplicate points logic is implemented here.
- * The canonical training flow remains boxer.html until the parallel training work lands.
+/* Boxer Experience V1: isolated, authenticated views plus a single server-controlled
+ * pending club-training request RPC (only when Training 2.0 is enabled).
+ * No direct training table writes, rating mutations or point/EXP transactions.
+ * Individual and supplementary submissions use the canonical boxer.html form.
  */
 (function () {
   'use strict';
