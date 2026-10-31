@@ -33,7 +33,7 @@ test('read-only: all training mutations remain in canonical studio',()=>{
   assert.match(js,/club_checkin_only/);
   assert.match(js,/trainingReward\(x\.reward\)/);
   assert.match(js,/trainingFallback\(host\)/);
-  assert.match(js,/\.{2}\/checkin\.html/);
+  assert.match(js,/\.\/checkin\.html/);
   assert.doesNotMatch(js,/Object\.assign\(payload|training_location\s*:/,'Trainingseintrag und Tier bleiben in boxer.html');
 });
 test('real data reads, no imaginary scores or podium participants',()=>{
