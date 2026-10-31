@@ -68,7 +68,8 @@
    const entries=[
      {icon:'👤',title:'Mein Bereich',summary:'Profil, Training und persönliche Ziele',items:[
        ['user','Anmelden / Mein Account','login.html',''],
-       ['dumbbell','Mein Studio','boxer.html',''],
+       ['user','Mein Takeover','boxer-experience.html','',true],
+       ['dumbbell','Training erfassen (Studio)','boxer.html',''],
        ['target','Meine Ziele','goals.html',''],
        ['medal','Bewertung','bewertung.html','',true],
        ['chart','Boxstil-Test','stil-test.html','',true],
@@ -159,7 +160,7 @@
   const ROLE_NAV={
     admin:{href:'./admin.html',label:'Clubverwaltung',emoji:'🛡️'},
     coach:{href:'./coach.html',label:'Coach',emoji:'🧑‍🏫'},
-    boxer:{href:'./boxer.html',label:'Mein Studio',emoji:'🥊'}
+    boxer:{href:'./boxer-experience.html',label:'Mein Takeover',emoji:'🥊'}
   };
   function applyDashboardLink(role){
     const target=ROLE_NAV[role];if(!target)return;
@@ -176,7 +177,7 @@
       const coachLink=panel.querySelector('a[href="./coach.html"]');
       if(coachLink) coachLink.classList.add('tl-current');
     }else if(role==='boxer'){
-      const boxerLink=panel.querySelector('a[href="./boxer.html"]');
+      const boxerLink=panel.querySelector('a[href="./boxer-experience.html"]');
       if(boxerLink) boxerLink.classList.add('tl-current');
     }
   }
@@ -255,11 +256,14 @@
       if(role==='admin'&&adminEntry) adminEntry.hidden=false;
       privateEntries.forEach(anchor=>{
         const href=anchor.getAttribute('href');
-        anchor.hidden=!(['./boxer.html','./goals.html','./bewertung.html','./stil-test.html','./wochenplan.html','./quests.html','./shop.html','./roadmap.html','./kampfpfad.html','./praesenz.html','./checkin.html','./feedback.html','./karten.html','./mein-boxer.html'].includes(href.split('?')[0]) ||
+        anchor.hidden=(role!=='boxer'&&href==='./boxer-experience.html') || !(['./boxer-experience.html','./boxer.html','./goals.html','./bewertung.html','./stil-test.html','./wochenplan.html','./quests.html','./shop.html','./roadmap.html','./kampfpfad.html','./praesenz.html','./checkin.html','./feedback.html','./karten.html','./mein-boxer.html'].includes(href.split('?')[0]) ||
           ((role==='admin'||role==='coach')&&['./coach.html','./league-manager.html'].includes(href)));
       });
       // static check sentinel: p.data?.role==='admin'
       if(ROLE_NAV[role]) applyDashboardLink(role);
+      // PWA/start URL opens index.html. Boxer default home is now their experience;
+      // explicit public sections (#ranking, #podium, #levels, #history) remain accessible.
+      if(role==='boxer'&&atHome&&!location.hash){location.replace('./boxer-experience.html');return;}
     }catch{
       if(adminEntry) adminEntry.hidden=true;
       privateEntries.forEach(a=>a.hidden=true);
@@ -310,7 +314,7 @@
        const isMenu=item===trigger;
        const active=!!tabname&&atHome&&tabname===tab ||
          isMenu&&(open || atHome&&(tab==='levels'||tab==='history') || ['challenges.html','duels.html','awards.html','features.html','coming-soon.html','boxer-profile.html'].includes(page)) ||
-         (item.classList.contains('tl-dashboard-nav')||item.classList.contains('dashboard-nav'))&&['login.html','boxer.html','coach.html','admin.html'].includes(page) ||
+         (item.classList.contains('tl-dashboard-nav')||item.classList.contains('dashboard-nav'))&&['login.html','boxer.html','boxer-experience.html','coach.html','admin.html'].includes(page) ||
          (item.getAttribute&&item.getAttribute('href')&&item.getAttribute('href').replace(/^\.\//,'')===page);
        item.classList.toggle(atHome?'active':'tl-active',!!active);
        if(active && item.tagName==='A')item.setAttribute('aria-current','page');
