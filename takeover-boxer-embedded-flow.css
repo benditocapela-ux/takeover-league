@@ -1,0 +1,89 @@
+/* Takeover Boxer Experience · embedded canonical pages (same-origin only).
+   Applied inside the iframe AFTER page load. No server logic is copied.
+   In normal direct URLs this stylesheet is not loaded, preserving legacy access. */
+html:has(body.tl-ex-embedded){scrollbar-color:#344963 #0b1525}
+body.tl-ex-embedded{
+ background:#080e1b!important;color:#edf3fd!important;
+ margin:0!important;max-width:none!important;min-height:100%!important;
+ padding:9px clamp(11px,3vw,22px) 34px!important;
+}
+body.tl-ex-embedded :where(.tl-screen-ribbon,.tl-subnav,.tl-global-bottom,.bottom,.tl-quick-open,.tl-screen-links,
+ #takeover-menu-open,.tl-menu-backdrop,.tl-menu-panel,.tl-help-link){
+ display:none!important;
+}
+body.tl-ex-embedded > main,
+body.tl-ex-embedded :where(main,.wrap,.container){
+ max-width:100%!important;width:100%!important;margin:0 auto!important;
+}
+body.tl-ex-embedded :where(h1,h2,h3){
+ color:#f6f9ff;overflow-wrap:anywhere;
+ font-family:'Barlow Condensed',var(--font-display),system-ui,sans-serif;
+ letter-spacing:.015em;
+}
+body.tl-ex-embedded :where(.card,.panel,.boxer-hero,.tlp-panel,.tl-v2-step,.tl-v2-reward,.section,.stat,.tlp-card){
+ border-radius:14px;border-color:#344963;background-color:#10203a;
+}
+body.tl-ex-embedded :where(input:not([type=checkbox]):not([type=radio]),select,textarea){
+ min-height:46px;max-width:100%;width:100%;
+ border-radius:11px;background:#0c1a2d;color:#f6f8fc;
+ border:1px solid #435674;
+}
+body.tl-ex-embedded :where(button,a,select,input,textarea):focus-visible{
+ outline:3px solid #f2c14e;outline-offset:3px;
+}
+body.tl-ex-embedded :where(button,[role=button],a.tlp-btn){min-height:44px;touch-action:manipulation}
+body.tl-ex-embedded :where(.card,.panel,.tlp-panel){box-shadow:0 8px 22px #0002}
+body.tl-ex-embedded :where(table,.table-wrap){max-width:100%}
+/* The secure, original boxer form becomes the body of the Training in-app subview.
+   Do not hide form, training-v2 prompt, validation, messages or confirmation actions. */
+body.tl-ex-embedded.tl-ex-training > main{padding:0!important}
+body.tl-ex-embedded.tl-ex-training #content{
+ display:block!important;padding:0!important;margin:0!important;
+}
+body.tl-ex-embedded.tl-ex-training :where(.studio-tabs,.studio-pane-overview>.boxer-hero,
+ .studio-pane-overview>.studio-summary,
+ .studio-pane-overview>#boxerTaskCenter,
+ .studio-pane-overview>#studioRecentSection,
+ .studio-pane-overview>.stat-highlights,
+ .studio-pane-overview>.card:not(#trainingFormCard),
+ .studio-pane-overview>.studio-section-overline,
+ .studio-pane-overview>h2,
+ #studioPanelHistory,#studioPanelDetails,
+ #studioTabOverview,#studioTabHistory,#studioTabDetails,
+ .tl-quick-dialog,.studio-sticky-actions){display:none!important}
+body.tl-ex-embedded.tl-ex-training #studioPanelOverview{display:block!important;padding:0!important;margin:0!important}
+body.tl-ex-embedded.tl-ex-training #trainingFormCard{
+ display:block!important;margin:0!important;padding:14px clamp(12px,3vw,19px)!important;
+ background:linear-gradient(140deg,#152641,#0c182d 85%);
+ border:1px solid #52617b;border-top:2px solid #f2c14e;
+ border-radius:16px;box-shadow:none;
+}
+body.tl-ex-embedded.tl-ex-training #trainingFormCard>h2{
+ font-size:clamp(23px,5vw,29px);margin:2px 0 9px;
+}
+body.tl-ex-embedded.tl-ex-training #trainingFormCard #form{
+ max-width:none!important;width:100%;background:transparent!important;
+}
+body.tl-ex-embedded.tl-ex-training #trainingFormCard #submit{
+ min-height:52px;width:100%;border-radius:11px;
+ background:linear-gradient(125deg,#ffe29b,#cda143);color:#111b2a;font-weight:850;
+}
+body.tl-ex-embedded.tl-ex-training #trainingFormCard .tl-v2-step{
+ background:#10203a;border:1px solid #435673;
+}
+body.tl-ex-embedded.tl-ex-training #trainingFormCard .tl-v2-card[aria-checked=true]{
+ border-color:#f2c14e;
+}
+/* The legacy page may show a toast in a parent-level status outside #content. */
+body.tl-ex-embedded.tl-ex-training #message{position:sticky;top:0;z-index:4;color:#f4d086;background:#0f1e33}
+body.tl-ex-embedded.tl-ex-training #message:empty{display:none}
+/* Avoid accidental horizontal pan on narrow devices without clipping controls. */
+@media(max-width:560px){
+ body.tl-ex-embedded :where(.card,.panel){padding:13px}
+ body.tl-ex-embedded.tl-ex-training .ux-training-tools{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+ body.tl-ex-embedded.tl-ex-training .ux-training-tools>*{min-width:0}
+ body.tl-ex-embedded :where(.tl-v2-cards,.cv2-grid2){grid-template-columns:minmax(0,1fr)}
+}
+@media(prefers-reduced-motion:reduce){
+ body.tl-ex-embedded *{scroll-behavior:auto!important;transition:none!important}
+}
