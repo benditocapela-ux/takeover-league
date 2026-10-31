@@ -218,3 +218,19 @@ body[data-tl-screen="admin"] .inline-actions button{min-height:44px}
 @media(prefers-reduced-motion:reduce){
  body[data-tl-screen="coach"] .cv2-tile{transition:none}
 }
+
+/* Full site menu remains available from staff headers despite the replacement dock. */
+body[data-tl-screen="coach"] .tl-screen-links button[data-stf-global-menu],
+body[data-tl-screen="admin"] .tl-screen-links button[data-stf-global-menu]{
+ min-height:43px;padding:10px 13px;border-radius:11px;
+ border:1px solid #526482;background:#142640;color:#f3d78d;
+ font:800 12px var(--font,system-ui);letter-spacing:0;cursor:pointer;
+}
+body[data-tl-screen="coach"] .tl-screen-links button[data-stf-global-menu]:focus-visible,
+body[data-tl-screen="admin"] .tl-screen-links button[data-stf-global-menu]:focus-visible{
+ outline:3px solid #f2c14e;outline-offset:3px;
+}
+@media(min-width:541px) and (max-width:700px){
+ body[data-tl-screen="admin"] table,
+ body[data-tl-screen="admin"] .table-wrap{min-width:0!important;max-width:100%}
+}
