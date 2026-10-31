@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="de-CH">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Takeover League · Character Art Review (nur lokal)</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,sans-serif;background:#070f20;color:#ecf2fc}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 50% 0%,#18355255,transparent 55%),#070f20}
+main{max-width:1190px;margin:auto;padding:20px clamp(12px,3vw,34px) 48px}
+header{border-bottom:1px solid #334d70;padding-bottom:15px;margin-bottom:16px}header strong{color:#f5c45c;letter-spacing:.14em;font-size:12px}h1{margin:8px 0;font-size:clamp(24px,4vw,35px)}p{line-height:1.55;color:#becbe0}
+.note{border-left:3px solid #f5c45c;padding:10px 13px;background:#13233b;color:#e9d7a6;font-size:13px}
+.controls{display:flex;gap:12px;align-items:end;flex-wrap:wrap;margin:16px 0}
+label{font-size:13px;font-weight:700}label span{display:block;margin-bottom:8px}
+input[type=file]{display:block;max-width:330px;font-size:12px;border:1px solid #4d6387;padding:10px;background:#101e35;border-radius:9px}
+button{color:#f3d58e;border:1px solid #a58342;background:#13243d;border-radius:9px;padding:11px 14px;font-weight:700;cursor:pointer}
+button:focus-visible,input:focus-visible{outline:2px solid #69d7ff;outline-offset:3px}
+button[aria-pressed=true]{background:#886221;color:#fff}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:14px}
+.panel{background:#0d182a;border:1px solid #344c69;border-radius:14px;padding:12px;min-width:0}
+.panel h2{margin:2px 3px 10px;font-size:15px;color:#efd08a}
+.stage{position:relative;aspect-ratio:768/1216;max-height:67vh;max-width:100%;margin:auto;background:radial-gradient(ellipse at center,#18476688,#091326 60%,#08101e);
+overflow:hidden;border:1px solid #34445e;border-radius:9px;display:grid;place-items:center}
+.stage.checkers{background-color:#172c46;background-image:linear-gradient(45deg,#26415a 25%,transparent 25%),linear-gradient(-45deg,#26415a 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#26415a 75%),linear-gradient(-45deg,transparent 75%,#26415a 75%);background-size:28px 28px;background-position:0 0,0 14px,14px -14px,-14px 0}
+.stage img,.stage svg{display:block;position:absolute;width:100%;height:100%;object-fit:contain;inset:0}
+.stage svg{padding:1%}.stage img{pointer-events:none}
+#split{position:absolute;inset:0;overflow:hidden;pointer-events:none;width:50%;border-right:2px solid #f1c76f}
+#split img{width:200%;max-width:none}
+#baseline svg{width:100%;height:100%}
+.state{font-size:12px;min-height:40px;margin:8px 2px;color:#b5cae8}
+.tools{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:15px 0}
+.tools input[type=range]{width:min(300px,50vw);accent-color:#f1c76f}
+footer{color:#8396b0;font-size:12px;margin-top:15px}
+@media(max-width:700px){.layout{grid-template-columns:1fr}.stage{height:min(53vh,490px);width:auto;aspect-ratio:768/1216}.panel{padding:10px}}
+</style>
+</head>
+<body>
+<main>
+<header><strong>TAKEOVER LEAGUE · INTERNE GRAFIKABNAHME</strong><h1>Premium-Boxer: Stil- & Ebenenvergleich</h1>
+<p>Vergleiche die echte Vorlage mit einem neuen transparenten PNG/WebP. Alle Bilder bleiben lokal in diesem Browser – kein Upload, keine Supabase-Daten und kein Einfluss auf deinen Boxer.</p></header>
+<div class="note">Referenzpose: <b>verschränkte Arme („cool“)</b>. Zielmass je Grafik: <b>768 × 1216 Pixel</b>. Der bisherige freigestellte Entwurf ist nur eine Stilvorlage; er ersetzt keine austauschbaren Kleidungsebenen.</div>
+<div class="controls">
+<label><span>1 · Referenzvorlage (PNG/WebP)</span><input id="reference" type="file" accept="image/png,image/webp"></label>
+<label><span>2 · Neue Charaktergrafik / Ebene</span><input id="candidate" type="file" accept="image/png,image/webp"></label>
+<button id="checker" type="button" aria-pressed="false">Transparenzraster anzeigen</button>
+</div>
+<div class="layout">
+<section class="panel"><h2>ORIGINALVORLAGE</h2><div class="stage" id="referenceStage"><img id="referenceImage" alt="Geladene Referenz" hidden></div><p class="state" id="referenceState">Referenzdatei wählen. Die Datei wird nicht hochgeladen.</p></section>
+<section class="panel"><h2>NEUE PREMIUM-GRAFIK</h2><div class="stage" id="candidateStage"><img id="candidateImage" alt="Neuer Boxer" hidden></div><p class="state" id="candidateState">Kandidat wählen. Die Grösse und Transparenz werden lokal geprüft.</p></section>
+</div>
+<div class="tools">
+<label for="compare">Überblendung</label>
+<input id="compare" type="range" min="0" max="100" value="50" aria-label="Prozentanteil neue Figur im direkten Vergleich">
+<output id="percent">50 %</output>
+<button id="switch" type="button" aria-pressed="false">Überlagerung einblenden</button>
+</div>
+<div class="panel" id="overlayPanel" hidden>
+<h2>DECKUNGSGLEICHHEIT / BILDSCHNITT</h2>
+<div class="stage" id="overlayStage">
+<img id="overlayReference" alt="Referenz für den Bildvergleich">
+<div id="split"><img id="overlayCandidate" alt="Neue Grafik"></div>
+</div>
+<p class="state">Links Referenz, rechts neues Bild. Die Trennlinie verschieben und Haltung, Proportionen, Saum und Stiefel vergleichen. Der Vergleich macht keine Qualitätsfreigabe automatisch.</p>
+</div>
+<footer>Interne Design-Abnahme · keine Bilddaten werden gespeichert oder übertragen. Fehlende/undurchsichtige Ebenen sind kein freigegebenes Artwork. Zur Veröffentlichung sind separate Rechte- und Qualitätstests erforderlich.</footer>
+</main>
+<script>
+'use strict';
+const images={reference:null,candidate:null},files={reference:null,candidate:null};
+const $=id=>document.getElementById(id);
+function refreshOverlay(){
+ const allowed=!!(images.reference&&images.candidate);
+ $('switch').disabled=!allowed;
+ if(!allowed){$('overlayPanel').hidden=true;return}
+ $('overlayReference').src=images.reference;
+ $('overlayCandidate').src=images.candidate;
+ $('overlayPanel').hidden=$('switch').getAttribute('aria-pressed')!=='true';
+}
+function validateImage(img){
+ const canvas=document.createElement('canvas');canvas.width=img.naturalWidth;canvas.height=img.naturalHeight;
+ const ctx=canvas.getContext('2d',{willReadFrequently:true});
+ ctx.drawImage(img,0,0);
+ const data=ctx.getImageData(0,0,canvas.width,canvas.height).data;
+ let transparent=0,visible=0;
+ for(let p=3;p<data.length;p+=4){if(data[p]<255)transparent++;if(data[p]>0)visible++}
+ return {transparent,visible};
+}
+for(const key of ['reference','candidate']){
+ $(key).addEventListener('change',async e=>{
+  const file=e.target.files&&e.target.files[0];
+  if(images[key])URL.revokeObjectURL(images[key]);
+  images[key]=null;files[key]=null;
+  $(key+'Image').hidden=true;
+  if(!file){$(key+'State').textContent='Keine Datei ausgewählt.';refreshOverlay();return}
+  if(!['image/png','image/webp'].includes(file.type)){$(key+'State').textContent='Bitte PNG oder WebP verwenden.';return}
+  const src=URL.createObjectURL(file),img=new Image();
+  img.onload=()=>{
+   let info;
+   try{info=validateImage(img)}catch(err){$(key+'State').textContent='Bild kann nicht auf Transparenz geprüft werden.';URL.revokeObjectURL(src);return}
+   const match=img.naturalWidth===768&&img.naturalHeight===1216,alpha=info.transparent>0;
+   images[key]=src;files[key]=file;
+   $(key+'Image').src=src;$(key+'Image').hidden=false;
+   $(key+'State').textContent=(match?'✓':'⚠')+' '+img.naturalWidth+' × '+img.naturalHeight+' px · '+Math.round(file.size/1024)+' KiB · '+(alpha?'Transparenz vorhanden':'WARNUNG: Bild ist vollständig undurchsichtig')+(match?'':' · Für echte Ebenen ist 768 × 1216 Pflicht');
+   refreshOverlay();
+  };
+  img.onerror=()=>{$(key+'State').textContent='Bilddatei konnte nicht gelesen werden.';URL.revokeObjectURL(src)};
+  img.src=src;
+ });
+}
+$('checker').addEventListener('click',()=>{
+ const pressed=$('checker').getAttribute('aria-pressed')!=='true';
+ $('checker').setAttribute('aria-pressed',String(pressed));
+ document.querySelectorAll('.stage').forEach(el=>el.classList.toggle('checkers',pressed));
+});
+$('switch').disabled=true;
+$('switch').addEventListener('click',()=>{
+ const pressed=$('switch').getAttribute('aria-pressed')!=='true';
+ $('switch').setAttribute('aria-pressed',String(pressed));refreshOverlay();
+});
+$('compare').addEventListener('input',()=>{
+ const p=Number($('compare').value);
+ $('percent').textContent=p+' %';
+ $('split').style.width=p+'%';
+ if(p>0)$('overlayCandidate').style.width=(10000/p)+'%';
+});
+</script>
+</body>
+</html>

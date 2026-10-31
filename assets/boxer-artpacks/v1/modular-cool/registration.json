@@ -1,0 +1,241 @@
+[
+  {
+    "name": "body",
+    "sourceSize": [
+      996,
+      1578
+    ],
+    "sourceBounds": [
+      227,
+      84,
+      796,
+      1513
+    ],
+    "scale": 0.7710843373493976,
+    "dx": 0,
+    "dy": -0.38554216867476043
+  },
+  {
+    "name": "hair-afro",
+    "sourceSize": [
+      768,
+      1216
+    ],
+    "sourceBounds": [
+      305,
+      46,
+      461,
+      166
+    ],
+    "scale": 1,
+    "dx": 0,
+    "dy": 0
+  },
+  {
+    "name": "feet",
+    "sourceSize": [
+      996,
+      1579
+    ],
+    "sourceBounds": [
+      148,
+      1165,
+      857,
+      1483
+    ],
+    "scale": 0.6619718309859155,
+    "dx": 60.02816901408451,
+    "dy": 185.71830985915483
+  },
+  {
+    "name": "bottom-black",
+    "sourceSize": [
+      996,
+      1578
+    ],
+    "sourceBounds": [
+      145,
+      580,
+      862,
+      1137
+    ],
+    "scale": 0.4456824512534819,
+    "dx": 163.3760445682451,
+    "dy": 287.15877437325906
+  },
+  {
+    "name": "eyes",
+    "sourceSize": [
+      996,
+      1578
+    ],
+    "sourceBounds": [
+      424,
+      179,
+      569,
+      211
+    ],
+    "scale": 0.6301369863013698,
+    "dx": 67.82191780821921,
+    "dy": 32.30821917808221
+  },
+  {
+    "name": "hair-short",
+    "sourceSize": [
+      996,
+      1579
+    ],
+    "sourceBounds": [
+      327,
+      72,
+      663,
+      325
+    ],
+    "scale": 0.3543307086614173,
+    "dx": 209.42913385826773,
+    "dy": 26.488188976377955
+  },
+  {
+    "name": "hands-blackgold",
+    "sourceSize": [
+      996,
+      1579
+    ],
+    "sourceBounds": [
+      182,
+      493,
+      876,
+      738
+    ],
+    "scale": 0.4,
+    "dx": 173,
+    "dy": 117,
+    "sourceSha256": "59c65325f282d2202ac41f249a76249c791bd5ad315efd417f0f68a5434f8101",
+    "registrationGroup": "crossed-arms-v3-ornate",
+    "bodyWristAnchors": {
+      "rear": [
+        310,
+        374
+      ],
+      "front": [
+        420,
+        386
+      ]
+    },
+    "notes": "Original ornate leather/gold style restored using imagegen; unchanged common transform 0.4 / 173 / 117. Rear lower edge remains occluded by foreground arm; style awaits personal approval."
+  },
+  {
+    "name": "top-tank",
+    "sourceSize": [
+      996,
+      1579
+    ],
+    "sourceBounds": [
+      236,
+      304,
+      787,
+      1199
+    ],
+    "scale": 0.34598214285714285,
+    "dx": 212.85714285714283,
+    "dy": 139.82142857142856
+  },
+  {
+    "name": "coatfront",
+    "sourceSize": [
+      996,
+      1579
+    ],
+    "sourceBounds": [
+      114,
+      140,
+      884,
+      1371
+    ],
+    "scale": 0.6168831168831169,
+    "dx": 84.36688311688309,
+    "dy": 83.63636363636363,
+    "localizedCorrection": {
+      "region": [
+        0,
+        0,
+        768,
+        310
+      ],
+      "blendRows": [
+        270,
+        310
+      ],
+      "sourceSize": [
+        997,
+        1578
+      ],
+      "scale": 0.63,
+      "dx": 72,
+      "dy": 114,
+      "method": "Imagegen collar/shoulder edit registered onto original sprite; original decoded pixels retained from row 310 downward. Body, back coat, cuffs and gloves unchanged.",
+      "sourceSha256": "21278fda63282108d64261e4fb4ed01996449b1be0e1d075822587dd939966ce"
+    }
+  },
+  {
+    "name": "coatback",
+    "sourceSize": [
+      996,
+      1579
+    ],
+    "sourceBounds": [
+      125,
+      587,
+      888,
+      1194
+    ],
+    "scale": 0.5756578947368421,
+    "dx": 103.14144736842103,
+    "dy": 212.08881578947364
+  },
+  {
+    "name": "bottom-red",
+    "sourceSize": [
+      996,
+      1578
+    ],
+    "sourceBounds": [
+      144,
+      578,
+      865,
+      1139
+    ],
+    "scale": 0.44321329639889195,
+    "dx": 164.17728531855954,
+    "dy": 289.2797783933518
+  },
+  {
+    "name": "hands-white",
+    "sourceSize": [
+      996,
+      1578
+    ],
+    "sourceBounds": [
+      182,
+      491,
+      881,
+      739
+    ],
+    "scale": 0.4,
+    "dx": 173,
+    "dy": 117,
+    "sourceSha256": "5a81fc8a950b46da1e765c5948facbba022b16e5cef3cb173132b237748e9a3d",
+    "registrationGroup": "crossed-arms-v3-ornate",
+    "bodyWristAnchors": {
+      "rear": [
+        310,
+        374
+      ],
+      "front": [
+        420,
+        386
+      ]
+    },
+    "notes": "Original ornate leather/gold style restored using imagegen; unchanged common transform 0.4 / 173 / 117. Rear lower edge remains occluded by foreground arm; style awaits personal approval."
+  }
+]

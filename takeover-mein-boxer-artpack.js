@@ -1,0 +1,185 @@
+/* Takeover League · optional layered premium 2D art runtime.
+ * All images share one 768x1216 transparent canvas and pose.
+ * The pack is all-or-nothing per selected configuration: no misleading
+ * clothing combinations, silent colour substitutions, or remote image URLs.
+ * SVG remains the trusted default until the art director approves a pack.
+ */
+(function(){
+'use strict';
+const ROOT='./assets/boxer-artpacks/v1/';
+const FILE=/^[a-z0-9_-]+(?:\/[a-z0-9_-]+)*\.(?:png|webp)$/;
+const OWN=(o,k)=>o&&Object.prototype.hasOwnProperty.call(o,k);
+const LABEL='Dein Boxer – Premium-Grafik';
+function build(manifest,draftPreview){
+ const m=manifest&&typeof manifest==='object'?manifest:{};
+ const valid= m.version===1 && (m.approved===true||draftPreview===true) &&
+  m.canvas&&m.canvas.width===768&&m.canvas.height===1216 &&
+  m.poses&&typeof m.poses==='object'&&!Array.isArray(m.poses);
+ const failed=new Set();
+ // Transparent 768x1216 sprites are expensive on mobile: never open an entire
+ // outfit's requests in parallel. Reuse each pending fetch across selections.
+ const MAX_PARALLEL=3;
+ const stats={attempted:0,matched:0,started:0,maxActive:0};
+ const loaded=new Set(),pending=new Map(),notifying=new Set();
+ const queue=[];
+ let activeLoads=0;
+ function pump(){
+  while(activeLoads<MAX_PARALLEL&&queue.length){
+   const job=queue.shift();
+   activeLoads++;
+   stats.started++;
+   stats.maxActive=Math.max(stats.maxActive,activeLoads);
+   let finished=false;
+   const settle=ok=>{
+    if(finished)return;
+    finished=true;
+    if(ok)loaded.add(job.url);else failed.add(job.url);
+    pending.delete(job.url);
+    activeLoads--;
+    job.resolve(ok);
+    pump();
+   };
+   try{
+    const pic=new window.Image();
+    pic.onload=()=>settle(true);
+    pic.onerror=()=>settle(false);
+    pic.src=job.url;
+   }catch(e){settle(false)}
+  }
+ }
+ function loadImage(url){
+  if(loaded.has(url))return Promise.resolve(true);
+  if(failed.has(url))return Promise.resolve(false);
+  if(pending.has(url))return pending.get(url);
+  let resolveTask;
+  const task=new Promise(resolve=>{resolveTask=resolve});
+  pending.set(url,task);
+  queue.push({url,resolve:resolveTask});
+  pump();
+  return task;
+ }
+ // One source of truth for both rendering and integration diagnostics.
+ // The viewer never substitutes another variant for a missing outfit piece.
+ function selection(config,pose){
+  if(!valid)return {state:'unapproved'};
+  if(typeof pose!=='string'||!/^[a-z0-9_-]{1,32}$/.test(pose)||!OWN(m.poses,pose))
+   return {state:'missing-pose',detail:String(pose||'')};
+  const cfg=config||{};
+  // Masked reference art is not an independent wardrobe. Keep its occlusion
+  // dependencies explicit, even if an approval flag is changed later.
+  if(OWN(m,'configurations')){
+   const constraints=OWN(m.configurations,pose)?m.configurations[pose]:null;
+   if(!constraints||typeof constraints!=='object'||Array.isArray(constraints))
+    return {state:'missing-layer',detail:'configuration:'+pose};
+   for(const key of Object.keys(constraints)){
+    if(cfg[key]!==constraints[key])return {state:'missing-layer',detail:'configuration:'+key};
+   }
+  }
+  if(cfg.aura!=='none'||cfg.eyefx!=='none'||(cfg.scene!=='holo'&&cfg.scene!=='none'))
+   return {state:'unsupported-effect'};
+  const pack=m.poses[pose];
+  if(!pack||typeof pack!=='object')return {state:'missing-pose',detail:pose};
+  const hood=cfg.top==='hoodie'&&cfg.hood===true;
+  const hiddenHair=cfg.head==='hijab'||hood;
+  const request=[
+   ['coatBack',cfg.coat,cfg.coat==='none'],
+   ['body',String(cfg.tone),false],
+   ['bottom',cfg.bottom+'/'+cfg.bottomc,false],
+   ['feet',cfg.feet+'/'+cfg.feetc,false],
+   ['top',cfg.top+'/'+cfg.topc+(cfg.top==='hoodie'?'/'+(hood?'up':'down'):''),cfg.top==='none'],
+   ['eyes',cfg.eye,false],
+   ['hair',cfg.hair+'/'+cfg.hc,hiddenHair],
+   ['head',cfg.head+'/'+cfg.headc,cfg.head==='none'],
+   ['coatFront',cfg.coat,cfg.coat==='none'],
+   ['hands',cfg.hands==='gloves'?'gloves/'+cfg.glove:'wraps',false]
+  ];
+  const selected=[];
+  for(const [slot,key,skip] of request){
+   if(skip)continue;
+   const group=OWN(pack,slot)?pack[slot]:null;
+   if(!group||!OWN(group,key))
+    return {state:'missing-layer',detail:slot+':'+key};
+   const name=group[key];
+   if(typeof name!=='string'||!FILE.test(name))
+    return {state:'invalid-path',detail:slot+':'+key};
+   const src=ROOT+name;
+   if(failed.has(src))return {state:'load-failed',detail:slot+':'+key};
+   selected.push({slot,src});
+  }
+  if(!selected.length)return {state:'missing-layer'};
+  return {state:selected.every(x=>loaded.has(x.src))?'ready':'loading',layers:selected};
+ }
+ // Item art is permitted only when the entire resulting outfit is supported.
+ function item(config,pose,slot){
+  const found=selection(config,pose),frames=m.itemFrames&&m.itemFrames[pose];
+  const frame=frames&&frames[slot];
+  if(!found.layers||!Array.isArray(frame)||frame.length!==4||!frame.every(Number.isFinite)||frame[2]<=0||frame[3]<=0)return null;
+  const slots=slot==='coat'?['coatBack','coatFront']:slot==='glove'?['hands']:[slot];
+  const layers=found.layers.filter(layer=>slots.includes(layer.slot));
+  if(!layers.length)return null;
+  return {state:found.state,layers,frame:frame.slice()};
+ }
+ function choose(config,pose){
+  stats.attempted++;
+  const found=selection(config,pose);
+  if(!found.layers)return null;
+  stats.matched++;
+  return found.layers;
+ }
+ function inspect(config,pose){
+  const found=selection(config,pose);
+  return Object.freeze({
+   state:found.state,detail:found.detail||'',
+   total:found.layers?found.layers.length:0,
+   loaded:found.layers?found.layers.filter(x=>loaded.has(x.src)).length:0
+  });
+ }
+ // Atomic swap: show the original SVG until every image in this outfit
+ // has finished loading. One failed layer invalidates the whole artwork.
+ function prepare(config,pose,onReady){
+  const layers=choose(config,pose);
+  if(!layers)return false;
+  const urls=[...new Set(layers.map(layer=>layer.src))];
+  if(urls.every(url=>loaded.has(url)))return true;
+  if(typeof window.Image!=='function')return false;
+  const tasks=urls.map(loadImage);
+  const key=urls.join('|');
+  if(typeof onReady==='function'&&!notifying.has(key)){
+   notifying.add(key);
+   Promise.all(tasks).then(()=>{notifying.delete(key);onReady()});
+  }
+  return false;
+ }
+ function render(config,pose){
+  const layers=choose(config,pose);
+  if(!layers)return null;
+  const html='<span class="mb-artpack" role="img" aria-label="'+(draftPreview?'Dein Boxer – nicht freigegebener Grafikentwurf':LABEL)+'" data-artpack-version="1"'+(draftPreview?' data-artpack-draft="modular-cool"':'')+' data-artpack-pose="'+pose+'">'+
+   // These URLs are already preloaded. Present their decoded layers together;
+   // async decoding can paint a bare body before hair/hands on the first frame.
+   layers.map(x=>'<img class="mb-artpack-img" data-art-slot="'+x.slot+'" src="'+x.src+'" alt="" draggable="false" decoding="sync" loading="eager">').join('')+
+   '</span>';
+  return html;
+ }
+ function markFailed(url){
+  if(typeof url!=='string'||!url.startsWith(ROOT))return false;
+  const path=url.slice(ROOT.length);
+  if(!FILE.test(path))return false;
+  failed.add(url);
+  return true;
+ }
+ return Object.freeze({render,choose,prepare,inspect,markFailed,item,stats});
+}
+function create(manifest){return build(manifest,false)}
+function createDraft(manifest){
+ // This entry point never approves or mutates a manifest. Only the explicitly
+ // requested review URL may inspect this particular disabled collection.
+ let requested=false;
+ try{requested=new URLSearchParams(window.location.search).get('art')==='modular'}catch(e){}
+ const permitted=requested&&manifest&&manifest.draft==='modular-cool'&&
+  manifest.approved===false&&manifest.enabled===false;
+ return build(permitted?manifest:null,!!permitted);
+}
+window.TLBoxerArtPacks=Object.freeze({
+ create,createDraft,active:create(window.TLBoxerArtPackManifest)
+});
+})();

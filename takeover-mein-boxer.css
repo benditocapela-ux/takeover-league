@@ -1,0 +1,775 @@
+/* Takeover League · Mein Boxer · fixed mobile holo editor
+   Reference: navy / gold / cyan, anime holo + optional selection below.
+   Visual-only; no backend, data keys or global navigation modifications. */
+body[data-tl-screen="mein-boxer"] .mb-stage{
+  border:1px solid #344566;
+  background:
+    radial-gradient(ellipse 62% 52% at 50% 65%,rgba(33,123,170,.19),transparent 88%),
+    radial-gradient(ellipse 48% 30% at 50% 94%,rgba(242,193,78,.12),transparent 90%),
+    linear-gradient(180deg,#0c1930 0%,#080f21 100%);
+  box-shadow:inset 0 1px 0 #ffffff14,0 12px 30px #02071360;
+  isolation:isolate;overflow:hidden;
+}
+body[data-tl-screen="mein-boxer"] .mb-stage-heading{
+  display:none;align-items:center;justify-content:space-between;gap:10px;
+  color:var(--gold);font:800 24px/1 var(--font-display);
+  letter-spacing:.035em;text-transform:uppercase;
+}
+body[data-tl-screen="mein-boxer"] .mb-stage-heading a{
+  font:700 12px/1.2 var(--font);letter-spacing:0;text-transform:none;
+  color:var(--text-2);text-decoration:none;padding:6px 8px;
+  border:1px solid var(--line-strong);border-radius:8px;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip{
+  background:linear-gradient(145deg,#16243c 0%,#091325 95%);
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip[aria-pressed="true"]{
+  box-shadow:0 0 0 1px #4fd8ff9c,0 0 13px #4fd8ff3a,inset 0 0 16px #4fd8ff12;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip:hover{
+  border-color:color-mix(in srgb,var(--gold) 62%,var(--line));
+}
+body[data-tl-screen="mein-boxer"] .mb-tabs{scrollbar-width:none}
+body[data-tl-screen="mein-boxer"] .mb-tabs::-webkit-scrollbar{display:none}
+
+@media(max-width:819px){
+  body[data-tl-screen="mein-boxer"].mb-editor-ready{
+    overflow:hidden;overscroll-behavior:none;
+  }
+  body[data-tl-screen="mein-boxer"].mb-editor-ready :is(.tl-screen-ribbon,.tl-subnav,#pageTitle){
+    display:none;
+  }
+  body[data-tl-screen="mein-boxer"].mb-editor-ready .mb-layout{
+    position:fixed;
+    top:env(safe-area-inset-top,0px);
+    right:0;
+    bottom:calc(72px + env(safe-area-inset-bottom,0px));
+    left:0;
+    z-index:20;
+    display:flex;flex-direction:column;
+    gap:9px;padding:8px max(10px,env(safe-area-inset-right,0px))
+      2px max(10px,env(safe-area-inset-left,0px));
+    background:linear-gradient(180deg,#070e1d,#081226);
+    overflow:hidden;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-stage{
+    position:relative;top:auto;flex:0 0 clamp(270px,45dvh,390px);
+    min-height:0;
+    display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;
+    gap:5px;padding:10px 12px 9px;
+    border-radius:16px;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-stage-heading{display:flex;position:relative;z-index:2}
+  body[data-tl-screen="mein-boxer"] .mb-preview{
+    position:relative;display:grid;place-items:center;
+    min-height:0;min-width:0;width:100%;height:100%;max-height:100%;
+    margin:0 auto;filter:none;
+    background:repeating-linear-gradient(
+      180deg,transparent 0px,transparent 5px,#72bcff09 6px,#72bcff09 7px
+    );
+  }
+  body[data-tl-screen="mein-boxer"] .mb-preview::before{
+    content:"";pointer-events:none;position:absolute;inset:0;
+    background:radial-gradient(ellipse 31% 74% at 50% 50%,#53c6ff1d,transparent 100%);
+  }
+  body[data-tl-screen="mein-boxer"] .mb-preview::after{
+    content:"";pointer-events:none;position:absolute;bottom:1%;
+    left:50%;width:min(50vw,185px);height:20px;
+    transform:translateX(-50%);
+    border:2px solid #f2c14e80;border-radius:50%;
+    box-shadow:0 0 16px #f2c14e4d,0 0 23px #4fd8ff3d;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-preview svg.tlh{
+    position:relative;z-index:1;display:block;
+    width:auto;height:100%;max-height:100%;max-width:100%;
+    filter:drop-shadow(0 0 9px #f2c14e38);
+  }
+  body[data-tl-screen="mein-boxer"] .mb-stage-bar{
+    position:relative;z-index:2;gap:6px;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-pill{
+    padding:3px 9px;font-size:12px;border:1px solid #52627d66;
+    background:#081326d9;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-actions{
+    position:relative;z-index:2;gap:8px;flex-wrap:nowrap;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-actions .mb-btn{
+    min-height:40px;min-width:0;flex:1;
+    padding:6px 10px;font-size:13px;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-panel{
+    flex:1 1 0;min-height:0;
+    display:flex;flex-direction:column;
+    border-radius:16px 16px 0 0;
+    background:linear-gradient(180deg,#0d172c,#0b1327 96%);
+    overflow:hidden;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-tabs{
+    flex:0 0 auto;min-height:48px;scrollbar-width:none;
+    background:#0a1528;overscroll-behavior-x:contain;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-tab{
+    padding:0 14px;
+    font-size:13px;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-tabbody{
+    flex:1 1 auto;min-height:0;
+    overflow-y:auto;overflow-x:hidden;
+    overscroll-behavior-y:contain;
+    -webkit-overflow-scrolling:touch;
+    padding:14px 12px 22px;
+    scrollbar-width:thin;
+    scrollbar-color:#526786 transparent;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-sec{gap:8px}
+  body[data-tl-screen="mein-boxer"] .mb-h{color:#b4c6df}
+  body[data-tl-screen="mein-boxer"] .mb-row{
+    flex-wrap:nowrap;overflow-x:auto;overflow-y:hidden;
+    padding:4px 3px 12px;gap:10px;
+    scroll-snap-type:x proximity;overscroll-behavior-x:contain;
+    -webkit-overflow-scrolling:touch;
+    scrollbar-width:thin;scrollbar-color:#334b6b transparent;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-row .mb-gear-chip{
+    flex:0 0 100px;width:100px;scroll-snap-align:start;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-row .mb-chip,
+  body[data-tl-screen="mein-boxer"] .mb-row .mb-sw,
+  body[data-tl-screen="mein-boxer"] .mb-row .mb-pose{flex-shrink:0}
+  body[data-tl-screen="mein-boxer"] .mb-tryon{
+    margin-bottom:2px;font-size:12px;
+  }
+  body[data-tl-screen="mein-boxer"] #status:not([hidden]){
+    position:fixed;left:14px;right:14px;
+    bottom:calc(85px + env(safe-area-inset-bottom,0px));
+    z-index:40;margin:0;max-height:96px;overflow-y:auto;
+    border:1px solid #526888;border-radius:10px;
+    padding:9px 12px;background:#111d32f2;
+    box-shadow:0 8px 22px #0008;
+    font-size:12px;
+  }
+}
+@media(max-width:819px) and (max-height:620px){
+  body[data-tl-screen="mein-boxer"] .mb-stage{
+    flex-basis:clamp(195px,44dvh,275px);gap:3px;padding:7px 10px;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-stage-heading{font-size:20px}
+  body[data-tl-screen="mein-boxer"] .mb-pill{font-size:11px;padding:2px 7px}
+  body[data-tl-screen="mein-boxer"] .mb-actions .mb-btn{min-height:34px}
+}
+@media(min-width:820px){
+  body[data-tl-screen="mein-boxer"] .mb-stage{top:14px}
+  body[data-tl-screen="mein-boxer"] .mb-preview{
+    position:relative;filter:drop-shadow(0 0 12px #f2c14e30);
+    /* Sprite/reference layers are absolutely positioned: reserve the same
+       canvas as the in-flow SVG so swapping renderers cannot collapse it. */
+    aspect-ratio:768/1216;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-tabbody{padding:20px}
+}
+@media(prefers-reduced-motion:reduce){
+  body[data-tl-screen="mein-boxer"] .mb-tabbody,
+  body[data-tl-screen="mein-boxer"] .mb-row{scroll-behavior:auto}
+}
+
+/* Art pass 1 · reference-matched item cards and restrained golden studio light.
+   The item artwork remains generated from the same editable boxer configuration. */
+body[data-tl-screen="mein-boxer"] .mb-stage{
+  border-color:#344765;
+  background:
+    radial-gradient(ellipse 24% 48% at 50% 53%,#eabf6020,transparent 94%),
+    radial-gradient(ellipse 72% 73% at 50% 58%,#1a3e5a88,transparent 75%),
+    linear-gradient(160deg,#081427,#070e1d 80%);
+}
+body[data-tl-screen="mein-boxer"] .mb-preview{
+  filter:drop-shadow(0 0 11px #f2c14e42);
+}
+body[data-tl-screen="mein-boxer"] .mb-stage .tlh-premium-coat,
+body[data-tl-screen="mein-boxer"] .mb-stage .tlh-premium-gear{
+  filter:drop-shadow(0 0 2px #f2c14e35);
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip{
+  border-color:#375070;
+  background:
+    radial-gradient(ellipse 84% 60% at 50% 25%,#3b58743b,transparent 80%),
+    linear-gradient(160deg,#13223a,#091222 85%);
+  box-shadow:inset 0 1px 0 #ffffff12,0 4px 12px #00000035;
+  transition:border-color .16s ease,box-shadow .16s ease;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-art{
+  border-color:#5673944d;
+  background:
+    radial-gradient(ellipse at 50% 72%,#f2c14e1a,transparent 50%),
+    radial-gradient(ellipse at 50% 33%,#1f4c6a99,transparent 70%),#071326;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-art::before{
+  content:"";position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:repeating-linear-gradient(180deg,#6ca7cf08 0 1px,transparent 1px 7px);
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-name{color:#e6ecf6;font-weight:800}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip[aria-pressed="true"]{
+  border-color:#ffda7b;
+  box-shadow:0 0 0 1px #ffd36b99,0 0 18px #dba73b45,inset 0 0 15px #dba73b15;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip[aria-pressed="true"] .mb-gear-art{
+  border-color:#f2c14e8c;
+  background:radial-gradient(ellipse at 50% 65%,#f2c14e32,transparent 62%),#0c1b30;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip .mb-lock{
+  background:#33270c;border:1px solid #ab852a66;
+}
+body[data-tl-screen="mein-boxer"] .mb-tab[aria-selected="true"]{
+  color:#fff; border-bottom-color:#4fd8ff;
+  background:linear-gradient(180deg,#172c4600,#44c9ff0c);
+}
+body[data-tl-screen="mein-boxer"] .mb-h{
+  color:#b5c9df;letter-spacing:.13em;
+}
+@media(max-width:819px){
+  body[data-tl-screen="mein-boxer"] .mb-preview{filter:none}
+  body[data-tl-screen="mein-boxer"] .mb-stage{
+    background:
+      radial-gradient(ellipse 31% 60% at 50% 54%,#f2c14e1c,transparent 95%),
+      radial-gradient(ellipse 65% 72% at 50% 55%,#164a6d8a,transparent 90%),
+      linear-gradient(180deg,#0a1a31,#080f20 100%);
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  body[data-tl-screen="mein-boxer"] .mb-gear-chip{transition:none}
+}
+
+/* Art pass 2: isolated, configurable item illustrations.
+   No cropped full-body boxer in the core equipment selection. */
+body[data-tl-screen="mein-boxer"] .mb-gear-art .mb-item-svg{
+  position:absolute;
+  inset:0;
+  display:block;
+  width:100%;
+  height:100%;
+  padding:4px 2px 1px;
+  overflow:visible;
+  filter:drop-shadow(0 5px 6px #0009) drop-shadow(0 0 5px #efc46827);
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip[aria-pressed="true"] .mb-item-svg{
+  filter:drop-shadow(0 4px 6px #0009) drop-shadow(0 0 8px #f2c14e5b);
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip .mb-gear-art{
+  height:92px;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip{
+  min-height:142px;
+}
+@media(prefers-reduced-motion:reduce){
+  body[data-tl-screen="mein-boxer"] .mb-gear-art .mb-item-svg{animation:none}
+}
+
+/* Screenshot-based layout correction (390px Chromium/iPhone viewport).
+   The inline SVG initially exceeded its grid cell, hiding the legs behind
+   controls. Constrain the entire viewBox inside the preview, not a zoomed crop. */
+@media(max-width:819px){
+  body[data-tl-screen="mein-boxer"] .mb-preview{
+    position:relative;
+    display:block;
+    min-height:0;
+    overflow:hidden;
+    contain:layout paint;
+    border-radius:10px;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-preview svg.tlh{
+    position:absolute;
+    top:3%;
+    left:50%;
+    transform:translateX(-50%);
+    width:auto!important;
+    height:94%!important;
+    max-height:94%!important;
+    max-width:100%!important;
+    min-height:0;
+    aspect-ratio:12/19;
+    /* Wide SVG poses can extend past their viewBox after the hero scaleX.
+       The outer preview still clips to the arena; do not cut off Jab's hand. */
+    overflow:visible!important;
+    filter:drop-shadow(0 0 7px #f2c14e24);
+  }
+  body[data-tl-screen="mein-boxer"] .mb-preview::after{
+    z-index:2;
+    height:11px;
+    bottom:0;
+    opacity:.8;
+    width:min(43vw,155px);
+  }
+  body[data-tl-screen="mein-boxer"] .mb-stage-bar{
+    margin-top:1px;
+    flex-wrap:nowrap;
+    justify-content:center;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-actions{
+    min-height:40px;
+  }
+  body[data-tl-screen="mein-boxer"] .mb-actions .mb-btn{
+    line-height:1.3;
+    white-space:normal;
+    overflow-wrap:anywhere;
+    text-align:center;
+  }
+}
+
+/* More visual presence on tall phones, while keeping the gear list independently scrollable.
+   Short screens retain the original compact heights. */
+@media(max-width:819px) and (min-height:721px){
+  body[data-tl-screen="mein-boxer"] .mb-stage{
+    flex:0 0 clamp(370px,51dvh,448px);
+  }
+}
+
+/* Art pass 3 · wider boxer proportions without stretching the stage or icons.
+   Only the editable hero pose is affected; public player cards remain identical. */
+body[data-tl-screen="mein-boxer"] .mb-preview svg.tlh .tlh-fig{
+  transform:scaleX(1.20);
+  transform-origin:50% 50%;
+  animation:none;
+}
+body[data-tl-screen="mein-boxer"] .mb-stage .mb-preview::before{
+  background:
+    radial-gradient(ellipse 23% 80% at 50% 50%,#f2c14e19,transparent 95%),
+    radial-gradient(ellipse 42% 82% at 50% 55%,#53c6ff12,transparent 98%);
+}
+@media(max-width:819px){
+  body[data-tl-screen="mein-boxer"] .mb-preview svg.tlh{
+    filter:drop-shadow(0 0 6px #f2c14e3e);
+  }
+}
+
+/* Premium art-pack compatibility: every transparent layer uses the SAME canvas.
+   The original Holo remains the immediate fallback when the manifest is absent. */
+body[data-tl-screen="mein-boxer"] .mb-preview .mb-artpack{
+  position:absolute;display:block;top:3%;left:0;
+  transform:none;
+  height:94%;width:100%;max-width:100%;
+  /* The absolute children have no intrinsic width for shrink-to-fit sizing.
+     Fill the stage explicitly; each image contains the same 768×1216 canvas. */
+  pointer-events:none;isolation:isolate;
+  overflow:hidden;
+  filter:drop-shadow(0 0 8px #f2c14e30);
+}
+body[data-tl-screen="mein-boxer"] .mb-preview .mb-artpack-img{
+  position:absolute;inset:0;display:block;width:100%;height:100%;
+  object-fit:contain;user-select:none;pointer-events:none;
+}
+@media(min-width:820px){
+  body[data-tl-screen="mein-boxer"] .mb-preview .mb-artpack{
+    top:0;height:100%;
+  }
+}
+@media(prefers-reduced-motion:reduce){
+  body[data-tl-screen="mein-boxer"] .mb-artpack,
+  body[data-tl-screen="mein-boxer"] .mb-artpack-img{animation:none;transition:none}
+}
+
+/* Developer-only artpack diagnostics, shown only with ?art=preview.
+   Overlay is anchored to the preview; it does not displace mobile controls. */
+body[data-tl-screen="mein-boxer"] .mb-preview .mb-art-debug{
+  position:absolute;top:4px;right:4px;z-index:4;
+  pointer-events:none;max-width:min(62%,245px);
+  border:1px solid #6279948a;border-radius:7px;
+  padding:4px 6px;background:#081327ed;color:#d6e2f2;
+  font:700 10px/1.3 system-ui,sans-serif;
+  overflow-wrap:anywhere;text-align:right;
+}
+/* Keep the draft notice beside the head, clear of hair and face. */
+body[data-tl-screen="mein-boxer"] .mb-preview .mb-art-debug[data-art-draft="modular"]{
+  left:4px;right:auto;max-width:90px;text-align:left;
+}
+body[data-tl-screen="mein-boxer"] .mb-preview .mb-art-debug[data-art-state="ready"]{
+  border-color:#9a7b2f;color:#ffdd87;
+}
+
+/* Visual art review only: compare the exact same boxer as SVG and approved sprites.
+   Control floats over stage rather than changing the mobile editor row heights. */
+body[data-tl-screen="mein-boxer"] .mb-stage .mb-art-compare{
+  position:absolute;left:12px;top:12px;z-index:6;
+  border:1px solid #a98941bd;border-radius:8px;
+  background:#0b172eea;color:#ffda88;
+  min-height:34px;max-width:145px;padding:5px 9px;
+  font:700 11px/1.25 system-ui,sans-serif;
+  cursor:pointer;
+}
+body[data-tl-screen="mein-boxer"] .mb-stage .mb-art-compare:focus-visible{
+  outline:2px solid #53c6ff;outline-offset:3px;
+}
+@media(max-width:819px){
+ body[data-tl-screen="mein-boxer"] .mb-stage .mb-art-compare{top:54px;left:12px}
+}
+body[data-tl-screen="mein-boxer"] .mb-preview .mb-art-debug[data-art-state="manual-svg"]{
+ border-color:#6c88b7;color:#d6e2f2;
+}
+
+/* Phase 4 · approved mobile webapp visual direction, 30 October 2026.
+   Arena and item visuals are genuine DOM/CSS: the boxer is ALWAYS the
+   selectable SVG/approved sprite renderer, never a fixed concept screenshot. */
+body[data-tl-screen="mein-boxer"] .mb-stage{
+  border-color:#916d3488;
+  background:
+    radial-gradient(ellipse 38% 20% at 50% 71%,#ffcf6a20,transparent 95%),
+    radial-gradient(ellipse 95% 90% at 50% 39%,#10345c,#050d1d 75%);
+  box-shadow:inset 0 1px 0 #f4d18c36,0 0 28px #b884261a,0 16px 40px #0009;
+}
+body[data-tl-screen="mein-boxer"] .mb-arena{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:0;
+  border-radius:inherit;
+  background:
+    radial-gradient(circle at 11% 24%,#d4ecff86 0 1px,#56a0df3d 3px,transparent 19px),
+    radial-gradient(circle at 89% 24%,#d4ecff86 0 1px,#56a0df3d 3px,transparent 19px),
+    radial-gradient(circle at 28% 33%,#ffffff66 0 1px,transparent 13px),
+    radial-gradient(circle at 72% 33%,#ffffff66 0 1px,transparent 13px),
+    linear-gradient(180deg,#152f501c 0%,transparent 36%,#0610207a 75%,#b17c2720 92%);
+}
+body[data-tl-screen="mein-boxer"] .mb-arena::before{
+  content:"";position:absolute;inset:-15% -20% 11%;
+  background:
+    conic-gradient(from 156deg at 17% 16%,transparent 0deg,#92c4fb19 12deg,transparent 28deg),
+    conic-gradient(from 173deg at 83% 16%,transparent 0deg,#92c4fb19 12deg,transparent 29deg);
+  opacity:.9;
+}
+body[data-tl-screen="mein-boxer"] .mb-arena::after{
+  content:"";position:absolute;inset:45% 0 0;
+  background:
+    repeating-linear-gradient(0deg,transparent 0 21px,#f1cf7030 22px,transparent 23px),
+    radial-gradient(ellipse at 50% 74%,#e8b64a18,transparent 64%);
+  mask-image:linear-gradient(180deg,transparent,#000 30%,transparent 92%);
+}
+body[data-tl-screen="mein-boxer"] .mb-arena-light{
+  position:absolute;top:19%;width:22px;height:22px;border-radius:50%;
+  background:#d6ebff;box-shadow:0 0 8px #d2e8ff,0 0 30px 14px #71b5f36b;
+  opacity:.55;
+}
+body[data-tl-screen="mein-boxer"] .mb-arena-light--left{left:12%}
+body[data-tl-screen="mein-boxer"] .mb-arena-light--right{right:12%}
+body[data-tl-screen="mein-boxer"] .mb-arena-flag{
+  position:absolute;top:28%;width:16%;height:34%;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;
+  gap:3px;color:#e1b86c;text-align:center;
+  background:linear-gradient(145deg,#1e304bde,#060c1eec);
+  border:1px solid #c69b4f98;
+  clip-path:polygon(0 0,100% 0,100% 100%,50% 88%,0 100%);
+  box-shadow:inset 0 0 22px #d1a64d18;
+  opacity:.68;
+}
+body[data-tl-screen="mein-boxer"] .mb-arena-flag--left{left:4%;transform:skewY(4deg)}
+body[data-tl-screen="mein-boxer"] .mb-arena-flag--right{right:4%;transform:skewY(-4deg)}
+body[data-tl-screen="mein-boxer"] .mb-arena-flag b{
+  font-size:clamp(17px,4vw,27px);line-height:1;
+}
+body[data-tl-screen="mein-boxer"] .mb-arena-flag small{
+  font:900 clamp(6px,1.5vw,10px)/1 system-ui,sans-serif;
+  letter-spacing:.06em;
+}
+body[data-tl-screen="mein-boxer"] .mb-arena-rope{
+  position:absolute;left:-4%;right:-4%;top:58%;height:15%;
+  border-top:1px solid #8dafd856;border-bottom:1px solid #779dc756;
+  box-shadow:0 -11px 0 -10px #7095c452,0 11px 0 -10px #7095c452;
+  transform:perspective(400px) rotateX(32deg);
+  opacity:.4;
+}
+body[data-tl-screen="mein-boxer"] .mb-arena-ring{
+  position:absolute;bottom:21%;left:15%;width:70%;height:8%;
+  border:2px solid #f5ce77b3;border-radius:50%;
+  background:radial-gradient(ellipse,#f5c87524,transparent 65%);
+  box-shadow:0 0 0 4px #e5b65720,inset 0 0 13px #e5b65742,0 0 23px #ffc86a69;
+}
+body[data-tl-screen="mein-boxer"] .mb-stage-heading,
+body[data-tl-screen="mein-boxer"] .mb-stage-bar,
+body[data-tl-screen="mein-boxer"] .mb-actions{position:relative;z-index:4}
+body[data-tl-screen="mein-boxer"] .mb-stage-heading{
+  display:flex;gap:7px;min-width:0;min-height:40px;justify-content:space-between;
+}
+body[data-tl-screen="mein-boxer"] .mb-stage-title{
+  display:flex;flex:1 1 auto;min-width:0;flex-direction:column;gap:1px;
+  color:#f8cf76;text-shadow:0 0 14px #e9b3484d;
+}
+body[data-tl-screen="mein-boxer"] .mb-stage-title small{
+  color:#bea56e;font:800 8px/1.3 system-ui,sans-serif;letter-spacing:.2em;
+}
+body[data-tl-screen="mein-boxer"] .mb-stage-title strong{
+  font:950 clamp(17px,4.4vw,23px)/1.1 var(--font-display),system-ui,sans-serif;
+  letter-spacing:.025em;white-space:nowrap;
+}
+body[data-tl-screen="mein-boxer"] .mb-save-state{
+  flex:none;align-self:center;border:1px solid #af8e4a9e;border-radius:8px;
+  padding:5px 8px;background:#102016e9;color:#d1edbc;
+  font:800 10px/1.25 system-ui,sans-serif;white-space:nowrap;
+}
+body[data-tl-screen="mein-boxer"] .mb-save-state[data-save-status="dirty"]{
+  color:#ffe2a1;background:#352711e9;
+}
+body[data-tl-screen="mein-boxer"] .mb-save-state[data-save-status="tryon"],
+body[data-tl-screen="mein-boxer"] .mb-save-state[data-save-status="busy"]{
+  color:#adddff;background:#15324aef;border-color:#6bbce29c;
+}
+body[data-tl-screen="mein-boxer"] .mb-stage-heading a{
+  flex:none;align-self:center;font-size:11px;padding:6px 7px;
+  border-color:#bb97536b;color:#eed1a0;background:#09172ac2;
+}
+body[data-tl-screen="mein-boxer"] .mb-preview{
+  position:relative;z-index:2;
+  background:transparent!important;filter:none!important;
+}
+body[data-tl-screen="mein-boxer"] .mb-preview::before{
+  background:radial-gradient(ellipse 35% 75% at 50% 50%,#dfb65313,transparent 90%);
+}
+body[data-tl-screen="mein-boxer"] .mb-preview::after{
+  border-color:#e7b85fba;box-shadow:0 0 20px #e7b85f91;
+}
+body[data-tl-screen="mein-boxer"] .mb-actions .mb-btn.primary{
+  border:1px solid #ffdb8b;
+  background:linear-gradient(180deg,#ffde91,#eab95d 53%,#ba8534);
+  color:#091328;font-weight:900;text-shadow:0 1px #fff6;
+  box-shadow:inset 0 1px 0 #fff7,0 4px 15px #e2ad4748;
+}
+body[data-tl-screen="mein-boxer"] .mb-actions .mb-btn.primary:disabled{
+  background:linear-gradient(180deg,#a38c62,#80683c);
+  border-color:#b09a6e;color:#0f1b2d;box-shadow:none;
+}
+body[data-tl-screen="mein-boxer"] .mb-panel{
+  border-color:#405775;border-radius:17px 17px 0 0;
+  background:linear-gradient(180deg,#0d1a2e,#071323);
+}
+body[data-tl-screen="mein-boxer"] .mb-tabs{
+  display:grid;grid-template-columns:repeat(5,minmax(0,1fr));
+  overflow-x:hidden;gap:0;border-bottom:1px solid #53658299;
+  background:linear-gradient(180deg,#10203a,#0a172a);
+}
+body[data-tl-screen="mein-boxer"] .mb-tabs .mb-tab{
+  display:flex;min-width:0;min-height:60px;flex-direction:column;
+  align-items:center;justify-content:center;gap:5px;
+  padding:7px 2px 6px;font-size:11px;line-height:1.2;
+  white-space:nowrap;border-right:1px solid #3e53724a;
+}
+body[data-tl-screen="mein-boxer"] .mb-tab-icon{display:block;width:22px;height:22px}
+body[data-tl-screen="mein-boxer"] .mb-tab-icon svg{display:block;width:100%;height:100%}
+body[data-tl-screen="mein-boxer"] .mb-tabs .mb-tab[aria-selected="true"]{
+  color:#ffdb86;border-bottom-color:#ffcf6e;
+  background:linear-gradient(180deg,#c69b3419,#ffca6712);
+  box-shadow:inset 0 -3px 8px #e7b25f1c;
+}
+body[data-tl-screen="mein-boxer"] .mb-tabs .mb-tab:focus-visible{
+  outline:2px solid #8ad6ff;outline-offset:-3px;
+}
+body[data-tl-screen="mein-boxer"] .mb-tabbody{
+  background:linear-gradient(180deg,#091627eb,#071123ed);
+  gap:12px;
+}
+body[data-tl-screen="mein-boxer"] .mb-sec{
+  padding:12px 10px 10px;gap:10px;border-radius:14px;
+  border:1px solid #3145639c;
+  background:linear-gradient(150deg,#11223b 0%,#071326 100%);
+}
+body[data-tl-screen="mein-boxer"] .mb-h{
+  font-size:13px;letter-spacing:.045em;color:#f4f6fc;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip{
+  position:relative;border-radius:13px;padding:7px 6px 9px;min-height:140px;
+  border-color:#405d82;background:linear-gradient(170deg,#172a48,#0b192d);
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip[aria-pressed="true"]{
+  border-color:#5edaff;box-shadow:0 0 0 1px #5edaff,0 0 14px #53c7fc6b;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip[aria-pressed="true"]::after{
+  content:"✓";position:absolute;top:5px;right:5px;
+  display:grid;place-items:center;
+  width:18px;height:18px;border-radius:50%;
+  background:#35c9f5;color:#061226;font:900 13px/1 system-ui,sans-serif;
+  box-shadow:0 0 6px #3bcbff66;pointer-events:none;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-chip .mb-gear-art{
+  height:88px;border-radius:9px;background:
+   radial-gradient(ellipse at 50% 70%,#e4bc5228,transparent 63%),#0b192b;
+}
+body[data-tl-screen="mein-boxer"] .mb-gear-name{
+  font-size:12px;line-height:1.25;text-align:center;
+}
+body[data-tl-screen="mein-boxer"] .mb-sw{
+  width:40px;height:40px;border:3px solid #071326;
+  box-shadow:0 1px 6px #0006;
+}
+body[data-tl-screen="mein-boxer"] .mb-sw[aria-pressed="true"]{
+  box-shadow:0 0 0 2px #ffd783,0 0 12px #f5cc7c6e;
+}
+body[data-tl-screen="mein-boxer"] .mb-switch[aria-pressed="true"]{
+  background:linear-gradient(90deg,#167a9f,#39c4f3);
+}
+body[data-tl-screen="mein-boxer"] .mb-pose[aria-pressed="true"]{
+  border-color:#ffd17e;box-shadow:0 0 0 2px #f1ba5b53;
+}
+@media(max-width:819px){
+ body[data-tl-screen="mein-boxer"] .mb-stage{
+   padding:8px 10px 9px;gap:4px;
+ }
+ body[data-tl-screen="mein-boxer"] .mb-stage-heading a{padding:5px 6px}
+ body[data-tl-screen="mein-boxer"] .mb-tabbody{padding:11px 9px 20px}
+ body[data-tl-screen="mein-boxer"] .mb-row .mb-gear-chip{flex-basis:101px;width:101px}
+}
+@media(max-width:819px) and (min-height:721px){
+ body[data-tl-screen="mein-boxer"] .mb-stage{flex:0 0 clamp(365px,52dvh,455px)}
+}
+@media(max-width:819px) and (max-height:620px){
+ body[data-tl-screen="mein-boxer"] .mb-stage{flex-basis:clamp(195px,43dvh,255px)}
+ body[data-tl-screen="mein-boxer"] .mb-stage-heading{min-height:30px}
+ body[data-tl-screen="mein-boxer"] .mb-stage-title strong{font-size:15px}
+ body[data-tl-screen="mein-boxer"] .mb-stage-title small{display:none}
+ body[data-tl-screen="mein-boxer"] .mb-tabs .mb-tab{min-height:48px;padding:3px 2px;gap:2px}
+ body[data-tl-screen="mein-boxer"] .mb-tab-icon{width:17px;height:17px}
+ body[data-tl-screen="mein-boxer"] .mb-arena-flag{opacity:.43}
+}
+@media(max-width:365px){
+ body[data-tl-screen="mein-boxer"] .mb-stage-heading{gap:4px}
+ body[data-tl-screen="mein-boxer"] .mb-stage-title strong{font-size:16px}
+ body[data-tl-screen="mein-boxer"] .mb-save-state{padding:4px;font-size:9px}
+ body[data-tl-screen="mein-boxer"] .mb-tabs .mb-tab{font-size:10px}
+}
+@media(prefers-reduced-motion:reduce){
+ body[data-tl-screen="mein-boxer"] .mb-arena,
+ body[data-tl-screen="mein-boxer"] .mb-arena *{animation:none;transition:none}
+}
+
+/* Private image comparison for an illustrator's approved reference artwork.
+   Active only with ?art=reference, never in the public user's regular editor. */
+body[data-tl-screen="mein-boxer"] .mb-preview .mb-reference-figure{
+ position:absolute;z-index:3;top:3%;left:50%;
+ display:block;width:auto;height:94%;max-height:94%;max-width:100%;
+ aspect-ratio:768/1216;object-fit:contain;
+ transform:translateX(-50%);filter:drop-shadow(0 0 8px #f6d07752);
+ pointer-events:none;user-select:none;
+}
+body[data-tl-screen="mein-boxer"] .mb-reference-tools{
+ position:absolute;z-index:7;top:57px;right:9px;
+ display:flex;flex-direction:column;align-items:stretch;gap:5px;
+ width:min(175px,47%);padding:8px;border:1px solid #b38c49a9;
+ border-radius:10px;background:#071326e8;box-shadow:0 5px 15px #000a;
+ font:700 11px/1.3 system-ui,sans-serif;color:#efd092;
+}
+body[data-tl-screen="mein-boxer"] .mb-reference-tools input{
+ width:100%;max-width:100%;font:500 10px/1.3 system-ui,sans-serif;color:#dceaff;
+}
+body[data-tl-screen="mein-boxer"] .mb-reference-tools small{
+ font:500 10px/1.35 system-ui,sans-serif;color:#b8cde7;
+}
+body[data-tl-screen="mein-boxer"] .mb-reference-tools .mb-reference-toggle{
+ min-height:29px;padding:3px 5px;font-size:10px;
+ border-color:#bb9959;background:#182f4a;color:#f4d48b;
+}
+@media(max-width:819px) and (max-height:620px){
+ body[data-tl-screen="mein-boxer"] .mb-reference-tools{
+  top:35px;right:5px;max-height:130px;overflow-y:auto;
+  padding:5px;gap:2px;font-size:10px;
+ }
+ body[data-tl-screen="mein-boxer"] .mb-reference-tools small{display:none}
+}
+
+/* Eight-layer pixel-compositing proof, available ONLY via ?art=layers.
+   The selected outfit is still backed by Holo, never persisted as draft art. */
+body[data-tl-screen="mein-boxer"] .mb-preview .mb-draft-artpack{
+ z-index:3;filter:drop-shadow(0 0 9px #eec46758);
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-tools{
+ position:absolute;right:8px;top:55px;z-index:7;
+ display:flex;flex-direction:column;gap:5px;
+ width:min(190px,48%);padding:9px;
+ border:1px solid #d0a35e9c;border-radius:11px;
+ background:#09162cdb;box-shadow:0 5px 14px #0009;
+ color:#f4da9a;font:700 11px/1.3 system-ui,sans-serif;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-tools input{
+ width:100%;max-width:100%;font:500 10px/1.25 system-ui,sans-serif;
+ color:#e6f1ff;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-tools small{
+ color:#c3d4eb;font:500 10px/1.35 system-ui,sans-serif;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-tools .mb-btn{
+ min-height:30px;padding:4px 6px;font-size:10px;
+ border-color:#e5c470;background:#203754;color:#fff0c2;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-tools input:focus-visible{
+ outline:2px solid #5bcfff;outline-offset:3px;
+}
+@media(max-width:819px) and (max-height:620px){
+ body[data-tl-screen="mein-boxer"] .mb-draft-tools{
+  top:34px;right:5px;max-height:130px;overflow:auto;
+  padding:5px;gap:3px;
+ }
+ body[data-tl-screen="mein-boxer"] .mb-draft-tools small{display:none}
+}
+
+/* Visual-only eight-layer mask inspection, never production or saved inventory. */
+body[data-tl-screen="mein-boxer"] .mb-draft-tools{
+ display:block;width:auto;padding:0;top:51px;max-width:53%;
+ border-radius:9px;overflow:visible;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-tools summary{
+ padding:7px 10px;cursor:pointer;min-height:34px;
+ color:#f9d989;font:800 11px/1.25 system-ui,sans-serif;
+ list-style:none;white-space:nowrap;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-tools summary::-webkit-details-marker{display:none}
+body[data-tl-screen="mein-boxer"] .mb-draft-tools summary::before{content:"☰";margin-right:5px}
+body[data-tl-screen="mein-boxer"] .mb-draft-tools summary:focus-visible{
+ outline:2px solid #73d6ff;outline-offset:2px;border-radius:8px;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-tools[open]{
+ width:min(206px,53%);max-height:min(345px,62dvh);overflow-y:auto;
+ overscroll-behavior:contain;scrollbar-width:thin;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-contents{
+ display:flex;flex-direction:column;gap:5px;padding:0 8px 8px;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-layer-controls{
+ display:grid;grid-template-columns:repeat(2,minmax(0,1fr));
+ gap:5px 3px;border:1px solid #47617f;border-radius:7px;
+ margin:4px 0 0;padding:8px 5px 5px;background:#0c1c35db;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-layer-controls legend{
+ padding:0 4px;color:#ebc876;font-size:10px;font-weight:800;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-layer-controls label{
+ display:flex;align-items:center;gap:3px;color:#e4eeff;
+ font:600 10px/1.15 system-ui,sans-serif;cursor:pointer;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-layer-controls input{
+ flex:none;width:14px;height:14px;accent-color:#f4c866;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-layer-controls input:focus-visible{
+ outline:2px solid #7fddff;outline-offset:2px;
+}
+
+/* Temporary anatomy tracing only: a deliberately unfinished vector sketch,
+   visible ONLY after opening ?art=layers and checking its explicit opt-in.
+   It draws beneath all eight user-reference image layers. */
+body[data-tl-screen="mein-boxer"] .mb-preview .mb-draft-underpaint{
+ position:absolute;inset:0;display:block;width:100%;height:100%;
+ z-index:0;pointer-events:none;user-select:none;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-anatomy{
+ display:flex;align-items:center;gap:5px;padding:5px 4px;
+ border:1px dashed #bf9a55a6;border-radius:7px;
+ color:#ffe2a6;font:700 10px/1.3 system-ui,sans-serif;cursor:pointer;
+}
+body[data-tl-screen="mein-boxer"] .mb-draft-anatomy input{
+ width:14px;height:14px;flex:none;accent-color:#d9ae63;
+}
+
+/* The desktop stage is only 300px wide. Give the heading its own row so
+   longer save states and browser font metrics cannot overlap the Studio link. */
+@media(min-width:820px){
+ body[data-tl-screen="mein-boxer"] .mb-stage-heading{flex-wrap:wrap}
+ body[data-tl-screen="mein-boxer"] .mb-stage-title{flex-basis:100%}
+ body[data-tl-screen="mein-boxer"] .mb-stage :is(.mb-draft-tools,.mb-reference-tools,.mb-art-compare){top:88px}
+}
+/* Equipment artwork follows the prospective full-outfit renderer. */
+body[data-tl-screen="mein-boxer"] .mb-gear-hair svg.tlh{width:168px;top:-14px}
+body[data-tl-screen="mein-boxer"] .mb-item-status{display:block;font:700 10px/1.3 system-ui;color:#b9c9dd;letter-spacing:.03em;margin-top:3px}
+body[data-tl-screen="mein-boxer"] .mb-item-status[data-renderer="anime"]{color:#f0cc72}
+body[data-tl-screen="mein-boxer"] :is(.mb-gear-art,.mb-shop-item-art){container-type:size;display:grid;place-items:center}
+body[data-tl-screen="mein-boxer"] .mb-item-png{display:block;position:relative;overflow:hidden;width:min(100cqw,calc(100cqh * var(--item-ratio)));height:auto;margin:auto;isolation:isolate}
+body[data-tl-screen="mein-boxer"] .mb-item-png img{position:absolute;display:block;max-width:none;max-height:none;object-fit:fill;pointer-events:none}
