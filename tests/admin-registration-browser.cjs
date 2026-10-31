@@ -66,7 +66,7 @@ export function createClient(){
     assert.ok(labels.some(x=>x.includes('Neu angemeldeter Boxer')));
     assert.ok(labels.some(x=>x.includes('Noch kein Account')));
     const menu=page.locator('a[data-tl-admin]');
-    await page.locator('#takeover-menu-open').click();
+    await page.locator('[data-stf-global-menu]').first().click();
     await menu.waitFor({state:'visible'});
     const checkbox=page.locator('#profilesBody tr').filter({hasText:'Neu angemeldeter Boxer'}).locator('input[type=checkbox]').first();
     assert.equal(await checkbox.isVisible(),true);
@@ -89,7 +89,7 @@ export function createClient(){
    }else{
     await page.waitForFunction(()=>document.getElementById('adminStatus').textContent.includes('Zugriff verweigert'));
     assert.equal(await page.locator('#adminContent').isVisible(),false);
-    await page.locator('#takeover-menu-open').click();
+    await page.locator('[data-stf-global-menu]').first().click();
     assert.equal(await page.locator('a[data-tl-admin]').isVisible(),false);
    }
    await page.close();

@@ -1,0 +1,50 @@
+name: Staff Experience V1 - real coach and admin UI
+on:
+  pull_request:
+    paths:
+      - 'coach.html'
+      - 'admin.html'
+      - 'takeover-staff-experience.css'
+      - 'tests/staff-experience-contracts.cjs'
+      - 'tests/staff-experience-browser.cjs'
+      - '.github/workflows/staff-experience.yml'
+  push:
+    branches:
+      - 'design/staff-experience-v1-20261031'
+
+permissions:
+  contents: read
+
+jobs:
+  static-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tests/staff-experience-contracts.cjs
+      - run: node tests/redesign-contracts.cjs
+      - run: node tests/coach-feedback-contracts.cjs
+      - run: node tests/admin-registration-static.cjs
+  browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false playwright@1.56.1
+      - run: npx playwright install --with-deps chromium
+      - name: Real coach/admin interface at 320/390/1366 px
+        run: STAFF_SHOTS=staff-v1-screenshots node tests/staff-experience-browser.cjs
+      - name: Existing admin profile registration regression
+        run: node tests/admin-registration-browser.cjs
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: staff-v1-screenshots
+          path: staff-v1-screenshots
+          if-no-files-found: warn
