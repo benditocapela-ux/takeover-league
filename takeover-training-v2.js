@@ -151,6 +151,12 @@
   document.addEventListener('takeover:training-fields-updated',updatePreview);
   const help=$('trainingHelp');if(help)help.textContent='Wähle zuerst, wo du trainiert hast. Vereinstrainings stuft dein Trainer beim Bestätigen ein – Punkte, EXP und Coins gibt es erst nach seiner Bestätigung.';
   render();
+  try{
+   const quick=await import('./takeover-club-today.js');
+   quick.mountBoxerPrompt({db:ctx.db,cfg:{...state.cfg,enabled:true},onIndividual:()=>{
+    state.loc='individual';state.choice=null;remember();render();
+   }});
+  }catch(err){console.warn('Club-Today-Prompt nicht geladen:',err)}
  }
  if(window.__tlTrainingCtx)start(window.__tlTrainingCtx);
  document.addEventListener('takeover:training-ctx',e=>start(e.detail));
