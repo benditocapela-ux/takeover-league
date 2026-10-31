@@ -190,14 +190,14 @@
   }
   async function loadTrainingConfiguration(){
     const host=$('ex-training-options');if(!host)return;
-    const [cfg,checkin]=await Promise.all([
-      safeRpc('get_training_v2_config'),
-      state.db.from('league_feature_flags').select('is_enabled').eq('feature_key','club_checkin_only').maybeSingle().catch(()=>({error:true}))
-    ]);
+    // Supabase-Abfragen sind nur «thenable» (kein .catch): Fehler deshalb mit try/await abfangen.
+    const flags=async()=>{try{return await state.db.from('league_feature_flags').select('feature_key,is_enabled').in('feature_key',['gym_training','club_checkin_only'])}catch(_){return {error:true}}};
+    const [cfg,checkin]=await Promise.all([safeRpc('get_training_v2_config'),flags()]);
     if(cfg?.enabled!==true||!Array.isArray(cfg.pflicht)||!Array.isArray(cfg.extras)){
       trainingFallback(host);return;
     }
-    const checkinOnly=!checkin.error&&checkin.data?.is_enabled===true;
+    // Nur betreuter Check-in gilt wie in PR #84 erst, wenn gym_training UND club_checkin_only an sind.
+    const checkinOnly=!checkin.error&&Array.isArray(checkin.data)&&['gym_training','club_checkin_only'].every(k=>checkin.data.some(x=>x.feature_key===k&&x.is_enabled===true));
     host.replaceChildren();
     const title=document.createElement('h3');title.textContent='Warst du heute im Vereinstraining?';
     host.append(title);

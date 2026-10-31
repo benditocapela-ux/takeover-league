@@ -65,3 +65,14 @@ Keine produktive Route wurde ersetzt. Ein nicht gemergter PR kann ohne Auswirkun
 ## Vereinheitlichung (31.10.2026)
 
 `submit_scheduled_club_training_today` aus PR #84 entscheidet anhand der tatsächlichen offenen Gym-Einheit und der Vereins-Flags zwischen `checked_in` (Gym-Anwesenheit, Trainer bestätigt später) und `submitted` (ausstehender Trainingsantrag, Trainer prüft später). Auch bei Check-in-only bleibt im neuen Dashboard der **Ja**-Button sichtbar; ohne geöffnete Gym-Einheit erscheint `gym_not_open` statt einer falschen Erfolgsnachricht. Separate Punkte- oder EXP-Buchungen durch das Dashboard gibt es nicht. Mehrere passende Gym-Einheiten werden in der Check-in-Seite auswählbar angezeigt. Beide Draft-PRs sind weiterhin voneinander abhängig und dürfen erst nach gemeinsamem Test freigegeben werden.
+
+## Integrationsprüfung (31.10.2026, Claude)
+
+- **Behoben:** Der Training-Bereich las die Vereins-Schalter mit `.maybeSingle().catch(...)`. Supabase-Abfragen sind nur «thenable» (ohne `.catch`), dadurch brach das Laden ab und der Bereich blieb bei «Trainingsmöglichkeiten werden geprüft …» stehen. Jetzt `try/await`; «nur betreuter Check-in» gilt wie in PR #84 erst bei `gym_training` **und** `club_checkin_only`.
+- **Behoben:** Die FUT-Card wurde auf Mein Boxer unten abgeschnitten (der Karten-Renderer setzt eine feste Breite, die Bühnen-Höhen waren kleiner). Die Kartenbreite kommt jetzt aus dem Stylesheet und passt bei 320–1366 px in die Bühne. Auf schmalen Displays überdecken sich die Texte neben Holo und Karte nicht mehr.
+- **Neu:** `tests/boxer-experience-browser.cjs` (Chromium, in CI zusätzlich WebKit):
+  - Gast- und Trainer-Sperre, fünf Bereiche, Holo nur auf Heute, Podium mit echten Top 3 und Holos
+  - feststehende FUT-Card mit Boxstil-Diagramm, scrollbarer Inhalt
+  - Ein-Klick-RPC mit allen Status, Doppelklick, Check-in-only, Einheitenwahl; Rückfall ohne Training 2.0 oder ohne Migration
+  - Tastatur, 320/390/1366 px
+- Die Route `boxer-experience.html` ist weiterhin nirgends verlinkt. Ein Merge ändert für bestehende Nutzer nichts; der Training-Bereich braucht für den Ein-Klick-Antrag die Migrationen aus PR #84 und fällt ohne sie auf das bisherige Formular zurück.
