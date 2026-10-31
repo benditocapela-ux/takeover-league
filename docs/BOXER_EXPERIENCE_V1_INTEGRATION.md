@@ -31,7 +31,7 @@ Branch: feature/boxer-experience-redesign (based on main @ 8176e8014d134136ba210
 
     node --test tests/boxer-experience-contract.cjs
 
-Tests prüfen Syntax, Tabs, Sections, IDs, echte RPCs, Auth-Guard, Read-only-Regeln und die kompatible servergesteuerte Training-2.0-Anzeige. Browser-/DB-Tests mit beiden Branches stehen weiterhin aus.
+Tests prüfen Syntax, Tabs, Sections, IDs, echte RPCs, Auth-Guard, keine direkten Datenbank-Schreibaufrufe und die servergesteuerte Training-2.0-Anzeige (mit dem ausdrücklich erlaubten Quick-Request-RPC). Browser-/DB-Tests mit beiden Branches stehen weiterhin aus.
 
 ## Rollback
 
