@@ -1,0 +1,21 @@
+name: Boxer Experience isolated contracts
+on:
+  push:
+    branches: ['feature/boxer-experience-redesign']
+  pull_request:
+    paths:
+      - 'boxer-experience.html'
+      - 'boxer-experience.js'
+      - 'tests/boxer-experience-contract.cjs'
+      - '.github/workflows/boxer-experience-contracts.yml'
+jobs:
+  contract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify role, tab, no direct database mutation and club request boundaries
+        run: node --test tests/boxer-experience-contract.cjs
