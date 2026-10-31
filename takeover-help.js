@@ -23,7 +23,7 @@ const REGISTERS=[
  {key:'experience',page:'boxer-experience.html',group:'mein',icon:'🥊',title:'Mein Takeover',summary:'Deine neue Boxer-Startseite mit fünf übersichtlichen Bereichen.',points:[
   '«Heute» zeigt deinen Holo, deine Fortschritte und das nächste Training.',
   '«Training» erfasst Vereinstrainings oder führt zum eigenen Trainingsformular.',
-  '«Kämpfe» bündelt Duelle, Challenges, Arena und Wochen-Quests.',
+  '«Kämpfe» bündelt Duelle, Challenges und Arena.',
   '«Liga» zeigt das Podium und deine Monatsposition.',
   '«Mein Boxer» zeigt die FUT-Card und darunter dein Boxstil-Diagramm.']},
  {key:'studio',page:'boxer.html',group:'mein',icon:'🥊',title:'Mein Studio',summary:'Dein Startpunkt: Training eintragen und Fortschritt sehen.',points:[
