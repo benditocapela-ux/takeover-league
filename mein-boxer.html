@@ -1,7 +1,7 @@
 <!doctype html><html lang="de-CH"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Mein Boxer · Takeover League</title>
 <style>:root{color-scheme:dark;font:16px system-ui,sans-serif}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 110px;background:var(--bg);color:var(--text)}main{max-width:880px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}button:focus-visible,a:focus-visible{outline:3px solid var(--gold);outline-offset:3px}</style>
-<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="mein-boxer">
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"><link rel="stylesheet" href="./takeover-mein-boxer.css"></head><body data-tl-screen="mein-boxer">
 <main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Mein Boxer"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🥊</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Dein Boxer-Holo</div><div class="tl-screen-title">Mein Boxer</div></div></div><div class="tl-screen-links"><a href="./mein-boxer.html" class="tl-screen-primary">Mein Boxer</a><a href="./shop.html">Shop</a><a href="./boxer.html">Mein Studio</a></div></div>
 <p class="tl-subnav"><a href="./boxer.html">← Mein Studio</a></p>
 <h1 id="pageTitle">Mein Boxer</h1>
@@ -12,9 +12,23 @@
 <script src="./takeover-holo.js" defer></script>
 <script type="module">
 const $=id=>document.getElementById(id),app=$('app'),status=$('status');
-const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
+let statusTimer=null;
+const say=(t,err)=>{
+ if(statusTimer){clearTimeout(statusTimer);statusTimer=null}
+ status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t;
+ // Success messages are accessible and temporary; errors remain until resolved.
+ if(t&&!err&&!/läuft/.test(t))statusTimer=setTimeout(()=>{status.hidden=true;statusTimer=null},3000);
+};
 await new Promise(r=>{const ok=()=>window.TLPerf&&window.TLHolo;if(ok())return r();const t=setInterval(()=>{if(ok()){clearInterval(t);r()}},30)});
-const P=window.TLPerf,H=window.TLHolo,esc=P.esc;
+// All visual modules are optional. A stale PWA/offline cache must not disable
+// boxing profile editing, saving or purchases when one extra art file is missing.
+await Promise.allSettled([
+ import('./takeover-mein-boxer-items.js'),
+ import('./takeover-mein-boxer-layers.js')
+]);
+const P=window.TLPerf,H=window.TLHolo,G=window.TLGearArt,esc=P.esc;
+// "premium" selects SVG shading only; Release A has no raster renderer.
+const heroArt=(config,pose)=>H.svg(config,{pose,label:'Dein Boxer-Holo',premium:true,holo:false,layered:true});
 const COIN='<svg class="mb-coin" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="11" fill="#ffcc33"/><circle cx="12" cy="12" r="8" fill="#e8a91a"/></svg>';
 const fmt=n=>Number(n||0).toLocaleString('de-CH');
 const OPT={
@@ -60,7 +74,7 @@ function gearChip(field,v,label,on,extra){
  const look=itemLook(field,v);
  const klass=slot==='glove'||slot==='hands'?'hands':slot;
  const scene=slot==='scene'?v:'none';
- const content=H.svg(look,{pose:'guard',scene,holo:false});
+ const content=G&&G.supports(field,v)?G.svg(field,v,look):H.svg(look,{pose:'guard',scene,holo:false});
  return `<button type="button" class="mb-chip mb-gear-chip" data-set="${field}" data-val="${esc(v)}" aria-label="${esc(label)}" aria-pressed="${on}"><span class="mb-gear-art mb-gear-${klass}" aria-hidden="true">${content}</span><span class="mb-gear-name">${esc(label)}</span>${extra||''}</button>`;
 }
 const sw=(field,v,color,label,on)=>`<button type="button" class="mb-sw" data-set="${field}" data-val="${esc(v)}" aria-pressed="${on}" aria-label="${esc(label)}" style="--c:${color}"></button>`;
@@ -112,30 +126,102 @@ function viewShop(){
    <div class="mb-price">${COIN}${fmt(b.price)} <s>${fmt(b.value)}</s></div>${buyBtn('bundle',b.key,b.price,b.owned_all)}
    <button type="button" class="mb-btn ghost" data-try-bundle="${esc(b.key)}">Anprobieren</button></div></article>`}).join('');
  const shopItems=items().filter(i=>i.unlock==='shop');
- const groups=['coat','glove','aura','eyefx','scene','pose'].map(s=>{const l=shopItems.filter(i=>i.slot===s);return l.length?sec(SLOT_TITLE[s],`<div class="mb-list">${l.map(i=>`<div class="mb-li"><span class="mb-shop-item-art" aria-hidden="true">${H.svg(itemLook(i.slot,i.value),{pose:'guard',scene:i.slot==='scene'?i.value:'none',holo:false})}</span><span><b>${esc(i.name)}</b><span class="mb-rar r-${esc(i.rarity)}">${esc(({common:'Gewöhnlich',rare:'Selten',epic:'Episch',leg:'Legendär',myth:'Mythisch'})[i.rarity]||'')}</span></span>${buyBtn('item',i.key,i.price,i.owned)}</div>`).join('')}</div>`):''}).join('');
+ const groups=['coat','glove','aura','eyefx','scene','pose'].map(s=>{const l=shopItems.filter(i=>i.slot===s);return l.length?sec(SLOT_TITLE[s],`<div class="mb-list">${l.map(i=>`<div class="mb-li"><span class="mb-shop-item-art" aria-hidden="true">${(G&&G.supports(i.slot,i.value)?G.svg(i.slot,i.value,itemLook(i.slot,i.value)):H.svg(itemLook(i.slot,i.value),{pose:'guard',scene:i.slot==='scene'?i.value:'none',holo:false}))}</span><span><b>${esc(i.name)}</b><span class="mb-rar r-${esc(i.rarity)}">${esc(({common:'Gewöhnlich',rare:'Selten',epic:'Episch',leg:'Legendär',myth:'Mythisch'})[i.rarity]||'')}</span></span>${buyBtn('item',i.key,i.price,i.owned)}</div>`).join('')}</div>`):''}).join('');
  const rewards=items().filter(i=>i.unlock==='reward');
  return `<div class="mb-wallet">${COIN}<b>${fmt(data.coins)}</b> Coins</div>${bundles?sec('Bundles',`<div class="mb-bundles">${bundles}</div>`):''}${groups}`
   +sec('Belohnungen',`<div class="mb-list">${rewards.map(i=>`<div class="mb-li"><span><b>${esc(i.name)}</b><span class="mb-note">${esc(SLOT_TITLE[i.slot]||'')} · ${esc(i.reward||'')}</span></span>${i.owned?'<span class="mb-owned">Freigeschaltet</span>':'<span class="mb-lockedtxt">Noch gesperrt</span>'}</div>`).join('')}</div>`);
 }
+// Preserve the focused selection across the DOM rebuild caused by outfit edits.
+// Match only our own fixed control attributes; never construct selectors from user data.
+function editorFocusKey(el){
+ if(!el||!app.contains(el))return null;
+ const names=['data-set','data-val','data-tab','data-toggle','data-buy-item',
+  'data-buy-bundle','data-confirm','data-cancel','data-try-bundle','id'];
+ const values=names.filter(k=>el.hasAttribute(k)).map(k=>[k,el.getAttribute(k)]);
+ return values.length?values:null;
+}
+function restoreEditorFocus(key){
+ if(!key)return;
+ const el=[...app.querySelectorAll('button,[role="tabpanel"]')].find(btn=>
+  key.every(([name,value])=>btn.getAttribute(name)===value));
+ if(el&&!el.disabled)el.focus({preventScroll:true});
+ // A completed purchase removes its confirmation control. Keep keyboard users
+ // inside the editor rather than dropping focus onto the document body.
+ else app.querySelector('.mb-tabs [aria-selected="true"]')?.focus({preventScroll:true});
+}
+// Decorative navigation artwork for the approved navy/gold mobile design.
+// Each tab retains its ordinary button semantics and accessible text label.
+const tabIcon=d=>'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+d+'</svg>';
+const TAB_ICONS=Object.freeze({
+ koerper:tabIcon('<circle cx="12" cy="5" r="2.7"/><path d="M8 21v-6l-3 2-2-2 4-6h10l4 6-2 2-3-2v6M9 9l3 3 3-3"/>'),
+ kleidung:tabIcon('<path d="m9 3 3 2 3-2 6 4-2 5-3-1v10H8V11l-3 1-2-5 6-4Z"/>'),
+ extras:tabIcon('<path d="m12 2 2.5 7.5L22 12l-7.5 2.5L12 22l-2.5-7.5L2 12l7.5-2.5L12 2Z"/><path d="M19 2v4M17 4h4"/>'),
+ posen:tabIcon('<circle cx="11" cy="4.5" r="2"/><path d="m10 8 4 3 4-1 2 2-6 2-3-2-3 4-5 3m8-7 3 5 4 4"/>'),
+ shop:tabIcon('<path d="M2 3h3l3 12h11l3-9H6"/><circle cx="10" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/>')
+});
 function render(){
+ // Keep the vertical editor position and horizontal equipment carousel positions
+ // when changing colors/items. Re-rendering must not jump back to the beginning.
+ const focused=editorFocusKey(document.activeElement);
+ const previousTab=app.querySelector('.mb-panel')?.dataset.activeTab;
+ const previousScroll=app.querySelector('.mb-tabbody')?.scrollTop||0;
+ const previousTabsScroll=app.querySelector('.mb-tabs')?.scrollLeft||0;
+ const oldRows=[...app.querySelectorAll('.mb-sec')].map(sec=>({
+  title:sec.querySelector('.mb-h')?.textContent,
+  lefts:[...sec.querySelectorAll('.mb-row')].map(row=>row.scrollLeft)
+ }));
+ document.body.classList.add('mb-editor-ready');
  const tabs=[['koerper','Körper'],['kleidung','Kleidung'],['extras','Extras'],['posen','Posen'],['shop','Shop']];
  const tl=tryOn(),pose=previewPose==='card'?cfg.pose_card:cfg.pose_profile;
  app.innerHTML=`${data.preview?'<p class="tlp-note">Vorschau – für die Boxer sichtbar, sobald der Boxer-Holo freigeschaltet ist.</p>':''}
- <div class="mb-layout"><div class="mb-stage"><div class="mb-preview">${H.svg(cfg,{pose,label:'Dein Boxer-Holo'})}</div>
+ <div class="mb-layout"><div class="mb-stage"><div class="mb-stage-heading"><span class="mb-stage-title"><small>TAKEOVER LEAGUE</small><strong>MEIN BOXER</strong></span><span class="mb-save-state" data-save-status="${busy?'busy':tl.length?'tryon':dirty()?'dirty':'saved'}">${busy?(busy==='buy'?'Kauf läuft …':'Wird gespeichert …'):tl.length?'Anprobe':dirty()?'Nicht gespeichert':'✓ Gespeichert'}</span><a href="./boxer.html" aria-label="Mein Studio öffnen">Studio</a></div>
+ <div class="mb-arena" aria-hidden="true"><span class="mb-arena-light mb-arena-light--left"></span><span class="mb-arena-light mb-arena-light--right"></span><span class="mb-arena-flag mb-arena-flag--left"><b>♛</b><small>TAKEOVER</small></span><span class="mb-arena-flag mb-arena-flag--right"><b>♛</b><small>TAKEOVER</small></span><span class="mb-arena-rope"></span><span class="mb-arena-ring"></span></div>
+ <div class="mb-preview">${heroArt(cfg,pose)}</div>
   <div class="mb-stage-bar"><span class="mb-pill">${previewPose==='card'?'Karten-Pose':'Profil-Pose'}</span>${data.shop?`<span class="mb-pill">${COIN}${fmt(data.coins)}</span>`:''}</div>
-  ${tl.length?`<div class="mb-tryon" role="note"><b>Anprobe:</b> ${tl.map(esc).join(', ')}<button type="button" class="mb-btn" data-tab="shop">Zum Shop</button></div>`:''}
-  <div class="mb-actions"><button type="button" class="mb-btn primary" id="saveBtn"${!dirty()||tl.length||busy?' disabled':''}>${tl.length?'Gesperrtes zuerst kaufen oder abwählen':dirty()?'Speichern':'Gespeichert'}</button>${dirty()?'<button type="button" class="mb-btn ghost" id="resetBtn">Änderungen verwerfen</button>':''}</div></div>
- <div class="mb-panel"><div class="mb-tabs" role="tablist" aria-label="Bereiche">${tabs.map(([k,l])=>`<button type="button" role="tab" class="mb-tab" data-tab="${k}" aria-selected="${tab===k}">${l}</button>`).join('')}</div>
-  <div class="mb-tabbody">${tab==='koerper'?viewKoerper():tab==='kleidung'?viewKleidung():tab==='extras'?viewExtras():tab==='posen'?viewPosen():viewShop()}</div></div></div>`;
+  <div class="mb-actions"><button type="button" class="mb-btn primary" id="saveBtn"${!dirty()||tl.length||busy?' disabled':''}>${tl.length?'Gesperrtes zuerst kaufen oder abwählen':dirty()?'Speichern':'Gespeichert'}</button>${dirty()?'<button type="button" class="mb-btn ghost" id="resetBtn" aria-label="Änderungen verwerfen">Verwerfen</button>':''}</div></div>
+ <div class="mb-panel" data-active-tab="${tab}"><div class="mb-tabs" role="tablist" aria-label="Bereiche">${tabs.map(([k,l])=>`<button type="button" role="tab" id="mb-tab-${k}" aria-controls="mb-tabbody" class="mb-tab" data-tab="${k}" aria-selected="${tab===k}" tabindex="${tab===k?0:-1}"><span class="mb-tab-icon">${TAB_ICONS[k]}</span><span class="mb-tab-label">${l}</span></button>`).join('')}</div>
+  <div class="mb-tabbody" id="mb-tabbody" role="tabpanel" aria-labelledby="mb-tab-${tab}" tabindex="0">${tl.length?`<div class="mb-tryon" role="note"><b>Anprobe:</b> ${tl.map(esc).join(', ')}<button type="button" class="mb-btn" data-tab="shop">Zum Shop</button></div>`:''}${tab==='koerper'?viewKoerper():tab==='kleidung'?viewKleidung():tab==='extras'?viewExtras():tab==='posen'?viewPosen():viewShop()}</div></div></div>`;
+ const tabsRail=app.querySelector('.mb-tabs');
+ if(tabsRail)tabsRail.scrollLeft=previousTabsScroll;
+ if(previousTab===tab){
+  const content=app.querySelector('.mb-tabbody');
+  if(content)content.scrollTop=previousScroll;
+  for(const sec of app.querySelectorAll('.mb-sec')){
+   const old=oldRows.find(x=>x.title===sec.querySelector('.mb-h')?.textContent);
+   if(old)[...sec.querySelectorAll('.mb-row')].forEach((row,i)=>{row.scrollLeft=old.lefts[i]||0});
+  }
+ }
+ restoreEditorFocus(focused);
 }
 async function load(){
- const [h,perf]=await Promise.all([db.rpc('get_my_holo'),db.rpc('get_my_performance')]);
+ // Performance decorates the card; its network failure must not block editing.
+ const [h,perf]=await Promise.all([db.rpc('get_my_holo'),
+  Promise.resolve().then(()=>db.rpc('get_my_performance')).catch(()=>({error:true}))]);
  if(h.error)throw h.error;
- data=h.data;if(!data||!data.enabled)return;
- data.perf=perf.error?null:perf.data;
+ // Keep the last usable inventory if a post-purchase refresh has no payload.
+ if(!h.data)throw Error('Keine Boxer-Daten erhalten.');
+ if(data&&data.enabled&&!h.data.enabled)throw Error('Boxer derzeit nicht verfügbar.');
+ const next=h.data;
+ next.perf=perf.error?null:perf.data;
+ data=next;
 }
+// Roving tab focus: left/right arrows, Home and End mirror native tab controls.
+app.addEventListener('keydown',e=>{
+ const btn=e.target.closest('[role="tab"][data-tab]');
+ if(!btn||!app.contains(btn))return;
+ if(!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;
+ const tabs=[...app.querySelectorAll('.mb-tabs [role="tab"]')];
+ const i=tabs.indexOf(btn);
+ if(i<0)return;
+ e.preventDefault();
+ const next=e.key==='Home'?0:e.key==='End'?tabs.length-1:
+  (i+(e.key==='ArrowRight'?1:-1)+tabs.length)%tabs.length;
+ tabs[next].click();
+ const active=app.querySelector('.mb-tabs [role="tab"][aria-selected="true"]');
+ if(active)active.focus({preventScroll:true});
+});
 app.addEventListener('click',async e=>{
- const t=e.target.closest('[data-tab]');if(t){tab=t.dataset.tab;confirmBuy=null;render();if(t.closest('.mb-tryon'))app.querySelector('.mb-panel').scrollIntoView({behavior:'smooth',block:'start'});return}
+ const t=e.target.closest('[data-tab]');if(t){tab=t.dataset.tab;confirmBuy=null;render();if(t.closest('.mb-tryon'))app.querySelector('.mb-tabbody')?.scrollTo({top:0,behavior:'smooth'});return}
  const s=e.target.closest('[data-set]');
  if(s){const f=s.dataset.set,v=s.dataset.val;
   if(f==='tone')cfg.tone=Number(v);
@@ -146,23 +232,67 @@ app.addEventListener('click',async e=>{
  if(g){if(g.dataset.toggle==='hood')cfg.hood=!cfg.hood;else{if(cfg.coat!=='none'){coatChoice=cfg.coat;cfg.coat='none'}else cfg.coat=coatChoice}render();return}
  const tb=e.target.closest('[data-try-bundle]');
  if(tb){const b=data.bundles.find(x=>x.key===tb.dataset.tryBundle);if(b)b.items.forEach(k=>{const i=items().find(x=>x.key===k);if(!i)return;if(['coat','aura','eyefx','scene'].includes(i.slot))cfg[i.slot]=i.value;if(i.slot==='glove'){cfg.hands='gloves';cfg.glove=i.value}if(i.slot==='pose')cfg.pose_profile=i.value});
-  window.scrollTo({top:0,behavior:'smooth'});render();return}
+  render();app.querySelector('.mb-tabbody')?.scrollTo({top:0,behavior:'smooth'});return}
  if(e.target.closest('[data-cancel]')){confirmBuy=null;render();return}
  const bi=e.target.closest('[data-buy-item],[data-buy-bundle]');
- if(bi){const kind=bi.dataset.buyItem?'item':'bundle',key=bi.dataset.buyItem||bi.dataset.buyBundle;
+ if(bi){
+  const kind=bi.dataset.buyItem?'item':'bundle',key=bi.dataset.buyItem||bi.dataset.buyBundle;
+  if(busy)return;
   if(!bi.dataset.confirm){confirmBuy=kind+':'+key;render();return}
-  if(busy)return;busy=true;say('Kauf läuft …');
-  const {data:res,error}=kind==='item'?await db.rpc('buy_holo_item',{p_key:key}):await db.rpc('buy_holo_bundle',{p_key:key});
-  busy=false;confirmBuy=null;
-  if(error){say(error.message,true);render();return}
-  const keep=cfg;await load();cfg=keep;say(`Gekauft: ${res.name}. Neuer Stand: ${fmt(res.balance)} Coins.`);render();return}
- if(e.target.closest('#resetBtn')){cfg=JSON.parse(saved);say('Änderungen verworfen.');render();return}
+  busy='buy';say('Kauf läuft …');render();
+  try{
+   const {data:res,error}=kind==='item'
+    ?await db.rpc('buy_holo_item',{p_key:key})
+    :await db.rpc('buy_holo_bundle',{p_key:key});
+   if(error)throw error;
+   if(!res)throw Error('Keine Kaufbestätigung erhalten.');
+   // A successful purchase must not look unsuccessful just because the subsequent
+   // refresh fails. Never auto-repeat a transaction.
+   if(data&&Number.isFinite(Number(res.balance)))data.coins=Number(res.balance);
+   // The receipt confirms ownership even if the follow-up read is offline.
+   const bought=kind==='item'?[key]:(data.bundles||[]).find(b=>b.key===key)?.items||[];
+   for(const it of items())if(bought.includes(it.key))it.owned=true;
+   for(const bundle of data.bundles||[])bundle.owned_all=bundle.items.every(k=>items().some(it=>it.key===k&&it.owned));
+   try{
+    await load();
+    say(`Gekauft: ${res.name}. Neuer Stand: ${fmt(res.balance)} Coins.`);
+   }catch(e){
+    say('Kauf bestätigt. Kontostand konnte nicht aktualisiert werden – bitte Seite später neu laden.',true);
+   }
+  }catch(e){
+   say('Kauf fehlgeschlagen: '+(e.message||e),true);
+  }finally{
+   busy=false;confirmBuy=null;render();
+  }
+  return;
+ }
+ if(e.target.closest('#resetBtn')){
+  if(busy)return;
+  cfg=JSON.parse(saved);say('Änderungen verworfen.');render();return;
+ }
  if(e.target.closest('#saveBtn')){
-  if(busy)return;busy=true;render();
-  const {data:res,error}=await db.rpc('save_my_holo',{p_config:cfg});
-  busy=false;
-  if(error){say(error.message,true);render();return}
-  cfg=res;saved=JSON.stringify(res);say('Gespeichert. So sehen dich jetzt alle im Profil und auf deiner Karte.');render();
+  if(busy)return;
+  const snapshot=JSON.stringify(cfg);
+  busy='save';render();
+  try{
+   // Send an immutable snapshot; later colour or outfit changes must not be lost.
+   const {data:res,error}=await db.rpc('save_my_holo',{p_config:JSON.parse(snapshot)});
+   if(error)throw error;
+   if(!res)throw Error('Keine Speicherbestätigung erhalten.');
+   const result=H.normalize(res);
+   saved=JSON.stringify(result);
+   if(JSON.stringify(cfg)===snapshot){
+    cfg=result;
+    say('Gespeichert. So sehen dich jetzt alle im Profil und auf deiner Karte.');
+   }else{
+    say('Gespeichert. Deine neueren Änderungen sind noch nicht gespeichert.');
+   }
+  }catch(e){
+   say('Speichern fehlgeschlagen: '+(e.message||e),true);
+  }finally{
+   busy=false;render();
+  }
+  return;
  }
 });
 try{
@@ -174,7 +304,7 @@ try{
   if(!data||!data.enabled){say('');app.innerHTML='<div class="tlp-panel">Der Boxer-Holo ist noch nicht freigeschaltet.</div>'}
   else{cfg=H.normalize(data.config);saved=JSON.stringify(cfg);coatChoice=cfg.coat!=='none'?cfg.coat:'basic';
    const want=new URLSearchParams(location.search).get('tab');if(['koerper','kleidung','extras','posen','shop'].includes(want))tab=want;
-   say(data.saved?'':'Gestalte deinen Boxer und speichere ihn. Er erscheint dann in deinem Profil und auf deiner Karte.');render()}
+   say('');render()}
  }
 }catch(e){say('Mein Boxer konnte nicht geladen werden: '+(e.message||e),true)}
 </script>
