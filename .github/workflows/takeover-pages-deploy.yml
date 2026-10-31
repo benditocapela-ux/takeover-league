@@ -30,9 +30,8 @@ concurrency:
 
 jobs:
   publish:
-    # Publication paused for the explicitly authorized merge-only integration.
-    # Restore the job condition only after separate deployment approval.
-    if: github.ref == 'refs/heads/main' && false
+    # Owner-approved release: publish merged PR #86 (Staff) and PR #88 (Boxer).
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     environment:
@@ -71,6 +70,15 @@ jobs:
           test -s _site/icons.svg
           test -s _site/boxer-profile.js
           test -s _site/boxer-profile.html
+          # Owner-approved combined release: both role UIs and the in-app Boxer navigation must ship together.
+          for asset in coach.html admin.html boxer-experience.html takeover-staff-experience.css takeover-boxer-flow.js takeover-boxer-embedded-flow.css boxer-experience.js; do
+            test -s "_site/${asset}"
+          done
+          grep -Fq 'takeover-staff-experience.css' _site/coach.html
+          grep -Fq 'takeover-staff-experience.css' _site/admin.html
+          grep -Fq 'takeover-boxer-flow.js' _site/boxer-experience.html
+          grep -Fq 'id="ex-flow-frame"' _site/boxer-experience.html
+          grep -Fq 'takeover-boxer-embedded-flow.css' _site/takeover-boxer-flow.js
           # League 2.1 static entrypoints must be packaged in the public release.
           for page in arena goals league-manager league-challenges league-history boxer-compare admin; do
             test -s "_site/${page}.html"
