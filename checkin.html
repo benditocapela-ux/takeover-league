@@ -19,7 +19,9 @@ function boxerView(list,enabled){
  // Scheduled Pflicht units use the same unified one-tap RPC displayed above.
  // Keep additional, non-Pflicht Gym sessions available through the legacy flow.
  if(unifiedScheduleActive){
-  list=list.filter(s=>s.club_tier!=='pflicht');
+  const pflicht=list.filter(s=>s.club_tier==='pflicht');
+  // With multiple open sessions, keep the detailed Gym choices visible.
+  list=list.filter(s=>s.club_tier!=='pflicht'||pflicht.length>1);
   if(!list.length)return '';
  }
  if(!enabled)return '<div class="tlp-panel">Der Gym-Check-in ist noch nicht freigeschaltet.</div>';
