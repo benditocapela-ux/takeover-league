@@ -64,7 +64,7 @@ function injected(cfg){
   const context=await browser.newContext({viewport:{width:cfg.testWidth||390,height:cfg.testHeight||844},reducedMotion:'reduce'});
   await context.addInitScript({content:'('+injected.toString()+')('+JSON.stringify(Object.assign({items:ITEMS},cfg))+')'});
   const p=await context.newPage();const errors=[];p.on('pageerror',e=>errors.push(e.message));
-  await p.route('**/*',r=>r.request().url().startsWith(base)?r.continue():r.fulfill({contentType:'application/json',body:'[]'}));
+  await p.route('**/*',r=>(r.request().url().startsWith(base)||/^(blob:|data:)/.test(r.request().url()))?r.continue():r.fulfill({contentType:'application/json',body:'[]'}));
   await p.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm',r=>r.fulfill({status:200,contentType:'text/javascript',body:'export const createClient=()=>window.__takeoverMockClient;'}));
   await p.route('https://iqarjivcrddcixrvqbfb.supabase.co/**',r=>{const u=r.request().url();
    const body=u.includes('get_public_levels')?[{boxer_name:'Anna',lifetime_exp:500},{boxer_name:'Ben',lifetime_exp:300}]:u.includes('get_public_leaderboard')?[{boxer_name:'Anna',rank_position:1,monthly_points:100,approved_sessions:4,points_training:100,points_bonus:0},{boxer_name:'Ben',rank_position:2,monthly_points:80,approved_sessions:3,points_training:80,points_bonus:0}]:[];
@@ -485,7 +485,8 @@ function injected(cfg){
  await shot(x.p,'holo-eight-layer-draft-preview');
  assert.equal(await x.p.locator('.mb-draft-layer-controls input').count(),8,'every real layer has a visibility switch');
  const coatMask=x.p.locator('[data-draft-layer="coatFront"]');
- await coatMask.uncheck();
+ await coatMask.focus();
+ await x.p.keyboard.press('Space');
  assert.equal(await x.p.locator('.mb-draft-artpack img').count(),7,
   'disabling the front coat reveals missing skin anatomy instead of faking another outfit');
  assert.equal(await x.p.evaluate(()=>document.activeElement?.dataset.draftLayer),'coatFront',
