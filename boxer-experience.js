@@ -244,6 +244,9 @@
     const extra=document.createElement('p');extra.className='ex-muted';
     extra.textContent='Ergänzungstrainings kannst du weiterhin im regulären Formular nach Trainingsart auswählen.';
     host.append(extra);
+    host.append(trainingOption('ERGAENZUNGSTRAINING IM VEREIN',
+      'Sandsack, Athletik oder Technik mit Trainerfreigabe',
+      checkinOnly?'./checkin.html':'./boxer.html?club=1#trainingFormCard'));
   }
   async function loadTraining(){
     const db=state.db, id=state.profile.id;
