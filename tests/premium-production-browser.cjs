@@ -92,14 +92,18 @@ async function saveContact(page, entries, file, crop = [0, 0, 768, 1216], column
             const result = productionResult, P = TLPremiumProduction, out = [], expected = document.createElement('canvas'); expected.width = 768; expected.height = 1216;
             P.draw(expected.getContext('2d'), result.selection, result.images);
             const hero = document.getElementById('after'), compare = (a, b) => { let max = 0, sum = 0; for (let i = 0; i < a.length; i++) { const d = Math.abs(a[i] - b[i]); max = Math.max(max, d); sum += d; } return { max, mean: sum / a.length }; };
-            hero.toDataURL(); expected.toDataURL(); const heroMatch = compare(hero.getContext('2d').getImageData(0, 0, 768, 1216).data, expected.getContext('2d').getImageData(0, 0, 768, 1216).data); const mismatchImages = heroMatch.max ? [hero.toDataURL(), expected.toDataURL()] : null;
+            // Byte-identical exported PNGs are an exact observable raster match.
+            // Otherwise retain the full, zero-tolerance RGBA comparison. In particular,
+            // never infer a match from a small mean delta or discard transparent pixels.
+            const exact = (a,b) => a.toDataURL() === b.toDataURL() ? {max:0,mean:0,exactPng:true} : compare(a.getContext('2d').getImageData(0,0,a.width,a.height).data,b.getContext('2d').getImageData(0,0,b.width,b.height).data);
+            const heroMatch = exact(hero,expected); const mismatchImages = heroMatch.max ? [hero.toDataURL(), expected.toDataURL()] : null;
             for (const tile of document.querySelectorAll('.item')) {
               const slot = tile.dataset.slot, cv = tile.querySelector('canvas'), frame = P.itemFrame(result.selection, slot);
               if (!frame) { const label = slot === 'hair' && result.selection.config.head === 'hijab' ? 'Verdeckt' : 'Ohne'; out.push({ slot, empty: true, valid: !cv && tile.querySelector('small').textContent === label }); continue; }
               if (!cv) { out.push({ slot, valid: false }); continue; }
               P.draw(expected.getContext('2d'), result.selection, result.images, slot);
               const crop = document.createElement('canvas'); crop.width = frame[2]; crop.height = frame[3]; crop.getContext('2d').drawImage(expected, ...frame, 0, 0, crop.width, crop.height);
-              const match = compare(cv.getContext('2d').getImageData(0, 0, cv.width, cv.height).data, crop.getContext('2d').getImageData(0, 0, crop.width, crop.height).data);
+              const match = exact(cv,crop);
               const badge = ['scene', 'aura', 'eyefx'].includes(slot) ? 'Canvas · Entwurf' : 'Anime · Entwurf';
               out.push({ slot, valid: cv.width === frame[2] && cv.height === frame[3] && match.max === 0 && tile.querySelector('small').textContent === badge, ...match }); crop.width = 0; crop.height = 0;
             }
