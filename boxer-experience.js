@@ -178,8 +178,10 @@
       case 'submitted':return 'Dein heutiges Vereinstraining «'+r.label+'» wurde automatisch eingetragen und zur Trainerfreigabe eingereicht.';
       case 'already_pending':return 'Dein heutiges Vereinstraining wurde bereits eingereicht und wartet auf Freigabe. Kein Doppeleintrag.';
       case 'already_approved':return 'Dein heutiges Vereinstraining wurde bereits bestätigt. Kein Doppeleintrag.';
-      case 'gym_registered':return 'Du bist heute bereits in einer Gym-Einheit eingecheckt. Kein Doppeleintrag.';
-      case 'checkin_required':return 'Dein Verein verlangt den Gym-Check-in. Bitte melde dich dort zur laufenden Einheit an.';
+      case 'already_checked_in':return 'Du bist für die heutige Vereinseinheit bereits eingecheckt. Dein Trainer bestätigt später deine Anwesenheit. Kein Doppeleintrag.';
+      case 'checked_in':return 'Erfolgreich eingecheckt! Das heutige Vereinstraining ist als Anwesenheit registriert und wird vom Trainer bestätigt.';
+      case 'gym_not_open':return 'Das heutige Vereinstraining wurde vom Trainer noch nicht zum Check-in geöffnet. Bitte versuche es nach dem Trainingsstart erneut.';
+      case 'choose_gym_session':return 'Mehrere Gym-Einheiten sind geöffnet. Bitte wähle die richtige im Gym-Check-in.';
       case 'no_slot':return 'Heute ist kein Pflichttraining hinterlegt. Du kannst ein individuelles Training erfassen.';
       case 'choose_slot':return 'Mehrere Vereinseinheiten sind heute geplant. Bitte wähle die richtige Einheit.';
       case 'disabled':return 'Der Ein-Klick-Antrag ist derzeit nicht aktiviert. Das bisherige Formular bleibt verfügbar.';
@@ -200,7 +202,7 @@
     const title=document.createElement('h3');title.textContent='Warst du heute im Vereinstraining?';
     host.append(title);
     const help=document.createElement('p');help.className='ex-muted';
-    help.textContent='Mit Ja wird die heutige Pflichteinheit aus dem Vereinsstundenplan automatisch zur Trainerfreigabe beantragt.';
+    help.textContent='Mit Ja wird die heutige Pflichteinheit automatisch erfasst: bei einer geöffneten Gym-Einheit per Check-in, ansonsten bei erlaubter Selbstmeldung als Antrag zur Freigabe.';
     host.append(help);
     const actions=document.createElement('div');actions.className='ex-grid';
     const yes=document.createElement('button');yes.type='button';yes.className='ex-link-card';
@@ -216,7 +218,7 @@
       'Heute ist keine Pflichteinheit im Stundenplan eingeplant.';
     host.append(schedule);
     async function submit(slotId,button){
-      if(button)button.disabled=true;status.hidden=false;status.textContent='Dein Antrag wird gespeichert …';
+      if(button)button.disabled=true;status.hidden=false;status.textContent='Dein Training wird erfasst …';
       try{
         const r=await state.db.rpc('submit_scheduled_club_training_today',{p_slot_id:slotId==null?null:Number(slotId)});
         if(r.error)throw r.error;
@@ -230,8 +232,9 @@
           }
           status.append(options);
         }
-        if(r.data?.status==='checkin_required')status.append(trainingOption('ZUM GYM-CHECK-IN','Vereinstraining vor Ort einchecken','./checkin.html'));
-        if(r.data?.status==='submitted')await loadTraining();
+        if(['gym_not_open','choose_gym_session'].includes(r.data?.status))
+          status.append(trainingOption('ZUM GYM-CHECK-IN','Geöffnete Vereinseinheit auswählen','./checkin.html'));
+        if(['submitted','checked_in'].includes(r.data?.status))await loadTraining();
       }catch(err){
         status.textContent='Antrag nicht gespeichert: '+String(err.message||err)+'. Bitte nicht blind erneut einreichen.';
       }finally{if(button)button.disabled=false}
@@ -239,7 +242,7 @@
     yes.addEventListener('click',()=>submit(null,yes));
     if(checkinOnly){
       const notice=document.createElement('p');notice.className='ex-note';
-      notice.textContent='Der Verein verlangt einen Gym-Check-in. Eine separate Selbstmeldung ist in diesem Modus gesperrt.';
+      notice.textContent='Dein Verein verwendet den betreuten Gym-Check-in. Mit Ja wirst du bei einer vom Trainer geöffneten Pflicht-Einheit angemeldet; ohne geöffnete Einheit ist keine Selbstmeldung möglich.';
       host.append(notice);
     }
     const extra=document.createElement('p');extra.className='ex-muted';
