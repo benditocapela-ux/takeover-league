@@ -327,3 +327,37 @@ body[data-tl-screen="admin"] .tl-screen-ribbon .tl-screen-links a[href="./coach.
  body[data-tl-screen="coach"] .cv2-hero h1,
  body[data-tl-screen="admin"] .stf-admin-hero h1{font-size:23px}
 }
+
+
+/* Help link is inserted into the real staff ribbon by takeover-navigation.js.
+   Unlike on other pages, keep it in normal flow: the absolute 32px '?' used to
+   cover the new 44px global menu button, breaking mobile and desktop clicks. */
+body[data-tl-screen="coach"] .tl-screen-ribbon:has(.tl-help-link),
+body[data-tl-screen="admin"] .tl-screen-ribbon:has(.tl-help-link){
+ padding-right:clamp(12px,2.5vw,22px);
+}
+body[data-tl-screen="coach"] .tl-screen-ribbon>.tl-help-link,
+body[data-tl-screen="admin"] .tl-screen-ribbon>.tl-help-link{
+ position:static;inset:auto;flex:0 0 44px;width:44px;height:44px;
+ display:grid;place-items:center;z-index:auto;border-radius:11px;
+ order:3;margin:0;font-size:16px;
+}
+body[data-tl-screen="coach"] .tl-screen-ribbon>.tl-help-link::before,
+body[data-tl-screen="admin"] .tl-screen-ribbon>.tl-help-link::before{
+ content:none;
+}
+@media(max-width:650px){
+ body[data-tl-screen="coach"] .tl-screen-ribbon:has(.tl-help-link),
+ body[data-tl-screen="admin"] .tl-screen-ribbon:has(.tl-help-link){
+  grid-template-columns:minmax(0,1fr) 44px 44px;
+  padding:6px 9px;
+ }
+ body[data-tl-screen="coach"] .tl-screen-ribbon>.tl-help-link,
+ body[data-tl-screen="admin"] .tl-screen-ribbon>.tl-help-link{
+  grid-column:2;grid-row:1;order:0;
+ }
+ body[data-tl-screen="coach"] .tl-screen-links button[data-stf-global-menu],
+ body[data-tl-screen="admin"] .tl-screen-links button[data-stf-global-menu]{
+  grid-column:3;grid-row:1;
+ }
+}
