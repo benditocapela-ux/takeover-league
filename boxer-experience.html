@@ -111,6 +111,9 @@ button{cursor:pointer}
 /* Die Kartenbreite kommt aus dem Stylesheet (!important überschreibt die feste Breite des Karten-Renderers), damit die Karte in die Bühne passt. */
 /* Kleine Displays: Texte neben dem Holo bzw. der FUT-Card überdecken sich nicht */
 @media(max-width:560px){.ex-card-stage .ex-figure-title,.ex-card-stage .ex-figure-stats{display:none}.ex-home-stage .ex-figure-foot{display:none}}
+.ex-preview-banner{flex:none;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:center;padding:9px 13px;background:#392b12;color:#f5e5bf;border-bottom:1px solid #bd9949;font-size:11px;text-align:center}
+.ex-preview-banner a{color:#ffe39c;font-weight:800;text-decoration:underline}
+body[data-staff-preview="true"] .ex-preview-no-write{opacity:.6;cursor:not-allowed}
 </style>
 </head>
 <body data-tl-screen="boxer-experience">
@@ -120,6 +123,7 @@ button{cursor:pointer}
  <div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Mein Takeover – Boxer Experience"><div class="ex-brand"><div class="ex-logo"><span class="tl-screen-symbol" aria-hidden="true">T</span></div><div class="ex-brand-name"><b>TAKEOVER</b><span>LEAGUE</span></div></div></div>
  <div class="ex-head-actions"><span class="ex-status">BOXER EXPERIENCE · TESTVERSION</span><button id="ex-settings" class="ex-icon-button" aria-label="Weitere Funktionen öffnen" aria-expanded="false">☰</button></div>
 </header>
+<div id="ex-preview-banner" class="ex-preview-banner" hidden role="status"><strong>TRAINER-/ADMIN-VORSCHAU · BEISPIELDATEN</strong><span>Alle Trainingsaktionen sind hier deaktiviert.</span><a href="./coach.html">Zurück zum Trainer-Dashboard</a></div>
 <div class="ex-main">
  <section class="ex-figure ex-home-stage" id="ex-home-stage" aria-label="Dein eigener Boxer">
   <div class="ex-figure-title"><span class="ex-eyebrow">DEIN BOXER</span><h2 id="ex-home-name">MEIN FIGHTER</h2><p>Trainieren. Aufsteigen. Kämpfen.</p></div>
