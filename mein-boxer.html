@@ -217,9 +217,10 @@ function selectionLook(field,value){
 }
 function itemPreview(field,value){
  const slot=field==='coatPick'?'coat':field;
- // Removal controls have no equipment artwork to classify.
- if(value==='none'&&['head','top','coat'].includes(slot))return {html:G&&G.svg?G.svg(field,value,itemLook(field,value)):'',kind:'none'};
  const next=selectionLook(field,value),pose=previewPose==='card'?next.pose_card:next.pose_profile;
+ // Removal controls have no equipment artwork to classify, but retain the
+ // existing Holo fallback when the optional item icon module is unavailable.
+ if(value==='none'&&['head','top','coat'].includes(slot))return {html:G&&G.svg?G.svg(field,value,itemLook(field,value)):H.svg(itemLook(field,value),{pose,scene:'none',holo:false}),kind:'none'};
  const runtime=modularReview?modularPack:usePremiumArt&&!compareSvg?A&&A.active:null;
  const descriptor=runtime&&runtime.item&&runtime.item(next,pose,slot);
  if(descriptor&&G&&G.png){
