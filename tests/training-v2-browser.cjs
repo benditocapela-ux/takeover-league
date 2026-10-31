@@ -332,18 +332,18 @@ async function boxerFlow(browser,engine){
  console.log('PASS '+engine+': Boxer-Formular – Ort → Einheit → Details → Belohnungsvorschau, Datum gegen Pflichttag geprüft, Antrag ohne Stufe, doppelt = eine Meldung, individuelle Arten ohne Vereinsarten');
 }
 async function gymOnlyFlow(browser,engine){
- for(const open of [true,false]){
+ for(const gymOpened of [true,false]){
   const {page,context,errors}=await open(browser,
-   {role:'boxer',gymOnly:true,gymOpen:open,forceTodaySlot:true},'boxer.html');
+   {role:'boxer',gymOnly:true,gymOpen:gymOpened,forceTodaySlot:true},'boxer.html');
   await page.waitForSelector('#ct-boxer');
   await page.getByRole('button',{name:/Ja, im Verein/}).click();
   await page.waitForFunction(()=>document.querySelector('#ct-boxer .ct-result')?.textContent
     && !/wird gespeichert/.test(document.querySelector('#ct-boxer .ct-result').textContent));
   const msg=await page.textContent('#ct-boxer .ct-result');
-  assert.match(msg,open?/Erfolgreich eingecheckt/:/noch nicht vom Trainer/);
+  assert.match(msg,gymOpened?/Erfolgreich eingecheckt/:/noch nicht vom Trainer/);
   assert.equal((await page.evaluate(()=>window.__stats.inserted)).length,0,
    'Gym one-tap must not insert a training submission in the browser');
-  if(open){
+  if(gymOpened){
    await page.getByRole('button',{name:/Ja, im Verein/}).click();
    await page.waitForFunction(()=>/bereits eingecheckt/.test(document.querySelector('#ct-boxer .ct-result')?.textContent||''));
    assert.equal(await page.evaluate(()=>window.__stats.quickCheckins),1,'second click is idempotent');
