@@ -10,6 +10,9 @@ on:
       - 'tests/boxer-experience-routing.cjs'
       - 'boxer-experience.html'
       - 'boxer-experience.js'
+      - 'takeover-boxer-flow.js'
+      - 'takeover-boxer-embedded-flow.css'
+      - 'tests/boxer-experience-inapp-routing.cjs'
       - 'tests/boxer-experience-contract.cjs'
       - 'tests/boxer-experience-browser.cjs'
       - '.github/workflows/boxer-experience-contracts.yml'
@@ -24,6 +27,8 @@ jobs:
           node-version: '22'
       - name: Verify role, tab, no direct database mutation and club request boundaries
         run: node --test tests/boxer-experience-contract.cjs
+      - name: Verify all functional links stay inside Boxer Experience
+        run: node --test tests/boxer-experience-inapp-routing.cjs
       - name: Check login, PWA start URL and role-safe navigation
         run: node --test tests/boxer-experience-routing.cjs
   browser:
