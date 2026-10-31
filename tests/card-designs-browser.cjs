@@ -99,7 +99,7 @@ function injected(cfg){
 
  // C: Podium zeigt die Card of the Week im Spezial-Design; Vergleich zeigt Designs
  ({p,errors,context}=await page({role:'boxer',me:'Ben'}));
- await p.goto(base+'index.html');await p.waitForSelector('.tlp-awards .tlp-card.d-design .tlp-badge',{timeout:10000});
+ await p.goto(base+'index.html#podium');await p.waitForSelector('.tlp-awards .tlp-card.d-design .tlp-badge',{timeout:10000});
  assert.match(await p.textContent('.tlp-awards'),/Card of the Week[\s\S]*ANNA/);
  await p.goto(base+'boxer-compare.html?left=Anna&right=Ben');await p.waitForSelector('.tlp-compare .tlp-card.d-design');
  assert.equal(await p.locator('.tlp-compare .tlp-badge').textContent(),'COTW');

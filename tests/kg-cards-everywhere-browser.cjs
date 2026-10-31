@@ -157,7 +157,7 @@ function injected(cfg){
 
  // E: Angemeldete sehen nur freigegebene Holo-Looks auf dem vorhandenen Podium.
  // Podium-Pose stammt aus pose_profile, FUT-Karten-Pose bleibt separat.
- ({p,errors}=await page({signedIn:true,me:'Ben',podiumHolos:true},'index.html'));
+ ({p,errors}=await page({signedIn:true,me:'Ben',podiumHolos:true},'index.html#podium'));
  try{await p.waitForSelector('#podium-content .tl-podium-1 .tl-podium-holo svg.tlh',{timeout:7000})}
  catch(e){
   console.error('Podium Holo debug:',JSON.stringify(await p.evaluate(()=>({

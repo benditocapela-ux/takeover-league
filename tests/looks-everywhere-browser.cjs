@@ -90,7 +90,7 @@ function injected(cfg){
  assert.deepEqual(errors,[]);
 
  // B: angemeldet – FUT-Karten der Top 3 auf dem Podium, verlinkt aufs Profil
- ({p,errors}=await page({signedIn:true},'index.html'));
+ ({p,errors}=await page({signedIn:true},'index.html#podium'));
  await p.waitForSelector('.tlp-podium-cards .tlp-podium-card .tlp-card');
  assert.equal(await p.locator('.tlp-podium-card').count(),3);
  assert.deepEqual(await p.$$eval('.tlp-podium-card',a=>a.map(x=>[x.className,x.getAttribute('href')])),
