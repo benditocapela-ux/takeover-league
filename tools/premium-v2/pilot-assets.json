@@ -1,0 +1,445 @@
+{
+  "version": 2,
+  "approved": false,
+  "enabled": false,
+  "base": "1a55e0516c45ee3c457fc7f073cd8e412721b83e",
+  "canvas": [
+    768,
+    1216
+  ],
+  "pieces": {
+    "head": {
+      "slot": "body",
+      "origin": "cool-exact",
+      "atlas": "shared",
+      "uv": [
+        2,
+        2,
+        230,
+        180
+      ],
+      "box": [
+        270,
+        50,
+        230,
+        180
+      ]
+    },
+    "lower": {
+      "slot": "body",
+      "origin": "cool-exact",
+      "atlas": "shared",
+      "uv": [
+        236,
+        2,
+        465,
+        625
+      ],
+      "box": [
+        155,
+        550,
+        465,
+        625
+      ]
+    },
+    "body-cool": {
+      "slot": "body",
+      "origin": "cool-exact",
+      "atlas": "shared",
+      "uv": [
+        2,
+        631,
+        380,
+        320
+      ],
+      "box": [
+        195,
+        230,
+        380,
+        320
+      ]
+    },
+    "coat-back": {
+      "slot": "coatBack",
+      "origin": "cool-exact",
+      "atlas": "shared",
+      "uv": [
+        386,
+        631,
+        460,
+        370
+      ],
+      "box": [
+        165,
+        540,
+        460,
+        370
+      ]
+    },
+    "coat-tail": {
+      "slot": "coatFront",
+      "origin": "cool-exact",
+      "atlas": "shared",
+      "uv": [
+        2,
+        1005,
+        490,
+        350
+      ],
+      "box": [
+        145,
+        590,
+        490,
+        350
+      ]
+    },
+    "coat-cool": {
+      "slot": "coatFront",
+      "origin": "cool-exact",
+      "atlas": "shared",
+      "uv": [
+        496,
+        1005,
+        390,
+        430
+      ],
+      "box": [
+        195,
+        160,
+        390,
+        430
+      ]
+    },
+    "feet": {
+      "slot": "feet",
+      "origin": "cool-exact",
+      "atlas": "shared",
+      "uv": [
+        2,
+        1439,
+        480,
+        235
+      ],
+      "box": [
+        150,
+        945,
+        480,
+        235
+      ]
+    },
+    "eyes": {
+      "slot": "eyes",
+      "origin": "cool-exact",
+      "atlas": "shared",
+      "uv": [
+        486,
+        1439,
+        100,
+        35
+      ],
+      "box": [
+        330,
+        140,
+        100,
+        35
+      ]
+    },
+    "hair-afro": {
+      "slot": "hair",
+      "origin": "cool-exact",
+      "atlas": "shared",
+      "uv": [
+        590,
+        1439,
+        170,
+        145
+      ],
+      "box": [
+        300,
+        40,
+        170,
+        145
+      ]
+    },
+    "hair-short": {
+      "slot": "hair",
+      "origin": "cool-exact",
+      "atlas": "shared",
+      "uv": [
+        764,
+        1439,
+        170,
+        145
+      ],
+      "box": [
+        300,
+        40,
+        170,
+        145
+      ]
+    },
+    "bottom-black": {
+      "slot": "bottom",
+      "origin": "cool-exact",
+      "atlas": "shared",
+      "uv": [
+        2,
+        1678,
+        340,
+        265
+      ],
+      "box": [
+        220,
+        540,
+        340,
+        265
+      ]
+    },
+    "bottom-red": {
+      "slot": "bottom",
+      "origin": "cool-exact",
+      "atlas": "shared",
+      "uv": [
+        346,
+        1678,
+        340,
+        265
+      ],
+      "box": [
+        220,
+        540,
+        340,
+        265
+      ]
+    },
+    "top-tank": {
+      "slot": "top",
+      "origin": "cool-exact",
+      "atlas": "shared",
+      "uv": [
+        690,
+        1678,
+        215,
+        335
+      ],
+      "box": [
+        280,
+        240,
+        215,
+        335
+      ]
+    },
+    "hands-blackgold": {
+      "slot": "hands",
+      "origin": "cool-exact",
+      "atlas": "shared",
+      "uv": [
+        2,
+        2017,
+        310,
+        130
+      ],
+      "box": [
+        230,
+        300,
+        310,
+        130
+      ]
+    },
+    "hands-white": {
+      "slot": "hands",
+      "origin": "cool-exact",
+      "atlas": "shared",
+      "uv": [
+        316,
+        2017,
+        310,
+        130
+      ],
+      "box": [
+        230,
+        300,
+        310,
+        130
+      ]
+    },
+    "body-guard": {
+      "slot": "body",
+      "origin": "guard-new",
+      "atlas": "guard",
+      "uv": [
+        2,
+        2,
+        380,
+        320
+      ],
+      "box": [
+        195,
+        230,
+        380,
+        320
+      ]
+    },
+    "coat-guard": {
+      "slot": "coatFront",
+      "origin": "guard-new",
+      "atlas": "guard",
+      "uv": [
+        386,
+        2,
+        420,
+        430
+      ],
+      "box": [
+        165,
+        160,
+        420,
+        430
+      ]
+    },
+    "guard-black-0": {
+      "slot": "hands",
+      "origin": "guard-new",
+      "atlas": "guard",
+      "uv": [
+        810,
+        2,
+        110,
+        135
+      ],
+      "box": [
+        260,
+        160,
+        110,
+        135
+      ]
+    },
+    "guard-black-1": {
+      "slot": "hands",
+      "origin": "guard-new",
+      "atlas": "guard",
+      "uv": [
+        2,
+        436,
+        110,
+        135
+      ],
+      "box": [
+        405,
+        160,
+        110,
+        135
+      ]
+    },
+    "guard-white-0": {
+      "slot": "hands",
+      "origin": "guard-new",
+      "atlas": "guard",
+      "uv": [
+        116,
+        436,
+        110,
+        135
+      ],
+      "box": [
+        260,
+        160,
+        110,
+        135
+      ]
+    },
+    "guard-white-1": {
+      "slot": "hands",
+      "origin": "guard-new",
+      "atlas": "guard",
+      "uv": [
+        230,
+        436,
+        110,
+        135
+      ],
+      "box": [
+        405,
+        160,
+        110,
+        135
+      ]
+    }
+  },
+  "atlases": {
+    "shared": {
+      "file": "shared.png",
+      "width": 1024,
+      "height": 2149,
+      "bytes": 1545380,
+      "sha256": "45d0529d347d3ba28064762702adad373428925974e18829423fc73ff38c4bc5"
+    },
+    "guard": {
+      "file": "guard.png",
+      "width": 1024,
+      "height": 573,
+      "bytes": 478747,
+      "sha256": "cb4c7e87498253e2958202be1b7a0e834f81331750c389832751afb8c79b48e0"
+    }
+  },
+  "sources": {
+    "body": {
+      "sha256": "0ffc8dc2bb6d685e48069607fcc4747b6d79f1f98c648035c56e1ebc840cffbb",
+      "size": [
+        996,
+        1578
+      ]
+    },
+    "coat": {
+      "sha256": "c13b35fa04d11c51ca782e4914a6bdf40611a9c9f91f94b3e8948a3f21de4956",
+      "size": [
+        997,
+        1578
+      ]
+    },
+    "black": {
+      "sha256": "9723cc592a238c25161e420635244444cd1d936be4f21e740dfe9df6995c267a",
+      "size": [
+        996,
+        1578
+      ]
+    },
+    "white": {
+      "sha256": "c2a9d3ddf0f4ae4c03964d1c2cb58b40e113fc418127a682fa455db9b2e08fc8",
+      "size": [
+        996,
+        1579
+      ]
+    }
+  },
+  "handBounds": {
+    "black": [
+      [
+        192,
+        258,
+        290,
+        375
+      ],
+      [
+        532,
+        258,
+        294,
+        375
+      ]
+    ],
+    "white": [
+      [
+        190,
+        257,
+        290,
+        378
+      ],
+      [
+        529,
+        257,
+        292,
+        378
+      ]
+    ]
+  }
+}

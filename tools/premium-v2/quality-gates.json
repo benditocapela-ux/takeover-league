@@ -1,0 +1,13 @@
+{
+  "productionReady": false,
+  "massProductionAllowed": false,
+  "scope": "Static front-camera Cool/Guard pilot only, not a full skeletal rig",
+  "passed": ["shared source pixels preserved", "same item and character component selection", "full-PNG and atlas output parity", "bounded decoded texture area", "unchanged application and catalogue"],
+  "open": [
+    {"id":"coat-waist","severity":"blocking","region":[230,490,310,110],"finding":"Transition between authored Guard upper coat and unchanged Cool tails has doubled/discontinuous trim; requires a pose-local corrective patch, not blanket CSS movement."},
+    {"id":"sleeve-occlusion","severity":"blocking","region":[180,230,410,230],"finding":"Review the sleeve silhouette against the bare-body elbows at full size and provide explicit garment/body occlusion masks."},
+    {"id":"glove-identity","severity":"blocking","region":[260,160,255,135],"finding":"Guard glove views have complete silhouettes, but generated crown/embroidery differs from the approved style reference. Match exact ornament design before catalogue expansion."},
+    {"id":"hidden-anatomy","severity":"blocking-for-rig","finding":"Upper torso/arms remain a pose-specific key drawing. Independent upper/forearms, hidden joint surfaces and correction shapes are not delivered by this atlas experiment."},
+    {"id":"physical-device","severity":"before-release","finding":"Physical iPhone/Android, visual acceptance and real-device GPU/heap peaks are not measured."}
+  ]
+}
