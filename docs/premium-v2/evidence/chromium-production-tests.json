@@ -2477,8 +2477,22 @@
       "slot": "top",
       "value": "hoodie",
       "color": "schwarz",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "schwarz",
       "state": "up",
       "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "schwarz",
+      "state": "up",
+      "pose": "cool"
     },
     {
       "slot": "top",
@@ -2491,8 +2505,22 @@
       "slot": "top",
       "value": "hoodie",
       "color": "weiss",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "weiss",
       "state": "up",
       "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "weiss",
+      "state": "up",
+      "pose": "cool"
     },
     {
       "slot": "top",
@@ -2505,8 +2533,22 @@
       "slot": "top",
       "value": "hoodie",
       "color": "grau",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "grau",
       "state": "up",
       "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "grau",
+      "state": "up",
+      "pose": "cool"
     },
     {
       "slot": "top",
@@ -2519,8 +2561,22 @@
       "slot": "top",
       "value": "hoodie",
       "color": "rot",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "rot",
       "state": "up",
       "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "rot",
+      "state": "up",
+      "pose": "cool"
     },
     {
       "slot": "top",
@@ -2533,8 +2589,22 @@
       "slot": "top",
       "value": "hoodie",
       "color": "blau",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "blau",
       "state": "up",
       "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "blau",
+      "state": "up",
+      "pose": "cool"
     },
     {
       "slot": "top",
@@ -2547,8 +2617,22 @@
       "slot": "top",
       "value": "hoodie",
       "color": "gruen",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
       "state": "up",
       "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
+      "state": "up",
+      "pose": "cool"
     },
     {
       "slot": "top",
@@ -2561,8 +2645,22 @@
       "slot": "top",
       "value": "hoodie",
       "color": "lila",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "lila",
       "state": "up",
       "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "lila",
+      "state": "up",
+      "pose": "cool"
     },
     {
       "slot": "top",
@@ -2575,7 +2673,77 @@
       "slot": "top",
       "value": "hoodie",
       "color": "gold",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gold",
       "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gold",
+      "state": "up",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "gold",
+      "state": "default",
       "pose": "guard"
     },
     {
@@ -9344,6 +9512,22 @@
       "itemMaxDelta": 0
     },
     {
+      "variant": "top|hoodie|schwarz|down|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
       "variant": "top|hoodie|schwarz|up|guard",
       "sources": [
         "head",
@@ -9358,6 +9542,22 @@
         "eyes",
         "hands-master-0",
         "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|hoodie|schwarz|up|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "top-cool-hoodie-up",
+        "eyes",
+        "hands-blackgold"
       ],
       "heroMaxDelta": 0,
       "itemMaxDelta": 0
@@ -9382,6 +9582,22 @@
       "itemMaxDelta": 0
     },
     {
+      "variant": "top|hoodie|weiss|down|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
       "variant": "top|hoodie|weiss|up|guard",
       "sources": [
         "head",
@@ -9396,6 +9612,22 @@
         "eyes",
         "hands-master-0",
         "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|hoodie|weiss|up|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "top-cool-hoodie-up",
+        "eyes",
+        "hands-blackgold"
       ],
       "heroMaxDelta": 0,
       "itemMaxDelta": 0
@@ -9420,6 +9652,22 @@
       "itemMaxDelta": 0
     },
     {
+      "variant": "top|hoodie|grau|down|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
       "variant": "top|hoodie|grau|up|guard",
       "sources": [
         "head",
@@ -9434,6 +9682,22 @@
         "eyes",
         "hands-master-0",
         "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|hoodie|grau|up|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "top-cool-hoodie-up",
+        "eyes",
+        "hands-blackgold"
       ],
       "heroMaxDelta": 0,
       "itemMaxDelta": 0
@@ -9458,6 +9722,22 @@
       "itemMaxDelta": 0
     },
     {
+      "variant": "top|hoodie|rot|down|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
       "variant": "top|hoodie|rot|up|guard",
       "sources": [
         "head",
@@ -9472,6 +9752,22 @@
         "eyes",
         "hands-master-0",
         "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|hoodie|rot|up|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "top-cool-hoodie-up",
+        "eyes",
+        "hands-blackgold"
       ],
       "heroMaxDelta": 0,
       "itemMaxDelta": 0
@@ -9496,6 +9792,22 @@
       "itemMaxDelta": 0
     },
     {
+      "variant": "top|hoodie|blau|down|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
       "variant": "top|hoodie|blau|up|guard",
       "sources": [
         "head",
@@ -9510,6 +9822,22 @@
         "eyes",
         "hands-master-0",
         "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|hoodie|blau|up|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "top-cool-hoodie-up",
+        "eyes",
+        "hands-blackgold"
       ],
       "heroMaxDelta": 0,
       "itemMaxDelta": 0
@@ -9534,6 +9862,22 @@
       "itemMaxDelta": 0
     },
     {
+      "variant": "top|hoodie|gruen|down|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
       "variant": "top|hoodie|gruen|up|guard",
       "sources": [
         "head",
@@ -9548,6 +9892,22 @@
         "eyes",
         "hands-master-0",
         "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|hoodie|gruen|up|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "top-cool-hoodie-up",
+        "eyes",
+        "hands-blackgold"
       ],
       "heroMaxDelta": 0,
       "itemMaxDelta": 0
@@ -9572,6 +9932,22 @@
       "itemMaxDelta": 0
     },
     {
+      "variant": "top|hoodie|lila|down|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
       "variant": "top|hoodie|lila|up|guard",
       "sources": [
         "head",
@@ -9586,6 +9962,22 @@
         "eyes",
         "hands-master-0",
         "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|hoodie|lila|up|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "top-cool-hoodie-up",
+        "eyes",
+        "hands-blackgold"
       ],
       "heroMaxDelta": 0,
       "itemMaxDelta": 0
@@ -9610,6 +10002,22 @@
       "itemMaxDelta": 0
     },
     {
+      "variant": "top|hoodie|gold|down|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "eyes",
+        "hair-afro",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
       "variant": "top|hoodie|gold|up|guard",
       "sources": [
         "head",
@@ -9622,6 +10030,158 @@
         "top-guard-hoodie-sleeve-right",
         "top-guard-hoodie-up",
         "eyes",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|hoodie|gold|up|cool",
+      "sources": [
+        "head",
+        "lower",
+        "body-cool",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-cool-hoodie-torso",
+        "top-cool-hoodie-up",
+        "eyes",
+        "hands-blackgold"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|jacke|schwarz|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-jacke",
+        "eyes",
+        "hair-afro",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|jacke|weiss|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-jacke",
+        "eyes",
+        "hair-afro",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|jacke|grau|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-jacke",
+        "eyes",
+        "hair-afro",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|jacke|rot|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-jacke",
+        "eyes",
+        "hair-afro",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|jacke|blau|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-jacke",
+        "eyes",
+        "hair-afro",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|jacke|gruen|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-jacke",
+        "eyes",
+        "hair-afro",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|jacke|lila|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-jacke",
+        "eyes",
+        "hair-afro",
+        "hands-master-0",
+        "hands-master-1"
+      ],
+      "heroMaxDelta": 0,
+      "itemMaxDelta": 0
+    },
+    {
+      "variant": "top|jacke|gold|default|guard",
+      "sources": [
+        "head",
+        "lower",
+        "body-guard",
+        "bottom-master-boxer-clean",
+        "feet",
+        "top-guard-jacke",
+        "eyes",
+        "hair-afro",
         "hands-master-0",
         "hands-master-1"
       ],
@@ -12816,49 +13376,49 @@
     "cold": [
       {
         "mode": "v1",
-        "loadDecodeFirstDrawMs": 209.5999999642372,
+        "loadDecodeFirstDrawMs": 130.9000000357628,
         "imageRequests": 8,
         "imageEncodedBytes": 1513231,
         "decodedRGBABytes": 29884416
       },
       {
         "mode": "v1",
-        "loadDecodeFirstDrawMs": 208.30000001192093,
+        "loadDecodeFirstDrawMs": 184.80000001192093,
         "imageRequests": 8,
         "imageEncodedBytes": 1513231,
         "decodedRGBABytes": 29884416
       },
       {
         "mode": "v1",
-        "loadDecodeFirstDrawMs": 205.30000001192093,
+        "loadDecodeFirstDrawMs": 139.60000002384186,
         "imageRequests": 8,
         "imageEncodedBytes": 1513231,
         "decodedRGBABytes": 29884416
       },
       {
         "mode": "v2",
-        "loadDecodeFirstDrawMs": 103.19999998807907,
+        "loadDecodeFirstDrawMs": 73.19999998807907,
         "imageRequests": 2,
         "imageEncodedBytes": 2024127,
         "decodedRGBABytes": 11149312
       },
       {
         "mode": "v2",
-        "loadDecodeFirstDrawMs": 116,
+        "loadDecodeFirstDrawMs": 75.89999997615814,
         "imageRequests": 2,
         "imageEncodedBytes": 2024127,
         "decodedRGBABytes": 11149312
       },
       {
         "mode": "v2",
-        "loadDecodeFirstDrawMs": 159.9000000357628,
+        "loadDecodeFirstDrawMs": 87.80000001192093,
         "imageRequests": 2,
         "imageEncodedBytes": 2024127,
         "decodedRGBABytes": 11149312
       },
       {
         "mode": "production-new-art",
-        "loadDecodeFirstDrawMs": 76.19999998807907,
+        "loadDecodeFirstDrawMs": 85.90000003576279,
         "imageRequests": 8,
         "imageEncodedBytes": 1291832,
         "decodedRGBABytes": 5026272,
@@ -12887,7 +13447,7 @@
       },
       {
         "mode": "production-new-art",
-        "loadDecodeFirstDrawMs": 84,
+        "loadDecodeFirstDrawMs": 71.80000001192093,
         "imageRequests": 8,
         "imageEncodedBytes": 1291832,
         "decodedRGBABytes": 5026272,
@@ -12916,7 +13476,7 @@
       },
       {
         "mode": "production-new-art",
-        "loadDecodeFirstDrawMs": 82.10000002384186,
+        "loadDecodeFirstDrawMs": 96.5,
         "imageRequests": 8,
         "imageEncodedBytes": 1291832,
         "decodedRGBABytes": 5026272,
@@ -12946,8 +13506,8 @@
     ],
     "warm": {
       "mode": "production-new-art",
-      "p50ms": 19.30000001192093,
-      "p95ms": 42.60000002384186,
+      "p50ms": 10.399999976158142,
+      "p95ms": 34.39999997615814,
       "samples": 100,
       "warmups": 10
     },

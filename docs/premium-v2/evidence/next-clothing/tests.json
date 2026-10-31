@@ -1,0 +1,16 @@
+{
+  "approved": false,
+  "enabled": false,
+  "reports": [
+    {
+      "engine": "chromium",
+      "combinations": 24,
+      "passed": true
+    },
+    {
+      "engine": "webkit",
+      "combinations": 24,
+      "passed": true
+    }
+  ]
+}

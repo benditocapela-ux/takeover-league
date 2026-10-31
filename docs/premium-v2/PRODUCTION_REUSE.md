@@ -1,6 +1,6 @@
 # Gemessene Wiederverwendung zwischen Cool und Guard
 
-Basis: 536 technisch getestete Varianten-/Posenzellen in Chromium und WebKit. Künstlerisch weiterhin ungeprüft, Premium deaktiviert.
+Basis: 560 technisch getestete Varianten-/Posenzellen in Chromium und WebKit. Künstlerisch weiterhin ungeprüft, Premium deaktiviert.
 
 Gezählt werden eindeutige Komponenten aus Datei, ID, UV-Ausschnitt und registrierter Zielbox. Farben vervielfachen diese Zählung nicht. Gleiche Dateien bedeuten keine identischen sichtbaren Pixelanteile: Atlanten enthalten teilweise unbenutzte Flächen. Es werden keine eingesparten Zeichenstunden behauptet.
 
@@ -8,7 +8,7 @@ Gezählt werden eindeutige Komponenten aus Datei, ID, UV-Ausschnitt und registri
 |---|---:|---:|---:|---:|---:|
 | hair | 22 | 22 | 22 | 100.0 % | 2257268 |
 | head | 3 | 3 | 3 | 100.0 % | 365687 |
-| top | 1 | 5 | 0 | 0.0 % | 0 |
+| top | 3 | 6 | 0 | 0.0 % | 247841 |
 | bottom | 4 | 4 | 4 | 100.0 % | 715047 |
 | glove | 1 | 2 | 0 | 0.0 % | 0 |
 | feet | 2 | 2 | 2 | 100.0 % | 441438 |
@@ -22,4 +22,4 @@ Gezählt werden eindeutige Komponenten aus Datei, ID, UV-Ausschnitt und registri
 
 Canvas: Szene, Aura und Augeneffekte teilen dasselbe Code-Modul, verwenden keine PNG-Dateien und erhalten deshalb keinen Raster-Prozentwert. Glatze ist eine Entfernung von Haaren, kein zusätzliches Artwork. Shirts bleiben ausgeschlossen. Basic Cool ist nach registrierter Verdeckung enthalten; der Hoodie ist nur in Guard verfügbar.
 
-Über alle akzeptierten Ganzfiguren: 36 identische Komponenten; Cool 44, Guard 48. Datei-/ID-/UV-/Box-Details und pose-spezifische Komponenten stehen in [production-reuse.json](evidence/production-reuse.json).
+Über alle akzeptierten Ganzfiguren: 36 identische Komponenten; Cool 46, Guard 49. Datei-/ID-/UV-/Box-Details und pose-spezifische Komponenten stehen in [production-reuse.json](evidence/production-reuse.json).

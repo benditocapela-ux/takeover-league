@@ -1,7 +1,7 @@
 {
   "engine": "chromium",
-  "rendererSha256": "7a43fea897488cd118d274362c266016dd22303c13d722ac35d5c54b38d49fca",
-  "materialManifestSha256": "694360f385126a3f6867368e9602245cc1af73053effd4cbc886b865c7053c60",
+  "rendererSha256": "6d46ecd6b4dbe87a7152121b49b9808f0340b6cb6a7340306f80b97baa1cd6ed",
+  "materialManifestSha256": "2621af906d47eaa6f102f2827223cde3dc9fae64cd40a43a933bf6820c822827",
   "status": "Technically validated",
   "artisticStatus": "Artistically pending",
   "productionChecks": [
@@ -449,6 +449,41 @@
       "changedVariants": 7
     },
     {
+      "id": "top-guard-hoodie-torso",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "top-guard-hoodie-sleeve-left",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "top-guard-hoodie-sleeve-right",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "top-guard-hoodie-up",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "top-cool-hoodie-torso",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "top-cool-hoodie-up",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "top-guard-jacke",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
       "id": "head-cap-schwarz",
       "variants": 8,
       "changedVariants": 7
@@ -470,6 +505,16 @@
     },
     {
       "id": "top-cool-tank",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "top-cool-shirt",
+      "variants": 8,
+      "changedVariants": 7
+    },
+    {
+      "id": "top-guard-shirt",
       "variants": 8,
       "changedVariants": 7
     },

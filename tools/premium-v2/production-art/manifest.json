@@ -576,6 +576,96 @@
       "bytes": 247841,
       "approved": false,
       "enabled": false
+    },
+    "top-cool-hoodie-torso": {
+      "id": "top-cool-hoodie-torso",
+      "slot": "top",
+      "src": "hoodie/cool.png",
+      "uv": [
+        0,
+        0,
+        390,
+        345
+      ],
+      "box": [
+        190,
+        210,
+        390,
+        345
+      ],
+      "source": "hoodie/cool-down-source.png",
+      "sourceCrop": [
+        79,
+        22,
+        1175,
+        1156
+      ],
+      "sourceSha256": "2a99be71e0c88ccf766b8c2ec44e649af21802bf4afd8279f3711625fb4cb4fb",
+      "sha256": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d",
+      "bytes": 182739,
+      "origin": "new-crossed-sleeve-cotton-master",
+      "approved": false,
+      "enabled": false
+    },
+    "top-cool-hoodie-up": {
+      "id": "top-cool-hoodie-up",
+      "slot": "top",
+      "src": "hoodie/guard.png",
+      "uv": [
+        0,
+        1037,
+        202,
+        240
+      ],
+      "box": [
+        286,
+        38,
+        202,
+        240
+      ],
+      "origin": "new-raised-hood-master",
+      "source": "hoodie/hood-up-source.png",
+      "sourceCrop": [
+        227,
+        99,
+        696,
+        820
+      ],
+      "sourceSha256": "b257ed56e979b5e3a1279292b4633c6caa730b4583e41d103758075c2d5c4000",
+      "sha256": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df",
+      "bytes": 247841,
+      "approved": false,
+      "enabled": false
+    },
+    "top-guard-jacke": {
+      "id": "top-guard-jacke",
+      "slot": "top",
+      "src": "tops/assets/guard-jacket.png",
+      "uv": [
+        0,
+        0,
+        390,
+        345
+      ],
+      "box": [
+        190,
+        210,
+        390,
+        345
+      ],
+      "source": "tops/source-guard-jacket.png",
+      "sourceCrop": [
+        9,
+        303,
+        980,
+        930
+      ],
+      "sourceSha256": "3b5bac56b75ef47ca8dad3cd8a55f5a702b0862dd7b526065e811421784ea8b6",
+      "sha256": "646686b0b423bc92530d21bd7f6e9850332188e035efd9d1fe49d5e35e41a6df",
+      "bytes": 207034,
+      "origin": "new-navy-gold-training-jacket",
+      "approved": false,
+      "enabled": false
     }
   },
   "sources": {
@@ -654,6 +744,7 @@
   },
   "hoodie": {
     "poses": [
+      "cool",
       "guard"
     ],
     "head": [
@@ -675,5 +766,23 @@
     230,
     145,
     320
-  ]
+  ],
+  "jacket": {
+    "poses": [
+      "guard"
+    ],
+    "coats": [
+      "none"
+    ],
+    "head": [
+      "none"
+    ],
+    "supported": true,
+    "bodyKeep": [
+      300,
+      230,
+      175,
+      325
+    ]
+  }
 }

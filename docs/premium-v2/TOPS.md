@@ -25,3 +25,7 @@ Real browser captures and before/after detail canvases live in `tools/premium-v2
 ## Integrated production palette
 
 The production resolver uses the black tank registration and applies the shared material system for all eight existing topc values. The standalone tops resolver remains black-master only. Shirt stays blocked in both paths; coat/hood restrictions remain.
+
+## Next sprint correction
+The inverse-tank mask is now replaced by a registered arm-only polygon and explicit covered-body clipping. Both shirt poses remain blocked after 200% review: Cool neckline/under-arm remnants and Guard elbow outline. See NEXT_CLOTHING.md; the old atlas mask is retained but no longer used.
+

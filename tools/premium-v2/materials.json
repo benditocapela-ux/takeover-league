@@ -1285,7 +1285,8 @@
     },
     "tops": {
       "forms": [
-        "tank"
+        "tank",
+        "shirt"
       ],
       "keys": [
         "schwarz",
@@ -1306,7 +1307,7 @@
         "top-cool-tank"
       ],
       "newVariantKeys": 7,
-      "restrictions": "No coat; shirt blocked"
+      "restrictions": "No coat; shirt Cool only. Hoodie both poses and jacket Guard use separate production manifests."
     },
     "wrapSkin": {
       "keys": [

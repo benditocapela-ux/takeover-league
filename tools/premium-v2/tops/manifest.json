@@ -8,7 +8,8 @@
     "guard"
   ],
   "tops": [
-    "tank"
+    "tank",
+    "shirt"
   ],
   "colors": [
     "schwarz"
@@ -260,23 +261,120 @@
       "reason": "Original Cool tank alpha already contains the crossed-arm occlusion."
     },
     "coolShirt": {
-      "type": "restoreBodyMask",
-      "src": "tops/assets/shirt.png",
-      "uv": [
-        0,
-        512,
-        380,
-        134
+      "type": "restoreBodyPolygons",
+      "polygons": [
+        [
+          [
+            210,
+            365
+          ],
+          [
+            249,
+            372
+          ],
+          [
+            283,
+            378
+          ],
+          [
+            328,
+            377
+          ],
+          [
+            372,
+            369
+          ],
+          [
+            410,
+            360
+          ],
+          [
+            446,
+            361
+          ],
+          [
+            471,
+            371
+          ],
+          [
+            478,
+            389
+          ],
+          [
+            510,
+            389
+          ],
+          [
+            539,
+            380
+          ],
+          [
+            552,
+            365
+          ],
+          [
+            564,
+            387
+          ],
+          [
+            559,
+            424
+          ],
+          [
+            548,
+            455
+          ],
+          [
+            533,
+            470
+          ],
+          [
+            508,
+            469
+          ],
+          [
+            467,
+            462
+          ],
+          [
+            423,
+            452
+          ],
+          [
+            385,
+            443
+          ],
+          [
+            350,
+            451
+          ],
+          [
+            310,
+            461
+          ],
+          [
+            272,
+            466
+          ],
+          [
+            249,
+            465
+          ],
+          [
+            232,
+            451
+          ],
+          [
+            220,
+            425
+          ],
+          [
+            213,
+            397
+          ]
+        ]
       ],
-      "box": [
-        195,
-        333,
-        380,
-        134
-      ],
-      "sourceTemplate": "assets/boxer-artpacks/v1/modular-cool/top-tank.png",
-      "sourceTemplateSha256": "1d65b893f039bb90bac126d354260ab74402e8025e7894bbede0834555dd1afe",
-      "rationale": "Small derived arm mask shares the shirt atlas, so no extra image request. Derived from original Cool tank alpha and bounded forearm polygon."
+      "rationale": "Dedicated registered foreground-arm contour; excludes the chest and abdomen previously restored from inverse tank alpha. Draft pending visual acceptance."
     }
   },
   "sources": {
@@ -323,8 +421,10 @@
   ],
   "blocked": {
     "shirt": [
-      "Guard shoulder skin crescents remain visible",
-      "Cool experimental mask exposes chest/abdomen bands"
+      "Cool: remaining neck triangle and under-arm skin wedge at 200%; Guard: elbow silhouette needs exact contour. Both remain SVG."
     ]
+  },
+  "supportedPoses": {
+    "shirt": []
   }
 }

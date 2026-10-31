@@ -2485,8 +2485,22 @@
       "slot": "top",
       "value": "hoodie",
       "color": "schwarz",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "schwarz",
       "state": "up",
       "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "schwarz",
+      "state": "up",
+      "pose": "cool"
     },
     {
       "slot": "top",
@@ -2499,8 +2513,22 @@
       "slot": "top",
       "value": "hoodie",
       "color": "weiss",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "weiss",
       "state": "up",
       "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "weiss",
+      "state": "up",
+      "pose": "cool"
     },
     {
       "slot": "top",
@@ -2513,8 +2541,22 @@
       "slot": "top",
       "value": "hoodie",
       "color": "grau",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "grau",
       "state": "up",
       "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "grau",
+      "state": "up",
+      "pose": "cool"
     },
     {
       "slot": "top",
@@ -2527,8 +2569,22 @@
       "slot": "top",
       "value": "hoodie",
       "color": "rot",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "rot",
       "state": "up",
       "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "rot",
+      "state": "up",
+      "pose": "cool"
     },
     {
       "slot": "top",
@@ -2541,8 +2597,22 @@
       "slot": "top",
       "value": "hoodie",
       "color": "blau",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "blau",
       "state": "up",
       "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "blau",
+      "state": "up",
+      "pose": "cool"
     },
     {
       "slot": "top",
@@ -2555,8 +2625,22 @@
       "slot": "top",
       "value": "hoodie",
       "color": "gruen",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
       "state": "up",
       "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gruen",
+      "state": "up",
+      "pose": "cool"
     },
     {
       "slot": "top",
@@ -2569,8 +2653,22 @@
       "slot": "top",
       "value": "hoodie",
       "color": "lila",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "lila",
       "state": "up",
       "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "lila",
+      "state": "up",
+      "pose": "cool"
     },
     {
       "slot": "top",
@@ -2583,7 +2681,77 @@
       "slot": "top",
       "value": "hoodie",
       "color": "gold",
+      "state": "down",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gold",
       "state": "up",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "gold",
+      "state": "up",
+      "pose": "cool"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "schwarz",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "weiss",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "grau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "rot",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "blau",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "gruen",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "lila",
+      "state": "default",
+      "pose": "guard"
+    },
+    {
+      "slot": "top",
+      "value": "jacke",
+      "color": "gold",
+      "state": "default",
       "pose": "guard"
     },
     {
@@ -3764,18 +3932,18 @@
     }
   ],
   "sourceHashes": {
-    "tests/premium-production-browser.cjs": "a55568ebaacd580b517224d0cb24d35a25cebcd7862d6292669c1eea1724118c",
+    "tests/premium-production-browser.cjs": "3dcfa93de5865ea3db7ef40deed33fbe5c4ac29429e4e56825b1472d55d2624a",
     "takeover-holo.js": "88b6c6fb4f169138ea91aae6a89026ae5efe620a075f6afb29f45132d818bcc3",
     "takeover-mein-boxer-items.js": "885c596d61c5d1548f0ca37bb5dc4f0e7aae142ac82e6e169d688c5b07048f21",
-    "tools/premium-v2/production.html": "16b913f411923a2de8f2b07df3cd24a494f779ca712f3188c4027d2ac0caefd7",
-    "tools/premium-v2/production.js": "935998f4b531d1dfcc2023dc523949fb4608c3c3528740a3002b16cdd7b4dd8b",
-    "tools/premium-v2/materials.js": "4960cfb016e248f3926570f1e706f1f2c124cb5b0ac3e1586b08194c37ae9e1e",
-    "tools/premium-v2/materials.json": "694360f385126a3f6867368e9602245cc1af73053effd4cbc886b865c7053c60",
+    "tools/premium-v2/production.html": "151be3aff9d9fdfbc1ee9dc42fbbb75339488cb033cc8b531cf2cfe01e308200",
+    "tools/premium-v2/production.js": "0f505e595000536bc31ac6382cfd1328a41bc46b67fe5ed6a3dca43178d10143",
+    "tools/premium-v2/materials.js": "6d46ecd6b4dbe87a7152121b49b9808f0340b6cb6a7340306f80b97baa1cd6ed",
+    "tools/premium-v2/materials.json": "2621af906d47eaa6f102f2827223cde3dc9fae64cd40a43a933bf6820c822827",
     "tools/premium-v2/streaming.js": "311117f3651f33931cc0c7f499b13c9888d7b64cbbee2a5e9d81e12534503828",
     "tools/premium-v2/streaming-assets.json": "7ca4e00dbf0575da6f5320159e35805e39e7bcf53624b3e3468b2aeef6df4a2e",
     "tools/premium-v2/pilot.js": "fac899d0d0bdf5219c0dd6783a0576dd6e4b76d5393c10480abff98d2af50528",
     "tools/premium-v2/pilot-assets.json": "8db99b0cafc2e7a77551afdb5de67aaedd5f406acbedd24dfa44e165289f53a0",
-    "tools/premium-v2/production-art/manifest.json": "d8c874559b5a9537fd45f35e2bdd01d45090e98bc2ff24d792305832c1090d11",
+    "tools/premium-v2/production-art/manifest.json": "caec9e442fccff2c549571869d153f11a723175a2ed38db57319750c360d9918",
     "tools/premium-v2/headwear/headwear.js": "90bdeebf76bdab15ed794868c1418122186d62ce8a2899ca847b5b564132c10a",
     "tools/premium-v2/headwear/manifest.json": "b10d087bc79ab93203b659037304f7aeacc9440df1059c16947d505e04a4875e",
     "tools/premium-v2/headwear-hijab/hijab.js": "f4e37a469fdc49a293db3a15817dc5bbe122d479bceee6d479edc472471bab00",
@@ -3783,8 +3951,8 @@
     "tools/premium-v2/long-hair/long-hair.js": "6b0f12310016de75019385c49cc6c22fe3c68c93a8828c31a16405aef424d1e3",
     "tools/premium-v2/long-hair/manifest.json": "f68e8f7f2df95c2f3385a6a9d39f9b86aa13b4ea738f44b1ea2fbd12f57353d1",
     "tools/premium-v2/hair-expansion/manifest.json": "6c0d1e1c36c1d6f2a64600618917d73c241132e737d3038be3758131d6592945",
-    "tools/premium-v2/tops/tops.js": "18c0c41e0c853e28e4a12343f12a1480908d0babcc60865aa3a957b4af876021",
-    "tools/premium-v2/tops/manifest.json": "88dbcc1b85b81b2e0ba7da13a64364ac3b167b0e349ac2e24048472ee6f75cef",
+    "tools/premium-v2/tops/tops.js": "f7b5d0143e13200ee02f96ea0911c94aa0fa2dffac1b217d549ec087344d031b",
+    "tools/premium-v2/tops/manifest.json": "51ff0801b8dc3bf0d2a08e11e33a795b66b7ccda0089c05b36e57d12579d2827",
     "tools/premium-v2/wraps/manifest.json": "4a28782cd26f194712e63856fe6323cb784b2ff2598d7ebd89067fe681acd8df",
     "tools/premium-v2/effects.js": "c521a885950dedf1c9bcc3be18d5590d4c9161c6f42b4f94a477e5c058a72d66",
     "tools/premium-v2/effects.json": "d33ca8ef6cac22a29062a4f0382f39abb50be509650493d66f1be29740e67485",
@@ -3796,9 +3964,9 @@
     "assets/boxer-artpacks/v1/modular-cool/hair-afro.png": "6aef558366445b21afdd60e6e82072ca4193bc29e261dc9961f5aa16538b7bc3",
     "tools/premium-v2/assets/v1-coat.png": "47e940e6ab32e7f53e0e8f847ea98faa54f6de717427e6c4bbf6946b3489a9c6",
     "tools/premium-v2/assets/v1-black.png": "c2db79692ba2dcc48a9500eb5b07857bec6cdf10a58e579281733ae9ae42d952",
+    "tools/premium-v2/streaming-assets/base.png": "2bfc7593b6c2b31f9fce5a20fd7583f4436eef9d02391cfe99ce88a6594c56ee",
     "tools/premium-v2/separation/coat-back.png": "0e7a4764f71a3bb9093dc174f26d57df5ed5af5082a2727b80213057692eb6da",
     "tools/premium-v2/streaming-assets/body-guard.png": "191333012e99dca1998b078ef468a9c9ec2569fe13696a59cf3939786c097a2f",
-    "tools/premium-v2/streaming-assets/base.png": "2bfc7593b6c2b31f9fce5a20fd7583f4436eef9d02391cfe99ce88a6594c56ee",
     "tools/premium-v2/separation/boxer.png": "e4fca7ef6ac8f8ef968829325869adf4187e20bbe29dacac9726ece9b7dec3e2",
     "tools/premium-v2/streaming-assets/hair-afro.png": "cbab6c42a98205872d993585f0bf0d54cfa004c8ac3a161906dcd90d4ab0c799",
     "tools/premium-v2/production-art/coat-guard-v2.png": "cbfe6a9ab7d19fbf44d6d3e518bd9b25be41dd3020d551267df19a655b55dd06",
@@ -3828,6 +3996,8 @@
     "tools/premium-v2/tops/assets/guard-tank.png": "3fbeca7ae1bc8b22fd028172748a2d92ca89fa49db91b7f8459dff6bb9c02967",
     "assets/boxer-artpacks/v1/modular-cool/top-tank.png": "1d65b893f039bb90bac126d354260ab74402e8025e7894bbede0834555dd1afe",
     "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df",
+    "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d",
+    "tools/premium-v2/tops/assets/guard-jacket.png": "646686b0b423bc92530d21bd7f6e9850332188e035efd9d1fe49d5e35e41a6df",
     "tools/premium-v2/production-art/bottom-kurz.png": "ae5644f7a0e90458097aa27a0a7e0ad1366d54dede3849e5249e119c28d58960",
     "tools/premium-v2/production-art/bottom-jogger.png": "323049fb9bdd2134f4dc5fc0fc018c31b2ada66384925d2d2aabe0e674b5057a",
     "tools/premium-v2/production-art/bottom-track.png": "12c4c58ce40c0b2ae600fa821150110bd6c8c1bb1142a228a1433ed8d6546f84",
@@ -3849,7 +4019,7 @@
     {
       "engine": "chromium",
       "file": "chromium-production-tests.json",
-      "variants": 536,
+      "variants": 560,
       "contactSheets": [
         {
           "file": "chromium-production-hair-contact.png",
@@ -4006,7 +4176,7 @@
     {
       "engine": "webkit",
       "file": "webkit-production-tests.json",
-      "variants": 536,
+      "variants": 560,
       "contactSheets": [
         {
           "file": "webkit-production-hair-contact.png",

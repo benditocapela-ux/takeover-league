@@ -2,8 +2,8 @@
   "summary": {
     "equipmentCatalogueEntries": 52,
     "poseCatalogueEntries": 6,
-    "equipmentItemsWithArtwork": 49,
-    "equipmentItemsTechnicallyValidated": 48,
+    "equipmentItemsWithArtwork": 50,
+    "equipmentItemsTechnicallyValidated": 49,
     "supportedPremiumPoseProfiles": [
       "cool",
       "guard"
@@ -14,17 +14,17 @@
     ],
     "catalogueEntries": 58,
     "matrixRows": 1800,
-    "catalogueItemsWithArtwork": 49,
-    "catalogueItemsTechnicallyValidated": 48,
-    "artworkVariantKeys": 277,
-    "artworkPoseCells": 538,
-    "technicallyValidatedVariantKeys": 276,
-    "technicallyValidatedPoseCells": 536,
+    "catalogueItemsWithArtwork": 50,
+    "catalogueItemsTechnicallyValidated": 49,
+    "artworkVariantKeys": 292,
+    "artworkPoseCells": 576,
+    "technicallyValidatedVariantKeys": 284,
+    "technicallyValidatedPoseCells": 560,
     "canvasVariantKeys": 12,
-    "rasterVariantKeys": 264,
-    "newlySupportedVariantKeys": 266,
-    "newlySupportedPoseCells": 515,
-    "brandNewVariantKeys": 265,
+    "rasterVariantKeys": 272,
+    "newlySupportedVariantKeys": 274,
+    "newlySupportedPoseCells": 539,
+    "brandNewVariantKeys": 273,
     "approvedItems": 0,
     "hashAlgorithm": "sha256-canonical-text-lf-v1",
     "evidenceValid": true,
@@ -702,8 +702,8 @@
       "entryKind": "equipment",
       "totalVariantKeys": 8,
       "totalPoseCells": 48,
-      "artworkVariantKeys": 1,
-      "artworkPoseCells": 2,
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 16,
       "technicallyValidatedVariantKeys": 0,
       "technicallyValidatedPoseCells": 0,
       "newTechnicallySupportedPoseCells": 0,
@@ -730,22 +730,25 @@
       "totalVariantKeys": 16,
       "totalPoseCells": 96,
       "artworkVariantKeys": 16,
-      "artworkPoseCells": 16,
+      "artworkPoseCells": 32,
       "technicallyValidatedVariantKeys": 16,
-      "technicallyValidatedPoseCells": 16,
-      "newTechnicallySupportedPoseCells": 16,
+      "technicallyValidatedPoseCells": 32,
+      "newTechnicallySupportedPoseCells": 32,
       "availability": "Artwork draft",
       "technicalStatus": "Technically validated",
       "artisticStatus": "Artistically pending",
       "approved": false,
       "supportedPoses": [
-        "guard"
+        "guard",
+        "cool"
       ],
       "artworkPoses": [
-        "guard"
+        "guard",
+        "cool"
       ],
       "sourceFiles": [
-        "tools/premium-v2/hoodie/guard.png"
+        "tools/premium-v2/hoodie/guard.png",
+        "tools/premium-v2/hoodie/cool.png"
       ],
       "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
     },
@@ -757,19 +760,25 @@
       "entryKind": "equipment",
       "totalVariantKeys": 8,
       "totalPoseCells": 48,
-      "artworkVariantKeys": 0,
-      "artworkPoseCells": 0,
-      "technicallyValidatedVariantKeys": 0,
-      "technicallyValidatedPoseCells": 0,
-      "newTechnicallySupportedPoseCells": 0,
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
+      "artworkVariantKeys": 8,
+      "artworkPoseCells": 8,
+      "technicallyValidatedVariantKeys": 8,
+      "technicallyValidatedPoseCells": 8,
+      "newTechnicallySupportedPoseCells": 8,
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
       "approved": false,
-      "supportedPoses": [],
-      "artworkPoses": [],
-      "sourceFiles": [],
-      "note": "No verified premium artwork in this production package."
+      "supportedPoses": [
+        "guard"
+      ],
+      "artworkPoses": [
+        "guard"
+      ],
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/guard-jacket.png"
+      ],
+      "note": "Only the reported variant/pose cells were browser-tested; full family and artist approval remain separate."
     },
     {
       "key": "bottom_boxer",

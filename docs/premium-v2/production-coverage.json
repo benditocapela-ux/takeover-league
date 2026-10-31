@@ -2,8 +2,8 @@
   "summary": {
     "equipmentCatalogueEntries": 52,
     "poseCatalogueEntries": 6,
-    "equipmentItemsWithArtwork": 49,
-    "equipmentItemsTechnicallyValidated": 48,
+    "equipmentItemsWithArtwork": 50,
+    "equipmentItemsTechnicallyValidated": 49,
     "supportedPremiumPoseProfiles": [
       "cool",
       "guard"
@@ -14,17 +14,17 @@
     ],
     "catalogueEntries": 58,
     "matrixRows": 1800,
-    "catalogueItemsWithArtwork": 49,
-    "catalogueItemsTechnicallyValidated": 48,
-    "artworkVariantKeys": 277,
-    "artworkPoseCells": 538,
-    "technicallyValidatedVariantKeys": 276,
-    "technicallyValidatedPoseCells": 536,
+    "catalogueItemsWithArtwork": 50,
+    "catalogueItemsTechnicallyValidated": 49,
+    "artworkVariantKeys": 292,
+    "artworkPoseCells": 576,
+    "technicallyValidatedVariantKeys": 284,
+    "technicallyValidatedPoseCells": 560,
     "canvasVariantKeys": 12,
-    "rasterVariantKeys": 264,
-    "newlySupportedVariantKeys": 266,
-    "newlySupportedPoseCells": 515,
-    "brandNewVariantKeys": 265,
+    "rasterVariantKeys": 272,
+    "newlySupportedVariantKeys": 274,
+    "newlySupportedPoseCells": 539,
+    "brandNewVariantKeys": 273,
     "approvedItems": 0,
     "hashAlgorithm": "sha256-canonical-text-lf-v1",
     "evidenceValid": true,
@@ -23758,20 +23758,24 @@
       "color": "weiss",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
+      "availability": "Artwork draft",
       "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
       "integratedAndTested": false,
       "newlySupported": false,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/shirt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/shirt.png": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6"
+      },
       "evidence": "",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -23821,20 +23825,24 @@
       "color": "weiss",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
+      "availability": "Artwork draft",
       "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
       "integratedAndTested": false,
       "newlySupported": false,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/shirt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/shirt.png": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6"
+      },
       "evidence": "",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -23884,20 +23892,24 @@
       "color": "grau",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
+      "availability": "Artwork draft",
       "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
       "integratedAndTested": false,
       "newlySupported": false,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/shirt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/shirt.png": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6"
+      },
       "evidence": "",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -23947,20 +23959,24 @@
       "color": "grau",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
+      "availability": "Artwork draft",
       "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
       "integratedAndTested": false,
       "newlySupported": false,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/shirt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/shirt.png": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6"
+      },
       "evidence": "",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -24010,20 +24026,24 @@
       "color": "rot",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
+      "availability": "Artwork draft",
       "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
       "integratedAndTested": false,
       "newlySupported": false,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/shirt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/shirt.png": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6"
+      },
       "evidence": "",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -24073,20 +24093,24 @@
       "color": "rot",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
+      "availability": "Artwork draft",
       "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
       "integratedAndTested": false,
       "newlySupported": false,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/shirt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/shirt.png": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6"
+      },
       "evidence": "",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -24136,20 +24160,24 @@
       "color": "blau",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
+      "availability": "Artwork draft",
       "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
       "integratedAndTested": false,
       "newlySupported": false,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/shirt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/shirt.png": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6"
+      },
       "evidence": "",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -24199,20 +24227,24 @@
       "color": "blau",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
+      "availability": "Artwork draft",
       "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
       "integratedAndTested": false,
       "newlySupported": false,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/shirt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/shirt.png": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6"
+      },
       "evidence": "",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -24262,20 +24294,24 @@
       "color": "gruen",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
+      "availability": "Artwork draft",
       "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
       "integratedAndTested": false,
       "newlySupported": false,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/shirt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/shirt.png": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6"
+      },
       "evidence": "",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -24325,20 +24361,24 @@
       "color": "gruen",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
+      "availability": "Artwork draft",
       "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
       "integratedAndTested": false,
       "newlySupported": false,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/shirt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/shirt.png": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6"
+      },
       "evidence": "",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -24388,20 +24428,24 @@
       "color": "lila",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
+      "availability": "Artwork draft",
       "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
       "integratedAndTested": false,
       "newlySupported": false,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/shirt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/shirt.png": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6"
+      },
       "evidence": "",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -24451,20 +24495,24 @@
       "color": "lila",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
+      "availability": "Artwork draft",
       "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
       "integratedAndTested": false,
       "newlySupported": false,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/shirt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/shirt.png": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6"
+      },
       "evidence": "",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -24514,20 +24562,24 @@
       "color": "gold",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
+      "availability": "Artwork draft",
       "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
       "integratedAndTested": false,
       "newlySupported": false,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/shirt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/shirt.png": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6"
+      },
       "evidence": "",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -24577,20 +24629,24 @@
       "color": "gold",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
+      "availability": "Artwork draft",
       "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
       "integratedAndTested": false,
       "newlySupported": false,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/shirt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/shirt.png": "f7e875e35d5f25b59293ece069fcc640ccbc0770a0cde2bf779d5e0c8942bbe6"
+      },
       "evidence": "",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -24707,6 +24763,31 @@
       "color": "schwarz",
       "state": "down",
       "pose": "cool",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
+      "approved": false,
+      "enabled": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
+      "previousStatus": "svg-only",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
+      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "schwarz",
+      "state": "down",
+      "pose": "flex",
       "availability": "SVG only",
       "technicalStatus": "Not validated",
       "artisticStatus": "Not applicable",
@@ -24727,27 +24808,6 @@
       "value": "hoodie",
       "color": "schwarz",
       "state": "down",
-      "pose": "flex",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
-      "approved": false,
-      "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
-      "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
-      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
-    },
-    {
-      "slot": "top",
-      "value": "hoodie",
-      "color": "schwarz",
-      "state": "down",
       "pose": "ansage",
       "availability": "SVG only",
       "technicalStatus": "Not validated",
@@ -24837,20 +24897,26 @@
       "color": "schwarz",
       "state": "up",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png",
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d",
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -24967,6 +25033,31 @@
       "color": "weiss",
       "state": "down",
       "pose": "cool",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
+      "approved": false,
+      "enabled": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
+      "previousStatus": "svg-only",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
+      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "weiss",
+      "state": "down",
+      "pose": "flex",
       "availability": "SVG only",
       "technicalStatus": "Not validated",
       "artisticStatus": "Not applicable",
@@ -24987,27 +25078,6 @@
       "value": "hoodie",
       "color": "weiss",
       "state": "down",
-      "pose": "flex",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
-      "approved": false,
-      "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
-      "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
-      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
-    },
-    {
-      "slot": "top",
-      "value": "hoodie",
-      "color": "weiss",
-      "state": "down",
       "pose": "ansage",
       "availability": "SVG only",
       "technicalStatus": "Not validated",
@@ -25097,20 +25167,26 @@
       "color": "weiss",
       "state": "up",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png",
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d",
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -25227,6 +25303,31 @@
       "color": "grau",
       "state": "down",
       "pose": "cool",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
+      "approved": false,
+      "enabled": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
+      "previousStatus": "svg-only",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
+      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
+    },
+    {
+      "slot": "top",
+      "value": "hoodie",
+      "color": "grau",
+      "state": "down",
+      "pose": "flex",
       "availability": "SVG only",
       "technicalStatus": "Not validated",
       "artisticStatus": "Not applicable",
@@ -25247,27 +25348,6 @@
       "value": "hoodie",
       "color": "grau",
       "state": "down",
-      "pose": "flex",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
-      "approved": false,
-      "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
-      "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
-      "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
-    },
-    {
-      "slot": "top",
-      "value": "hoodie",
-      "color": "grau",
-      "state": "down",
       "pose": "ansage",
       "availability": "SVG only",
       "technicalStatus": "Not validated",
@@ -25357,20 +25437,26 @@
       "color": "grau",
       "state": "up",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png",
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d",
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -25487,20 +25573,24 @@
       "color": "rot",
       "state": "down",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -25617,20 +25707,26 @@
       "color": "rot",
       "state": "up",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png",
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d",
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -25747,20 +25843,24 @@
       "color": "blau",
       "state": "down",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -25877,20 +25977,26 @@
       "color": "blau",
       "state": "up",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png",
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d",
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -26007,20 +26113,24 @@
       "color": "gruen",
       "state": "down",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -26137,20 +26247,26 @@
       "color": "gruen",
       "state": "up",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png",
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d",
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -26267,20 +26383,24 @@
       "color": "lila",
       "state": "down",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -26397,20 +26517,26 @@
       "color": "lila",
       "state": "up",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png",
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d",
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -26527,20 +26653,24 @@
       "color": "gold",
       "state": "down",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -26657,20 +26787,26 @@
       "color": "gold",
       "state": "up",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hoodie/cool.png",
+        "tools/premium-v2/hoodie/guard.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hoodie/cool.png": "f0436414b4d6b376e020062043fee9b5df25e73d1567eb8ddcbb4aec8da0d30d",
+        "tools/premium-v2/hoodie/guard.png": "67b4bd6507f32476a0b729ab91795cfc45a9ba21fb2b1ac7acfa5566bc7c28df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -26720,20 +26856,24 @@
       "color": "schwarz",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/guard-jacket.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/guard-jacket.png": "646686b0b423bc92530d21bd7f6e9850332188e035efd9d1fe49d5e35e41a6df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -26846,20 +26986,24 @@
       "color": "weiss",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/guard-jacket.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/guard-jacket.png": "646686b0b423bc92530d21bd7f6e9850332188e035efd9d1fe49d5e35e41a6df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -26972,20 +27116,24 @@
       "color": "grau",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/guard-jacket.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/guard-jacket.png": "646686b0b423bc92530d21bd7f6e9850332188e035efd9d1fe49d5e35e41a6df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -27098,20 +27246,24 @@
       "color": "rot",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/guard-jacket.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/guard-jacket.png": "646686b0b423bc92530d21bd7f6e9850332188e035efd9d1fe49d5e35e41a6df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -27224,20 +27376,24 @@
       "color": "blau",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/guard-jacket.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/guard-jacket.png": "646686b0b423bc92530d21bd7f6e9850332188e035efd9d1fe49d5e35e41a6df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -27350,20 +27506,24 @@
       "color": "gruen",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/guard-jacket.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/guard-jacket.png": "646686b0b423bc92530d21bd7f6e9850332188e035efd9d1fe49d5e35e41a6df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -27476,20 +27636,24 @@
       "color": "lila",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/guard-jacket.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/guard-jacket.png": "646686b0b423bc92530d21bd7f6e9850332188e035efd9d1fe49d5e35e41a6df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",
@@ -27602,20 +27766,24 @@
       "color": "gold",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/tops/assets/guard-jacket.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/tops/assets/guard-jacket.png": "646686b0b423bc92530d21bd7f6e9850332188e035efd9d1fe49d5e35e41a6df"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared torso/material masters; sleeves and folds per pose; tank needs unoccluded chest",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "top",

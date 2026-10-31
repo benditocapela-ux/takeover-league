@@ -139,7 +139,8 @@ function available(row) {
     return [];
   }
   if (slot === 'top') {
-    if(value==='hoodie'&&pose==='guard'&&art.hoodie?.supported&&inventory.domains.topc.includes(color))return pieces(Object.keys(art.pieces).filter(id=>id.startsWith('top-guard-hoodie-')&&(id!=='top-guard-hoodie-up'||row.state==='up')));
+    if(value==='jacke'&&art.jacket?.poses.includes(pose)&&art.jacket.supported&&inventory.domains.topc.includes(color))return pieces(['top-guard-jacke']);
+    if(value==='hoodie'&&art.hoodie?.poses.includes(pose)&&art.hoodie?.supported&&inventory.domains.topc.includes(color))return pieces(Object.keys(art.pieces).filter(id=>id.startsWith('top-'+pose+'-hoodie-')&&(!id.endsWith('-up')||row.state==='up')));
     const colored = has('tops', color, pose) && materials.families.tops.forms?.includes(value);
     if ([...tops.tops, ...(tops.draftTops || [])].includes(value) && (tops.colors.includes(color) || colored) && tops.poses.includes(pose) && row.state === 'default') return pieces(['top-' + pose + '-' + value]);
     if (value === 'tank' && color === 'schwarz' && pose === 'cool') return pieces(['top-tank']);
