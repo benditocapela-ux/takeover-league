@@ -250,6 +250,7 @@ function row(s){
  edit.addEventListener('click',()=>openSheet(s,'review'));
  no.addEventListener('click',()=>openSheet(s,'reject'));
  actions.append(ok,edit,no);card.append(actions,result);
+ if(s.own&&currentRole!=='admin'){ok.disabled=true;edit.disabled=true;result.textContent='Eigenes Training – bestätigt ein anderer Trainer oder der Admin.'}
  return card;
 }
 // Bestätigen/Ablehnen über den Server. Punkte stehen erst nach der Serverantwort fest.

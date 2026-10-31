@@ -82,7 +82,26 @@ Rücknahme:
 
 Bestätigte Buchungen und das Audit bleiben in beiden Fällen erhalten. Vor jedem produktiven Schritt gilt: Backup gemäss `docs/BACKUP_RESTORE_RUNBOOK.md`.
 
-## 7. Tests
+## 7. Unabhängige Prüfung und offene Punkte
+
+Eine separate Prüfung der Datenbanklogik fand keine kritischen Lücken. Diese Befunde sind behoben und getestet:
+
+- Trainer konnten bei eigenen Trainings eine Stufe vorbelegen. Jetzt gelten eigene Meldungen auch für Trainer als Antrag, und die Bestätigung setzt die Stufe immer autoritativ.
+- Trainer bestätigen oder korrigieren eigene Trainings nicht mehr selbst; das macht ein anderer Trainer oder der Admin.
+- Bei Schalter aus bleibt eine bestehende Stufe (Gym-Check-in) bei Korrekturen erhalten.
+- Der Saisonschutz prüft auch das ursprüngliche Datum.
+- Gleichzeitige Freigaben desselben Boxers am selben Tag laufen nacheinander (Advisory Lock).
+- Das Audit ist vollständig.
+- Bei Artwechsel werden die Technikminuten nicht mehr übernommen.
+- Der Rollback bricht ab, solange der aktivierte Stundenplan noch aktiv ist.
+
+Bewusst offen (Entscheid Owner):
+
+- Ist zusätzlich `club_checkin_only` eingeschaltet, sind Vereinstrainings weiterhin nur per Gym-Check-in meldbar. Das ist so gewollt; die beiden Schalter schliessen sich praktisch aus.
+- `staff_confirm_gym_session` (Etappe 6a) nimmt den neuen Tages-Lock noch nicht. Die bestehende Prüfung «gleiche Trainingsart am selben Tag» bleibt aktiv, und `staff_review_training` erkennt Gym-Check-ins als Hinweis.
+- `staff_set_training_tier` (Etappe 6a) gibt es weiterhin. Das Dashboard nutzt es mit Training 2.0 nicht mehr; es kann nach der Aktivierung entfernt oder an eine Begründung gebunden werden.
+
+## 8. Tests
 
 | Test | Inhalt |
 |---|---|

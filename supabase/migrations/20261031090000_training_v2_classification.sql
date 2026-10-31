@@ -188,7 +188,8 @@ DECLARE uid uuid := auth.uid(); me public.profiles; tname text; sl public.club_s
 BEGIN
  IF uid IS NULL THEN RETURN NEW; END IF;
  SELECT * INTO me FROM public.profiles p WHERE p.auth_user_id=uid LIMIT 1;
- IF me.id IS NOT NULL AND me.role IN ('admin','coach') AND me.is_active THEN RETURN NEW; END IF;
+ -- Trainer/Admin tragen für andere ein (z. B. staff_record_training); eigene Trainings gelten wie bei Boxern als Antrag.
+ IF me.id IS NOT NULL AND me.role IN ('admin','coach') AND me.is_active AND NEW.boxer_id IS DISTINCT FROM me.id THEN RETURN NEW; END IF;
  NEW.club_tier := NULL;
  NEW.recorded_by := NULL;
  NEW.tier_note := NULL;
@@ -251,6 +252,7 @@ CREATE OR REPLACE FUNCTION league_private.check_tier_choice(s public.training_su
 RETURNS void LANGUAGE plpgsql STABLE SECURITY DEFINER SET search_path='' AS $fn$
 BEGIN
  IF p_tier IS NULL THEN RETURN; END IF;
+ IF p_tier IS NOT DISTINCT FROM s.club_tier AND s.boxer_id<>p_me THEN RETURN; END IF; -- unveränderte Stufe (z. B. Gym-Check-in) bleibt
  IF NOT league_private.flag_on('training_v2') THEN
   RAISE EXCEPTION 'Pflicht- und Ergänzungstraining gelten, sobald «Training 2.0» freigeschaltet ist' USING ERRCODE='42501';
  END IF;
@@ -279,6 +281,11 @@ BEGIN
  IF reason IS NOT NULL AND pg_catalog.char_length(reason) NOT BETWEEN 3 AND 500 THEN RAISE EXCEPTION 'Begründung mit 3 bis 500 Zeichen' USING ERRCODE='22023'; END IF;
  SELECT * INTO s FROM public.training_submissions x WHERE x.id=p_submission_id FOR UPDATE;
  IF NOT FOUND THEN RAISE EXCEPTION 'Training nicht gefunden' USING ERRCODE='22023'; END IF;
+ -- Gleichzeitige Buchungen desselben Boxers am selben Tag (Selbstmeldung und Gym-Check-in) nacheinander prüfen
+ PERFORM pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtext('training_day:'||s.boxer_id::text||':'||s.training_date::text));
+ IF p_training_date IS NOT NULL AND p_training_date<>s.training_date THEN
+  PERFORM pg_catalog.pg_advisory_xact_lock(pg_catalog.hashtext('training_day:'||s.boxer_id::text||':'||p_training_date::text));
+ END IF;
  IF s.status<>'pending' THEN
   IF s.status=p_decision THEN
    RETURN league_private.training_card(s, me.id) || pg_catalog.jsonb_build_object('already',true);
@@ -293,6 +300,12 @@ BEGIN
   RETURN league_private.training_card(s, me.id) || pg_catalog.jsonb_build_object('already',false);
  END IF;
 
+ IF s.boxer_id=me.id AND me.role<>'admin' THEN
+  RAISE EXCEPTION 'Eigene Trainings bestätigt ein anderer Trainer oder der Admin' USING ERRCODE='42501';
+ END IF;
+ IF league_private.training_closed_season(s.training_date) THEN
+  RAISE EXCEPTION 'Dieses Training gehört zu einer abgeschlossenen Saison' USING ERRCODE='22023';
+ END IF;
  -- Korrekturen vor der Bestätigung
  s0 := pg_catalog.to_jsonb(s);
  IF p_training_type_id IS NOT NULL AND p_training_type_id<>s.training_type_id THEN
@@ -345,8 +358,9 @@ BEGIN
 
  -- Buchung: bestehende Bestätigung (eine Punktebuchung, Boni, Mitteilungen), danach Stufe und Wert
  PERFORM public.review_training(s.id,'approved');
- IF want IS NOT NULL OR reason IS NOT NULL THEN
-  UPDATE public.training_submissions x SET club_tier=want, tier_note=coalesce(reason,x.tier_note) WHERE x.id=s.id;
+ -- Stufe immer autoritativ setzen (eine vorbelegte Stufe bleibt nie unbemerkt stehen)
+ UPDATE public.training_submissions x SET club_tier=want, tier_note=coalesce(reason,x.tier_note) WHERE x.id=s.id;
+ IF want IS NOT NULL OR reason IS NOT NULL OR s.club_tier IS NOT NULL THEN
   PERFORM league_private.apply_training_value(s.id, me.id,
    CASE WHEN want IS NULL THEN 'Bestätigtes Training' ELSE 'Bestätigtes Training ('||league_private.tier_label(want)||')' END,
    CASE WHEN reason IS NOT NULL OR want IS DISTINCT FROM sug THEN s0 END);
@@ -372,7 +386,8 @@ BEGIN
  END IF;
  IF coalesce(p_training_date,s.training_date)>league_private.zurich_today() THEN RAISE EXCEPTION 'Das Trainingsdatum darf nicht in der Zukunft liegen' USING ERRCODE='22023'; END IF;
  IF p_duration_minutes IS NOT NULL AND p_duration_minutes NOT BETWEEN 1 AND 1440 THEN RAISE EXCEPTION 'Bitte die Dauer in Minuten angeben (1–1440)' USING ERRCODE='22023'; END IF;
- want := CASE WHEN p_tier IS NULL OR p_tier IN ('none','') THEN NULL WHEN p_tier='keep' THEN s.club_tier ELSE p_tier END;
+ IF s.boxer_id=me.id AND me.role<>'admin' THEN RAISE EXCEPTION 'Eigene Trainings korrigiert ein anderer Trainer oder der Admin' USING ERRCODE='42501'; END IF;
+ want := CASE WHEN p_tier IS NULL OR p_tier='keep' THEN s.club_tier WHEN p_tier IN ('none','') THEN NULL ELSE p_tier END;
  before_pts := (SELECT x.points FROM public.point_transactions x WHERE x.submission_id=s.id);
  s0 := pg_catalog.to_jsonb(s);
  IF coalesce(p_training_type_id,s.training_type_id)<>s.training_type_id OR coalesce(p_training_date,s.training_date)<>s.training_date THEN
@@ -383,16 +398,15 @@ BEGIN
  SELECT t.name INTO tname FROM public.training_types t WHERE t.id=s.training_type_id;
  UPDATE public.training_submissions x SET club_tier=want, tier_note=reason,
   duration_minutes=coalesce(p_duration_minutes,x.duration_minutes),
-  technique_minutes=CASE WHEN tname='Techniktraining' THEN coalesce(p_duration_minutes,x.duration_minutes) ELSE x.technique_minutes END
+  technique_minutes=CASE WHEN tname='Techniktraining' THEN coalesce(p_duration_minutes,x.duration_minutes)
+   WHEN (s0->>'training_type_id')::bigint<>x.training_type_id THEN NULL ELSE x.technique_minutes END
  WHERE x.id=s.id;
  PERFORM league_private.apply_training_value(s.id, me.id,
   CASE WHEN want IS NULL THEN 'Training (korrigiert)' ELSE 'Training ('||league_private.tier_label(want)||', korrigiert)' END, s0);
- -- apply_training_value protokolliert nur bei geänderten Punkten; Kategorie-/Dauer-Korrekturen ohne Punkteänderung trotzdem festhalten
- IF NOT EXISTS (SELECT 1 FROM public.training_audit a WHERE a.submission_id=s.id AND a.old_submission=s0) THEN
-  INSERT INTO public.training_audit(submission_id,changed_by,old_submission,new_submission,old_transaction,new_transaction)
-  SELECT s.id, me.id, s0, pg_catalog.to_jsonb(x), pg_catalog.to_jsonb(tx), pg_catalog.to_jsonb(tx)
-  FROM public.training_submissions x LEFT JOIN public.point_transactions tx ON tx.submission_id=x.id WHERE x.id=s.id;
- END IF;
+ -- Abschluss-Eintrag: vollständiger Vorher/Nachher-Stand der Korrektur (Kategorie, Dauer, Begründung)
+ INSERT INTO public.training_audit(submission_id,changed_by,old_submission,new_submission,old_transaction,new_transaction)
+ SELECT s.id, me.id, s0, pg_catalog.to_jsonb(x), pg_catalog.to_jsonb(tx), pg_catalog.to_jsonb(tx)
+ FROM public.training_submissions x LEFT JOIN public.point_transactions tx ON tx.submission_id=x.id WHERE x.id=s.id;
  IF me.role='coach' THEN PERFORM league_private.coach_training_bonus_refresh(s.boxer_id); ELSE PERFORM public.recalculate_boxer_bonuses(s.boxer_id); END IF;
  SELECT * INTO s FROM public.training_submissions x WHERE x.id=p_submission_id;
  RETURN league_private.training_card(s, me.id) || pg_catalog.jsonb_build_object('points_before',before_pts);
@@ -508,7 +522,8 @@ BEGIN
          WHEN EXISTS (SELECT 1 FROM public.club_extra_trainings e WHERE e.is_active AND e.training_type_id=t.id) AND t.club_only THEN 'ergaenzung'
     END AS proposal,
     CASE WHEN league_private.suggested_tier(s) IS NOT NULL THEN 'Antrag des Boxers'
-         WHEN (league_private.pflicht_slot_on(s.training_date)).id IS NOT NULL THEN 'Vereinsart am Pflichttag (bitte mit Trainer prüfen)'
+         WHEN (league_private.pflicht_slot_on(s.training_date)).id IS NOT NULL
+              AND (t.club_only OR (league_private.pflicht_slot_on(s.training_date)).training_type_id=t.id) THEN 'Vereinsart am Pflichttag (bitte mit Trainer prüfen)'
          ELSE 'Vereins-Ergänzungsart (bitte mit Trainer prüfen)' END AS basis
    FROM public.training_submissions s JOIN public.training_types t ON t.id=s.training_type_id
    JOIN public.point_transactions tx ON tx.submission_id=s.id

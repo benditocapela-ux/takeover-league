@@ -266,6 +266,46 @@ BEGIN
  RAISE NOTICE 'PASS 18 (sequenziell), 20: zweiter Trainer bucht nicht doppelt; Prüfbericht schlägt nur vor und ändert nichts';
 END $t$;
 
+
+-- Befunde der unabhängigen Prüfung: eigene Trainings, Stufe bei Schalter aus, Saisonschutz vor Datumskorrektur
+DO $t$ DECLARE r jsonb; x uuid; y uuid; z uuid; m date := DATE '2026-09-07';
+ coach text := '10000000-0000-0000-0000-00000000000c'; owner text := '10000000-0000-0000-0000-00000000000a';
+ coachP uuid := '00000000-0000-0000-0000-00000000000c'; annaP uuid := '00000000-0000-0000-0000-000000000001'; jog bigint; wk bigint;
+BEGIN
+ PERFORM set_config('role','postgres',true);
+ SELECT id INTO jog FROM public.training_types WHERE name='Joggen'; SELECT id INTO wk FROM public.training_types WHERE name='Wettkampf';
+ -- Trainer meldet eigenes Training mit vorbelegter Stufe: Stufe wird entfernt, Freigabe durch anderen Trainer bucht den Artwert
+ PERFORM pg_temp.act(coach);
+ INSERT INTO public.training_submissions(boxer_id,training_type_id,training_date,notes,status,duration_minutes,club_tier,tier_note)
+ VALUES (coachP,jog,m+4,'Eigenes Joggen','pending',40,'pflicht','selbst') RETURNING id INTO x;
+ PERFORM set_config('role','postgres',true);
+ IF (SELECT club_tier IS NOT NULL OR tier_note IS NOT NULL FROM public.training_submissions WHERE id=x) THEN RAISE EXCEPTION 'coach preset own tier'; END IF;
+ PERFORM pg_temp.act(coach);
+ BEGIN PERFORM public.staff_review_training(x,'approved'); RAISE EXCEPTION 'coach approved own'; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+ BEGIN PERFORM public.staff_review_training(x,'approved','none',wk,NULL,NULL,'Wettkampf'); RAISE EXCEPTION 'coach upgraded own'; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+ PERFORM pg_temp.act(owner); r := public.staff_review_training(x,'approved');
+ PERFORM set_config('role','postgres',true);
+ IF pg_temp.pts(x)<>20 OR (SELECT club_tier FROM public.training_submissions WHERE id=x) IS NOT NULL OR pg_temp.coins(x)<>10 THEN RAISE EXCEPTION 'own training value'; END IF;
+ PERFORM pg_temp.act(coach);
+ BEGIN PERFORM public.staff_correct_training(x,wk,NULL,NULL,'keep','mehr Punkte'); RAISE EXCEPTION 'coach corrected own'; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+ -- Schalter aus: Dauer korrigieren behält bestehende Stufe (z. B. Gym-Check-in), Stufe neu setzen ist gesperrt
+ PERFORM set_config('role','postgres',true);
+ SELECT id INTO y FROM public.training_submissions WHERE boxer_id=annaP AND status='approved' AND club_tier='pflicht' AND training_date=m+2;
+ UPDATE public.league_feature_flags SET is_enabled=false WHERE feature_key='training_v2';
+ PERFORM pg_temp.act(coach);
+ r := public.staff_correct_training(y,NULL,NULL,75,NULL,'Dauer korrigiert');
+ BEGIN PERFORM public.staff_correct_training(y,NULL,NULL,NULL,'ergaenzung','Stufe'); RAISE EXCEPTION 'tier change with flag off'; EXCEPTION WHEN insufficient_privilege THEN NULL; END;
+ PERFORM set_config('role','postgres',true);
+ UPDATE public.league_feature_flags SET is_enabled=true WHERE feature_key='training_v2';
+ IF (SELECT club_tier||':'||duration_minutes FROM public.training_submissions WHERE id=y)<>'pflicht:75' OR pg_temp.pts(y)<>60 THEN RAISE EXCEPTION 'keep tier'; END IF;
+ IF (SELECT count(*) FROM public.training_audit WHERE submission_id=y AND new_submission->>'duration_minutes'='75')<1 THEN RAISE EXCEPTION 'audit duration'; END IF;
+ -- Offenes Training in abgeschlossener Saison lässt sich nicht durch Datumskorrektur freigeben
+ INSERT INTO public.training_submissions(boxer_id,training_type_id,training_date,notes,status,duration_minutes) VALUES (annaP,jog,'2026-02-10','Alte Saison','pending',30) RETURNING id INTO z;
+ PERFORM pg_temp.act(coach);
+ BEGIN PERFORM public.staff_review_training(z,'approved','auto',NULL,m+4,NULL,'verschoben'); RAISE EXCEPTION 'closed season bypass'; EXCEPTION WHEN invalid_parameter_value THEN NULL; END;
+ RAISE NOTICE 'PASS Prüfbefunde: keine vorbelegte eigene Stufe, eigene Trainings bestätigt/korrigiert ein anderer Trainer, Stufe bleibt bei Schalter aus, Saisonschutz vor Datumskorrektur, Audit vollständig';
+END $t$;
+
 -- 20. Bestehende Werte bleiben ohne ausdrückliche Korrektur gleich
 DO $t$ BEGIN
  PERFORM set_config('role','postgres',true);

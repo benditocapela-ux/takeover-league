@@ -1,12 +1,18 @@
 -- Rücknahme von 20261031090000_training_v2_classification.sql.
 -- Stellt training_insert_guard (Stand 20261029230000) und training_value (Stand 20261028230000) wörtlich wieder her, entfernt
 -- die neuen RPCs, Hilfsfunktionen, den Ändern-Trigger, die Antragsspalten, die Ergänzungsliste und den Schalter training_v2.
--- Vorher deactivate_20261031090000_training_v2.sql ausführen, falls aktiviert. Bestätigte Trainings, club_tier, Punkte, EXP,
+-- Vorher deactivate_20261031090000_training_v2.sql ausführen, falls aktiviert (wird geprüft). Offene Anträge (Ort/Einheit) gehen dabei verloren;
+-- die Trainings selbst bleiben offen und werden nach Trainingsart bestätigt. Bestätigte Trainings, club_tier, Punkte, EXP,
 -- Coins und die Änderungshistorie bleiben unverändert (eingestufte Trainings behalten ihre gültige Wertung).
 BEGIN;
 DO $$ BEGIN
  IF EXISTS (SELECT 1 FROM public.league_feature_flags WHERE feature_key='training_v2' AND is_enabled) THEN
   RAISE EXCEPTION 'Zuerst deactivate_20261031090000_training_v2.sql ausführen';
+ END IF;
+ IF to_regclass('league_private.training_v2_schedule_backup') IS NOT NULL AND EXISTS (
+   SELECT b.id,b.dow,b.training_type_id,b.tier,b.label,b.is_active FROM league_private.training_v2_schedule_backup b
+   EXCEPT SELECT x.id,x.dow,x.training_type_id,x.tier,x.label,x.is_active FROM public.club_schedule x) THEN
+  RAISE EXCEPTION 'Stundenplan weicht von der Sicherung ab: zuerst deactivate_20261031090000_training_v2.sql ausführen';
  END IF;
 END $$;
 DROP FUNCTION IF EXISTS public.staff_review_training(uuid,text,text,bigint,date,integer,text,boolean);

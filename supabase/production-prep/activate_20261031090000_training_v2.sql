@@ -18,7 +18,8 @@ INSERT INTO league_private.training_v2_schedule_backup SELECT * FROM public.club
 -- Pflichttage Mo/Mi/Sa: vorhandene Einheit umstellen, fehlende ergänzen
 UPDATE public.club_schedule x SET training_type_id=t.id, tier='pflicht', label='Reguläres Boxtraining', is_active=true, updated_at=now()
 FROM public.training_types t
-WHERE t.name='Reguläres Boxtraining' AND x.dow IN (1,3,6) AND x.tier='pflicht';
+WHERE t.name='Reguläres Boxtraining' AND x.dow IN (1,3,6) AND x.tier='pflicht'
+  AND x.id=(SELECT y.id FROM public.club_schedule y WHERE y.dow=x.dow AND y.tier='pflicht' ORDER BY y.is_active DESC, y.sort_order, y.id LIMIT 1);
 INSERT INTO public.club_schedule(dow,training_type_id,tier,label,duration_minutes,sort_order)
 SELECT d, t.id, 'pflicht', 'Reguläres Boxtraining', 90, d FROM public.training_types t, unnest(ARRAY[1,3,6]) d
 WHERE t.name='Reguläres Boxtraining' AND NOT EXISTS (SELECT 1 FROM public.club_schedule x WHERE x.dow=d AND x.tier='pflicht' AND x.is_active);
