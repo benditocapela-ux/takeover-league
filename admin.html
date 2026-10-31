@@ -29,26 +29,34 @@ td input[type="checkbox"]{width:22px;height:22px;accent-color:var(--gold)}
 pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:13px;background:var(--bg);border-radius:var(--r-sm);border:1px solid var(--line-strong);font-size:var(--fs-xs)}
 .warn{border-left:3px solid var(--gold);padding:var(--sp-4);background:var(--surface-2)}
 @media(max-width:700px){body{padding:var(--sp-3)}.panel{padding:var(--sp-4)}.table-wrap{overflow:visible}table,thead,tbody,tr,td{display:block;width:100%;min-width:0}thead{position:absolute;clip:rect(0,0,0,0);width:1px;height:1px;overflow:hidden}tr{border:1px solid var(--line);border-radius:var(--r-md);margin:12px 0;padding:8px 11px}td{border:none;border-bottom:1px dashed var(--line);padding:9px 0}td:last-child{border-bottom:0}td::before{content:attr(data-label);display:block;color:var(--muted);font-size:11px;font-weight:800;margin-bottom:5px}td input[type="email"],td select{max-width:100%}}
-</style><link rel="stylesheet" href="./takeover-redesign.css"></head><body data-tl-screen="admin">
+</style><link rel="stylesheet" href="./takeover-redesign.css"><link rel="stylesheet" href="./takeover-staff-experience.css"></head><body data-tl-screen="admin">
 <main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Clubverwaltung"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🛡️</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Konten, Rollen und Freigaben</div><div class="tl-screen-title">Clubverwaltung</div></div></div><div class="tl-screen-links"><a href="#adminContent" class="tl-screen-primary">Profile verwalten</a><a href="./coach.html">Trainerbereich</a></div></div><header class="tl-subnav"><div class="brand">TAKEOVER LEAGUE / ADMIN</div><a href="./coach.html">Trainerbereich</a><a href="./login.html">Mein Account</a></header>
-<h1>Clubverwaltung</h1>
-<p>Nur der Eigentümer-Admin darf Rollen, Kontozustände und die öffentliche Sichtbarkeit verwalten.</p>
+<div class="stf-admin-hero"><span class="stf-admin-headline">TAKEOVER · CLUB CONTROL</span><h1>CLUBVERWALTUNG</h1>
+<p>Alle Boxer, Zugänge und Freigaben übersichtlich verwalten. Rollen und Berechtigungen bleiben serverseitig geschützt.</p></div>
 <div id="adminStatus" class="status" role="status" aria-live="polite">Admin-Berechtigung wird überprüft …</div>
 <section id="adminContent" class="hidden">
-<div class="panel"><div class="inline-actions" style="justify-content:space-between;align-items:center">
+ <nav class="stf-admin-tabs" aria-label="Clubverwaltung Bereiche">
+   <button type="button" data-staff-target="profiles" aria-current="page"><span class="stf-ic" aria-hidden="true">👥</span><span>Boxer</span></button>
+   <button type="button" data-staff-target="security" aria-current="false"><span class="stf-ic" aria-hidden="true">🔐</span><span>Zugänge</span></button>
+   <button type="button" data-staff-target="audit" aria-current="false"><span class="stf-ic" aria-hidden="true">🗓️</span><span>Protokoll</span></button>
+   <a href="./coach.html"><span class="stf-ic" aria-hidden="true">🥊</span><span>Trainer</span></a>
+ </nav>
+<div class="panel" data-staff-pane="profiles" role="region" aria-label="Boxerprofile"><div class="inline-actions" style="justify-content:space-between;align-items:center">
 <div><h2>Boxerprofile &amp; Zugänge</h2><div id="profileTotals" class="summary" aria-live="polite"></div></div>
 <div class="inline-actions" style="align-items:center"><label class="archive-toggle"><input type="checkbox" id="showArchived"> Archivierte Profile anzeigen</label><button type="button" id="adminRefresh">Aktualisieren</button></div></div>
 <p class="warn">Neue Anmeldungen sind sofort aktiv, aber zunächst <strong>nicht öffentlich sichtbar</strong>. Bei vorbereiteten Profilen zuerst die E-Mail hinterlegen. Die Registrierung mit exakt dieser Adresse übernimmt dann das bestehende Profil samt Trainings und Punkten.</p>
-<div class="table-wrap"><table aria-label="Profile verwalten"><thead><tr><th>Profil</th><th>E-Mail / Verknüpfung</th><th>Rolle</th><th>Aktiv</th><th>Öffentlich</th></tr></thead><tbody id="profilesBody"></tbody></table></div>
+<div class="stf-admin-searchbox"><label>Boxer und E-Mails suchen<input type="search" data-staff-search placeholder="Boxername oder E-Mail eingeben" autocomplete="off"></label><span class="stf-result" data-staff-result role="status"></span></div>
+ <div class="table-wrap"><table aria-label="Profile verwalten"><thead><tr><th>Profil</th><th>E-Mail / Verknüpfung</th><th>Rolle</th><th>Aktiv</th><th>Öffentlich</th></tr></thead><tbody id="profilesBody"></tbody></table></div>
+ <div class="stf-admin-more"><span class="stf-result" data-staff-page-status role="status"></span><button type="button" data-staff-more hidden>Weitere 10 Profile anzeigen</button></div>
 </div>
-<div class="panel"><h2>Vollständige Login-Sperre – nur manuell</h2>
+<div class="panel" data-staff-pane="security" role="region" aria-label="Zugänge und Sicherheit" hidden><h2>Vollständige Login-Sperre – nur manuell</h2>
 <p>Die Deaktivierung eines Profils sperrt Daten und Funktionen, <strong>nicht die Anmeldung</strong>. Um eine Person auch am Login zu hindern, kann der Admin in der Supabase-Konsole <code>auth.users.banned_until</code> setzen. Diese Befehle werden hier niemals ausgeführt. Der Platzhalter ist vor einer bewussten manuellen Ausführung zu ersetzen.</p>
 <h3>Login sperren</h3><pre id="banSql">update auth.users set banned_until = now() + interval '100 years'
 where email = '&lt;email&gt;';</pre><button type="button" data-copy="banSql">SQL-Text kopieren</button>
 <h3>Sperre aufheben</h3><pre id="unbanSql">update auth.users set banned_until = null
 where email = '&lt;email&gt;';</pre><button type="button" data-copy="unbanSql">SQL-Text kopieren</button>
 </div>
-<div class="panel"><h2>Letzte Verwaltungsänderungen</h2><p>Rollen, Aktivierungen, Sichtbarkeit und hinterlegte E-Mails werden serverseitig protokolliert.</p><div id="adminAudit"></div></div>
+<div class="panel" data-staff-pane="audit" role="region" aria-label="Verwaltungsprotokoll" hidden><h2>Letzte Verwaltungsänderungen</h2><p>Rollen, Aktivierungen, Sichtbarkeit und hinterlegte E-Mails werden serverseitig protokolliert.</p><div id="adminAudit"></div></div>
 </section>
 </main>
 <script type="module">
