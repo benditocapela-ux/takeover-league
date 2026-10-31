@@ -38,7 +38,11 @@ test('server-authorized one-tap club request; no direct row mutations',()=>{
   assert.match(js,/\?club=1#trainingFormCard/);
   assert.match(js,/\?individual=1#trainingFormCard/);
   assert.match(js,/already_pending/);
-  assert.match(js,/gym_registered/);
+  assert.match(js,/already_checked_in/);
+  assert.match(js,/checked_in/);
+  assert.match(js,/gym_not_open/);
+  assert.match(js,/choose_gym_session/);
+  assert.match(js,/\['submitted','checked_in'\]/);
   assert.match(js,/choose_slot/);
   assert.match(js,/status==='submitted'/);
   assert.match(js,/trainingFallback\(host\)/);
