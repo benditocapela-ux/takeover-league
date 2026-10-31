@@ -4,6 +4,10 @@ on:
     branches: ['feature/boxer-experience-redesign']
   pull_request:
     paths:
+      - 'login.html'
+      - 'takeover-navigation.js'
+      - 'boxer.html'
+      - 'tests/boxer-experience-routing.cjs'
       - 'boxer-experience.html'
       - 'boxer-experience.js'
       - 'tests/boxer-experience-contract.cjs'
@@ -20,6 +24,8 @@ jobs:
           node-version: '22'
       - name: Verify role, tab, no direct database mutation and club request boundaries
         run: node --test tests/boxer-experience-contract.cjs
+      - name: Check login, PWA start URL and role-safe navigation
+        run: node --test tests/boxer-experience-routing.cjs
   browser:
     runs-on: ubuntu-latest
     timeout-minutes: 15
