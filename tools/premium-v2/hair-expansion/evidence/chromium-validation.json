@@ -4,7 +4,7 @@
   "artisticStatus": "Artistically pending",
   "fingerprintScheme": "sha256-canonical-text-lf-v1",
   "manifestSha256": "6c0d1e1c36c1d6f2a64600618917d73c241132e737d3038be3758131d6592945",
-  "materialRendererSha256": "7a43fea897488cd118d274362c266016dd22303c13d722ac35d5c54b38d49fca",
+  "materialRendererSha256": "6d46ecd6b4dbe87a7152121b49b9808f0340b6cb6a7340306f80b97baa1cd6ed",
   "renderer": "TLPremiumProduction.draw",
   "checks": [
     {
