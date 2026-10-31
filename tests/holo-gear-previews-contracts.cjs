@@ -9,7 +9,12 @@ for(const k of ['head','top','bottom','hands','feet','coat','glove','aura','eyef
  assert.match(html,new RegExp("(?:slot===|field===)'"+k+"'"),'item look previews slot '+k);
 }
 assert.match(html,/function gearChip\(field,v,label,on,extra\)/);
-assert.match(html,/H\.svg\(look,\{pose:'guard',scene,holo:false\}\)/);
+assert.match(html,/H\.svg\(look,\{pose,scene,holo:false\}\)/,'fallback item previews follow the selected pose');
+const itemLookSource=html.slice(html.indexOf('function itemLook('),html.indexOf('// Apply precisely'));
+const previewContext=vm.createContext({cfg:{...H.DEF,hair:'afro'}});
+vm.runInContext(itemLookSource,previewContext);
+assert.equal(previewContext.itemLook('hair','kurz_glatt').hair,'kurz_glatt','SVG hair preview shows the candidate, not currently equipped hair');
+assert.equal(previewContext.cfg.hair,'afro','preview never changes the equipped outfit');
 assert.match(html,/class="mb-chip mb-gear-chip" data-set="\$\{field\}" data-val="\$\{esc\(v\)\}"/);
 assert.match(html,/class="mb-shop-item-art" aria-hidden="true"/);
 assert.match(css,/\.mb-gear-chip\{/);

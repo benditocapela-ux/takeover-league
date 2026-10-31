@@ -6,8 +6,13 @@ const navScript=fs.readFileSync('takeover-navigation.js','utf8');
 const navCss=fs.readFileSync('takeover-navigation.css','utf8');
 const deploy=fs.readFileSync('.github/workflows/takeover-pages-deploy.yml','utf8');
 
-assert.match(deploy,/name '.*\.js'/,'Pages deployment must copy shared JavaScript');
-assert.match(deploy,/name '.*\.css'/,'Pages deployment must copy shared CSS');
+assert.match(deploy,/node tools\/assemble-pages-site.cjs _site/,'Pages must use the tested asset assembler');
+const {fixture}=require('./tests/boxer-pages-build.cjs');
+const release=fixture();
+try{
+ for(const name of ['takeover-navigation.js','takeover-navigation.css'])
+  assert.deepEqual(fs.readFileSync(require('node:path').join(release.directory,name)),fs.readFileSync(name),'Pages must copy shared navigation: '+name);
+}finally{release.cleanup()}
 for(const fragment of ['.tl-menu-panel','.tl-menu-backdrop','.tl-global-bottom','--tl-nav-gold:var(--gold)']) {
  assert.ok(navCss.includes(fragment),'Shared original-color styling missing: '+fragment);
 }

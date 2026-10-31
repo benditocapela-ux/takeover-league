@@ -1,0 +1,62 @@
+[
+  {
+    "bytes": 530922,
+    "sha256": "9c251880877763da527a978a62ec93ec3fbf1b16f500670b337f3447ef3cfef8",
+    "file": "body.png"
+  },
+  {
+    "bytes": 192890,
+    "sha256": "31b86b8ce22a242cc9a610c079d9120f730723f4bf73e60223403973f5cbf92c",
+    "file": "bottom-black.png"
+  },
+  {
+    "bytes": 195158,
+    "sha256": "a832ffe12cb8e7be3468bc2d26b1acc9f8b6692d015132b3af3f218e4a6279d5",
+    "file": "bottom-red.png"
+  },
+  {
+    "bytes": 251771,
+    "sha256": "ad891a408f555ce62ce7114b9e9a8267e9884f54350f2d08643fb8079d55833e",
+    "file": "coatback.png"
+  },
+  {
+    "bytes": 328119,
+    "sha256": "5efe2cf9230bdb46d8ae7980d067070bc3a8bec1c75c47d3457cd02326ba2e02",
+    "file": "coatfront.png"
+  },
+  {
+    "bytes": 29460,
+    "sha256": "e75dbe4395de6905d53fdbff6db2dddc8a0d90a59e6b1d114043ef60a363a6ca",
+    "file": "eyes.png"
+  },
+  {
+    "bytes": 145032,
+    "sha256": "4aa58b3ad58000a53cd7e05b3f383cc8fcaf3f5965fcfd27b00f78444a30a5f1",
+    "file": "feet.png"
+  },
+  {
+    "bytes": 68342,
+    "sha256": "6aef558366445b21afdd60e6e82072ca4193bc29e261dc9961f5aa16538b7bc3",
+    "file": "hair-afro.png"
+  },
+  {
+    "bytes": 48120,
+    "sha256": "8b3b646ad1e9393f315a3a0d12933491702344b98fc6f10e3a3245bb40e0f658",
+    "file": "hair-short.png"
+  },
+  {
+    "bytes": 70288,
+    "sha256": "59a90be5b7ca29c75c1a773dc33f491d07fd5e9b6d78e081e9e5195330ebb7dc",
+    "file": "hands-blackgold.png"
+  },
+  {
+    "bytes": 70226,
+    "sha256": "7668c89abef8eb86a18bfb451d21e5c09291928e5138068280e0e5b590f0b313",
+    "file": "hands-white.png"
+  },
+  {
+    "bytes": 113062,
+    "sha256": "1d65b893f039bb90bac126d354260ab74402e8025e7894bbede0834555dd1afe",
+    "file": "top-tank.png"
+  }
+]

@@ -5,6 +5,11 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+# A new PR commit supersedes old screenshots and test results. Cancel stale
+# staging work, never the unrelated GitHub Pages deployment workflow.
+concurrency:
+  group: release2-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
@@ -18,10 +23,27 @@ jobs:
           node-version: '22'
       - run: npm install --no-save --package-lock=false jsdom@26.1.0
       - run: node tests/release-static-contracts.cjs
-      - run: node tests/training-v2-contracts.cjs
-      - run: node --test tests/club-today-contracts.cjs
       - run: node tests/holo-emote-podium-contracts.cjs
       - run: node tests/holo-gear-previews-contracts.cjs
+      - run: node tests/mein-boxer-editor-art-contracts.cjs
+      - run: node tests/mein-boxer-artpack-contracts.cjs
+      - run: node tests/mein-boxer-modular-art-contracts.cjs
+      - run: node tests/mein-boxer-modular-editor-contracts.cjs
+      - run: node tests/mein-boxer-draft-layers-contracts.cjs
+      - run: node tests/mein-boxer-anatomy-blockout-contracts.cjs
+      - run: node tests/mein-boxer-custom-underpaint-contracts.cjs
+      - run: node tests/import-original-cool-contracts.cjs
+      - run: node tests/mein-boxer-installed-art-contracts.cjs
+      - run: node tests/boxer-original-art-readiness-contracts.cjs
+      - run: node tests/boxer-original-art-readiness.cjs
+      - run: node tests/mein-boxer-preload-performance.cjs
+      - run: node tests/publish-boxer-artpack-contracts.cjs
+      - run: node tests/boxer-pages-build.cjs
+      - run: node tests/boxer-character-architecture.cjs
+      - run: node tests/validate-boxer-artpack-contracts.cjs
+      - run: node tests/report-boxer-artpack-contracts.cjs
+      - run: node scripts/report-boxer-artpack.cjs
+      - run: node scripts/validate-boxer-artpack.cjs
       - run: node tests/design-foundation-check.cjs
       - run: node tests/redesign-all-pages.cjs
       - run: node tests/redesign-accessibility.cjs
@@ -54,6 +76,10 @@ jobs:
         timeout-minutes: 4
       - run: node tests/boxer-responsive-layout-browser.cjs
         timeout-minutes: 4
+      - run: node tests/boxer-editor-transactions-browser.cjs
+        timeout-minutes: 4
+      - run: node tests/boxer-art-review-browser.cjs
+        timeout-minutes: 2
       - run: node tests/release-live-duels-browser.cjs
         timeout-minutes: 4
       - run: node tests/league-21-browser.cjs
@@ -66,7 +92,13 @@ jobs:
       - run: node tests/news-feedback-browser.cjs
       - run: node tests/help-tutorial-browser.cjs
       - run: node tests/card-designs-browser.cjs
-      - run: node tests/boxer-holo-browser.cjs
+      - name: Capture Mein-Boxer mobile browser screenshots
+        run: mkdir -p "${{ runner.temp }}/mein-boxer-shots"
+      - name: Boxer-Holo integration with screenshots
+        env:
+          SHOTS: ${{ runner.temp }}/mein-boxer-shots
+        run: node tests/boxer-holo-browser.cjs
+        timeout-minutes: 4
       - run: node tests/self-rating-browser.cjs
       - run: node tests/card-scale-browser.cjs
       - run: node tests/club-types-selfservice-browser.cjs
@@ -91,6 +123,64 @@ jobs:
         timeout-minutes: 5
       - run: node tests/coach-feedback-browser.cjs
         timeout-minutes: 5
+
+      - name: Save rendered Mein-Boxer screens for design review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: mein-boxer-rendered-screens
+          path: ${{ runner.temp }}/mein-boxer-shots/*.png
+          if-no-files-found: ignore
+          retention-days: 14
+
+  modular-art-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      fail-fast: false
+      matrix:
+        browser: [chromium, webkit]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false playwright@1.56.1
+      - run: npx playwright install --with-deps ${{ matrix.browser }}
+      - name: Verify editor and responsive SVG behavior in both browsers
+        env:
+          BROWSER: ${{ matrix.browser }}
+          EDITOR_ONLY: '1'
+        run: |
+          node tests/boxer-holo-browser.cjs
+          node tests/boxer-responsive-layout-browser.cjs
+        timeout-minutes: 8
+      - name: Verify 32 outfits and anatomical glove pixel regressions
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: node tests/boxer-modular-art-browser.cjs
+        timeout-minutes: 5
+      - name: Verify all pose fallbacks and the isolated Pages assembly
+        env:
+          BROWSER: ${{ matrix.browser }}
+          SHOTS: ${{ runner.temp }}/modular-art-shots
+        run: node tests/boxer-pose-fallback-browser.cjs
+        timeout-minutes: 5
+      - name: Verify purchase receipts and network failures in both browsers
+        env:
+          BROWSER: ${{ matrix.browser }}
+        run: node tests/boxer-editor-transactions-browser.cjs
+        timeout-minutes: 4
+      - name: Save unapproved modular draft screenshots for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: modular-art-${{ matrix.browser }}
+          path: |
+            ${{ runner.temp }}/modular-art-shots/*.png
+            ${{ runner.temp }}/modular-art-shots/*-glove-pixels.json
+          if-no-files-found: ignore
+          retention-days: 14
 
   training-v2-browser:
     runs-on: ubuntu-latest
