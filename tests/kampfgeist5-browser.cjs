@@ -125,7 +125,7 @@ function injected(cfg){
  await done(x);
 
  // Podium (Etappe 8): kein eigenes Kampfgeist-Podium; Emote nur bei Boxern, die es eingeschaltet haben; eigene Auswahl unter dem Podium
- x=await open({role:'boxer'},'index.html');
+ x=await open({role:'boxer'},'index.html#podium');
  await x.p.waitForSelector('.tl-podium-emote-pick');
  assert.equal(await x.p.locator('.kg-podium,.kg-podium-place,[data-kg-react]').count(),0,'no separate Kampfgeist podium');
  assert.equal(await x.p.locator('.tl-podium .tl-podium-emote').count(),1,'only Ben shows an emote');
