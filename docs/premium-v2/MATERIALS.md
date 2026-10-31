@@ -54,3 +54,7 @@ The source-backed cap and band masters support all eight existing headc values. 
 
 All four wrap components support tone 0–7 with the existing warm-skin mask and calibrated skin ramp. Neutral white cotton is excluded from recoloring. Runtime gate: wrapSkin. No additional PNG color variants or network requests. Tests include exact baseline/alpha/nonmaterial protection for 29 real source components, plus production-rendered Cool/Guard cap/band and tank contacts in all eight colors. Artistic approval remains pending.
 
+
+## Hijab material extension
+
+The actual headwear-hijab source is registered as head-hijab-schwarz, with all eight existing headc materials and hijabMaterials:true. Source alpha and face opening remain exact. The standalone Hijab resolver still enforces no coat/top and hides all hair; production only neutralizes the source color after verifying the material gate. The family metadata lists cap, band and hijab. Thirty actual source components and 48 Cool/Guard production combinations are covered by the current browser suite.

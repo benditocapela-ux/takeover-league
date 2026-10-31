@@ -8,7 +8,7 @@ Die neue durchgehende Guard-Mantelfront ersetzt den fehlerhaften Übergang. Regi
 
 Gemeinsame Masken unterstützen acht Hauttöne, acht Augenfarben, acht Haarfarben, fünf Handschuhmaterialien und acht Kleidungsfarben. Gold, Alpha und neutraler Bandagenstoff bleiben geschützt. Die alte Afro-Grafik wird für Figur und Kachel von eingebrannten Gesichtsteilen getrennt. Es handelt sich nicht um globale CSS-Einfärbung.
 
-Neue Haarformen ergänzen Kurz/Afro/Glatze. Alle vier Hosenformen und beide Schuhformen besitzen tatsächliche Quellen und Materialvarianten. Kappe/Stirnband, Tanktops und poseabhängige Bandagen sind integriert. Die aktuelle vollständige Aufzählung und geprüften Zahlen stehen in der automatisch erzeugten [58-Item-Übersicht](PRODUCTION_PROGRESS.md). Die [Produktionsmatrix](production-coverage.csv) enthält alle sechs Posen, auch nicht unterstützte Fälle. Zwölf vorhandene Auren/Augeneffekte/Szenen verwenden Canvas, keine vorgetäuschten PNGs.
+Alle 18 bestehenden Frisurauswahlen sind im Labor vertreten, einschließlich Glatze ohne Haar-Layer. Die fünf langen Formen verwenden je einen Atlas mit getrennten Vorder-/Hinterteilen; Farben und beide Frontansicht-Posen teilen dieselben Quellen. Acht Glatzen-Farbkonfigurationen bedeuten keine acht unterschiedlichen Zeichnungen. Alle vier Hosenformen und beide Schuhformen besitzen tatsächliche Quellen und Materialvarianten. Kappe/Stirnband, Hijab, Tanktops und poseabhängige Bandagen sind integriert. Hijab und Kleidung verwenden die acht bestehenden Materialfarben. Die aktuelle vollständige Aufzählung und geprüften Zahlen stehen in der automatisch erzeugten [58-Item-Übersicht](PRODUCTION_PROGRESS.md). Die [Produktionsmatrix](production-coverage.csv) enthält alle sechs Posen, auch nicht unterstützte Fälle. Zwölf vorhandene Auren/Augeneffekte/Szenen verwenden Canvas, keine vorgetäuschten PNGs.
 
 Figur und Kacheln benutzen dieselben Quellen, Varianten und Materialfunktionen. Nicht kompatible Gesamtkonfigurationen fallen vollständig auf SVG zurück. Die Vorschau speichert kein Profil und führt keine Käufe aus.
 
@@ -34,7 +34,7 @@ Der verlustfreie Vergleich mit unveränderter PR-81-Kunst reduziert den Sammelat
 ## Nächster konkreter Produktionsauftrag
 
 1. Shirt und Basic Cool anhand gespeicherter Körper-/Maskenansichten korrigieren. Erst nach sauberer Schulterkontur und Armverdeckung freischalten; anschließend Kachelparität und beide Browser erneut prüfen.
-2. Fehlende lange Haarformen in Vorder-/Hinterkomponenten trennen; Kopf-/Ohrenanker, Mantel und Guard-Fäuste prüfen. Gleiche Frontansicht soll keine unabhängigen Neuzeichnungen pro Pose erhalten.
+2. Die vorhandenen langen Haarformen für zusätzliche Mantel-/Kopf-Kombinationen freistellen und prüfen. Aktuell nur ohne Mantel, Kopfbedeckung und Kapuze; Hijab zusätzlich ohne Oberteil. Kappe ist auf Kurz glatt, Stirnband auf Kurz glatt/Afro beschränkt. Keine ungeprüfte Erweiterung des Resolvers.
 3. Hoodie/Jacke sowie Neon/Drache mit eigenen Materialien und Ärmeln produzieren. Kapuzenzustände separat abdecken; keine Samurai-Grafik als Ersatz ausgeben.
 4. Erst nach Gelenk-/Lichtkorrekturen einen begrenzten Flex-Pilot aufbauen. Kopf, Haare, Unterkörper und Materialien weiterverwenden; poseabhängige Arme/Kleidung gezielt neu zeichnen.
 

@@ -909,6 +909,35 @@
       "sourceFile": "headwear/assets/band.png",
       "sourceHash": "a3efb6db8ccf7304700e87d170c23df2a7674eae99e6053119f723984533c35b"
     },
+    "head-hijab-schwarz": {
+      "file": "material-assets/mask-head-hijab-schwarz.png",
+      "box": [
+        301,
+        55,
+        168,
+        250.6875
+      ],
+      "channels": {
+        "r": "leather",
+        "g": "iris",
+        "b": "hair"
+      },
+      "pixels": {
+        "skin": 0,
+        "iris": 0,
+        "hair": 0,
+        "leather": 102887
+      },
+      "sha256": "2f20dca3828cd66ed1dc46d1859598b2cc730c9ba9065a2204088d39f115a561",
+      "sourceUV": [
+        0,
+        0,
+        384,
+        573
+      ],
+      "sourceFile": "headwear-hijab/assets/hijab.png",
+      "sourceHash": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+    },
     "top-guard-tank": {
       "file": "material-assets/mask-top-guard-tank.png",
       "box": [
@@ -1229,7 +1258,8 @@
     "head": {
       "forms": [
         "cap",
-        "band"
+        "band",
+        "hijab"
       ],
       "keys": [
         "schwarz",
@@ -1247,9 +1277,10 @@
       ],
       "sourcePieces": [
         "head-cap-schwarz",
-        "head-band-schwarz"
+        "head-band-schwarz",
+        "head-hijab-schwarz"
       ],
-      "newVariantKeys": 14,
+      "newVariantKeys": 21,
       "restrictions": "Existing headwear resolver hair compatibility still applies"
     },
     "tops": {
@@ -1306,7 +1337,7 @@
     "No artist approval.",
     "Cool tone 6 is existing art, not a literal reproduction of catalogue hex. Other tones use explicitly calibrated premium ramps.",
     "Material masks are registered to these source views, not generic segmentation for arbitrary new body poses.",
-    "Hair masks require hair-only source components; headwear and hidden hair layers are not covered.",
+    "Hair masks require hair-only source components; headwear uses explicit source IDs and preserves the resolver hair restrictions.",
     "Gold accent material is preserved across all garment variants; existing SVG palette secondary/accent differences are not silently treated as the same design.",
     "Only black-base source pieces support leather recolouring; independent red/white drawings must not be passed as black masters."
   ],
@@ -1528,8 +1559,8 @@
     },
     {
       "file": "material-assets/equipment-contact.png",
-      "bytes": 3952912,
-      "sha256": "dd48f9ad76fc04fa0006c68cbb4367c9bc05cc6781e9a2432f0c75573dced62e"
+      "bytes": 4301796,
+      "sha256": "6b517bb83d3d4bd76d3eb59693386ee08ca70d1fe52f2f1a5f310d7497c77d9d"
     }
   ]
 }

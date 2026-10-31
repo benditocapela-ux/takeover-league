@@ -8,7 +8,7 @@ const clothing={schwarz:['#24222c','#0e0d12','#f2c14e'],weiss:['#eef0f5','#b8bfc
 const glovePart=id=>id==='hands-blackgold'||id.startsWith('hands-master-')||id.startsWith('guard-black-');
 const bottomPart=id=>['bottom-black','bottom-jogger','bottom-kurz','bottom-track'].includes(id)||id.startsWith('bottom-master-');
 const feetPart=id=>id==='feet'||id==='feet-sneaker'||id.startsWith('feet-master-');
-const headPart=id=>id==='head-cap-schwarz'||id==='head-band-schwarz';
+const headPart=id=>id==='head-cap-schwarz'||id==='head-band-schwarz'||id==='head-hijab-schwarz';
 const topPart=id=>id==='top-cool-tank'||id==='top-guard-tank';
 const hex=s=>[1,3,5].map(i=>parseInt(s.slice(i,i+2),16));
 const mix=(a,b,t)=>a.map((v,i)=>v+(b[i]-v)*Math.min(1,Math.max(0,t)));
@@ -71,6 +71,6 @@ function applyToPiece(image,id,config={},box,canvasFactory){
  const cv=canvasFactory?canvasFactory(width,height):document.createElement('canvas');cv.width=width;cv.height=height;
  const g=cv.getContext('2d',{willReadFrequently:true});g.drawImage(image,0,0);const pixels=g.getImageData(0,0,width,height);pixels.data.set(transformPixels(pixels.data,width,height,id,config,box));g.putImageData(pixels,0,0);const cost=width*height*4;if(cost<=MAX_BYTES){while(cache.size&&(cache.size>=MAX_ENTRIES||bytes+cost>MAX_BYTES)){const oldest=cache.keys().next().value;bytes-=cache.get(oldest).bytes;cache.delete(oldest);}cache.set(key,{canvas:cv,bytes:cost});bytes+=cost;}return cv;
 }
-const api=Object.freeze({approved:false,enabled:false,status:'Artistically pending',wrapSkin:true,headMaterials:true,topMaterials:true,skinMid,hair,eyes,gloves,clothing,masks,transformPixels,applyToPiece,hairOnly,isolateHairPixels,afroEdge,clear,stats});
+const api=Object.freeze({approved:false,enabled:false,status:'Artistically pending',wrapSkin:true,headMaterials:true,hijabMaterials:true,topMaterials:true,skinMid,hair,eyes,gloves,clothing,masks,transformPixels,applyToPiece,hairOnly,isolateHairPixels,afroEdge,clear,stats});
 if(typeof module!=='undefined'&&module.exports)module.exports=api;else root.TLPremiumMaterials=api;
 })(typeof window!=='undefined'?window:globalThis);

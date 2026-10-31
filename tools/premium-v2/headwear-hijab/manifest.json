@@ -1,0 +1,76 @@
+{
+  "version": 1,
+  "approved": false,
+  "enabled": false,
+  "artStatus": "Artistically pending",
+  "canvas": [
+    768,
+    1216
+  ],
+  "poses": [
+    "cool",
+    "guard"
+  ],
+  "colors": [
+    "schwarz"
+  ],
+  "allowedCoats": [
+    "none"
+  ],
+  "allowedTops": [
+    "none"
+  ],
+  "bodyMask": {
+    "type": "hideEars",
+    "rects": [
+      [
+        315,
+        130,
+        14,
+        48
+      ],
+      [
+        433,
+        130,
+        14,
+        48
+      ]
+    ]
+  },
+  "hairMask": {
+    "type": "hideAllHair",
+    "reason": "No hair layer may be drawn; all silhouettes fully suppressed."
+  },
+  "pieces": [
+    {
+      "id": "head-hijab-schwarz",
+      "slot": "head",
+      "src": "headwear-hijab/assets/hijab.png",
+      "uv": [
+        0,
+        0,
+        384,
+        573
+      ],
+      "box": [
+        301,
+        55,
+        168,
+        250.6875
+      ],
+      "sha256": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f",
+      "bytes": 177297
+    }
+  ],
+  "source": {
+    "file": "source-hijab.png",
+    "sha256": "8c2e81c133a968b9607aa1738ba252312958efe984c3caf03ae2cb37cf393173",
+    "crop": [
+      225,
+      109,
+      701,
+      1046
+    ],
+    "bytes": 623033
+  }
+}

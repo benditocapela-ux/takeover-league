@@ -14,6 +14,9 @@ const expansion = read(lab + 'hair-expansion/manifest.json', { pieces: {}, mater
 const tops = read(lab + 'tops/manifest.json', { pieces: {}, tops: [], colors: [], poses: [] });
 const effects = read(lab + 'effects.json', { keys: {}, poses: [], module: {} });
 const wraps = read(lab + 'wraps/manifest.json', { pieces: {}, poses: [] });
+const hijab = read(lab + 'headwear-hijab/manifest.json', { pieces: [], colors: [], poses: [] });
+const longHair = read(lab + 'long-hair/manifest.json', { pieces: [], colors: [], poses: [], families: {} });
+const extraPieces = Object.fromEntries([...(hijab.pieces || []), ...(longHair.pieces || [])].map(p => [p.id, p]));
 const reportFile = 'docs/premium-v2/evidence/production-tests.json', report = read(reportFile);
 const checks = new Map(), issues = [];
 function alphaPopulation(bytes) {
@@ -65,7 +68,7 @@ function image(file, expected, registration) {
   checks.set(cacheKey, value); return value;
 }
 function piece(id) {
-  const p = art.pieces[id] || expansion.pieces[id] || tops.pieces[id] || wraps.pieces[id];
+  const p = extraPieces[id] || art.pieces[id] || expansion.pieces[id] || tops.pieces[id] || wraps.pieces[id];
   if (p) return image(path.posix.normalize(lab + p.src), p.sha256, p);
   const s = split.pieces[id], a = s && split.atlases[s.atlas];
   return a ? image(lab + a.file, a.sha256, s) : null;
@@ -97,12 +100,19 @@ function available(row) {
   if (slot === 'hair') {
     // Bald is a removal state backed by the existing complete head, not eight new PNGs.
     if (value === 'glatze') return pieces(['head']);
+    const longFamily = longHair.families?.[value];
+    const longIds = longFamily?.pieces || (longHair.hair === value ? longHair.pieces.map(p => p.id) : null);
+    if (longIds && longHair.poses.includes(pose) && longHair.colors.includes(color)) return pieces(longIds);
     const id = value === 'kurz_glatt' ? 'hair-short' : 'hair-' + value;
     // Every additional form still requires a real registered PNG; a palette alone is not a hairstyle.
     const expanded = expansion.pieces[id] && expansion.poses.includes(pose) && expansion.materialKeys.includes(color);
     return color === 'schwarz' || has('hair', color, pose) || expanded ? pieces([id]) : [];
   }
   if (slot === 'head') {
+    if (value === 'hijab') {
+      const colored = has('head', color, pose) && materials.families.head.forms?.includes(value);
+      return hijab.poses.includes(pose) && (hijab.colors.includes(color) || colored) ? pieces(hijab.pieces.map(p => p.id)) : [];
+    }
     const h = headwear.pieces[value];
     const colored = has('head', color, pose) && materials.families.head.forms?.includes(value);
     if (!h || !headwear.colors.includes(color) && !colored || !headwear.poses.includes(pose)) return [];
@@ -150,6 +160,8 @@ if (productionCode.includes('hair-expansion/manifest.json')) requiredCode.push(l
 if (productionCode.includes('tops/manifest.json')) requiredCode.push(lab + 'tops/tops.js', lab + 'tops/manifest.json');
 if (productionCode.includes('TLPremiumEffects')) requiredCode.push(lab + 'effects.js', lab + 'effects.json');
 if (productionCode.includes('wraps/manifest.json')) requiredCode.push(lab + 'wraps/manifest.json');
+if (productionCode.includes('headwear-hijab/manifest.json')) requiredCode.push(lab + 'headwear-hijab/manifest.json', lab + 'headwear-hijab/hijab.js');
+if (productionCode.includes('long-hair/manifest.json')) requiredCode.push(lab + 'long-hair/manifest.json');
 const evidenceValid = !!report && report.passed === true && report.hashAlgorithm === 'sha256-canonical-text-lf-v1' && ['chromium', 'webkit'].every(e => report.engines?.includes(e)) && Object.keys(evidenceHashes).length > 0 && Object.entries(evidenceHashes).every(([file, hash]) => fileHash(file) === hash) && requiredCode.every(file => evidenceHashes[file] && fileHash(file) === evidenceHashes[file]);
 const uniqueFiles = list => [...new Map(list.map(a => [a.file, a])).values()];
 const matrix = historical.map(old => {
@@ -168,11 +180,29 @@ const matrix = historical.map(old => {
     caveat: exists ? 'Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated.' : 'No verified premium source for this item/colour/pose. Keep full SVG fallback.'
   };
 });
+// Pose catalogue entries describe profile selection, not additional equipment graphics.
+const supportedPremiumPoseProfiles = ['cool', 'guard'].filter(pose => pieces(['head', 'lower', 'body-' + pose]).length === 3);
+const technicallyValidatedPoseProfiles = supportedPremiumPoseProfiles.filter(pose => matrix.some(r => r.pose === pose && r.integratedAndTested));
 const itemRows = inventory.catalogue.map(item => {
+  if (item.slot === 'pose') {
+    const supported = supportedPremiumPoseProfiles.includes(item.value), validated = technicallyValidatedPoseProfiles.includes(item.value);
+    return {
+      key: item.key, name: item.name, slot: item.slot, value: item.value, entryKind: 'pose-metadata',
+      totalVariantKeys: 0, totalPoseCells: 0, artworkVariantKeys: 0, artworkPoseCells: 0,
+      technicallyValidatedVariantKeys: 0, technicallyValidatedPoseCells: 0, newTechnicallySupportedPoseCells: 0,
+      availability: 'Metadata', profileSupported: supported,
+      profileStatus: supported ? 'Premium profile supported (partial equipment coverage)' : 'SVG fallback',
+      technicalStatus: validated ? 'Profile technically validated' : supported ? 'Profile available; current evidence pending' : 'SVG fallback',
+      artisticStatus: supported ? 'Artistically pending' : 'Not applicable', approved: false, enabled: false,
+      supportedPoses: validated ? [item.value] : [], artworkPoses: supported ? [item.value] : [],
+      sourceFiles: supported ? [...new Set(pieces(['head', 'lower', 'body-' + item.value]).map(a => a.file))] : [],
+      note: supported ? 'Pose catalogue metadata: this premium profile has registered base components and partial equipment coverage. It is not an additional item, image or variant key; unsupported full outfits still use SVG.' : 'Pose catalogue metadata: no premium profile is integrated for this pose; retain the complete existing SVG renderer. This row does not add artwork variants.'
+    };
+  }
   const rows = matrix.filter(r => r.slot === item.slot && r.value === item.value), artwork = rows.filter(r => r.availability === 'Artwork draft'), technical = rows.filter(r => r.integratedAndTested);
   const variants = list => new Set(list.map(r => [r.value, r.color, r.state].join('|'))).size;
   return {
-    key: item.key, name: item.name, slot: item.slot, value: item.value,
+    key: item.key, name: item.name, slot: item.slot, value: item.value, entryKind: 'equipment',
     totalVariantKeys: variants(rows), totalPoseCells: rows.length,
     artworkVariantKeys: variants(artwork), artworkPoseCells: artwork.length,
     technicallyValidatedVariantKeys: variants(technical), technicallyValidatedPoseCells: technical.length,
@@ -190,6 +220,11 @@ const unique = list => new Set(list.map(r => [r.slot, r.value, r.color, r.state]
 const priorAvailableKeys = new Set(historical.filter(r => r.status !== 'svg-only').map(r => [r.slot, r.value, r.color, r.state].join('|')));
 const brandNewVariantKeys = new Set(technical.map(r => [r.slot, r.value, r.color, r.state].join('|')).filter(k => !priorAvailableKeys.has(k))).size;
 const summary = {
+  equipmentCatalogueEntries: itemRows.filter(i => i.entryKind === 'equipment').length,
+  poseCatalogueEntries: itemRows.filter(i => i.entryKind === 'pose-metadata').length,
+  equipmentItemsWithArtwork: itemRows.filter(i => i.entryKind === 'equipment' && i.artworkPoseCells > 0).length,
+  equipmentItemsTechnicallyValidated: itemRows.filter(i => i.entryKind === 'equipment' && i.technicallyValidatedPoseCells > 0).length,
+  supportedPremiumPoseProfiles, technicallyValidatedPoseProfiles,
   catalogueEntries: itemRows.length, matrixRows: matrix.length, catalogueItemsWithArtwork: itemRows.filter(i => i.artworkPoseCells > 0).length,
   catalogueItemsTechnicallyValidated: itemRows.filter(i => i.technicallyValidatedPoseCells > 0).length,
   artworkVariantKeys: unique(artwork), artworkPoseCells: artwork.length,
@@ -209,7 +244,8 @@ fs.writeFileSync(path.join(dir, 'production-progress.json'), JSON.stringify({ su
 const md = [
   '# Premium-Produktion: überprüfbarer Stand aller 58 Katalogeinträge', '',
   'Automatisch aus vorhandenem Inventar, tatsächlichen PNG-Dateien, Registrierungen, SHA-256 und aktuellem Browser-Testbericht erzeugt. Keine Live-Datenbankabfrage. Der historische PR-81-Stand bleibt in `coverage.csv`; die aktuelle Produktionsmatrix steht in `production-coverage.csv` und `production-coverage.json`.', '',
-  `**${summary.catalogueItemsWithArtwork}/58 Katalogeinträge mit nachgewiesenen Grafikquellen; ${summary.catalogueItemsTechnicallyValidated}/58 mit aktueller technischer Testabdeckung; 0 freigegeben.**`, '',
+  `**${summary.equipmentCatalogueEntries} Ausrüstungs-/Effekteinträge + ${summary.poseCatalogueEntries} Pose-Metadateneinträge = 58 Katalogeinträge. ${summary.equipmentItemsWithArtwork}/${summary.equipmentCatalogueEntries} Ausrüstungs-/Effekteinträge mit Grafikquellen; ${summary.equipmentItemsTechnicallyValidated}/${summary.equipmentCatalogueEntries} technisch geprüft; 0 freigegeben.**`, '',
+  `Premium-Profile mit registrierter Körperbasis: ${supportedPremiumPoseProfiles.join(', ') || 'keine'} (jeweils nur nachgewiesene Ausrüstungskombinationen). Aktuell technisch belegte Profile: ${technicallyValidatedPoseProfiles.join(', ') || 'noch kein aktueller Nachweis'}. Pose-Zeilen sind Metadaten und erhöhen weder Item-Abdeckung noch Grafikvarianten.`, '',
   `Gesamtmatrix: ${summary.matrixRows} Zeilen. Grafikquellen für ${summary.artworkVariantKeys} unterschiedliche Varianten-Schlüssel bzw. ${summary.artworkPoseCells} Posezellen. Technisch integriert und geprüft: ${summary.technicallyValidatedVariantKeys} Varianten-Schlüssel / ${summary.technicallyValidatedPoseCells} Posezellen. Gegenüber dem historischen SVG-only-Stand neu: ${summary.newlySupportedPoseCells} Posezellen; ${summary.newlySupportedVariantKeys} Schlüssel gewinnen neue Poseabdeckung, davon waren ${summary.brandNewVariantKeys} vorher in keiner Premium-Pose vorhanden. Haut- und Augenfarben sind zusätzlich enthalten, aber keine neuen Shop-Items.`, '',
   '**Zählweise:** Varianten-Schlüssel = Slot, Itemwert, Farbe und Zustand; jede Pose wird zusätzlich als Posezelle gezählt. Das ist keine Anzahl aller kombinierbaren Outfits und keine Anzahl neuer PNGs. Ein Teil mit zwei Posen zählt nur einmal als Varianten-Schlüssel.', '',
   `Technisch geprüft sind ${summary.rasterVariantKeys} Raster-/Materialvarianten und ${summary.canvasVariantKeys} prozedurale Canvas-Varianten. Effekte/Szenen werden ausdrücklich nicht als neue PNG-Illustrationen gezählt. Glatze entfernt die Haare; die acht zulässigen Haarfarbwerte erzeugen dabei dasselbe Bild.`, '',
@@ -217,7 +253,7 @@ const md = [
   'Status getrennt: `SVG only` = keine verifizierte passende Grafik; `Artwork draft` = Datei und Registrierung vorhanden; `Technically validated` = passende Variante im aktuellen Bericht beider Engines und gültige Quellhashes; `Artistically pending` = persönliche Designabnahme offen. `Approved` wird durch dieses Skript niemals gesetzt. Auch ein technisch geprüfter Entwurf bleibt deaktiviert.', '',
   '| Item-Key | Name | Grafikvarianten / vorhanden | Technisch geprüft | geprüfte Posen | Status |',
   '|---|---|---:|---:|---|---|',
-  ...itemRows.map(i => `| ${i.key} | ${i.name.replaceAll('|', '/')} | ${i.artworkVariantKeys}/${i.totalVariantKeys} | ${i.technicallyValidatedVariantKeys}/${i.totalVariantKeys} | ${i.supportedPoses.join(', ') || '–'} | ${i.availability}; ${i.technicalStatus}; ${i.artisticStatus} |`), '',
+  ...itemRows.map(i => i.entryKind === 'pose-metadata' ? `| ${i.key} | ${i.name.replaceAll('|', '/')} | – Metadaten | – kein Grafikitem | ${i.supportedPoses.join(', ') || '–'} | Metadaten; ${i.profileSupported ? 'Premium-Profil verfügbar (Teilabdeckung)' : 'SVG-Fallback'}; ${i.technicalStatus} |` : `| ${i.key} | ${i.name.replaceAll('|', '/')} | ${i.artworkVariantKeys}/${i.totalVariantKeys} | ${i.technicallyValidatedVariantKeys}/${i.totalVariantKeys} | ${i.supportedPoses.join(', ') || '–'} | ${i.availability}; ${i.technicalStatus}; ${i.artisticStatus} |`), '',
   'Posen, Szenen und Effekte behalten die vorhandene prozedurale/SVG-Darstellung, solange keine tatsächlich integrierte Premium-Familie nachgewiesen ist. Neue Canvas-Effekte sind separat als Canvas ausgewiesen. Ein Guard-Pilot macht nicht sämtliche sechs Pose-Items zu fertigen Illustrationen.', '',
   'Reproduktion: `node scripts/inventory-premium-production.cjs`. Der technische Bericht liegt unter `docs/premium-v2/evidence/production-tests.json`; er muss `passed:true`, beide Engines, `validatedVariants` und passende `sourceHashes` enthalten. Hashverfahren `sha256-canonical-text-lf-v1`: UTF-8-Text normalisiert CRLF zu LF, PNG-/Binärdateien verwenden unveränderte Bytes. Damit lassen sich Windows- und Linux-Checkouts vergleichen. Fehlender oder veralteter Bericht fällt automatisch auf Entwurfsstatus zurück. Noch nicht kompatible vollständige Outfits müssen im Labor und im normalen Editor vollständig SVG bleiben.', '',
   issues.length ? `**Quellprobleme:** ${issues.length} Datei-/Hash-/Registrierungsfehler wurden nicht als vorhandene Grafik gezählt; Details in production-coverage.json.` : 'Alle gezählten Rasterquellen haben passende PNG-Abmessungen, nichtleere Alpha-Pixel und SHA-256; Canvas-Quellen sind als Code separat verifiziert. Diese Checks ersetzen keine Sichtprüfung von Anatomie, Stoff, Verdeckung oder Materialien.', ''

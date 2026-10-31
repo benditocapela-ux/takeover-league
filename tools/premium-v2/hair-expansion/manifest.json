@@ -13,7 +13,8 @@
     "high_top",
     "cornrows",
     "twists",
-    "afro_puffs"
+    "afro_puffs",
+    "dutts"
   ],
   "poses": [
     "cool",
@@ -245,6 +246,42 @@
         "guard"
       ],
       "materialKind": "hair"
+    },
+    "hair-dutts": {
+      "id": "hair-dutts",
+      "slot": "hair",
+      "shapeId": "dutts",
+      "src": "hair-expansion/assets/dutts.png",
+      "uv": [
+        0,
+        0,
+        188,
+        100
+      ],
+      "box": [
+        290,
+        59,
+        188,
+        100
+      ],
+      "bytes": 33793,
+      "sha256": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5",
+      "approved": false,
+      "enabled": false,
+      "status": "Artwork draft",
+      "source": "dutts",
+      "sourceCrop": [
+        47,
+        19,
+        1627,
+        866
+      ],
+      "sourceHairline": 463,
+      "poses": [
+        "cool",
+        "guard"
+      ],
+      "materialKind": "hair"
     }
   },
   "sources": {
@@ -283,6 +320,12 @@
       "sha256": "6b9f8b6b5013106f03181db50556206d17981eb1f77486a5c98886b764e7aabf",
       "width": 1536,
       "height": 1024
+    },
+    "dutts": {
+      "file": "hair-expansion/sources/dutts-v2.png",
+      "sha256": "9c40d882e0a30d181144031aa719394cc5bd18887cac1acfbfa8c8163678fd7c",
+      "width": 1721,
+      "height": 914
     }
   },
   "generationMode": "built-in imagegen",

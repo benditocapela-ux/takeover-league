@@ -1,18 +1,30 @@
 {
   "summary": {
+    "equipmentCatalogueEntries": 52,
+    "poseCatalogueEntries": 6,
+    "equipmentItemsWithArtwork": 48,
+    "equipmentItemsTechnicallyValidated": 47,
+    "supportedPremiumPoseProfiles": [
+      "cool",
+      "guard"
+    ],
+    "technicallyValidatedPoseProfiles": [
+      "cool",
+      "guard"
+    ],
     "catalogueEntries": 58,
     "matrixRows": 1800,
-    "catalogueItemsWithArtwork": 41,
-    "catalogueItemsTechnicallyValidated": 40,
-    "artworkVariantKeys": 205,
-    "artworkPoseCells": 410,
-    "technicallyValidatedVariantKeys": 204,
-    "technicallyValidatedPoseCells": 407,
+    "catalogueItemsWithArtwork": 48,
+    "catalogueItemsTechnicallyValidated": 47,
+    "artworkVariantKeys": 261,
+    "artworkPoseCells": 522,
+    "technicallyValidatedVariantKeys": 260,
+    "technicallyValidatedPoseCells": 519,
     "canvasVariantKeys": 12,
-    "rasterVariantKeys": 192,
-    "newlySupportedVariantKeys": 194,
-    "newlySupportedPoseCells": 386,
-    "brandNewVariantKeys": 193,
+    "rasterVariantKeys": 248,
+    "newlySupportedVariantKeys": 250,
+    "newlySupportedPoseCells": 498,
+    "brandNewVariantKeys": 249,
     "approvedItems": 0,
     "hashAlgorithm": "sha256-canonical-text-lf-v1",
     "evidenceValid": true,
@@ -2172,20 +2184,24 @@
       "color": "schwarz",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -2235,20 +2251,24 @@
       "color": "schwarz",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -2298,20 +2318,24 @@
       "color": "braun",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -2361,20 +2385,24 @@
       "color": "braun",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -2424,20 +2452,24 @@
       "color": "dunkelbraun",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -2487,20 +2519,24 @@
       "color": "dunkelbraun",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -2550,20 +2586,24 @@
       "color": "blond",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -2613,20 +2653,24 @@
       "color": "blond",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -2676,20 +2720,24 @@
       "color": "rot",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -2739,20 +2787,24 @@
       "color": "rot",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -2802,20 +2854,24 @@
       "color": "silber",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -2865,20 +2921,24 @@
       "color": "silber",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -2928,20 +2988,24 @@
       "color": "blau",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -2991,20 +3055,24 @@
       "color": "blau",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -3054,20 +3122,24 @@
       "color": "pink",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -3117,20 +3189,24 @@
       "color": "pink",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/lang_glatt.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -6396,20 +6472,24 @@
       "color": "schwarz",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -6459,20 +6539,24 @@
       "color": "schwarz",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -6522,20 +6606,24 @@
       "color": "braun",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -6585,20 +6673,24 @@
       "color": "braun",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -6648,20 +6740,24 @@
       "color": "dunkelbraun",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -6711,20 +6807,24 @@
       "color": "dunkelbraun",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -6774,20 +6874,24 @@
       "color": "blond",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -6837,20 +6941,24 @@
       "color": "blond",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -6900,20 +7008,24 @@
       "color": "rot",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -6963,20 +7075,24 @@
       "color": "rot",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7026,20 +7142,24 @@
       "color": "silber",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7089,20 +7209,24 @@
       "color": "silber",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7152,20 +7276,24 @@
       "color": "blau",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7215,20 +7343,24 @@
       "color": "blau",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7278,20 +7410,24 @@
       "color": "pink",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7341,20 +7477,24 @@
       "color": "pink",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/hair-expansion/assets/dutts.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/hair-expansion/assets/dutts.png": "b443e73e93203134177f02ea5c70c15fd7f86c2e5eb71b104aa997392128d3b5"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7404,20 +7544,24 @@
       "color": "schwarz",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7467,20 +7611,24 @@
       "color": "schwarz",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7530,20 +7678,24 @@
       "color": "braun",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7593,20 +7745,24 @@
       "color": "braun",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7656,20 +7812,24 @@
       "color": "dunkelbraun",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7719,20 +7879,24 @@
       "color": "dunkelbraun",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7782,20 +7946,24 @@
       "color": "blond",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7845,20 +8013,24 @@
       "color": "blond",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7908,20 +8080,24 @@
       "color": "rot",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -7971,20 +8147,24 @@
       "color": "rot",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8034,20 +8214,24 @@
       "color": "silber",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8097,20 +8281,24 @@
       "color": "silber",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8160,20 +8348,24 @@
       "color": "blau",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8223,20 +8415,24 @@
       "color": "blau",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8286,20 +8482,24 @@
       "color": "pink",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8349,20 +8549,24 @@
       "color": "pink",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/zopf.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/zopf.png": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8412,20 +8616,24 @@
       "color": "schwarz",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8475,20 +8683,24 @@
       "color": "schwarz",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8538,20 +8750,24 @@
       "color": "braun",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8601,20 +8817,24 @@
       "color": "braun",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8664,20 +8884,24 @@
       "color": "dunkelbraun",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8727,20 +8951,24 @@
       "color": "dunkelbraun",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8790,20 +9018,24 @@
       "color": "blond",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8853,20 +9085,24 @@
       "color": "blond",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8916,20 +9152,24 @@
       "color": "rot",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -8979,20 +9219,24 @@
       "color": "rot",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -9042,20 +9286,24 @@
       "color": "silber",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -9105,20 +9353,24 @@
       "color": "silber",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -9168,20 +9420,24 @@
       "color": "blau",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -9231,20 +9487,24 @@
       "color": "blau",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -9294,20 +9554,24 @@
       "color": "pink",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -9357,20 +9621,24 @@
       "color": "pink",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/bob.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/bob.png": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -13708,20 +13976,24 @@
       "color": "schwarz",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -13771,20 +14043,24 @@
       "color": "schwarz",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -13834,20 +14110,24 @@
       "color": "braun",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -13897,20 +14177,24 @@
       "color": "braun",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -13960,20 +14244,24 @@
       "color": "dunkelbraun",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14023,20 +14311,24 @@
       "color": "dunkelbraun",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14086,20 +14378,24 @@
       "color": "blond",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14149,20 +14445,24 @@
       "color": "blond",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14212,20 +14512,24 @@
       "color": "rot",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14275,20 +14579,24 @@
       "color": "rot",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14338,20 +14646,24 @@
       "color": "silber",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14401,20 +14713,24 @@
       "color": "silber",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14464,20 +14780,24 @@
       "color": "blau",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14527,20 +14847,24 @@
       "color": "blau",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14590,20 +14914,24 @@
       "color": "pink",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14653,20 +14981,24 @@
       "color": "pink",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/locs.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/locs.png": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14716,20 +15048,24 @@
       "color": "schwarz",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14779,20 +15115,24 @@
       "color": "schwarz",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14842,20 +15182,24 @@
       "color": "braun",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14905,20 +15249,24 @@
       "color": "braun",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -14968,20 +15316,24 @@
       "color": "dunkelbraun",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -15031,20 +15383,24 @@
       "color": "dunkelbraun",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -15094,20 +15450,24 @@
       "color": "blond",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -15157,20 +15517,24 @@
       "color": "blond",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -15220,20 +15584,24 @@
       "color": "rot",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -15283,20 +15651,24 @@
       "color": "rot",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -15346,20 +15718,24 @@
       "color": "silber",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -15409,20 +15785,24 @@
       "color": "silber",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -15472,20 +15852,24 @@
       "color": "blau",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -15535,20 +15919,24 @@
       "color": "blau",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -15598,20 +15986,24 @@
       "color": "pink",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -15661,20 +16053,24 @@
       "color": "pink",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/long-hair/assets/box_braids.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/long-hair/assets/box_braids.png": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; long hair needs back/front occlusion variants",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "hair",
@@ -21084,20 +21480,24 @@
       "color": "schwarz",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",
@@ -21147,20 +21547,24 @@
       "color": "schwarz",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",
@@ -21210,20 +21614,24 @@
       "color": "weiss",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",
@@ -21273,20 +21681,24 @@
       "color": "weiss",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",
@@ -21336,20 +21748,24 @@
       "color": "grau",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",
@@ -21399,20 +21815,24 @@
       "color": "grau",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",
@@ -21462,20 +21882,24 @@
       "color": "rot",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",
@@ -21525,20 +21949,24 @@
       "color": "rot",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",
@@ -21588,20 +22016,24 @@
       "color": "blau",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",
@@ -21651,20 +22083,24 @@
       "color": "blau",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",
@@ -21714,20 +22150,24 @@
       "color": "gruen",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",
@@ -21777,20 +22217,24 @@
       "color": "gruen",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",
@@ -21840,20 +22284,24 @@
       "color": "lila",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",
@@ -21903,20 +22351,24 @@
       "color": "lila",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",
@@ -21966,20 +22418,24 @@
       "color": "gold",
       "state": "default",
       "pose": "guard",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",
@@ -22029,20 +22485,24 @@
       "color": "gold",
       "state": "default",
       "pose": "cool",
-      "availability": "SVG only",
-      "technicalStatus": "Not validated",
-      "artisticStatus": "Not applicable",
-      "renderer": "SVG",
+      "availability": "Artwork draft",
+      "technicalStatus": "Technically validated",
+      "artisticStatus": "Artistically pending",
+      "renderer": "PNG + material",
       "approved": false,
       "enabled": false,
-      "integratedAndTested": false,
-      "newlySupported": false,
+      "integratedAndTested": true,
+      "newlySupported": true,
       "previousStatus": "svg-only",
-      "sourceFiles": [],
-      "sourceHashes": {},
-      "evidence": "",
+      "sourceFiles": [
+        "tools/premium-v2/headwear-hijab/assets/hijab.png"
+      ],
+      "sourceHashes": {
+        "tools/premium-v2/headwear-hijab/assets/hijab.png": "f4c89c6eee8236f66228f7faea6a3c65e509025ad1d70babef76d787eb04723f"
+      },
+      "evidence": "docs/premium-v2/evidence/production-tests.json",
       "reuse": "Shared head-local source; cap/hijab/hood occlusion masks required",
-      "caveat": "No verified premium source for this item/colour/pose. Keep full SVG fallback."
+      "caveat": "Artwork availability does not imply complete-outfit compatibility or artistic approval. Only tested configurations count as technically integrated."
     },
     {
       "slot": "head",

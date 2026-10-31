@@ -1,0 +1,396 @@
+{
+  "version": 2,
+  "approved": false,
+  "enabled": false,
+  "artStatus": "Artistically pending",
+  "hair": "locs",
+  "families": {
+    "locs": {
+      "pieces": [
+        "hair-locs-back",
+        "hair-locs-front"
+      ],
+      "src": "long-hair/assets/locs.png",
+      "status": "candidate"
+    },
+    "bob": {
+      "pieces": [
+        "hair-bob-back",
+        "hair-bob-front"
+      ],
+      "src": "long-hair/assets/bob.png",
+      "status": "candidate"
+    },
+    "lang_glatt": {
+      "pieces": [
+        "hair-lang_glatt-back",
+        "hair-lang_glatt-front"
+      ],
+      "src": "long-hair/assets/lang_glatt.png",
+      "status": "candidate"
+    },
+    "zopf": {
+      "pieces": [
+        "hair-zopf-back",
+        "hair-zopf-front"
+      ],
+      "src": "long-hair/assets/zopf.png",
+      "status": "candidate"
+    },
+    "box_braids": {
+      "pieces": [
+        "hair-box_braids-back",
+        "hair-box_braids-front"
+      ],
+      "src": "long-hair/assets/box_braids.png",
+      "status": "candidate"
+    }
+  },
+  "poses": [
+    "cool",
+    "guard"
+  ],
+  "colors": [
+    "schwarz",
+    "braun",
+    "dunkelbraun",
+    "blond",
+    "rot",
+    "silber",
+    "blau",
+    "pink"
+  ],
+  "restrictions": {
+    "head": "none",
+    "hood": false,
+    "coat": "none"
+  },
+  "canvas": [
+    768,
+    1216
+  ],
+  "pieces": [
+    {
+      "id": "hair-locs-back",
+      "slot": "hair",
+      "depth": "back",
+      "src": "long-hair/assets/locs.png",
+      "uv": [
+        2,
+        2,
+        384,
+        425
+      ],
+      "box": [
+        280,
+        45,
+        210,
+        232.421875
+      ],
+      "sha256": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93",
+      "bytes": 378726
+    },
+    {
+      "id": "hair-locs-front",
+      "slot": "hair",
+      "depth": "front",
+      "src": "long-hair/assets/locs.png",
+      "uv": [
+        2,
+        431,
+        384,
+        268
+      ],
+      "box": [
+        306,
+        40,
+        158,
+        110.27083333333333
+      ],
+      "sha256": "bffa8e792e8203cf50d77b2c3b2b500387e868f2b2c8c8d12c080400ff1f9e93",
+      "bytes": 378726
+    },
+    {
+      "id": "hair-bob-back",
+      "slot": "hair",
+      "depth": "back",
+      "src": "long-hair/assets/bob.png",
+      "uv": [
+        2,
+        2,
+        384,
+        358
+      ],
+      "box": [
+        295,
+        45,
+        180,
+        167.8125
+      ],
+      "sha256": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c",
+      "bytes": 337853
+    },
+    {
+      "id": "hair-bob-front",
+      "slot": "hair",
+      "depth": "front",
+      "src": "long-hair/assets/bob.png",
+      "uv": [
+        2,
+        364,
+        384,
+        303
+      ],
+      "box": [
+        308,
+        45,
+        154,
+        121.515625
+      ],
+      "sha256": "8e9b36023bed43cc7bd3eb73b61f32c6fa58e059127523de6a11e61033bbb58c",
+      "bytes": 337853
+    },
+    {
+      "id": "hair-lang_glatt-back",
+      "slot": "hair",
+      "depth": "back",
+      "src": "long-hair/assets/lang_glatt.png",
+      "uv": [
+        2,
+        2,
+        384,
+        633
+      ],
+      "box": [
+        292.5,
+        45,
+        185,
+        304.9609375
+      ],
+      "sha256": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55",
+      "bytes": 450768
+    },
+    {
+      "id": "hair-lang_glatt-front",
+      "slot": "hair",
+      "depth": "front",
+      "src": "long-hair/assets/lang_glatt.png",
+      "uv": [
+        2,
+        639,
+        384,
+        316
+      ],
+      "box": [
+        308,
+        45,
+        154,
+        126.72916666666667
+      ],
+      "sha256": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55",
+      "bytes": 450768
+    },
+    {
+      "id": "hair-zopf-back",
+      "slot": "hair",
+      "depth": "back",
+      "src": "long-hair/assets/zopf.png",
+      "uv": [
+        2,
+        2,
+        384,
+        418
+      ],
+      "box": [
+        316,
+        45,
+        205,
+        223.15104166666666
+      ],
+      "sha256": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049",
+      "bytes": 308534
+    },
+    {
+      "id": "hair-zopf-front",
+      "slot": "hair",
+      "depth": "front",
+      "src": "long-hair/assets/zopf.png",
+      "uv": [
+        2,
+        424,
+        384,
+        348
+      ],
+      "box": [
+        314,
+        45,
+        142,
+        128.6875
+      ],
+      "sha256": "1305af3ae75e51fec7715b56949dd7d6a91c1637a0e77b6d630c0f6ef8a19049",
+      "bytes": 308534
+    },
+    {
+      "id": "hair-box_braids-back",
+      "slot": "hair",
+      "depth": "back",
+      "src": "long-hair/assets/box_braids.png",
+      "uv": [
+        2,
+        2,
+        384,
+        549
+      ],
+      "box": [
+        285,
+        45,
+        200,
+        285.9375
+      ],
+      "sha256": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb",
+      "bytes": 458357
+    },
+    {
+      "id": "hair-box_braids-front",
+      "slot": "hair",
+      "depth": "front",
+      "src": "long-hair/assets/box_braids.png",
+      "uv": [
+        2,
+        555,
+        384,
+        337
+      ],
+      "box": [
+        312,
+        45,
+        146,
+        128.13020833333334
+      ],
+      "sha256": "1b0bad987abb6180b94572023f73ce17bfbcbbab8f07b143ad551988ea87a1cb",
+      "bytes": 458357
+    }
+  ],
+  "sources": {
+    "locs": {
+      "back": {
+        "file": "source-locs-back.png",
+        "sha256": "a0547e3c1389fbda99d2002eb89e30a196a40d3b841a7d6327375ec357b98ead",
+        "crop": [
+          85,
+          199,
+          870,
+          963
+        ],
+        "bytes": 1632074
+      },
+      "front": {
+        "file": "source-locs-front.png",
+        "sha256": "b181fe69c95b55f61d2758dc071bd7f9995d73be5fbfbe5d2a0764610933f37f",
+        "crop": [
+          90,
+          72,
+          1284,
+          897
+        ],
+        "bytes": 1478105
+      }
+    },
+    "bob": {
+      "back": {
+        "file": "source-bob-back.png",
+        "sha256": "fb04d44224ae607e53d607f0e92c3e729148cacb135b28d7e3839f5b2ea73919",
+        "crop": [
+          173,
+          206,
+          856,
+          797
+        ],
+        "bytes": 894629
+      },
+      "front": {
+        "file": "source-bob-front.png",
+        "sha256": "b259be37da27500bdddf7142090935b282492cfd0dd7bf5105439ab591e1dec4",
+        "crop": [
+          172,
+          117,
+          1103,
+          869
+        ],
+        "bytes": 1180082
+      }
+    },
+    "lang_glatt": {
+      "back": {
+        "file": "source-lang_glatt-back.png",
+        "sha256": "b9219209369c9cb254d304742804826c8f49d3ae35f1f3673a214bccb6eaf01f",
+        "crop": [
+          53,
+          91,
+          866,
+          1428
+        ],
+        "bytes": 1474104
+      },
+      "front": {
+        "file": "source-lang_glatt-front.png",
+        "sha256": "539a973df7d8f801b3144cbf87538fb5e1d120a3ea73a164f6ef3f2bced887e0",
+        "crop": [
+          99,
+          36,
+          1236,
+          1016
+        ],
+        "bytes": 1371626
+      }
+    },
+    "zopf": {
+      "back": {
+        "file": "source-zopf-back.png",
+        "sha256": "bd4c2959e749319c8f3e547ebaf5ab405c2d3cb78333d5456efdd75a54a7cec1",
+        "crop": [
+          184,
+          94,
+          962,
+          1046
+        ],
+        "bytes": 907413
+      },
+      "front": {
+        "file": "source-zopf-front.png",
+        "sha256": "a0ec8988b778d9a178cd86c91eecbaf7e0dc190e625295ee7b93b61ba848990b",
+        "crop": [
+          205,
+          52,
+          1054,
+          956
+        ],
+        "bytes": 1097503
+      }
+    },
+    "box_braids": {
+      "back": {
+        "file": "source-box_braids-back.png",
+        "sha256": "f58f43b2eb14e79565501f34b9e0332b3aaffa2e57de0b3bcf6406462e911b9d",
+        "crop": [
+          130,
+          93,
+          857,
+          1226
+        ],
+        "bytes": 1372635
+      },
+      "front": {
+        "file": "source-box_braids-front.png",
+        "sha256": "408ea9253c308da2f3a282a9b553bd179f0ab29e6b5546082bd26f5b9c951df2",
+        "crop": [
+          336,
+          147,
+          777,
+          682
+        ],
+        "bytes": 602320
+      }
+    }
+  }
+}

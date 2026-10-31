@@ -7,14 +7,14 @@ const sourceHash = (file, bytes = fs.readFileSync(path.join(root, file))) => dig
 const read = file => JSON.parse(fs.readFileSync(path.join(root, file), 'utf8'));
 const matrix = read('docs/premium-v2/coverage.json'), art = read(lab + 'production-art/manifest.json');
 const fingerprintFiles = ['tests/premium-production-browser.cjs', 'takeover-holo.js', 'takeover-mein-boxer-items.js', lab + 'production.html', lab + 'production.js', lab + 'materials.js', lab + 'materials.json', lab + 'streaming.js', lab + 'streaming-assets.json', lab + 'pilot.js', lab + 'pilot-assets.json', lab + 'production-art/manifest.json'];
-for (const file of ['headwear/headwear.js', 'headwear/manifest.json', 'hair-expansion/manifest.json', 'tops/tops.js', 'tops/manifest.json', 'wraps/manifest.json', 'effects.js', 'effects.json']) if (fs.existsSync(path.join(root, lab + file))) fingerprintFiles.push(lab + file);
+for (const file of ['headwear/headwear.js', 'headwear/manifest.json', 'headwear-hijab/hijab.js', 'headwear-hijab/manifest.json', 'long-hair/long-hair.js', 'long-hair/manifest.json', 'hair-expansion/manifest.json', 'tops/tops.js', 'tops/manifest.json', 'wraps/manifest.json', 'effects.js', 'effects.json']) if (fs.existsSync(path.join(root, lab + file))) fingerprintFiles.push(lab + file);
 const initialHashes = Object.fromEntries(fingerprintFiles.map(f => [f, sourceHash(f)])), served = new Map();
 let imageActive = 0, imagePeak = 0;
 const server = http.createServer((req, res) => {
   const pathname = decodeURIComponent(new URL(req.url, 'http://localhost').pathname), file = path.resolve(root, '.' + pathname);
   if (pathname === '/' + lab + 'production-bench-fixture.html') {
     res.setHeader('Content-Type', 'text/html');
-    const optionalScripts = ['headwear/headwear.js', 'tops/tops.js', 'effects.js'].filter(f => fs.existsSync(path.join(root, lab + f))).map(f => '<script src="' + f + '"></script>').join('');
+    const optionalScripts = ['headwear/headwear.js', 'headwear-hijab/hijab.js', 'long-hair/long-hair.js', 'tops/tops.js', 'effects.js'].filter(f => fs.existsSync(path.join(root, lab + f))).map(f => '<script src="' + f + '"></script>').join('');
     res.end(`<!doctype html><html><meta charset="utf-8"><canvas width="768" height="1216"></canvas><script src="../../takeover-holo.js"></script><script src="pilot.js"></script><script src="streaming.js"></script><script src="materials.js"></script>${optionalScripts}<script src="production.js"></script><script>
     (async()=>{await TLPremiumProduction.init();const t=performance.now(),result=await TLPremiumProduction.prepare(TLPremiumProduction.defaults);if(result.renderer!=='anime-draft')throw Error('No default production draft');await Promise.all(Object.values(result.images).map(im=>im.decode()));const g=document.querySelector('canvas').getContext('2d');TLPremiumProduction.draw(g,result.selection,result.images);g.getImageData(0,0,1,1);const urls=new Set(Object.keys(result.images).map(src=>new URL(src,location.href).href));window.result={mode:'production-new-art',loadDecodeFirstDrawMs:performance.now()-t,imageRequests:urls.size,imageEncodedBytes:performance.getEntriesByType('resource').filter(r=>urls.has(r.name)).reduce((n,r)=>n+r.encodedBodySize,0),decodedRGBABytes:Object.values(result.images).reduce((n,im)=>n+im.naturalWidth*im.naturalHeight*4,0),loader:TLPremiumProduction.loader.stats(),materials:TLPremiumMaterials.stats()};document.body.dataset.ready='true'})().catch(e=>{document.body.dataset.ready='error';window.error=e.message})
     </script></html>`); return;
@@ -95,7 +95,7 @@ async function saveContact(page, entries, file, crop = [0, 0, 768, 1216], column
             hero.toDataURL(); expected.toDataURL(); const heroMatch = compare(hero.getContext('2d').getImageData(0, 0, 768, 1216).data, expected.getContext('2d').getImageData(0, 0, 768, 1216).data); const mismatchImages = heroMatch.max ? [hero.toDataURL(), expected.toDataURL()] : null;
             for (const tile of document.querySelectorAll('.item')) {
               const slot = tile.dataset.slot, cv = tile.querySelector('canvas'), frame = P.itemFrame(result.selection, slot);
-              if (!frame) { out.push({ slot, empty: true, valid: !cv && tile.querySelector('small').textContent === 'Ohne' }); continue; }
+              if (!frame) { const label = slot === 'hair' && result.selection.config.head === 'hijab' ? 'Verdeckt' : 'Ohne'; out.push({ slot, empty: true, valid: !cv && tile.querySelector('small').textContent === label }); continue; }
               if (!cv) { out.push({ slot, valid: false }); continue; }
               P.draw(expected.getContext('2d'), result.selection, result.images, slot);
               const crop = document.createElement('canvas'); crop.width = frame[2]; crop.height = frame[3]; crop.getContext('2d').drawImage(expected, ...frame, 0, 0, crop.width, crop.height);
@@ -110,6 +110,23 @@ async function saveContact(page, entries, file, crop = [0, 0, 768, 1216], column
           assert.ok(r.images.peakActive <= 3 && r.images.cachedDecodedBytes <= r.images.maxBytes && r.images.cachedEntries <= r.images.maxEntries); assert.ok(r.materials.bytes <= r.materials.maxBytes && r.materials.entries <= r.materials.maxEntries); assert.deepEqual(r.flags, [false, false]);
           validated.push({ slot: row.slot, value: row.value, color: row.color, state: row.state, pose: row.pose }); validations.push({ variant: variantKey(row), sources: r.ids, heroMaxDelta: r.heroMatch.max, itemMaxDelta: Math.max(0, ...r.items.map(i => i.max || 0)) });
         }
+        const hijabSuppression = await page.evaluate(async () => {
+          const P = TLPremiumProduction, rows = [];
+          const base = { ...P.defaults, head: 'hijab', headc: 'schwarz', coat: 'none', top: 'none', hood: false };
+          if (!P.resolve(base)) return { available: false, rows };
+          for (const pose_profile of ['cool', 'guard']) {
+            await P.prepare({ ...base, pose_profile });
+            const start = P.loader.stats().requests;
+            for (const hair of TLHolo.HAIR_KEYS) {
+              const result = await P.prepare({ ...base, pose_profile, hair });
+              rows.push({ hair, pose: pose_profile, renderer: result.renderer, hairPieces: result.selection?.pieces.filter(p => p.slot === 'hair').length,
+                unexpectedImages: result.selection ? Object.keys(result.images).filter(src => !result.selection.pieces.some(p => p.src === src)) : [] });
+            }
+            if (P.loader.stats().requests !== start) throw Error('Hidden hair must not cause extra image requests');
+          }
+          return { available: true, rows };
+        });
+        if (hijabSuppression.available) assert.ok(hijabSuppression.rows.every(r => r.renderer === 'anime-draft' && r.hairPieces === 0 && r.unexpectedImages.length === 0), 'Hijab fully suppresses every catalogue hairstyle without loading hidden artwork');
         const bodyMask = await page.evaluate(async () => {
           const P = TLPremiumProduction, layers = [];
           for (const coat of ['none', 'samurai']) { const r = await P.prepare({ ...P.defaults, pose_profile: 'guard', coat, top: 'none' }), c = document.createElement('canvas'); c.width = 768; c.height = 1216; P.draw(c.getContext('2d'), r.selection, r.images, 'body'); layers.push(c.getContext('2d').getImageData(0, 0, 768, 1216).data); }
@@ -122,7 +139,7 @@ async function saveContact(page, entries, file, crop = [0, 0, 768, 1216], column
         });
         assert.ok(bodyMask.sleeveSkinRemoved > 1000, 'Guard coat applies actual body occlusion'); assert.equal(bodyMask.chestChanges, 0); assert.equal(bodyMask.headLowerChanges, 0);
         const fallback = [];
-        for (const patch of [{ head: 'hijab' }, { pose_profile: 'jab' }, { top: 'hoodie', hood: true }, { top: 'shirt', topc: 'schwarz', coat: 'none', pose_profile: 'cool' }, { top: 'shirt', topc: 'schwarz', coat: 'none', pose_profile: 'guard' }, { coat: 'basic', pose_profile: 'cool', top: 'none' }]) {
+        for (const patch of [{ head: 'hijab', coat: 'samurai' }, { pose_profile: 'jab' }, { top: 'hoodie', hood: true }, { top: 'shirt', topc: 'schwarz', coat: 'none', pose_profile: 'cool' }, { top: 'shirt', topc: 'schwarz', coat: 'none', pose_profile: 'guard' }, { coat: 'basic', pose_profile: 'cool', top: 'none' }]) {
           await set(page, patch); const result = await page.evaluate(() => ({ renderer: document.body.dataset.renderer, heroPNG: !!document.querySelector('#hero canvas'), heroSVG: !!document.querySelector('#hero svg'), animeBadges: [...document.querySelectorAll('.item small')].filter(x => /Anime|Canvas/.test(x.textContent)).length }));
           assert.deepEqual(result, { renderer: 'svg', heroPNG: false, heroSVG: true, animeBadges: 0 }); fallback.push({ patch, ...result });
         }
@@ -150,6 +167,11 @@ async function saveContact(page, entries, file, crop = [0, 0, 768, 1216], column
         const poses = ['cool', 'guard'], contacts = [], forms = await page.evaluate(() => TLHolo.HAIR_KEYS.filter(hair => TLPremiumProduction.resolve({ ...TLPremiumProduction.defaults, hair })));
         const entries = (values, key, extra = {}) => poses.flatMap(pose => values.map(value => ({ label: pose + ' · ' + key + ' ' + value, patch: { pose_profile: pose, coat: 'none', [key]: value, ...extra } })));
         contacts.push(await saveContact(page, entries(forms, 'hair'), engine + '-production-hair-contact.png', [215, 30, 345, 300]));
+        if (fs.existsSync(path.join(root, lab + 'long-hair/manifest.json'))) {
+          const long = read(lab + 'long-hair/manifest.json'), longForms = Object.keys(long.families || {});
+          if (!longForms.length && long.hair) longForms.push(long.hair);
+          contacts.push(await saveContact(page, entries(longForms, 'hair'), engine + '-production-long-hair-contact.png', [170, 15, 430, 600]));
+        }
         contacts.push(await saveContact(page, entries(['boxer', 'kurz', 'jogger', 'track'], 'bottom'), engine + '-production-bottom-contact.png', [135, 500, 510, 700]));
         contacts.push(await saveContact(page, entries(['boots', 'sneaker'], 'feet'), engine + '-production-feet-contact.png', [135, 800, 510, 400]));
         contacts.push(await saveContact(page, entries([0, 1, 2, 3, 4, 5, 6, 7], 'tone'), engine + '-production-skin-contact.png', [190, 65, 390, 520]));
@@ -158,7 +180,7 @@ async function saveContact(page, entries, file, crop = [0, 0, 768, 1216], column
         contacts.push(await saveContact(page, entries(['rot', 'weiss', 'schwarzgold', 'eisblau', 'glut'], 'glove'), engine + '-production-gloves-contact.png', [195, 130, 390, 340]));
         contacts.push(await saveContact(page, entries([0, 1, 2, 3, 4, 5, 6, 7], 'tone', { hands: 'wraps' }), engine + '-production-wraps-contact.png', [195, 130, 390, 340]));
         contacts.push(await saveContact(page, entries(['none', 'samurai', 'basic'], 'coat'), engine + '-production-coat-contact.png'));
-        contacts.push(await saveContact(page, entries(['cap', 'band'], 'head', { hair: 'kurz_glatt' }), engine + '-production-headwear-contact.png', [215, 30, 345, 300]));
+        contacts.push(await saveContact(page, entries(['cap', 'band', 'hijab'], 'head', { hair: 'kurz_glatt' }), engine + '-production-headwear-contact.png', [215, 30, 345, 300]));
         contacts.push(await saveContact(page, entries(['tank', 'shirt'], 'top', { topc: 'schwarz', hood: false }), engine + '-production-tops-contact.png', [170, 170, 430, 450]));
         contacts.push(await saveContact(page, entries(['flamme', 'sakura', 'blitz', 'schatten'], 'aura'), engine + '-production-aura-contact.png'));
         contacts.push(await saveContact(page, entries(['holo', 'dojo', 'neon', 'arena'], 'scene'), engine + '-production-scene-contact.png'));
@@ -176,7 +198,7 @@ async function saveContact(page, entries, file, crop = [0, 0, 768, 1216], column
           await benchmark.goto(base + '/' + lab + (mode === 'production-new-art' ? 'production-bench-fixture.html' : 'bench.html?mode=' + mode)); await ready(benchmark); cold.push(await benchmark.evaluate(() => window.result)); await context.close();
         }
         assert.deepEqual(errors, []); assert.deepEqual(external, []); assert.ok(imagePeak <= 3, 'server sees at most three active image requests');
-        engineReports.push({ engine, passed: true, validatedVariants: validated, validations, bodyMask, wrappedTones, fallback, failedPNGFullSVGFallback: true, latestSelectionWins: true, mobileOverflow: false, externalRequests: external, jsErrors: errors, maxServerImageConcurrency: imagePeak, contacts: contacts.filter(Boolean), benchmarks: { cold, warm, method: 'Same 3 fresh contexts and 110 draws minus 10 warmups, forced pixel readback; no artificial network delay. Production uses corrected artwork and material pipeline, so this is a system comparison; use streaming test for equal-art renderer comparison.' } });
+        engineReports.push({ engine, passed: true, validatedVariants: validated, validations, hijabSuppression, bodyMask, wrappedTones, fallback, failedPNGFullSVGFallback: true, latestSelectionWins: true, mobileOverflow: false, externalRequests: external, jsErrors: errors, maxServerImageConcurrency: imagePeak, contacts: contacts.filter(Boolean), benchmarks: { cold, warm, method: 'Same 3 fresh contexts and 110 draws minus 10 warmups, forced pixel readback; no artificial network delay. Production uses corrected artwork and material pipeline, so this is a system comparison; use streaming test for equal-art renderer comparison.' } });
         fs.writeFileSync(path.join(output, engine + '-production-tests.json'), JSON.stringify(engineReports.at(-1), null, 2) + '\n');
         console.log('PASS ' + engine + ': ' + validated.length + ' integrated variant/pose cells, exact item tiles, full SVG fallback, race, mobile, cache/concurrency; ' + contacts.filter(Boolean).length + ' contact sheets.');
       } finally { await browser.close(); }

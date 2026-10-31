@@ -2,13 +2,15 @@
 
 Automatisch aus vorhandenem Inventar, tatsächlichen PNG-Dateien, Registrierungen, SHA-256 und aktuellem Browser-Testbericht erzeugt. Keine Live-Datenbankabfrage. Der historische PR-81-Stand bleibt in `coverage.csv`; die aktuelle Produktionsmatrix steht in `production-coverage.csv` und `production-coverage.json`.
 
-**41/58 Katalogeinträge mit nachgewiesenen Grafikquellen; 40/58 mit aktueller technischer Testabdeckung; 0 freigegeben.**
+**52 Ausrüstungs-/Effekteinträge + 6 Pose-Metadateneinträge = 58 Katalogeinträge. 48/52 Ausrüstungs-/Effekteinträge mit Grafikquellen; 47/52 technisch geprüft; 0 freigegeben.**
 
-Gesamtmatrix: 1800 Zeilen. Grafikquellen für 205 unterschiedliche Varianten-Schlüssel bzw. 410 Posezellen. Technisch integriert und geprüft: 204 Varianten-Schlüssel / 407 Posezellen. Gegenüber dem historischen SVG-only-Stand neu: 386 Posezellen; 194 Schlüssel gewinnen neue Poseabdeckung, davon waren 193 vorher in keiner Premium-Pose vorhanden. Haut- und Augenfarben sind zusätzlich enthalten, aber keine neuen Shop-Items.
+Premium-Profile mit registrierter Körperbasis: cool, guard (jeweils nur nachgewiesene Ausrüstungskombinationen). Aktuell technisch belegte Profile: cool, guard. Pose-Zeilen sind Metadaten und erhöhen weder Item-Abdeckung noch Grafikvarianten.
+
+Gesamtmatrix: 1800 Zeilen. Grafikquellen für 261 unterschiedliche Varianten-Schlüssel bzw. 522 Posezellen. Technisch integriert und geprüft: 260 Varianten-Schlüssel / 519 Posezellen. Gegenüber dem historischen SVG-only-Stand neu: 498 Posezellen; 250 Schlüssel gewinnen neue Poseabdeckung, davon waren 249 vorher in keiner Premium-Pose vorhanden. Haut- und Augenfarben sind zusätzlich enthalten, aber keine neuen Shop-Items.
 
 **Zählweise:** Varianten-Schlüssel = Slot, Itemwert, Farbe und Zustand; jede Pose wird zusätzlich als Posezelle gezählt. Das ist keine Anzahl aller kombinierbaren Outfits und keine Anzahl neuer PNGs. Ein Teil mit zwei Posen zählt nur einmal als Varianten-Schlüssel.
 
-Technisch geprüft sind 192 Raster-/Materialvarianten und 12 prozedurale Canvas-Varianten. Effekte/Szenen werden ausdrücklich nicht als neue PNG-Illustrationen gezählt. Glatze entfernt die Haare; die acht zulässigen Haarfarbwerte erzeugen dabei dasselbe Bild.
+Technisch geprüft sind 248 Raster-/Materialvarianten und 12 prozedurale Canvas-Varianten. Effekte/Szenen werden ausdrücklich nicht als neue PNG-Illustrationen gezählt. Glatze entfernt die Haare; die acht zulässigen Haarfarbwerte erzeugen dabei dasselbe Bild.
 
 Technische Evidenz: aktueller, hashgebundener Chromium-/WebKit-Bericht vorhanden.
 
@@ -18,25 +20,25 @@ Status getrennt: `SVG only` = keine verifizierte passende Grafik; `Artwork draft
 |---|---|---:|---:|---|---|
 | hair_kurz_glatt | Kurz glatt | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | hair_stachel | Stachel | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
-| hair_lang_glatt | Lang glatt | 0/8 | 0/8 | – | SVG only; Not validated; Not applicable |
+| hair_lang_glatt | Lang glatt | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | hair_undercut | Undercut | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | hair_buzz | Buzzcut | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | hair_glatze | Glatze | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
-| hair_dutts | Zwei Dutts | 0/8 | 0/8 | – | SVG only; Not validated; Not applicable |
-| hair_zopf | Pferdeschwanz | 0/8 | 0/8 | – | SVG only; Not validated; Not applicable |
-| hair_bob | Bob | 0/8 | 0/8 | – | SVG only; Not validated; Not applicable |
+| hair_dutts | Zwei Dutts | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
+| hair_zopf | Pferdeschwanz | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
+| hair_bob | Bob | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | hair_wellig | Wellig | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | hair_locken | Locken | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | hair_afro | Afro | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | hair_afro_puffs | Afro-Puffs | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
-| hair_locs | Locs | 0/8 | 0/8 | – | SVG only; Not validated; Not applicable |
-| hair_box_braids | Box Braids | 0/8 | 0/8 | – | SVG only; Not validated; Not applicable |
+| hair_locs | Locs | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
+| hair_box_braids | Box Braids | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | hair_cornrows | Cornrows | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | hair_twists | Twists | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | hair_high_top | High-Top Fade | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | head_cap | Kappe | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | head_band | Stirnband | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
-| head_hijab | Sport-Hijab | 0/8 | 0/8 | – | SVG only; Not validated; Not applicable |
+| head_hijab | Sport-Hijab | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | top_tank | Tanktop | 8/8 | 8/8 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | top_shirt | T-Shirt | 1/8 | 0/8 | – | Artwork draft; Not validated; Artistically pending |
 | top_hoodie | Hoodie | 0/16 | 0/16 | – | SVG only; Not validated; Not applicable |
@@ -68,12 +70,12 @@ Status getrennt: `SVG only` = keine verifizierte passende Grafik; `Artwork draft
 | scene_dojo | Dojo | 1/1 | 1/1 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | scene_neon | Neon-Stadt | 1/1 | 1/1 | guard, cool | Artwork draft; Technically validated; Artistically pending |
 | scene_arena | Arena | 1/1 | 1/1 | guard, cool | Artwork draft; Technically validated; Artistically pending |
-| pose_guard | Kampfstellung | 0/1 | 0/1 | – | SVG only; Not validated; Not applicable |
-| pose_jab | Jab | 0/1 | 0/1 | – | SVG only; Not validated; Not applicable |
-| pose_sieg | Siegerpose | 0/1 | 0/1 | – | SVG only; Not validated; Not applicable |
-| pose_cool | Cool | 0/1 | 0/1 | – | SVG only; Not validated; Not applicable |
-| pose_flex | Bizeps | 0/1 | 0/1 | – | SVG only; Not validated; Not applicable |
-| pose_ansage | Ansage | 0/1 | 0/1 | – | SVG only; Not validated; Not applicable |
+| pose_guard | Kampfstellung | – Metadaten | – kein Grafikitem | guard | Metadaten; Premium-Profil verfügbar (Teilabdeckung); Profile technically validated |
+| pose_jab | Jab | – Metadaten | – kein Grafikitem | – | Metadaten; SVG-Fallback; SVG fallback |
+| pose_sieg | Siegerpose | – Metadaten | – kein Grafikitem | – | Metadaten; SVG-Fallback; SVG fallback |
+| pose_cool | Cool | – Metadaten | – kein Grafikitem | cool | Metadaten; Premium-Profil verfügbar (Teilabdeckung); Profile technically validated |
+| pose_flex | Bizeps | – Metadaten | – kein Grafikitem | – | Metadaten; SVG-Fallback; SVG fallback |
+| pose_ansage | Ansage | – Metadaten | – kein Grafikitem | – | Metadaten; SVG-Fallback; SVG fallback |
 
 Posen, Szenen und Effekte behalten die vorhandene prozedurale/SVG-Darstellung, solange keine tatsächlich integrierte Premium-Familie nachgewiesen ist. Neue Canvas-Effekte sind separat als Canvas ausgewiesen. Ein Guard-Pilot macht nicht sämtliche sechs Pose-Items zu fertigen Illustrationen.
 

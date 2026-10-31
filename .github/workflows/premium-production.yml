@@ -31,6 +31,8 @@ jobs:
           node tests/premium-v2-tops.cjs
           node tests/premium-v2-wraps.cjs
           node tests/premium-v2-effects.cjs
+          node tests/premium-v2-hijab.cjs
+          node tests/premium-v2-long-hair.cjs
       - name: Integrated catalogue, exact item tiles and full SVG fallback
         run: node tests/premium-production-browser.cjs
       - name: Rebuild source- and evidence-bound coverage
@@ -46,5 +48,7 @@ jobs:
             tools/premium-v2/hair-expansion/evidence/
             tools/premium-v2/tops/evidence/
             tools/premium-v2/wraps/evidence/
+            tools/premium-v2/headwear-hijab/evidence/
+            tools/premium-v2/long-hair/evidence/
             tools/premium-v2/material-assets/*contact.png
             docs/premium-v2/production-*.json
