@@ -109,3 +109,17 @@ Bewusst offen (Entscheid Owner):
 | `tests/training-v2-concurrency.sh` | 6 parallele Bestätigungen → 1 Buchung |
 | `tests/training-v2-contracts.cjs` | statische Sicherheitsverträge |
 | `tests/training-v2-browser.cjs` | Chromium, in CI zusätzlich WebKit: alle Dashboard- und Formularabläufe, 320–1366 px, erzeugt die Screenshots in `docs/screenshots/training-v2/` |
+
+## 15. Vereinstrainings fixieren und Ein-Klick-Meldung (Erweiterung zu PR #83)
+
+**Verhalten bei aktiviertem `training_v2`:** Auf `boxer.html` erscheint vor dem bisherigen Trainingseintrag die Frage «Warst du heute im Vereinstraining?». «Ja» ruft `public.submit_scheduled_club_training_today(p_slot_id)` auf; der Server bestimmt den heutigen Schweizer Kalendertag, die aktive Pflicht-Einheit aus `club_schedule`, die Trainingsart, Dauer und die beantragte Einstufung. Das Training wird ausschliesslich als **pending** gespeichert. Die Meldung «... automatisch eingetragen und zur Trainerfreigabe eingereicht» erscheint erst bei `status=submitted`. «Nein» öffnet das bestehende individuelle Trainingsformular. Für andere Vereinstrainings gibt es einen separaten Ergänzungstrainings-Link; das bestehende Training-2.0-Formular bleibt zuständig.
+
+**Fixer Stundenplan:** `checkin.html` zeigt angemeldeten Boxern die aktiven Pflicht-Einheiten der Woche (aus `get_training_v2_config`) und bietet für die heutige Einheit einen eigenen Antrag-Button. Trainer sehen weiterhin die bisherige Gym-Check-in-/Start-Logik. Der Stundenplan wird nicht doppelt im Frontend gespeichert.
+
+**Serverseitige Schutzregeln:** nur aktive authentifizierte Boxer, `training_v2` aktiv; geschlossene Saisons abgewiesen; Pflicht-Tag und `p_slot_id` geprüft; Tages-Advisory-Lock; kein zweiter offener/bestätigter Pflicht-/gleichartiger Antrag; Gym-Teilnahme am selben Tag verhindert zusätzliche Selbstmeldung; bei mehreren aktiven Pflicht-Einheiten wird zunächst eine konkrete Auswahl verlangt. Punkte, EXP, Coins und `club_tier` werden NICHT vom Client übertragen und erst durch Trainerbestätigung verarbeitet. Bei `already_pending`, `already_approved`, `gym_registered`, `no_slot`, `choose_slot` oder Fehler wird keine falsche Erfolgsmeldung gezeigt.
+
+**Check-in-only-Modus:** Wenn zugleich `gym_training` und `club_checkin_only` aktiv sind, wird kein zusätzlicher Selbstantrag erstellt, sondern der Boxer zum bestehenden Trainer-geführten Check-in verwiesen. Das ist eine bewusst beibehaltene Sicherheitsgrenze, bis die Owner-Entscheidung zur Vereinheitlichung von Gym-Check-in und Selbstantrag getroffen ist.
+
+**Migration und Freigabe:** Nach der originalen `20261031090000_training_v2_classification.sql` muss zusätzlich `20261031100000_scheduled_club_training_quick_request.sql` angewendet werden. Beide bleiben ohne aktive Schalter zunächst inaktiv. Danach Postflight und nur nach Freigabe die bestehende `activate_20261031090000_training_v2.sql`. Zum Rückbau: zuerst Training 2.0 deaktivieren, anschliessend `rollback_20261031100000_scheduled_club_training_quick_request.sql` und erst danach den Basis-Rollback durchführen.
+
+**Tests:** `node --test tests/club-today-contracts.cjs`. Ein vollständiger PostgreSQL-/Browser-Test und ein echter Check-in-vs.-Antrag-Race-Test stehen noch aus; sie sind ein Freigabegate. Die beiden PRs bleiben Draft, ohne produktive Aktivierung.
