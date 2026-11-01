@@ -13,7 +13,8 @@ const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
  const challenge={
   id:'future-challenge',title:'Original Challenge',description:'Original description',
   metric:'training_sessions',target_value:10,
-  starts_at:'2026-11-01T00:00:00+01:00',ends_at:'2026-11-08T23:59:59+01:00',status:'active'
+  // relativ zu heute, damit die Challenge im Test immer in der Zukunft liegt (feste Daten liefen am 1.11.2026 ab)
+  starts_at:new Date(Date.now()+7*864e5).toISOString(),ends_at:new Date(Date.now()+14*864e5).toISOString(),status:'active'
  };
  const db={
   auth:{getUser:async()=>({data:{user:{id:'admin-auth'}},error:null})},

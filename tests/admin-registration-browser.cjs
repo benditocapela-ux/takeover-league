@@ -65,8 +65,8 @@ export function createClient(){
     const labels=await page.locator('#profilesBody tr').allTextContents();
     assert.ok(labels.some(x=>x.includes('Neu angemeldeter Boxer')));
     assert.ok(labels.some(x=>x.includes('Noch kein Account')));
-    const menu=page.locator('a[data-tl-admin]');
-    await page.locator('[data-stf-global-menu]').first().click();
+    const menu=page.locator('#tla-drawer a[href="./admin.html"]'); // Takeover 3.0: Admin-Bereiche im Menü der App-Shell
+    await page.locator('#tla-account-btn').click();
     await menu.waitFor({state:'visible'});
     const checkbox=page.locator('#profilesBody tr').filter({hasText:'Neu angemeldeter Boxer'}).locator('input[type=checkbox]').first();
     assert.equal(await checkbox.isVisible(),true);
@@ -89,8 +89,8 @@ export function createClient(){
    }else{
     await page.waitForFunction(()=>document.getElementById('adminStatus').textContent.includes('Zugriff verweigert'));
     assert.equal(await page.locator('#adminContent').isVisible(),false);
-    await page.locator('[data-stf-global-menu]').first().click();
-    assert.equal(await page.locator('a[data-tl-admin]').isVisible(),false);
+    await page.locator('#tla-account-btn').click();await page.locator('#tla-drawer:not([hidden])').waitFor();
+    assert.equal(await page.locator('#tla-drawer a[href="./admin.html"]').count(),0,'non-admins see no Clubverwaltung entry');
    }
    await page.close();
   }

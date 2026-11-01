@@ -163,7 +163,7 @@ function injected(cfg){
  await x.p.locator('.tlp-profile .tlp-figure').scrollIntoViewIfNeeded();await shot(x.p,'kg-profile');
  assert.ok(await x.p.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth),'no horizontal scroll on profile');
  await x.context.close();
- x=await open({role:'boxer'},'boxer.html');
+ x=await open({role:'boxer'},'boxer-experience.html'); // Takeover 3.0: Studio-Kacheln in Mein Takeover
  await x.p.waitForSelector('.tlp-tile[href="./shop.html"]',{timeout:15000});
  t=await x.p.textContent('.tlp-tile[href="./shop.html"]');assert.match(t,/230/);assert.match(t,/Rang F/);
  assert.ok((await calls(x.p)).some(c=>c[0]==='get_my_kampfgeist'&&c[1]&&c[1].p_full===false),'studio uses light request');

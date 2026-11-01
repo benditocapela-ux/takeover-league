@@ -119,11 +119,11 @@ const PAGE_KEY={'boxer.html':'studio','boxer-experience.html':'experience','goal
  'league-history.html':'awards','boxer-profile.html':'profil','news.html':'news','feedback.html':'feedback','karten.html':'karten','coach.html':'coach','league-manager.html':'manager','admin.html':'manager'};
 const TOUR=[
  {icon:'👋',title:'Willkommen in der Takeover League',text:'In einer Minute zeigen wir dir, wo du was findest. Du kannst die Tour jederzeit überspringen und später unter «Hilfe & Tutorial» nochmal ansehen.'},
- {icon:'🥊',title:'Training eintragen',text:'Hier in «Mein Studio» trägst du dein Training ein. Sobald dein Coach es bestätigt, bekommst du Punkte und EXP.',focus:'.tl-screen-ribbon .tl-screen-primary'},
- {icon:'📊',title:'Ranking und Podium',text:'Unten in der Leiste siehst du jederzeit, wer diesen Monat vorne liegt. Punkte starten jeden Monat neu, EXP bleiben für immer.',focus:'.tl-global-bottom [data-tl-tab="ranking"]'},
- {icon:'🧭',title:'Alle Bereiche im Menü',text:'Im Menü findest du Duelle, Challenges, Quests, Shop, Bewertung und mehr – sortiert nach Rubriken.',focus:'#takeover-menu-open'},
+ {icon:'🥊',title:'Training eintragen',text:'Unter «Training» trägst du dein Vereinstraining mit einem Tipp oder dein eigenes Training ein. Sobald dein Coach es bestätigt, bekommst du Punkte und EXP.',focus:'.ex-menu [data-tab="training"]|#tla-nav [data-area="training"]|.tl-screen-ribbon .tl-screen-primary'},
+ {icon:'📊',title:'Ranking und Podium',text:'Unten unter «Liga» siehst du jederzeit, wer diesen Monat vorne liegt. Punkte starten jeden Monat neu, EXP bleiben für immer.',focus:'.ex-menu [data-tab="liga"]|#tla-nav [data-area="liga"]|.tl-global-bottom [data-tl-tab="ranking"]'},
+ {icon:'🧭',title:'Alle Bereiche im Menü',text:'Oben rechts im Menü findest du «Mein Account» (Konto wechseln, abmelden) und alle Bereiche: Duelle, Challenges, Quests, Shop, Bewertung und mehr.',focus:'#ex-settings|#tla-account-btn|#takeover-menu-open'},
  {icon:'🧑‍🏫',title:'Für Trainer',text:'Im Trainer-Dashboard bestätigst du Trainings, gibst Feedback und startest den Gym-Check-in.',staff:true},
- {icon:'❓',title:'Hilfe auf jeder Seite',text:'Das «?» oben auf jeder Seite erklärt dir genau diese Seite. Fehler oder Ideen meldest du im Menü unter «Feedback & Fehler melden».',focus:'.tl-help-link'}
+ {icon:'❓',title:'Hilfe auf jeder Seite',text:'Das «?» oben auf jeder Seite erklärt dir genau diese Seite. Fehler oder Ideen meldest du im Menü unter «Feedback & Fehler melden».',focus:'.ex-help|.tla-help|.tl-help-link'}
 ];
 function tourSteps(role){return TOUR.filter(s=>!s.staff||role==='admin'||role==='coach')}
 let tourEl=null;
@@ -142,7 +142,7 @@ function runTour(opts){
  const onKey=e=>{if(e.key==='Escape'){e.preventDefault();finish(false)}};
  const draw=()=>{
   const s=steps[i],last=i===steps.length-1;unfocus();
-  if(s.focus){const el=document.querySelector(s.focus);if(el&&el.getClientRects().length){focused=el;el.classList.add('tl-tour-focus');const r=el.getBoundingClientRect();if(r.bottom<0||r.top>window.innerHeight)try{el.scrollIntoView({block:'nearest'})}catch(_){}}}
+  if(s.focus){const el=s.focus.split('|').map(q=>document.querySelector(q)).find(n=>n&&n.getClientRects().length);if(el){focused=el;el.classList.add('tl-tour-focus');const r=el.getBoundingClientRect();if(r.bottom<0||r.top>window.innerHeight)try{el.scrollIntoView({block:'nearest'})}catch(_){}}}
   tourEl.classList.toggle('dim',!focused);
   tourEl.classList.toggle('low',!!(focused&&focused.getBoundingClientRect().top+focused.getBoundingClientRect().height/2>window.innerHeight/2));
   tourEl.innerHTML=`<div class="tl-tour-card" role="dialog" aria-label="Kurze Einführung"><div class="tl-tour-top"><span class="tl-tour-icon" aria-hidden="true">${s.icon}</span><span class="tl-tour-count">${i+1} / ${steps.length}</span></div>
@@ -167,7 +167,7 @@ async function maybeTour(){
  runTour({role:data.role,onDone:()=>{db.rpc('mark_tour_seen',{p_version:TOUR_VERSION}).then(r=>{if(r.error)console.warn('Tour-Stand nicht gespeichert:',r.error.message)})}});
 }
 window.TLHelp={GROUPS,REGISTERS,PAGE_KEY,TOUR,TOUR_VERSION,tourSteps,runTour,maybeTour,client,esc};
-if(document.body&&document.body.dataset.tlScreen==='boxer'){
+if(document.body&&['boxer','boxer-experience'].includes(document.body.dataset.tlScreen)){
  const go=()=>setTimeout(()=>maybeTour().catch(e=>console.warn('Tour nicht verfügbar:',e)),600);
  if(document.readyState==='complete')go();else window.addEventListener('load',go,{once:true});
 }

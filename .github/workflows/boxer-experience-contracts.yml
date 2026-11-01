@@ -1,7 +1,7 @@
-name: Boxer Experience isolated contracts
+name: Takeover 3.0 · Boxer Experience, App-Shell und Konto-Umschalter
 on:
   push:
-    branches: ['feature/boxer-experience-redesign']
+    branches: ['feature/boxer-experience-redesign','feature/takeover-3-app-shell']
   pull_request:
     paths:
       - 'login.html'
@@ -10,9 +10,15 @@ on:
       - 'tests/boxer-experience-routing.cjs'
       - 'boxer-experience.html'
       - 'boxer-experience.js'
-      - 'takeover-boxer-flow.js'
-      - 'takeover-boxer-embedded-flow.css'
-      - 'tests/boxer-experience-inapp-routing.cjs'
+      - 'takeover-app-shell.js'
+      - 'takeover-app-shell.css'
+      - 'takeover-account.js'
+      - 'takeover-training-form.js'
+      - 'boxer-experience-studio.js'
+      - 'takeover-experience.css'
+      - 'tests/takeover3-contracts.cjs'
+      - 'tests/takeover3-browser.cjs'
+      - 'tests/takeover3-harness.cjs'
       - 'tests/boxer-experience-contract.cjs'
       - 'tests/boxer-experience-browser.cjs'
       - '.github/workflows/boxer-experience-contracts.yml'
@@ -27,8 +33,8 @@ jobs:
           node-version: '22'
       - name: Verify role, tab, no direct database mutation and club request boundaries
         run: node --test tests/boxer-experience-contract.cjs
-      - name: Verify all functional links stay inside Boxer Experience
-        run: node --test tests/boxer-experience-inapp-routing.cjs
+      - name: Takeover 3.0 contracts (App-Shell, Konto-Umschalter, Trainingsformular, Legacy-Weiterleitungen)
+        run: node --test tests/takeover3-contracts.cjs
       - name: Check login, PWA start URL and role-safe navigation
         run: node --test tests/boxer-experience-routing.cjs
   browser:
@@ -43,6 +49,8 @@ jobs:
       - run: npx playwright install --with-deps chromium webkit
       - name: Boxer Experience im Browser (Chromium + WebKit, gemocktes Supabase)
         run: SHOTS=boxer-experience-screenshots REQUIRE_WEBKIT=1 node tests/boxer-experience-browser.cjs
+      - name: Takeover 3.0 Benutzerwege (Konto, Training, Navigation; Chromium + WebKit; 320–1366 px)
+        run: TAKEOVER3_SHOTS=boxer-experience-screenshots/takeover3 node tests/takeover3-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:

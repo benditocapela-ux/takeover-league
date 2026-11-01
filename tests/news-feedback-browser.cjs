@@ -53,17 +53,19 @@ function injected(cfg){
 
  // A: Menü zeigt «Neu», News-Seite markiert Ungelesenes und merkt sich den Stand
  let {p,errors,context}=await page({role:'boxer',signedIn:true});
- await p.goto(base+'boxer.html');await p.waitForSelector('#takeover-menu-open.tl-has-news',{state:'attached'});
- assert.match(await p.textContent('a.tl-menu-link[href="./news.html"]'),/Neu/);
- assert.equal(await p.getAttribute('a.tl-menu-link[href^="./feedback.html"]','href'),'./feedback.html?from=boxer.html');
+ // Takeover 3.0: Punkt am Menüknopf der App-Shell, «Neu» und Feedback-Herkunft im Menü
+ await p.goto(base+'goals.html');await p.waitForSelector('#tla-account-btn.tla-has-news',{state:'attached'});
+ await p.click('#tla-account-btn');await p.waitForSelector('#tla-drawer:not([hidden])');
+ assert.match(await p.textContent('#tla-drawer a[href="./news.html"]'),/Neu/);
+ assert.equal(await p.getAttribute('#tla-drawer a[href^="./feedback.html"]','href'),'./feedback.html?from=goals.html');
  await p.goto(base+'news.html');await p.waitForSelector('.news-entry');
  assert.equal(await p.locator('.news-entry.unread').count(),2);
  const txt=await p.textContent('#app');assert.match(txt,/Feedback-Portal: Fehler und Ideen/);assert.match(txt,/<b>Kein<\/b> HTML/,'text shown literally');
  assert.equal(await p.locator('.news-items b').count(),0,'no HTML injection');
  assert.equal(await p.evaluate(()=>localStorage.getItem('tl.news.seen')),'57');
  await shot(p,'7b-news');await noOverflow(p);
- await p.goto(base+'boxer.html');await p.waitForTimeout(500);
- assert.equal(await p.locator('#takeover-menu-open.tl-has-news').count(),0,'read → no dot');
+ await p.goto(base+'goals.html');await p.waitForSelector('#tla-account-btn');await p.waitForTimeout(500);
+ assert.equal(await p.locator('#tla-account-btn.tla-has-news').count(),0,'read → no dot');
  assert.deepEqual(errors,[]);await context.close();
 
  // B: Boxer meldet einen Fehler mit Screenshot
@@ -104,7 +106,8 @@ function injected(cfg){
  ({p,errors,context}=await page({role:'boxer',signedIn:false}));
  await p.goto(base+'feedback.html');await p.waitForFunction(()=>/anmelden/.test(document.getElementById('app').textContent));
  assert.ok(!(await p.evaluate(()=>window.__calls)).length,'guest triggers no rpc');
- assert.ok(await p.locator('a.tl-menu-link[href^="./feedback.html"]').isHidden());
+ await p.click('#tla-account-btn');await p.waitForSelector('#tla-drawer:not([hidden])');
+ assert.equal(await p.locator('#tla-drawer a[href^="./feedback.html"]').count(),0,'guest menu without feedback');
  await context.close();
 
  await browser.close();server.close();

@@ -26,7 +26,7 @@ label{display:grid;gap:5px}small{color:var(--muted)}.error{color:var(--bad)}
 .live-reload-note{font-size:var(--fs-sm);color:var(--muted)}
 button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 </style>
-<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"></head>
+<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"><link rel="stylesheet" href="./takeover-app-shell.css"></head>
 <body data-tl-screen="duels">
 <main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Boxer-Duelle"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🥊</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Vergleich, Einladung und Ergebnisse</div><div class="tl-screen-title">Boxer-Duelle</div></div></div><div class="tl-screen-links"><a href="#app" class="tl-screen-primary">Duelle ansehen</a><a href="./arena.html">Arena</a></div></div>
 <p class="tl-subnav"><a href="./index.html">Liga</a><a href="./boxer.html">Mein Studio</a><a href="./coach.html">Trainerbereich</a></p>
@@ -344,5 +344,5 @@ byId('signin').onsubmit=async e=>{e.preventDefault();if(!db)return;const f=new F
 init();
 setInterval(()=>{if(!document.hidden&&profile&&!busy)load().catch(e=>say(message(e),true))},90000);
 </script>
-<script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-quick-actions.js" defer></script><script src="./takeover-choice-cards.js" defer></script><script src="./takeover-performance.js" defer></script><script src="./takeover-navigation.js" defer></script></body>
+<script src="./takeover-ux-scroll.js" defer></script><script src="./takeover-quick-actions.js" defer></script><script src="./takeover-choice-cards.js" defer></script><script src="./takeover-performance.js" defer></script><script src="./takeover-navigation.js" defer></script><script src="./takeover-account.js" defer></script><script src="./takeover-app-shell.js" defer></script></body>
 </html>

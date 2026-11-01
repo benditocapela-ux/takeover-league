@@ -29,7 +29,7 @@ td input[type="checkbox"]{width:22px;height:22px;accent-color:var(--gold)}
 pre{white-space:pre-wrap;overflow-wrap:anywhere;padding:13px;background:var(--bg);border-radius:var(--r-sm);border:1px solid var(--line-strong);font-size:var(--fs-xs)}
 .warn{border-left:3px solid var(--gold);padding:var(--sp-4);background:var(--surface-2)}
 @media(max-width:700px){body{padding:var(--sp-3)}.panel{padding:var(--sp-4)}.table-wrap{overflow:visible}table,thead,tbody,tr,td{display:block;width:100%;min-width:0}thead{position:absolute;clip:rect(0,0,0,0);width:1px;height:1px;overflow:hidden}tr{border:1px solid var(--line);border-radius:var(--r-md);margin:12px 0;padding:8px 11px}td{border:none;border-bottom:1px dashed var(--line);padding:9px 0}td:last-child{border-bottom:0}td::before{content:attr(data-label);display:block;color:var(--muted);font-size:11px;font-weight:800;margin-bottom:5px}td input[type="email"],td select{max-width:100%}}
-</style><link rel="stylesheet" href="./takeover-redesign.css"><link rel="stylesheet" href="./takeover-staff-experience.css"></head><body data-tl-screen="admin">
+</style><link rel="stylesheet" href="./takeover-redesign.css"><link rel="stylesheet" href="./takeover-staff-experience.css"><link rel="stylesheet" href="./takeover-app-shell.css"></head><body data-tl-screen="admin">
 <main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Clubverwaltung"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🛡️</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Konten, Rollen und Freigaben</div><div class="tl-screen-title">Clubverwaltung</div></div></div><div class="tl-screen-links"><a href="#adminContent" class="tl-screen-primary">Profile verwalten</a><a href="./coach.html">Trainerbereich</a><button type="button" data-stf-global-menu aria-haspopup="dialog">☰ Menü</button></div></div><header class="tl-subnav"><div class="brand">TAKEOVER LEAGUE / ADMIN</div><a href="./coach.html">Trainerbereich</a><a href="./login.html">Mein Account</a></header>
 <div class="stf-admin-hero"><span class="stf-admin-headline">TAKEOVER · CLUB CONTROL</span><h1>CLUBVERWALTUNG</h1>
 <p>Alle Boxer, Zugänge und Freigaben übersichtlich verwalten. Rollen und Berechtigungen bleiben serverseitig geschützt.</p></div>
@@ -250,4 +250,4 @@ document.querySelectorAll('[data-copy]').forEach(button=>button.addEventListener
 try{await mustBeAdmin();await load();openStaffPanel('profiles')}catch(e){msg(e.message,true);$('adminContent').classList.add('hidden')}
 </script>
 <script src="./takeover-navigation.js" defer></script>
-</body></html>
+<script src="./takeover-account.js" defer></script><script src="./takeover-app-shell.js" defer></script></body></html>

@@ -43,20 +43,21 @@ const server=http.createServer((req,res)=>{
  if(!file.startsWith(root+path.sep)){res.writeHead(403);res.end();return}
  fs.readFile(file,(err,bytes)=>{if(err){res.writeHead(404);res.end();return}res.setHeader('content-type',mime[path.extname(file)]||'application/octet-stream');res.end(bytes)});
 });
+// Takeover 3.0: Hilfe und «Mein Account»/Menü sitzen in der gemeinsamen Kopfzeile der App-Shell.
 async function assertStaffHeaderNotOverlapping(page,role){
+ await page.locator('#tla-header #tla-account-btn').waitFor();
  const state=await page.evaluate(()=>{
-  const ribbon=document.querySelector('.tl-screen-ribbon');
-  const menu=ribbon?.querySelector('[data-stf-global-menu]');
-  const help=ribbon?.querySelector('.tl-help-link');
-  if(!menu||!help)return {ready:false};
-  const a=menu.getBoundingClientRect(),b=help.getBoundingClientRect();
-  const intersectionX=Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left));
-  const intersectionY=Math.max(0,Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top));
-  return {ready:true,overlap:intersectionX*intersectionY,menuWidth:a.width,helpWidth:b.width};
+  const menu=document.querySelector('#tla-account-btn'),help=document.querySelector('#tla-header .tla-help');
+  if(!menu)return {ready:false};
+  const a=menu.getBoundingClientRect(),b=help&&help.getClientRects().length?help.getBoundingClientRect():null;
+  const ix=b?Math.max(0,Math.min(a.right,b.right)-Math.max(a.left,b.left)):0,iy=b?Math.max(0,Math.min(a.bottom,b.bottom)-Math.max(a.top,b.top)):0;
+  const hit=document.elementFromPoint(a.left+a.width/2,a.top+a.height/2);
+  return {ready:true,overlap:ix*iy,menuWidth:a.width,menuHeight:a.height,helpWidth:b?b.width:44,top:menu.contains(hit)};
  });
- assert.ok(state.ready,role+' menu and help link must exist');
- assert.equal(state.overlap,0,role+' help link must not overlay the global menu');
- assert.ok(state.menuWidth>=44&&state.helpWidth>=44,role+' header actions remain touch friendly');
+ assert.ok(state.ready,role+' account menu must exist');
+ assert.equal(state.overlap,0,role+' help link must not overlay the account menu');
+ assert.ok(state.menuWidth>=44&&state.menuHeight>=44&&state.helpWidth>=44,role+' header actions remain touch friendly');
+ assert.ok(state.top,role+' account menu is the topmost hit target');
 }
 const shotDir=process.env.STAFF_SHOTS;
 async function shot(page,name){if(!shotDir)return;fs.mkdirSync(shotDir,{recursive:true});await page.screenshot({path:path.join(shotDir,name+'.png')})}
@@ -76,8 +77,8 @@ async function adminScenario(browser,base,width){
  if(width<=390){
   const ribbon=await page.locator('.tl-screen-ribbon').boundingBox();
   const hero=await page.locator('.stf-admin-hero').boundingBox();
-  const menu=await page.locator('.tl-screen-ribbon [data-stf-global-menu]').boundingBox();
-  assert.ok(ribbon&&ribbon.height<=68,'admin mobile ribbon must be one compact row, got '+ribbon?.height);
+  const menu=await page.locator('#tla-account-btn').boundingBox(); // Takeover 3.0: Menü + Mein Account in der Kopfzeile
+  assert.ok(!ribbon||ribbon.height<=68,'admin mobile ribbon must be one compact row, got '+ribbon?.height);
   assert.ok(hero&&hero.height<=60,'admin mobile hero must be condensed, got '+hero?.height);
   assert.ok(menu&&menu.width>=44&&menu.height>=44,'admin global menu remains touch accessible');
  }
@@ -96,7 +97,7 @@ async function adminScenario(browser,base,width){
  assert.ok(await page.locator('[data-staff-pane="profiles"]').isVisible());
  const menu=page.locator('.stf-admin-tabs [data-stf-global-menu]');
  await menu.click();
- await page.locator('#tl-menu-panel[aria-hidden="false"]').waitFor();
+ await page.locator('#tla-drawer:not([hidden])').waitFor();
  await page.keyboard.press('Escape');
  assert.deepEqual(errors,[]);
  await ctx.close();
@@ -119,14 +120,14 @@ async function coachScenario(browser,base,width){
  await page.goto(base+'/coach.html');
  await page.locator('#cv2Tabs [data-view="review"]').waitFor();
  await assertStaffHeaderNotOverlapping(page,'coach');
- assert.ok(await page.locator('.tl-screen-ribbon').isVisible(),'premium trainer topbar visible');
+ assert.ok(await page.locator('#tla-header').isVisible(),'premium trainer topbar visible');
  assert.equal(await page.locator('#cv2Tabs [data-view]').count(),6,'six live trainer views retained');
  assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'coach no viewport overflow '+width);
  if(width<=390){
   const ribbon=await page.locator('.tl-screen-ribbon').boundingBox();
   const hero=await page.locator('.cv2-hero').boundingBox();
-  const menu=await page.locator('.tl-screen-ribbon [data-stf-global-menu]').boundingBox();
-  assert.ok(ribbon&&ribbon.height<=68,'coach mobile ribbon must be one compact row, got '+ribbon?.height);
+  const menu=await page.locator('#tla-account-btn').boundingBox(); // Takeover 3.0: Menü + Mein Account in der Kopfzeile
+  assert.ok(!ribbon||ribbon.height<=68,'coach mobile ribbon must be one compact row, got '+ribbon?.height);
   assert.ok(hero&&hero.height<=76,'coach mobile hero must be condensed, got '+hero?.height);
   assert.ok(menu&&menu.width>=44&&menu.height>=44,'coach global menu remains touch accessible');
  }
@@ -140,8 +141,8 @@ async function coachScenario(browser,base,width){
  await shot(page,'coach-review-'+width);
  await page.locator('#cv2Tabs [data-view="boxers"]').click();
  await page.locator('#viewBoxers').waitFor({state:'visible'});
- await page.locator('[data-stf-global-menu]').first().click();
- await page.locator('#tl-menu-panel[aria-hidden="false"]').waitFor();
+ await page.locator('#tla-account-btn').click();
+ await page.locator('#tla-drawer:not([hidden])').waitFor();
  await page.keyboard.press('Escape');
  assert.deepEqual(errors.filter(x=>!/Gamification|takeover-gamification/.test(x)),[]);
  await ctx.close();

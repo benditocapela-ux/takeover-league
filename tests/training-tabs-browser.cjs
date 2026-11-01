@@ -1,4 +1,5 @@
 // Trainingsauswahl (Mein Studio): Alle Bereichs-Tasten müssen anklickbar sein – auch wenn bereits
+// Takeover 3.0: boxer.html bleibt die Trainingsseite für Trainer (Boxer werden in Mein Takeover weitergeleitet), daher Trainerprofil.
 // eine Trainingsart ausgewählt ist (Fehlerbericht 27.10.2026: nur «Häufig» und «Boxen» reagierten).
 const {chromium}=require('playwright');
 const http=require('node:http');const fs=require('node:fs');const path=require('node:path');const assert=require('node:assert/strict');
@@ -11,7 +12,7 @@ const types=[[1,'Reguläres Boxtraining',50,'Boxen',110],[2,'Wettkampfsparring',
  .map(([id,name,points,category,sort_order])=>({id,name,points,category,sort_order,is_active:true}));
 const history=[1,1,1,3,3,4,6].map((t,i)=>({id:'s'+i,boxer_id:'p1',training_type_id:t,training_date:'2026-10-2'+(i%9),notes:'Training',status:'approved',created_at:'2026-10-20T10:00:00Z'}));
 const mock=`
-const T=${JSON.stringify({profiles:[{id:'p1',auth_user_id:'u1',display_name:'Ben',role:'boxer',is_active:true,is_listed:true}],training_types:types,training_submissions:history})};
+const T=${JSON.stringify({profiles:[{id:'p1',auth_user_id:'u1',display_name:'Ben',role:'coach',is_active:true,is_listed:true}],training_types:types,training_submissions:history})};
 function q(table){let one=false;const b={select(){return b},eq(){return b},neq(){return b},in(){return b},gte(){return b},lte(){return b},order(){return b},limit(){return b},range(){return b},
  is(){return b},not(){return b},or(){return b},filter(){return b},maybeSingle(){one=true;return b},single(){one=true;return b},insert(){return b},update(){return b},upsert(){return b},delete(){return b},
  then(res,rej){let d=T[table]||[];if(one)d=d[0]||null;return Promise.resolve({data:d,error:null,count:Array.isArray(d)?d.length:null}).then(res,rej)}};return b}
