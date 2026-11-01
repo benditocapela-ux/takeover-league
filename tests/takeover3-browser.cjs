@@ -210,10 +210,14 @@ async function trainingFlows(browser,base,name){
   // je Aufruf eine frische Seite (wie ein Klick aus einer Mitteilung oder einem Lesezeichen)
   const tab=await ctx.newPage();await tab.goto(base+legacy);await tab.waitForURL(expect);await tab.locator('#ex-app:not([hidden])').waitFor();await tab.close();
  }
- await page.goto(base+'/boxer.html?individual=1#trainingFormCard');await page.waitForURL(/#training\/eigenes$/);
- await page.locator('#ex-training-form:not([hidden]) .tf-form').waitFor();
+ // Hinweis: Playwright-WebKit (Linux) stürzte ab, wenn diese lange offene Seite per goto auf boxer.html wechselte;
+ // in frischen Tabs (wie bei Lesezeichen/Mitteilungen) läuft derselbe Weg fehlerfrei. Daher frischer Tab.
+ assert.deepEqual(errors,[]);
+ const fresh=await ctx.newPage();fresh.on('pageerror',e=>errors.push(e.message));
+ await fresh.goto(base+'/boxer.html?individual=1#trainingFormCard');await fresh.waitForURL(/#training\/eigenes$/);
+ await fresh.locator('#ex-training-form:not([hidden]) .tf-form').waitFor();
  // Reload behält die Ansicht
- await page.reload();await page.locator('#ex-training-form:not([hidden]) .tf-form').waitFor();
+ await fresh.reload();await fresh.locator('#ex-training-form:not([hidden]) .tf-form').waitFor();
  assert.deepEqual(errors,[]);
  await ctx.close();
 
