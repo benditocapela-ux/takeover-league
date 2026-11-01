@@ -16,6 +16,10 @@ on:
       - 'takeover-training-form.js'
       - 'boxer-experience-studio.js'
       - 'takeover-experience.css'
+      - 'takeover-anime.js'
+      - 'takeover-premium-character.js'
+      - 'tools/publish-premium-character.cjs'
+      - 'tests/anime-everywhere-browser.cjs'
       - 'tests/takeover3-contracts.cjs'
       - 'tests/takeover3-browser.cjs'
       - 'tests/takeover3-harness.cjs'
@@ -49,6 +53,8 @@ jobs:
       - run: npx playwright install --with-deps chromium webkit
       - name: Boxer Experience im Browser (Chromium + WebKit, gemocktes Supabase)
         run: SHOTS=boxer-experience-screenshots REQUIRE_WEBKIT=1 node tests/boxer-experience-browser.cjs
+      - name: Anime-Darstellung überall (veröffentlichter Build, Chromium + WebKit)
+        run: SHOTS=boxer-experience-screenshots/anime node tests/anime-everywhere-browser.cjs
       - name: Takeover 3.0 Benutzerwege (Konto, Training, Navigation; Chromium + WebKit; 320–1366 px)
         run: TAKEOVER3_SHOTS=boxer-experience-screenshots/takeover3 node tests/takeover3-browser.cjs
       - uses: actions/upload-artifact@v4
