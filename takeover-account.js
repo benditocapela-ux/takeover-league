@@ -187,7 +187,7 @@
      const r=await switchTo(db,acc.id);
      if(r&&r.ok)return;
      if(r&&r.error){
-      host.querySelectorAll('button').forEach(b=>b.disabled=false);say(r.error.message,true);
+      host.querySelectorAll('button').forEach(b=>b.disabled=false);say(r.error.message,true);go.focus();
       if(r.needsLogin)location.assign('./login.html?add=1&account='+encodeURIComponent(r.email||''));
      }
     });

@@ -193,8 +193,8 @@
    const areas=el('div');areas.id='tla-areas';
    panel.append(top,acc,areas);d.append(panel);
    d.addEventListener('click',e=>{if(e.target===d)closeDrawer(true)});
+   document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!d.hidden){e.preventDefault();closeDrawer(true)}});
    d.addEventListener('keydown',e=>{
-    if(e.key==='Escape'){e.preventDefault();closeDrawer(true)}
     if(e.key==='Tab'){const f=[...panel.querySelectorAll('a[href],button:not([disabled])')];if(!f.length)return;const a=f[0],b=f[f.length-1];
      if(e.shiftKey&&document.activeElement===a){e.preventDefault();b.focus()}else if(!e.shiftKey&&document.activeElement===b){e.preventDefault();a.focus()}}
    });
