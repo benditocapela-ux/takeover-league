@@ -102,3 +102,18 @@ test('role-based navigation for boxer, coach, admin and guests; legacy chrome hi
  assert.match(css,/min-height:44px/);assert.match(css,/env\(safe-area-inset-top/);assert.match(css,/env\(safe-area-inset-bottom/);
  assert.match(css,/html\.tla-typing \.tla-nav/,'nav hides while the iPhone keyboard is open');
 });
+test('early boxer.html guard redirects exactly like TLShell.legacyTarget',()=>{
+ const html=read('boxer.html');const src=html.slice(html.indexOf('<script>')+8,html.indexOf('</script>'));
+ const shellCtx={window:{},location:{href:'https://x.test/t/index.html',pathname:'/t/index.html',hash:''},document:{readyState:'loading',addEventListener(){},documentElement:{classList:{add(){}}}},URL,addEventListener(){},localStorage:{getItem:()=>null},console};
+ shellCtx.window=shellCtx;vm.createContext(shellCtx);vm.runInContext(shell,shellCtx);
+ for(const u of ['boxer.html','boxer.html?individual=1#trainingFormCard','boxer.html?club=1#trainingFormCard','boxer.html#entriesCard','boxer.html#profileCard','boxer.html#boxerNotificationSection','boxer.html#achievementsV2']){
+  const url=new URL('https://x.test/t/'+u);let target=null;
+  const store={'sb-iqarjivcrddcixrvqbfb-auth-token':JSON.stringify({user:{id:'u1'}}),takeover_accounts_v2:JSON.stringify([{id:'u1',role:'boxer'}])};
+  const ctx={localStorage:{getItem:k=>store[k]||null},URLSearchParams,JSON,location:{search:url.search,hash:url.hash,replace:t=>{target=t}},document:{documentElement:{style:{}}}};
+  vm.createContext(ctx);vm.runInContext(src,ctx);
+  assert.equal(target,shellCtx.TLShell.legacyTarget(url.href,'boxer'),u);
+ }
+ // Trainer werden nicht umgeleitet
+ let moved=false;const ctx={localStorage:{getItem:k=>k.startsWith('sb-')?JSON.stringify({user:{id:'u1'}}):JSON.stringify([{id:'u1',role:'coach'}])},URLSearchParams,JSON,location:{search:'',hash:'',replace:()=>{moved=true}},document:{documentElement:{style:{}}}};
+ vm.createContext(ctx);vm.runInContext(src,ctx);assert.equal(moved,false);
+});
