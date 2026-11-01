@@ -142,4 +142,10 @@ Alle Bereiche nutzen die bestehenden RPCs und RLS-Grenzen. «Mein Takeover» set
 | `tests/takeover3-harness.cjs` | Supabase-Attrappe mit simuliertem Token-Server (Widerruf, Rotation) |
 | bestehende Tests | an das neue Menü angepasst (`account-switch`, `boxer-experience-*`, `staff-experience-*`, `admin-registration`, `help-tutorial`, `news-feedback`, `release-browser-smoke`, `kampfgeist`, `redesign-contracts`); Studio-Tests für `boxer.html` laufen mit Trainerprofil |
 
-WebKit läuft in GitHub Actions; lokal war es nicht installierbar (kein Netzwerkzugang).
+CI (GitHub Actions, Commit `d3e97f9`): 92 von 92 Prüfungen grün, darunter alle Takeover-3.0-Wege in Chromium **und WebKit**.
+
+## 7. Bekannte Risiken
+- **WebKit-Absturz im Test:** Playwright-WebKit (Linux) stürzte reproduzierbar ab, wenn eine lange offene Boxer-Experience-Seite per `goto` auf `boxer.html` wechselte. Derselbe Weg in einem frischen Tab (Lesezeichen, Mitteilung) läuft fehlerfrei; der Test nutzt deshalb einen frischen Tab. Auf einem echten iPhone (Safari und installierte App) vor der Freigabe prüfen.
+- **Nicht im Simulator geprüft:** Safe-Area, Dynamic Island und Tastatur sind per CSS (`env(safe-area-inset-*)`, ausgeblendete Navigation beim Tippen) und mit simuliertem Inset getestet, nicht auf einem Gerät.
+- **Rollenhinweis kann veralten:** Der frühe Weiterleitungsschutz in `boxer.html` nutzt die zuletzt gespeicherte Rolle. Wurde ein Boxer kürzlich zum Trainer, landet er einmalig in der Boxer-Sperrseite; ab dem nächsten Laden stimmt es.
+- **Testdatum:** `tests/admin-challenge-editing-browser.cjs` hatte feste Daten, die am 1.11.2026 abliefen (auch auf `main` rot); hier auf relative Daten umgestellt.
