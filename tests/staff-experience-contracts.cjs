@@ -65,7 +65,7 @@ test('No added inline script blocks, duplicate IDs or sensitive SQL on click',()
   const ids=[...s.matchAll(/\bid="([^"]+)"/g)].map(m=>m[1]);
   assert.equal(new Set(ids).size,ids.length);
  }
- assert.equal((coach.match(/<script\b/g)||[]).length,6); // +2 Takeover 3.0: takeover-account.js, takeover-app-shell.js
- assert.equal((admin.match(/<script\b/g)||[]).length,4);
+ assert.equal((coach.match(/<script\b/g)||[]).length,7); // +2 Takeover 3.0: takeover-account.js, takeover-app-shell.js
+ assert.equal((admin.match(/<script\b/g)||[]).length,5);
  assert.doesNotMatch(css,/display:none!important;\s*\/\* admin permission/);
 });

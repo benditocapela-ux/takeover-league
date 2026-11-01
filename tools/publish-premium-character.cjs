@@ -33,8 +33,12 @@ function publish(source,destination){
  for(const [file,data] of json){const dest=path.join(out,file);fs.mkdirSync(path.dirname(dest),{recursive:true});fs.writeFileSync(dest,JSON.stringify(data))}
  fs.writeFileSync(path.join(out,'runtime.js'),bundle);
  fs.writeFileSync(path.join(out,'release.json'),JSON.stringify(release));
- const page=path.join(destination,'mein-boxer.html');
- fs.writeFileSync(page,fs.readFileSync(page,'utf8').replace('</head>','<meta name="tl-premium-character" content="enabled" data-version="'+version+'"></head>'));
+ // Freigabe für den Editor und für alle Seiten, die Holos über takeover-anime.js als Anime zeigen.
+ const tag='<meta name="tl-premium-character" content="enabled" data-version="'+version+'">';
+ for(const name of fs.readdirSync(destination).filter(f=>f.endsWith('.html'))){
+  const page=path.join(destination,name),html=fs.readFileSync(page,'utf8');
+  if(name==='mein-boxer.html'||html.includes('src="./takeover-anime.js"'))fs.writeFileSync(page,html.replace('</head>',tag+'</head>'));
+ }
  return {enabled:true,version,files:files.size+json.size+2};
 }
 module.exports={publish,modules,manifests};

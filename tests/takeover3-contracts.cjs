@@ -103,7 +103,7 @@ test('role-based navigation for boxer, coach, admin and guests; legacy chrome hi
  assert.match(css,/html\.tla-typing \.tla-nav/,'nav hides while the iPhone keyboard is open');
 });
 test('early boxer.html guard redirects exactly like TLShell.legacyTarget',()=>{
- const html=read('boxer.html');const src=html.slice(html.indexOf('<script>')+8,html.indexOf('</script>'));
+ const html=read('boxer.html');const at=html.indexOf('<script>/* Takeover 3.0: Boxer werden');const src=html.slice(at+8,html.indexOf('</script>',at));
  const shellCtx={window:{},location:{href:'https://x.test/t/index.html',pathname:'/t/index.html',hash:''},document:{readyState:'loading',addEventListener(){},documentElement:{classList:{add(){}}}},URL,addEventListener(){},localStorage:{getItem:()=>null},console};
  shellCtx.window=shellCtx;vm.createContext(shellCtx);vm.runInContext(shell,shellCtx);
  for(const u of ['boxer.html','boxer.html?individual=1#trainingFormCard','boxer.html?club=1#trainingFormCard','boxer.html#entriesCard','boxer.html#profileCard','boxer.html#boxerNotificationSection','boxer.html#achievementsV2']){
@@ -116,4 +116,11 @@ test('early boxer.html guard redirects exactly like TLShell.legacyTarget',()=>{
  // Trainer werden nicht umgeleitet
  let moved=false;const ctx={localStorage:{getItem:k=>k.startsWith('sb-')?JSON.stringify({user:{id:'u1'}}):JSON.stringify([{id:'u1',role:'coach'}])},URLSearchParams,JSON,location:{search:'',hash:'',replace:()=>{moved=true}},document:{documentElement:{style:{}}}};
  vm.createContext(ctx);vm.runInContext(src,ctx);assert.equal(moved,false);
+});
+test('anime renderer upgrades every Holo outside the editor and loads before takeover-holo.js',()=>{
+ const anime=read('takeover-anime.js');assert.doesNotThrow(()=>new vm.Script(anime));
+ assert.match(anime,/meta\[name="tl-premium-character"\]\[content="enabled"\]/);assert.match(anime,/page==='mein-boxer\.html'/);
+ for(const p of pages.filter(p=>p!=='mein-boxer.html')){const s=read(p);const a=s.indexOf('src="./takeover-anime.js"'),h=s.indexOf('src="./takeover-holo.js"');
+  assert.ok(a>0,p+' loads takeover-anime.js');if(h>0)assert.ok(a<h,p+': anime before holo')}
+ assert.match(read('tools/publish-premium-character.cjs'),/html\.includes\('src="\.\/takeover-anime\.js"'\)/);
 });
