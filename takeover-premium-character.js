@@ -4,7 +4,7 @@ export async function init(){
  const version=document.querySelector('meta[name=tl-premium-character]').dataset.version;
  if(!/^[a-f0-9]{16}$/.test(version))return null;
  await import('./assets/premium-character/'+version+'/runtime.js');
- const P=window.TLPremiumProduction;await P.init();
+ const P=window.TLPremiumCompletion;await P.init();
  const cache=new Map(),pending=new Set(),failed=new Set(),queue=[];
  let running=false;
  const config=(c,pose)=>window.TLHolo.normalize({...c,pose_profile:pose});
@@ -30,7 +30,8 @@ export async function init(){
    remember(job.key,html);pending.delete(job.key);job.done();
   }}finally{running=false}
  }
- function request(c,pose,slot,done){const normalized=config(c,pose),ck=key(normalized),k=ck+'|'+slot;
+ function request(c,pose,slot,done){if(slot&&failed.has(key(config(c,pose))))return null;
+  const normalized=config(slot==='top'?{...c,coat:'none'}:c,pose),ck=key(normalized),k=ck+'|'+slot;
   if(failed.has(ck)||!P.resolve(normalized))return null;
   if(cache.has(k)){const value=cache.get(k);cache.delete(k);cache.set(k,value);return value}
   if(!pending.has(k)){pending.add(k);const job={c:normalized,configKey:ck,key:k,slot,done};if(slot)queue.push(job);else queue.unshift(job);pump()}

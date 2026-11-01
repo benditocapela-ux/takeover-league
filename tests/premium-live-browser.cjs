@@ -28,17 +28,17 @@ const defaults={tone:6,hair:'afro',hc:'schwarz',eye:'braun',head:'none',top:'non
  await page.waitForFunction(()=>document.querySelector('[data-set="top"][data-val="shirt"] .mb-item-status')?.dataset.renderer==='anime',{timeout:90000});
  assert.equal(await page.locator('[data-set="top"][data-val="shirt"] .mb-premium-item').count(),1);
  await page.screenshot({path:path.join(output,engine+'-cool-shirt.png'),fullPage:true});
- await choose('pose_profile','jab');await page.waitForSelector('.mb-preview svg.tlh');assert.equal(await page.locator('[data-premium-character]').count(),0);
- await page.locator('[data-tab="kleidung"]').click();assert.equal(await page.locator('[data-set="top"][data-val="shirt"] .mb-item-status').getAttribute('data-renderer'),'svg');
+ for(const pose of ['jab','sieg','flex','ansage']){await choose('pose_profile',pose);await page.waitForSelector('[data-artpack-pose="'+pose+'"][data-premium-character]',{timeout:90000});await page.screenshot({path:path.join(output,engine+'-'+pose+'.png'),fullPage:true});}
+ await page.locator('[data-tab="kleidung"]').click();await page.waitForFunction(()=>document.querySelector('[data-set="top"][data-val="shirt"] .mb-item-status')?.dataset.renderer==='anime',{timeout:90000});
  await choose('pose_profile','guard');await anime();
- await page.locator('[data-tab="kleidung"]').click();await coatToggle.click();await page.waitForSelector('.mb-preview svg.tlh');
+ await page.locator('[data-tab="kleidung"]').click();await coatToggle.click();await anime();
  await choose('top','none');await anime();
  assert.deepEqual(errors,[]);assert.deepEqual(missing,[]);assert.equal(await page.evaluate(()=>window.__calls.some(c=>c[0]==='save_my_holo'||c[0].startsWith('buy_'))),false,'no account writes');
  await context.close();
  const broken=await browser.newContext({viewport:{width:390,height:844}});await broken.addInitScript({content:'('+injected+')('+JSON.stringify({visualDemo:true,items,saved:defaults})+')'});
  await broken.route('**/*',r=>{const u=r.request().url();if(u.startsWith(base)){if(u.includes('/assets/premium-character/')&&u.endsWith('.png'))return r.fulfill({status:404,body:'missing'});return r.continue()}if(u.includes('@supabase/supabase-js'))return r.fulfill({contentType:'text/javascript',body:'export const createClient=()=>window.__takeoverMockClient;'});return r.fulfill({contentType:'application/json',body:'[]'})});
  const bp=await broken.newPage();await bp.goto(base+'mein-boxer.html');await bp.waitForSelector('.mb-preview svg.tlh');await bp.waitForFunction(()=>window.TLPremiumProduction?.loader.stats().failures>0);assert.equal(await bp.locator('[data-premium-character]').count(),0);await broken.close();
- console.log('PASS '+engine+': released editor, Guard/Cool, red pants, shirt tile parity, unsupported pose/coat fallback, restored anime, missing-image fallback, no persistence; '+base);
+ console.log('PASS '+engine+': built editor, six Anime poses, red pants, shirt tile parity, shirt plus coat, missing-image fallback, no persistence; '+base);
  }finally{await browser.close()}}
  }finally{if(server)await new Promise(r=>server.close(r));if(dir)fs.rmSync(dir,{recursive:true,force:true})}
 })().catch(e=>{console.error(e);process.exit(1)});

@@ -1,0 +1,267 @@
+{
+  "version": 1,
+  "enabled": false,
+  "status": "visual-validation-pending",
+  "pieces": {
+    "coat-neon-guard": {
+      "id": "coat-neon-guard",
+      "slot": "coatFront",
+      "src": "completion/assets/coat-neon-guard.png",
+      "uv": [
+        0,
+        0,
+        475,
+        750
+      ],
+      "box": [
+        155,
+        180,
+        475,
+        750
+      ],
+      "sha256": "c9cfdbc11a7d5089e385f5fa189483bf84adbced27954fff9a6e94f3c74fed5a",
+      "bytes": 406328
+    },
+    "coat-neon-cool": {
+      "id": "coat-neon-cool",
+      "slot": "coatFront",
+      "src": "completion/assets/coat-neon-cool.png",
+      "uv": [
+        0,
+        0,
+        475,
+        750
+      ],
+      "box": [
+        155,
+        180,
+        475,
+        750
+      ],
+      "sha256": "75164fb9098fc65802bae032adcd6969e880c24534a5c92a2a27065e9370d640",
+      "bytes": 405298
+    },
+    "coat-drache-guard": {
+      "id": "coat-drache-guard",
+      "slot": "coatFront",
+      "src": "completion/assets/coat-drache-guard.png",
+      "uv": [
+        0,
+        0,
+        475,
+        750
+      ],
+      "box": [
+        155,
+        180,
+        475,
+        750
+      ],
+      "sha256": "0d9c17d7270d06af8a316be809bb3ea540706fa81fa9c7e518622faa218fb4f2",
+      "bytes": 435706
+    },
+    "coat-drache-cool": {
+      "id": "coat-drache-cool",
+      "slot": "coatFront",
+      "src": "completion/assets/coat-drache-cool.png",
+      "uv": [
+        0,
+        0,
+        475,
+        750
+      ],
+      "box": [
+        155,
+        180,
+        475,
+        750
+      ],
+      "sha256": "a37af7712f4fbb73165fc34b2cfb5ffd550b4045dd9759c5f8bb4230653b4c9c",
+      "bytes": 453897
+    },
+    "top-cool-jacke": {
+      "id": "top-cool-jacke",
+      "slot": "top",
+      "src": "completion/assets/top-cool-jacke.png",
+      "uv": [
+        0,
+        0,
+        390,
+        345
+      ],
+      "box": [
+        190,
+        210,
+        390,
+        345
+      ],
+      "sha256": "88be7e997dafb15e1c48c800395e82c3c86f2f3a4a0f70638f272639460c4768",
+      "bytes": 239714
+    },
+    "coat-rig-body": {
+      "id": "coat-rig-body",
+      "slot": "coatFront",
+      "src": "completion/assets/coat-rig-body.png",
+      "uv": [
+        0,
+        0,
+        475,
+        750
+      ],
+      "box": [
+        155,
+        180,
+        475,
+        750
+      ],
+      "sha256": "b7aa7aab709ef9c991cc5131d28af1dc86e19135c9302c339ba3ad8bc7fce3dc",
+      "bytes": 338448
+    },
+    "coat-neon-back": {
+      "id": "coat-neon-back",
+      "slot": "coatBack",
+      "src": "separation/coat-back.png",
+      "uv": [
+        0,
+        0,
+        450,
+        354
+      ],
+      "box": [
+        166,
+        547,
+        450,
+        354
+      ],
+      "sha256": "0e7a4764f71a3bb9093dc174f26d57df5ed5af5082a2727b80213057692eb6da",
+      "bytes": 198810,
+      "source": "separation/coat-back-source.png",
+      "sourceSha256": "ad06dc030285ecec062f8d6bc7ce13809214ef5c62fc9bda45956842c00760ba",
+      "sourceCrop": [
+        15,
+        348,
+        1121,
+        785
+      ],
+      "approved": false,
+      "enabled": false,
+      "material": "neon"
+    },
+    "coat-drache-back": {
+      "id": "coat-drache-back",
+      "slot": "coatBack",
+      "src": "separation/coat-back.png",
+      "uv": [
+        0,
+        0,
+        450,
+        354
+      ],
+      "box": [
+        166,
+        547,
+        450,
+        354
+      ],
+      "sha256": "0e7a4764f71a3bb9093dc174f26d57df5ed5af5082a2727b80213057692eb6da",
+      "bytes": 198810,
+      "source": "separation/coat-back-source.png",
+      "sourceSha256": "ad06dc030285ecec062f8d6bc7ce13809214ef5c62fc9bda45956842c00760ba",
+      "sourceCrop": [
+        15,
+        348,
+        1121,
+        785
+      ],
+      "approved": false,
+      "enabled": false,
+      "material": "drache"
+    }
+  },
+  "sources": {
+    "coat-neon-guard": {
+      "file": "completion/sources/coat-neon-guard.png",
+      "sha256": "152e3597d45ae42bca964173bdc43d103134cd4f4e400820f361727f10b8a809",
+      "dimensions": [
+        996,
+        1578
+      ],
+      "crop": [
+        20,
+        6,
+        958,
+        1467
+      ]
+    },
+    "coat-neon-cool": {
+      "file": "completion/sources/coat-neon-cool.png",
+      "sha256": "7d0beadf3720a20ebf21a4a4bc4d3c5e4be6d38053f95b7aee993c0d2b3c8fe9",
+      "dimensions": [
+        996,
+        1578
+      ],
+      "crop": [
+        52,
+        127,
+        899,
+        1336
+      ]
+    },
+    "coat-drache-guard": {
+      "file": "completion/sources/coat-drache-guard.png",
+      "sha256": "f71804bf2b2c427532e53fb7f36ba6c03af91cf270776fcb42b17aaec7c1bc6f",
+      "dimensions": [
+        997,
+        1578
+      ],
+      "crop": [
+        74,
+        64,
+        850,
+        1295
+      ]
+    },
+    "coat-drache-cool": {
+      "file": "completion/sources/coat-drache-cool.png",
+      "sha256": "89b584df3be8d2924c24bcf065205baa242f55f24560710e582e66ae6feada9d",
+      "dimensions": [
+        996,
+        1578
+      ],
+      "crop": [
+        24,
+        65,
+        947,
+        1402
+      ]
+    },
+    "top-cool-jacke": {
+      "file": "completion/sources/top-cool-jacke.png",
+      "sha256": "02d767e33097f22533c58e54671abf25159862424a52c829e8b0c9ac7cba1216",
+      "dimensions": [
+        1326,
+        1186
+      ],
+      "crop": [
+        79,
+        29,
+        1170,
+        1148
+      ]
+    },
+    "coat-rig-body": {
+      "file": "completion/sources/coat-rig-body.png",
+      "sha256": "1f53009b9ab90102823364588e7e820bc5e14de11aab9b4ccc3ce1e85a8f580f",
+      "dimensions": [
+        996,
+        1579
+      ],
+      "crop": [
+        65,
+        68,
+        865,
+        1346
+      ]
+    }
+  }
+}

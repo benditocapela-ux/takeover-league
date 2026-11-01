@@ -93,7 +93,7 @@ const server=http.createServer((req,res)=>{
     if(query)await p.waitForFunction(()=>document.querySelector('.mb-art-debug')?.dataset.artState==='load-failed');
     if(query)await svgPose(p,'cool');else await p.waitForSelector('[data-premium-character][data-artpack-pose="cool"]',{timeout:60000});
     if(!query)assert.equal(x.art.length,0,'normal release never requests draft art');
-    for(const pose of poses.filter(x=>x!=='cool')){await select(p,pose);if(!query&&pose==='guard')await p.waitForSelector('[data-premium-character][data-artpack-pose="guard"]',{timeout:60000});else await svgPose(p,pose)}
+    for(const pose of poses.filter(x=>x!=='cool')){await select(p,pose);if(!query)await p.waitForSelector('[data-premium-character][data-artpack-pose="'+pose+'"]',{timeout:60000});else await svgPose(p,pose)}
     assert.equal((await p.evaluate(()=>window.__calls.filter(([n])=>/^(save_|buy_)/.test(n)))).length,0);
     assert.deepEqual(x.errors,[]);await shot(p,'release-svg'+(query?'-draft-url':''));await x.context.close();
    }

@@ -1,7 +1,7 @@
 'use strict';
 // Anime-Darstellung überall: In der veröffentlichten Seite (gleicher Build wie GitHub Pages) zeigen das eigene Holo,
 // das Podium und die FUT-Card in «Mein Takeover» die Anime-Grafik des Editors statt des SVG-Fallbacks.
-// Nicht unterstützte Kombinationen (z. B. Pose «jab») bleiben beim SVG. Supabase ist simuliert; keine echten Daten.
+// Auch Jab verwendet die gemeinsame Anime-Pipeline. Kontodaten sind simuliert.
 const assert=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path'),http=require('node:http');
 const pw=require('playwright');const H=require('./takeover3-harness.cjs');
 const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.webp':'image/webp','.svg':'image/svg+xml','.woff':'font/woff'};
@@ -30,17 +30,17 @@ const config=`{users:[{id:'u-ben',email:'ben@test.invalid'}],
    // Eigenes Holo auf «Heute»
    await page.locator('#ex-home-holo svg.tlh-anime image').waitFor({timeout:90000});
    assert.match(await page.locator('#ex-home-holo svg.tlh-anime image').getAttribute('href'),/^data:image\/png;base64,/);
-   // Podium: Anna und Ben als Anime, Cleo (Pose jab, nicht unterstützt) bleibt SVG
+   // Podium: Guard und Jab verwenden beide Anime.
    await page.click('.ex-menu [data-tab="liga"]');
-   await page.waitForFunction(()=>document.querySelectorAll('#ex-podium svg.tlh-anime').length===2,null,{timeout:90000});
-   assert.equal(await page.locator('#ex-podium svg.tlh:not(.tlh-anime)').count(),1,'unsupported pose keeps the SVG fallback');
+   await page.waitForFunction(()=>document.querySelectorAll('#ex-podium svg.tlh-anime').length===3,null,{timeout:90000});
+   assert.equal(await page.locator('#ex-podium svg.tlh:not(.tlh-anime)').count(),0,'all registered poses use Anime');
    // FUT-Card in «Mein Boxer»
    await page.click('.ex-menu [data-tab="boxer"]');
    await page.locator('#ex-fut-card .tlp-holo svg.tlh-anime image').waitFor({timeout:90000});
    if(process.env.SHOTS){fs.mkdirSync(process.env.SHOTS,{recursive:true});await page.screenshot({path:path.join(process.env.SHOTS,name+'-anime-fut.png')});
     await page.click('.ex-menu [data-tab="heute"]');await page.screenshot({path:path.join(process.env.SHOTS,name+'-anime-heute.png')})}
    assert.deepEqual(errors,[]);await ctx.close();
-   console.log('PASS '+name+': Anime auf Heute, Podium und FUT-Card; nicht unterstützte Pose bleibt SVG');
+   console.log('PASS '+name+': Anime auf Heute, Podium und FUT-Card; Jab ebenfalls Anime');
   }finally{await browser.close()}
  }}finally{server.close();fs.rmSync(dir,{recursive:true,force:true})}
 })().catch(e=>{console.error(e);process.exitCode=1});
