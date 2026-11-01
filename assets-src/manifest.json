@@ -1,0 +1,2189 @@
+{
+  "title": "Takeover League / pose-compatible source vectors v1",
+  "repo": "benditocapela-ux/takeover-league",
+  "base_sha": "8176e8014d134136ba210ced37b230cd61190ac8",
+  "palette": {
+    "main": "#FF0001",
+    "dark": "#FF0002",
+    "accent": "#FF0003",
+    "skin": "#FF0011",
+    "shadow": "#FF0012",
+    "hair": "#FF0021",
+    "hairdark": "#FF0022",
+    "hairshine": "#FF0023",
+    "eye": "#FF0031",
+    "ink": "#1A1020"
+  },
+  "entries": [
+    {
+      "path": "holo/hair-kurz-glatt-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_kurz_glatt",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-kurz-glatt-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_kurz_glatt",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-stachel-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_stachel",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-stachel-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_stachel",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-lang-glatt-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_lang_glatt",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-lang-glatt-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_lang_glatt",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-undercut-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_undercut",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-undercut-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_undercut",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-buzz-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_buzz",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-buzz-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_buzz",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-glatze-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_glatze",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-glatze-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_glatze",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": false
+    },
+    {
+      "path": "holo/hair-dutts-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_dutts",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-dutts-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_dutts",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-zopf-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_zopf",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-zopf-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_zopf",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-bob-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_bob",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-bob-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_bob",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-wellig-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_wellig",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-wellig-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_wellig",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-locken-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_locken",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-locken-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_locken",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-afro-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_afro",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-afro-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_afro",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-afro-puffs-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_afro_puffs",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-afro-puffs-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_afro_puffs",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-locs-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_locs",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-locs-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_locs",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-locs-strands.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_locs",
+      "layer": "strands",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-box-braids-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_box_braids",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-box-braids-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_box_braids",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-box-braids-strands.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_box_braids",
+      "layer": "strands",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-cornrows-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_cornrows",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-cornrows-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_cornrows",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-twists-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_twists",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-twists-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_twists",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-twists-strands.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_twists",
+      "layer": "strands",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-high-top-back.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_high_top",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/hair-high-top-front.svg",
+      "system": "holo",
+      "slot": "hair",
+      "key": "hair_high_top",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/head-cap-front.svg",
+      "system": "holo",
+      "slot": "head",
+      "key": "head_cap",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/head-band-front.svg",
+      "system": "holo",
+      "slot": "head",
+      "key": "head_band",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/head-hijab-back.svg",
+      "system": "holo",
+      "slot": "head",
+      "key": "head_hijab",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/head-hijab-front.svg",
+      "system": "holo",
+      "slot": "head",
+      "key": "head_hijab",
+      "layer": "front",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/top-tank-body.svg",
+      "system": "holo",
+      "slot": "top",
+      "key": "top_tank",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/top-shirt-body.svg",
+      "system": "holo",
+      "slot": "top",
+      "key": "top_shirt",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/top-hoodie-body.svg",
+      "system": "holo",
+      "slot": "top",
+      "key": "top_hoodie",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/top-jacke-body.svg",
+      "system": "holo",
+      "slot": "top",
+      "key": "top_jacke",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/top-hoodie-hood-up.svg",
+      "system": "holo",
+      "slot": "top",
+      "key": "top_hoodie",
+      "layer": "hood-up",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/top-hoodie-hood-down.svg",
+      "system": "holo",
+      "slot": "top",
+      "key": "top_hoodie",
+      "layer": "hood-down",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/top-shirt-cuff.svg",
+      "system": "holo",
+      "slot": "top",
+      "key": "top_shirt",
+      "layer": "cuff",
+      "pose": "arm-end",
+      "viewBox": "-20 -20 44 40",
+      "colorable": true
+    },
+    {
+      "path": "holo/top-hoodie-cuff.svg",
+      "system": "holo",
+      "slot": "top",
+      "key": "top_hoodie",
+      "layer": "cuff",
+      "pose": "arm-end",
+      "viewBox": "-20 -20 44 40",
+      "colorable": true
+    },
+    {
+      "path": "holo/top-jacke-cuff.svg",
+      "system": "holo",
+      "slot": "top",
+      "key": "top_jacke",
+      "layer": "cuff",
+      "pose": "arm-end",
+      "viewBox": "-20 -20 44 40",
+      "colorable": true
+    },
+    {
+      "path": "holo/bottom-boxer-body.svg",
+      "system": "holo",
+      "slot": "bottom",
+      "key": "bottom_boxer",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/bottom-kurz-body.svg",
+      "system": "holo",
+      "slot": "bottom",
+      "key": "bottom_kurz",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/bottom-jogger-body.svg",
+      "system": "holo",
+      "slot": "bottom",
+      "key": "bottom_jogger",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/bottom-track-body.svg",
+      "system": "holo",
+      "slot": "bottom",
+      "key": "bottom_track",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/feet-boots-body.svg",
+      "system": "holo",
+      "slot": "feet",
+      "key": "feet_boots",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/feet-sneaker-body.svg",
+      "system": "holo",
+      "slot": "feet",
+      "key": "feet_sneaker",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/glove-rot-thumbup.svg",
+      "system": "holo",
+      "slot": "glove",
+      "key": "glove_rot",
+      "layer": "thumbup",
+      "pose": "thumbup",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "holo/glove-rot-thumbdown.svg",
+      "system": "holo",
+      "slot": "glove",
+      "key": "glove_rot",
+      "layer": "thumbdown",
+      "pose": "thumbdown",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "holo/glove-weiss-thumbup.svg",
+      "system": "holo",
+      "slot": "glove",
+      "key": "glove_weiss",
+      "layer": "thumbup",
+      "pose": "thumbup",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "holo/glove-weiss-thumbdown.svg",
+      "system": "holo",
+      "slot": "glove",
+      "key": "glove_weiss",
+      "layer": "thumbdown",
+      "pose": "thumbdown",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "holo/glove-schwarzgold-thumbup.svg",
+      "system": "holo",
+      "slot": "glove",
+      "key": "glove_schwarzgold",
+      "layer": "thumbup",
+      "pose": "thumbup",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "holo/glove-schwarzgold-thumbdown.svg",
+      "system": "holo",
+      "slot": "glove",
+      "key": "glove_schwarzgold",
+      "layer": "thumbdown",
+      "pose": "thumbdown",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "holo/glove-eisblau-thumbup.svg",
+      "system": "holo",
+      "slot": "glove",
+      "key": "glove_eisblau",
+      "layer": "thumbup",
+      "pose": "thumbup",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "holo/glove-eisblau-thumbdown.svg",
+      "system": "holo",
+      "slot": "glove",
+      "key": "glove_eisblau",
+      "layer": "thumbdown",
+      "pose": "thumbdown",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "holo/glove-glut-thumbup.svg",
+      "system": "holo",
+      "slot": "glove",
+      "key": "glove_glut",
+      "layer": "thumbup",
+      "pose": "thumbup",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "holo/glove-glut-thumbdown.svg",
+      "system": "holo",
+      "slot": "glove",
+      "key": "glove_glut",
+      "layer": "thumbdown",
+      "pose": "thumbdown",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "holo/hands-wraps-wrap.svg",
+      "system": "holo",
+      "slot": "hands",
+      "key": "hands_wraps",
+      "layer": "wrap",
+      "pose": "arm-end",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "holo/coat-basic-body.svg",
+      "system": "holo",
+      "slot": "coat",
+      "key": "coat_basic",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/coat-basic-trim.svg",
+      "system": "holo",
+      "slot": "coat",
+      "key": "coat_basic",
+      "layer": "trim",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/coat-basic-cuff.svg",
+      "system": "holo",
+      "slot": "coat",
+      "key": "coat_basic",
+      "layer": "cuff",
+      "pose": "arm-end",
+      "viewBox": "-20 -20 44 40",
+      "colorable": true
+    },
+    {
+      "path": "holo/coat-samurai-body.svg",
+      "system": "holo",
+      "slot": "coat",
+      "key": "coat_samurai",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/coat-samurai-trim.svg",
+      "system": "holo",
+      "slot": "coat",
+      "key": "coat_samurai",
+      "layer": "trim",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/coat-samurai-cuff.svg",
+      "system": "holo",
+      "slot": "coat",
+      "key": "coat_samurai",
+      "layer": "cuff",
+      "pose": "arm-end",
+      "viewBox": "-20 -20 44 40",
+      "colorable": true
+    },
+    {
+      "path": "holo/coat-neon-body.svg",
+      "system": "holo",
+      "slot": "coat",
+      "key": "coat_neon",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/coat-neon-trim.svg",
+      "system": "holo",
+      "slot": "coat",
+      "key": "coat_neon",
+      "layer": "trim",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/coat-neon-cuff.svg",
+      "system": "holo",
+      "slot": "coat",
+      "key": "coat_neon",
+      "layer": "cuff",
+      "pose": "arm-end",
+      "viewBox": "-20 -20 44 40",
+      "colorable": true
+    },
+    {
+      "path": "holo/coat-drache-body.svg",
+      "system": "holo",
+      "slot": "coat",
+      "key": "coat_drache",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/coat-drache-trim.svg",
+      "system": "holo",
+      "slot": "coat",
+      "key": "coat_drache",
+      "layer": "trim",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/coat-drache-cuff.svg",
+      "system": "holo",
+      "slot": "coat",
+      "key": "coat_drache",
+      "layer": "cuff",
+      "pose": "arm-end",
+      "viewBox": "-20 -20 44 40",
+      "colorable": true
+    },
+    {
+      "path": "holo/aura-flamme-back.svg",
+      "system": "holo",
+      "slot": "aura",
+      "key": "aura_flamme",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/aura-sakura-back.svg",
+      "system": "holo",
+      "slot": "aura",
+      "key": "aura_sakura",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/aura-blitz-back.svg",
+      "system": "holo",
+      "slot": "aura",
+      "key": "aura_blitz",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/aura-schatten-back.svg",
+      "system": "holo",
+      "slot": "aura",
+      "key": "aura_schatten",
+      "layer": "back",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/eyefx-kristall-eye.svg",
+      "system": "holo",
+      "slot": "eyefx",
+      "key": "eyefx_kristall",
+      "layer": "eye",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/eyefx-glut-eye.svg",
+      "system": "holo",
+      "slot": "eyefx",
+      "key": "eyefx_glut",
+      "layer": "eye",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/eyefx-stern-eye.svg",
+      "system": "holo",
+      "slot": "eyefx",
+      "key": "eyefx_stern",
+      "layer": "eye",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/eyefx-mond-eye.svg",
+      "system": "holo",
+      "slot": "eyefx",
+      "key": "eyefx_mond",
+      "layer": "eye",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "holo/scene-holo-background.svg",
+      "system": "holo",
+      "slot": "scene",
+      "key": "scene_holo",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/scene-dojo-background.svg",
+      "system": "holo",
+      "slot": "scene",
+      "key": "scene_dojo",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": false
+    },
+    {
+      "path": "holo/scene-neon-background.svg",
+      "system": "holo",
+      "slot": "scene",
+      "key": "scene_neon",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/scene-arena-background.svg",
+      "system": "holo",
+      "slot": "scene",
+      "key": "scene_arena",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": false
+    },
+    {
+      "path": "holo/body-skin-torso-base.svg",
+      "system": "holo",
+      "slot": "body",
+      "key": "skin-torso",
+      "layer": "base",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/body-skin-legs-base.svg",
+      "system": "holo",
+      "slot": "body",
+      "key": "skin-legs",
+      "layer": "base",
+      "pose": "all",
+      "viewBox": "0 0 240 380",
+      "colorable": true
+    },
+    {
+      "path": "holo/body-face-base.svg",
+      "system": "holo",
+      "slot": "body",
+      "key": "face",
+      "layer": "base",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-kenji-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_kenji",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-zara-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_zara",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-luca-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_luca",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-mei-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_mei",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-lina-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_lina",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-malik-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_malik",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-sora-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_sora",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-ivo-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_ivo",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-nia-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_nia",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-tomas-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_tomas",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-mira-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_mira",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-yuki-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_yuki",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-amara-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_amara",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-rico-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_rico",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-nova-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_nova",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-bruno-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_bruno",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-selin-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_selin",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-jin-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_jin",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-taro-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_taro",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-kael-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_kael",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-leandra-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_leandra",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-rhea-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_rhea",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-kenta-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_kenta",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-meister-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_meister",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-varn-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_varn",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-schatten-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_schatten",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/avatar-a-namenlos-body.svg",
+      "system": "kampfgeist",
+      "slot": "avatar",
+      "key": "a_namenlos",
+      "layer": "body",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-rot-single.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_rot",
+      "layer": "single",
+      "pose": "wrist",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-rot-pair.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_rot",
+      "layer": "pair",
+      "pose": "all",
+      "viewBox": "0 0 180 130",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-blau-single.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_blau",
+      "layer": "single",
+      "pose": "wrist",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-blau-pair.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_blau",
+      "layer": "pair",
+      "pose": "all",
+      "viewBox": "0 0 180 130",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-weiss-single.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_weiss",
+      "layer": "single",
+      "pose": "wrist",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-weiss-pair.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_weiss",
+      "layer": "pair",
+      "pose": "all",
+      "viewBox": "0 0 180 130",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-glut-single.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_glut",
+      "layer": "single",
+      "pose": "wrist",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-glut-pair.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_glut",
+      "layer": "pair",
+      "pose": "all",
+      "viewBox": "0 0 180 130",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-kirsch-single.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_kirsch",
+      "layer": "single",
+      "pose": "wrist",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-kirsch-pair.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_kirsch",
+      "layer": "pair",
+      "pose": "all",
+      "viewBox": "0 0 180 130",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-jade-single.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_jade",
+      "layer": "single",
+      "pose": "wrist",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-jade-pair.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_jade",
+      "layer": "pair",
+      "pose": "all",
+      "viewBox": "0 0 180 130",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-tiger-single.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_tiger",
+      "layer": "single",
+      "pose": "wrist",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-tiger-pair.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_tiger",
+      "layer": "pair",
+      "pose": "all",
+      "viewBox": "0 0 180 130",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-sturm-single.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_sturm",
+      "layer": "single",
+      "pose": "wrist",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-sturm-pair.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_sturm",
+      "layer": "pair",
+      "pose": "all",
+      "viewBox": "0 0 180 130",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-frost-single.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_frost",
+      "layer": "single",
+      "pose": "wrist",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-frost-pair.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_frost",
+      "layer": "pair",
+      "pose": "all",
+      "viewBox": "0 0 180 130",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-obsidian-single.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_obsidian",
+      "layer": "single",
+      "pose": "wrist",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-obsidian-pair.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_obsidian",
+      "layer": "pair",
+      "pose": "all",
+      "viewBox": "0 0 180 130",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-gold-single.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_gold",
+      "layer": "single",
+      "pose": "wrist",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-gold-pair.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_gold",
+      "layer": "pair",
+      "pose": "all",
+      "viewBox": "0 0 180 130",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-drache-single.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_drache",
+      "layer": "single",
+      "pose": "wrist",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-drache-pair.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_drache",
+      "layer": "pair",
+      "pose": "all",
+      "viewBox": "0 0 180 130",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-schatten-single.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_schatten",
+      "layer": "single",
+      "pose": "wrist",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-schatten-pair.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_schatten",
+      "layer": "pair",
+      "pose": "all",
+      "viewBox": "0 0 180 130",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-leere-single.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_leere",
+      "layer": "single",
+      "pose": "wrist",
+      "viewBox": "-24 -22 56 44",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/handschuhe-g-leere-pair.svg",
+      "system": "kampfgeist",
+      "slot": "handschuhe",
+      "key": "g_leere",
+      "layer": "pair",
+      "pose": "all",
+      "viewBox": "0 0 180 130",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/aura-u-glut-ring.svg",
+      "system": "kampfgeist",
+      "slot": "aura",
+      "key": "u_glut",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/aura-u-wind-ring.svg",
+      "system": "kampfgeist",
+      "slot": "aura",
+      "key": "u_wind",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/aura-u-frost-ring.svg",
+      "system": "kampfgeist",
+      "slot": "aura",
+      "key": "u_frost",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/aura-u-smaragd-ring.svg",
+      "system": "kampfgeist",
+      "slot": "aura",
+      "key": "u_smaragd",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/aura-u-kirsch-ring.svg",
+      "system": "kampfgeist",
+      "slot": "aura",
+      "key": "u_kirsch",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/aura-u-sturm-ring.svg",
+      "system": "kampfgeist",
+      "slot": "aura",
+      "key": "u_sturm",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/aura-u-rauch-ring.svg",
+      "system": "kampfgeist",
+      "slot": "aura",
+      "key": "u_rauch",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/aura-u-sonne-ring.svg",
+      "system": "kampfgeist",
+      "slot": "aura",
+      "key": "u_sonne",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/aura-u-kalt-ring.svg",
+      "system": "kampfgeist",
+      "slot": "aura",
+      "key": "u_kalt",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/aura-u-abgrund-ring.svg",
+      "system": "kampfgeist",
+      "slot": "aura",
+      "key": "u_abgrund",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/aura-u-limit-ring.svg",
+      "system": "kampfgeist",
+      "slot": "aura",
+      "key": "u_limit",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/aura-u-drache-ring.svg",
+      "system": "kampfgeist",
+      "slot": "aura",
+      "key": "u_drache",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/aura-u-schatten-ring.svg",
+      "system": "kampfgeist",
+      "slot": "aura",
+      "key": "u_schatten",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/aura-u-leere-ring.svg",
+      "system": "kampfgeist",
+      "slot": "aura",
+      "key": "u_leere",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-dojo-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_dojo",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-ring-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_ring",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-sunrise-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_sunrise",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-ember-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_ember",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-storm-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_storm",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-sakura-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_sakura",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-rooftop-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_rooftop",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-lake-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_lake",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-spot-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_spot",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-wasserfall-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_wasserfall",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-mitternacht-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_mitternacht",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-speed-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_speed",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-shadow-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_shadow",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-riss-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_riss",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-mond-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_mond",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-gold-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_gold",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-leere-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_leere",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/banner-b-pass-background.svg",
+      "system": "kampfgeist",
+      "slot": "banner",
+      "key": "b_pass",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 480 180",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-linie-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_linie",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-glut-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_glut",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-frost-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_frost",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-kirsch-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_kirsch",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-kalt-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_kalt",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-system-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_system",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-blitz-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_blitz",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-abgrund-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_abgrund",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-srang-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_srang",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-rang-e-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_rang_e",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-rang-d-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_rang_d",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-rang-c-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_rang_c",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-rang-b-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_rang_b",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-rang-a-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_rang_a",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-rang-s-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_rang_s",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/rahmen-f-pass-ring.svg",
+      "system": "kampfgeist",
+      "slot": "rahmen",
+      "key": "f_pass",
+      "layer": "ring",
+      "pose": "all",
+      "viewBox": "0 0 200 200",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/titel-common-plate.svg",
+      "system": "kampfgeist",
+      "slot": "titel",
+      "key": "common",
+      "layer": "plate",
+      "pose": "all",
+      "viewBox": "0 0 160 32",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/titel-rare-plate.svg",
+      "system": "kampfgeist",
+      "slot": "titel",
+      "key": "rare",
+      "layer": "plate",
+      "pose": "all",
+      "viewBox": "0 0 160 32",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/titel-epic-plate.svg",
+      "system": "kampfgeist",
+      "slot": "titel",
+      "key": "epic",
+      "layer": "plate",
+      "pose": "all",
+      "viewBox": "0 0 160 32",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/titel-leg-plate.svg",
+      "system": "kampfgeist",
+      "slot": "titel",
+      "key": "leg",
+      "layer": "plate",
+      "pose": "all",
+      "viewBox": "0 0 160 32",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/titel-myth-plate.svg",
+      "system": "kampfgeist",
+      "slot": "titel",
+      "key": "myth",
+      "layer": "plate",
+      "pose": "all",
+      "viewBox": "0 0 160 32",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/emote-cloud-bubble.svg",
+      "system": "kampfgeist",
+      "slot": "emote",
+      "key": "cloud",
+      "layer": "bubble",
+      "pose": "all",
+      "viewBox": "0 0 100 100",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/emote-burst-bubble.svg",
+      "system": "kampfgeist",
+      "slot": "emote",
+      "key": "burst",
+      "layer": "bubble",
+      "pose": "all",
+      "viewBox": "0 0 100 100",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/emote-jag-bubble.svg",
+      "system": "kampfgeist",
+      "slot": "emote",
+      "key": "jag",
+      "layer": "bubble",
+      "pose": "all",
+      "viewBox": "0 0 100 100",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/einlauf-e-slam-background.svg",
+      "system": "kampfgeist",
+      "slot": "einlauf",
+      "key": "e_slam",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 400 240",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/einlauf-e-ring-background.svg",
+      "system": "kampfgeist",
+      "slot": "einlauf",
+      "key": "e_ring",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 400 240",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/einlauf-e-donner-background.svg",
+      "system": "kampfgeist",
+      "slot": "einlauf",
+      "key": "e_donner",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 400 240",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/einlauf-e-glut-background.svg",
+      "system": "kampfgeist",
+      "slot": "einlauf",
+      "key": "e_glut",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 400 240",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/einlauf-e-kirsch-background.svg",
+      "system": "kampfgeist",
+      "slot": "einlauf",
+      "key": "e_kirsch",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 400 240",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/einlauf-e-frost-background.svg",
+      "system": "kampfgeist",
+      "slot": "einlauf",
+      "key": "e_frost",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 400 240",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/einlauf-e-limit-background.svg",
+      "system": "kampfgeist",
+      "slot": "einlauf",
+      "key": "e_limit",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 400 240",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/einlauf-e-schatten-background.svg",
+      "system": "kampfgeist",
+      "slot": "einlauf",
+      "key": "e_schatten",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 400 240",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/einlauf-e-rangs-background.svg",
+      "system": "kampfgeist",
+      "slot": "einlauf",
+      "key": "e_rangs",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 400 240",
+      "colorable": true
+    },
+    {
+      "path": "kampfgeist/einlauf-e-pass-sturm-background.svg",
+      "system": "kampfgeist",
+      "slot": "einlauf",
+      "key": "e_pass_sturm",
+      "layer": "background",
+      "pose": "all",
+      "viewBox": "0 0 400 240",
+      "colorable": true
+    }
+  ]
+}
