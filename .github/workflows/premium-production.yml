@@ -8,7 +8,7 @@ permissions:
 jobs:
   production:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -40,6 +40,19 @@ jobs:
         run: node tests/premium-production-browser.cjs
       - name: Rebuild source- and evidence-bound coverage
         run: node scripts/inventory-premium-production.cjs
+      - name: Six-pose catalogue and outfit completion
+        env:
+          CANDIDATE: '1'
+          REPORT: docs/premium-v2/completion/combinations.json
+          SHOTS: docs/premium-v2/completion/evidence
+          BROWSER: chromium,webkit
+        run: |
+          BROWSER=chromium node tests/premium-combinations-browser.cjs --assert-complete
+          node tests/premium-completion-variants.cjs
+          node tests/premium-completion-contracts.cjs
+          node tests/premium-completion-visual.cjs
+          node tests/premium-pose-outfits-browser.cjs
+          node tests/premium-live-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -55,4 +68,5 @@ jobs:
             tools/premium-v2/long-hair/evidence/
             tools/premium-v2/material-assets/*contact.png
             docs/premium-v2/production-*.json
+            docs/premium-v2/completion/
 

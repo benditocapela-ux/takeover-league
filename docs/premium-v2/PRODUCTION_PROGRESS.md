@@ -1,4 +1,6 @@
-# Premium-Produktion: überprüfbarer Stand aller 58 Katalogeinträge
+# Bisheriger Zwei-Posen-Renderer: Regression und Katalogabdeckung
+
+> Diese Matrix prüft weiterhin TLPremiumProduction. Der neue TLPremiumCompletion-Renderer mit sechs Posen wird separat in [SIX-POSE-COMPLETION.md](SIX-POSE-COMPLETION.md) und `completion/variants-*.json` nachgewiesen. Die folgenden Legacy-Zahlen sind nicht die Abdeckung des neuen Renderers.
 
 Automatisch aus vorhandenem Inventar, tatsächlichen PNG-Dateien, Registrierungen, SHA-256 und aktuellem Browser-Testbericht erzeugt. Keine Live-Datenbankabfrage. Der historische PR-81-Stand bleibt in `coverage.csv`; die aktuelle Produktionsmatrix steht in `production-coverage.csv` und `production-coverage.json`.
 

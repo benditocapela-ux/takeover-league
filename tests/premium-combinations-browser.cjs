@@ -1,0 +1,13 @@
+'use strict';
+// Geometry coverage is separate from single-item/material coverage. No account APIs.
+const fs=require('node:fs'),path=require('node:path'),http=require('node:http'),assert=require('node:assert/strict');
+const root=path.resolve(__dirname,'..');
+const server=http.createServer((req,res)=>{const f=path.resolve(root,'.'+new URL(req.url,'http://local').pathname);if(!f.startsWith(root+path.sep)){res.writeHead(403);return res.end()}fs.readFile(f,(e,b)=>{if(e){res.writeHead(404);return res.end()}res.setHeader('Content-Type',({'.html':'text/html','.js':'text/javascript','.json':'application/json','.png':'image/png'})[path.extname(f)]||'application/octet-stream');res.end(b)})});
+(async()=>{await new Promise(r=>server.listen(0,'127.0.0.1',r));const browser=await require('playwright')[process.env.BROWSER||'chromium'].launch();try{const page=await browser.newPage();await page.goto('http://127.0.0.1:'+server.address().port+'/tools/premium-v2/'+(process.env.CANDIDATE?'completion.html':'production.html'));await page.waitForFunction(()=>document.body.dataset.ready==='true');
+const report=await page.evaluate(()=>{const P=window.TLPremiumCompletion||TLPremiumProduction,topStates=[['none',false],['tank',false],['shirt',false],['hoodie',false],['hoodie',true],['jacke',false]],rows=[];let total=0,supported=0;
+for(const pose of ['cool','guard','jab','sieg','flex','ansage'])for(const hair of TLHolo.HAIR_KEYS)for(const head of ['none','cap','band','hijab'])for(const [top,hood]of topStates)for(const coat of ['none','basic','samurai','neon','drache']){
+let valid=0,count=0;for(const bottom of ['boxer','kurz','jogger','track'])for(const feet of ['boots','sneaker'])for(const hands of ['gloves','wraps']){const c={...P.defaults,pose_profile:pose,hair,head,top,hood,coat,bottom,feet,hands};count++;if(P.resolve(c))valid++}
+rows.push({pose,hair,head,top,hood,coat,total:count,supported:valid});total+=count;supported+=valid;
+}return {scope:'Six-pose geometry combinations; fixed default materials; resolver coverage is not visual approval',total,supported,percent:100*supported/total,rows}});
+const out=process.env.REPORT||path.join(root,'docs/premium-v2/combination-audit.json');fs.mkdirSync(path.dirname(out),{recursive:true});fs.writeFileSync(out,JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify({total:report.total,supported:report.supported,percent:report.percent,report:out}));if(process.argv.includes('--assert-complete'))assert.equal(report.supported,report.total,'Every geometry combination must resolve before claiming complete coverage');
+}finally{await browser.close();await new Promise(r=>server.close(r))}})().catch(e=>{console.error(e);process.exitCode=1;server.close()});

@@ -13753,49 +13753,49 @@
     "cold": [
       {
         "mode": "v1",
-        "loadDecodeFirstDrawMs": 172.00000000000003,
+        "loadDecodeFirstDrawMs": 172,
         "imageRequests": 8,
         "imageEncodedBytes": 1513231,
         "decodedRGBABytes": 29884416
       },
       {
         "mode": "v1",
-        "loadDecodeFirstDrawMs": 156,
+        "loadDecodeFirstDrawMs": 175,
         "imageRequests": 8,
         "imageEncodedBytes": 1513231,
         "decodedRGBABytes": 29884416
       },
       {
         "mode": "v1",
-        "loadDecodeFirstDrawMs": 164,
+        "loadDecodeFirstDrawMs": 167,
         "imageRequests": 8,
         "imageEncodedBytes": 1513231,
         "decodedRGBABytes": 29884416
       },
       {
         "mode": "v2",
-        "loadDecodeFirstDrawMs": 67,
+        "loadDecodeFirstDrawMs": 67.00000000000001,
         "imageRequests": 2,
         "imageEncodedBytes": 2024127,
         "decodedRGBABytes": 11149312
       },
       {
         "mode": "v2",
-        "loadDecodeFirstDrawMs": 64,
+        "loadDecodeFirstDrawMs": 72,
         "imageRequests": 2,
         "imageEncodedBytes": 2024127,
         "decodedRGBABytes": 11149312
       },
       {
         "mode": "v2",
-        "loadDecodeFirstDrawMs": 74,
+        "loadDecodeFirstDrawMs": 77,
         "imageRequests": 2,
         "imageEncodedBytes": 2024127,
         "decodedRGBABytes": 11149312
       },
       {
         "mode": "production-new-art",
-        "loadDecodeFirstDrawMs": 140,
+        "loadDecodeFirstDrawMs": 242,
         "imageRequests": 8,
         "imageEncodedBytes": 1291832,
         "decodedRGBABytes": 5026272,
@@ -13824,7 +13824,7 @@
       },
       {
         "mode": "production-new-art",
-        "loadDecodeFirstDrawMs": 150,
+        "loadDecodeFirstDrawMs": 235,
         "imageRequests": 8,
         "imageEncodedBytes": 1291832,
         "decodedRGBABytes": 5026272,
@@ -13853,7 +13853,7 @@
       },
       {
         "mode": "production-new-art",
-        "loadDecodeFirstDrawMs": 141,
+        "loadDecodeFirstDrawMs": 176,
         "imageRequests": 8,
         "imageEncodedBytes": 1291832,
         "decodedRGBABytes": 5026272,
@@ -13883,8 +13883,8 @@
     ],
     "warm": {
       "mode": "production-new-art",
-      "p50ms": 19,
-      "p95ms": 32,
+      "p50ms": 42.000000000116415,
+      "p95ms": 53,
       "samples": 100,
       "warmups": 10
     },

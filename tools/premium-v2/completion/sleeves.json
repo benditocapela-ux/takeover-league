@@ -1,0 +1,346 @@
+{
+  "version": 1,
+  "enabled": false,
+  "parts": {
+    "coat-upper": {
+      "src": "completion/assets/sleeve-coat-upper.png",
+      "sha256": "d27015bfcacf959f7dcc833fc0ea6cb28d646158820fab9e36c5c45dfefd0606",
+      "sourceBox": [
+        95,
+        158,
+        418,
+        870
+      ],
+      "sourcePixels": 237450,
+      "size": [
+        98.13333333333334,
+        204.2488038277512
+      ],
+      "scale": 0.23476874003189793,
+      "pivot": [
+        44.3969696969697,
+        22.70653907496013
+      ],
+      "distal": [
+        33.8169696969697,
+        179.33653907496014
+      ],
+      "sourceAnchor": {
+        "proximal": [
+          284.109375,
+          254.71875
+        ],
+        "distal": [
+          239.04375000000002,
+          921.8859375000001
+        ]
+      },
+      "uv": [
+        0,
+        0,
+        197,
+        409
+      ],
+      "sourceCrop": [
+        115,
+        151,
+        424,
+        893
+      ]
+    },
+    "coat-forearm": {
+      "src": "completion/assets/sleeve-coat-forearm.png",
+      "sha256": "79afabb450d178a551859ba696fc051102075ae8c5d573c2ffff50212f3198e6",
+      "sourceBox": [
+        449,
+        358,
+        450,
+        685
+      ],
+      "sourcePixels": 141193,
+      "size": [
+        117.1291866028708,
+        178.29665071770333
+      ],
+      "scale": 0.2602870813397129,
+      "pivot": [
+        23.636100478468915,
+        149.57722488038277
+      ],
+      "distal": [
+        99.6261004784689,
+        4.2272248803827805
+      ],
+      "sourceAnchor": {
+        "proximal": [
+          539.8078125000001,
+          932.6625
+        ],
+        "distal": [
+          831.7546875,
+          374.240625
+        ]
+      },
+      "uv": [
+        0,
+        0,
+        235,
+        357
+      ],
+      "sourceCrop": [
+        519,
+        393,
+        526,
+        680
+      ]
+    },
+    "hoodie-upper": {
+      "src": "completion/assets/sleeve-hoodie-upper.png",
+      "sha256": "11c77244bc0e49f806e620c9872eeb81cbc8aa4dc02207967c92d60f7fd429bc",
+      "sourceBox": [
+        95,
+        158,
+        418,
+        870
+      ],
+      "sourcePixels": 237450,
+      "size": [
+        98.13333333333334,
+        204.2488038277512
+      ],
+      "scale": 0.23476874003189793,
+      "pivot": [
+        44.3969696969697,
+        22.70653907496013
+      ],
+      "distal": [
+        33.8169696969697,
+        179.33653907496014
+      ],
+      "sourceAnchor": {
+        "proximal": [
+          284.109375,
+          254.71875
+        ],
+        "distal": [
+          239.04375000000002,
+          921.8859375000001
+        ]
+      },
+      "uv": [
+        0,
+        0,
+        197,
+        409
+      ],
+      "sourceCrop": [
+        104,
+        107,
+        510,
+        990
+      ]
+    },
+    "hoodie-forearm": {
+      "src": "completion/assets/sleeve-hoodie-forearm.png",
+      "sha256": "7cbbb590d5f7b1d117766fa561a1438bf9de5168227c765aa4735bfc09634912",
+      "sourceBox": [
+        449,
+        358,
+        450,
+        685
+      ],
+      "sourcePixels": 141193,
+      "size": [
+        117.1291866028708,
+        178.29665071770333
+      ],
+      "scale": 0.2602870813397129,
+      "pivot": [
+        23.636100478468915,
+        149.57722488038277
+      ],
+      "distal": [
+        99.6261004784689,
+        4.2272248803827805
+      ],
+      "sourceAnchor": {
+        "proximal": [
+          539.8078125000001,
+          932.6625
+        ],
+        "distal": [
+          831.7546875,
+          374.240625
+        ]
+      },
+      "uv": [
+        0,
+        0,
+        235,
+        357
+      ],
+      "sourceCrop": [
+        500,
+        352,
+        584,
+        789
+      ]
+    },
+    "jacke-upper": {
+      "src": "completion/assets/sleeve-jacke-upper.png",
+      "sha256": "bfa418da52e91297495b6beaec7d0a34df55fe283ea7c16e148f736f03d6f75e",
+      "sourceBox": [
+        95,
+        158,
+        418,
+        870
+      ],
+      "sourcePixels": 237450,
+      "size": [
+        98.13333333333334,
+        204.2488038277512
+      ],
+      "scale": 0.23476874003189793,
+      "pivot": [
+        44.3969696969697,
+        22.70653907496013
+      ],
+      "distal": [
+        33.8169696969697,
+        179.33653907496014
+      ],
+      "sourceAnchor": {
+        "proximal": [
+          284.109375,
+          254.71875
+        ],
+        "distal": [
+          239.04375000000002,
+          921.8859375000001
+        ]
+      },
+      "uv": [
+        0,
+        0,
+        197,
+        409
+      ],
+      "sourceCrop": [
+        98,
+        66,
+        532,
+        1038
+      ]
+    },
+    "jacke-forearm": {
+      "src": "completion/assets/sleeve-jacke-forearm.png",
+      "sha256": "de3e9b5126208046de15debb7991bd4975c9e33483bac4d7f5070e24b8183e2d",
+      "sourceBox": [
+        449,
+        358,
+        450,
+        685
+      ],
+      "sourcePixels": 141193,
+      "size": [
+        117.1291866028708,
+        178.29665071770333
+      ],
+      "scale": 0.2602870813397129,
+      "pivot": [
+        23.636100478468915,
+        149.57722488038277
+      ],
+      "distal": [
+        99.6261004784689,
+        4.2272248803827805
+      ],
+      "sourceAnchor": {
+        "proximal": [
+          539.8078125000001,
+          932.6625
+        ],
+        "distal": [
+          831.7546875,
+          374.240625
+        ]
+      },
+      "uv": [
+        0,
+        0,
+        235,
+        357
+      ],
+      "sourceCrop": [
+        522,
+        401,
+        590,
+        753
+      ]
+    },
+    "shirt-upper": {
+      "src": "completion/assets/sleeve-shirt-upper.png",
+      "sha256": "00e53a2fb1217fee234349295d3381d0fbe622ba85124bf9c5331197a45041a6",
+      "sourceBox": [
+        95,
+        158,
+        418,
+        870
+      ],
+      "sourcePixels": 237450,
+      "size": [
+        98.13333333333334,
+        115
+      ],
+      "scale": 0.23476874003189793,
+      "pivot": [
+        44.3969696969697,
+        22.70653907496013
+      ],
+      "distal": [
+        33.8169696969697,
+        179.33653907496014
+      ],
+      "sourceAnchor": {
+        "proximal": [
+          284.109375,
+          254.71875
+        ],
+        "distal": [
+          239.04375000000002,
+          921.8859375000001
+        ]
+      },
+      "uv": [
+        0,
+        0,
+        197,
+        230
+      ],
+      "sourceCrop": [
+        221,
+        137,
+        883,
+        937
+      ]
+    }
+  },
+  "sources": {
+    "coat": {
+      "file": "completion/sources/sleeve-coat.png",
+      "sha256": "e081ca0f00d7f890678e9eb12579cb1d7f76e0bef2b5941780d202f4345c2789"
+    },
+    "hoodie": {
+      "file": "completion/sources/sleeve-hoodie.png",
+      "sha256": "9dd5591636d7cd0b7b733b2791c8e9f795874ce3908ba35b0f38341e0e52ac11"
+    },
+    "jacke": {
+      "file": "completion/sources/sleeve-jacke.png",
+      "sha256": "a242774f6c144cdccae048a3f88fcce42a25ad9d53e8464c71484e6ad9659cbb"
+    },
+    "shirt": {
+      "file": "completion/sources/sleeve-shirt.png",
+      "sha256": "04e6aeebf54c39ec5f39deed19d17e92062f8041494b6c9b97971ab41c168fc0"
+    }
+  }
+}

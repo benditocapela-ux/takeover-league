@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const modules=['pilot.js','streaming.js','materials.js','headwear/headwear.js','tops/tops.js','effects.js','headwear-hijab/hijab.js','long-hair/long-hair.js','production.js'];
-const manifests=['pilot-assets.json','streaming-assets.json','production-art/manifest.json','headwear/manifest.json','tops/manifest.json','hair-expansion/manifest.json','wraps/manifest.json','headwear-hijab/manifest.json','long-hair/manifest.json'];
+const modules=['pilot.js','streaming.js','materials.js','headwear/headwear.js','tops/tops.js','effects.js','headwear-hijab/hijab.js','long-hair/long-hair.js','production.js','completion/poses.js','completion/completion.js'];
+const manifests=['pilot-assets.json','streaming-assets.json','production-art/manifest.json','headwear/manifest.json','tops/manifest.json','hair-expansion/manifest.json','wraps/manifest.json','headwear-hijab/manifest.json','long-hair/manifest.json','completion/manifest.json','completion/pose-assets.json','completion/sleeves.json','completion/pose-bodies.json'];
 function publish(source,destination){
  const release=JSON.parse(fs.readFileSync(path.join(source,'tools/premium-character-release.json')));
  if(!release.enabled)return {enabled:false,files:0};
@@ -23,7 +23,7 @@ function publish(source,destination){
    const from='new URL(src, location.href)';if(!code.includes(from))throw Error('Streaming root contract changed');
    code=code.replace(from,"new URL(src, new URL('./assets/premium-character/'+document.querySelector('meta[name=tl-premium-character]').dataset.version+'/', document.baseURI))");
   }
-  if(file==='production.js')code="{const fetch=(url)=>window.fetch(new URL(url,new URL('./assets/premium-character/'+document.querySelector('meta[name=tl-premium-character]').dataset.version+'/',document.baseURI)));\n"+code+'\n}';
+  if(['production.js','completion/poses.js','completion/completion.js'].includes(file))code="{const fetch=(url)=>window.fetch(new URL(url,new URL('./assets/premium-character/'+document.querySelector('meta[name=tl-premium-character]').dataset.version+'/',document.baseURI)));\n"+code+'\n}';
   bundle+='\n'+code;
  }
  const hash=crypto.createHash('sha256').update(bundle).update(JSON.stringify([...json]));for(const src of files.values())hash.update(fs.readFileSync(src));

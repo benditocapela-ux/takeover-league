@@ -244,7 +244,8 @@ fs.writeFileSync(path.join(dir, 'production-coverage.json'), JSON.stringify({ su
 fs.writeFileSync(path.join(dir, 'production-coverage.csv'), csv);
 fs.writeFileSync(path.join(dir, 'production-progress.json'), JSON.stringify({ summary, entries: itemRows }, null, 2) + '\n');
 const md = [
-  '# Premium-Produktion: überprüfbarer Stand aller 58 Katalogeinträge', '',
+  '# Bisheriger Zwei-Posen-Renderer: Regression und Katalogabdeckung', '',
+  '> Diese Matrix prüft weiterhin TLPremiumProduction. Der neue TLPremiumCompletion-Renderer mit sechs Posen wird separat in [SIX-POSE-COMPLETION.md](SIX-POSE-COMPLETION.md) und `completion/variants-*.json` nachgewiesen. Die folgenden Legacy-Zahlen sind nicht die Abdeckung des neuen Renderers.', '',
   'Automatisch aus vorhandenem Inventar, tatsächlichen PNG-Dateien, Registrierungen, SHA-256 und aktuellem Browser-Testbericht erzeugt. Keine Live-Datenbankabfrage. Der historische PR-81-Stand bleibt in `coverage.csv`; die aktuelle Produktionsmatrix steht in `production-coverage.csv` und `production-coverage.json`.', '',
   `**${summary.equipmentCatalogueEntries} Ausrüstungs-/Effekteinträge + ${summary.poseCatalogueEntries} Pose-Metadateneinträge = 58 Katalogeinträge. ${summary.equipmentItemsWithArtwork}/${summary.equipmentCatalogueEntries} Ausrüstungs-/Effekteinträge mit Grafikquellen; ${summary.equipmentItemsTechnicallyValidated}/${summary.equipmentCatalogueEntries} technisch geprüft; 0 freigegeben.**`, '',
   `Premium-Profile mit registrierter Körperbasis: ${supportedPremiumPoseProfiles.join(', ') || 'keine'} (jeweils nur nachgewiesene Ausrüstungskombinationen). Aktuell technisch belegte Profile: ${technicallyValidatedPoseProfiles.join(', ') || 'noch kein aktueller Nachweis'}. Pose-Zeilen sind Metadaten und erhöhen weder Item-Abdeckung noch Grafikvarianten.`, '',

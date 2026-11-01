@@ -1,0 +1,55 @@
+{
+  "tool": "Built-in image_gen; no API/CLI fallback",
+  "kind": "Production briefs and retained-source provenance",
+  "common": "Transparent isolated premium anime game artwork, matching the existing black/gold Cool boxer. Preserve material, lighting, framing and modular separation. No background, unrelated clothing or embedded body in equipment.",
+  "assets": [
+    {
+      "files": [
+        "coat-neon-guard",
+        "coat-neon-cool"
+      ],
+      "brief": "Existing robe design adapted to each reference arm pose, black satin with cyan neon trim. Only robe, no boxer, no pants, no gloves."
+    },
+    {
+      "files": [
+        "coat-drache-guard",
+        "coat-drache-cool"
+      ],
+      "brief": "Existing robe adapted to each reference arm pose, deep red satin with gold dragon embroidery. Only robe, no boxer, no pants, no gloves."
+    },
+    {
+      "files": [
+        "top-cool-jacke"
+      ],
+      "brief": "Isolated black/gold training jacket matching the Cool crossed-arm reference, preserving arm anatomy and torso proportions; no hands, head or trousers."
+    },
+    {
+      "files": [
+        "sleeve-coat",
+        "sleeve-hoodie",
+        "sleeve-jacke",
+        "sleeve-shirt"
+      ],
+      "brief": "Separated sleeve components for the named existing garment, matching its material. Transparent disconnected upper/forearm pieces for source-joint registration; shirt uses a short upper sleeve only. No skin or other clothing."
+    },
+    {
+      "files": [
+        "body-jab",
+        "body-sieg",
+        "body-flex",
+        "body-ansage"
+      ],
+      "brief": "Same adult anime boxer in sports shorts and boxing boots, respectively punching jab, one-arm victory, double-arm flex, and announcement gesture. Full sports character on transparency; preserve frontal body proportions and rendering style. Export pipeline uses only the registered torso/arm region; heads and lower clothing remain shared existing assets."
+    },
+    {
+      "files": [
+        "coat-rig-body"
+      ],
+      "brief": "Transparent robe torso with no sleeves, matching black/gold coat front, open centre, crown motifs and hems. Separate sleeves are attached by renderer.",
+      "finalEditPrompt": "Edit target: this transparent black gold anime boxing robe torso asset. Precise object edit for modular game clothing. Preserve exact framing, scale, silhouette, collar, front gold trim, crown motifs and tails. ONLY change the two gold-rimmed oval armholes: remove the gold oval rings completely and fill the holes with continuous matching black satin fabric and natural folds. These areas must be solid black fabric attachment panels so separate animated sleeves can overlap invisibly. No golden outlines around shoulders or arm sockets. No sleeves, body, arms, trousers, hands, or background. Keep all the other artwork unchanged. True transparent background.",
+      "generatedFile": "exec-8e12b99d-9736-4b52-bc83-ecb1a0416950.png"
+    }
+  ],
+  "sources": "sources/*.png; exact SHA-256 recorded in manifest.json, sleeves.json and pose-bodies.json",
+  "exports": "assets/*.png; deterministic canvas isolation/registration; source art remains retained"
+}
