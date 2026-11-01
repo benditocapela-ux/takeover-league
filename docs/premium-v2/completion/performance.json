@@ -1,0 +1,255 @@
+{
+  "method": "Desktop automation; decoded image/material caches cleared per pose; HTTP browser cache may be warm. Ten warm draw+PNG encodes with forced readback. Not device FPS.",
+  "engines": [
+    {
+      "engine": "chromium",
+      "rows": [
+        {
+          "pose": "cool",
+          "loadAndDrawMs": 199,
+          "warmDrawEncodeMedianMs": 66.19999998807907,
+          "imageFiles": 8,
+          "loader": {
+            "cachedEntries": 8,
+            "cachedDecodedBytes": 5592880,
+            "maxEntries": 16,
+            "maxBytes": 12582912,
+            "pending": 0,
+            "requests": 16,
+            "hits": 8,
+            "evictions": 0,
+            "failures": 0,
+            "active": 0,
+            "peakActive": 3,
+            "queued": 0
+          }
+        },
+        {
+          "pose": "guard",
+          "loadAndDrawMs": 167.30000001192093,
+          "warmDrawEncodeMedianMs": 70.20000004768372,
+          "imageFiles": 9,
+          "loader": {
+            "cachedEntries": 9,
+            "cachedDecodedBytes": 5564472,
+            "maxEntries": 16,
+            "maxBytes": 12582912,
+            "pending": 0,
+            "requests": 25,
+            "hits": 8,
+            "evictions": 0,
+            "failures": 0,
+            "active": 0,
+            "peakActive": 3,
+            "queued": 0
+          }
+        },
+        {
+          "pose": "jab",
+          "loadAndDrawMs": 211,
+          "warmDrawEncodeMedianMs": 130.10000002384186,
+          "imageFiles": 12,
+          "loader": {
+            "cachedEntries": 12,
+            "cachedDecodedBytes": 9618944,
+            "maxEntries": 16,
+            "maxBytes": 12582912,
+            "pending": 0,
+            "requests": 37,
+            "hits": 8,
+            "evictions": 0,
+            "failures": 0,
+            "active": 0,
+            "peakActive": 3,
+            "queued": 0
+          }
+        },
+        {
+          "pose": "sieg",
+          "loadAndDrawMs": 344.5,
+          "warmDrawEncodeMedianMs": 130.89999997615814,
+          "imageFiles": 12,
+          "loader": {
+            "cachedEntries": 12,
+            "cachedDecodedBytes": 9618944,
+            "maxEntries": 16,
+            "maxBytes": 12582912,
+            "pending": 0,
+            "requests": 49,
+            "hits": 8,
+            "evictions": 0,
+            "failures": 0,
+            "active": 0,
+            "peakActive": 3,
+            "queued": 0
+          }
+        },
+        {
+          "pose": "flex",
+          "loadAndDrawMs": 288.60000002384186,
+          "warmDrawEncodeMedianMs": 130.80000001192093,
+          "imageFiles": 12,
+          "loader": {
+            "cachedEntries": 12,
+            "cachedDecodedBytes": 9618944,
+            "maxEntries": 16,
+            "maxBytes": 12582912,
+            "pending": 0,
+            "requests": 61,
+            "hits": 8,
+            "evictions": 0,
+            "failures": 0,
+            "active": 0,
+            "peakActive": 3,
+            "queued": 0
+          }
+        },
+        {
+          "pose": "ansage",
+          "loadAndDrawMs": 289.80000001192093,
+          "warmDrawEncodeMedianMs": 117.19999998807907,
+          "imageFiles": 12,
+          "loader": {
+            "cachedEntries": 12,
+            "cachedDecodedBytes": 9618944,
+            "maxEntries": 16,
+            "maxBytes": 12582912,
+            "pending": 0,
+            "requests": 73,
+            "hits": 8,
+            "evictions": 0,
+            "failures": 0,
+            "active": 0,
+            "peakActive": 3,
+            "queued": 0
+          }
+        }
+      ]
+    },
+    {
+      "engine": "webkit",
+      "rows": [
+        {
+          "pose": "cool",
+          "loadAndDrawMs": 189,
+          "warmDrawEncodeMedianMs": 114.00000000000011,
+          "imageFiles": 8,
+          "loader": {
+            "cachedEntries": 8,
+            "cachedDecodedBytes": 5592880,
+            "maxEntries": 16,
+            "maxBytes": 12582912,
+            "pending": 0,
+            "requests": 16,
+            "hits": 8,
+            "evictions": 0,
+            "failures": 0,
+            "active": 0,
+            "peakActive": 3,
+            "queued": 0
+          }
+        },
+        {
+          "pose": "guard",
+          "loadAndDrawMs": 170,
+          "warmDrawEncodeMedianMs": 123,
+          "imageFiles": 9,
+          "loader": {
+            "cachedEntries": 9,
+            "cachedDecodedBytes": 5564472,
+            "maxEntries": 16,
+            "maxBytes": 12582912,
+            "pending": 0,
+            "requests": 25,
+            "hits": 8,
+            "evictions": 0,
+            "failures": 0,
+            "active": 0,
+            "peakActive": 3,
+            "queued": 0
+          }
+        },
+        {
+          "pose": "jab",
+          "loadAndDrawMs": 359,
+          "warmDrawEncodeMedianMs": 189,
+          "imageFiles": 12,
+          "loader": {
+            "cachedEntries": 12,
+            "cachedDecodedBytes": 9618944,
+            "maxEntries": 16,
+            "maxBytes": 12582912,
+            "pending": 0,
+            "requests": 37,
+            "hits": 8,
+            "evictions": 0,
+            "failures": 0,
+            "active": 0,
+            "peakActive": 3,
+            "queued": 0
+          }
+        },
+        {
+          "pose": "sieg",
+          "loadAndDrawMs": 266,
+          "warmDrawEncodeMedianMs": 196.9999999999991,
+          "imageFiles": 12,
+          "loader": {
+            "cachedEntries": 12,
+            "cachedDecodedBytes": 9618944,
+            "maxEntries": 16,
+            "maxBytes": 12582912,
+            "pending": 0,
+            "requests": 49,
+            "hits": 8,
+            "evictions": 0,
+            "failures": 0,
+            "active": 0,
+            "peakActive": 3,
+            "queued": 0
+          }
+        },
+        {
+          "pose": "flex",
+          "loadAndDrawMs": 270,
+          "warmDrawEncodeMedianMs": 227,
+          "imageFiles": 12,
+          "loader": {
+            "cachedEntries": 12,
+            "cachedDecodedBytes": 9618944,
+            "maxEntries": 16,
+            "maxBytes": 12582912,
+            "pending": 0,
+            "requests": 61,
+            "hits": 8,
+            "evictions": 0,
+            "failures": 0,
+            "active": 0,
+            "peakActive": 3,
+            "queued": 0
+          }
+        },
+        {
+          "pose": "ansage",
+          "loadAndDrawMs": 289.0000000000018,
+          "warmDrawEncodeMedianMs": 236.00000000000182,
+          "imageFiles": 12,
+          "loader": {
+            "cachedEntries": 12,
+            "cachedDecodedBytes": 9618944,
+            "maxEntries": 16,
+            "maxBytes": 12582912,
+            "pending": 0,
+            "requests": 73,
+            "hits": 8,
+            "evictions": 0,
+            "failures": 0,
+            "active": 0,
+            "peakActive": 3,
+            "queued": 0
+          }
+        }
+      ]
+    }
+  ]
+}
