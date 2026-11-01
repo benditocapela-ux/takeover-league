@@ -81,7 +81,7 @@ app.addEventListener('submit',async e=>{
  status.textContent='Gespeichert.';status.classList.remove('error');editing=null;await loadFaq();render();
 });
 (async()=>{
- await new Promise(ok=>{if(window.TLHelp)ok();else document.querySelector('script[src="./takeover-help.js"]').addEventListener('load',ok,{once:true})});
+ await new Promise(ok=>{if(window.TLHelp)ok();else document.querySelector('script[src^="./takeover-help.js"]').addEventListener('load',ok,{once:true})});
  H=window.TLHelp;
  try{
   db=await H.client();
