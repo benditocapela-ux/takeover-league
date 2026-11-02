@@ -71,3 +71,11 @@ Der erste ungeprüfte Prototyp wurde am ursprünglichen Zeitlimit zurückgenomme
 Der vollständige, unabhängig geprüfte Studio-Lesepfad ist in `studio-history.md` dokumentiert: 20 Trainings pro Serverabruf, vollständige Aggregate, tatsächliche PostgreSQL- und Browserprüfungen ohne Produktionsschreibzugriff. Die Inbox-Wrapper bleiben unverändert.
 
 Der CI-Befund zum Effekte-Manifest war ein veralteter Quellhash nach der transparenten Podiumszene. Der Manifesthash wurde aus dem tatsächlichen Modul mit der bestehenden kanonischen LF-Methode berechnet; `premium-v2-effects.cjs` erzeugte anschließend neue echte Chromium-/WebKit-Berichte (40 Szenen-/Aura-Kombinationen, vier Augeneffekte, exakte Kachelgleichheit). Die Assertions bleiben unverändert. Zusätzlich werden Textquellhashes der Completion-Varianten auf beiden Plattformen kanonisch mit LF berechnet; PNG-Hashes bleiben bytegenau. Die Variantenberichte entstehen durch erneutes Zeichnen, nicht durch manuelles Umschreiben von Prüfergebnissen.
+
+Die ergänzenden lokalen Material-/Rig-Regressionen bestanden in beiden Engines: 39 Materialkomponenten mit unveränderter Alpha-/Fremdmaterialmaske, neun begrenzte Gelenkstellungen mit konstanten Knochenlängen und deckenden Ankern. Die erneuten, nur messungsbedingten JSON-Ausgaben sind unter `output/final-extra-regressions/` abgelegt; keine Laufzeitgrafik wurde geändert.
+
+## CI-Regression: Kachel und Hauptfigur laden dasselbe Outfit
+
+Der WebKit-Timeout wurde als echter Integrationsfehler reproduziert: Die alte Benachrichtigungsmenge speicherte nur einen Callback pro Outfit. Startete eine Kachel das Laden und wählte die Hauptfigur dasselbe Outfit währenddessen, erhielt nur die Kachel die Fertigmeldung. Die neue Map aus Outfit-Schlüssel und Callback-Menge benachrichtigt beide Verbraucher, dedupliziert dieselbe Funktion und gibt Listener vor dem Neuzeichnen frei. Fehlerpfad und unveränderte neun Quellanfragen sind ebenfalls geprüft.
+
+Vor der Korrektur war der neue verzögerte Tile→Hero-Browserfall in WebKit rot; danach bestanden Chromium und WebKit die vollständige Suite mit 32 Outfits, 16 Handschuhansichten und diesem Regressionstest. Drei zugehörige Quellverträge bestanden. Keine PNGs, Registrierungen oder Auswahl-Epochen verändert; keine Timeouts erhöht oder Assertions gestrichen.

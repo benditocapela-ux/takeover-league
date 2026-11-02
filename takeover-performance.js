@@ -272,15 +272,21 @@ async function mountStudio(){
 /* ---- Etappe 5: Emotes und Einlauf im Duell; Podium-Emote (Etappe 8) ---- */
 let duelState=null,duelTimer=null;
 async function mountDuels(){
- const list=document.getElementById('duelList');if(!list)return;
- const db=await client();
+ const lists=['duelList','metricDuelList'].map(id=>document.getElementById(id)).filter(Boolean);if(!lists.length)return;
+ const db=await client();let epoch=0,owner=null;
+ const visibleCards=()=>lists.flatMap(list=>[...list.querySelectorAll('article.tl-duel-card[data-duel-id]')]).filter(card=>card.isConnected&&!card.closest('[hidden]'));
+ const clear=()=>{epoch++;owner=null;duelState=null;clearTimeout(duelTimer);for(const list of lists)list.querySelectorAll('.kg-social').forEach(node=>node.remove())};
+ const actor=async()=>{const r=await db.auth.getUser();return r.error?null:r.data?.user?.id||null};
+ const current=(token,uid,cards)=>token===epoch&&owner===uid&&cards.length===visibleCards().length&&cards.every((card,index)=>card===visibleCards()[index]);
  const decorate=async()=>{
-  const s=await db.auth.getSession();if(!s.data||!s.data.session)return;
-  const cards=[...list.querySelectorAll('article.tl-duel-card[data-duel-id]')];if(!cards.length)return;
+  const token=epoch,cards=visibleCards();if(!cards.length)return;
+  const uid=await actor();if(token!==epoch||!uid||cards.some(card=>!card.isConnected||card.closest('[hidden]')))return;
+  owner=uid;
   const ids=[...new Set(cards.map(c=>c.dataset.duelId))].slice(0,60);
   const {data,error}=await db.rpc('get_duel_kampfgeist',{p_duel_ids:ids});
-  if(error||!data||!data.enabled)return;
-  duelState=data;const K=await kampfgeist();
+  if(!current(token,uid,cards)||error||!data||!data.enabled||!Array.isArray(data.duels)||!Array.isArray(data.my_emotes))return;
+  const K=await kampfgeist();if(!current(token,uid,cards)||await actor()!==uid||!current(token,uid,cards))return;
+  duelState=data;
   for(const card of cards){
    const d=data.duels.find(x=>x.id===card.dataset.duelId);card.querySelector('.kg-social')?.remove();if(!d)continue;
    const box=document.createElement('div');box.className='kg-social';
@@ -293,18 +299,29 @@ async function mountDuels(){
    card.append(box);
   }
  };
- const schedule=()=>{clearTimeout(duelTimer);duelTimer=setTimeout(()=>decorate().catch(e=>console.warn('Duell-Emotes nicht verfügbar:',e)),150)};
- new MutationObserver(m=>{if(m.some(x=>[...x.addedNodes].some(n=>n.nodeType===1&&!n.classList.contains('kg-social'))))schedule()}).observe(list,{childList:true});
+ const schedule=()=>{clear();duelTimer=setTimeout(()=>decorate().catch(e=>console.warn('Duell-Emotes nicht verfügbar:',e)),150)};
+ for(const list of lists){
+ new MutationObserver(m=>{if(m.some(x=>[...x.addedNodes,...x.removedNodes].some(n=>n.nodeType===1&&!n.classList.contains('kg-social'))))schedule()}).observe(list,{childList:true});
  list.addEventListener('click',async ev=>{
-  const b=ev.target.closest('[data-kg-send],[data-kg-hide],[data-kg-intro]');if(!b||!duelState)return;
-  if(b.dataset.kgIntro){const d=duelState.duels.find(x=>x.id===b.dataset.kgIntro),K=await kampfgeist();K.playEinlauf([{look:d.challenger,name:d.challenger.name},{look:d.opponent,name:d.opponent.name}]);return}
+  const b=ev.target.closest('[data-kg-send],[data-kg-hide],[data-kg-intro]'),card=b?.closest('article[data-duel-id]');if(!b||b.disabled||!duelState||!visibleCards().includes(card))return;
+  const token=epoch,uid=owner,cards=visibleCards(),data=duelState,d=data.duels.find(x=>x.id===card.dataset.duelId);if(!d)return;
   b.disabled=true;
+  try{
+  if(await actor()!==uid||!current(token,uid,cards))return;
+  if(b.dataset.kgIntro){const K=await kampfgeist();if(!current(token,uid,cards)||await actor()!==uid||!current(token,uid,cards))return;K.playEinlauf([{look:d.challenger,name:d.challenger.name},{look:d.opponent,name:d.opponent.name}]);return}
+  if(b.dataset.kgSend&&(!d.can_send||b.dataset.kgSend!==d.id||!data.my_emotes.some(m=>m.key===b.dataset.kgEmote)))return;
+  if(b.dataset.kgHide&&(!data.can_moderate||!d.events.some(e=>String(e.id)===b.dataset.kgHide&&!e.hidden)))return;
   const r=b.dataset.kgSend?await db.rpc('send_duel_emote',{p_duel_id:b.dataset.kgSend,p_emote_key:b.dataset.kgEmote}):await db.rpc('hide_kg_emote',{p_event_id:Number(b.dataset.kgHide)});
+  if(!current(token,uid,cards))return;
   const st=document.getElementById('status');
   if(r.error){if(st)st.textContent=r.error.message;b.disabled=false;return}
   if(st)st.textContent=b.dataset.kgSend?'Emote gesendet.':'Emote ausgeblendet.';
-  decorate().catch(()=>{});
+  schedule();
+  }catch(error){if(current(token,uid,cards)){const st=document.getElementById('status');if(st)st.textContent=error?.message||'Die Duell-Interaktion konnte nicht geladen werden.'}}finally{if(b.isConnected)b.disabled=false}
  });
+ }
+ document.addEventListener('takeover:duels-view',schedule);
+ db.auth.onAuthStateChange?.(event=>{if(['SIGNED_OUT','SIGNED_IN','USER_UPDATED'].includes(event))schedule()});
  schedule();
 }
 /* Etappe 8: kein eigenes Kampfgeist-Podium. Wer auf dem normalen Podium steht, entscheidet selbst, ob dort ein Emote erscheint. */

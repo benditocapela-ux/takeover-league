@@ -78,11 +78,11 @@
    try{if(!await verifyActor()||!current(token,epoch))return;await rpc(name,args);if(!current(token,epoch))return;if(onMutation)await onMutation();else await load()}
    catch(error){if(current(token,epoch))say(error?.message||'Die Änderung konnte nicht gespeichert werden.',true)}finally{mutating=false}
   }
-  function render(items,token,epoch){
+  function render(items,token,epoch,requestedScope){
    list.replaceChildren();if(!items.length){list.append(node('p','Keine Duelle für diese Auswahl.'));return}
    const labels={pending:'Einladung offen',active:'Aktiv',awaiting_reviews:'Trainerprüfung offen',settled:'Abgeschlossen',declined:'Abgelehnt',expired:'Abgelaufen',cancelled:'Zurückgezogen'};
    for(const item of items){
-    const d=JSON.parse(JSON.stringify(item)),card=node('article','');card.className='tl-duel-card';card.dataset.metricDuel=d.id;
+    const d=JSON.parse(JSON.stringify(item)),card=node('article','');card.className='tl-duel-card';card.dataset.metricDuel=d.id;card.dataset.status=d.status;if(requestedScope==='mine'||requestedScope==='staff')card.dataset.duelId=d.id;
     if(targetDuel===d.id){card.classList.add('is-linked-duel');card.tabIndex=-1}
     card.append(node('h3',(d.challenger_name||'Boxer')+' vs. '+(d.opponent_name||'Boxer')),node('p',labels[d.status]));for(const line of ruleLines(d.rule,d.duration_days,d.starts_at,d.ends_at))card.append(node('p',line));
     if(d.scores){card.append(node('p',d.scores.valid?(d.scores.provisional?'Vorläufiger Zwischenstand: ':'Offizieller Endstand: ')+format(d.scores.challenger_score)+' : '+format(d.scores.opponent_score)+' '+d.rule.unit:'Zwischenstand nicht verlässlich berechenbar. Trainerprüfung erforderlich.'));if(d.scores.pending)card.append(node('p',d.scores.pending+' offene Trainings können das Ergebnis verändern.'))}
@@ -106,11 +106,11 @@
     if(!value||!Array.isArray(value.items)||value.items.length>20||value.items.some(d=>!validItem(d))||value.next_cursor!==null&&(!date(value.next_cursor?.before)||typeof value.next_cursor?.before_id!=='string'))throw Error('Die Duellübersicht ist unvollständig. Bitte erneut laden.');
     if(targetDuel&&(value.items.length>1||value.next_cursor!==null||value.items.some(d=>d.id!==targetDuel)))throw Error('Der verlinkte Duellstand konnte nicht eindeutig geladen werden.');
     if(value.items.some(d=>requestedScope==='mine'&&![d.challenger_id,d.opponent_id].includes(getActor().id)||requestedScope==='club'&&(d.rule.version!==3||d.rule.visibility!=='club'||!['active','awaiting_reviews','settled'].includes(d.status))))throw Error('Die Antwort passt nicht zum gewählten Sichtbarkeitsbereich.');
-    nextCursor=value.next_cursor;render(value.items,token,epoch);say('Seite '+(history.length+1)+' · '+value.items.length+' Duelle'+(targetDuel?' · Verlinktes Duell':'')+(requestedScope==='club'?' · Nur ausdrücklich freigegebene Gesamtstände.':''));prev.hidden=!history.length;next.hidden=!nextCursor;
+    nextCursor=value.next_cursor;render(value.items,token,epoch,requestedScope);say('Seite '+(history.length+1)+' · '+value.items.length+' Duelle'+(targetDuel?' · Verlinktes Duell':'')+(requestedScope==='club'?' · Nur ausdrücklich freigegebene Gesamtstände.':''));prev.hidden=!history.length;next.hidden=!nextCursor;
    }catch(error){if(current(token,epoch)){nextCursor=null;prev.hidden=!history.length;next.hidden=true;say(['PGRST202','42883'].includes(error?.code)?'Die Übersicht für alle Duellarten ist noch nicht verfügbar. Bestehende Punkte-Duelle bleiben separat erreichbar.':String(error?.message||error),true)}}
    finally{if(current(token,epoch)){loading=false;prev.disabled=next.disabled=false}}
   }
-  async function changeView(){request++;cursor=null;history=[];nextCursor=null;root.hidden=view.value!=='all';legacy.hidden=view.value==='all';if(!root.hidden)await load();else await onMutation?.()}
+  async function changeView(){request++;cursor=null;history=[];nextCursor=null;root.hidden=view.value!=='all';legacy.hidden=view.value==='all';doc.dispatchEvent(new Event('takeover:duels-view'));if(!root.hidden)await load();else await onMutation?.()}
   function invalidate(){request++;options=null;cursor=null;history=[];nextCursor=null;list.replaceChildren();say('');root.hidden=true;view.hidden=true;view.value='legacy';legacy.hidden=false;onChange?.()}
   view.addEventListener('change',changeView);scope.addEventListener('change',()=>{cursor=null;history=[];load()});state.addEventListener('change',()=>{cursor=null;history=[];load()});$('metricDuelFilter').onsubmit=e=>{e.preventDefault();cursor=null;history=[];load()};
   prev.onclick=()=>{if(loading||!history.length)return;cursor=history.pop();load()};next.onclick=()=>{if(loading||!nextCursor)return;history.push(cursor);cursor=nextCursor;load()};

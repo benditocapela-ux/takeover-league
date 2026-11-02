@@ -67,3 +67,20 @@ Rollenabkürzungen: **B** Boxer, **C** Coach, **A** Admin, **Gast** ohne Sitzung
 5. **CI ist commitbezogen.** Die jeweiligen Suite-/Handoff-Nachweise sind hier verlinkt. Aktuelle Remote-Checks und freigegebener Commit werden im zentralen [STATUS.md](STATUS.md) geführt; diese Matrix macht daraus keine ungeprüfte Gesamtfreigabe.
 
 Offen bleiben insbesondere echte angemeldete Cloud-Rollenpfade, physische Geräte, Fachaktionen der nur mit S/Q belegten Routen, die vollständige Shop-/Outfit-Kunstabnahme und der dokumentierte Flex-Shirt-Übergang. Dafür wird keine Prozentzahl erfunden.
+
+## Ergänzung aus der entfernten Staging-CI
+
+Am Integrationscommit `15c317f21fc712d8fceb08b17ac757ab4c287687` lief der Chromium-Smoke-Job zusätzlich erfolgreich durch die nachfolgenden Fachsuiten, bevor er die gesondert korrigierte Duell-Moderationsintegration in `kampfgeist5-browser.cjs` erreichte. Diese Ergebnisse erweitern die konservative obige Shell-Matrix; sie bleiben synthetische API-/Kontenprüfungen. Log: [Staging-CI](https://github.com/benditocapela-ux/takeover-league/actions/runs/41465697799/job/125345866841). Am finalen PR-Head müssen die Checks erneut bestehen.
+
+| Bereich / Routen | Tatsächlich bestandene zusätzliche Fachprüfung |
+| --- | --- |
+| `news.html`, `feedback.html` | Nachrichten/Ungelesenstatus, eigener Screenshot-Uploadpfad, eigene Antworten, Admin-Eingang, Gast-Sperre (`news-feedback-browser`) |
+| `hilfe.html` | Tour, Rollen-/Flagfilter, Suche, Admin-FAQ, Gastlesen (`help-tutorial-browser`) |
+| `bewertung.html`, `boxer-compare.html`, `stil-test.html` | Bewertung, Coach-Regler, Vergleich/Stil-Overlay, Monatssperre, Freigabe und Profilkarte (`performance-browser`, `self-rating-browser`) |
+| `karten.html`, `awards.html`, `boxer-profile.html` | Karten wählen/kaufen/gesperrt, persönliche und zeitlich begrenzte Designs, begründete Rücknahme, Vergleichs-/Profilverknüpfungen (`card-designs-browser`, `card-designs-personal-browser`, `award-designs-limited-browser`, `award-skip-revoke-browser`, `card-arena-browser`) |
+| `checkin.html`, `praesenz.html`, `wochenplan.html` | Gym-Check-in für Coach/Boxer, Präsenz für Boxer/Coach, Wochenplan für Boxer/Coach/Admin (`gym-browser`) |
+| `quests.html` | Boxer-Abholung/Truhe, deaktivierter Zustand, Coach-Übersicht und Admin-Vorschau ohne Abholung (`quests-browser`) |
+| `shop.html`, `roadmap.html` | 93 bestehende Kampfgeist-Items, Kauf/Ausrüsten, Rang-/Coin-Sperren, Inventar/Verlauf, deaktivierter Zustand und Admin-Vorschau (`kampfgeist-browser`) |
+| `admin.html`, `coach.html` | Admin-Rename-Test, Bonus-EXP-Vorschau und begründete Rücknahme, Selbsteinschätzungsprüfung (`admin-registration-browser`, `admin-bonus-exp-browser`, `self-rating-browser`) |
+
+Weder Käufe, Profiländerungen noch Abholungen dieses Jobs wurden an reale Konten oder eine reale Datenbank gesendet. Der Lauf ist kein Ersatz für die weiterhin offene Cloud- und Geräteabnahme.

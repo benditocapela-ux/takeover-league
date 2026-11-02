@@ -206,6 +206,7 @@ jobs:
           node tests/inbox-browser.cjs
           node tests/studio-history-browser.cjs
           node tests/duel-metrics-browser.cjs
+          TL_BROWSER=webkit node tests/kampfgeist5-browser.cjs
           node tests/duel-queue-browser.cjs
           TL_BROWSER=webkit node tests/duel-queue-browser.cjs
           node tests/duel-close-browser.cjs

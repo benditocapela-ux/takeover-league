@@ -2,7 +2,7 @@
 // Chromium test with mocked Supabase SDK (no real account, no server writes) for Etappe 5:
 // Kampfpfad page, emotes + Einlauf on the duel page, Podium-Emote on index.html (Etappe 8), emote/Einlauf items in the shop.
 const assert=require('node:assert/strict'),fs=require('node:fs'),http=require('node:http'),path=require('node:path');
-const {chromium}=require('playwright');
+const engines=require('playwright'),engine=process.env.TL_BROWSER||'chromium';
 const root=process.cwd();
 const unq=s=>s==='NULL'?null:s.slice(1,-1).replace(/''/g,"'");
 const parse=sql=>[...sql.matchAll(/\('([a-z0-9_]+)','(avatar|aura|banner|rahmen|titel|handschuhe|emote|einlauf)','((?:[^']|'')*)',(NULL|'(?:[^']|'')*'),'(\w+)','([FEDCBAS])','(start|rank|shop|pass)',(NULL|\d+),'(\{[^']*\})',(\d+)\)/g)]
@@ -17,6 +17,8 @@ const server=http.createServer((req,res)=>{
 });
 function injected(cfg){
  const calls=[];window.__calls=calls;
+ let authId='u1';const authListeners=[];
+ window.__kgAuthChange=id=>{authId=id;authListeners.forEach(fn=>fn(id?'SIGNED_IN':'SIGNED_OUT'))};
  const names={boxer:'Anna',coach:'Marco',admin:'Owner'},profile={id:'p-'+cfg.role,display_name:names[cfg.role],role:cfg.role,is_active:true};
  const find=k=>cfg.items.find(i=>i.key===k);
  const look=(av,em,ein,ti)=>({level:7,rank:'F',avatar:find(av),aura:find('u_glut'),banner:find('b_dojo'),rahmen:find('f_glut'),titel:find(ti||'t_rookie'),handschuhe:find('g_rot'),emote:find(em),einlauf:find(ein)});
@@ -26,6 +28,7 @@ function injected(cfg){
   return {tier:t,need:t*20,reached:t<=7,claimed:claimed.has(t),reward:{coins:item?0:t===5?100:15,item:item?find(item):null,substitute:false}}});
  const duel={id:'d-1',challenger_id:'p-boxer',challenger_name:'Anna',opponent_id:'p-ben',opponent_name:'Ben',status:'active',duration_days:7,invited_at:new Date().toISOString(),expires_at:new Date(Date.now()+864e5).toISOString(),accepted_at:new Date().toISOString(),ends_at:new Date(Date.now()+6*864e5).toISOString(),challenger_score:0,opponent_score:0,winner_id:null};
  const myEmotes=['m_respekt','m_gg','m_deckung','m_runde','m_stark'].map(find);
+ const rule={version:3,metric:'points',label:'Trainingspunkte',unit:'Trainingspunkte',timezone:'Europe/Zurich',time_rule:'legacy_inclusive_zurich_dates',visibility:'participants',reward_rule:'ranked_v21',reward_label:'Bestehende rangabhängige EXP-Regel',training_type_id:null,training_type_name:null};
  const rpc=async(name,args)=>{
   calls.push([name,args]);
   switch(name){
@@ -35,11 +38,14 @@ function injected(cfg){
    case 'claim_kampfpfad':{const open=tiers().filter(t=>t.reached&&!t.claimed&&(args.p_tier==null||t.tier===args.p_tier));open.forEach(t=>claimed.add(t.tier));
      return {data:{month,claimed:open.length,coins:open.reduce((s,t)=>s+t.reward.coins,0),items:[],balance:500},error:null}}
    case 'duel_v2_list_mine':return {data:[duel],error:null};
+   case 'duel_v2_staff_queue':return {data:{items:args.p_state==='all'||args.p_state==='open'?[duel]:[],next_cursor:null,counts:{all:1,open:1,due:0,ready:0,closed:0},state:args.p_state,search:args.p_search||'',duel_id:args.p_duel_id||null,metric:'points',limit:args.p_limit,as_of:new Date().toISOString()},error:null};
    case 'duel_v2_eligible_boxers':return {data:[],error:null};
-   case 'duel_v2_live_scores':return {data:{duel_id:'d-1',status:'active',challenger_score:120,opponent_score:90,pending:0},error:null};
-   case 'get_duel_kampfgeist':return {data:{enabled:true,preview:false,can_moderate:cfg.role!=='boxer',muted:false,my_emotes:myEmotes,
+   case 'duel_v2_live_scores':return {data:{duel_id:'d-1',status:'active',challenger_score:120,opponent_score:90,pending:0,provisional:true},error:null};
+   case 'duel_v3_options':return cfg.v3?{data:{timezone:'Europe/Zurich',metrics:[{key:'points',label:'Trainingspunkte',unit:'Trainingspunkte',enabled:true,revision:'points-1',reward_rule:'ranked_v21',reward_label:'Bestehende EXP-Regel'},...['jogging_km','training_count'].map(key=>({key,label:key,unit:key==='jogging_km'?'km':'Trainings',enabled:false,disabled_reason:'Noch nicht freigegeben',revision:key+'-1',reward_rule:null,reward_label:'Nicht freigegeben'}))],training_types:[],visibility_options:[{key:'participants',label:'Beteiligte'},{key:'club',label:'Verein'}]},error:null}:{data:null,error:{code:'PGRST202',message:'Not installed'}};
+   case 'duel_v3_list':return {data:{items:[{...duel,starts_at:duel.accepted_at,rule:{...rule,visibility:args.p_scope==='club'?'club':'participants'},scores:{challenger_score:120,opponent_score:90,pending:0,valid:true,provisional:true}}],next_cursor:null},error:null};
+   case 'get_duel_kampfgeist':{const result={data:{enabled:true,preview:false,can_moderate:cfg.role!=='boxer',muted:false,my_emotes:myEmotes,
      duels:[{id:'d-1',status:'active',challenger:Object.assign(look('a_nia','m_stark','e_glut','t_unerm'),{id:'p-boxer',name:'Anna'}),opponent:Object.assign(look('a_malik','m_gg','e_donner'),{id:'p-ben',name:'Ben'}),
-      can_send:cfg.role==='boxer',events:events.slice()}]},error:null};
+      can_send:cfg.role==='boxer',events:events.slice()}]},error:null};return window.__kgHoldReads?new Promise(resolve=>{window.__kgReleaseRead=()=>resolve(result)}):result}
    case 'send_duel_emote':{const e={id:events.length+1,sender_id:profile.id,sender:profile.display_name,emote:find(args.p_emote_key),created_at:new Date().toISOString(),hidden:false};events.push(e);return {data:e,error:null}}
    case 'hide_kg_emote':events.forEach(e=>{if(e.id===args.p_event_id)e.hidden=true});return {data:{id:args.p_event_id,hidden:true},error:null};
    case 'get_podium_kampfgeist':{const mine=cfg.podium||{show:false,key:'m_respekt'};
@@ -57,12 +63,12 @@ function injected(cfg){
  const from=()=>{const q={select(){return q},eq(){return q},order(){return q},limit(){return q},
   maybeSingle:async()=>({data:{id:profile.id,role:profile.role,is_active:true,display_name:profile.display_name},error:null}),
   then:(r)=>Promise.resolve({data:[],error:null}).then(r)};return q};
- window.__takeoverMockClient={auth:{getSession:async()=>({data:{session:{access_token:'x'}}}),getUser:async()=>({data:{user:{id:'u1'}},error:null}),onAuthStateChange:()=>({data:{subscription:{unsubscribe(){}}}}),signOut:async()=>({error:null})},from,rpc};
+ window.__takeoverMockClient={auth:{getSession:async()=>({data:{session:authId?{access_token:'x',user:{id:authId}}:null}}),getUser:async()=>{const result={data:{user:authId?{id:authId}:null},error:null};if(window.__kgHoldAuth){window.__kgHoldAuth=false;return new Promise(resolve=>{window.__kgReleaseAuth=()=>resolve(result)})}return result},onAuthStateChange:fn=>{authListeners.push(fn);return {data:{subscription:{unsubscribe(){}}}}},signOut:async()=>({error:null})},from,rpc};
 }
 (async()=>{
  await new Promise(r=>server.listen(0,'127.0.0.1',r));
  const base='http://127.0.0.1:'+server.address().port+'/';
- const browser=await chromium.launch();
+ const browser=await engines[engine].launch();
  const shots=process.env.KG_SHOTS||'';
  async function open(cfg,file,motion){
   const context=await browser.newContext({viewport:{width:390,height:844},reducedMotion:motion||'reduce'});
@@ -100,7 +106,8 @@ function injected(cfg){
  await done(x);
 
  // Duell: Kämpfer mit Avatar/Titel, Emote-Feed, Emote senden, Einlauf
- x=await open({role:'boxer'},'duels.html','no-preference');
+ for(const v3 of [false,true]){
+ x=await open({role:'boxer',v3},'duels.html','no-preference');
  await x.p.waitForSelector('.tl-duel-card .kg-social');
  t=await x.p.textContent('.tl-duel-card .kg-social');
  assert.match(t,/Anna/);assert.match(t,/Ben/);assert.match(t,/Der Unermüdliche/);assert.match(t,/GG!/);
@@ -117,11 +124,37 @@ function injected(cfg){
  await x.p.keyboard.press('Escape');assert.equal(await x.p.locator('.kg-intro').count(),0);
  await done(x);
  // Coach: kann ausblenden, nicht senden
- x=await open({role:'coach'},'duels.html');
+ x=await open({role:'coach',v3},'duels.html');
+ if(v3){await x.p.waitForSelector('#duelView:not([hidden])');await x.p.selectOption('#duelView','all');}
  await x.p.waitForSelector('[data-kg-hide]');
  assert.equal(await x.p.locator('[data-kg-send]').count(),0);
  await x.p.click('[data-kg-hide="1"]');
  await x.p.waitForFunction(()=>window.__calls.some(c=>c[0]==='hide_kg_emote'&&c[1].p_event_id===1));
+ await done(x);
+ }
+
+ // V3 scope/account races: a private late read never decorates Club; stale actions never write.
+ x=await open({role:'boxer',v3:true},'duels.html');
+ await x.p.waitForSelector('#metricDuelList .kg-social');
+ await x.p.evaluate(()=>{window.__kgHoldReads=true;window.__kgReleaseRead=null});
+ await x.p.click('#refresh');await x.p.waitForFunction(()=>typeof window.__kgReleaseRead==='function');
+ await x.p.selectOption('#metricDuelScope','club');await x.p.waitForSelector('#metricDuelList article');
+ const readsBefore=(await calls(x.p)).filter(c=>c[0]==='get_duel_kampfgeist').length;
+ await x.p.evaluate(()=>{window.__kgReleaseRead();window.__kgHoldReads=false});await x.p.waitForTimeout(350);
+ assert.equal((await calls(x.p)).filter(c=>c[0]==='get_duel_kampfgeist').length,readsBefore,'Club view issues no social read, including hidden legacy cards');
+ assert.equal(await x.p.locator('#metricDuelList [data-duel-id],#metricDuelList .kg-social').count(),0,'Club aggregate never gets private hooks or stale social result');
+ await x.p.selectOption('#metricDuelScope','mine');await x.p.waitForSelector('#metricDuelList .kg-social');
+ await x.p.evaluate(()=>{window.__kgHoldAuth=true;window.__kgReleaseAuth=null});
+ await x.p.click('[data-kg-send][data-kg-emote="m_stark"]');await x.p.waitForFunction(()=>typeof window.__kgReleaseAuth==='function');
+ await x.p.selectOption('#metricDuelScope','club');await x.p.waitForSelector('#metricDuelList article');
+ await x.p.evaluate(()=>window.__kgReleaseAuth());await x.p.waitForTimeout(250);
+ assert.equal((await calls(x.p)).filter(c=>c[0]==='send_duel_emote').length,0,'Detached selection cannot submit after auth check');
+ await x.p.selectOption('#metricDuelScope','mine');await x.p.waitForSelector('#metricDuelList .kg-social');
+ await x.p.evaluate(()=>{window.__kgHoldReads=true;window.__kgReleaseRead=null});
+ await x.p.click('#refresh');await x.p.waitForFunction(()=>typeof window.__kgReleaseRead==='function');
+ await x.p.evaluate(()=>{window.__kgAuthChange('u2');window.__kgReleaseRead()});await x.p.waitForTimeout(350);
+ assert.equal(await x.p.locator('.kg-social').count(),0,'Account switch discards late private result');
+ assert.equal((await calls(x.p)).filter(c=>['send_duel_emote','hide_kg_emote'].includes(c[0])).length,0);
  await done(x);
 
  // Podium (Etappe 8): kein eigenes Kampfgeist-Podium; Emote nur bei Boxern, die es eingeschaltet haben; eigene Auswahl unter dem Podium
@@ -174,5 +207,5 @@ function injected(cfg){
  await done(x);
 
  await browser.close();server.close();
- console.log('PASS: Etappe 5 im Browser – Kampfpfad (30 Stufen, abholen, Flag aus), Duell (Kämpfer, Emote-Feed, senden, Einlauf VS, Coach blendet aus), Podium (Emote nur wer es einschaltet, eigene Auswahl, kein separates Podium), Shop (13 Emotes, 8 Einläufe, Vorschau, Kampfpfad-Items)');
+ console.log('PASS '+engine+': Etappe 5 – Kampfpfad; legacy + V3 Mine/Staff emotes/intro/moderation; Club no private reads; stale selection/account guards; Podium; Shop');
 })().catch(e=>{console.error(e);process.exit(1)});

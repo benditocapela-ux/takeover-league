@@ -118,3 +118,26 @@ const hoodHtml=AP.create(hoodManifest).render(withHood,'cool');
 assert.ok(hoodHtml&&hoodHtml.includes('hoodie-up.webp'));
 assert.ok(!hoodHtml.includes('hair/afro-black.webp'),'hood covers hair');
 console.log('PASS: opt-in artpack selection, complete outfits, no mismatched art, safe paths, load-error fallback and SVG default');
+
+// A pending outfit may be requested first by a tile, then by the hero. Keep
+// every distinct consumer, dedupe repeats, and notify failures as well.
+(async()=>{
+ for(const fail of [false,true]){
+  const requests=[];ctx.window.Image=class{set src(value){this.url=value;requests.push(this)}};
+  const runtime=AP.create(manifest);let tiles=0,heroes=0;
+  const tile=()=>tiles++,hero=()=>heroes++;
+  assert.equal(runtime.prepare(cfg,'cool',tile),false);
+  assert.equal(runtime.prepare(cfg,'cool',hero),false);
+  runtime.prepare(cfg,'cool',tile);runtime.prepare(cfg,'cool',hero);
+  let count=0;while(requests.length){const image=requests.shift();count++;if(fail&&count===1)image.onerror();else image.onload()}
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(tiles,1,'tile callback called once on '+(fail?'failure':'success'));
+  assert.equal(heroes,1,'hero callback is retained after tile-first preload on '+(fail?'failure':'success'));
+  assert.equal(runtime.inspect(cfg,'cool').state,fail?'load-failed':'ready');
+  runtime.prepare(cfg,'cool',tile);runtime.prepare(cfg,'cool',hero);
+  await new Promise(resolve=>setImmediate(resolve));
+  assert.equal(tiles,1,'completed callbacks released');assert.equal(heroes,1,'no repeated completed hero callback');
+  assert.equal(runtime.stats.started,9,'each source fetched only once');
+ }
+ console.log('PASS: shared tile/hero preload callbacks on success and failure, deduplication and cleanup');
+})().catch(error=>{console.error(error);process.exitCode=1});

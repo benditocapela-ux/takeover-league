@@ -78,6 +78,10 @@ Der unabhängige Review identifizierte eine mögliche Übernahme einer alten Zus
 
 ## Bewusste Grenzen und nächster Auftrag
 
+Die abschliessende CI-Prüfung deckte zwei Kampfgeist-Integrationsprobleme auf: Der alte Coach-Test kannte die neue serverseitige Warteschlange nicht, und v3-Karten hatten noch keine Emote-Hooks. Beides wurde gezielt behoben. Nur sichtbare Teilnehmer-/Trainerkarten erhalten die vorhandenen Social-Funktionen; die Vereinsübersicht löst keine privaten Kampfgeist-Abfragen aus. Konto-, Anfrage- und Kartenidentität werden über asynchrone Grenzen erneut geprüft. Die Datenbankberechtigungen bleiben unverändert.
+
+`tests/kampfgeist5-browser.cjs` besteht in Chromium und WebKit: bestehende Kampfpfad-/Podium-/Shop-Fälle, Legacy/v3-Emotes und Einläufe, Trainer-Moderation, Vereinsansicht ohne private Anfragen sowie verspätete Antworten und Aktionen nach Konto-/Ansichtswechsel. Die vollständige Metric-Browsersuite besteht danach ebenfalls in beiden Engines, ergänzt durch 33/33 statische Release-Verträge, Metric-UI-, UX-Roadmap- und Kampfgeist-Quelltests. Dies sind lokale Browser mit synthetischen SDK-Antworten, keine Produktionskonten oder physischen Geräte.
+
 1. Die Punkte-Trainerwarteschlange behält ihren eigenen Zähl-/Bereitschaftsvertrag. Alle drei Duellarten sind zusätzlich über die fertig implementierte und geprüfte v3-Ansicht erreichbar; neue Metriken werden nicht in den alten Punkte-Zähler eingemischt.
 2. Produktive Kilometer-/Trainingsart-Einladungen bleiben deaktiviert, bis genaue Trainingsart, Belohnungszuordnung und Freigabe ausdrücklich konfiguriert sind. Die vollständigen Abläufe wurden mit isolierten Testkonfigurationen geprüft.
 3. Die geprüfte Vereinsansicht zeigt nur angenommene, ausdrücklich vereinsöffentliche v3-Verträge mit aktuell sichtbaren Beteiligten. Private Altduelle bleiben privat; keine anonyme Freigabe.

@@ -223,6 +223,19 @@ const server=http.createServer((req,res)=>{
     await noWrites(x.p);assert.deepEqual(x.errors,[]);await x.context.close();
    }
 
+   // A tile starts this outfit load before the hero selects it. Both consumers
+   // must be notified even though they share one in-flight set of PNG requests.
+   x=await page();let releaseTank,seenTank;
+   const tankGate=new Promise(r=>releaseTank=r),tankRequested=new Promise(r=>seenTank=r);
+   await x.context.route('**/modular-cool/top-tank.png',async route=>{seenTank();await tankGate;await route.continue()});
+   await x.p.goto(base+'/mein-boxer.html?art=modular');await ready(x.p);
+   await x.p.locator('.mb-tabs [data-tab="kleidung"]').click();await tankRequested;
+   await x.p.locator('[data-set="top"][data-val="tank"]').click();
+   assert.equal(await x.p.locator('.mb-art-debug').getAttribute('data-art-state'),'loading','hero shares still-pending tile preload');
+   releaseTank();await ready(x.p);
+   assert.equal(await x.p.locator('.mb-preview [data-art-slot="top"]').count(),1,'tile-first load also refreshes selected hero');
+   await noWrites(x.p);assert.deepEqual(x.errors,[]);await x.context.close();
+
    // Delay one real PNG request while choosing its variant. Keep complete SVG
    // until that request finishes, even though the other files are already cached.
    x=await page();let release,seen;
