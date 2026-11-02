@@ -33,11 +33,14 @@ const fs=require('node:fs'),vm=require('node:vm');
  };
  const manifest={approved:true,version:1,canvas:{width:768,height:1216},poses:{cool:names}};
  const first=API.create(manifest);
- let notified=0;
- assert.equal(first.prepare(config,'cool',()=>{notified++}),false);
+ let notified=0,tileNotified=0;
+ const notify=()=>{notified++},notifyTile=()=>{tileNotified++};
+ assert.equal(first.prepare(config,'cool',notify),false);
  assert.equal(started.length,3,'mobile preload starts only three requests');
- assert.equal(first.prepare(config,'cool',()=>{notified++}),false);
- assert.equal(started.length,3,'duplicate selection does not duplicate image requests');
+ assert.equal(first.prepare(config,'cool',notify),false);
+ assert.equal(first.prepare(config,'cool',notifyTile),false,'a distinct tile consumer can join the same preload');
+ assert.equal(first.prepare(config,'cool',notifyTile),false,'repeated tile subscriber is deduplicated');
+ assert.equal(started.length,3,'duplicate selection and distinct consumers do not duplicate image requests');
  assert.equal(first.inspect(config,'cool').loaded,0,'unloaded art never counts as ready');
  for(let i=0;i<9;i++){
   const img=started[i];
@@ -52,7 +55,8 @@ const fs=require('node:fs'),vm=require('node:vm');
  assert.equal(maxOpen,3,'mock independently saw only three open image requests');
  assert.equal(first.inspect(config,'cool').state,'ready');
  assert.equal(first.prepare(config,'cool'),true,'ready outfit appears atomically');
- assert.equal(notified,1,'shared pending request notifies editor only once');
+ assert.equal(notified,1,'shared pending request notifies the repeated hero subscriber only once');
+ assert.equal(tileNotified,1,'shared pending request also notifies the distinct tile subscriber exactly once');
  assert.equal(started.length,9,'re-render never downloads loaded images again');
 
  const second=API.create(manifest);
