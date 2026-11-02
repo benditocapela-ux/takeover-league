@@ -200,15 +200,15 @@ async function listSeasons(){
    const open=pending.error?null:(pending.count||0);
    const hint=document.createElement('p');hint.className='muted';
    const ended=s.ends_on<today;
-   hint.textContent=(ended?'Bereit zum Abschluss.':'Abschluss ab '+chDate(localDateAfter(s.ends_on))+' möglich.')+
+   hint.textContent=(ended?'Zeitraum beendet – Abschlussvorschau prüfen.':'Abschluss ab '+chDate(localDateAfter(s.ends_on))+' möglich.')+
     (open===null?'':open===0?' Keine offenen Trainings in dieser Saison.':' '+open+(open===1?' Training wartet':' Trainings warten')+' noch auf Bestätigung.');
    card.append(hint);
   }
   if(s.status==='closed'){
-   const link=document.createElement('a');link.href='./league-history.html';link.textContent='Rangliste und Hall of Fame ansehen';card.append(link);
+   const link=document.createElement('a');link.href='./league-history.html?season='+encodeURIComponent(s.id);link.textContent='Rangliste und Hall of Fame ansehen';card.append(link);
   }
   if(s.status!=='closed'){
-   const button=document.createElement('button');button.textContent=s.status==='draft'?'Aktivieren':'Saison abschliessen';
+   const button=document.createElement('button');button.textContent=s.status==='draft'?'Aktivieren':'Abschlussvorschau öffnen';
    button.type='button';button.className=s.status==='active'?'danger':'';
    if(s.status==='active'&&s.ends_on>=today)button.disabled=true;
    // A prepared next season waits until the running one is closed (no two active seasons).
@@ -219,6 +219,7 @@ async function listSeasons(){
     card.append(wait);
    }
    button.onclick=async()=>{
+    if(s.status==='active'){location.href='./league-history.html?season='+encodeURIComponent(s.id);return}
     if(!confirm('Saison '+s.title+' wirklich '+(s.status==='draft'?'aktivieren':'abschliessen und Rangliste endgültig speichern')+'?'))return;
     button.disabled=true;
     const r=await db.rpc('league_v21_admin_season_action',{p_season:s.id,p_action:s.status==='draft'?'activate':'close'});

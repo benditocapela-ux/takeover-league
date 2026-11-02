@@ -659,7 +659,7 @@ async function mountPodiumHolos(){
  if(!session.data||!session.data.session)return;
  let cacheKey='',looksByName=new Map(),H=null,busy=false,again=false;
  const namesIn=pod=>[...pod.querySelectorAll('.tl-podium-step .tl-podium-name')]
-  .map(n=>n.textContent.trim()).filter(n=>n&&n!=='–').slice(0,3);
+  .filter(n=>n.closest('.tl-podium-step')?.dataset.empty!=='true').map(n=>n.textContent.trim()).filter(n=>n&&n!=='–').slice(0,3);
  const addFigure=(host,name,cfg,large)=>{
   if(!host||host.dataset.tlHoloChecked)return;
   host.dataset.tlHoloChecked='1';
@@ -671,8 +671,10 @@ async function mountPodiumHolos(){
   const pose=H.normalize(cfg).pose_profile;
   fig.dataset.tlPose=pose;
   fig.innerHTML=H.svg(cfg,{pose,scene:'none',holo:false});
+  fig.querySelector('svg')?.setAttribute('preserveAspectRatio','xMidYMax meet');
   const before=host.querySelector(large?'.champion':'.tl-podium-name');
-  if(before)before.before(fig);else host.prepend(fig);
+  const stage=!large&&host.querySelector('.tl-podium-figure');
+  if(stage)stage.append(fig);else if(before)before.before(fig);else host.prepend(fig);
   host.classList.add(large?'tl-champion-holo-on':'tl-podium-holo-on');
  };
  const apply=async()=>{
@@ -719,17 +721,18 @@ async function mountPodiumCards(){
  const render=async()=>{
   const pod=anchor.querySelector('.tl-podium');if(!pod||pod.dataset.tlpCards)return;
   pod.dataset.tlpCards='1';const my=++seq;
-  const names=[...pod.querySelectorAll('.tl-podium-step')].map(st=>{const n=st.querySelector('.tl-podium-name');return n?n.textContent.trim():''}).filter(n=>n&&n!=='–').slice(0,3);
+  const steps=[...pod.querySelectorAll('.tl-podium-step')].filter(st=>st.dataset.empty!=='true');
+  const names=steps.map(st=>st.querySelector('.tl-podium-name')?.textContent.trim()||'').filter(n=>n&&n!=='–').slice(0,3);
   if(!names.length)return;
   const data=await Promise.all(names.map(cardFor));
-  const rated=names.map((n,i)=>({n,d:data[i],place:i+1})).filter(x=>x.d&&x.d.rating);
+  const rated=names.map((n,i)=>({n,d:data[i],place:steps[i]?.hasAttribute('data-rank')?(Number(steps[i].dataset.rank)||null):i+1})).filter(x=>x.d&&x.d.rating).sort((a,b)=>(a.place??Infinity)-(b.place??Infinity));
   if(my!==seq||!rated.length||!anchor.contains(pod))return;
   const lks=await looks(db,rated.map(x=>x.d.display_name)).catch(()=>({}));
   if(my!==seq||!anchor.contains(pod))return;
   anchor.querySelectorAll('.tlp-podium-cards').forEach(x=>x.remove());
   const box=document.createElement('div');box.className='tlp-podium-cards';box.setAttribute('role','list');box.setAttribute('aria-label','Spielerkarten der Top 3');
   box.innerHTML=rated.map(x=>{const r=x.d.rating,pos=x.d.style&&x.d.style.scores?styleType(x.d.style.scores).pos:'BOX';
-   return `<a role="listitem" class="tlp-podium-card p${x.place}" href="./boxer-profile.html?name=${encodeURIComponent(x.d.display_name)}"><span class="tlp-eyebrow">Platz ${x.place}</span>${card({name:x.d.display_name,overall:r.overall,categories:r.categories,pos,delta:r.delta,width:104,look:lks[x.d.display_name]})}</a>`}).join('');
+   return `<a role="listitem" class="tlp-podium-card p${x.place}" href="./boxer-profile.html?name=${encodeURIComponent(x.d.display_name)}"><span class="tlp-eyebrow">${x.place?'Platz '+x.place:'Noch ohne Wertung'}</span>${card({name:x.d.display_name,overall:r.overall,categories:r.categories,pos,delta:r.delta,width:104,look:lks[x.d.display_name]})}</a>`}).join('');
   const pick=anchor.querySelector('.tl-podium-emote-pick');(pick&&pick.previousElementSibling===pod?pick:pod).after(box);
  };
  new MutationObserver(()=>{const pod=anchor.querySelector('.tl-podium');if(pod&&!pod.dataset.tlpCards)render().catch(e=>console.warn('Podium-Karten nicht verfügbar:',e))}).observe(anchor,{childList:true});

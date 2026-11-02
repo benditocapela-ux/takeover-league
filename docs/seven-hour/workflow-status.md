@@ -1,38 +1,78 @@
-# Workflow UI: verifizierter Stand
+# Workflow UI: verifizierter Stand der Fortsetzung
 
-Stand: 2026-11-02. Keine Produktionsschreibvorgänge, kein Merge, kein Deployment.
+Stand: 2026-11-02. Das folgende Paket ist im Arbeitsbranch implementiert. Keine Produktionsschreibvorgänge, kein Merge, kein Deployment.
 
-## Umgesetzt
+## Fertiges Funktionspaket
 
-- Bestehende Punkte-Duelle: Gegnerwahl und Laufzeit öffnen eine lesbare Einladungsvorschau. Erst «Einladung ausdrücklich senden» ruft die bestehende Einladung-RPC auf.
-- Vorschau enthält beide Namen, Wertung, Laufzeit, Annahmefrist und Sichtbarkeit. Bestehende Belohnung bleibt serverseitig; neue Beträge werden nicht erfunden.
-- Änderung einer Eingabe verwirft die Vorschau. Zusätzlich prüft der Sendehandler den gesamten Eingabestand und die Sitzung. Auch eine programmatische Änderung ohne Change-Ereignis kann keine ungeprüften Regeln senden.
-- Laufende Anfragen sind gegen Doppelklick und Sitzungswechsel geschützt. Bestehende Annahme, Ablehnung, Rückzug, Live-Wertung und Trainerabschluss bleiben erhalten.
-- Joggingkilometer und Trainingsanzahl sind deaktiviert; ihre fehlende Freigabe wird erklärt. Keine spekulativen v3-RPCs sind im produktiven Browsercode verdrahtet.
-- Fehlende Gastsitzung zeigt die Anmeldung, nicht den technischen Fehler «Auth session missing».
-- duels.html, coach.html und league-manager.html verwenden die gemeinsame Client-Factory. league-history.html besitzt bislang keinen SDK-Client, sondern anonymes REST.
-- Trainer-Startseite meldet ausschliesslich fehlende Trainingsaufgaben statt fälschlich alle Wettkämpfe als erledigt darzustellen.
+### Einladung und bestehende Duelle
 
-## Tests und tatsächliche Evidenz
+- Gegnerwahl/Laufzeit öffnen eine lesbare Vorschau; nur «Einladung ausdrücklich senden» ruft die bestehende Einladung-RPC auf.
+- Eingabeänderung oder Sitzungswechsel verwirft die Freigabe. Der Sendehandler prüft zusätzlich den unveränderten Eingabestand.
+- Joggingkilometer und Trainingsanzahl bleiben deaktiviert. Es wurden keine neuen Belohnungen erfunden.
+- Gast ohne Sitzung sieht die Anmeldung, keinen technischen AuthSessionMissingError.
+- Bestehende Annahme/Ablehnung/Rückzug, Live-Wertung und Einladungsabläufe sind weiter getestet.
 
-- `node tests/duels-v2-browser.cjs`: bestanden. JSDOM: Gast, fehlende Gastsitzung, Einladungsvorschau, ausdrückliches Senden, veränderte Regeln, Sitzungsverlust, verspätete Antwort nach Logout, Trainerwahl, Annahme/Ablehnung, Ablauf, bestehender Abschluss, XSS.
-- `node tests/release-static-contracts.cjs`: 33/33 bestanden. Der bisherige native-confirm-Vertrag wurde durch den stärkeren Vorschau-/Signatur-/Sendevertrag ersetzt.
-- `node tests/release-live-duels-browser.cjs`: echter Chromium-Browser mit synthetischen Supabase-Antworten; 375 und 1280 px bestanden.
-- `$env:TL_BROWSER='webkit'; node tests/release-live-duels-browser.cjs`: echter WebKit-Browser, dieselben beiden Breiten bestanden.
-- Browserfälle: Auswahl sendet nichts, Vorschau sendet nichts, ungeprüfte Änderung wird zurückgewiesen, ausdrücklicher Klick sendet genau die geprüften Daten einmal, neue Metriken gesperrt, Live-Ergebnis, offene Trainings, Fehler statt veralteter Zahlen, Annahme aktualisiert Ansicht, kein horizontaler Überlauf.
-- Screenshots: `output/seven-hour/duel-review/{chromium,webkit}-{375,1280}.png`. Synthetische Boxer Alpha/Beta, keine echten Konten. Chromium-Mobilansicht visuell geprüft.
+### Schreibfreie Abschlussvorschau und ausdrückliche Buchung
 
-## Nicht fertig / keine Freigabe dafür
+- «Ergebnis prüfen» ruft ausschliesslich `duel_v2_close_preview` auf. Der frühere direkte Aufruf von `duel_v2_reconcile` wurde aus der Seite entfernt.
+- `takeover-duel-close.js` zeigt Zeitraum/Regel, geprüfte Punkte, bestätigte/offene/abgelehnte Trainings, Sperrgründe und EXP je Teilnehmer: geplant, bereits gebucht, Änderung. Vorhandene Buchungsbelege werden angezeigt.
+- Erst der ausdrückliche Abschluss/Korrektur ruft `duel_v2_close_confirm` mit `p_confirm=true` und der geprüften Revision auf. Ein geänderter Stand wird erneut gezeigt und benötigt einen weiteren bewussten Klick.
+- Fehlende API, fehlendes Frontendmodul, unvollständige/inkonsistente Antwort oder offene Trainings bieten keine Buchungsaktion. Es gibt keinen Rückfall auf die alte mutierende reconcile-RPC.
+- Antwort eines erfolgreichen Abschlusses benötigt passende echte Belege beider Teilnehmer. Doppelklick wird unterdrückt. Abmeldung verwirft ausstehende private Antworten.
+- Bereits abgeschlossene Duelle können zur Belegprüfung geöffnet werden. Eine Korrektur wird nur angeboten, wenn der Server sie ausdrücklich erlaubt.
+- `?duel=<uuid>` lädt für Trainer das genaue autorisierte Punkte-Duell auch jenseits der ersten 100 Einträge und hebt es hervor. Boxer erhalten unverändert nur ihre bestehende Teilnehmeransicht. Kein Link löst automatisch eine Abschlussvorschau oder Buchung aus. Ein nicht zugänglicher Link meldet dies neutral.
 
-Die vollständige Wettkampf- und Archivstrecke ist nicht implementiert. Die vorgesehenen Backend-Verträge existieren noch nicht; siehe backend-status.md. Ein zuerst vorbereiteter v3-Frontendentwurf wurde entfernt, damit keine nicht vorhandenen API-Aktionen angezeigt werden.
+### Trainer-Dashboard
 
-1. Keine Kilometer- oder Trainingsart-Duelle: zuerst verbindliche Belohnungs-/Zeit-/Sichtbarkeitsregeln und geprüfte serverseitige Migration mit RLS, danach UI und Browserintegration.
-2. Keine neue Vereinsansicht oder v3-Cursor-Paginierung. Altduelle bleiben in ihrer bestehenden Sichtbarkeit.
-3. Keine neue Trainer-Abschlusswarteschlange. Der vorhandene Button «Ergebnis prüfen» ruft weiterhin die bestehende reconcile-RPC auf und kann serverseitig abschliessen. Er ist **keine** neue schreibfreie Abschlussvorschau. Vor einer Freigabe des neuen Workflows muss dies ersetzt und separat getestet werden.
-4. Keine neue Monats-/Saisonarchivwahl. league-history.html lädt weiterhin bestehende Listen; der globale Ergebnismix ist noch nicht behoben. Keine rekonstruierte Oktoberwertung erstellt.
-5. Keine erweiterten Coach-Rechte für Saison-/Monatsabschluss; league-manager.html wurde nur auf die gemeinsame Client-Factory umgestellt.
-6. Keine DB-/RLS-/Idempotenzbeweise für die neuen Funktionen. Die UI-Mocks sind ausdrücklich kein solcher Nachweis.
+- Neuer Bereich «Wettkämpfe & Abschlüsse» mit Duellabschluss-, Challenge- und Saisonlinks.
+- Duellstatus basiert auf der neuen schreibfreien `duel_v2_staff_queue`-RPC. Exakte serverseitige Zahlen berücksichtigen alle Punkte-Duelle. Offen, fällig, abschlussbereit und abgeschlossen sind getrennt definiert; Abschlussbereitschaft nutzt denselben geprüften Vorschau-Helper wie die Buchungsansicht.
+- Duellseite bietet nur für Trainer/Admin Statusfilter, Namenssuche und echte Cursor-Paginierung mit höchstens 20 Einträgen pro Seite. Auch alte fällige Duelle hinter mehr als 100 neuen Einträgen bleiben erreichbar.
+- Fehlgeschlagene Statusabfrage wird als unbekannt angezeigt. Nach Logout können verspätete Antworten keine Statusdaten wiederherstellen.
+- Vier Pixel mobiler Überlauf wurde auf untrennbare deutsche Texte in vorhandenen `.cv2-tile`-Flexelementen zurückgeführt. Derselbe Fehler wurde mit unverändertem `coach.html` aus a806260 über eine lokale Serverantwort reproduziert. Eng begrenzter Umbruch-/Min-width-Fix beseitigt die Ursache, ohne horizontales Overflow zu verstecken.
 
-## Konkreter nächster Auftrag
+## Verifikation
 
-Zuerst serverseitig schreibfreie Duell-/Periodenabschlussvorschau, expliziten idempotenten Abschluss und zeilenweise belegte Prämien liefern. Danach die Trainerwarteschlange mit Status/Suche/Cursor und klar getrennten Vorschau-/Abschlussaktionen integrieren. Anschliessend periodengefiltertes Archiv samt Deep Links, eigenem Rang und Ausschüttungsnachweisen. Erst mit freigegebenen Belohnungen Kilometer-/Trainingsart-Duelle anschliessen. Jede Stufe mit isolierten DB-Tests und Browsertests für Boxer/Coach/Admin/Gast prüfen.
+| Prüfung | Ergebnis |
+| --- | --- |
+| `node tests/duels-v2-browser.cjs` | bestanden; bestehende Abläufe plus schreibfreies Öffnen statt altem reconcile-Aufruf |
+| `node tests/duel-close-ui.cjs` | bestanden; Rollen, XSS, unvollständige Daten, tatsächliche Rewards, Versionswechsel, Doppelklick, Logout |
+| `node tests/coach-competition-status.cjs` | bestanden; exakte Serverzahlen jenseits 100, strenger Antwortvertrag, API-Fehler, Rollen, verspätete Antwort nach Logout |
+| `node tests/duel-queue-browser.cjs` (auch `TL_BROWSER=webkit`) | 390/1280 px bestanden; 121 Einträge über sieben Seiten, alter fälliger Fall, Suche, genauer Link, fehlende API und Logout |
+| PostgreSQL 17.11: `tests/duel-staff-queue-schema.sql` und `tests/duel-staff-queue-rollback.sql` | 127 SQL-Fälle über sieben Seiten, exakte Statuszahlen, Rollen, Literal-Suche, Read-only-Vergleich, spätere Metrikausschlüsse und Rollback/Reapply bestanden |
+| `node tests/release-static-contracts.cjs` | 33/33 bestanden |
+| `node tests/duel-close-browser.cjs` | echter Chromium, 390/1280 px; Vorschau/Bestätigung, Versionswechsel, Belege, gesperrte/fehlende/fehlerhafte Vorschau, Admin-Deep-Link, fehlendes Modul, Boxer-/Gastbarriere bestanden |
+| `$env:TL_BROWSER='webkit'; node tests/duel-close-browser.cjs` | echter WebKit, gleiche Szenarien und Breiten bestanden |
+| `node tests/release-live-duels-browser.cjs` | echter Chromium, 375/1280 px; bestehende Einladungs-/Live-/Annahmefälle bestanden |
+| `node tests/staff-experience-browser.cjs` | echter Chromium, 320/390/1366 px; bestehende Coach/Admin-Navigation, Rollen, Suche/Paginierung und neuer Status bestanden |
+| `git diff --check` für Workflow-Dateien | bestanden |
+
+Die Browser verwenden synthetische Konten und RPC-Antworten, keine Produktionskonten. Diese Tests ersetzen keine Datenbanktests. Die zugehörige Migration wurde vom Backend-Agenten auf isoliertem PostgreSQL 17.11 geprüft; dessen eigenständige DB-/Concurrency-Nachweise stehen in `backend-status.md`.
+
+Screenshots: `output/continuation/duel-close/{chromium,webkit}-{390,1280}-{preview,confirm,settled}.png`. Mobile Chromium-Vorschau und Bestätigungsbereich wurden visuell geprüft. Frühere Einladungsbilder: `output/seven-hour/duel-review/`.
+
+
+### Mitteilungen: exakter Zähler und vollständige Seiten
+
+- Neue gemeinsame Lese-/Markierlogik in `takeover-inbox.js` wird von Boxer Experience und dem bestehenden Studio für Coaches verwendet. Vorhandene Zielpfad-Whitelists und `mark_my_notification_read` bleiben erhalten.
+- Globaler Ungelesen-Zähler verwendet eine eigene gefilterte Head-Abfrage mit `count:'exact'`; die Seitenabfrage liefert separat die exakte Gesamtzahl. Die Zahl ist nicht länger auf die ersten 20 Einträge begrenzt.
+- Echte serverseitige Bereiche von höchstens 20 Einträgen, stabil nach `created_at DESC,id DESC`, mit Vor-/Zurück-Schaltflächen. Nach Lesebestätigung wird der globale Zähler erneut vom Server gelesen. Unbekannte Zahlen werden als unbekannt dargestellt, nicht als null ungelesen.
+- Frische Benutzer-/Profilprüfung vor dem Lesen und Markieren. Auth-Ereignisse leeren private Daten sofort; Request-Epochen verhindern alte Seiten oder Lesebestätigungen nach Kontowechsel. Feature-Flag und bestehende RLS bleiben maßgeblich. Keine neue Berechtigung, Tabelle oder RPC.
+- `tests/inbox-browser.cjs`: tatsächliches Chromium/WebKit, jeweils Boxer Experience und Legacy-Coach-Studio; 45 Einträge/35 ungelesen, 20/20/5-Seiten ohne Duplikate, korrekte Oktober-/September-Links, Fehlversuch/Retry, unbekannter Zähler bei Abfragefehler, Kontowechsel bestanden.
+- `tests/inbox-races.cjs`: verspätete Auth-/Seiten-/Markierantworten, Profil-/Kontowechsel, unbestätigte Markierung, fehlender exakter Zähler und deaktiviertes Flag bestanden.
+- Gemeinsame Browser-Attrappe korrigiert: Range-Offset, Count vor Pagination, Head ohne Daten und sekundäre Sortierung entsprechen nun dem echten Query-Vertrag. Die bestehende Markierfixture persistiert ihren simulierten Serverzustand, statt nur `true` zurückzugeben.
+- Bestehende Gesamtsuite `node tests/takeover3-browser.cjs` vollständig in Chromium und WebKit bestanden: Konto-Umschalter, Trainingsmeldung, App-Shell und Navigation. Statische Takeover-/Release-Verträge sowie gezielter Diff-Check bestanden.
+- Bilder: `output/continuation/inbox/{chromium,webkit}-{studio,legacy}.png`; WebKit-Bilder visuell geprüft. Keine Trainingshistorie geändert.
+
+### Zusätzliche Prüfung Periodenabschluss
+
+Der unabhängige Review identifizierte eine mögliche Übernahme einer alten Zustimmung während einer ausstehenden Benutzerprüfung. Der Hauptagent hat Benutzer/Periode vor dem Await eingefroren und die Anfrage-Epoche unmittelbar vor der schreibenden RPC erneut geprüft. `tests/period-close-races.cjs` bestätigt Schliessen/Escape, gleichen oder anderen Staff nach Periodenwechsel, alte Vorschau und normalen expliziten Abschluss. SQL-/Archivimplementierung bleibt Eigentum des separaten Hauptpakets.
+
+## Bewusste Grenzen und nächster Auftrag
+
+1. Die neue Trainerwarteschlange deckt Punkte-Duelle vollständig ab. Neue Metriken werden bewusst ausgeschlossen; ihr gesonderter v3-Vertrag wird separat geprüft.
+2. Keine Kilometer-/Trainingsart-Duelle, solange Belohnungs-/Zeit-/Sichtbarkeitsregeln nicht ausdrücklich freigegeben sind.
+3. Keine neue Vereinsansicht oder Erweiterung privater Duellsichtbarkeit.
+4. Keine neuen Coach-Rechte für Monats-/Saisonabschluss in diesem UI-Paket. Bestehende League-Manager-Berechtigungen bleiben bestehen. Periodenarchiv ist ein separater Arbeitsbereich des Hauptagenten.
+5. Die Backend-Migration bleibt ausstehend für eine spätere ausdrücklich freigegebene Auslieferung. Auf einer Datenbank ohne neue RPCs ist die neue Abschlussaktion absichtlich gesperrt.
+
+Die serverseitige Warteschlange und die genaue alte Ergebnisabfrage sind jetzt implementiert. Einzelheiten und SQL-Nachweise stehen in duel-queue.md. Periodenabschluss bleibt ein separater Arbeitsbereich des Hauptagenten. Neue Metriken erst nach geprüftem Vertrag und konkreter Belohnungsfreigabe anschliessen.

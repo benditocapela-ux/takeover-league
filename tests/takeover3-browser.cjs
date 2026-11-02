@@ -30,7 +30,7 @@ const config=(opts={})=>`{
    extras:[{key:'technik',label:'Techniktraining im Verein',training_type_id:3,reward:{points:40,exp:40,coins:12}}],
    types:[{id:2,name:'Joggen',club_only:false,reward:{points:20,exp:20,coins:10}},{id:4,name:'Krafttraining',club_only:false,reward:{points:30,exp:30,coins:10}},{id:1,name:'Reguläres Boxtraining',club_only:true,reward:{points:30,exp:30,coins:10}}]}`},
   submit_scheduled_club_training_today:()=>({data:{status:'already_pending',label:'Reguläres Boxtraining'},error:null}),
-  get_public_leaderboard:[],get_my_feedback:{enabled:false},league_training_audit_recent:[],mark_my_notification_read:true
+  get_public_leaderboard:[],get_my_feedback:{enabled:false},league_training_audit_recent:[],mark_my_notification_read:({p_notification_id})=>{const data=JSON.parse(localStorage.getItem('__tl_mock_db')||'{}');data.boxer_notifications=(data.boxer_notifications||window.__tlMockConfig.tables.boxer_notifications).map(n=>n.id===p_notification_id?{...n,read_at:new Date().toISOString()}:n);localStorage.setItem('__tl_mock_db',JSON.stringify(data));return {data:true,error:null}}
  }
 }`;
 const log=page=>page.evaluate(()=>JSON.parse(localStorage.getItem('__tl_mock_log')||'[]'));

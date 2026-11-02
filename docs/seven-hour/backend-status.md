@@ -1,92 +1,75 @@
-# Backend audit and continuation state
+> Zwischencheckpoint: Das Metrikpaket 20261102095422 und seine Tests befinden sich noch im lokalen Review und folgen in einem eigenen Commit. Die nachstehenden Metriknotizen beschreiben diesen Arbeitsstand, keine Freigabe und keine bereits in diesem Commit enthaltene Migration. Punktevertrag/Event-Identität sind enthalten und separat getestet.
 
-Updated: 2026-11-02 08:16 UTC. This is an audit and implementation handoff, **not a completed backend release**.
+# Backend implementation and verification
 
-## Scope and execution boundary
+Updated during the user-authorized continuation on 2 November 2026. The initial timed turn ended with an audit-only handoff; the following packages were implemented after “fahre weiter”.
 
-- Production `iqarjivcrddcixrvqbfb`: read-only metadata/function inspection only. No writes, migrations, flag changes, closures or rewards.
-- Test `cfgdvcccsqwfjajuizsr`: confirmed healthy; schema/function inspection only. No synthetic write test was run.
-- No backend migration is ready or applied. An empty CLI-generated migration was removed rather than shipping a misleading no-op.
-- No v3 API described below exists as a result of this work. Frontend must retain existing v2 operation and fail closed for unavailable previews/new metrics.
-- Initial parent budget ended 07:10 UTC. The next explicit clock check returned 08:16 UTC; major implementation stopped. Do not claim completed scoring, role, concurrency, SQL, or authenticated end-to-end tests.
+## Delivered on the working branch
 
-## Verified installed contract
+| Migration | Behavior |
+| --- | --- |
+| `20261102084519_duel_points_shared_preview_close.sql` | Shared legacy points scorer/reward arithmetic; live missing-ledger protection; read-only staff preview; explicit close/correction with revision revalidation and actual booking references |
+| `20261102093606_duel_notification_event_identity.sql` | Nullable event identity, unique recipient/event index, exact duel links, distinct simultaneous results without duplicate alerts |
+| `20261102095422_duel_metric_contracts_disabled.sql` | Complete numeric km and distinct training-count contracts/APIs, full Zurich calendar periods, immutable agreements, explicit visibility, disabled/unconfigured release and reward mappings |
 
-`public.duel_v2_live_scores(uuid)` delegates to `league_duel_private.duel_v2_live_scores_core(uuid)`. `public.duel_v2_reconcile(uuid)` delegates to `league_v21_private.duel_reconcile_ranked_core(uuid)`.
+No production or managed Supabase test-project writes, migrations, flag changes, real closures, payouts or account changes occurred. All writes/tests used synthetic local PostgreSQL databases. No merge or deployment.
 
-Current scoring uses approved submissions and matching `point_transactions` with category `training` or `legacy_import`. Legacy dates are inclusive from the Zurich acceptance date to the Zurich end date. Timely submissions satisfy `created_at <= ends_at`. Pending timely submissions prevent first settlement. Settlement locks participant profiles, then the duel, then relevant submissions in deterministic order. Duplicate and missing scoring ledgers fail closed. Live scoring checks duplicates, but does not implement the same missing-ledger check. This code difference is not evidence that production data is damaged.
+New metrics remain **disabled** and `reward_rule=NULL`. Jogging also has no configured training-type ID. A later explicit business/release decision must select the verified jogging ID, reward mapping and release state; no client can edit this private configuration.
 
-Rank snapshots are captured at acceptance. Settlement requires zero snapshots for legacy or exactly two matching participant snapshots. Verified rewards:
+## Preserved rules and changed behavior
 
-| Rule | Outcome | EXP |
-| --- | --- | --- |
-| Legacy, no rank snapshots | Tie / winner / loser | 50 / 100 / 25 |
-| Ranked | Tie | 50 each |
-| Ranked winner | Equal rank indices | 100 |
-| Ranked winner | Winner rank index below loser index | 150 |
-| Ranked winner | Otherwise | 50 |
-| Ranked loser | Loser rank index above winner index | -50 |
-| Ranked loser | Otherwise | 25 |
+- Existing points duels keep inclusive Zurich acceptance/end dates and timely `created_at <= ends_at`. Their agreed periods and economy are not changed.
+- Legacy rewards remain tie 50 each, winner 100, loser 25. Ranked rewards remain tie 50; winner same rank index 100, lower index 150, otherwise 50; loser with higher index -50, otherwise 25.
+- Live, preview and settlement now share scoring validation. Missing/duplicate scoring ledgers fail closed; broken previews show null scores rather than believable partial/zero totals.
+- Existing profile → duel → submission lock order, rank snapshots, payout-ledger integrity, transaction reuse and correction events remain.
+- New metric contracts are immutable from invitation; accepted period/participants/duration/type/reward cannot change. New metrics start next Zurich midnight for 7/14 full local days with an exclusive end.
+- Km uses exact PostgreSQL numeric sums of the configured type. Missing, negative or nonfinite distance fails closed. Count uses distinct approved submission IDs of exactly the selected valid type.
+- Only timely relevant submissions count/block. Pending reviews prevent closure; rejected, wrong-type, late and out-of-period submissions do not count.
+- Metric settlement stores numeric final values separately. Old v2 points reads/reconcile and the integer public-history projection cannot process these rows.
+- New metric results stay fixed until a reviewed explicit correction. Configuration changes do not alter an invited contract.
+- Club aggregate access requires an explicit club contract and currently active/listed/non-archived participants; legacy private rows are not opened to spectators or guests.
+- Event keys distinguish invitations/acceptances/declines/settlements by duel ID and recipient. Existing messages/read state are retained; corrections do not resend the initial settlement alert.
 
-Do not reinterpret rank-index ordering in UI without checking the rank definition. A unique `(duel_id, boxer_id)` reward ledger points to one `duel_exp` transaction per boxer. Corrections update that transaction, with integrity checks for missing/orphaned/mismatched ledgers. No new metric reward mapping has been approved.
+Detailed API and release contract: [backend-v3-api.md](backend-v3-api.md).
 
-The installed invite/respond functions preserve a 48-hour invitation expiry, 7/14 day durations, active-boxer checks, same-pair exclusion and active-duel limits. New metric contracts must preserve these guards.
+## Real verification executed
 
-`training_submissions.jogging_km` is numeric and `training_type_id` is bigint. Production training types currently include active `Joggen` with ID 6. This is audit evidence, not permission to infer future semantics from arbitrary labels. New configuration should bind a verified type ID, not let caller-supplied names authorize scoring. Count metrics must count distinct submission IDs without ledger joins multiplying the count.
+Environment: official EDB **PostgreSQL 17.11**, local loopback `127.0.0.1:55481`. Existing production-like fixtures and actual historical RPC/migration sources were replayed. This is real SQL/database integration evidence, not a mocked interpreter, Supabase Auth login, remote test-account flow or physical device test.
 
-`league_duels.challenger_score` and `opponent_score` are integer columns. A numeric metric implementation must not truncate distances into these fields or continue labelling them as training points. Preserve old v2 return types and use an explicit numeric contract/value representation.
+| Test | Result |
+| --- | --- |
+| `duel-points-preview-schema.sql` and transaction suite | PASS: migration replay, missing/duplicate ledger, pending, reward plan, no preview writes, stale revision, actual bookings, retry, explicit correction, role guards |
+| Existing underdog and missing-ledger regression transactions | PASS: original 150/-50 payout and idempotency preserved |
+| `duel-points-boundaries-transaction.sql` | PASS: legacy Zurich/DST boundaries, exact/late cutoff, rejected/foreign ledgers, participant/third/guest/inactive/archived roles, negative totals |
+| `duel-points-preview-concurrency.cjs` default mode | PASS: two real sessions; second waited 2030 ms; one event and two legacy tie payouts |
+| Points rollback/reapply | PASS: all duel/transaction/ledger/event/inbox JSON witnesses unchanged |
+| Notification identity and rollback suites | PASS: two identical same-minute results each notify both recipients; repeat/correction dedup; read state/deep links; historical rows and identity retained |
+| `duel-metric-contracts-transaction.sql` | PASS: disabled/unconfigured gates, actual invite/acceptance, pair guards, immutable contract, 3.35 vs 3.30 km, exact 2 vs 1 count, wrong/missing type, missing/NaN distance, duplicate ledger, pending/late/rejected data, privacy, pagination, no-reward close, stored result and explicit correction |
+| `duel-metric-ranked-transaction.sql` | PASS: explicitly selected existing reward mapping, zero/tie, 150/-50 actual payout, missing-ledger/stale-preview guard, retry |
+| Metric DST periods | PASS: autumn 7 full days = 169 hours, spring = 167 hours; 14-day month crossing |
+| Metric concurrency: explicit none / ranked | PASS: second session waited 2029 / 2037 ms; one settlement; zero / exactly two payout transactions |
+| Empty metric rollback/reapply | PASS: old game data unchanged, metrics still disabled/unconfigured |
+| Populated metric rollback guard | PASS: refuses to discard stored agreements; results/payouts unchanged |
+| `node tests/release-static-contracts.cjs` | PASS, 33/33 |
 
-The installed `league_v21_private.sync_public_duel_history()` copies settled integer scores/names into `league_public_duel_history_v21`. Extending this trigger naively would publish incorrect values or broaden visibility. Private legacy duels must not be exposed by a new general SELECT policy.
+The first concurrency timing attempt exposed a harness issue: psql buffered a marker in a single `-c`. Separate commands fixed the measurement; the final tests observed actual lock contention. No product assertions were weakened.
 
-## Seasons and messages
+Local binaries/logs: `C:/Users/bendi/Documents/Codex/tools/pg-core17/`. Logs include `duel-preview-tests.log`, `duel-points-boundaries.log`, `duel-preview-rollback.log`, `duel-notification-tests.log`, `duel-notification-rollback.log`, `duel-metric-latest.log`, `duel-metric-contracts-final.log`, `duel-metric-rollback.log`.
 
-The current season close path is `league_v21_private.season_transition_core`, mirrored by `20261028110000_season_single_active_next_draft.sql`. All actions currently require admin. It locks the season, rejects premature closure, locks period training, blocks pending reviews, snapshots listed active non-archived boxers, writes HoF from those results and prepares a next season as **draft**. It does not pay a new season bonus. Its close-date comparison uses `current_date`; a future change should make the Zurich boundary explicit.
+## Rollout and rollback boundaries
 
-New coach authority must be a narrow close permission. Activation, configuration and archival must remain separately authorized. A preview must be read-only; closing must revalidate under lock rather than trusting the preview.
+Read-only preflight/postflight and prepared rollback files are in `supabase/production-prep/`, named after each migration. They do not authorize production execution.
 
-Notifications are inserted directly into `boxer_notifications`; there is no general `notify_profile` helper. `league_v21_private.notifications_enabled()` gates emission. Existing duel message deduplication relies on text/time checks, and settlement text uses integer training points. A future first migration should add nullable `event_key` and a partial unique index `(recipient_id,event_key) WHERE event_key IS NOT NULL`; existing rows need not be rewritten. New writers must key the real duel/period event and use a precise result link. This column/index has **not** been added.
+Apply points before notification identity before metric generation. Metrics require current v2 invite/respond, ranked snapshots, profile archive/listing and event-identity dependencies. The queue/period migrations owned by other agents have their own ordering and checks.
 
-Public snapshot readers must recheck current profile visibility while keeping official snapshot ranks and values immutable. A reconstructed October ranking must remain labelled reconstructed; do not create retrospective official awards or payouts.
+Points rollback restores previous functions without reversing game data. Notification rollback restores the previous writer while retaining identity/index/messages/read state. Both refuse unsafe reversal once metric APIs depend on them. Metric rollback is empty-generation only: any stored contract, numeric result or configured mapping blocks it; preserve agreements and use a forward fix thereafter.
 
-## Proposed v3 API, not implemented
+## Remaining separate work
 
-The UI agent received this provisional shape. It is a design draft and must not be presented as an installed contract:
+- Product UI integration and independent review of the new metric path; no metric activation is authorized.
+- PostgreSQL 16/17 CI results are separate from the local 17.11 runs and must not be claimed until received.
+- Managed Supabase Auth/browser integration and manual/physical-device acceptance were not performed.
+- Queue, period/archive/close and visual packages are owned by the parent/other agents; see their evidence separately.
+- Production migration, merge, deployment and any real closure/reward require their separate explicit authorization.
 
-```text
-duel_v3_options() -> {
-  metrics:[{key,label,unit,enabled,disabled_reason,reward_rule,reward_label}],
-  training_types:[{id,name}],
-  visibility_options:[{key,label}], timezone:'Europe/Zurich'
-}
-duel_v3_invite(p_challenger uuid,p_opponent uuid,p_duration_days int,
-  p_metric text,p_training_type_id bigint default null,
-  p_visibility text default 'participants') -> uuid
-duel_v3_list(p_scope text='mine',p_state text='all',p_limit int=20,
-  p_before timestamptz=null,p_before_id uuid=null,p_search text=null) -> {
-  items:[existing v2 identity/status fields + rule:{metric,unit,label,
-    training_type_id,training_type_name,visibility,reward_rule,reward_label,time_rule},
-    scores:{challenger_score numeric,opponent_score numeric,pending},starts_at,ends_at],
-  next_cursor:{before,before_id}|null
-}
-```
-
-New metrics remain disabled until a documented reward mapping is explicitly selected; even no reward is a business decision. Points duels retain legacy time semantics. New metric periods start at next Zurich midnight after acceptance and end at the exclusive midnight after 7/14 full calendar days, including DST. Snapshot metric/type/period/reward/visibility at invitation/acceptance, and prevent subsequent contract changes.
-
-## Next concrete backend package
-
-1. Create a migration using the CLI. Implement additive contract/numeric value storage, nullable notification event identity, strict private helpers and explicit public wrapper grants.
-2. Extract a common score/validation helper used by live, preview and settlement. Preserve legacy reward and correction logic; retain submission and payout ledger checks.
-3. Implement v3 options/invite/list and read-only closure preview. Guard permissions using active `profiles` records and `auth.uid()`, fixed `search_path`, no user metadata authorization. Private legacy remains participants/staff only; club summaries require explicitly agreed visibility and currently listed profiles.
-4. Implement narrow explicit coach close with fresh locks/revalidation, reward contract snapshot and idempotent result. Do not expose new metric invites before reward configuration exists.
-5. Add separate immutable month snapshots and paginated period readers, preserving existing season generation and next-draft behavior. No historical closure on deploy.
-6. Run real transaction-isolated SQL fixtures in the confirmed test project or local Postgres. Cover all roles, decimal km, type filtering, pending/rejected/late submissions, missing/duplicate ledgers, null distance, tie/zero, DST/month boundaries, accepted contract immutability, read-only preview and two concurrent closers. None of these new-path tests ran in this work.
-
-## Tooling
-
-Official Supabase CLI v2.122.0 was downloaded from the upstream release and its version verified at:
-
-`C:/Users/bendi/Documents/Codex/tools/supabase-2.122.0/supabase.exe`
-
-No `psql` or Docker executable was found on PATH. CLI `migration new --help` was inspected. Do not apply DDL through the read-query tool. Production remains read-only. Any later shared test migration needs isolation/restoration consistent with the user request.
-
-The Supabase skill and changelog were read. Current relevant timezone updates concerned Vancouver, Edmonton and Casablanca, not Zurich. No authentication or production database configuration was changed.
+Each migration filename was created with official Supabase CLI `migration new` (CLI 2.122.0). The local server is shared only with the root agent's independent synthetic archive fixture; stop it once all agents finish testing.

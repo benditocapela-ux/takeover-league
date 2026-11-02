@@ -83,40 +83,19 @@
   const legacy=window.TLShell&&window.TLShell.legacyTarget(dest.href,'boxer');
   return legacy?new URL(legacy,location.href).href:dest.href;
  }
+ let inboxPromise=null;
  async function loadNotifications(){
   const host=$('ex-notifications'),label=$('ex-notifications-status');if(!host)return;
-  label.textContent='Prüfe Mitteilungen …';
-  const flag=await S.db.from('league_feature_flags').select('is_enabled').eq('feature_key','notifications').maybeSingle();
-  host.replaceChildren();
-  if(flag.error||flag.data?.is_enabled!==true){label.textContent='Mitteilungen sind derzeit noch nicht freigeschaltet.';setBadge(0);return}
-  const r=await S.db.from('boxer_notifications').select('id,notification_type,title,message,target_path,created_at,read_at')
-   .eq('recipient_id',S.profile.id).order('created_at',{ascending:false}).limit(20);
-  if(r.error){label.textContent='Mitteilungen konnten nicht geladen werden: '+r.error.message;return}
-  const rows=r.data||[];const unread=()=>rows.filter(x=>!x.read_at).length;
-  const summary=()=>{label.textContent=rows.length?unread()+' ungelesen von '+rows.length+' Mitteilungen':'Du hast aktuell keine Mitteilungen.';setBadge(unread())};summary();
-  for(const note of rows){
-   const item=el('article','ex-notice'+(note.read_at?' read':''));
-   item.append(el('strong','',note.title||'Mitteilung'),el('p','',note.message||''),el('small','',new Date(note.created_at).toLocaleDateString('de-CH')));
-   const actions=el('div','ex-notice-actions');
-   const href=noteLink(note.target_path);if(href){const a=el('a','ex-btn ex-btn-ghost','Ansehen');a.href=href;actions.append(a)}
-   if(!note.read_at){
-    const mark=el('button','ex-btn ex-btn-ghost','Als gelesen markieren');mark.type='button';
-    mark.setAttribute('aria-label','Mitteilung als gelesen markieren: '+(note.title||'Mitteilung'));
-    mark.addEventListener('click',async()=>{
-     mark.disabled=true;mark.textContent='Speichere …';
-     const res=await S.db.rpc('mark_my_notification_read',{p_notification_id:note.id});
-     if(res.error){mark.disabled=false;mark.textContent='Als gelesen markieren';label.textContent='Mitteilung konnte nicht gespeichert werden. Bitte erneut versuchen.';return}
-     if(res.data!==true){const chk=await S.db.from('boxer_notifications').select('read_at').eq('id',note.id).eq('recipient_id',S.profile.id).maybeSingle();
-      if(chk.error||!chk.data?.read_at){mark.disabled=false;mark.textContent='Als gelesen markieren';label.textContent='Mitteilung konnte nicht bestätigt werden. Bitte aktualisieren.';return}}
-     note.read_at=new Date().toISOString();item.classList.add('read');mark.remove();summary();
-    });
-    actions.append(mark);
-   }
-   if(actions.childNodes.length)item.append(actions);
-   host.append(item);
-  }
+  try{
+   inboxPromise??=import('./takeover-inbox.js').then(({createInbox})=>createInbox({
+    getContext:()=>({db:S.db,profile:S.profile}),host,label,noteLink,
+    markRead:(db,id)=>db.rpc('mark_my_notification_read',{p_notification_id:id}),onUnread:setBadge,
+    classes:{item:'ex-notice',read:'read',actions:'ex-notice-actions',button:'ex-btn ex-btn-ghost',muted:'ex-muted'}
+   }));
+   await (await inboxPromise).load();
+  }catch{inboxPromise=null;host.replaceChildren();setBadge(null);label.textContent='Mitteilungen konnten nicht geladen werden. Bitte erneut versuchen.'}
  }
- function setBadge(n){const b=$('ex-notify-badge');if(!b)return;b.hidden=!n;b.textContent=n>99?'99+':String(n)}
+ function setBadge(n){const b=$('ex-notify-badge');if(!b)return;b.hidden=n===0;b.textContent=n===null?'–':n>99?'99+':String(n);b.setAttribute('aria-label',n===null?'Anzahl ungelesener Mitteilungen derzeit unbekannt':n+' ungelesene Mitteilungen')}
 
  // ---------------- Profil, Statistik, Level, Performance, Feedback ----------------
  function drawAvatar(key,url){
@@ -213,7 +192,7 @@
  }
 
  async function mount({db,profile,types}){
-  S.db=db;S.profile=profile;S.types=types||[];if(S.mounted)return;S.mounted=true;
+  S.db=db;S.profile=profile;S.types=types||[];if(S.mounted){await loadNotifications();return}S.mounted=true;
   $('ex-history-filter')?.addEventListener('change',()=>{S.visible=8;renderHistory()});
   $('ex-history-more')?.addEventListener('click',()=>{S.visible+=10;renderHistory()});
   $('ex-history-refresh')?.addEventListener('click',()=>{loadHistory();loadAudit()});

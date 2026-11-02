@@ -91,14 +91,15 @@ function injected(cfg){
 
  // A: Gast – Podium (Champion mit Banner und Avatar, Treppchen) und Ranking-Zeilen
  let {p,errors}=await page({signedIn:false},'index.html');
- await p.waitForSelector('#podium-content .tl-champion.tl-kg-banner .tl-kg-face .kg-ava');
- const champ=p.locator('#podium-content .tl-champion');
- assert.match(await champ.locator(':scope>.tl-kg-bg .kg-bn').getAttribute('class'),/kg-bn-ember/,'champion banner = Anna ember');
+ await p.waitForSelector('#podium-content .tl-podium-1 .tl-kg-face .kg-ava');
+ const champ=p.locator('#podium-content .tl-podium-1');
+ assert.equal(await p.locator('#podium-content .tl-champion').count(),0,'one shared podium, no premature monthly champion card');
+ assert.match(await p.locator('#league-shared-podium .tl-podium-heading').textContent(),/Aktueller Monatsstand/);
+ assert.match(await champ.locator('.tl-podium-block>.tl-kg-bg .kg-bn').getAttribute('class'),/kg-bn-ember/,'first place keeps Anna ember banner');
  assert.equal(await champ.locator('.tl-kg-face .kg-photo img').count(),1,'Anna has no own avatar → profile photo inside the frame');
- assert.equal(await champ.locator('.tl-kg-face .kg-aura').count()>0,true,'aura around champion');
+ assert.equal(await champ.locator('.tl-kg-face .kg-aura').count()>0,true,'aura retained');
  assert.equal(await champ.locator('.tl-kg-face .kg-rkbadge').textContent(),'D');
- assert.match(await champ.locator('.tl-kg-meta').textContent(),/Rang D · .* · Level 25/);
- assert.ok(await champ.locator('.league-champion .tl-kg-src').count()===1&&await champ.locator('.league-champion .tl-kg-src').isHidden(),'old photo hidden');
+ assert.ok(await champ.locator('.tl-kg-src').isHidden(),'old photo hidden after card decoration');
  // Treppchen: Ben mit eigenem Avatar (Figur), Banner im Sockel
  const ben=p.locator('#podium-content .tl-podium-step',{hasText:'Ben'});
  await ben.locator('.tl-kg-face .kg-disc>svg').waitFor();
@@ -173,7 +174,7 @@ function injected(cfg){
  await benStep.locator('.tl-podium-holo svg.tlh').waitFor();
  assert.equal(await annaStep.locator('.tl-podium-holo').getAttribute('data-tl-pose'),'sieg','Anna chose victory as profile pose');
  assert.equal(await benStep.locator('.tl-podium-holo').getAttribute('data-tl-pose'),'jab','Ben chose jab as profile pose');
- assert.equal(await p.locator('#podium-content .tl-champion .tl-champion-holo').getAttribute('data-tl-pose'),'sieg');
+ assert.equal(await p.locator('#podium-content .tl-champion-holo').count(),0,'no duplicate leader figure');
  assert.equal(await p.locator('#podium-content .tl-podium-3 .tl-podium-holo').count(),0,'without Holo keep previous avatar');
  assert.equal(await p.locator('#podium-content .tl-podium-3 .tl-kg-face').count(),1,'fallback avatar still displayed');
  assert.ok(await benStep.locator('.tl-kg-face').isHidden(),'avoid duplicate avatar when Holo is shown');

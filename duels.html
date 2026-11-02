@@ -27,7 +27,7 @@ label{display:grid;gap:5px}small{color:var(--muted)}.error{color:var(--bad)}
 button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 #inviteReview{border-color:var(--gold);overflow-wrap:anywhere}button{min-height:44px}@media(prefers-reduced-motion:reduce){.live-fill{transition:none}}
 </style>
-<link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"><link rel="stylesheet" href="./takeover-app-shell.css"></head>
+<link rel="stylesheet" href="./takeover-duel-close.css"><link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"><link rel="stylesheet" href="./takeover-app-shell.css"></head>
 <body data-tl-screen="duels">
 <main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Boxer-Duelle"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🥊</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Vergleich, Einladung und Ergebnisse</div><div class="tl-screen-title">Boxer-Duelle</div></div></div><div class="tl-screen-links"><a href="#app" class="tl-screen-primary">Duelle ansehen</a><a href="./arena.html">Arena</a></div></div>
 <p class="tl-subnav"><a href="./index.html">Liga</a><a href="./boxer.html">Mein Studio</a><a href="./coach.html">Trainerbereich</a></p>
@@ -67,11 +67,15 @@ button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(
 </section>
 <section aria-label="Meine Duelle">
 <h2>Meine Duelle</h2>
+<p id="duelListScope" class="meta" hidden>Punkte-Duelle für Trainer · 20 pro Seite. Abschlussbereit bedeutet: Die serverseitige Vorschau hat keine Sperre gefunden; vor einer Buchung wird erneut geprüft.</p><section id="duelQueueControls" hidden aria-label="Trainer-Duellwarteschlange"><p id="duelQueueTarget" hidden>Ein verlinktes Duell ist ausgewählt. <a href="./duels.html">Alle Duelle anzeigen</a></p><form id="duelQueueForm"><label>Status<select id="duelQueueState"><option value="all">Alle</option><option value="open">Offen</option><option value="due">Fällig</option><option value="ready">Abschlussbereit</option><option value="closed">Abgeschlossen</option></select></label><label>Boxer suchen<input id="duelQueueSearch" type="search" maxlength="80" placeholder="Name eines Beteiligten" autocomplete="off"></label><button type="submit">Suchen</button></form><p id="duelQueueCounts" role="status"></p><p id="duelQueuePage" class="meta"></p><div class="actions"><button id="duelQueuePrev" type="button" hidden>Vorherige 20</button><button id="duelQueueNext" type="button" hidden>Weitere 20</button></div></section><p id="duelTargetStatus" class="meta" role="status" hidden></p><label id="duelReviewFilter" hidden><input id="duelDueOnly" type="checkbox">Nur fällige Duelle anzeigen</label>
 <div id="duelList"></div>
 </section>
 </section>
+<dialog id="duelClosePreview" aria-labelledby="duelCloseTitle"><h2 id="duelCloseTitle" data-close-title>Duell-Abschluss prüfen</h2><div data-close-body></div><p data-close-status role="status" aria-live="polite"></p><div class="actions"><button type="button" data-close-confirm hidden>Duell ausdrücklich abschliessen</button><button type="button" data-close-refresh>Vorschau neu laden</button><button type="button" data-close-dismiss>Schliessen</button></div></dialog>
 </main>
 <script>window.TAKEOVER_DUELS_V2_ENABLED=true;</script>
+<script src="./takeover-duel-queue.js"></script>
+<script src="./takeover-duel-close.js"></script>
 <script type="module">
 import {createClient} from './takeover-client.js';
 const byId=id=>document.getElementById(id);
@@ -83,13 +87,27 @@ let db,profile=null,eligible=[],duels=[],busy=false,sessionEpoch=0,loadRequestId
 let liveScoreMap=new Map(),liveScoreErrors=new Map(),lastLiveUpdate=null,liveLoading=false;
 const requestedOpponent=(new URLSearchParams(location.search).get('opponent')||'').trim().slice(0,120);
 let targetHint='',reviewedInvitation=null;
+const rawTargetDuel=new URLSearchParams(location.search).get('duel');
+const targetDuel=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rawTargetDuel||'')?rawTargetDuel.toLowerCase():null;
+let targetDuelFocused=false,queueCursor=null,queueNext=null,queueHistory=[],queueFilterKey=null;
+const closureUI=window.TLDuelClose?.create({dialog:byId('duelClosePreview'),rpc,getActor:()=>profile,getEpoch:()=>sessionEpoch,onClosed:load});
+byId('duelDueOnly').checked=!targetDuel&&new URLSearchParams(location.search).get('review')==='due';
+byId('duelQueueState').value=byId('duelDueOnly').checked?'due':'all';
+byId('duelQueueForm').hidden=!!targetDuel;byId('duelQueueTarget').hidden=!targetDuel;
+const resetQueue=()=>{queueCursor=null;queueNext=null;queueHistory=[];load().catch(e=>say(message(e),true))};
+byId('duelDueOnly').addEventListener('change',()=>{byId('duelQueueState').value=byId('duelDueOnly').checked?'due':'all';resetQueue()});
+byId('duelQueueState').addEventListener('change',()=>{byId('duelDueOnly').checked=byId('duelQueueState').value==='due';resetQueue()});
+byId('duelQueueForm').onsubmit=e=>{e.preventDefault();resetQueue()};
+byId('duelQueueNext').onclick=()=>{if(!queueNext)return;queueHistory.push(queueCursor);queueCursor=queueNext;load().catch(e=>say(message(e),true))};
+byId('duelQueuePrev').onclick=()=>{if(!queueHistory.length)return;queueCursor=queueHistory.pop();load().catch(e=>say(message(e),true))};
+function openClosure(duel){if(closureUI)closureUI.open(duel);else say('Die Abschlussvorschau konnte nicht geladen werden. Bitte die Seite neu laden. Es wurde nichts gebucht.',true)}
 function cancelInviteReview(){reviewedInvitation=null;byId('inviteReview').hidden=true}
 function invitationSignature(){return JSON.stringify(['challenger','opponent','duration','metric'].map(key=>form.elements[key].value))}
 const say=(text,isError=false)=>{status.textContent=text;status.className=isError?'error':''};
 const message=e=>{const t=String(e?.message||e||'Unbekannter Fehler');if(/jwt expired|invalid jwt/i.test(t))return 'Sitzung abgelaufen. Bitte erneut anmelden.';if(/failed to fetch|networkerror/i.test(t))return 'Netzwerkfehler. Bitte Internetverbindung prüfen.';return t};
 async function rpc(name,args={}){const result=await db.rpc(name,args);if(result.error)throw result.error;return result.data}
 function reset(){
- sessionEpoch++;loadRequestId++;profile=null;eligible=[];duels=[];cancelInviteReview();
+ sessionEpoch++;loadRequestId++;profile=null;eligible=[];duels=[];cancelInviteReview();closureUI?.invalidate();targetDuelFocused=false;queueCursor=null;queueNext=null;queueHistory=[];byId('duelQueueCounts').textContent='';byId('duelQueueControls').hidden=true;byId('duelTargetStatus').hidden=true;byId('duelTargetStatus').textContent='';
  liveScoreMap.clear();liveScoreErrors.clear();lastLiveUpdate=null;liveLoading=false;
  panel.hidden=true;auth.hidden=false;list.replaceChildren();
  byId('liveOverviewSection').hidden=true;byId('liveOverviewList').replaceChildren();
@@ -231,9 +249,14 @@ function appendRivalry(card,duel){
 function render(){
  renderLiveOverview();
  list.replaceChildren();
- if(!duels.length){list.append(el('p','Noch keine Duelle vorhanden.'));return}
- for(const duel of duels){
+ const staff=['coach','admin'].includes(profile.role);byId('duelReviewFilter').hidden=true;byId('duelListScope').hidden=!staff;byId('duelQueueControls').hidden=!staff;
+ const shown=duels;
+ const foundTarget=targetDuel&&shown.some(d=>String(d.id).toLowerCase()===targetDuel);
+ byId('duelTargetStatus').hidden=!rawTargetDuel;byId('duelTargetStatus').textContent=!rawTargetDuel?'':!targetDuel?'Der Duell-Link ist ungültig.':foundTarget?'Das verlinkte Duell ist hervorgehoben.':'Das verlinkte Duell ist in dieser Übersicht nicht enthalten oder nicht zugänglich.';
+ if(!shown.length){list.append(el('p',staff?'Keine Duelle für diesen Filter geladen.':'Noch keine Duelle vorhanden.'));return}
+ for(const duel of shown){
   const card=document.createElement('article');card.className='tl-duel-card';card.dataset.status=duel.status||'';card.dataset.duelId=duel.id||'';
+  if(targetDuel&&String(duel.id).toLowerCase()===targetDuel){card.classList.add('is-linked-duel');card.tabIndex=-1;}
   card.append(el('h3',String(duel.challenger_name||'Boxer')+' vs. '+String(duel.opponent_name||'Boxer')));
   const expired=duel.status==='pending'&&duel.expires_at&&new Date(duel.expires_at)<=new Date();
   const statusLine=el('p',expired?'Einladung abgelaufen':(statuses[duel.status]||duel.status));statusLine.className='tl-duel-status';card.append(statusLine);
@@ -273,17 +296,37 @@ function render(){
    withdraw.onclick=()=>{if(confirm('Diese offene Duell-Einladung zurückziehen? Sie wird als zurückgezogen protokolliert.'))mutate('duel_v2_withdraw_invite',{p_duel_id:duel.id})};
    card.append(withdraw);
   }
-  if(['coach','admin'].includes(profile.role)&&duel.ends_at&&new Date(duel.ends_at)<=new Date()&&['active','awaiting_reviews'].includes(duel.status)){
-   const button=el('button','Ergebnis prüfen');button.type='button';button.onclick=()=>mutate('duel_v2_reconcile',{p_duel_id:duel.id});card.append(button);
+  if(['coach','admin'].includes(profile.role)&&duel.ends_at&&new Date(duel.ends_at)<=new Date()&&['active','awaiting_reviews','settled'].includes(duel.status)){
+   const button=el('button',duel.status==='settled'?'Abschluss ansehen':'Ergebnis prüfen');button.type='button';button.onclick=()=>openClosure(duel);card.append(button);
   }
   list.append(card);
  }
+ if(foundTarget&&!liveLoading&&!targetDuelFocused&&!byId('duelClosePreview').open){targetDuelFocused=true;const card=list.querySelector('.is-linked-duel');card?.scrollIntoView?.({block:'center'});card?.focus({preventScroll:true})}
 }
 async function load(){
  const epoch=sessionEpoch,requestId=++loadRequestId;
- const [all,boxers]=await Promise.all([rpc('duel_v2_list_mine'),rpc('duel_v2_eligible_boxers')]);
+ const staff=['coach','admin'].includes(profile?.role);
+ const key=JSON.stringify([byId('duelQueueState').value,byId('duelQueueSearch').value.trim(),targetDuel]);if(key!==queueFilterKey){queueCursor=null;queueNext=null;queueHistory=[];queueFilterKey=key}
+ const queueArgs={p_state:targetDuel?'all':byId('duelQueueState').value,p_limit:20,p_before:queueCursor?.before||null,p_before_id:queueCursor?.before_id||null,p_search:targetDuel?null:byId('duelQueueSearch').value.trim(),p_duel_id:targetDuel||null};
+ byId('duelQueueNext').disabled=true;byId('duelQueuePrev').disabled=true;
+ const [pageResult,boxerResult]=await Promise.allSettled([staff?rpc('duel_v2_staff_queue',queueArgs):rpc('duel_v2_list_mine'),rpc('duel_v2_eligible_boxers')]);
  if(epoch!==sessionEpoch||requestId!==loadRequestId||!profile)return;
- duels=Array.isArray(all)?all:[];eligible=Array.isArray(boxers)?boxers:[];
+ if(boxerResult.status==='fulfilled')eligible=Array.isArray(boxerResult.value)?boxerResult.value:[];
+ populate();
+ try{
+  if(pageResult.status==='rejected')throw pageResult.reason;
+  if(staff){
+   if(!window.TLDuelQueue?.validPage(pageResult.value,queueArgs))throw Error('Die Trainer-Warteschlange ist unvollständig. Es werden keine Gesamtzahlen behauptet.');
+   const page=pageResult.value;duels=page.items;queueNext=page.next_cursor;
+   byId('duelQueueCounts').textContent=window.TLDuelQueue.countsText(page.counts)+(page.search?' · Suche: '+page.search:'')+(targetDuel?' · Verlinktes Duell':'');
+   byId('duelQueuePage').textContent='Seite '+(queueHistory.length+1)+' · '+duels.length+' von '+page.counts[page.state]+' Duellen · Stand '+new Date(page.as_of).toLocaleTimeString('de-CH',{hour:'2-digit',minute:'2-digit'});
+   byId('duelQueueNext').hidden=!queueNext;byId('duelQueuePrev').hidden=!queueHistory.length;
+  }else duels=Array.isArray(pageResult.value)?pageResult.value:[];
+ }catch(error){
+  duels=[];queueNext=null;liveScoreMap.clear();liveScoreErrors.clear();liveLoading=false;render();
+  byId('duelQueueCounts').textContent='Warteschlange nicht verfügbar. Offene Abschlüsse sind nicht als erledigt gewertet.';byId('duelQueuePage').textContent='';byId('duelQueueNext').hidden=true;byId('duelQueuePrev').hidden=!queueHistory.length;
+  say(['PGRST202','42883'].includes(error?.code)?'Die Trainer-Warteschlange ist noch nicht freigeschaltet. Einladungen bleiben verfügbar.':message(error),true);return;
+ }finally{byId('duelQueueNext').disabled=false;byId('duelQueuePrev').disabled=false}
  const active=duels.filter(isDuelLive);
  // Keep the last valid score visible while the background refresh runs.
  // Never reuse a score if the duel changed status or disappeared.

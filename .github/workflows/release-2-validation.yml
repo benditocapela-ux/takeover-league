@@ -23,6 +23,10 @@ jobs:
           node-version: '22'
       - run: npm install --no-save --package-lock=false jsdom@26.1.0
       - run: node tests/release-static-contracts.cjs
+      - run: node tests/duel-close-ui.cjs
+      - run: node tests/coach-competition-status.cjs
+      - run: node tests/period-close-races.cjs
+      - run: node tests/inbox-races.cjs
       - run: node tests/holo-emote-podium-contracts.cjs
       - run: node tests/holo-gear-previews-contracts.cjs
       - run: node tests/mein-boxer-editor-art-contracts.cjs
@@ -181,6 +185,39 @@ jobs:
             ${{ runner.temp }}/modular-art-shots/*.png
             ${{ runner.temp }}/modular-art-shots/*-glove-pixels.json
           if-no-files-found: ignore
+          retention-days: 14
+
+  competition-and-preview-browser:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm install --no-save --package-lock=false playwright@1.56.1
+      - run: npx playwright install --with-deps chromium webkit
+      - name: Periods, explicit closures, paginated inbox and exact artwork previews
+        run: |
+          node tests/period-archive-browser.cjs
+          node tests/period-close-browser.cjs
+          node tests/period-notices-browser.cjs
+          node tests/inbox-browser.cjs
+          node tests/duel-queue-browser.cjs
+          TL_BROWSER=webkit node tests/duel-queue-browser.cjs
+          node tests/duel-close-browser.cjs
+          TL_BROWSER=webkit node tests/duel-close-browser.cjs
+          SHOTS=output/seven-hour/podium node tests/league-podium-browser.cjs
+          SHOTS=output/seven-hour/editor node tests/premium-editor-previews-browser.cjs
+        timeout-minutes: 12
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: competition-preview-browser-evidence
+          path: |
+            output/seven-hour/**/*.png
+            output/continuation/**/*.png
+          if-no-files-found: warn
           retention-days: 14
 
   training-v2-browser:

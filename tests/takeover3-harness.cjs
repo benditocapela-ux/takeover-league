@@ -36,14 +36,15 @@ function match(row,f){const [op,k,v]=f;const x=row[k];
  if(op==='gte')return x>=v;if(op==='lte')return x<=v;if(op==='is')return v===null?x==null:x===v;return true}
 function table(name){const d=DB();return Array.isArray(d[name])?d[name]:(cfg().tables&&cfg().tables[name])||[]}
 function query(name){
- const st={filters:[],one:false,order:null,limit:null,op:'select',payload:null,opts:null};
- const b={select(){return b},eq(k,v){st.filters.push(['eq',k,v]);return b},neq(k,v){st.filters.push(['neq',k,v]);return b},in(k,v){st.filters.push(['in',k,v]);return b},
+ const st={filters:[],one:false,order:[],offset:0,limit:null,op:'select',payload:null,opts:null,selectOpts:null};
+ const b={select(columns,options){st.selectOpts=options||null;return b},eq(k,v){st.filters.push(['eq',k,v]);return b},neq(k,v){st.filters.push(['neq',k,v]);return b},in(k,v){st.filters.push(['in',k,v]);return b},
   gte(k,v){st.filters.push(['gte',k,v]);return b},lte(k,v){st.filters.push(['lte',k,v]);return b},is(k,v){st.filters.push(['is',k,v]);return b},
-  order(k,o){st.order=[k,o&&o.ascending===false?-1:1];return b},limit(n){st.limit=n;return b},range(a,z){st.limit=z-a+1;return b},not(){return b},or(){return b},filter(){return b},ilike(){return b},
+  order(k,o){st.order.push([k,o&&o.ascending===false?-1:1]);return b},limit(n){st.limit=n;return b},range(a,z){st.offset=a;st.limit=z-a+1;return b},not(){return b},or(){return b},filter(){return b},ilike(){return b},
   maybeSingle(){st.one='maybe';return b},single(){st.one='single';return b},
   insert(p){st.op='insert';st.payload=p;return b},upsert(p,o){st.op='upsert';st.payload=p;st.opts=o;return b},update(p){st.op='update';st.payload=p;return b},delete(){st.op='delete';return b},
   then(res,rej){return run().then(res,rej)}};
  async function run(){
+  if(cfg().traceQueries)log('query:'+name,st);
   const hook=cfg().fail&&cfg().fail[name+':'+st.op];
   if(hook)return {data:null,error:hook};
   const d=DB();let rows=table(name).slice();
@@ -56,11 +57,12 @@ function query(name){
   if(st.op==='update'){d[name]=rows.map(r=>st.filters.every(f=>match(r,f))?{...r,...st.payload}:r);saveDB(d);return {data:null,error:null}}
   if(name==='profiles'){const s=read();if(!s)rows=[]}
   rows=rows.filter(r=>st.filters.every(f=>match(r,f)));
-  if(st.order){const [k,dir]=st.order;rows.sort((a,z)=>a[k]<z[k]?-dir:a[k]>z[k]?dir:0)}
-  if(st.limit!=null)rows=rows.slice(0,st.limit);
-  const data=st.one?(rows[0]||null):rows;
+  const exactCount=st.selectOpts?.count==='exact'?rows.length:null;
+  if(st.order.length)rows.sort((a,z)=>{for(const [k,dir] of st.order){const result=a[k]<z[k]?-dir:a[k]>z[k]?dir:0;if(result)return result}return 0});
+  if(st.limit!=null)rows=rows.slice(st.offset,st.offset+st.limit);
+  const data=st.selectOpts?.head?null:st.one?(rows[0]||null):rows;
   if(st.one==='single'&&!rows[0])return {data:null,error:{code:'PGRST116',message:'no rows'}};
-  return {data,error:null,count:Array.isArray(data)?data.length:null};
+  return {data,error:null,count:exactCount};
  }
  return b;
 }

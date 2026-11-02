@@ -1,78 +1,58 @@
-# Arbeitsstand – 2. November 2026
+# Arbeitsstand – Fortsetzung vom 2. November 2026
 
-Start: 01:10 Europe/Zurich / 00:10 UTC. Arbeitsbudget bis 08:10 Europe/Zurich / 07:10 UTC. In der letzten Stunde keine neue grosse Funktion.
-Branch: feature/league-audit-seven-hours-20261102. Basis: c7fbd9ff568e703db7d7b7820f0f2605d8b0d0b6. Vor Beginn sauberer Arbeitsbaum; keine AGENTS.md im Repository oder den geprüften Elternverzeichnissen.
+Branch: `feature/league-audit-seven-hours-20261102`. Draft-PR: [#94](https://github.com/benditocapela-ux/takeover-league/pull/94). Basis/main: `c7fbd9ff568e703db7d7b7820f0f2605d8b0d0b6`, erneut mit GitHub abgeglichen. Letzter vorheriger Remote-Head: `a806260243eb6de23c7355f983edbfc7ef165bfa`.
 
-## Schutz und Zuständigkeiten
+Nach dem ausdrücklichen „fahre weiter“ wurde die Arbeit um **08:42:58 UTC / 09:42:58 Europe/Zurich** wieder aufgenommen. Dies ist der aktuelle Integrationsstand; der erste Teilstand bleibt als [STATUS.initial.md](STATUS.initial.md) dokumentiert. Keine erfundenen Prozentzahlen oder Behauptung durchgehend geleisteter sieben Stunden.
 
-Kein neuer Produktionsrelease autorisiert. Produktion iqarjivcrddcixrvqbfb ausschliesslich lesend; keine Migration, Flagänderung, Auszahlung oder echte Abschlussbuchung. Testprojekt cfgdvcccsqwfjajuizsr ist bestätigt: Takeover league test, ACTIVE_HEALTHY. Nur isolierte synthetische Testdaten/Transaktionen. Alte PRs 80, 78, 77, 76 und 62 bleiben unangetastet.
+## Schutzrahmen
 
-- duel_contract: Datenbank/Wertung, Duell-/Monats-/Saisonabschluss, gemeinsame Event-Identität, SQL-Nachweise.
-- workflow_ui: Duellformular, Trainerabschlüsse, periodengenaues Archiv, zugehörige Browser-Tests.
-- graphics_mobile: beide Podien, Anime-Anatomie, Editor-Posen/Bundle-Vorschauen, Grafikmatrix/Mobile.
-- root: Integration, Studio-Historie/Inbox/Periodenhinweise, Auth-/Routenprüfung, Release-Eingaben, CI/Draft-PR.
+**Kein Merge, kein Deployment, keine Produktionsmigration, keine Änderung produktiver Flags, keine produktiven Auszahlungen.** Produktion `iqarjivcrddcixrvqbfb` nur lesend. Auch das bestätigte gemeinsame Testprojekt `cfgdvcccsqwfjajuizsr` wurde nicht beschrieben. Alle neuen Datenbanktests laufen gegen isolierte synthetische Datenbanken auf lokalem PostgreSQL 17.11, Loopback 127.0.0.1:55481. Es wurden keine echten Benutzer, Trainings, Besitzstände oder Wirtschaftsdaten verändert.
 
-## Verifizierte Baseline
+Die offenen alten PRs #80/#78/#77/#76/#62 wurden nicht übernommen oder gemergt. Keine neuen Laufzeitabhängigkeiten, Frameworks oder Dienste.
 
-- main weiterhin c7fbd9f, offene PRs wie Audit; Testprojekt bestätigt.
-- release-static-contracts 33/33, takeover3-contracts 12/12, staff-experience-contracts 7/7, JS-Regex und CSS-Struktur bestanden.
-- Produktive Flags: duels, training_v2, notifications aktiv; boxer_duels, seasons, hall_of_fame inaktiv. Keine Flags geändert.
-- Reproduktion aus Code: Studio lädt 1.000 volle Trainingseinträge, Inbox begrenzt gleichzeitig Liste und Ungelesenzähler auf 20; mehrere unabhängige createClient-Stellen. Live-Warnungen werden vor Auth-Änderung im Browser geprüft.
+## Zielmatrix
 
-## Priorisierte Akzeptanz
-
-1. Gemeinsame serverseitige Duellwertung; explizite Einladung/Annahme; vollständige Regeln, enge Sichtbarkeit, Legacy unverändert. Neue Metriken ohne festgelegte Reward-Regel nicht einladbar.
-2. Lesende Abschlussvorschau und expliziter idempotenter Abschluss, eng begrenzte Trainerrechte. Offene Trainings blockieren, keine erfundenen Prämien.
-3. Getrennte Monats-/Saisonansichten mit periodengebundenen Links/Snapshots; rekonstruierter Monat sichtbar vorläufig. Eindeutige Mitteilungsereignisse, Profiltrennung, Nachladen und echter Ungelesenzähler.
-4. Deutlich grösseres datengetriebenes Podium und korrigierte Anime-Vorschauen/Ärmel; Grafikmatrix 100/200 %, keine eingebrannten Rang-/Namensdaten.
-5. Routen/Rollen/Mobile prüfen, reale Fehler priorisiert beheben; bestehender Veröffentlichungsweg bleibt erhalten.
-
-## Nachweise unterscheiden
-
-Quellverträge, DOM-/Browser-Mocks, echte Browser, Test-DB-RPCs und Produktions-Read-only werden getrennt protokolliert. Kein physisches Gerät verfügbar/verifiziert. Ausstehende End-to-End-Prüfungen nicht als bestanden melden.
-
-## Offen / Entscheidungen
-
-Neue Metrik-Rewards und neue Monats-/Saisonboni sind nicht definiert: sichere deaktivierte Konfiguration vorbereiten, keine Beträge erfinden. Private Altduelle nicht öffentlich machen. Weitere Arbeitsstände in backend-status.md, workflow-status.md und graphics-status.md.
-
-## Abschluss: Teilstand, keine vollständige Auftragserfüllung
-
-Der erste Uhrwert war 2026-11-02 00:10:08 UTC. Der erneute explizite Abgleich lieferte 08:16:54 UTC; auch die Windows-Uhr zeigte 09:16 Europe/Zurich. Damit war die festgelegte Grenze 07:10 UTC überschritten. Danach nur Sicherung, Integration und Abschlussprüfung begonnener kleiner Pakete. Daraus wird **keine siebenstündige produktive Arbeitszeit** abgeleitet. Grosse unvollständige Entwürfe wurden nicht als fertige Funktion übernommen.
-
-| Ziel | Ergebnis | Nachweis / Restarbeit |
+| Ziel | Stand | Nachweis / verbleibende Arbeit |
 | --- | --- | --- |
-| Duelle mit drei Wertungen | Teilweise | Punkte-Einladung mit lesender Prüfansicht und ausdrücklichem Senden. Kilometer/Anzahl bleiben deaktiviert; gemeinsamer SQL-Wertungsvertrag fehlt. |
-| Trainerabschlüsse und sichere Belohnungen | Zurückgestellt | Produktionsvertrag lesend dokumentiert; keine neue Vorschau, Warteschlange oder Coach-Befugnis. Bestehender reconcile-Aufruf kann weiterhin buchen. |
-| Monats-/Saisonarchiv und Deep Links | Zurückgestellt | Bestehender globaler Ergebnismix noch offen; keine neuen Monats-Snapshots oder Oktober-Rekonstruktion. |
-| Periodenmeldungen, Inbox, Historien-Paginierung | Zurückgestellt | Kein neuer Event-Schlüssel, keine neue Bannerlogik, Zähler-/Limit-Probleme noch offen. |
-| Grosses Podium, korrekte Ränge | Zurückgestellt | Baseline-Bilder und konkrete Befunde vorhanden; ungeprüfter Prototyp zurückgenommen. |
-| Flex-Anatomie, Pose-/Bundle-Kacheln | Zurückgestellt | Ursachen eingegrenzt; keine Grafik korrigiert und keine Nachher-Abnahme. |
-| Mehrfache GoTrue-Clients | Umgesetzt | Gemeinsame Factory in allen produktiven SDK-Erzeugern. Echter SDK-Gasttest: je drei Seiten in Chromium/WebKit, genau eine Auth-Instanz, keine Mehrfachwarnung. |
-| Rollen-/Kontowechsel-Regression | Geprüfter Teilumfang | Bestehende Browser-Suite in Chromium/WebKit bestanden; synthetische Konten, keine echten Login-/Refresh-Token. |
-| Trainer-Leerzustand | Umgesetzt | Meldung benennt nur Trainingsaufgaben und behauptet nicht mehr, sämtliche Wettkämpfe seien erledigt. |
-| LIVE-Kontrast | Umgesetzt | Gemessener CSS-Kontrast 6.89:1 statt gleicher Vorder-/Hintergrundfarbe. |
-| Release-Eingaben | Umgesetzt | Pages reagiert künftig auch auf Root-SVG und tools/premium-v2; Auth-Modul löst vorhandene Konto-/Staff-CI aus. Kein Release gestartet. |
-| Vollständiges 33-Seiten-/Rollen-/Geräteaudit | Teilweise | Vorhandene Shell-/Navigationstests bestanden, aber keine vollständige echte Rollen-/DB-/Gerätematrix. |
+| Gemeinsame Wertung bestehender Punkte-Duelle | Umgesetzt, getestet | Livewertung und Abschluss nutzen dieselben Ledgerprüfungen; fehlende/doppelte Buchungen blockieren. Legacy-Zeitraum und Rangbelohnungen bleiben erhalten. |
+| Lesende Duellvorschau, ausdrücklicher Abschluss | Umgesetzt, getestet | Vorschau schreibt nichts; Revision, erneute Bestätigung, tatsächliche Buchungen und Fehlerzustände. Reale Zwei-Trainer-Konkurrenz und Rollback getestet. |
+| Auffindbare Trainerabschlüsse | Umgesetzt für Punkte-Duelle | Serverseitige Suche, Statusfilter, 20er-Keyset-Seiten und exakte Zähler. SQL mit 127 Duellen und Browser mit 121 Duellen: alte fällige Duelle hinter 120 neueren Ergebnissen auffindbar. |
+| Kilometer-/Trainingsart-Duelle | Backend vorbereitet, Integration läuft | Exakte Dezimal-/ID-Wertung, Folgetag/7–14 volle Zürcher Tage, Sichtbarkeit, unveränderlicher Vertrag, Abschluss/Korrektur und isolierte Tests. Standardkonfiguration deaktiviert, Reward-Zuordnung NULL. UI-Endabnahme und unabhängiges Review laufen. |
+| Monats-/Saisonarchiv | Umgesetzt, getestet | Eindeutige Periodenschlüssel, keine vermischten Saisons, 20er-Seiten, eigener Rang ausserhalb der ersten Seite, aktuelle Profil-Sichtbarkeit. Nicht abgeschlossene Monate ausdrücklich rekonstruiert. |
+| Offizielle Monats-/Saisonabschlüsse | Umgesetzt als Ergebnisabschluss, getestet | Enger Coach-/Admin-Endpunkt, lesende Vorschau, offene Trainings/Ledgerfehler blockieren, unveränderliche Monats-Snapshots. Bestehende Saisontitel und Folgeentwurf erhalten. **Keine zusätzliche Prämie eingerichtet.** |
+| Periodenmeldungen und Deep Links | Umgesetzt, getestet | Eindeutige Ereignisse je Periode/Empfänger; Hinweise in Heute/Liga. Servergespeichertes Schliessen pro Profil und Phase; offizieller Abschluss erscheint trotz geschlossenem vorläufigem Hinweis erneut. |
+| Inbox-Zähler und Nachladen | Umgesetzt, getestet | Exakter globaler Ungelesenzähler, 20er-Seiten, eigene Deep Links, fehlgeschlagene Bestätigung und Kontowechsel. 45 Nachrichten/35 ungelesen, beide Browser und bestehende Kontoregression bestanden. |
+| Trainingshistorie vorladen | Offen | Studio lädt weiterhin bis 1.000 Vollzeilen; echte Paginierung darf Statistik/Kalender/Serie nicht verfälschen. |
+| Grösseres Liga-Podium | Umgesetzt, getestet | Gemeinsame 2–1–3-Darstellung, tatsächliche Ränge, Gleichstände, Nullleistung, leere/kleine Felder, lange Namen, alle sechs Posen. Transparenter Anime-Hintergrund statt schwarzer Rechtecke. |
+| Posen-/Bundle-Vorschauen | Umgesetzt, getestet | Zwölf Pose-Kacheln, FUT und Bundle pixelgleich zum echten Compositor. Anime/SVG folgt tatsächlichem Resolver. Begrenzter Cache und Modulfehler mit Wiederholung. |
+| Flex-Shirt-Schultern | Ursache belegt, noch offen | Ärmelquelle und geerbte Mantelanker verursachen falschen Übergang. Versuche bei 100/200 % reichen nicht aus; keine unbewiesene Korrektur und kein pauschaler SVG-Downgrade übernommen. |
+| Auth-Client, Gastzustand, LIVE-Kontrast | Vorheriges Paket erhalten | Eine SDK-Instanz; verständlicher Gastzustand; Kontrast 6.89:1. |
+| Vollständige Website-/Shop-/Geräteabnahme | Teilweise | Bestehende Regressionen plus gezielte neue Pfade. Keine vollständige echte Login-/Cloud-/Gerätematrix oder künstlerische Abnahme sämtlicher Kombinationen. |
 
-### Ausgeführte Abschlussprüfungen
+## Tatsächliche Nachweise
 
-- `release-static-contracts.cjs`: 33/33; `takeover3-contracts.cjs`: 12/12; `staff-experience-contracts.cjs`: 7/7.
-- `js-regex-guard.cjs` und `css-structure.cjs`: bestanden.
-- `takeover3-browser.cjs`: Chromium und WebKit bestanden; Konto hinzufügen/wechseln/entfernen, Rollenwechsel, abgelaufene Sitzung, Netzwerkfehler, Tabwechsel, Training und Navigation. Supabase-Attrappe, keine echten Konten. Kurzlog: account-browser.log.
-- `duels-v2-browser.cjs`: JSDOM bestanden. `release-live-duels-browser.cjs`: Chromium/WebKit, 375/1280 px, synthetische RPCs; Details in workflow-status.md.
-- `auth-singleton-browser.cjs`: sechs echte SDK-Gastläufe bestanden. auth-baseline.json zeigt die produktiven Mehrfachwarnungen, auth-after.json den lokalen korrigierten Stand. Keine echte authentifizierte SDK-Abnahme.
-- `assemble-pages-site.cjs`: lokales Staging erfolgreich, 81 Root-Dateien; takeover-client.js wird mitgeliefert. Premium-Konfiguration unverändert. **Kein Upload/Deployment.**
-- LIVE-Badge in Chromium mit berechnetem CSS geprüft: feature-contrast.json.
-- Keine neuen SQL-/RLS-/Concurrency-Tests, keine Testdatenbank-Schreibtests und keine physische iPhone-/Android-Abnahme.
+- **Quellverträge:** 33/33 Release-Checks, 12/12 Takeover-3, 7/7 Staff, Erhalt bestehender DOM-IDs/RPCs, JS-Regex und CSS-Struktur. Neue legitime Hooks sind ausdrücklich gelistet; keine allgemeinen Ausnahmen.
+- **Echte Browser, synthetische API-Daten:** Chromium und WebKit für Abschluss, Archiv, Hinweise, Warteschlange, Konto-/Fehlerzustände. Neue Periodenabläufe bei 320/390/1280 px. Podium/Editor zusätzlich 320/360/390/430 px und Desktop.
+- **Echte lokale Datenbank:** PostgreSQL 17.11 mit tatsächlichen Rollen, Read-only-Transaktionen, Wertungsgrenzen, fehlenden/doppelten Ledgers, konkurrierenden Sessions, Rollback/Reapply und Datenfingerprints. Kein Ersatz für echte Supabase-Login-/PostgREST-End-to-End-Abnahme.
+- **Grafik:** 3.528 Variantenberichte aktualisiert; exakte PNG-Vorschauvergleiche und Cachegrenzen. 32 Previewvarianten → 24 Cache-Einträge, 0 ausstehende Jobs, 0 zusätzliche PNG-Quellanfragen nach Aufwärmen. Kein allgemeiner Performancegewinn behauptet.
+- **GitHub-CI:** Am alten Head a806260 waren Staff/Takeover-3 grün. Zwei andere Läufe fanden veraltete Design-/Confirm-Assertions und einen montagsabhängigen Club-Slot-Test. Diese Ursachen sind lokal korrigiert. CI am nächsten gepushten Head muss neu geprüft werden; alte Resultate sind keine Freigabe.
 
-GitHub-CI des ersten Draft-Commits fand eine veraltete DOM-ID-Liste im Designvertrag: die fünf neuen Elemente der Einladungsvorschau waren dort nicht erfasst. Die Liste wurde gezielt um genau diese Elemente ergänzt; Schutz bestehender IDs/RPCs bleibt aktiv. Lokal danach bestanden: redesign-contracts, coach-feedback-contracts, admin-registration-static, features-live-directory und release-ux-staging. Trainer-/Admin-Browserjob des ersten CI-Laufs war erfolgreich. Neue CI-Läufe müssen am korrigierten PR-Head gelesen werden, alte Ergebnisse sind keine Freigabe des neuen Commits.
+## Migrationen und Release
 
-### Datenbank, Flags und späterer Release
+Reihenfolge und Nachweise: [archive-and-closures.md](archive-and-closures.md), [backend-status.md](backend-status.md), [duel-queue.md](duel-queue.md). Die folgende Liste ist die Integrationsreihenfolge. **095422 (neue Metriken) befindet sich noch im lokalen Review und ist nicht Teil dieses ersten Fortsetzungs-Checkpoints.** Alle übrigen hier aufgeführten Migrationen sind als überprüfbare Dateien enthalten:
 
-Dieses Paket enthält **null neue Migrationen**. Es benötigt die vorhandenen v2-RPCs und erweitert keine Datenrechte. Die im Backend-Dokument vorgeschlagenen v3-Verträge sind nicht installiert. Es gibt keinen anwendbaren SQL-Rollback, weil keine SQL-Änderung erstellt oder angewendet wurde.
+1. `20261102084519` gemeinsamer Punktevertrag und Duellvorschau.
+2. `20261102090410` periodenbezogene Archivleser und heutige öffentliche Profil-Sichtbarkeit.
+3. `20261102093606` Empfänger-/Ereignisschlüssel für Duellmitteilungen.
+4. `20261102095352` begrenzte Trainerwarteschlange.
+5. `20261102095422` deaktivierte neue Metrikverträge.
+6. `20261102095858` ausdrückliche Monats-/Saisonabschlüsse.
+7. `20261102101922` profilgebundene Periodenhinweise.
 
-Lesender Flag-Snapshot: aktiviert sind achievements, app_feedback, boxer_holo, card_designs, coach_challenges, coach_feedback, coach_ratings, duels, gym_training, kampfgeist_shop, notifications, performance_dashboard, self_rating, style_test, training_v2, tutorial, weekly_quests. Deaktiviert sind boxer_duels, club_checkin_only, coach_goals, hall_of_fame, league_challenges, palmares, public_boxer_profiles, seasons. Alte Flag-Namen nicht mit der Freigabe neuer Generationen gleichsetzen. Keine Flags verändert.
+Frontend und passende RPCs gemeinsam vorbereiten. Bei fehlenden neuen APIs wird keine alte schreibende RPC als vermeintlich lesende Vorschau verwendet. Rollback in umgekehrter Abhängigkeitsreihenfolge; nach echten neuen Snapshots/Verträgen verweigern die Schutzskripte einen datenvernichtenden Schema-Rollback. Dann Daten erhalten und eine geprüfte Vorwärtskorrektur vorbereiten.
 
-Vor einem späteren Release: Draft prüfen, vollständige CI am aktuellen Commit abwarten, verbleibende authentifizierte SDK-Regression und Mobile-Überlagerungen prüfen. Frontend-Importänderungen und takeover-client.js müssen zusammen veröffentlicht werden. Rollback dieses Pakets wäre ein gemeinsames Revert von Factory und Importen; bestehende Daten bleiben unverändert. Merge, Pages-Veröffentlichung und jede künftige DB-Migration erfordern die entsprechende ausdrückliche FREIGEBEN-Anweisung. Nichts davon wurde ausgeführt.
+Unverändert aktiv laut Read-only-Snapshot: achievements, app_feedback, boxer_holo, card_designs, coach_challenges, coach_feedback, coach_ratings, duels, gym_training, kampfgeist_shop, notifications, performance_dashboard, self_rating, style_test, training_v2, tutorial, weekly_quests. Unverändert aus: boxer_duels, club_checkin_only, coach_goals, hall_of_fame, league_challenges, palmares, public_boxer_profiles, seasons. Alte Flags nicht als Freigabe neuer Generationen interpretieren.
 
-Nächstes priorisiertes Paket: gemeinsamer serverseitiger Duellvertrag samt read-only Abschlussvorschau und isolierten Rechte-/Wertungs-/Idempotenztests; danach explizite Trainerabschlüsse und periodengefiltertes Archiv. Neue Metrik-Rewards, zusätzliche Monats-/Saisonboni und Vereins-Sichtbarkeit müssen als nachvollziehbare Konfiguration festgelegt werden. Private Altduelle bleiben privat.
+## Nächste Arbeit
+
+Metrik-Review/UI und echte Trainingshistorien-Paginierung abschliessen; den getesteten Zwischenstand pushen und CI am tatsächlichen Head auswerten. Danach die noch offenen P1-Integrationslücken und risikobasierten Regressionen priorisieren. Neue Reward-Zuordnungen bleiben eine explizite Fachentscheidung; private Altduelle werden nicht automatisch für Zuschauer geöffnet. **Nichts aus dieser Fortsetzung ist veröffentlicht.**

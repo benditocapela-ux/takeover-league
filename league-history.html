@@ -1,40 +1,10 @@
-<!doctype html><html lang="de-CH"><head><script src="./takeover-anime.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Saisons & Hall of Fame · Takeover League</title>
-<style>:root{font:16px system-ui,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 100px;background:var(--bg);color:var(--text)}main{max-width:950px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:var(--sp-4)}.panel{border:1px solid var(--line);background:var(--surface);border-radius:var(--r-lg);padding:var(--sp-5);margin:var(--sp-4) 0}.item{padding:var(--sp-3);border:1px solid var(--line-strong);border-radius:var(--r-sm);margin:var(--sp-3) 0;background:var(--surface-2)}.muted{color:var(--muted)}.place{color:var(--gold);font-weight:800}h2{font-size:var(--fs-lg)}</style><link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"><link rel="stylesheet" href="./takeover-app-shell.css"></head><body data-tl-screen="league-history">
-<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Saisons & Hall of Fame"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🏆</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Ergebnisse und Erinnerungen</div><div class="tl-screen-title">Saisons & Hall of Fame</div></div></div><div class="tl-screen-links"><a href="./index.html" class="tl-screen-primary">Zur Liga</a><a href="./awards.html">Awards</a></div></div><p class="tl-subnav"><a href="./index.html">← Liga</a></p><h1><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-trophy"></use></svg> Saisons & Hall of Fame</h1><p class="muted">Offizielle Saisonergebnisse und historische Auszeichnungen. Entwürfe und unveröffentlichte Ergebnisse bleiben verborgen.</p>
-<div class="grid">
-<section class="panel"><h2><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-season"></use></svg> Saisons</h2><div id="seasons" aria-live="polite">Lade Saisons …</div></section>
-<section class="panel"><h2><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-medal"></use></svg> Hall of Fame</h2><div id="honors" aria-live="polite">Lade Ehrungen …</div></section></div>
-<section class="panel"><h2><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-chart"></use></svg> Historische Saisonrankings</h2><div id="results" aria-live="polite">Lade Ranglisten …</div></section>
-</main>
-<script>
-const API='https://iqarjivcrddcixrvqbfb.supabase.co';
-const KEY='sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R';
-const make=(tag,text)=>{const e=document.createElement(tag);e.textContent=String(text??'');return e};
-async function list(table,fields,order){
- const url=new URL(API+'/rest/v1/'+table);
- url.searchParams.set('select',fields);url.searchParams.set('order',order);url.searchParams.set('limit','300');
- const response=await fetch(url,{headers:{apikey:KEY},cache:'no-store'});
- if(!response.ok)throw new Error('HTTP '+response.status);
- const data=await response.json();if(!Array.isArray(data))throw new Error('Ungültige Antwort');return data;
-}
-function show(id,rows,build,empty){
- const root=document.getElementById(id);root.replaceChildren();
- if(!rows.length){root.append(make('p',empty));return}
- for(const row of rows){const item=make('article','');item.className='item';build(row,item);root.append(item)}
-}
-async function init(){
- const jobs=[
-  ['seasons','league_seasons_v21','id,title,starts_on,ends_on,status','starts_on.desc',r=>[r.title,r.starts_on+' bis '+r.ends_on], 'Noch keine veröffentlichte Saison.'],
-  ['honors','league_hall_of_fame_v21','id,title,boxer_name,description,awarded_at','awarded_at.desc',r=>[r.boxer_name+' · '+r.title,r.description||'Offizielle Auszeichnung'], 'Noch keine historischen Titel veröffentlicht.'],
-  ['results','league_season_results_v21','id,season_id,boxer_name,rank_position,points,exp','rank_position.asc',r=>['#'+r.rank_position+' · '+r.boxer_name,r.points+' Punkte · '+r.exp+' EXP'], 'Noch keine abgeschlossene Saison mit Rangliste.']
- ];
- await Promise.all(jobs.map(async([id,table,cols,order,text,empty])=>{
-  try{const rows=await list(table,cols,order);show(id,rows,(row,item)=>{
-   const [title,description]=text(row);
-   const strong=make('strong',title);strong.className='place';
-   const detail=make('p',description);detail.className='muted';item.append(strong,detail)
-  },empty)}catch(e){document.getElementById(id).textContent='Noch nicht verfügbar: '+e.message}
- }));
-}
-init();
-</script><script src="./takeover-navigation.js" defer></script><script src="./takeover-account.js" defer></script><script src="./takeover-app-shell.js" defer></script></body></html>
+<!doctype html><html lang="de-CH"><head><script src="./takeover-anime.js"></script><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>Ergebnisse & Archiv · Takeover League</title>
+<style>:root{font:16px system-ui,sans-serif;color-scheme:dark}*{box-sizing:border-box}body{margin:0;padding:var(--sp-5) var(--sp-4) 100px;background:var(--bg);color:var(--text)}main{max-width:950px;margin:auto}h1{color:var(--gold)}a{color:var(--gold)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:var(--sp-4)}.panel{border:1px solid var(--line);background:var(--surface);border-radius:var(--r-lg);padding:var(--sp-5);margin:var(--sp-4) 0}.item{padding:var(--sp-3);border:1px solid var(--line-strong);border-radius:var(--r-sm);margin:var(--sp-3) 0;background:var(--surface-2)}.muted{color:var(--muted)}.place{color:var(--gold);font-weight:800}h2{font-size:var(--fs-lg)}.archive-controls{display:flex;gap:var(--sp-4);align-items:end;flex-wrap:wrap}.archive-controls label{display:grid;gap:6px;min-width:0}.archive-controls input,.archive-controls select,button{font:inherit;min-height:44px;max-width:100%;padding:10px;border-radius:8px;border:1px solid var(--line-strong);background:var(--surface-2);color:var(--text)}button{cursor:pointer}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:3px}.archive-top{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,160px),1fr));gap:10px}.archive-top .item{margin:0}.item{overflow-wrap:anywhere}#periodMine{border-left:3px solid var(--gold);padding-left:12px}[hidden]{display:none!important}@media(max-width:430px){.archive-controls>*{width:100%}}
+.period-close-dialog{max-width:min(650px,calc(100vw - 24px));max-height:calc(100dvh - 32px);overflow:auto;background:var(--surface);color:var(--text);border:1px solid var(--gold);border-radius:16px;padding:20px}.period-close-dialog::backdrop{background:#000b}.period-close-dialog button{margin:8px 8px 0 0}.period-close-dialog li,.period-close-dialog p{overflow-wrap:anywhere}.period-close-dialog ol{padding-left:24px}</style><link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"><link rel="stylesheet" href="./takeover-app-shell.css"></head><body data-tl-screen="league-history">
+<main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Saisons & Hall of Fame"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🏆</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Ergebnisse und Erinnerungen</div><div class="tl-screen-title">Saisons & Hall of Fame</div></div></div><div class="tl-screen-links"><a href="./index.html" class="tl-screen-primary">Zur Liga</a><a href="./awards.html">Awards</a></div></div><p class="tl-subnav"><a href="./index.html">← Liga</a></p><h1><svg class="tl-icon" aria-hidden="true" focusable="false"><use href="./icons.svg#icon-trophy"></use></svg> Saisons & Hall of Fame</h1><p class="muted">Monate und Saisons getrennt ansehen. Gespeicherte Monats- und Saisonendstände sind offiziell. Laufende oder rekonstruierte Werte sind ausdrücklich gekennzeichnet.</p>
+<section class="panel" aria-labelledby="periodHeading"><h2 id="periodHeading">Ergebnisse &amp; Archiv</h2><form id="periodForm" class="archive-controls"><label>Zeitraumtyp<select id="periodKind"><option value="month">Monat</option><option value="season">Saison</option></select></label><label id="monthLabel">Monat<input id="periodMonth" type="month" required></label><label id="seasonLabel" hidden>Saison<select id="periodSeason"><option value="">Saison wählen</option></select></label><button type="submit">Ergebnis ansehen</button></form><p id="periodStatus" role="status" aria-live="polite">Lade Zeitraum …</p></section>
+<section class="panel" aria-labelledby="periodTitle"><h2 id="periodTitle">Zeitraum</h2><p id="periodSummary" class="muted"></p><p id="periodReward" class="muted"></p><div id="periodPodium" class="archive-top" aria-label="Passende Topplätze"></div><p id="periodMine" hidden></p></section>
+<div class="grid"><section class="panel"><h2>Veröffentlichte Saisons</h2><div id="seasons" aria-live="polite">Lade Saisons …</div><button id="moreSeasons" type="button" hidden>Weitere Saisons laden</button></section><section class="panel"><h2>Ehrungen dieser Periode</h2><div id="honors" aria-live="polite"></div></section></div>
+<section class="panel"><h2>Rangliste dieser Periode</h2><div id="results" aria-live="polite"></div><button id="moreResults" type="button" hidden>Weitere 20 Ergebnisse laden</button></section>
+<section id="periodClose" class="panel" hidden></section></main>
+<script src="./takeover-period-close.js" defer></script><script src="./takeover-archive.js" defer></script><script src="./takeover-navigation.js" defer></script><script src="./takeover-account.js" defer></script><script src="./takeover-app-shell.js" defer></script></body></html>

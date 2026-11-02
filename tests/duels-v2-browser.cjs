@@ -38,10 +38,13 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
   }},
   rpc:async(name,args)=>{calls.push({name,args});
    if(rpcError)return {data:null,error:{message:rpcError}};
+   if(name==='duel_v2_staff_queue')return {data:{items:duels,next_cursor:null,counts:{all:duels.length,open:duels.filter(x=>x.status==='pending'||x.status==='active'&&Date.parse(x.ends_at)>Date.now()).length,due:duels.filter(x=>['active','awaiting_reviews'].includes(x.status)&&Date.parse(x.ends_at)<=Date.now()).length,ready:0,closed:duels.filter(x=>x.status==='settled').length},state:args.p_state,search:args.p_search||'',duel_id:args.p_duel_id||null,metric:'points',limit:20,as_of:new Date().toISOString()},error:null};
    return {data:name==='duel_v2_list_mine'?duels:name==='duel_v2_eligible_boxers'?boxers:'ok',error:null};
   }
  };
  dom.window.createClient=()=>db;dom.window.confirm=()=>true;
+ dom.window.HTMLDialogElement.prototype.showModal=function(){this.setAttribute('open','')};dom.window.HTMLDialogElement.prototype.close=function(){this.removeAttribute('open')};
+ dom.window.eval(fs.readFileSync('takeover-duel-close.js','utf8'));dom.window.eval(fs.readFileSync('takeover-duel-queue.js','utf8'));
  dom.window.eval('window.TAKEOVER_DUELS_V2_ENABLED=true;');
  dom.window.eval(prodSource.replace('init();','window.__ready=init();'));
  await dom.window.__ready;
@@ -182,7 +185,9 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  assert.match(coachReview.document.querySelector('#duelList').textContent,/Zwischenstand hat ein ungültiges Datenformat/,'invalid live-score payload must not fall back to stale stored scores');
  assert.doesNotMatch(coachReview.document.querySelector('#duelList').textContent,/Trainingspunkte: 70 : 40/,'active score must not appear finalized');
  reconcileButton.click();await tick();await tick();
- assert.ok(coachReview.calls.some(x=>x.name==='duel_v2_reconcile'&&x.args.p_duel_id==='duel-1'));
+ assert.ok(coachReview.calls.some(x=>x.name==='duel_v2_close_preview'&&x.args.p_duel_id==='duel-1'),'review uses only read-only preview');
+ assert.equal(coachReview.calls.some(x=>x.name==='duel_v2_reconcile'||x.name==='duel_v2_close_confirm'),false,'opening never settles');
+ assert.equal(coachReview.document.querySelector('[data-close-confirm]').hidden,true,'incomplete preview fails closed');
  coachReview.dom.window.close();
  const boxerReview=await mount({profile:{id:'boxer-1',role:'boxer',is_active:true},duels:[finished]});
  assert.equal([...boxerReview.document.querySelectorAll('#duelList button')].some(x=>x.textContent==='Ergebnis prüfen'),false,'boxer cannot manually reconcile a duel');

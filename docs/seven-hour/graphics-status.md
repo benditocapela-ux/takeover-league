@@ -1,28 +1,67 @@
-# Grafik- und Mobile-Audit – tatsächlicher Stand
+# Grafik- und Mobile-Audit – Fortsetzung nach ausdrücklichem Weiterauftrag
 
-## Geprüft
+## Abgeschlossen: gemeinsames grösseres Liga-Podium
 
-- Basis c7fbd9f: veröffentlichter statischer Build mit simulierten Kontodaten, Chromium und WebKit.
-- Browser-Test anime-everywhere-browser: Heute, eingeloggtes Podium (Guard und Jab) und FUT-Card verwenden die Anime-Pipeline. Beide Engines bestanden.
-- Echte Vorher-Bilder des Podiums bei 320, 360, 390, 430 und 1000 CSS-Pixeln liegen außerhalb des Veröffentlichungsbaums unter outputs/seven-hour/graphics/{chromium,webkit}-podium-before-{Breite}.png.
-- Öffentliche Rangliste nutzt freigegebene öffentliche Avatare. get_holo_looks ist laut separat geprüftem Produktionsvertrag nicht anonym ausführbar. Keine Berechtigung erweitert und kein öffentlicher Holo-Aufruf ergänzt.
-- Index nutzt jetzt den gemeinsamen takeover-client.js-Wrapper. Mein-Boxer, Shop und Boxer-Experience haben keine direkten Supabase-CDN-Imports; Boxer-Experience nutzt TLPerf.client.
+- Öffentliche Rangliste und Mein Takeover verwenden denselben Renderer und dieselbe Arena-Gestaltung. Namen, Punktzahlen und Rang stammen aus der bestehenden Ranglistenquelle.
+- Platzierung bleibt optisch 2–1–3. Beschriftung und Sockelhöhe folgen dem tatsächlichen Rang: Gleichstände bleiben gleichrangig, Nullpunkte erhalten keine Krone oder erfundene Wertung. Fehlende Plätze, leere Rangliste und lange Namen sind abgedeckt.
+- Laufender Monat wird als Zwischenstand gekennzeichnet. Die irreführende zusätzliche „Champion des Monats“-Karte ist entfernt. Öffentlicher Monatsname folgt Europe/Zurich; Link „Ergebnisse & Archiv“ führt zur separaten Ergebnisansicht.
+- Figuren sind wesentlich grösser. Bei 320/360 px ist die Bühne nun 465 statt 225/246 px hoch; Figurenflächen 213/255 statt 126/145 px. Bei 390/430 px Bühne 490 px und Figurenflächen 238/280 px. Breite Posen bleiben innerhalb der Arena. Die zusätzlichen Sechs-Posen-Tests haben zunächst beschnittene Jab-/Ansage-Hände gefunden; die Layoutursache wurde vor Abschluss korrigiert.
+- Authentifizierte Figuren nutzen die vorhandene Anime-Pipeline. Der Adapter respektiert nun scene:none auch nach dem asynchronen Anime-Upgrade. Dadurch verschwinden die rechteckigen Szenenhintergründe; Aura und Augeneffekte bleiben in der Pipeline erhalten. Keine PNG-Datei geändert.
+- Öffentliche Gäste behalten freigegebene Avatare. Der bestehende authentifizierte Holo-Pfad bleibt berechtigungsgebunden. Keine zusätzlichen Zugriffsrechte oder anonymen Holo-Abfragen.
+- Zusätzliche Prüfung mit Flex/Ansage als Spitzenreiter und langen Nachbarnamen fand überlappende Hand-/Textpixel bei 320 px. Ein reservierter Abstand unter den tieferen Rangbeschriftungen richtet alle Namen oberhalb der höchsten Figur aus, ohne die Figuren zu verkleinern oder zu beschneiden. Der erweiterte Browser-Test bestätigt null überlappende Pixel in beiden Engines.
+- Verdiente Rahmen, Titel, Banner, Emotes und FUT-Karten bleiben integriert. FUT-Karten lesen ebenfalls den tatsächlichen Podiumsrang; Besitz- und Kaufpfade wurden nicht verändert.
 
-## Nachgewiesene offene Probleme
+## Ausgeführte Prüfungen
 
-1. Eingeloggtes Podium ist bei kleinen Geräten nur 225–246 px hoch, Figuren etwa 126–145 px; deutlich kleiner als die gewünschte Referenz.
-2. renderPodium beschriftet die visuelle Slot-Reihenfolge 2–1–3 statt des serverseitigen rank_position. Gleichstände und Nullpunkt-Ränge sind daher nicht korrekt dargestellt.
-3. Öffentliche Rangliste bezeichnet den aktuellen Zwischenstand als „Champion des Monats“; der Monatsabschluss ist dafür nicht nachgewiesen.
-4. Editor-Pose- und Bundle-Kacheln rufen H.svg direkt auf, während normale Item-Kacheln den Premium-Adapter verwenden. Eine gemeinsame Preview-API benötigt einen eigenen begrenzten Cache, da der aktuelle Hero-Cache nur vier Einträge hält.
-5. Flex-Shirt: Die aus Guard übernommene Torso-Maske enthält möglicherweise alte Schulterkappen zusätzlich zu den neuen retargeteten Ärmeln. Dies ist eine begründete Ursache, noch keine abgeschlossene Grafikdiagnose oder Korrektur.
-6. Editor wartet ohne Timeout auf TLPerf/TLHolo; ein fehlgeschlagenes Modul kann dauerhaft blockieren.
+- `tests/release-static-contracts.cjs`: 33/33.
+- `tests/league-podium-browser.cjs`: Chromium und WebKit; tatsächlicher veröffentlichungsnaher statischer Build, simulierte Konten und RPC-Antworten. 320/360/390/430/1000 px; öffentliche und eingeloggte Ansicht; Gleichstand, Nullpunkte, zwei/keine Teilnehmenden, lange und HTML-artige Namen, fehlende Looks. Pixelgrenzen aller sechs Anime-Posen auch als Spitzenreiter bei 320/360/390/430/1000 px; transparente Hintergrundpixel bei vollständiger Figur; getrennte Szenenvarianten im Cache.
+- `tests/boxer-experience-browser.cjs`: Chromium und WebKit; bestehende Navigation, Rollen-Gates, Training, Holo und FUT-Card sowie 320/390/1366 px bestanden.
+- `tests/kg-cards-everywhere-browser.cjs`: öffentliche Kampfgeist-Dekoration und authentifizierte Profil-Posen auf dem neuen Podium bestanden. Assertions für die entfernte doppelte Champion-Karte wurden auf das gemeinsame Podium angepasst; Besitz-/Dekorationsprüfungen bleiben erhalten.
+- `tests/looks-everywhere-browser.cjs`: Rahmen/Titel und tatsächliche FUT-Rangzuordnung bestanden.
+- `tests/kampfgeist5-browser.cjs`: Podium-Emotes und bestehende Shop-/Duell-/Kampfpfad-Integration bestanden.
+- `tests/premium-completion-variants.cjs`: 1'764 katalogisierte Material-/Item-Varianten je Engine erneut gezeichnet (3'528 insgesamt); beide quellengebundenen Berichte erneuert.
+- `tests/premium-completion-contracts.cjs`: beide Variantenberichte sowie 19 registrierte PNG-Referenzen mit SHA-256 und gültigen Ausschnitten bestanden.
 
-## Nicht abgeschlossen
+Alle Browserdaten waren simuliert. Dies ist keine manuelle Geräteabnahme und keine Freigabe jeder möglichen Materialkombination.
 
-Das Sieben-Stunden-Zeitfenster war bei der Implementationsphase bereits überschritten. Ein noch ungeprüfter gemeinsamer Podium-Prototyp wurde deshalb vollständig aus dem Repository zurückgenommen. Die Quellskizze wurde nur außerhalb des Veröffentlichungsbaums in outputs/seven-hour/graphics/unverified-podium-prototype aufbewahrt. Es gibt keine verifizierten Nachher-Bilder und keine abgeschlossene Premium-/Editor-/Shop-Änderung in diesem Paket. Keine Aussagen über 100-/200-%-Grafikabnahme oder gesamte Website-Mobile-Abnahme.
+## Echte Bildnachweise
 
-## Nächster konkreter Auftrag
+Ausserhalb des Veröffentlichungsbaums: `outputs/seven-hour/graphics/` im übergeordneten Arbeitsbereich.
 
-Zuerst gemeinsamen Podium-Renderer mit tatsächlichen Rängen, Nullpunkt-/Gleichstand-/Unter-drei-Zuständen und dynamischen Namen bauen. Öffentliche Avatare bleiben öffentlich; private Looks nur im berechtigten Kontext. Danach 320/360/390/430 und Desktop in Chromium/WebKit einschließlich langer Namen und fehlender Looks prüfen. Anschließend separate begrenzte Premium-Preview-API für Pose-/Bundle-Kacheln und gezielte Torso-/Ärmel-Maskenkorrektur für Flex mit echten 100-/200-%-Vergleichen.
+- `{chromium,webkit}-podium-before-{320,360,390,430,1000}.png`: unveränderte Basis.
+- `{chromium,webkit}-podium-after-{320,360,390,430,1000}.png`: neue eingeloggte Ansicht mit identischen Basiskonfigurationen.
+- `{chromium,webkit}-public-podium-after-{320,360,390,430,1000}.png`: öffentliche Avataransicht.
+- `{chromium,webkit}-podium-{tied,zero,two,empty,long}.png`: Randfälle.
+- `{chromium,webkit}-podium-poses-*.png`: echte aktuelle Anime-Layer aller sechs Posen mit Samurai-Mantel.
+- `podium-layout-report.json`: gemessene Layoutdaten (width ist die gemessene Podiumsbreite, bei 320 px Viewport zum Beispiel 292 px).
 
-Keine Grafik neu generiert. Keine Produktionsänderung, kein Merge oder Deployment.
+## Abgeschlossen: Editor-Vorschauen und Wiederherstellung
+
+- Zwölf Pose-Kacheln, die FUT-Abbildung im Posenbereich, Pose-Artikel und Bundle-Vorschauen verwenden denselben Resolver und dieselben registrierten Quellen wie die Hauptfigur. Anime/SVG-Kennzeichnung folgt dem tatsächlich verfügbaren Renderer.
+- Ein separater Cache hält höchstens 24 vollständige Miniaturen (240 px Höhe); der Hero-Cache bleibt auf vier Einträge begrenzt, das gesamte HTML-/Bild-Cache-Limit bei 128. Hauptfigur bleibt in der Warteschlange priorisiert.
+- Bundle-Kachel und Anprobe verwenden dieselbe Konfigurationsfunktion. Die Anprobe zeigt jetzt ausdrücklich die Profil-Pose des Bundles, auch wenn zuvor die Karten-Pose betrachtet wurde. Gespeicherte Karten-Pose bleibt unabhängig.
+- Asynchrone Bilder aktualisieren nur Grafikbereiche/Badges. Auswahl, Tastaturfokus, Sperren, Preise und Kaufbestätigung bleiben bestehen.
+- Bei fehlenden Grafikdateien bleiben vollständige SVG-Vorschauen und SVG-Badges sichtbar. Ein älteres gecachtes Adapter-Modul ohne Preview-API fällt ebenfalls auf SVG zurück.
+- Fehlende Kernmodule erhalten nach acht Sekunden eine verständliche Fehlermeldung mit funktionierendem „Erneut laden“-Button.
+
+Zusätzliche Prüfungen:
+
+- `tests/premium-editor-previews-browser.cjs`: Chromium und WebKit; alle zwölf Pose-Bilder, die FUT-Abbildung und das Drachen-Bundle pixelgleich zum realen Compositor (jeweils PNG-Roundtrip, keine Pixel-Toleranz). Profil-/Karten-Pose unabhängig, schnelle Tastaturwechsel mit Fokus, 320/360/390/430/1100 px, echte Fehlasset-Fallbacks und Modulfehler mit erfolgreichem Reload. Keine Konto-Schreibaufrufe.
+- Derselbe Test zeichnet 32 Materialvarianten in einer isolierten Adapter-Instanz: 24 Cache-Einträge, keine ausstehenden Jobs und **null zusätzliche Quellbild-Anfragen** nach dem Aufwärmen.
+- `tests/premium-live-browser.cjs`: Chromium/WebKit bestanden; sechs Posen, rote Hose, Shirt-Kachel, Shirt/Mantel-Kombination und fehlende Bilddateien.
+- `tests/boxer-holo-browser.cjs`: Chromium/WebKit bestanden, einschliesslich bestehender Speicher-, Anprobe- und Kaufbestätigungsabläufe mit ausschliesslich simulierten Kontodaten.
+- Nachweise: `{chromium,webkit}-editor-premium-{poses,bundle}.png` sowie `editor-preview-parity.json` im oben genannten externen Evidence-Ordner.
+
+## Noch offen: Flex-Shirt-Anatomie und weitergehende Kunstabnahme
+
+Die Isolationsprüfung bei 100/200 % widerlegt den anfänglichen Verdacht alter Guard-Schulterreste: Der übernommene Torso ist bereits sauber beschnitten. Die sichtbaren Polster stammen aus `completion/assets/sleeve-shirt-upper.png` selbst und dessen Registrierung/Überlappung.
+
+- `completion/sleeves.json`: Shirt-Komponente 197 × 230 Quellpixel, Weltgrösse 98.1333 × 115; geerbter Pivot `[44.39697,22.70654]`, Distalpunkt `[33.81697,179.33654]` liegt unterhalb der kurzen Komponente. Provenienz/Anker sind vom langen Mantelarm übernommen.
+- `completion/poses.js` verwendet für jedes Kleidungsstück direkt `rig.parts.upper` als Achse. Garmentspezifische Anker werden bisher nicht ausgewertet. Ärmel liegen zudem über dem Torso.
+- Tatsächliche Flex-Körperanker: links Schulter `[280,253.58974]`, Ellbogen `[127.25,262.30769]`; rechts `[488,253.58974]` und `[640.75,262.30769]`.
+- Reine Anker-/Längenvarianten und Wiederverwendung direkt zugeschnittener Ärmel aus `tops/assets/shirt.png` wurden im Browser ausprobiert. Sie ändern die Ausrichtung, lösen aber den sichtbaren abgetrennten Schulter-/Armlochübergang noch nicht ausreichend. **Keine dieser experimentellen Änderungen wurde übernommen.** Kein pauschaler SVG-Downgrade.
+- Reale Detailbilder: `flex-shirt-before-{100,200}.png`, `flex-shirt-torso-{100,200}.png`, `flex-shirt-sleeves-{100,200}.png`; nicht freigegebene Versuche `flex-shirt-candidate-*.png`, `flex-shirt-anchor-*.png`, `flex-shirt-reuse-*.png` im externen Evidence-Ordner.
+
+Nächster Kunstauftrag: kurze Shirt-Ärmel aus derselben Materialquelle mit eigenen Schulter-/Cuff-Ankern, passendem Armloch und klarer Torso-/Ärmel-Überlappung registrieren; Flex zuerst, danach Jab/Sieg/Ansage. Erst nach sauberer 100-/200-%-Abnahme übernehmen und die Variantenberichte neu erzeugen. Shop-Gesamtprüfung und vollständige künstlerische Abnahme sämtlicher Outfitkombinationen bleiben offen.
+
+Der erste ungeprüfte Prototyp wurde am ursprünglichen Zeitlimit zurückgenommen. Das hier dokumentierte Podium wurde erst nach dem ausdrücklichen Weiterauftrag wieder aufgenommen und geprüft. Kein Merge, Deployment, Produktionsschreibzugriff oder neu generiertes Artwork.

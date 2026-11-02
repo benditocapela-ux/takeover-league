@@ -19,7 +19,16 @@ const say=(t,err)=>{
  // Success messages are accessible and temporary; errors remain until resolved.
  if(t&&!err&&!/läuft/.test(t))statusTimer=setTimeout(()=>{status.hidden=true;statusTimer=null},3000);
 };
-await new Promise(r=>{const ok=()=>window.TLPerf&&window.TLHolo;if(ok())return r();const t=setInterval(()=>{if(ok()){clearInterval(t);r()}},30)});
+const coreReady=await new Promise(resolve=>{
+ const ok=()=>window.TLPerf&&window.TLHolo;
+ if(ok()){resolve(true);return}
+ const poll=setInterval(()=>{if(ok())finish(true)},30),deadline=setTimeout(()=>finish(false),8000);
+ function finish(ready){clearInterval(poll);clearTimeout(deadline);resolve(ready)}
+});
+if(!coreReady){
+ say('Der Boxer-Editor konnte nicht vollständig geladen werden. Prüfe deine Verbindung und versuche es erneut.',true);
+ const retry=document.createElement('button');retry.type='button';retry.className='mb-btn';retry.id='editorRetry';retry.textContent='Erneut laden';retry.addEventListener('click',()=>location.reload());status.append(retry);
+}else{
 // All visual modules are optional. A stale PWA/offline cache must not disable
 // boxing profile editing, saving or purchases when one extra art file is missing.
 await Promise.allSettled([
@@ -218,9 +227,24 @@ function selectionLook(field,value){
  if(field==='top'&&value!=='hoodie')next.hood=false;
  return H.normalize(next);
 }
+function figurePreview(look,pose,scene='none'){
+ const normalized=H.normalize(look);
+ const html=liveCharacter?.preview?.(normalized,pose,refreshItemPreviews,{scene});
+ return html?{html,kind:'anime'}:{html:H.svg(normalized,{pose,scene,holo:false}),kind:'svg'};
+}
+function bundleLook(bundle){
+ const look={...cfg};
+ for(const key of bundle.items||[]){const it=items().find(i=>i.key===key);if(!it)continue;
+  if(['coat','aura','eyefx','scene'].includes(it.slot))look[it.slot]=it.value;
+  if(it.slot==='glove'){look.hands='gloves';look.glove=it.value}
+  if(it.slot==='pose')look.pose_profile=it.value;
+ }
+ return H.normalize(look);
+}
 function itemPreview(field,value){
  const slot=field==='coatPick'?'coat':field;
  const next=selectionLook(field,value),pose=previewPose==='card'?next.pose_card:next.pose_profile;
+ if(slot==='pose')return figurePreview(next,pose);
  // Removal controls have no equipment artwork to classify, but retain the
  // existing Holo fallback when the optional item icon module is unavailable.
  if(value==='none'&&['head','top','coat'].includes(slot))return {html:G&&G.svg?G.svg(field,value,itemLook(field,value)):H.svg(itemLook(field,value),{pose,scene:'none',holo:false}),kind:'none'};
@@ -239,6 +263,7 @@ function itemPreview(field,value){
 const itemStatus=kind=>kind==='none'?'':'<span class="mb-item-status" data-renderer="'+kind+'">'+(kind==='anime'?'Anime':'SVG')+'</span>';
 function refreshItemPreviews(){
  if(!cfg||!app.querySelectorAll)return;
+ refreshFigurePreviews();
  for(const tile of app.querySelectorAll('[data-preview-field]')){
   const result=itemPreview(tile.dataset.previewField,tile.dataset.previewValue);
   const art=tile.querySelector('.mb-gear-art,.mb-shop-item-art'),badge=tile.querySelector('.mb-item-status');
@@ -246,6 +271,16 @@ function refreshItemPreviews(){
   if(badge){badge.textContent=result.kind==='anime'?'Anime':'SVG';badge.dataset.renderer=result.kind}
   if(tile.matches('button'))tile.setAttribute('aria-description',result.kind==='none'?'Kein Ausrüstungsgegenstand':result.kind==='anime'?'Anime':'SVG');
  }
+}
+function updateFigurePreview(tile,result){
+ const art=tile.querySelector('.mb-pose-fig,.mb-bfig');if(art)art.innerHTML=result.html;
+ const badge=tile.querySelector('.mb-item-status');if(badge){badge.textContent=result.kind==='anime'?'Anime':'SVG';badge.dataset.renderer=result.kind}
+ if(tile.matches('button'))tile.setAttribute('aria-description',result.kind==='anime'?'Anime':'SVG');
+}
+function refreshFigurePreviews(){
+ for(const tile of app.querySelectorAll('[data-pose-preview]'))updateFigurePreview(tile,figurePreview({...cfg,[tile.dataset.set]:tile.dataset.val},tile.dataset.val));
+ for(const tile of app.querySelectorAll('[data-bundle-preview]')){const bundle=data.bundles.find(b=>b.key===tile.dataset.bundlePreview);if(bundle){const look=bundleLook(bundle);updateFigurePreview(tile,figurePreview(look,look.pose_profile,look.scene))}}
+ const card=app.querySelector('.mb-cardprev .tlp-holo');if(card)card.innerHTML=figurePreview(cfg,cfg.pose_card).html;
 }
 function gearChip(field,v,label,on,extra){
  const slot=field==='coatPick'?'coat':field;
@@ -282,23 +317,27 @@ function viewExtras(){
   +sec('Hintergrund',`<div class="mb-row">${itemChips('scene','scene',false)}</div>`);
 }
 function poseRow(field){
- return `<div class="mb-row">${items().filter(i=>i.slot==='pose').map(i=>`<button type="button" class="mb-pose" data-set="${field}" data-val="${esc(i.value)}" aria-pressed="${cfg[field]===i.value}"><span class="mb-pose-fig">${H.svg(cfg,{pose:i.value,scene:'none',holo:false})}</span>${esc(i.name)}${lockTag(i)}</button>`).join('')}</div>`;
+ return '<div class="mb-row">'+items().filter(i=>i.slot==='pose').map(i=>{
+  const result=figurePreview({...cfg,[field]:i.value},i.value);
+  return `<button type="button" class="mb-pose" data-pose-preview="1" data-set="${field}" data-val="${esc(i.value)}" aria-pressed="${cfg[field]===i.value}" aria-description="${result.kind==='anime'?'Anime':'SVG'}"><span class="mb-pose-fig" aria-hidden="true">${result.html}</span><span>${esc(i.name)}</span>${itemStatus(result.kind)}${lockTag(i)}</button>`;
+ }).join('')+'</div>';
 }
 function viewPosen(){
  // Etappe 17b: so, wie andere die Karte sehen (öffentliche Werte, beste Karte = 92)
  const perf=data.perf,raw=perf&&perf.rating&&perf.rating.current?perf.rating.current.summary:null,r=raw?(P.pubOf(raw)||raw):null;
  const pos=perf&&perf.style&&perf.style.current?P.styleType(perf.style.current.scores).pos:'BOX';
  const cardHtml=P.card({name:data.display_name,overall:r?r.overall:70,categories:r?r.categories:{OFF:70,DEF:70,BEI:70,KON:70,TAK:70,MEN:70},pos,width:170,look:{holo:cfg}});
- return sec('Im Profil',poseRow('pose_profile'))+sec('Auf der FUT-Karte',poseRow('pose_card'))+sec('So sieht deine Karte aus',`<div class="mb-cardprev">${cardHtml}</div>`);
+ const cardFigure=figurePreview(cfg,cfg.pose_card);
+ const cardPreview=cardHtml.replace(/(<div class="tlp-holo">)[\s\S]*?(<\/div>)/,(_,open,close)=>open+cardFigure.html+close);
+ return sec('Im Profil',poseRow('pose_profile'))+sec('Auf der FUT-Karte',poseRow('pose_card'))+sec('So sieht deine Karte aus',`<div class="mb-cardprev">${cardPreview}</div>`);
 }
 function viewShop(){
  if(!data.shop)return `<div class="tlp-panel">Der Kampfgeist-Shop ist noch nicht freigeschaltet. Anprobieren kannst du trotzdem.</div>`;
  const buyBtn=(kind,key,price,owned)=>owned?`<span class="mb-owned">Im Besitz</span>`
   :confirmBuy===kind+':'+key?`<span class="mb-confirm"><button type="button" class="mb-btn primary" data-buy-${kind}="${esc(key)}" data-confirm="1">Ja, für ${fmt(price)} kaufen</button><button type="button" class="mb-btn" data-cancel="1">Abbrechen</button></span>`
   :`<button type="button" class="mb-btn" data-buy-${kind}="${esc(key)}"${data.coins<price?' disabled':''}>${COIN}${fmt(price)}</button>`;
- const bundles=(data.bundles||[]).map(b=>{const its=b.items.map(k=>items().find(i=>i.key===k)).filter(Boolean);
-  const look=Object.assign({},cfg);its.forEach(i=>{if(['coat','aura','eyefx','scene'].includes(i.slot))look[i.slot]=i.value;if(i.slot==='glove'){look.hands='gloves';look.glove=i.value}if(i.slot==='pose')look.pose_profile=i.value});
-  return `<article class="mb-bundle"><span class="mb-bfig">${H.svg(look,{})}</span><div class="mb-bbody"><span class="mb-eyebrow">Bundle</span><b>${esc(b.name)}</b><p class="mb-note">${esc(b.description||'')}</p>
+ const bundles=(data.bundles||[]).map(b=>{const look=bundleLook(b),result=figurePreview(look,look.pose_profile,look.scene);
+  return `<article class="mb-bundle" data-bundle-preview="${esc(b.key)}"><span class="mb-bfig" aria-hidden="true">${result.html}</span><div class="mb-bbody"><span class="mb-eyebrow">Bundle</span><b>${esc(b.name)}</b>${itemStatus(result.kind)}<p class="mb-note">${esc(b.description||'')}</p>
    <div class="mb-price">${COIN}${fmt(b.price)} <s>${fmt(b.value)}</s></div>${buyBtn('bundle',b.key,b.price,b.owned_all)}
    <button type="button" class="mb-btn ghost" data-try-bundle="${esc(b.key)}">Anprobieren</button></div></article>`}).join('');
  const shopItems=items().filter(i=>i.unlock==='shop');
@@ -545,7 +584,7 @@ app.addEventListener('click',async e=>{
  const g=e.target.closest('[data-toggle]');
  if(g){referenceVisible=false;draftSample=false;if(g.dataset.toggle==='hood')cfg.hood=!cfg.hood;else{if(cfg.coat!=='none'){coatChoice=cfg.coat;cfg.coat='none'}else cfg.coat=coatChoice}render();return}
  const tb=e.target.closest('[data-try-bundle]');
- if(tb){referenceVisible=false;draftSample=false;const b=data.bundles.find(x=>x.key===tb.dataset.tryBundle);if(b)b.items.forEach(k=>{const i=items().find(x=>x.key===k);if(!i)return;if(['coat','aura','eyefx','scene'].includes(i.slot))cfg[i.slot]=i.value;if(i.slot==='glove'){cfg.hands='gloves';cfg.glove=i.value}if(i.slot==='pose')cfg.pose_profile=i.value});
+ if(tb){referenceVisible=false;draftSample=false;const b=data.bundles.find(x=>x.key===tb.dataset.tryBundle);if(b){cfg=bundleLook(b);previewPose='profile'}
   render();app.querySelector('.mb-tabbody')?.scrollTo({top:0,behavior:'smooth'});return}
  if(e.target.closest('[data-cancel]')){confirmBuy=null;render();return}
  const bi=e.target.closest('[data-buy-item],[data-buy-bundle]');
@@ -621,5 +660,6 @@ try{
    say('');render()}
  }
 }catch(e){say('Mein Boxer konnte nicht geladen werden: '+(e.message||e),true)}
+}
 </script>
 <script src="./takeover-navigation.js" defer></script><script src="./takeover-account.js" defer></script><script src="./takeover-app-shell.js" defer></script></body></html>

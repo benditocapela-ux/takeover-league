@@ -275,73 +275,28 @@ function renderTrainingInsights(){
 
 
 // Notifications are only shown when the production RLS-gated feature flag is on.
+let boxerInboxPromise=null;
+function boxerNoteLink(path){
+ const allowed=new Set(['boxer.html','duels.html','challenges.html','index.html','awards.html','boxer-profile.html','league-challenges.html','league-history.html','goals.html','arena.html','bewertung.html','karten.html']);
+ try{
+  const value=String(path||'').trim(),clean=value.startsWith('/')&&!value.startsWith('//')?value.slice(1):value.replace(/^\.\//,'');
+  const [filename,queryString]=clean.split('?',2);
+  if(!allowed.has(filename)||filename.includes('/')||(queryString&&/[#\\]/.test(queryString)))return null;
+  const base=new URL('./',location.href),dest=new URL('./'+filename+(queryString?'?'+queryString:''),base);
+  return dest.origin===location.origin&&dest.pathname.startsWith(base.pathname)?dest.href:null;
+ }catch{return null}
+}
 async function refreshBoxerNotifications(){
  if(!profile)return;
- const root=$('boxerNotificationList'),label=$('boxerNotificationStatus');
- label.textContent='Prüfe Mitteilungen …';
- const flag=await db.from('league_feature_flags').select('is_enabled').eq('feature_key','notifications').maybeSingle();
- if(flag.error||flag.data?.is_enabled!==true){
-  root.replaceChildren();label.textContent='Mitteilungen sind derzeit noch nicht freigeschaltet.';return;
- }
- const response=await db.from('boxer_notifications')
-  .select('id,notification_type,title,message,target_path,created_at,read_at')
-  .eq('recipient_id',profile.id).order('created_at',{ascending:false}).limit(20);
- root.replaceChildren();
- if(response.error){label.textContent='Mitteilungen konnten nicht geladen werden: '+response.error.message;return}
- const rows=response.data||[];
- label.textContent=rows.length?rows.filter(x=>!x.read_at).length+' ungelesene von '+rows.length+' Mitteilungen':'Du hast aktuell keine Mitteilungen.';
- const allowed=new Set(['boxer.html','duels.html','challenges.html','index.html','awards.html','boxer-profile.html','league-challenges.html','league-history.html','goals.html','arena.html','bewertung.html','karten.html']);
- for(const note of rows){
-  const item=document.createElement('article');item.className='ux-notice';
-  const title=document.createElement('strong');title.textContent=note.title||'Mitteilung';
-  const detail=document.createElement('p');detail.textContent=note.message||'';
-  const date=document.createElement('small');date.textContent=new Date(note.created_at).toLocaleDateString('de-CH');
-  item.append(title,detail,date);
-  item.classList.toggle('ux-notice-read',!!note.read_at);
-  if(!note.read_at){
-   const mark=document.createElement('button');mark.type='button';mark.className='secondary-btn';
-   mark.textContent='Als gelesen markieren';mark.setAttribute('aria-label','Mitteilung als gelesen markieren: '+(note.title||'Mitteilung'));
-   mark.onclick=async()=>{
-    mark.disabled=true;mark.textContent='Speichere …';
-    const result=await db.rpc('mark_my_notification_read',{p_notification_id:note.id});
-    if(result.error){
-     mark.disabled=false;mark.textContent='Als gelesen markieren';
-     label.textContent='Mitteilung konnte nicht gespeichert werden. Bitte erneut versuchen.';
-     return;
-    }
-    if(result.data!==true){
-     // A second tab may already have acknowledged the message.
-     // Re-check the server rather than claiming a failed or successful write.
-     const check=await db.from('boxer_notifications').select('read_at')
-       .eq('id',note.id).eq('recipient_id',profile.id).maybeSingle();
-     if(check.error||!check.data?.read_at){
-      mark.disabled=false;mark.textContent='Als gelesen markieren';
-      label.textContent='Mitteilung konnte nicht bestätigt werden. Bitte aktualisieren.';
-      return;
-     }
-     note.read_at=check.data.read_at;
-    }
-    note.read_at=new Date().toISOString();item.classList.add('ux-notice-read');mark.remove();
-    label.textContent=rows.filter(x=>!x.read_at).length+' ungelesene von '+rows.length+' Mitteilungen';
-   };
-   item.append(mark);
-  }
-  const path=String(note.target_path||'').trim();
-  try{
-   // Existing Supabase triggers use '/boxer.html'; GitHub Pages uses a project subpath.
-   // Normalize only a whitelisted local filename, never arbitrary URLs or parent traversal.
-   const clean=path.startsWith('/')&&!path.startsWith('//')?path.slice(1):path.replace(/^\.\//,'');
-   const [filename,queryString]=clean.split('?',2);
-   if(allowed.has(filename)&&!filename.includes('/')&&(!queryString||!/[#\\]/.test(queryString))){
-    const base=new URL('./',location.href);
-    const dest=new URL('./'+filename+(queryString?'?'+queryString:''),base);
-    if(dest.origin===location.origin&&dest.pathname.startsWith(base.pathname)){
-     const link=document.createElement('a');link.href=dest.href;link.textContent='Ansehen';item.append(link);
-    }
-   }
-  }catch{}
-  root.append(item);
- }
+ const host=$('boxerNotificationList'),label=$('boxerNotificationStatus');
+ try{
+  boxerInboxPromise??=import('./takeover-inbox.js').then(({createInbox})=>createInbox({
+   getContext:()=>({db,profile}),host,label,noteLink:boxerNoteLink,
+   markRead:(db,id)=>db.rpc('mark_my_notification_read',{p_notification_id:id}),
+   classes:{item:'ux-notice',read:'ux-notice-read',actions:'actions',button:'secondary-btn'}
+  }));
+  await (await boxerInboxPromise).load();
+ }catch{boxerInboxPromise=null;host.replaceChildren();label.textContent='Mitteilungen konnten nicht geladen werden. Bitte erneut versuchen.'}
 }
 $('refreshBoxerNotifications').addEventListener('click',refreshBoxerNotifications);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&profile)refreshBoxerNotifications()});
