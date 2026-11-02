@@ -87,3 +87,9 @@ Ein separater Fehler im veröffentlichten `takeover-premium-character.js` ließ 
 Der neue `premium-shared-consumers-browser.cjs` reproduziert genau diesen Fall mit echten veröffentlichten Modulen/PNGs: Profilpose Cool und Guard, beide tatsächlich als Guard angezeigt. Vor der Korrektur blieb die zweite Figur unverändert; danach werden beide in Chromium und WebKit mit exakt demselben PNG aktualisiert. Der Adapter sammelt nun unterschiedliche Empfänger, dedupliziert dieselbe Funktion und gibt den wartenden Job vor den Rückrufen frei. Ein fehlerhafter Empfänger blockiert weder weitere Empfänger noch die Renderwarteschlange.
 
 Die gesamte bestehende Editor-Vorschauprüfung und das responsive Liga-Podium bestanden anschließend ebenfalls in beiden Engines. Keine Grafiken, Quellanfragen oder Cachegrenzen für diese Korrektur verändert. Unabhängiger Code-Review ohne blockierenden Befund.
+
+## Abschluss: Flex-Shirt-Schultern
+
+Der oben dokumentierte offene Flex-Befund ist jetzt korrigiert. Eine gemeinsame, passend registrierte Shirtquelle ersetzt die aufgesetzten Ärmel. Figur und Kachel verwenden dieselbe Datei; keine Körper-/Hosen-/Handschuhänderung. Chromium und WebKit: jeweils 54 Outfits, 45 vollständig unveränderte andere Outfits, 36 unveränderte Hände-/Unterteilpaare, 54 exakte Kacheln, tatsächlicher Editor und vollständiger SVG-Fallback bei PNG-Ausfall. Die Flex-Grafik wurde bei 100/200 % in Schwarz/Rot/Weiss und ohne Mantel/Samurai/Basic geprüft.
+
+Die weiteren drei Retarget-Versuche wurden trotz mathematisch gültiger Dreiecke wegen sichtbarer Kontur-/Stofffehler verworfen; kein CPU-Pilot gelangt in die Runtime. Echte Vorher-/Nachherbilder und alle Grenzen: [Shirt-Registrierung und Nachweise](../premium-v2/completion/shirt-registration.md). Die 3528 Variantenberichte wurden neu gezeichnet. Neue CI-Ergebnisse gehören zum finalen PR-Head. Kein Merge/Deployment.

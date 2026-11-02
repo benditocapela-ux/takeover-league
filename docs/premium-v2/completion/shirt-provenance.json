@@ -1,0 +1,35 @@
+{
+  "status": "Flex source accepted; non-Flex reuse candidates are not approved",
+  "tool": "built-in image_gen.imagegen",
+  "sourceCanvas": [
+    768,
+    800
+  ],
+  "prompts": [
+    {
+      "file": "source.png",
+      "generator": "exec-421e9d0f-facb-47af-8c0c-cd7af73f1a19.png",
+      "prompt": "Use case: precise-object-edit. Produce a registration-locked clothing overlay for an existing 2D anime character rig. Image 1 is the EXACT fixed 768 by 800 coordinate canvas and body silhouette to fit; Image 2 is the exact black-and-gold shirt design/material reference. Do not make a free-standing shirt with arbitrary proportions. Keep image 1's entire canvas extent, scale, center, and empty margins. Draw a fitted SHORT-SLEEVED athletic shirt directly over image 1's chest, shoulders, upper arms, ribcage and waist, then output ONLY that garment as a transparent layer, removing ALL human skin/body from the output. The overlay must align when laid directly over image1 with no transform. Target canvas 768x800. Neck opening centered x384 at the existing neck base: collar sides near (336,218) and (432,218), collar low point near (384,276). The hem is at y552, waist sides near x292 and x476; it covers the entire side torso contour up to the armpits around x245/523,y322. Shirt shoulders follow the body's actual upper outline around y214 from x200 to x315 and mirrored x453 to x568. The raised upper arms are nearly horizontal. Short cuffs cut approximately vertically around x182 and x586, from y226 to y314, well before each elbow, leaving forearms and outer biceps uncovered. The cloth must COVER the original deltoid silhouette smoothly with normal garment ease, not add puffed domes, floating shoulder pads, duplicated muscles, sharp rectangular tabs, skin triangles or gap seams. Do not force a flat straight shoulder line; trace and slightly smooth the fixed body contour. Respect the body's chest width and lat/waist taper so NO side skin remains outside the torso cloth. Preserve image2's soft premium anime-painted black athletic knit, subtle grey highlights, small natural stretch folds, thin gold neckline/cuff trim and gold side piping. Continuous anatomically correct armholes from sleeve to chest, cloth folds pulled laterally by raised arms. Keep actual stitched armhole seams readable for modular segmentation. No body, skin, neck, arms, hands, face, trousers, belt, coat, text, logos, mannequin, hanger, environmental shadow, glow, opaque backdrop, extra pieces or contact sheet. Empty collar opening and all space outside cloth must have genuine alpha zero; cloth itself opaque alpha 255 except antialiased edges. One exact-size registered shirt overlay in the same 768x800 canvas as image1. No recentering, auto-cropping, perspective rotation or enlargement to fill the page.",
+      "sha256": "4c8369ded54ac80da272d0c8d439187a78e17537f42847a2b941270a4d4f17be",
+      "dimensions": [
+        1229,
+        1280
+      ]
+    },
+    {
+      "file": "source-v2.png",
+      "generator": "exec-fe6f85a0-fd73-493b-b089-61070e658c9f.png",
+      "prompt": "Use case: precise-object-edit. Edit target Image 1 is the registered shirt overlay from the previous step. Preserve its EXACT canvas extent, placement, shoulder silhouette, sleeve/cuff shape, armhole stitching, chest material, gold details and transparency. Image 2 is the underlying fixed 768x800 body reference only. Make ONLY two anatomical registration corrections to Image1: (1) Lower and deepen the gold-trimmed crew-neck opening to the proper BASE OF THE NECK, not high against the jaw. In Image1's 1229x1280 coordinate system, the gold collar endpoints should be around (537,349) and (692,349), and the center bottom of the U around (614,443). Keep the collar opening empty/transparent. This is about 40 pixels lower at its center than the current collar. Fill the removed old collar area with the same consistent shirt fabric only where appropriate below the new opening; there must be no duplicate gold ring. Preserve the existing shoulders at their current absolute coordinates. (2) Raise the lower hem from about y914 to y880, retaining the existing waist width/taper, fitted folds and gold side piping; it should stop at the boxer's belt at y550 in the 768x800 registration. All other contour points remain unchanged. Output ONLY the shirt, no skin or body, on the same full transparent canvas with the same empty margins. Fully opaque cloth interior, true alpha255 away from edges; alpha0 outside, crisp antialiased edge and no translucent glow/halo. Do not recenter, resize to fill, change material or add new objects. Preserve the soft premium anime illustration style.",
+      "sha256": "04005e7022a67409e7e31657966b9c2e61d0a1081500ccfc2374d5deb058bc92",
+      "dimensions": [
+        1229,
+        1280
+      ]
+    }
+  ],
+  "publishedSource": "tools/premium-v2/completion/assets/shirt-registered.png",
+  "references": [
+    "tools/premium-v2/completion/assets/body-flex.png",
+    "tools/premium-v2/tops/assets/shirt.png"
+  ]
+}

@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "referencePose": "flex",
+  "canvas": [
+    768,
+    800
+  ],
+  "piece": {
+    "id": "top-guard-shirt",
+    "slot": "top",
+    "src": "completion/assets/shirt-registered.png",
+    "uv": [
+      0,
+      0,
+      1229,
+      1280
+    ],
+    "box": [
+      0,
+      0,
+      768,
+      800
+    ],
+    "sha256": "04005e7022a67409e7e31657966b9c2e61d0a1081500ccfc2374d5deb058bc92"
+  },
+  "frames": {
+    "flex": [
+      169,
+      210,
+      430,
+      343
+    ]
+  }
+}

@@ -11,6 +11,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
@@ -40,6 +42,8 @@ jobs:
         run: node tests/premium-production-browser.cjs
       - name: Rebuild source- and evidence-bound coverage
         run: node scripts/inventory-premium-production.cjs
+      - name: Shirt shoulders against pinned pre-change build
+        run: node tests/premium-shirt-registration-browser.cjs
       - name: Six-pose catalogue and outfit completion
         env:
           CANDIDATE: '1'
@@ -69,4 +73,5 @@ jobs:
             tools/premium-v2/material-assets/*contact.png
             docs/premium-v2/production-*.json
             docs/premium-v2/completion/
+            output/shirt-qa/
 
