@@ -79,3 +79,11 @@ Die ergänzenden lokalen Material-/Rig-Regressionen bestanden in beiden Engines:
 Der WebKit-Timeout wurde als echter Integrationsfehler reproduziert: Die alte Benachrichtigungsmenge speicherte nur einen Callback pro Outfit. Startete eine Kachel das Laden und wählte die Hauptfigur dasselbe Outfit währenddessen, erhielt nur die Kachel die Fertigmeldung. Die neue Map aus Outfit-Schlüssel und Callback-Menge benachrichtigt beide Verbraucher, dedupliziert dieselbe Funktion und gibt Listener vor dem Neuzeichnen frei. Fehlerpfad und unveränderte neun Quellanfragen sind ebenfalls geprüft.
 
 Vor der Korrektur war der neue verzögerte Tile→Hero-Browserfall in WebKit rot; danach bestanden Chromium und WebKit die vollständige Suite mit 32 Outfits, 16 Handschuhansichten und diesem Regressionstest. Drei zugehörige Quellverträge bestanden. Keine PNGs, Registrierungen oder Auswahl-Epochen verändert; keine Timeouts erhöht oder Assertions gestrichen.
+
+## Fortsetzung: mehrere Figuren mit derselben angezeigten Pose
+
+Ein separater Fehler im veröffentlichten `takeover-premium-character.js` ließ die zweite Figur als SVG stehen, wenn verschiedene gespeicherte Profilposen dieselbe angeforderte Kartenpose ergaben. Der Compositor normalisiert beide Konfigurationen auf denselben Job; die aufrufende Anime-Einbindung hat dafür aber verschiedene wartende Figuren. Der Adapter speicherte nur die erste Fertigmeldung.
+
+Der neue `premium-shared-consumers-browser.cjs` reproduziert genau diesen Fall mit echten veröffentlichten Modulen/PNGs: Profilpose Cool und Guard, beide tatsächlich als Guard angezeigt. Vor der Korrektur blieb die zweite Figur unverändert; danach werden beide in Chromium und WebKit mit exakt demselben PNG aktualisiert. Der Adapter sammelt nun unterschiedliche Empfänger, dedupliziert dieselbe Funktion und gibt den wartenden Job vor den Rückrufen frei. Ein fehlerhafter Empfänger blockiert weder weitere Empfänger noch die Renderwarteschlange.
+
+Die gesamte bestehende Editor-Vorschauprüfung und das responsive Liga-Podium bestanden anschließend ebenfalls in beiden Engines. Keine Grafiken, Quellanfragen oder Cachegrenzen für diese Korrektur verändert. Unabhängiger Code-Review ohne blockierenden Befund.

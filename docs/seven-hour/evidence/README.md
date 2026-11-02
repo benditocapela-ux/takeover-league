@@ -13,3 +13,5 @@ Echte Chromium-Aufnahmen mit synthetischen Konten/RPC-Antworten und tatsächlich
 Die vorgeschlagenen Ärmelversuche wurden nicht übernommen. Es gibt dafür kein freigegebenes Nachher-Bild. Namen, Punkte und Platzierungen auf den Podien werden aus Daten gerendert und sind nicht ins Artwork eingebrannt.
 
 Weitere echte Chromium-Aufnahmen: [Metrischer Abschluss ohne Prämie](metric-close-mobile.png), [gefilterte Trainingshistorie mit vollständigen Gesamtzahlen](studio-history-mobile.png). Synthetische Testdaten, keine Produktionsauszahlung.
+
+Fortsetzung: [bestätigter Shop-Kauf trotz ausgefallener Katalognachlese](shop-confirmed-offline.png). Der bestätigte Besitz bleibt sichtbar; statt erneutem Kauf wird Ausrüsten angeboten. Tatsächliche Chromium-Aufnahme mit synthetischem Kaufbeleg, kein echter Kauf. Der entsprechende WebKit- und Fehlerablauf ist im [Shop-Audit](../shop-audit.md) dokumentiert.

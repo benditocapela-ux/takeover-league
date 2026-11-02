@@ -16,7 +16,7 @@ const P=window.TLPerf,K=window.TLKG,$=id=>document.getElementById(id),app=$('app
 const say=(t,err)=>{status.textContent=t;status.classList.toggle('error',!!err);status.hidden=!t};
 const REASON={start:'Startguthaben',training:'Bestätigtes Training',training_fix:'Korrektur Training',quest:'Quest',purchase:'Kauf',admin:'Vom Admin'};
 const SLOT_HELP={avatar:'Deine Kämpferfigur',aura:'Leuchtet um deinen Avatar',banner:'Hintergrund deiner Karte',rahmen:'Rand um deinen Avatar',titel:'Steht über deinem Namen',handschuhe:'Siehst du an deinem Avatar',emote:'Im Duell sendest du alle eigenen Emotes; auf dem Podium nur, wenn du es dort einschaltest',einlauf:'Dein Auftritt vor einem Duell'};
-let db,role='boxer',myName='',data=null,tab='shop',cat='alle',admin=null,social=null,atab='konten',acat='avatar',busy=false,bonuses=null,bonusFor='';
+let db,role='boxer',myName='',data=null,tab='shop',cat='alle',admin=null,social=null,atab='konten',acat='avatar',busy=false,bonuses=null,bonusFor='',selectedItem=null;
 const byKey=k=>data.items.find(i=>i.key===k);
 const coins=n=>`<span class="kg-price">${K.COIN}${K.fmt(n)}</span>`;
 function itemTile(it,mode){
@@ -110,6 +110,7 @@ function render(){
   (tab==='inv'?invView():tab==='coins'?coinView():tab==='admin'?adminView():shopView());
 }
 function sheet(it){
+ selectedItem=it.key;
  const eq=data.look[it.category]&&data.look[it.category].key===it.key,bal=data.wallet.balance;
  let action='';
  if(it.owned)action=eq?'<p class="tlp-note">Ist gerade ausgerüstet.</p>':(data.can_buy?`<button type="button" class="tlp-btn big" data-equip="${K.esc(it.key)}" style="width:100%">Ausrüsten</button>`:'<p class="tlp-note">Ausrüsten geht nach dem Freischalten.</p>');
@@ -127,6 +128,8 @@ function sheet(it){
   <button type="button" class="tlp-btn ghost" data-close="1" style="width:100%">Schliessen</button></div></div>`;
  const b=layer.querySelector('[data-buy],[data-equip]')||layer.querySelector('button');if(b)b.focus();
 }
+function closeSheet(){selectedItem=null;layer.innerHTML=''}
+function sheetNotice(text){const dialog=layer.querySelector('[role="dialog"]');if(!dialog)return;const note=document.createElement('p');note.className='tlp-note';note.setAttribute('role','status');note.textContent=text;dialog.append(note);note.scrollIntoView({block:'nearest'})}
 async function loadMine(){const r=await db.rpc('get_my_kampfgeist',{p_full:true});if(r.error)throw r.error;data=r.data}
 async function loadAdmin(){const r=await db.rpc('admin_kg_overview');if(r.error)throw r.error;admin=r.data}
 async function loadSocial(){const r=await db.rpc('admin_kg_social');if(r.error)throw r.error;social=r.data}
@@ -146,17 +149,25 @@ app.addEventListener('click',async ev=>{
 layer.addEventListener('click',async ev=>{
  const pl=ev.target.closest('[data-play]');if(pl){const it=byKey(pl.dataset.play);K.playEinlauf([{look:Object.assign({},data.look,{einlauf:it}),name:myName}]);return}
  const b=ev.target.closest('[data-buy],[data-equip],[data-close]');if(!b)return;
- if(b.dataset.close&&(ev.target===b||b.tagName==='BUTTON')){layer.innerHTML='';return}
+ if(b.dataset.close&&(ev.target===b||b.tagName==='BUTTON')){closeSheet();return}
  if(busy||(!b.dataset.buy&&!b.dataset.equip))return;busy=true;b.disabled=true;
- const r=b.dataset.buy?await db.rpc('buy_kg_item',{p_item_key:b.dataset.buy}):await db.rpc('equip_kg_item',{p_slot:byKey(b.dataset.equip).category,p_item_key:b.dataset.equip});
- busy=false;
- if(r.error){layer.innerHTML='';say(r.error.message,true);return}
- const name=byKey(b.dataset.buy||b.dataset.equip).name;
- try{await loadMine();layer.innerHTML='';render();
-  if(b.dataset.buy){say('Gekauft: '+name+'. Du hast noch '+K.fmt(r.data.balance)+' Coins.');const it=byKey(b.dataset.buy);if(it)sheet(it)}else say('Ausgerüstet: '+name);
- }catch(e){say(e.message,true)}
+ const key=b.dataset.buy||b.dataset.equip,it=byKey(key),buy=!!b.dataset.buy;
+ try{
+  const r=buy?await db.rpc('buy_kg_item',{p_item_key:key}):await db.rpc('equip_kg_item',{p_slot:it.category,p_item_key:key});
+  if(r.error)throw r.error;
+  if(!r.data||buy&&(r.data.key!==key||!Number.isFinite(r.data.balance))||!buy&&!r.data.look)throw Error('Keine vollständige Bestätigung erhalten. Bitte den Shop neu laden.');
+  // The authoritative receipt remains valid when a later catalogue read fails.
+  if(buy){it.owned=true;data.wallet.balance=r.data.balance}else data.look=r.data.look;
+  let readError=null;try{await loadMine()}catch(error){readError=error}
+  render();
+  // Refresh only the detail that is still open. A delayed receipt must not reopen an old selection.
+  if(selectedItem){const current=byKey(selectedItem);if(current&&(!buy&&selectedItem===key&&!readError))closeSheet();else if(current)sheet(current);else closeSheet()}
+  const message=readError?(buy?'Kauf bestätigt.':'Ausrüstung bestätigt.')+' Die Übersicht konnte nicht aktualisiert werden. Bitte später neu laden.':buy?'Gekauft: '+it.name+'. Du hast noch '+K.fmt(r.data.balance)+' Coins.':'Ausgerüstet: '+it.name;
+  say(message,!!readError);if(readError&&selectedItem===key)sheetNotice(message);
+ }catch(e){const message=(buy?'Kauf nicht bestätigt: ':'Ausrüstung nicht bestätigt: ')+(e.message||e);say(message,true);if(selectedItem===key)sheetNotice(message)}
+ finally{busy=false;if(b.isConnected)b.disabled=false}
 });
-document.addEventListener('keydown',e=>{if(e.key==='Escape'&&layer.innerHTML)layer.innerHTML=''});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&layer.innerHTML)closeSheet()});
 app.addEventListener('submit',async ev=>{
  ev.preventDefault();const f=ev.target,btn=f.querySelector('button[type="submit"]');btn.disabled=true;let r;
  if(f.id==='rulesForm')r=await db.rpc('admin_update_kg_settings',{p_start_coins:Number(f.start.value),p_coins_per_training:Number(f.per.value)});
