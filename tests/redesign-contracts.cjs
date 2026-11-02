@@ -9,12 +9,13 @@ for(const [path,b] of Object.entries(baseline)){
  const gotIds=[...s.matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)].map(x=>x[1]);
  const gotRpc=[...new Set([...s.matchAll(/\brpc\s*\(\s*["']([^"']+)["']/gi)].map(x=>x[1]))].sort();
  // Keep every pre-existing hook in the original order. New semantic tab IDs
- // are allowed only for the five accessible guest navigation tabs.
+ // are explicitly listed below; existing hooks remain unchanged.
  const originalIds=gotIds.filter(id=>b.ids.includes(id));
  assert.deepEqual(originalIds,b.ids,`${path}: a pre-existing DOM hook changed`);
  const addedIds=gotIds.filter(id=>!b.ids.includes(id));
  const allowedAdded=path==='guest.html'
   ? ['guest-tab-overview','guest-tab-ranking','guest-tab-challenges','guest-tab-duels','guest-tab-history']
+  : path==='duels.html' ? ['inviteReview','inviteReviewTitle','inviteReviewBody','sendInvite','editInvite']
   : path==='admin.html' ? ['showArchived'] : path==='coach.html' ? ["cv2Tabs", "viewHome", "selfRatingNotice", "todayCount", "confirmedTodayCount", "cv2TasksTitle", "cv2Tasks", "cv2RecentTitle", "cv2Recent", "viewReview", "cv2ReviewTitle", "cv2PendingChips", "cv2BulkBar", "cv2BulkCount", "cv2PendingCountText", "cv2PendingMore", "viewHistory", "cv2HistoryTitle", "cv2Filters", "filterCategory", "cv2ReviewReport", "cv2ReportLoad", "cv2ReportBody", "viewBoxers", "cv2BoxersTitle", "cv2BoxerSearch", "cv2People", "cv2PeopleCount", "cv2PeopleMore", "viewGym", "cv2GymTitle", "cv2StaffEntrySlot", "viewMore", "cv2MoreTitle", "cv2Sheet", "cv2SheetTitle", "cv2SheetSub", "cv2SheetBody", "cv2SheetFoot"] : []; // Etappe 10: Hinweis auf offene Selbsteinschätzungen; Training 2.0: Trainer-Dashboard 2.0 (Bereiche, Karten, Bottom Sheet). Reihenfolge der bestehenden IDs wurde mit dem Redesign neu festgelegt (alle bestehenden IDs bleiben).
  assert.deepEqual(addedIds,allowedAdded,`${path}: unexpected additional DOM ID`);
  const originalRpc=gotRpc.filter(rpc=>b.rpc.includes(rpc));

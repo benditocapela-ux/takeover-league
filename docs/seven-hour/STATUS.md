@@ -65,6 +65,8 @@ Der erste Uhrwert war 2026-11-02 00:10:08 UTC. Der erneute explizite Abgleich li
 - LIVE-Badge in Chromium mit berechnetem CSS geprüft: feature-contrast.json.
 - Keine neuen SQL-/RLS-/Concurrency-Tests, keine Testdatenbank-Schreibtests und keine physische iPhone-/Android-Abnahme.
 
+GitHub-CI des ersten Draft-Commits fand eine veraltete DOM-ID-Liste im Designvertrag: die fünf neuen Elemente der Einladungsvorschau waren dort nicht erfasst. Die Liste wurde gezielt um genau diese Elemente ergänzt; Schutz bestehender IDs/RPCs bleibt aktiv. Lokal danach bestanden: redesign-contracts, coach-feedback-contracts, admin-registration-static, features-live-directory und release-ux-staging. Trainer-/Admin-Browserjob des ersten CI-Laufs war erfolgreich. Neue CI-Läufe müssen am korrigierten PR-Head gelesen werden, alte Ergebnisse sind keine Freigabe des neuen Commits.
+
 ### Datenbank, Flags und späterer Release
 
 Dieses Paket enthält **null neue Migrationen**. Es benötigt die vorhandenen v2-RPCs und erweitert keine Datenrechte. Die im Backend-Dokument vorgeschlagenen v3-Verträge sind nicht installiert. Es gibt keinen anwendbaren SQL-Rollback, weil keine SQL-Änderung erstellt oder angewendet wurde.
