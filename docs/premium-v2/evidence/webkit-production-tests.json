@@ -13753,49 +13753,49 @@
     "cold": [
       {
         "mode": "v1",
-        "loadDecodeFirstDrawMs": 172,
+        "loadDecodeFirstDrawMs": 245,
         "imageRequests": 8,
         "imageEncodedBytes": 1513231,
         "decodedRGBABytes": 29884416
       },
       {
         "mode": "v1",
-        "loadDecodeFirstDrawMs": 175,
+        "loadDecodeFirstDrawMs": 232,
         "imageRequests": 8,
         "imageEncodedBytes": 1513231,
         "decodedRGBABytes": 29884416
       },
       {
         "mode": "v1",
-        "loadDecodeFirstDrawMs": 167,
+        "loadDecodeFirstDrawMs": 249,
         "imageRequests": 8,
         "imageEncodedBytes": 1513231,
         "decodedRGBABytes": 29884416
       },
       {
         "mode": "v2",
-        "loadDecodeFirstDrawMs": 67.00000000000001,
+        "loadDecodeFirstDrawMs": 129,
         "imageRequests": 2,
         "imageEncodedBytes": 2024127,
         "decodedRGBABytes": 11149312
       },
       {
         "mode": "v2",
-        "loadDecodeFirstDrawMs": 72,
+        "loadDecodeFirstDrawMs": 113,
         "imageRequests": 2,
         "imageEncodedBytes": 2024127,
         "decodedRGBABytes": 11149312
       },
       {
         "mode": "v2",
-        "loadDecodeFirstDrawMs": 77,
+        "loadDecodeFirstDrawMs": 115,
         "imageRequests": 2,
         "imageEncodedBytes": 2024127,
         "decodedRGBABytes": 11149312
       },
       {
         "mode": "production-new-art",
-        "loadDecodeFirstDrawMs": 242,
+        "loadDecodeFirstDrawMs": 199,
         "imageRequests": 8,
         "imageEncodedBytes": 1291832,
         "decodedRGBABytes": 5026272,
@@ -13853,7 +13853,7 @@
       },
       {
         "mode": "production-new-art",
-        "loadDecodeFirstDrawMs": 176,
+        "loadDecodeFirstDrawMs": 184,
         "imageRequests": 8,
         "imageEncodedBytes": 1291832,
         "decodedRGBABytes": 5026272,
@@ -13883,8 +13883,8 @@
     ],
     "warm": {
       "mode": "production-new-art",
-      "p50ms": 42.000000000116415,
-      "p95ms": 53,
+      "p50ms": 59.000000000116415,
+      "p95ms": 84,
       "samples": 100,
       "warmups": 10
     },

@@ -14,6 +14,14 @@ on:
       - 'tests/period-notices-*'
       - 'tests/duel-staff-queue-*'
       - 'tests/duel-metric-*'
+      - 'tests/duel-metrics-*'
+      - 'tests/duel-receipt-*'
+      - 'tests/duel-v3-*'
+      - 'tests/studio-history-*'
+      - 'takeover-duel-metrics.js'
+      - 'takeover-duel-close.js'
+      - 'takeover-gamification.js'
+      - 'supabase/production-prep/*20261102*.sql'
       - '.github/workflows/league-21-migration-replay.yml'
   workflow_dispatch:
 permissions:
@@ -52,11 +60,29 @@ jobs:
           createdb league21_replay_duel_preview
           psql -X -d league21_replay_duel_preview -v ON_ERROR_STOP=1 -f tests/duel-points-preview-schema.sql
           psql -X -d league21_replay_duel_preview -v ON_ERROR_STOP=1 -f tests/duel-points-boundaries-transaction.sql
+          # Queue counts use a pristine fixture; concurrency deliberately commits a result.
+          psql -X -d league21_replay_duel_preview -v ON_ERROR_STOP=1 -f tests/duel-staff-queue-schema.sql -f tests/duel-staff-queue-rollback.sql
           PGDATABASE=league21_replay_duel_preview node tests/duel-points-preview-concurrency.cjs
           psql -X -d league21_replay_duel_preview -v ON_ERROR_STOP=1 -f tests/duel-points-preview-rollback.sql
           psql -X -d league21_replay_duel_preview -v ON_ERROR_STOP=1 -f tests/duel-notification-event-identity.sql
           psql -X -d league21_replay_duel_preview -v ON_ERROR_STOP=1 -f tests/duel-notification-event-identity-rollback.sql
-          psql -X -d league21_replay_duel_preview -v ON_ERROR_STOP=1 -f tests/duel-staff-queue-schema.sql -f tests/duel-staff-queue-rollback.sql
+      - name: Disabled metric contracts, real SQL-to-UI contract, receipt authority and concurrency
+        env:
+          PGDATABASE: league21_replay_duel_preview
+        run: |
+          node tests/duel-metric-test-bootstrap.cjs
+          psql -X -v ON_ERROR_STOP=1 -f supabase/migrations/20261102095422_duel_metric_contracts_disabled.sql
+          psql -X -v ON_ERROR_STOP=1 -f tests/duel-metric-contracts-transaction.sql
+          psql -X -v ON_ERROR_STOP=1 -f tests/duel-metric-ranked-transaction.sql
+          psql -X -v ON_ERROR_STOP=1 -f tests/duel-v3-points-privacy-transaction.sql
+          psql -X -v ON_ERROR_STOP=1 -f tests/duel-receipt-authority-transaction.sql
+          psql -X -v ON_ERROR_STOP=1 -f tests/duel-points-boundaries-transaction.sql
+          node tests/duel-metrics-api-contracts.cjs
+          psql -X -v ON_ERROR_STOP=1 -f tests/duel-metric-rollback.sql
+          node tests/duel-receipt-rollback-guard.cjs
+          DUEL_TEST_METRIC=training_count DUEL_TEST_REWARD=none node tests/duel-points-preview-concurrency.cjs
+          DUEL_TEST_METRIC=training_count DUEL_TEST_REWARD=ranked_v21 node tests/duel-points-preview-concurrency.cjs
+          node tests/duel-metric-rollback-guard.cjs
       - name: Archive period isolation, public visibility, pagination and read-only contract
         run: |
           createdb league21_replay_archive
@@ -69,6 +95,14 @@ jobs:
           psql -X -d league21_replay_period_close -v ON_ERROR_STOP=1 -f tests/period-notices-transaction.sql -f tests/period-notices-rollback.sql
           PGDATABASE=league21_replay_period_close node tests/period-close-concurrency.cjs
           PGDATABASE=league21_replay_period_close node tests/period-close-rollback-guard.cjs
+      - name: Own training history, complete aggregates, legacy parity and read-only rollback
+        env:
+          PGDATABASE: league21_replay_studio_history
+        run: |
+          createdb league21_replay_studio_history
+          psql -X -v ON_ERROR_STOP=1 -f tests/studio-history-schema.sql
+          node tests/studio-history-parity.cjs
+          psql -X -v ON_ERROR_STOP=1 -f tests/studio-history-rollback.sql
   league21-sql-replay:
     runs-on: ubuntu-latest
     timeout-minutes: 12

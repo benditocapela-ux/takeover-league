@@ -26,13 +26,14 @@ label{display:grid;gap:5px}small{color:var(--muted)}.error{color:var(--bad)}
 .live-reload-note{font-size:var(--fs-sm);color:var(--muted)}
 button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
 #inviteReview{border-color:var(--gold);overflow-wrap:anywhere}button{min-height:44px}@media(prefers-reduced-motion:reduce){.live-fill{transition:none}}
+#duelView{width:100%;min-width:0}#metricDuels label{min-width:0}
 </style>
 <link rel="stylesheet" href="./takeover-duel-close.css"><link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"><link rel="stylesheet" href="./takeover-app-shell.css"></head>
 <body data-tl-screen="duels">
 <main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Boxer-Duelle"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🥊</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Vergleich, Einladung und Ergebnisse</div><div class="tl-screen-title">Boxer-Duelle</div></div></div><div class="tl-screen-links"><a href="#app" class="tl-screen-primary">Duelle ansehen</a><a href="./arena.html">Arena</a></div></div>
 <p class="tl-subnav"><a href="./index.html">Liga</a><a href="./boxer.html">Mein Studio</a><a href="./coach.html">Trainerbereich</a></p>
 <h1>Boxer-Duelle</h1>
-<p id="rolloutNote">Vergleiche bestätigte Trainingspunkte. Prüfe Gegner und Laufzeit vor dem Senden deiner Einladung.</p>
+<p id="rolloutNote">Vergleiche bestätigte Trainingswerte. Prüfe Gegner, Wertung, Laufzeit und Sichtbarkeit vor dem Senden deiner Einladung.</p>
 <p id="status" role="status">Prüfe Zugriff …</p>
 <section id="auth" class="panel">
 <h2>Anmelden</h2>
@@ -52,13 +53,18 @@ button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(
 <label>Herausforderer<select name="challenger" required data-tl-choice-hint="Wähle, wer die Einladung sendet."></select></label>
 <label>Gegner<select name="opponent" required data-tl-choice-hint="Wähle einen aktiven Gegner. Du kannst dich nicht selbst herausfordern."></select></label>
 <label>Duellart<select name="metric" required><option value="points">Trainingspunkte</option><option value="jogging_km" disabled>Joggingkilometer · noch nicht freigegeben</option><option value="training_count" disabled>Trainings einer Art · noch nicht freigegeben</option></select></label>
-<p class="meta">Joggingkilometer und Trainings einer Art sind noch nicht freigegeben. Dafür müssen Wertung und Belohnung zuerst feststehen.</p>
+<p id="metricChoiceStatus" class="meta" role="status">Joggingkilometer und Trainings einer Art sind noch nicht freigegeben. Dafür müssen Wertung und Belohnung zuerst feststehen.</p>
+<label id="metricTrainingTypeField" hidden>Trainingsart<select name="training_type"><option value="">Trainingsart wählen</option></select></label>
+<label id="metricVisibilityField" hidden>Sichtbarkeit<select name="visibility"><option value="participants">Nur Teilnehmer und Trainer</option></select></label>
 <label>Laufzeit<select name="duration" required data-tl-choice-hint="Lege die Laufzeit des Duells fest."><option value="7">7 Tage</option><option value="14">14 Tage</option></select></label>
 <button type="submit">Einladung prüfen</button>
 </form>
 <p id="inviteHint" class="meta"></p>
 <section id="inviteReview" class="panel" hidden aria-labelledby="inviteReviewTitle"><h3 id="inviteReviewTitle" tabindex="-1">Einladung prüfen</h3><div id="inviteReviewBody"></div><p>Die Einladung bleibt 48 Stunden offen und wird erst mit der Annahme aktiv.</p><button type="button" id="sendInvite">Einladung ausdrücklich senden</button><button type="button" id="editInvite">Angaben ändern</button></section>
 </section>
+<label>Duellübersicht<select id="duelView" hidden><option value="legacy">Bestehende Punkte-Duelle / Trainerwarteschlange</option><option value="all">Alle Duellarten und vereinbarte Regeln</option></select></label>
+<section id="metricDuels" hidden aria-label="Vereinbarte Duelle"><h2>Alle Duellarten</h2><form id="metricDuelFilter"><label>Bereich<select id="metricDuelScope"><option value="mine">Meine Duelle</option><option value="club">Freigegebene Vereinsübersicht</option><option value="staff" hidden>Traineransicht</option></select></label><label>Status<select id="metricDuelState"><option value="all">Alle</option><option value="pending">Einladungen</option><option value="active">Aktiv</option><option value="due">Fällig</option><option value="settled">Abgeschlossen</option></select></label><label>Namen suchen<input id="metricDuelSearch" type="search" maxlength="100"></label><button type="submit">Suchen</button></form><p id="metricDuelStatus" role="status"></p><div id="metricDuelList"></div><div class="actions"><button id="metricDuelPrev" type="button" hidden>Vorherige 20</button><button id="metricDuelNext" type="button" hidden>Weitere 20</button></div></section>
+<div id="legacyDuelViews">
 <section id="liveOverviewSection" class="panel" aria-label="Live-Duellübersicht" hidden>
 <h2>Live-Duellübersicht</h2>
 <p class="meta">Nur bestätigte Trainingspunkte zählen. Offene Trainings können den Zwischenstand verändern.</p>
@@ -70,11 +76,13 @@ button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(
 <p id="duelListScope" class="meta" hidden>Punkte-Duelle für Trainer · 20 pro Seite. Abschlussbereit bedeutet: Die serverseitige Vorschau hat keine Sperre gefunden; vor einer Buchung wird erneut geprüft.</p><section id="duelQueueControls" hidden aria-label="Trainer-Duellwarteschlange"><p id="duelQueueTarget" hidden>Ein verlinktes Duell ist ausgewählt. <a href="./duels.html">Alle Duelle anzeigen</a></p><form id="duelQueueForm"><label>Status<select id="duelQueueState"><option value="all">Alle</option><option value="open">Offen</option><option value="due">Fällig</option><option value="ready">Abschlussbereit</option><option value="closed">Abgeschlossen</option></select></label><label>Boxer suchen<input id="duelQueueSearch" type="search" maxlength="80" placeholder="Name eines Beteiligten" autocomplete="off"></label><button type="submit">Suchen</button></form><p id="duelQueueCounts" role="status"></p><p id="duelQueuePage" class="meta"></p><div class="actions"><button id="duelQueuePrev" type="button" hidden>Vorherige 20</button><button id="duelQueueNext" type="button" hidden>Weitere 20</button></div></section><p id="duelTargetStatus" class="meta" role="status" hidden></p><label id="duelReviewFilter" hidden><input id="duelDueOnly" type="checkbox">Nur fällige Duelle anzeigen</label>
 <div id="duelList"></div>
 </section>
+</div>
 </section>
 <dialog id="duelClosePreview" aria-labelledby="duelCloseTitle"><h2 id="duelCloseTitle" data-close-title>Duell-Abschluss prüfen</h2><div data-close-body></div><p data-close-status role="status" aria-live="polite"></p><div class="actions"><button type="button" data-close-confirm hidden>Duell ausdrücklich abschliessen</button><button type="button" data-close-refresh>Vorschau neu laden</button><button type="button" data-close-dismiss>Schliessen</button></div></dialog>
 </main>
 <script>window.TAKEOVER_DUELS_V2_ENABLED=true;</script>
 <script src="./takeover-duel-queue.js"></script>
+<script src="./takeover-duel-metrics.js"></script>
 <script src="./takeover-duel-close.js"></script>
 <script type="module">
 import {createClient} from './takeover-client.js';
@@ -90,7 +98,8 @@ let targetHint='',reviewedInvitation=null;
 const rawTargetDuel=new URLSearchParams(location.search).get('duel');
 const targetDuel=/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(rawTargetDuel||'')?rawTargetDuel.toLowerCase():null;
 let targetDuelFocused=false,queueCursor=null,queueNext=null,queueHistory=[],queueFilterKey=null;
-const closureUI=window.TLDuelClose?.create({dialog:byId('duelClosePreview'),rpc,getActor:()=>profile,getEpoch:()=>sessionEpoch,onClosed:load});
+const metricsUI=window.TLDuelMetrics?.create({form,root:byId('metricDuels'),view:byId('duelView'),legacy:byId('legacyDuelViews'),getActor:()=>profile,getEpoch:()=>sessionEpoch,rpc,verifyActor,onChange:cancelInviteReview,onMutation:load,openClosure,targetDuel});
+const closureUI=window.TLDuelClose?.create({dialog:byId('duelClosePreview'),rpc,getActor:()=>profile,getEpoch:()=>sessionEpoch,onClosed:load,verifyActor});
 byId('duelDueOnly').checked=!targetDuel&&new URLSearchParams(location.search).get('review')==='due';
 byId('duelQueueState').value=byId('duelDueOnly').checked?'due':'all';
 byId('duelQueueForm').hidden=!!targetDuel;byId('duelQueueTarget').hidden=!targetDuel;
@@ -102,12 +111,12 @@ byId('duelQueueNext').onclick=()=>{if(!queueNext)return;queueHistory.push(queueC
 byId('duelQueuePrev').onclick=()=>{if(!queueHistory.length)return;queueCursor=queueHistory.pop();load().catch(e=>say(message(e),true))};
 function openClosure(duel){if(closureUI)closureUI.open(duel);else say('Die Abschlussvorschau konnte nicht geladen werden. Bitte die Seite neu laden. Es wurde nichts gebucht.',true)}
 function cancelInviteReview(){reviewedInvitation=null;byId('inviteReview').hidden=true}
-function invitationSignature(){return JSON.stringify(['challenger','opponent','duration','metric'].map(key=>form.elements[key].value))}
+function invitationSignature(){return JSON.stringify(['challenger','opponent','duration','metric','training_type','visibility'].map(key=>form.elements[key].value))}
 const say=(text,isError=false)=>{status.textContent=text;status.className=isError?'error':''};
 const message=e=>{const t=String(e?.message||e||'Unbekannter Fehler');if(/jwt expired|invalid jwt/i.test(t))return 'Sitzung abgelaufen. Bitte erneut anmelden.';if(/failed to fetch|networkerror/i.test(t))return 'Netzwerkfehler. Bitte Internetverbindung prüfen.';return t};
 async function rpc(name,args={}){const result=await db.rpc(name,args);if(result.error)throw result.error;return result.data}
 function reset(){
- sessionEpoch++;loadRequestId++;profile=null;eligible=[];duels=[];cancelInviteReview();closureUI?.invalidate();targetDuelFocused=false;queueCursor=null;queueNext=null;queueHistory=[];byId('duelQueueCounts').textContent='';byId('duelQueueControls').hidden=true;byId('duelTargetStatus').hidden=true;byId('duelTargetStatus').textContent='';
+ sessionEpoch++;loadRequestId++;profile=null;eligible=[];duels=[];cancelInviteReview();metricsUI?.invalidate();closureUI?.invalidate();targetDuelFocused=false;queueCursor=null;queueNext=null;queueHistory=[];byId('duelQueueCounts').textContent='';byId('duelQueueControls').hidden=true;byId('duelTargetStatus').hidden=true;byId('duelTargetStatus').textContent='';
  liveScoreMap.clear();liveScoreErrors.clear();lastLiveUpdate=null;liveLoading=false;
  panel.hidden=true;auth.hidden=false;list.replaceChildren();
  byId('liveOverviewSection').hidden=true;byId('liveOverviewList').replaceChildren();
@@ -279,7 +288,8 @@ function render(){
    const verdictLine=el('p',verdict);verdictLine.className='tl-duel-verdict';card.append(verdictLine);
    appendRivalry(card,duel);
   }
-  if(duel.status==='pending'&&!expired&&profile.role==='boxer'&&duel.opponent_id===profile.id){
+  if(duel.status==='pending'&&!expired&&profile.role==='boxer'&&duel.opponent_id===profile.id&&metricsUI?.available()){const link=el('a','Vereinbarung vor Annahme prüfen');link.href='./duels.html?duel='+encodeURIComponent(duel.id);card.append(link)}
+  if(duel.status==='pending'&&!expired&&profile.role==='boxer'&&duel.opponent_id===profile.id&&!metricsUI?.available()){
    const actions=document.createElement('div');actions.className='actions';
    for(const [label,accept] of [['Annehmen',true],['Ablehnen',false]]){
     const button=el('button',label);button.type='button';if(accept)button.classList.add('tl-primary');
@@ -305,6 +315,7 @@ function render(){
 }
 async function load(){
  const epoch=sessionEpoch,requestId=++loadRequestId;
+ if(metricsUI?.available()&&byId('duelView').value==='all'){try{const rows=await rpc('duel_v2_eligible_boxers');if(epoch!==sessionEpoch||requestId!==loadRequestId||!profile)return;eligible=Array.isArray(rows)?rows:[];populate();await metricsUI.load();if(epoch===sessionEpoch)say('Duellübersicht aktualisiert.')}catch(error){if(epoch===sessionEpoch)say(message(error),true)}return}
  const staff=['coach','admin'].includes(profile?.role);
  const key=JSON.stringify([byId('duelQueueState').value,byId('duelQueueSearch').value.trim(),targetDuel]);if(key!==queueFilterKey){queueCursor=null;queueNext=null;queueHistory=[];queueFilterKey=key}
  const queueArgs={p_state:targetDuel?'all':byId('duelQueueState').value,p_limit:20,p_before:queueCursor?.before||null,p_before_id:queueCursor?.before_id||null,p_search:targetDuel?null:byId('duelQueueSearch').value.trim(),p_duel_id:targetDuel||null};
@@ -351,16 +362,17 @@ async function load(){
  }
  say(duels.length+' Duelle geladen.'+(liveScoreErrors.size?' Einige Live-Zwischenstände sind noch nicht verfügbar.':''));
 }
-async function mutate(name,args){
+async function verifyActor(){const epoch=sessionEpoch,actor=profile;if(!actor)return false;const {data,error}=await db.auth.getUser();if(epoch!==sessionEpoch||profile!==actor)return false;if(error||data?.user?.id!==actor.auth_user_id){reset();say('Deine Sitzung hat sich geändert. Bitte erneut anmelden.',true);return false}return true}
+async function mutate(name,args,stillApproved=()=>true){
  if(busy)return;busy=true;const epoch=sessionEpoch;
- try{say('Änderung wird gespeichert …');await rpc(name,args);if(epoch!==sessionEpoch||!profile)return;await load()}
- catch(e){if(epoch===sessionEpoch)say(message(e),true)}finally{busy=false}
+ try{if(!await verifyActor()||epoch!==sessionEpoch||!stillApproved())return;say('Änderung wird gespeichert …');await rpc(name,args);if(epoch!==sessionEpoch||!profile)return;await load()}
+ catch(e){if(epoch===sessionEpoch){if(e?.code==='40001'){cancelInviteReview();await metricsUI?.loadOptions();say('Die Duellregel hat sich geändert. Bitte Auswahl und Belohnung erneut prüfen und eine neue Einladung freigeben.',true)}else say(message(e),true)}}finally{busy=false}
 }
 async function init(){
  const epoch=++sessionEpoch;
  if(!window.TAKEOVER_DUELS_V2_ENABLED){reset();auth.hidden=true;say('Boxer-Duelle werden vorbereitet. Es werden keine Punkte verändert.');return}
  try{
-  if(!db){db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');db.auth.onAuthStateChange?.(event=>{if(event==='SIGNED_OUT'){reset();say('Sitzung beendet. Bitte anmelden.')}});}
+  if(!db){db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');db.auth.onAuthStateChange?.(event=>{if(event==='SIGNED_OUT'||profile&&['SIGNED_IN','USER_UPDATED'].includes(event)){reset();say('Sitzung geändert. Bitte neu anmelden oder die Seite neu laden.')}});}
   const {data:{user},error}=await db.auth.getUser();
   if(epoch!==sessionEpoch)return;
   if(error&&error.name!=='AuthSessionMissingError'&&!/auth session missing/i.test(error.message||''))throw error;
@@ -369,21 +381,22 @@ async function init(){
   if(epoch!==sessionEpoch)return;
   if(p.error)throw p.error;
   if(!p.data?.is_active||!['boxer','coach','admin'].includes(p.data.role)){reset();throw Error('Kein aktives Boxer- oder Trainerprofil vorhanden.')}
-  profile=p.data;auth.hidden=true;panel.hidden=false;
-  await load();
+  profile={...p.data,auth_user_id:user.id};auth.hidden=true;panel.hidden=false;
+  await metricsUI?.loadOptions();if(epoch!==sessionEpoch)return;await load();
  }catch(e){if(epoch!==sessionEpoch)return;if(!profile)reset();say(message(e),true)}
 }
 form.elements.challenger.addEventListener('change',populate);
 form.elements.opponent.addEventListener('change',()=>{const usable=!!form.elements.challenger.value&&!!form.elements.opponent.value;form.querySelector('button[type=submit]').disabled=!usable;if(usable)byId('inviteHint').textContent='Der Gegner muss die Einladung innerhalb von 48 Stunden bestätigen.'});
-for(const name of ['challenger','opponent','duration','metric'])form.elements[name].addEventListener('change',cancelInviteReview);
+for(const name of ['challenger','opponent','duration','metric','training_type','visibility'])form.elements[name].addEventListener('change',cancelInviteReview);
 form.onsubmit=e=>{e.preventDefault();if(busy||!profile)return;
  const challenger=form.elements.challenger.value,opponent=form.elements.opponent.value,days=Number(form.elements.duration.value);
- if(form.elements.metric.value!=='points'){say('Diese Duellart ist noch nicht freigegeben.',true);return}
+ if(!metricsUI?.available()&&form.elements.metric.value!=='points'){say('Diese Duellart ist noch nicht freigegeben.',true);return}
  if(!challenger||!opponent||challenger===opponent||![7,14].includes(days)||!eligible.some(x=>x.id===challenger)||!eligible.some(x=>x.id===opponent)){say('Wähle zwei unterschiedliche aktive Boxer und 7 oder 14 Tage.',true);return}
  const challengerName=eligible.find(x=>x.id===challenger).display_name,opponentName=eligible.find(x=>x.id===opponent).display_name;
- reviewedInvitation={args:{p_challenger:challenger,p_opponent:opponent,p_duration_days:days},epoch:sessionEpoch,signature:invitationSignature()};
+ let contract;try{contract=metricsUI?.prepare(challenger,opponent,days)}catch(error){say(message(error),true);return}
+ reviewedInvitation={rpc:contract?.rpc||'duel_v2_invite',args:contract?.args||{p_challenger:challenger,p_opponent:opponent,p_duration_days:days},epoch:sessionEpoch,signature:invitationSignature()};
  const body=byId('inviteReviewBody');body.replaceChildren();
- for(const text of [challengerName+' fordert '+opponentName+' heraus.','Wertung: bestätigte Trainingspunkte.','Laufzeit: '+days+' Tage ab Annahme. Es gilt die bestehende Punkte-Duellregel.','Sichtbarkeit: Beteiligte und Trainer.','Belohnung: Die bestehende serverseitige Duellregel bleibt unverändert.'])body.append(el('p',text));
+ const lines=contract?.lines||['Wertung: bestätigte Trainingspunkte.','Laufzeit: '+days+' Tage ab Annahme. Es gilt die bestehende Punkte-Duellregel.','Sichtbarkeit: Beteiligte und Trainer.','Belohnung: Die bestehende serverseitige Duellregel bleibt unverändert.'];for(const text of [challengerName+' fordert '+opponentName+' heraus.',...lines])body.append(el('p',text));
  byId('inviteReview').hidden=false;say('Einladung bereit zur Prüfung. Noch nicht gesendet.');byId('inviteReviewTitle').focus();
 };
 byId('editInvite').onclick=()=>{cancelInviteReview();form.elements.opponent.focus()};
@@ -392,7 +405,7 @@ byId('sendInvite').onclick=async()=>{
  if(!review||busy||!profile||review.epoch!==sessionEpoch)return;
  if(review.signature!==invitationSignature()){cancelInviteReview();say('Angaben wurden geändert. Bitte Einladung erneut prüfen.',true);return}
  byId('sendInvite').disabled=true;
- try{await mutate('duel_v2_invite',review.args)}finally{byId('sendInvite').disabled=false;cancelInviteReview()}
+ try{await mutate(review.rpc,review.args,()=>reviewedInvitation===review&&review.signature===invitationSignature())}finally{byId('sendInvite').disabled=false;cancelInviteReview()}
 };
 byId('refresh').onclick=async()=>{if(busy)return;try{say('Aktualisiere Duelle …');await load()}catch(e){say(message(e),true)}};
 byId('logout').onclick=async()=>{reset();try{const {error}=await db.auth.signOut();if(error)throw error;say('Abgemeldet.')}catch(e){say(message(e),true)}};

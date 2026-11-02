@@ -24,6 +24,7 @@ jobs:
       - run: npm install --no-save --package-lock=false jsdom@26.1.0
       - run: node tests/release-static-contracts.cjs
       - run: node tests/duel-close-ui.cjs
+      - run: node tests/duel-metrics-ui.cjs
       - run: node tests/coach-competition-status.cjs
       - run: node tests/period-close-races.cjs
       - run: node tests/inbox-races.cjs
@@ -203,6 +204,8 @@ jobs:
           node tests/period-close-browser.cjs
           node tests/period-notices-browser.cjs
           node tests/inbox-browser.cjs
+          node tests/studio-history-browser.cjs
+          node tests/duel-metrics-browser.cjs
           node tests/duel-queue-browser.cjs
           TL_BROWSER=webkit node tests/duel-queue-browser.cjs
           node tests/duel-close-browser.cjs

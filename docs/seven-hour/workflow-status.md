@@ -67,12 +67,21 @@ Screenshots: `output/continuation/duel-close/{chromium,webkit}-{390,1280}-{previ
 
 Der unabhängige Review identifizierte eine mögliche Übernahme einer alten Zustimmung während einer ausstehenden Benutzerprüfung. Der Hauptagent hat Benutzer/Periode vor dem Await eingefroren und die Anfrage-Epoche unmittelbar vor der schreibenden RPC erneut geprüft. `tests/period-close-races.cjs` bestätigt Schliessen/Escape, gleichen oder anderen Staff nach Periodenwechsel, alte Vorschau und normalen expliziten Abschluss. SQL-/Archivimplementierung bleibt Eigentum des separaten Hauptpakets.
 
+
+### Alle drei Duellarten über denselben Vertragsablauf
+
+- `takeover-duel-metrics.js` ergänzt Punkte, Joggingkilometer und eine genaue Trainingsart. Die neue Serverkonfiguration bleibt deaktiviert/unvollständig; die Oberfläche aktiviert nichts.
+- Einladungsprüfung enthält Typ, Zeitregel, Belohnung und Sichtbarkeit. Die gespeicherte Regelrevision und Typrevision werden beim Senden unter Serversperren geprüft. Eine Änderung benötigt neue Zustimmung; Feldwechsel während der Benutzerprüfung verhindert den alten Aufruf.
+- Teilnehmer-/Traineransicht mit echten 20er-Seiten, ausdrückliche Vereinsansicht nur für freigegebene angenommene Verträge, autorisierte Einzelabfrage für alte Benachrichtigungslinks. Bestehende Punktewarteschlange bleibt separat nutzbar.
+- Empfänger bestätigen die gespeicherte Vereinbarung ausdrücklich. Abschlussdialog zeigt Dezimalkilometer oder ganze Trainingszahlen und unterscheidet null Prämie ohne Transaktion von rangabhängiger Regel mit zwei tatsächlichen Belegen.
+- Tatsächliches Chromium/WebKit sowie echte SQL-API-JSON-Validierung gegen PostgreSQL 17.11 bestanden. Details, genaue CI-Befehle und Grenzen in [duel-metrics-ui.md](duel-metrics-ui.md).
+
 ## Bewusste Grenzen und nächster Auftrag
 
-1. Die neue Trainerwarteschlange deckt Punkte-Duelle vollständig ab. Neue Metriken werden bewusst ausgeschlossen; ihr gesonderter v3-Vertrag wird separat geprüft.
-2. Keine Kilometer-/Trainingsart-Duelle, solange Belohnungs-/Zeit-/Sichtbarkeitsregeln nicht ausdrücklich freigegeben sind.
-3. Keine neue Vereinsansicht oder Erweiterung privater Duellsichtbarkeit.
-4. Keine neuen Coach-Rechte für Monats-/Saisonabschluss in diesem UI-Paket. Bestehende League-Manager-Berechtigungen bleiben bestehen. Periodenarchiv ist ein separater Arbeitsbereich des Hauptagenten.
+1. Die Punkte-Trainerwarteschlange behält ihren eigenen Zähl-/Bereitschaftsvertrag. Alle drei Duellarten sind zusätzlich über die fertig implementierte und geprüfte v3-Ansicht erreichbar; neue Metriken werden nicht in den alten Punkte-Zähler eingemischt.
+2. Produktive Kilometer-/Trainingsart-Einladungen bleiben deaktiviert, bis genaue Trainingsart, Belohnungszuordnung und Freigabe ausdrücklich konfiguriert sind. Die vollständigen Abläufe wurden mit isolierten Testkonfigurationen geprüft.
+3. Die geprüfte Vereinsansicht zeigt nur angenommene, ausdrücklich vereinsöffentliche v3-Verträge mit aktuell sichtbaren Beteiligten. Private Altduelle bleiben privat; keine anonyme Freigabe.
+4. Der enge Coach-/Admin-Weg für Monats-/Saisonabschlüsse ist im separaten Periodenpaket implementiert und geprüft. Aktivierung und weitergehende League-Manager-Rechte bleiben begrenzt; Nachweise stehen in archive-and-closures.md.
 5. Die Backend-Migration bleibt ausstehend für eine spätere ausdrücklich freigegebene Auslieferung. Auf einer Datenbank ohne neue RPCs ist die neue Abschlussaktion absichtlich gesperrt.
 
-Die serverseitige Warteschlange und die genaue alte Ergebnisabfrage sind jetzt implementiert. Einzelheiten und SQL-Nachweise stehen in duel-queue.md. Periodenabschluss bleibt ein separater Arbeitsbereich des Hauptagenten. Neue Metriken erst nach geprüftem Vertrag und konkreter Belohnungsfreigabe anschliessen.
+Die serverseitige Warteschlange und die genaue alte Ergebnisabfrage sind jetzt implementiert. Einzelheiten und SQL-Nachweise stehen in duel-queue.md. Periodenabschluss bleibt ein separater Arbeitsbereich des Hauptagenten. Der geprüfte v3-Vertrag ist nun in der Oberfläche angeschlossen; die produktive Metrikfreigabe und Belohnungswahl bleiben ausdrücklich separat.

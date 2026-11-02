@@ -35,6 +35,28 @@ function match(row,f){const [op,k,v]=f;const x=row[k];
  if(op==='eq')return String(x)===String(v);if(op==='neq')return String(x)!==String(v);if(op==='in')return v.map(String).includes(String(x));
  if(op==='gte')return x>=v;if(op==='lte')return x<=v;if(op==='is')return v===null?x==null:x===v;return true}
 function table(name){const d=DB();return Array.isArray(d[name])?d[name]:(cfg().tables&&cfg().tables[name])||[]}
+async function studioRPC(name,args){
+ const me=table('profiles').find(p=>p.auth_user_id===read()?.user?.id&&p.is_active&&!p.archived_at);
+ if(!me)return {data:null,error:{code:'42501',message:'Active own profile required'}};
+ const rows=table('training_submissions').filter(r=>r.boxer_id===me.id),types=table('training_types');
+ if(name==='get_my_studio_training_history'){
+  const status=args.p_status||'all';let filtered=rows.filter(r=>status==='all'||r.status===status);
+  filtered.sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at))||String(b.id).localeCompare(String(a.id)));
+  if(args.p_before)filtered=filtered.filter(r=>r.created_at<args.p_before||r.created_at===args.p_before&&r.id<args.p_before_id);
+  const items=filtered.slice(0,20).map(r=>({...r,training_type_name:types.find(t=>t.id===r.training_type_id)?.name})),last=items.at(-1);
+  return {data:{profile_id:me.id,status,items,next_cursor:filtered.length>20?{before:last.created_at,before_id:last.id}:null},error:null};
+ }
+ const m=await import(new URL('./takeover-gamification.js',location.href).href),names=new Map(types.map(t=>[String(t.id),t.name]));
+ const today=new Date().toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'}),shift=(key,n)=>{const d=new Date(key+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+n);return d.toISOString().slice(0,10)},approved=rows.filter(r=>r.status==='approved');
+ const days=new Map();for(const r of approved)days.set(r.training_date,(days.get(r.training_date)||0)+1);
+ let cursor=days.has(today)?today:shift(today,-1),streak=0;while(days.has(cursor)&&streak<10000){streak++;cursor=shift(cursor,-1)}
+ const weekly=m.weeklyState(rows,names,new Date(today+'T12:00:00')),per=types.map(t=>{const own=approved.filter(r=>r.training_type_id===t.id);return {id:t.id,name:t.name,count:own.length,km:own.reduce((n,r)=>n+(Number(r.jogging_km)||0),0),minutes:own.reduce((n,r)=>n+(Number(r.technique_minutes)||0),0)}}).filter(t=>t.count);
+ return {data:{profile_id:me.id,today,totals:{total:rows.length,approved:approved.length,pending:rows.filter(r=>r.status==='pending').length,rejected:rows.filter(r=>r.status==='rejected').length},
+  progress:m.achievementProgress(rows,names),weekly:{done:weekly.quests[0].done,pending:weekly.quests[0].waiting,boxing_done:weekly.quests[1].done,boxing_pending:weekly.quests[1].waiting,engine_done:weekly.quests[2].done,engine_pending:weekly.quests[2].waiting,streak:weekly.streak},
+  day_streak:streak,last7:approved.filter(r=>r.training_date<=today&&r.training_date>=shift(today,-6)).length,last30:approved.filter(r=>r.training_date<=today&&r.training_date>=shift(today,-29)).length,
+  days:[...days].filter(([day])=>day<=today&&day>=shift(today,-41)).map(([date,count])=>({date,count})),types:per,
+  stats:{km:per.filter(t=>/jogg|lauf|running/i.test(t.name)).reduce((n,t)=>n+t.km,0),sprints:per.filter(t=>/sprint/i.test(t.name)).reduce((n,t)=>n+t.count,0),technique:per.filter(t=>/technik/i.test(t.name)).reduce((n,t)=>n+t.minutes,0)}},error:null};
+}
 function query(name){
  const st={filters:[],one:false,order:[],offset:0,limit:null,op:'select',payload:null,opts:null,selectOpts:null};
  const b={select(columns,options){st.selectOpts=options||null;return b},eq(k,v){st.filters.push(['eq',k,v]);return b},neq(k,v){st.filters.push(['neq',k,v]);return b},in(k,v){st.filters.push(['in',k,v]);return b},
@@ -85,7 +107,7 @@ export function createClient(){
  };
  return {auth,from:query,
   async rpc(name,args){log('rpc:'+name,args||null);const h=cfg().rpc&&cfg().rpc[name];
-   if(typeof h==='function')return h(args||{});if(h!==undefined)return {data:h,error:null};return {data:null,error:{code:'PGRST202',message:'Function not found: '+name}}},
+   if(typeof h==='function')return h(args||{});if(h!==undefined)return {data:h,error:null};if(['get_my_studio_training_history','get_my_studio_training_summary'].includes(name))return studioRPC(name,args||{});return {data:null,error:{code:'PGRST202',message:'Function not found: '+name}}},
   storage:{from:()=>({upload:async()=>({error:null}),getPublicUrl:()=>({data:{publicUrl:''}})})},
   channel(){const c={on(){return c},subscribe(){return c}};return c},removeChannel(){},removeAllChannels(){}};
 }`;

@@ -225,7 +225,7 @@ function section(id,heading,intro){
  return {section:s,body};
 }
 
-export async function mountGamification({db,profile,types,getHistory}){
+export async function mountGamification({db,profile,types,getHistory,getSummary}){
  if(!db||!profile||document.getElementById('weeklyQuestsSection'))return null;
  const typeNames=new Map((types||[]).map(t=>[String(t.id),t.name]));
  const pulse=document.getElementById('studioPulseSection');
@@ -263,8 +263,12 @@ export async function mountGamification({db,profile,types,getHistory}){
 
  function renderAll(){
   const rows=(typeof getHistory==='function'?getHistory():[])||[];
-  questCard(quests.body,weeklyState(rows,typeNames));
-  const progress=achievementProgress(rows,typeNames);
+  const summary=typeof getSummary==='function'?getSummary():undefined;
+  if(summary===null){quests.body.textContent='Trainingsfortschritt derzeit nicht verfügbar.';goals.body.replaceChildren();if(grid){grid.root.replaceChildren();grid.status.textContent='Trainingsfortschritt derzeit nicht verfügbar.'}return}
+  const weekly=weeklyState(rows,typeNames);
+  if(summary){const w=summary.weekly;weekly.quests[0].done=w.done;weekly.quests[0].waiting=w.pending;weekly.quests[1].done=w.boxing_done;weekly.quests[1].waiting=w.boxing_pending;weekly.quests[2].done=w.engine_done;weekly.quests[2].waiting=w.engine_pending;weekly.streak=w.streak;weekly.currentMet=w.done>=WEEK_GOAL;weekly.missing=Math.max(0,WEEK_GOAL-w.done);weekly.pending=w.pending}
+  questCard(quests.body,weekly);
+  const progress=summary?summary.progress:achievementProgress(rows,typeNames);
   if(achievementsOn&&definitions.length){
    nextGoalsList(goals.body,nextAchievements(progress,owned,definitions));
    if(grid){achievementGrid(grid.root,progress,owned,definitions);grid.status.textContent=owned.size+' / '+definitions.length+' Achievements freigeschaltet'}
@@ -297,5 +301,5 @@ export async function mountGamification({db,profile,types,getHistory}){
  }catch{}
 
  if(location.hash==='#achievementsV2'){const t=document.getElementById('achievementsV2');if(t){window.dispatchEvent(new HashChangeEvent('hashchange'));t.scrollIntoView({block:'start'})}}
- return {refresh:renderAll};
+ return {refresh:renderAll,destroy(){document.removeEventListener('takeover:history-loaded',renderAll);for(const section of [quests.section,rival.section,goals.section,document.getElementById('achievementsV2')])section?.remove()}};
 }

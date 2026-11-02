@@ -65,3 +65,9 @@ Die Isolationsprüfung bei 100/200 % widerlegt den anfänglichen Verdacht alter 
 Nächster Kunstauftrag: kurze Shirt-Ärmel aus derselben Materialquelle mit eigenen Schulter-/Cuff-Ankern, passendem Armloch und klarer Torso-/Ärmel-Überlappung registrieren; Flex zuerst, danach Jab/Sieg/Ansage. Erst nach sauberer 100-/200-%-Abnahme übernehmen und die Variantenberichte neu erzeugen. Shop-Gesamtprüfung und vollständige künstlerische Abnahme sämtlicher Outfitkombinationen bleiben offen.
 
 Der erste ungeprüfte Prototyp wurde am ursprünglichen Zeitlimit zurückgenommen. Das hier dokumentierte Podium wurde erst nach dem ausdrücklichen Weiterauftrag wieder aufgenommen und geprüft. Kein Merge, Deployment, Produktionsschreibzugriff oder neu generiertes Artwork.
+
+## Fortsetzung: vollständige Studio-Historie und CI-Provenienz
+
+Der vollständige, unabhängig geprüfte Studio-Lesepfad ist in `studio-history.md` dokumentiert: 20 Trainings pro Serverabruf, vollständige Aggregate, tatsächliche PostgreSQL- und Browserprüfungen ohne Produktionsschreibzugriff. Die Inbox-Wrapper bleiben unverändert.
+
+Der CI-Befund zum Effekte-Manifest war ein veralteter Quellhash nach der transparenten Podiumszene. Der Manifesthash wurde aus dem tatsächlichen Modul mit der bestehenden kanonischen LF-Methode berechnet; `premium-v2-effects.cjs` erzeugte anschließend neue echte Chromium-/WebKit-Berichte (40 Szenen-/Aura-Kombinationen, vier Augeneffekte, exakte Kachelgleichheit). Die Assertions bleiben unverändert. Zusätzlich werden Textquellhashes der Completion-Varianten auf beiden Plattformen kanonisch mit LF berechnet; PNG-Hashes bleiben bytegenau. Die Variantenberichte entstehen durch erneutes Zeichnen, nicht durch manuelles Umschreiben von Prüfergebnissen.

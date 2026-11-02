@@ -11,3 +11,5 @@ Echte Chromium-Aufnahmen mit synthetischen Konten/RPC-Antworten und tatsächlich
 | Flex-Shirt-Anatomie | [100 %](flex-shirt-before-100.png), [200 %](flex-shirt-before-200.png) | **Noch nicht korrigiert.** [Isolierter Torso bei 200 %](flex-shirt-torso-200.png) zeigt: Die falschen Schulterpolster kommen aus der separaten Ärmelkomponente. |
 
 Die vorgeschlagenen Ärmelversuche wurden nicht übernommen. Es gibt dafür kein freigegebenes Nachher-Bild. Namen, Punkte und Platzierungen auf den Podien werden aus Daten gerendert und sind nicht ins Artwork eingebrannt.
+
+Weitere echte Chromium-Aufnahmen: [Metrischer Abschluss ohne Prämie](metric-close-mobile.png), [gefilterte Trainingshistorie mit vollständigen Gesamtzahlen](studio-history-mobile.png). Synthetische Testdaten, keine Produktionsauszahlung.

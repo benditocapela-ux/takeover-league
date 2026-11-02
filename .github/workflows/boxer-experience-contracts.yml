@@ -24,6 +24,7 @@ on:
       - 'tests/takeover3-contracts.cjs'
       - 'tests/takeover3-browser.cjs'
       - 'tests/takeover3-harness.cjs'
+      - 'tests/training-success-doubletap-browser.cjs'
       - 'tests/boxer-experience-contract.cjs'
       - 'tests/boxer-experience-browser.cjs'
       - '.github/workflows/boxer-experience-contracts.yml'
@@ -58,6 +59,8 @@ jobs:
         run: SHOTS=boxer-experience-screenshots/anime node tests/anime-everywhere-browser.cjs
       - name: Takeover 3.0 Benutzerwege (Konto, Training, Navigation; Chromium + WebKit; 320–1366 px)
         run: TAKEOVER3_SHOTS=boxer-experience-screenshots/takeover3 node tests/takeover3-browser.cjs
+      - name: Fast training response preserves success view after double tap
+        run: node tests/training-success-doubletap-browser.cjs
       - uses: actions/upload-artifact@v4
         if: always()
         with:
