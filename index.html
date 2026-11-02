@@ -170,7 +170,7 @@ loadLevels();
   e.preventDefault();
   const fallback='./login.html';
   try{
-   const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+   const {createClient}=await import('./takeover-client.js');
    const client=createClient(SUPABASE_URL,SUPABASE_PUBLIC_KEY);
    const {data:{user},error}=await client.auth.getUser();
    if(error||!user){location.href=fallback;return}

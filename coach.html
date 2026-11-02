@@ -80,7 +80,7 @@
 <dialog id="coachBoxerQuick" aria-labelledby="coachBoxerQuickTitle"><h2 id="coachBoxerQuickTitle">Boxer-Schnellansicht</h2><div id="coachBoxerQuickBody" aria-live="polite"></div><div class="actions"><button type="button" id="closeCoachQuick">Schliessen</button></div></dialog>
 <dialog id="cv2Sheet" class="cv2-sheet" aria-labelledby="cv2SheetTitle"><div class="cv2-sheet-inner"><div class="cv2-sheet-head"><div><h2 id="cv2SheetTitle">Training bearbeiten</h2><p id="cv2SheetSub"></p></div><button type="button" class="cv2-btn-sec x" data-close aria-label="Schliessen">✕</button></div><div class="cv2-sheet-body" id="cv2SheetBody"></div><div class="cv2-sheet-foot" id="cv2SheetFoot"></div></div></dialog>
 </main><script type="module">
-import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import {createClient} from './takeover-client.js';
 const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
 const $=id=>document.getElementById(id);const fail=m=>{$('error').textContent=m;$('content').classList.add('hidden');$('cv2Tabs').hidden=true};
 const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n};
@@ -146,7 +146,7 @@ function renderHome(){
  if(summary&&summary.pending_conflicts>0)task(summary.pending_conflicts+' Meldung'+(summary.pending_conflicts===1?'':'en')+' mit Hinweis (z. B. Gym-Check-in am selben Tag) – bitte einzeln prüfen.',()=>go('review',{focus:true}),'Ansehen',true);
  if(summary&&summary.open_gym_sessions>0)task(summary.open_gym_sessions+' Gym-Einheit'+(summary.open_gym_sessions===1?' läuft':'en laufen')+' heute noch.',()=>go('gym',{focus:true}),'Gym');
  if(v2Cfg&&v2Cfg.preview)task('Vorschau: «Training 2.0» (Pflicht-/Ergänzungstraining) ist noch nicht freigeschaltet. Bestätigungen buchen wie bisher nach Trainingsart.',null,null,true);
- if(!tasks.children.length)task('Alles erledigt – keine offenen Aufgaben. 👍');
+ if(!tasks.children.length)task('Keine offenen Trainingsaufgaben. Wettkämpfe und Abschlüsse bitte separat prüfen.');
  const rec=$('cv2Recent');rec.replaceChildren();
  const list=summary?.recent_confirmed||[];
  if(!list.length){rec.append(el('li','','Noch keine bestätigten Trainings.'))}

@@ -2,7 +2,7 @@
 // Chromium UI integration only: simulated Supabase sessions and RPC payloads,
 // no external authentication and no writes to production.
 const assert=require('node:assert/strict');
-const {chromium}=require('playwright');
+const {chromium,webkit}=require('playwright');
 const fs=require('node:fs'),http=require('node:http'),path=require('node:path');
 const root=process.cwd();
 const server=http.createServer((req,res)=>{
@@ -41,7 +41,7 @@ function setupFixture(){
   [d2]:{challenger_score:100,opponent_score:110,pending:2,status:'awaiting_reviews',provisional:true},
   [d4]:{challenger_score:0,opponent_score:0,pending:0,status:'active',provisional:true}
  };
- const clientState={scenario:'ok',calls:[],accepted:0};
+ const clientState={scenario:'ok',calls:[],accepted:0,invited:0};
  window.__liveDuelsState=clientState;
  const profiles=[{id:challenger,auth_user_id:'abcd0000-0000-4000-8000-000000000001',role:'boxer',is_active:true}];
  window.__liveDuelsSupabase={
@@ -65,6 +65,7 @@ function setupFixture(){
     if(clientState.scenario==='malformed')return {data:{...scores[args.p_duel_id],challenger_score:-1},error:null};
     return {data:scores[args.p_duel_id]||null,error:null};
    }
+   if(name==='duel_v2_invite'){clientState.invited++;return {data:'new-duel-id',error:null};}
    if(name==='duel_v2_respond'){
     clientState.accepted++;
     duels=duels.map(x=>x.id===args.p_duel_id?{...x,status:'active',accepted_at:next(-60000),ends_at:next(86400000*7)}:x);
@@ -77,7 +78,8 @@ function setupFixture(){
 async function main(){
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
  const base='http://127.0.0.1:'+server.address().port;
- const browser=await chromium.launch({headless:true,args:['--no-sandbox']});
+ const engine=process.env.TL_BROWSER==='webkit'?webkit:chromium;
+ const browser=await engine.launch({headless:true,...(engine===chromium?{args:['--no-sandbox']}:{} )});
  try{
   for(const width of [375,1280]){
    const context=await browser.newContext({viewport:{width,height:850},hasTouch:width===375,isMobile:width===375});
@@ -99,6 +101,28 @@ async function main(){
     assert.equal(await page.locator('#invite select[name="duration"]').inputValue(),'14','Duration card must update the existing select value');
     await page.locator('#invite label:has(select[name="duration"]) + .tl-choice-field .tl-choice-card[data-value="7"]').click();
     assert.equal(await page.locator('#invite select[name="duration"]').inputValue(),'7','Duration can be changed back using the card');
+    assert.equal(await page.evaluate(()=>window.__liveDuelsState.invited),0,'opponent and duration clicks must not send');
+    await page.locator('#invite button[type="submit"]').click();
+    await page.locator('#inviteReview').waitFor({state:'visible'});
+    assert.equal(await page.evaluate(()=>window.__liveDuelsState.invited),0,'review is read-only');
+    assert.match(await page.locator('#inviteReviewBody').innerText(),/Boxer Alpha fordert Boxer Beta/);
+    assert.match(await page.locator('#inviteReviewBody').innerText(),/7 Tage/);
+    // Bypass the select change event: the send guard still must reject an unreviewed rule.
+    await page.locator('#invite select[name="duration"]').evaluate(n=>{n.value='14'});
+    await page.locator('#sendInvite').click();
+    assert.equal(await page.evaluate(()=>window.__liveDuelsState.invited),0);
+    await page.locator('#inviteReview').waitFor({state:'hidden'});
+    await page.locator('#invite label:has(select[name="duration"]) + .tl-choice-field .tl-choice-card[data-value="14"]').click();
+    await page.locator('#invite button[type="submit"]').click();
+    assert.match(await page.locator('#inviteReviewBody').innerText(),/14 Tage/);
+    assert.equal(await page.locator('#invite select[name="metric"] option:disabled').count(),2,'unsupported metrics remain disabled');
+    const evidence=path.join(root,'output','seven-hour','duel-review');fs.mkdirSync(evidence,{recursive:true});
+    await page.screenshot({path:path.join(evidence,(process.env.TL_BROWSER||'chromium')+'-'+width+'.png'),fullPage:true});
+    await page.locator('#sendInvite').click();
+    await page.waitForFunction(()=>window.__liveDuelsState.invited===1);
+    const sent=await page.evaluate(()=>window.__liveDuelsState.calls.filter(x=>x.name==='duel_v2_invite'));
+    assert.equal(sent.length,1);assert.equal(sent[0].args.p_duration_days,14);assert.equal(sent[0].args.p_opponent,'bbbb2222-2222-4222-8222-222222222222');
+    console.log('PASS reviewed immutable invitation, explicit single send, disabled unsupported metrics');
     assert.equal(await page.locator('[data-live-duel]').count(),2);
     assert.match(await page.locator('[data-live-duel]').first().innerText(),/70 : 40/);
     assert.match(await page.locator('[data-live-duel]').first().innerText(),/1 offenes Training kann/);

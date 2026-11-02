@@ -8,7 +8,7 @@
 const SB_URL='https://iqarjivcrddcixrvqbfb.supabase.co',SB_KEY='sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R';
 let clientPromise=null;
 function client(){
- if(!clientPromise)clientPromise=import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm').then(m=>m.createClient(SB_URL,SB_KEY));
+ if(!clientPromise)clientPromise=import('./takeover-client.js').then(m=>m.createClient(SB_URL,SB_KEY));
  return clientPromise;
 }
 const CATS=[

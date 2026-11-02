@@ -25,13 +25,14 @@ label{display:grid;gap:5px}small{color:var(--muted)}.error{color:var(--bad)}
 .live-hint.warning{color:var(--gold)}
 .live-reload-note{font-size:var(--fs-sm);color:var(--muted)}
 button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+#inviteReview{border-color:var(--gold);overflow-wrap:anywhere}button{min-height:44px}@media(prefers-reduced-motion:reduce){.live-fill{transition:none}}
 </style>
 <link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"><link rel="stylesheet" href="./takeover-app-shell.css"></head>
 <body data-tl-screen="duels">
 <main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Boxer-Duelle"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🥊</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Vergleich, Einladung und Ergebnisse</div><div class="tl-screen-title">Boxer-Duelle</div></div></div><div class="tl-screen-links"><a href="#app" class="tl-screen-primary">Duelle ansehen</a><a href="./arena.html">Arena</a></div></div>
 <p class="tl-subnav"><a href="./index.html">Liga</a><a href="./boxer.html">Mein Studio</a><a href="./coach.html">Trainerbereich</a></p>
 <h1>Boxer-Duelle</h1>
-<p id="rolloutNote">Duell-Funktion wird vorbereitet. Die bisherigen Trainingseinträge und Punkte bleiben unverändert.</p>
+<p id="rolloutNote">Vergleiche bestätigte Trainingspunkte. Prüfe Gegner und Laufzeit vor dem Senden deiner Einladung.</p>
 <p id="status" role="status">Prüfe Zugriff …</p>
 <section id="auth" class="panel">
 <h2>Anmelden</h2>
@@ -50,10 +51,13 @@ button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(
 <form id="invite">
 <label>Herausforderer<select name="challenger" required data-tl-choice-hint="Wähle, wer die Einladung sendet."></select></label>
 <label>Gegner<select name="opponent" required data-tl-choice-hint="Wähle einen aktiven Gegner. Du kannst dich nicht selbst herausfordern."></select></label>
+<label>Duellart<select name="metric" required><option value="points">Trainingspunkte</option><option value="jogging_km" disabled>Joggingkilometer · noch nicht freigegeben</option><option value="training_count" disabled>Trainings einer Art · noch nicht freigegeben</option></select></label>
+<p class="meta">Joggingkilometer und Trainings einer Art sind noch nicht freigegeben. Dafür müssen Wertung und Belohnung zuerst feststehen.</p>
 <label>Laufzeit<select name="duration" required data-tl-choice-hint="Lege die Laufzeit des Duells fest."><option value="7">7 Tage</option><option value="14">14 Tage</option></select></label>
-<button type="submit">Einladung senden</button>
+<button type="submit">Einladung prüfen</button>
 </form>
 <p id="inviteHint" class="meta"></p>
+<section id="inviteReview" class="panel" hidden aria-labelledby="inviteReviewTitle"><h3 id="inviteReviewTitle" tabindex="-1">Einladung prüfen</h3><div id="inviteReviewBody"></div><p>Die Einladung bleibt 48 Stunden offen und wird erst mit der Annahme aktiv.</p><button type="button" id="sendInvite">Einladung ausdrücklich senden</button><button type="button" id="editInvite">Angaben ändern</button></section>
 </section>
 <section id="liveOverviewSection" class="panel" aria-label="Live-Duellübersicht" hidden>
 <h2>Live-Duellübersicht</h2>
@@ -69,7 +73,7 @@ button:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(
 </main>
 <script>window.TAKEOVER_DUELS_V2_ENABLED=true;</script>
 <script type="module">
-import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import {createClient} from './takeover-client.js';
 const byId=id=>document.getElementById(id);
 const status=byId('status'),panel=byId('app'),auth=byId('auth'),form=byId('invite'),list=byId('duelList');
 const el=(tag,text)=>{const node=document.createElement(tag);node.textContent=String(text??'');return node};
@@ -78,12 +82,14 @@ const statuses={pending:'Einladung offen',active:'Aktiv',awaiting_reviews:'Wird 
 let db,profile=null,eligible=[],duels=[],busy=false,sessionEpoch=0,loadRequestId=0;
 let liveScoreMap=new Map(),liveScoreErrors=new Map(),lastLiveUpdate=null,liveLoading=false;
 const requestedOpponent=(new URLSearchParams(location.search).get('opponent')||'').trim().slice(0,120);
-let targetHint='';
+let targetHint='',reviewedInvitation=null;
+function cancelInviteReview(){reviewedInvitation=null;byId('inviteReview').hidden=true}
+function invitationSignature(){return JSON.stringify(['challenger','opponent','duration','metric'].map(key=>form.elements[key].value))}
 const say=(text,isError=false)=>{status.textContent=text;status.className=isError?'error':''};
 const message=e=>{const t=String(e?.message||e||'Unbekannter Fehler');if(/jwt expired|invalid jwt/i.test(t))return 'Sitzung abgelaufen. Bitte erneut anmelden.';if(/failed to fetch|networkerror/i.test(t))return 'Netzwerkfehler. Bitte Internetverbindung prüfen.';return t};
 async function rpc(name,args={}){const result=await db.rpc(name,args);if(result.error)throw result.error;return result.data}
 function reset(){
- sessionEpoch++;loadRequestId++;profile=null;eligible=[];duels=[];
+ sessionEpoch++;loadRequestId++;profile=null;eligible=[];duels=[];cancelInviteReview();
  liveScoreMap.clear();liveScoreErrors.clear();lastLiveUpdate=null;liveLoading=false;
  panel.hidden=true;auth.hidden=false;list.replaceChildren();
  byId('liveOverviewSection').hidden=true;byId('liveOverviewList').replaceChildren();
@@ -314,7 +320,7 @@ async function init(){
   if(!db){db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');db.auth.onAuthStateChange?.(event=>{if(event==='SIGNED_OUT'){reset();say('Sitzung beendet. Bitte anmelden.')}});}
   const {data:{user},error}=await db.auth.getUser();
   if(epoch!==sessionEpoch)return;
-  if(error)throw error;
+  if(error&&error.name!=='AuthSessionMissingError'&&!/auth session missing/i.test(error.message||''))throw error;
   if(!user){reset();say('Bitte anmelden, um deine Duelle zu sehen.');return}
   const p=await db.from('profiles').select('id,role,is_active').eq('auth_user_id',user.id).maybeSingle();
   if(epoch!==sessionEpoch)return;
@@ -326,14 +332,24 @@ async function init(){
 }
 form.elements.challenger.addEventListener('change',populate);
 form.elements.opponent.addEventListener('change',()=>{const usable=!!form.elements.challenger.value&&!!form.elements.opponent.value;form.querySelector('button[type=submit]').disabled=!usable;if(usable)byId('inviteHint').textContent='Der Gegner muss die Einladung innerhalb von 48 Stunden bestätigen.'});
+for(const name of ['challenger','opponent','duration','metric'])form.elements[name].addEventListener('change',cancelInviteReview);
 form.onsubmit=e=>{e.preventDefault();if(busy||!profile)return;
- const challenger=form.elements.challenger.value,opponent=form.elements.opponent.value;
- const days=Number(form.elements.duration.value);
- if(!challenger||!opponent||challenger===opponent||![7,14].includes(days)){say('Wähle zwei unterschiedliche Boxer und 7 oder 14 Tage.',true);return}
- const challengerName=eligible.find(x=>x.id===challenger)?.display_name||'Unbekannter Boxer';
- const opponentName=eligible.find(x=>x.id===opponent)?.display_name||'Unbekannter Boxer';
- if(!confirm('Duell-Einladung senden? '+challengerName+' fordert '+opponentName+' für '+days+' Tage heraus. Der Gegner muss innerhalb von 48 Stunden annehmen.'))return;
- mutate('duel_v2_invite',{p_challenger:challenger,p_opponent:opponent,p_duration_days:days});
+ const challenger=form.elements.challenger.value,opponent=form.elements.opponent.value,days=Number(form.elements.duration.value);
+ if(form.elements.metric.value!=='points'){say('Diese Duellart ist noch nicht freigegeben.',true);return}
+ if(!challenger||!opponent||challenger===opponent||![7,14].includes(days)||!eligible.some(x=>x.id===challenger)||!eligible.some(x=>x.id===opponent)){say('Wähle zwei unterschiedliche aktive Boxer und 7 oder 14 Tage.',true);return}
+ const challengerName=eligible.find(x=>x.id===challenger).display_name,opponentName=eligible.find(x=>x.id===opponent).display_name;
+ reviewedInvitation={args:{p_challenger:challenger,p_opponent:opponent,p_duration_days:days},epoch:sessionEpoch,signature:invitationSignature()};
+ const body=byId('inviteReviewBody');body.replaceChildren();
+ for(const text of [challengerName+' fordert '+opponentName+' heraus.','Wertung: bestätigte Trainingspunkte.','Laufzeit: '+days+' Tage ab Annahme. Es gilt die bestehende Punkte-Duellregel.','Sichtbarkeit: Beteiligte und Trainer.','Belohnung: Die bestehende serverseitige Duellregel bleibt unverändert.'])body.append(el('p',text));
+ byId('inviteReview').hidden=false;say('Einladung bereit zur Prüfung. Noch nicht gesendet.');byId('inviteReviewTitle').focus();
+};
+byId('editInvite').onclick=()=>{cancelInviteReview();form.elements.opponent.focus()};
+byId('sendInvite').onclick=async()=>{
+ const review=reviewedInvitation;
+ if(!review||busy||!profile||review.epoch!==sessionEpoch)return;
+ if(review.signature!==invitationSignature()){cancelInviteReview();say('Angaben wurden geändert. Bitte Einladung erneut prüfen.',true);return}
+ byId('sendInvite').disabled=true;
+ try{await mutate('duel_v2_invite',review.args)}finally{byId('sendInvite').disabled=false;cancelInviteReview()}
 };
 byId('refresh').onclick=async()=>{if(busy)return;try{say('Aktualisiere Duelle …');await load()}catch(e){say(message(e),true)}};
 byId('logout').onclick=async()=>{reset();try{const {error}=await db.auth.signOut();if(error)throw error;say('Abgemeldet.')}catch(e){say(message(e),true)}};

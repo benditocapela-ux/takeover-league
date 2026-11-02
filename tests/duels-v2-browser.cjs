@@ -22,13 +22,13 @@ const eligible=[
 ];
 const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
 const watchdog=setTimeout(()=>{console.error('Duels V2 browser smoke timed out after 30 seconds');process.exit(1)},30000);
-async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_active:true},boxers=eligible,duels=[],rpcError=null}={}){
+async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_active:true},boxers=eligible,duels=[],rpcError=null,authError=null}={}){
  // Exercise production JavaScript against its matching production DOM, with all network calls mocked.
  const dom=new JSDOM(production,{url:'https://example.test/duels.html',runScripts:'outside-only'});
  const calls=[];let onAuthEvent=null;
  const db={
   auth:{
-   getUser:async()=>({data:{user},error:null}),
+   getUser:async()=>({data:{user},error:authError}),
    signInWithPassword:async()=>({error:null}),
    signOut:async()=>({error:null}),
    onAuthStateChange:cb=>{onAuthEvent=cb;return {data:{subscription:{unsubscribe(){}}}}}
@@ -66,6 +66,8 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  assert.equal(guest.calls.length,0,'guest cannot access duel RPCs');
  guest.dom.window.close();
 
+ const guestMissing=await mount({user:null,authError:{name:'AuthSessionMissingError',message:'Auth session missing!'}});
+ assert.equal(guestMissing.calls.length,0);assert.match(guestMissing.document.querySelector('#status').textContent,/Bitte anmelden/);assert.equal(guestMissing.document.querySelector('#status').className,'');guestMissing.dom.window.close();
  const boxer=await mount();
  const boxerForm=boxer.document.querySelector('#invite');
  assert.equal(boxer.document.querySelector('#auth').hidden,true);
@@ -77,12 +79,18 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  assert.equal(boxerForm.elements.opponent.value,'boxer-2');
  boxerForm.dispatchEvent(new boxer.dom.window.Event('submit',{bubbles:true,cancelable:true}));
  await tick();await tick();
+ assert.equal(boxer.calls.some(x=>x.name==='duel_v2_invite'),false,'review must not send an invitation');
+ assert.equal(boxer.document.querySelector('#inviteReview').hidden,false);
+ assert.match(boxer.document.querySelector('#inviteReviewBody').textContent,/Boxer Eins fordert Boxer Zwei/);
+ assert.match(boxer.document.querySelector('#inviteReviewBody').textContent,/7 Tage/);
+ boxer.document.querySelector('#sendInvite').click();await tick();await tick();
  assert.ok(boxer.calls.some(x=>x.name==='duel_v2_invite'&&x.args.p_challenger==='boxer-1'&&x.args.p_opponent==='boxer-2'&&x.args.p_duration_days===7));
  boxer.document.querySelector('#logout').click();await tick();await tick();
  assert.equal(boxer.document.querySelector('#app').hidden,true);
  assert.equal(boxer.document.querySelector('#auth').hidden,false);
  boxer.dom.window.close();
 
+ const changed=await mount();const cf=changed.document.querySelector('#invite');cf.elements.opponent.value='boxer-2';cf.dispatchEvent(new changed.dom.window.Event('submit',{bubbles:true,cancelable:true}));cf.elements.duration.value='14';changed.document.querySelector('#sendInvite').click();await tick();assert.equal(changed.calls.some(x=>x.name==='duel_v2_invite'),false,'unreviewed programmatic rule edits cannot be sent');assert.equal(changed.document.querySelector('#inviteReview').hidden,true);cf.dispatchEvent(new changed.dom.window.Event('submit',{bubbles:true,cancelable:true}));changed.emitAuth('SIGNED_OUT');changed.document.querySelector('#sendInvite').click();await tick();assert.equal(changed.calls.some(x=>x.name==='duel_v2_invite'),false,'signed-out reviews cannot be sent');changed.dom.window.close();
  const raced=await mount();
  let resolveLateList;
  const originalRpc=raced.db.rpc;
@@ -125,6 +133,8 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  form.elements.duration.value='14';
  form.dispatchEvent(new coach.dom.window.Event('submit',{bubbles:true,cancelable:true}));
  await tick();await tick();
+ assert.equal(coach.calls.some(x=>x.name==='duel_v2_invite'),false);
+ coach.document.querySelector('#sendInvite').click();await tick();await tick();
  assert.ok(coach.calls.some(x=>x.name==='duel_v2_invite'&&x.args.p_challenger==='boxer-2'&&x.args.p_duration_days===14));
  coach.dom.window.close();
  console.log('CHECKPOINT: coach invitation form');

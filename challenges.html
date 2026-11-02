@@ -22,7 +22,7 @@
 </section>
 </section><button id="refresh" type="button" hidden>Challenges aktualisieren</button><div id="filters" hidden><label for="challengeSearch">Challenges suchen</label> <input id="challengeSearch" type="search" placeholder="Titel oder Beschreibung" aria-label="Challenges suchen"> <label for="challengeStatus">Status</label> <select id="challengeStatus" aria-label="Challenge-Status" data-tl-choice="challenge-status" data-tl-choice-hint="Filtere nach dem aktuellen Status."><option value="all">Alle</option><option value="draft">Entwürfe</option><option value="open">Offen</option><option value="active">Aktiv</option><option value="awaiting_reviews">Bewertung</option><option value="settled">Abgeschlossen</option><option value="cancelled">Abgebrochen</option></select></div><section id="list"></section></main>
 <script>window.TAKEOVER_CHALLENGES_V2_ENABLED=true;</script><script type="module">
-import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+import {createClient} from './takeover-client.js';
 const status=document.querySelector('#status'),refresh=document.querySelector('#refresh'),list=document.querySelector('#list'),coach=document.querySelector('#coach'),login=document.querySelector('#login'),logout=document.querySelector('#logout');
 const say=(s,error=false)=>{status.textContent=s;status.className=error?'error':''};
 const friendlyError=e=>{const msg=String(e?.message||e||'Unbekannter Fehler');if(/jwt expired|invalid jwt/i.test(msg))return 'Sitzung abgelaufen. Bitte neu anmelden.';if(/failed to fetch|networkerror/i.test(msg))return 'Netzwerkfehler. Bitte Verbindung prüfen und erneut versuchen.';return msg};

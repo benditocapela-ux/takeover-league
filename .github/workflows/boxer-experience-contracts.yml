@@ -11,6 +11,7 @@ on:
       - 'boxer-experience.html'
       - 'boxer-experience.js'
       - 'takeover-app-shell.js'
+      - 'takeover-client.js'
       - 'takeover-app-shell.css'
       - 'takeover-account.js'
       - 'takeover-training-form.js'

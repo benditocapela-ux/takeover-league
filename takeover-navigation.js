@@ -187,7 +187,7 @@
     if(adminEntry) adminEntry.hidden=true;
     privateEntries.forEach(a=>a.hidden=true);
     try{
-      const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+      const {createClient}=await import('./takeover-client.js');
       const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R',{auth:{autoRefreshToken:false,detectSessionInUrl:false}});
       const sess=await db.auth.getSession();if(!sess.data.session)return;
       const {data:{user},error}=await db.auth.getUser();if(error||!user)return;
