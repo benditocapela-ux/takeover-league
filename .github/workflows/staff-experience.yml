@@ -4,6 +4,7 @@ on:
     paths:
       - 'coach.html'
       - 'admin.html'
+      - 'takeover-client.js'
       - 'takeover-staff-experience.css'
       - 'tests/staff-experience-contracts.cjs'
       - 'tests/staff-experience-browser.cjs'

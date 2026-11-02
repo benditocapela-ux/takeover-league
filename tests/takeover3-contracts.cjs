@@ -92,8 +92,11 @@ test('training form validation mirrors the established rules',()=>{
 test('studio writes are limited to avatar and notification read state',()=>{
  assert.doesNotMatch(studio,/\.(?:insert|upsert|delete)\(/);
  const rpcs=[...studio.matchAll(/rpc\('([a-z_0-9]+)'/g)].map(m=>m[1]);
- for(const r of rpcs)assert.ok(['league_training_audit_recent','mark_my_notification_read','update_my_boxer_avatar','get_boxer_exp_level_rank','get_boxer_performance_30d','get_my_feedback'].includes(r),r);
- assert.match(studio,/eq\('boxer_id',S\.profile\.id\)/);assert.match(studio,/eq\('recipient_id',S\.profile\.id\)/);
+ for(const r of rpcs)assert.ok(['get_my_studio_training_history','get_my_studio_training_summary','league_training_audit_recent','mark_my_notification_read','update_my_boxer_avatar','get_boxer_exp_level_rank','get_boxer_performance_30d','get_my_feedback'].includes(r),r);
+ assert.match(studio,/r\.data\?\.profile_id!==owner/);
+ const historySql=read('supabase/migrations/20261102103929_studio_training_history_summary.sql');
+ assert.match(historySql,/auth_user_id=\(SELECT auth\.uid\(\)\)/);assert.match(historySql,/WHERE s\.boxer_id=me/);assert.match(historySql,/LIMIT 21/);
+ assert.match(studio,/getContext:\(\)=>\(\{db:S\.db,profile:S\.profile\}\)/);assert.match(read('takeover-inbox.js'),/eq\('recipient_id',context\.profileId\)/);assert.match(read('takeover-inbox.js'),/count:'exact',head:true/);
 });
 test('role-based navigation for boxer, coach, admin and guests; legacy chrome hidden when the shell runs',()=>{
  for(const r of ['boxer:[','coach:[','admin:[','guest:['])assert.ok(shell.includes(r),r);

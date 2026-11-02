@@ -7,6 +7,8 @@ on:
       - '*.js'
       - '*.css'
       - '*.png'
+      - '*.svg'
+      - 'tools/premium-v2/**'
       - '*.woff'
       - 'manifest.webmanifest'
       - 'avatars/**'

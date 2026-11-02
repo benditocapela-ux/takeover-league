@@ -8,7 +8,7 @@ const SB_URL='https://iqarjivcrddcixrvqbfb.supabase.co',SB_KEY='sb_publishable_o
 const TOUR_VERSION=1;
 let clientPromise=null;
 function client(){
- if(!clientPromise)clientPromise=import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm').then(m=>m.createClient(SB_URL,SB_KEY));
+ if(!clientPromise)clientPromise=import('./takeover-client.js').then(m=>m.createClient(SB_URL,SB_KEY));
  return clientPromise;
 }
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));

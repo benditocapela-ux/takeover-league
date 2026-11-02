@@ -61,13 +61,13 @@ console.log('PASS: modular draft isolated behind explicit URL; 32 selections, tw
  const pending=[];
  ctx.window.Image=class{set src(url){this.url=url;pending.push(this)}};
  const ready=A.createDraft(m);
- let notifications=0;
+ let notifications=0;const notify=()=>notifications++;
  const changed={...cfg,coat:'samurai',top:'tank',topc:'schwarz',glove:'weiss',
   bottomc:'rot',hair:'kurz_glatt'};
- assert.equal(ready.prepare(cfg,'cool',()=>notifications++),false);
- assert.equal(ready.prepare(cfg,'cool',()=>notifications++),false);
+ assert.equal(ready.prepare(cfg,'cool',notify),false);
+ assert.equal(ready.prepare(cfg,'cool',notify),false);
  assert.equal(pending.length,3,'at most three concurrent image loads');
- assert.equal(ready.prepare(changed,'cool',()=>notifications++),false);
+ assert.equal(ready.prepare(changed,'cool',notify),false);
  for(let i=0;i<12;i++){
   assert.ok(pending[i],'all twelve union assets scheduled');
   assert.equal(ready.prepare(changed,'cool'),false,'never expose partial revised outfit');
@@ -75,7 +75,7 @@ console.log('PASS: modular draft isolated behind explicit URL; 32 selections, tw
  }
  for(let i=0;i<32;i++)await Promise.resolve();
  assert.equal(pending.length,12,'overlapping selections share requests');
- assert.equal(notifications,2,'each distinct outfit completion calls back once');
+ assert.equal(notifications,2,'each distinct outfit completion calls the repeated consumer once');
  assert.equal(ready.prepare(cfg,'cool'),true);
  assert.equal(ready.prepare(changed,'cool'),true);
  assert.equal(ready.stats.maxActive,3);

@@ -22,13 +22,13 @@ const eligible=[
 ];
 const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
 const watchdog=setTimeout(()=>{console.error('Duels V2 browser smoke timed out after 30 seconds');process.exit(1)},30000);
-async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_active:true},boxers=eligible,duels=[],rpcError=null}={}){
+async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_active:true},boxers=eligible,duels=[],rpcError=null,authError=null}={}){
  // Exercise production JavaScript against its matching production DOM, with all network calls mocked.
  const dom=new JSDOM(production,{url:'https://example.test/duels.html',runScripts:'outside-only'});
  const calls=[];let onAuthEvent=null;
  const db={
   auth:{
-   getUser:async()=>({data:{user},error:null}),
+   getUser:async()=>({data:{user},error:authError}),
    signInWithPassword:async()=>({error:null}),
    signOut:async()=>({error:null}),
    onAuthStateChange:cb=>{onAuthEvent=cb;return {data:{subscription:{unsubscribe(){}}}}}
@@ -38,10 +38,13 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
   }},
   rpc:async(name,args)=>{calls.push({name,args});
    if(rpcError)return {data:null,error:{message:rpcError}};
+   if(name==='duel_v2_staff_queue')return {data:{items:duels,next_cursor:null,counts:{all:duels.length,open:duels.filter(x=>x.status==='pending'||x.status==='active'&&Date.parse(x.ends_at)>Date.now()).length,due:duels.filter(x=>['active','awaiting_reviews'].includes(x.status)&&Date.parse(x.ends_at)<=Date.now()).length,ready:0,closed:duels.filter(x=>x.status==='settled').length},state:args.p_state,search:args.p_search||'',duel_id:args.p_duel_id||null,metric:'points',limit:20,as_of:new Date().toISOString()},error:null};
    return {data:name==='duel_v2_list_mine'?duels:name==='duel_v2_eligible_boxers'?boxers:'ok',error:null};
   }
  };
  dom.window.createClient=()=>db;dom.window.confirm=()=>true;
+ dom.window.HTMLDialogElement.prototype.showModal=function(){this.setAttribute('open','')};dom.window.HTMLDialogElement.prototype.close=function(){this.removeAttribute('open')};
+ dom.window.eval(fs.readFileSync('takeover-duel-close.js','utf8'));dom.window.eval(fs.readFileSync('takeover-duel-queue.js','utf8'));
  dom.window.eval('window.TAKEOVER_DUELS_V2_ENABLED=true;');
  dom.window.eval(prodSource.replace('init();','window.__ready=init();'));
  await dom.window.__ready;
@@ -66,6 +69,8 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  assert.equal(guest.calls.length,0,'guest cannot access duel RPCs');
  guest.dom.window.close();
 
+ const guestMissing=await mount({user:null,authError:{name:'AuthSessionMissingError',message:'Auth session missing!'}});
+ assert.equal(guestMissing.calls.length,0);assert.match(guestMissing.document.querySelector('#status').textContent,/Bitte anmelden/);assert.equal(guestMissing.document.querySelector('#status').className,'');guestMissing.dom.window.close();
  const boxer=await mount();
  const boxerForm=boxer.document.querySelector('#invite');
  assert.equal(boxer.document.querySelector('#auth').hidden,true);
@@ -77,12 +82,18 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  assert.equal(boxerForm.elements.opponent.value,'boxer-2');
  boxerForm.dispatchEvent(new boxer.dom.window.Event('submit',{bubbles:true,cancelable:true}));
  await tick();await tick();
+ assert.equal(boxer.calls.some(x=>x.name==='duel_v2_invite'),false,'review must not send an invitation');
+ assert.equal(boxer.document.querySelector('#inviteReview').hidden,false);
+ assert.match(boxer.document.querySelector('#inviteReviewBody').textContent,/Boxer Eins fordert Boxer Zwei/);
+ assert.match(boxer.document.querySelector('#inviteReviewBody').textContent,/7 Tage/);
+ boxer.document.querySelector('#sendInvite').click();await tick();await tick();
  assert.ok(boxer.calls.some(x=>x.name==='duel_v2_invite'&&x.args.p_challenger==='boxer-1'&&x.args.p_opponent==='boxer-2'&&x.args.p_duration_days===7));
  boxer.document.querySelector('#logout').click();await tick();await tick();
  assert.equal(boxer.document.querySelector('#app').hidden,true);
  assert.equal(boxer.document.querySelector('#auth').hidden,false);
  boxer.dom.window.close();
 
+ const changed=await mount();const cf=changed.document.querySelector('#invite');cf.elements.opponent.value='boxer-2';cf.dispatchEvent(new changed.dom.window.Event('submit',{bubbles:true,cancelable:true}));cf.elements.duration.value='14';changed.document.querySelector('#sendInvite').click();await tick();assert.equal(changed.calls.some(x=>x.name==='duel_v2_invite'),false,'unreviewed programmatic rule edits cannot be sent');assert.equal(changed.document.querySelector('#inviteReview').hidden,true);cf.dispatchEvent(new changed.dom.window.Event('submit',{bubbles:true,cancelable:true}));changed.emitAuth('SIGNED_OUT');changed.document.querySelector('#sendInvite').click();await tick();assert.equal(changed.calls.some(x=>x.name==='duel_v2_invite'),false,'signed-out reviews cannot be sent');changed.dom.window.close();
  const raced=await mount();
  let resolveLateList;
  const originalRpc=raced.db.rpc;
@@ -125,6 +136,8 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  form.elements.duration.value='14';
  form.dispatchEvent(new coach.dom.window.Event('submit',{bubbles:true,cancelable:true}));
  await tick();await tick();
+ assert.equal(coach.calls.some(x=>x.name==='duel_v2_invite'),false);
+ coach.document.querySelector('#sendInvite').click();await tick();await tick();
  assert.ok(coach.calls.some(x=>x.name==='duel_v2_invite'&&x.args.p_challenger==='boxer-2'&&x.args.p_duration_days===14));
  coach.dom.window.close();
  console.log('CHECKPOINT: coach invitation form');
@@ -172,7 +185,9 @@ async function mount({user={id:'user'},profile={id:'boxer-1',role:'boxer',is_act
  assert.match(coachReview.document.querySelector('#duelList').textContent,/Zwischenstand hat ein ungültiges Datenformat/,'invalid live-score payload must not fall back to stale stored scores');
  assert.doesNotMatch(coachReview.document.querySelector('#duelList').textContent,/Trainingspunkte: 70 : 40/,'active score must not appear finalized');
  reconcileButton.click();await tick();await tick();
- assert.ok(coachReview.calls.some(x=>x.name==='duel_v2_reconcile'&&x.args.p_duel_id==='duel-1'));
+ assert.ok(coachReview.calls.some(x=>x.name==='duel_v2_close_preview'&&x.args.p_duel_id==='duel-1'),'review uses only read-only preview');
+ assert.equal(coachReview.calls.some(x=>x.name==='duel_v2_reconcile'||x.name==='duel_v2_close_confirm'),false,'opening never settles');
+ assert.equal(coachReview.document.querySelector('[data-close-confirm]').hidden,true,'incomplete preview fails closed');
  coachReview.dom.window.close();
  const boxerReview=await mount({profile:{id:'boxer-1',role:'boxer',is_active:true},duels:[finished]});
  assert.equal([...boxerReview.document.querySelectorAll('#duelList button')].some(x=>x.textContent==='Ergebnis prüfen'),false,'boxer cannot manually reconcile a duel');

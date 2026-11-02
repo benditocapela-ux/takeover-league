@@ -1,0 +1,55 @@
+/* The same arena and true leaderboard ranks on the public and signed-in league. */
+.tl-league-podium{--podium-gold:#f5cc67;position:relative;isolation:isolate;display:block!important;width:100%;height:auto!important;min-height:420px;padding:19px 13px 0!important;overflow:hidden;border:1px solid #667084!important;border-top-color:#d9b467!important;border-radius:18px!important;background:radial-gradient(ellipse at 50% 80%,#bc802e38,transparent 42%),radial-gradient(ellipse at 9% 0,#bac8ef20,transparent 35%),radial-gradient(ellipse at 91% 0,#bac8ef20,transparent 35%),linear-gradient(160deg,#111c2e,#060d19 55%,#14213a)!important;box-shadow:inset 0 0 38px #02061080,0 8px 24px #0002;color:#f4f5f8}
+.tl-league-podium:before{content:"";position:absolute;z-index:-1;inset:58px 0 0;background:linear-gradient(108deg,transparent 19%,#c9daff0d 19.3%,transparent 28%),linear-gradient(252deg,transparent 19%,#c9daff0d 19.3%,transparent 28%),repeating-linear-gradient(0deg,transparent 0 64px,#c1d3f00d 65px 66px);pointer-events:none}
+.tl-podium-heading{display:flex;flex-direction:column;align-items:center;gap:5px;text-align:center;margin:0 0 12px;min-height:44px}
+.tl-podium-heading strong{font:800 clamp(15px,3.8vw,21px)/1.15 var(--font-display,'Barlow Condensed',sans-serif);letter-spacing:.04em;text-transform:uppercase;color:#f9df9a}
+.tl-podium-heading span{font:500 10px/1.4 var(--font-body,system-ui,sans-serif);color:#d0d6e3;max-width:100%}
+.tl-podium-arena{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.14fr) minmax(0,1fr);align-items:end;min-height:345px;max-width:680px;margin:0 auto;position:relative}
+.tl-podium-person{--metal:#9eafc7;--metal-dim:#344861;--plinth:62px;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;min-width:0;text-align:center;text-decoration:none!important;color:inherit!important;position:relative;border-radius:10px 10px 0 0;outline-offset:3px;-webkit-tap-highlight-color:#f5cc6726}
+.tl-podium-person:focus-visible{outline:3px solid #ffe7a9;z-index:3}
+.tl-podium-person:hover .tl-podium-person-name{text-decoration:underline;text-underline-offset:3px}
+.tl-podium-person[data-rank="1"]{--plinth:95px;z-index:2}
+.tl-podium-person[data-rank="3"]{--plinth:48px}
+.tl-podium-person[data-rank="1"]{--metal:#ffe39b;--metal-dim:#997236}
+.tl-podium-person[data-rank="3"]{--metal:#eea26d;--metal-dim:#734b36}
+.tl-podium-caption{position:relative;z-index:2;width:100%;padding:0 2px 3px;display:flex;flex-direction:column;gap:3px;min-height:38px;justify-content:flex-end;text-shadow:0 2px 4px #000}
+.tl-podium-person-name{font:800 clamp(12px,3.2vw,18px)/1.12 var(--font-display,'Barlow Condensed',sans-serif);overflow-wrap:anywhere;max-width:100%}
+.tl-podium-person-points{font:750 clamp(10px,2.6vw,13px)/1.2 var(--font-body,system-ui,sans-serif);color:#ffe6a0;white-space:nowrap}
+.tl-league-podium .tl-podium-figure{display:flex;align-items:flex-end;justify-content:center;flex:none;width:140%;max-width:none;height:213px;max-height:none;position:relative;margin:0 -20%;filter:drop-shadow(0 3px 5px #0008);pointer-events:none;z-index:1}
+.tl-league-podium .tl-podium-person[data-rank="1"] .tl-podium-figure{height:255px;width:138%;margin:0 -19%;max-height:none}
+.tl-league-podium .tl-podium-figure>svg{display:block;width:100%!important;height:100%!important;max-width:none;overflow:visible}
+.tl-league-podium .tl-podium-figure .league-avatar{width:76%;height:auto;aspect-ratio:1;max-width:135px;min-width:0;margin:auto;border:2px solid var(--metal);background:radial-gradient(circle,#ffffff13,#0b1321 72%);font-size:42px;box-shadow:0 0 28px #f8d78612}
+.tl-league-podium .tl-podium-figure .league-avatar img{width:100%;height:100%;object-fit:cover}
+.tl-podium-placeholder{display:grid;place-items:center;width:65%;height:70%;font-size:48px;opacity:.65}
+.tl-podium-person[data-empty="true"] .tl-podium-caption{opacity:.55}
+.tl-podium-person[data-empty="true"] .tl-podium-placeholder{opacity:.13}
+.tl-podium-plinth{box-sizing:border-box;position:relative;z-index:2;display:flex;align-items:center;justify-content:center;gap:6px;width:100%;height:var(--plinth);border:1px solid var(--metal-dim);border-top:3px solid var(--metal);border-radius:50% 50% 4px 4px/8px 8px 3px 3px;background:linear-gradient(90deg,#0008,transparent 18%,#ffffff09 48%,transparent 78%,#0008),linear-gradient(var(--metal-dim),#111927 96%);box-shadow:0 -4px 16px color-mix(in srgb,var(--metal) 18%,transparent),inset 0 2px 10px #fce3b420}
+.tl-podium-plinth b{font:850 37px/1 var(--font-display,'Barlow Condensed',sans-serif);color:var(--metal);text-shadow:0 1px 3px #000}
+.tl-podium-crown{font:normal 36px/1 Georgia,serif;color:var(--metal);filter:drop-shadow(0 0 7px #ffd36950)}
+.tl-podium-person[data-rank="unranked"]{--metal:#65748b;--metal-dim:#293951}
+.tl-podium-person[data-rank="unranked"] .tl-podium-plinth b{font-size:28px}
+@media(min-width:390px){.tl-league-podium .tl-podium-figure{height:238px}.tl-league-podium .tl-podium-person[data-rank="1"] .tl-podium-figure{height:280px}.tl-podium-arena{min-height:370px}}
+@media(min-width:600px){.tl-league-podium{padding:23px 24px 0!important}.tl-podium-heading{margin-bottom:18px}.tl-podium-heading span{font-size:12px}.tl-league-podium .tl-podium-figure{height:300px;width:125%;margin:0 -12.5%}.tl-league-podium .tl-podium-person[data-rank="1"] .tl-podium-figure{height:340px;width:125%;margin:0 -12.5%}.tl-podium-arena{min-height:450px}.tl-podium-person{--plinth:78px}.tl-podium-person[data-rank="1"]{--plinth:112px}.tl-podium-person[data-rank="3"]{--plinth:60px}.tl-podium-caption{min-height:45px}.tl-podium-plinth b{font-size:44px}}
+@media(prefers-reduced-motion:no-preference){.tl-podium-person-name{transition:color .15s ease}.tl-podium-person:hover .tl-podium-person-name{color:#ffe09a}}
+/* Preserve earned frame/banner/emote and authenticated Holo hooks without their former compact layout. */
+body[data-tl-screen="index"] .tl-league-podium{margin:0}
+.tl-league-podium .tl-podium-arena{grid-template-areas:"p2 p1 p3";gap:0}
+.tl-league-podium .tl-podium-1{grid-area:p1}.tl-league-podium .tl-podium-2{grid-area:p2}.tl-league-podium .tl-podium-3{grid-area:p3}
+body[data-tl-screen="index"] .tl-league-podium .tl-podium-name{margin:0;white-space:normal;overflow:visible;text-overflow:clip;font:inherit}
+body[data-tl-screen="index"] .tl-league-podium .tl-podium-person-name{font:800 clamp(12px,3.2vw,18px)/1.12 var(--font-display,'Barlow Condensed',sans-serif)}
+body[data-tl-screen="index"] .tl-league-podium .tl-podium-block{flex-direction:row;gap:6px;height:var(--plinth);border:1px solid var(--metal-dim);border-top:3px solid var(--metal);border-radius:50% 50% 4px 4px/8px 8px 3px 3px;background:linear-gradient(90deg,#0008,transparent 18%,#ffffff09 48%,transparent 78%,#0008),linear-gradient(var(--metal-dim),#111927 96%)}
+body[data-tl-screen="index"] .tl-league-podium .tl-podium-holo{position:absolute;inset:0;width:100%;height:100%;margin:0;max-width:none}
+body[data-tl-screen="index"] .tl-league-podium .tl-podium-holo::before{display:none}
+body[data-tl-screen="index"] .tl-league-podium .tl-podium-holo>svg.tlh{width:100%;height:100%}
+body[data-tl-screen="index"] .tl-league-podium .tl-podium-holo-on .tl-podium-figure>.league-avatar,
+body[data-tl-screen="index"] .tl-league-podium .tl-podium-holo-on .tl-podium-figure>.tl-kg-face{display:none!important}
+body[data-tl-screen="index"] .tl-league-podium .tl-podium-figure>.tl-kg-face{margin:auto}
+body[data-tl-screen="index"] .tl-league-podium .tl-podium-emote{top:auto;bottom:calc(var(--plinth) + 5px);right:0;z-index:3}
+/* Outer figures may use the arena padding, but never extend beyond it: wide poses retain both hands. */
+.tl-league-podium .tl-podium-2 .tl-podium-figure,.tl-league-podium .tl-podium-3 .tl-podium-figure{width:calc(100% + 24px);margin:0 -12px}
+@media(min-width:600px){.tl-league-podium .tl-podium-2 .tl-podium-figure,.tl-league-podium .tl-podium-3 .tl-podium-figure{width:calc(100% + 44px);margin:0 -22px}}
+/* Keep every name above the tallest pose, including a leader's extended/raised arms. */
+.tl-league-podium .tl-podium-caption{margin-bottom:75px}
+.tl-league-podium [data-rank="1"] .tl-podium-caption{margin-bottom:0}
+.tl-league-podium [data-rank="3"] .tl-podium-caption{margin-bottom:89px}
+@media(min-width:600px){.tl-league-podium .tl-podium-caption{margin-bottom:74px}.tl-league-podium [data-rank="3"] .tl-podium-caption{margin-bottom:92px}}

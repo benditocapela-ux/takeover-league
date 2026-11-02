@@ -1,0 +1,98 @@
+[
+  {
+    "engine": "chromium",
+    "route": "index.html",
+    "status": 200,
+    "client": {
+      "same": true,
+      "instanceId": 0,
+      "guest": true,
+      "sessionError": null,
+      "refresh": true,
+      "persist": true,
+      "detect": true
+    },
+    "warnings": [],
+    "errors": []
+  },
+  {
+    "engine": "chromium",
+    "route": "duels.html",
+    "status": 200,
+    "client": {
+      "same": true,
+      "instanceId": 0,
+      "guest": true,
+      "sessionError": null,
+      "refresh": true,
+      "persist": true,
+      "detect": true
+    },
+    "warnings": [],
+    "errors": []
+  },
+  {
+    "engine": "chromium",
+    "route": "boxer-profile.html",
+    "status": 200,
+    "client": {
+      "same": true,
+      "instanceId": 0,
+      "guest": true,
+      "sessionError": null,
+      "refresh": true,
+      "persist": true,
+      "detect": true
+    },
+    "warnings": [],
+    "errors": []
+  },
+  {
+    "engine": "webkit",
+    "route": "index.html",
+    "status": 200,
+    "client": {
+      "same": true,
+      "instanceId": 0,
+      "guest": true,
+      "sessionError": null,
+      "refresh": true,
+      "persist": true,
+      "detect": true
+    },
+    "warnings": [],
+    "errors": []
+  },
+  {
+    "engine": "webkit",
+    "route": "duels.html",
+    "status": 200,
+    "client": {
+      "same": true,
+      "instanceId": 0,
+      "guest": true,
+      "sessionError": null,
+      "refresh": true,
+      "persist": true,
+      "detect": true
+    },
+    "warnings": [],
+    "errors": []
+  },
+  {
+    "engine": "webkit",
+    "route": "boxer-profile.html",
+    "status": 200,
+    "client": {
+      "same": true,
+      "instanceId": 0,
+      "guest": true,
+      "sessionError": null,
+      "refresh": true,
+      "persist": true,
+      "detect": true
+    },
+    "warnings": [],
+    "errors": []
+  }
+]

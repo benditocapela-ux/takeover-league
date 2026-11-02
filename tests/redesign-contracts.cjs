@@ -9,20 +9,24 @@ for(const [path,b] of Object.entries(baseline)){
  const gotIds=[...s.matchAll(/\bid\s*=\s*["']([^"']+)["']/gi)].map(x=>x[1]);
  const gotRpc=[...new Set([...s.matchAll(/\brpc\s*\(\s*["']([^"']+)["']/gi)].map(x=>x[1]))].sort();
  // Keep every pre-existing hook in the original order. New semantic tab IDs
- // are allowed only for the five accessible guest navigation tabs.
+ // are explicitly listed below; existing hooks remain unchanged.
  const originalIds=gotIds.filter(id=>b.ids.includes(id));
  assert.deepEqual(originalIds,b.ids,`${path}: a pre-existing DOM hook changed`);
  const addedIds=gotIds.filter(id=>!b.ids.includes(id));
  const allowedAdded=path==='guest.html'
   ? ['guest-tab-overview','guest-tab-ranking','guest-tab-challenges','guest-tab-duels','guest-tab-history']
-  : path==='admin.html' ? ['showArchived'] : path==='coach.html' ? ["cv2Tabs", "viewHome", "selfRatingNotice", "todayCount", "confirmedTodayCount", "cv2TasksTitle", "cv2Tasks", "cv2RecentTitle", "cv2Recent", "viewReview", "cv2ReviewTitle", "cv2PendingChips", "cv2BulkBar", "cv2BulkCount", "cv2PendingCountText", "cv2PendingMore", "viewHistory", "cv2HistoryTitle", "cv2Filters", "filterCategory", "cv2ReviewReport", "cv2ReportLoad", "cv2ReportBody", "viewBoxers", "cv2BoxersTitle", "cv2BoxerSearch", "cv2People", "cv2PeopleCount", "cv2PeopleMore", "viewGym", "cv2GymTitle", "cv2StaffEntrySlot", "viewMore", "cv2MoreTitle", "cv2Sheet", "cv2SheetTitle", "cv2SheetSub", "cv2SheetBody", "cv2SheetFoot"] : []; // Etappe 10: Hinweis auf offene Selbsteinschätzungen; Training 2.0: Trainer-Dashboard 2.0 (Bereiche, Karten, Bottom Sheet). Reihenfolge der bestehenden IDs wurde mit dem Redesign neu festgelegt (alle bestehenden IDs bleiben).
+  : path==='index.html' ? ['league-shared-podium']
+  : path==='league-history.html' ? ['periodHeading','periodForm','periodKind','monthLabel','periodMonth','seasonLabel','periodSeason','periodStatus','periodTitle','periodSummary','periodReward','periodPodium','periodMine','moreSeasons','moreResults','periodClose']
+  : path==='duels.html' ? ['metricChoiceStatus','metricTrainingTypeField','metricVisibilityField','inviteReview','inviteReviewTitle','inviteReviewBody','sendInvite','editInvite','duelView','metricDuels','metricDuelFilter','metricDuelScope','metricDuelState','metricDuelSearch','metricDuelStatus','metricDuelList','metricDuelPrev','metricDuelNext','legacyDuelViews','duelListScope','duelQueueControls','duelQueueTarget','duelQueueForm','duelQueueState','duelQueueSearch','duelQueueCounts','duelQueuePage','duelQueuePrev','duelQueueNext','duelTargetStatus','duelReviewFilter','duelDueOnly','duelClosePreview','duelCloseTitle']
+  : path==='admin.html' ? ['showArchived'] : path==='coach.html' ? ["cv2Tabs", "viewHome", "selfRatingNotice", "todayCount", "confirmedTodayCount", "cv2TasksTitle", "cv2Tasks", "coachCompetitions", "coachCompetitionsTitle", "coachDuelsStatus", "cv2RecentTitle", "cv2Recent", "viewReview", "cv2ReviewTitle", "cv2PendingChips", "cv2BulkBar", "cv2BulkCount", "cv2PendingCountText", "cv2PendingMore", "viewHistory", "cv2HistoryTitle", "cv2Filters", "filterCategory", "cv2ReviewReport", "cv2ReportLoad", "cv2ReportBody", "viewBoxers", "cv2BoxersTitle", "cv2BoxerSearch", "cv2People", "cv2PeopleCount", "cv2PeopleMore", "viewGym", "cv2GymTitle", "cv2StaffEntrySlot", "viewMore", "cv2MoreTitle", "cv2Sheet", "cv2SheetTitle", "cv2SheetSub", "cv2SheetBody", "cv2SheetFoot"] : []; // Etappe 10: Hinweis auf offene Selbsteinschätzungen; Training 2.0: Trainer-Dashboard 2.0 (Bereiche, Karten, Bottom Sheet). Reihenfolge der bestehenden IDs wurde mit dem Redesign neu festgelegt (alle bestehenden IDs bleiben).
  assert.deepEqual(addedIds,allowedAdded,`${path}: unexpected additional DOM ID`);
  const originalRpc=gotRpc.filter(rpc=>b.rpc.includes(rpc));
  assert.deepEqual(originalRpc,b.rpc,`${path}: a pre-existing RPC literal changed`);
  const addedRpc=gotRpc.filter(rpc=>!b.rpc.includes(rpc));
- const allowedRpc={'admin.html':['admin_list_profile_archive_state'],'coach.html':['coach_list_training_history','get_club_schedule','staff_list_feedback','staff_list_self_ratings','staff_record_training','staff_send_feedback','staff_set_training_tier','staff_training_tiers','staff_update_feedback', // Etappe 6a: Vereinsstufen, 6b: Feedback
+ const allowedRpc={'admin.html':['admin_list_profile_archive_state'],'coach.html':['duel_v2_staff_queue','coach_list_training_history','get_club_schedule','staff_list_feedback','staff_list_self_ratings','staff_record_training','staff_send_feedback','staff_set_training_tier','staff_training_tiers','staff_update_feedback', // Etappe 6a: Vereinsstufen, 6b: Feedback
    'admin_training_tier_review','get_training_v2_config','staff_correct_training','staff_list_trainings','staff_review_training','staff_training_summary','training_reward_preview'], // Training 2.0
   'boxer.html':['get_my_feedback'], // Etappe 6b: Feedback aktiv/archiviert
+  'duels.html':['duel_v2_staff_queue'],
   'league-manager.html':['league_v21_admin_delete_global_draft','league_v21_admin_publish_global_challenge','league_v21_admin_update_global_draft',
    'league_v21_archive_goal','league_v21_complete_goal','league_v21_record_goal_progress'],
   'goals.html':['league_v21_archive_goal'],
@@ -31,7 +35,7 @@ for(const [path,b] of Object.entries(baseline)){
  assert.deepEqual(addedRpc,[...(allowedRpc[path]||[])].sort(),`${path}: unexpected additional RPC literal`);
  const choiceCardPages=new Set(['arena.html','boxer.html','boxer-compare.html','challenges.html','duels.html','goals.html','league-manager.html','league-challenges.html']);
  const allowedScriptAdditions=(choiceCardPages.has(path)?1:0)+(path==='boxer.html'?2:0)+(['boxer.html','boxer-profile.html','duels.html','index.html','boxer-compare.html'].includes(path)?1:0); // boxer.html +1 takeover-training-v2.js (Training 2.0) · +1 takeover-performance.js (Bewertung/Boxstil, Etappe 5: Duell-Emotes, Kampfgeist-Podium, Etappe 7a: Boxervergleich)
- const shellScripts=3+(path==='boxer.html'?1:0); // Takeover 3.0: takeover-anime.js + takeover-account.js + takeover-app-shell.js; boxer.html: früher Weiterleitungsschutz
+ const shellScripts=3+(path==='duels.html'?1:0)+(path==='boxer.html'?1:0)+(['index.html','duels.html','league-history.html'].includes(path)?1:0)+(['coach.html','duels.html'].includes(path)?1:0); // Shared podium / explicit closure previews are separate scripts.
  assert.equal((s.match(/<script\b/gi)||[]).length,b.scriptCount+allowedScriptAdditions+shellScripts,`${path}: unexpected script change`);
  assert.match(s,/takeover-redesign\.css/,`${path}: must import production stylesheet`);
  ids+=gotIds.length;rpcCount+=gotRpc.length;

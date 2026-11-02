@@ -14,30 +14,50 @@
  const TIER={pflicht:'Pflichttraining',ergaenzung:'Ergänzungstraining'};
  const PRESETS=Object.fromEntries(Array.from({length:14},(_,i)=>{const n=String(i+1).padStart(2,'0');return ['avatar-'+n,'./avatars/avatar-'+n+'.webp']}));
  const NOTE_PAGES=new Set(['boxer.html','duels.html','challenges.html','index.html','awards.html','boxer-profile.html','league-challenges.html','league-history.html','goals.html','arena.html','bewertung.html','karten.html','feedback.html']);
- const S={db:null,profile:null,types:[],rows:[],visible:8,mounted:false,gamify:null};
+ const S={db:null,profile:null,types:[],rows:[],summary:null,cursor:null,historyEpoch:0,summaryEpoch:0,historyBusy:false,historyError:false,gamifyEpoch:0,actor:null,readAllowed:true,mounted:false,gamify:null};
  const calendarDay=d=>d.toLocaleDateString('sv-SE',{timeZone:'Europe/Zurich'});
  const stepDay=(key,delta)=>{const d=new Date(key+'T12:00:00Z');d.setUTCDate(d.getUTCDate()+delta);return d.toISOString().slice(0,10)};
  const typeName=id=>S.types.find(t=>String(t.id)===String(id))?.name||'Training';
  const dayLabel=v=>{try{return new Date(v+'T12:00:00').toLocaleDateString('de-CH',{weekday:'short',day:'2-digit',month:'2-digit',year:'numeric'})}catch{return v}};
 
  // ---------------- Trainingshistorie ----------------
- async function loadHistory(){
-  const host=$('ex-history');if(!host)return;
-  const r=await S.db.from('training_submissions').select('*').eq('boxer_id',S.profile.id).order('created_at',{ascending:false}).limit(1000);
-  if(r.error){$('ex-history-status').textContent='Trainingshistorie konnte nicht geladen werden: '+r.error.message;return}
-  S.rows=Array.isArray(r.data)?r.data:[];S.visible=8;
-  $('ex-history-status').textContent=S.rows.length?S.rows.length+(S.rows.length===1?' Training':' Trainings')+' eingereicht · '+S.rows.filter(x=>x.status==='approved').length+' bestätigt · '+S.rows.filter(x=>x.status==='pending').length+' in Prüfung':'';
-  renderHistory();renderInsights();
-  document.dispatchEvent(new Event('takeover:history-loaded'));
+ function historyCurrent(epoch,owner){return S.readAllowed&&epoch===S.historyEpoch&&owner===S.profile?.id}
+ function historyLabel(){const totals=S.summary?.totals;const label=$('ex-history-status');if(!label)return;if(S.historyError){label.textContent='Trainingshistorie konnte nicht geladen werden. Bitte erneut versuchen.';return}label.textContent=totals?totals.total+' Trainings eingereicht · '+totals.approved+' bestätigt · '+totals.pending+' in Prüfung · '+S.rows.length+' geladen':'Gesamtzahlen derzeit nicht verfügbar.'}
+ function clearTraining(){
+  S.readAllowed=false;S.gamifyEpoch++;S.historyEpoch++;S.summaryEpoch++;S.rows=[];S.summary=null;S.cursor=null;S.historyBusy=false;
+  $('ex-history')?.replaceChildren();if($('ex-history-more'))$('ex-history-more').hidden=true;
+  if($('ex-history-status'))$('ex-history-status').textContent='Bitte erneut anmelden.';
+  renderInsights();renderStats();S.gamify?.refresh();
+ }
+ async function loadHistory(append=false){
+  const host=$('ex-history'),more=$('ex-history-more');if(!host||!S.readAllowed||append&&(!S.cursor||S.historyBusy))return;
+  const epoch=++S.historyEpoch,owner=S.profile.id,cursor=append?S.cursor:null,filter=$('ex-history-filter')?.value||'all';
+  S.historyBusy=true;S.historyError=false;more.disabled=true;
+  if(!append){S.rows=[];S.cursor=null;host.replaceChildren(el('p','ex-muted','Trainings werden geladen …'));more.hidden=true}
+  try{
+   const r=await S.db.rpc('get_my_studio_training_history',{p_status:filter,p_before:cursor?.before||null,p_before_id:cursor?.before_id||null});
+   if(!historyCurrent(epoch,owner))return;
+   if(r.error)throw r.error;if(r.data?.profile_id!==owner||!Array.isArray(r.data.items))throw Error('Historie ist derzeit nicht verfügbar.');
+   const seen=new Set(S.rows.map(x=>x.id));S.rows=append?S.rows.concat(r.data.items.filter(x=>!seen.has(x.id))):r.data.items;
+   S.cursor=r.data.next_cursor||null;renderHistory();historyLabel();
+  }catch(error){if(!historyCurrent(epoch,owner))return;S.historyError=true;$('ex-history-status').textContent='Trainingshistorie konnte nicht geladen werden. Bitte erneut versuchen.';if(!append)host.replaceChildren();more.hidden=!append}
+  finally{if(historyCurrent(epoch,owner)){S.historyBusy=false;more.disabled=false}}
+ }
+ async function loadSummary(){
+  if(!S.readAllowed)return;const epoch=++S.summaryEpoch,owner=S.profile.id;S.summary=null;renderInsights();renderStats();S.gamify?.refresh();
+  try{const r=await S.db.rpc('get_my_studio_training_summary');if(!S.readAllowed||epoch!==S.summaryEpoch||owner!==S.profile?.id)return;
+   if(r.error)throw r.error;if(r.data?.profile_id!==owner||!r.data.progress||!r.data.weekly)throw Error('Statistik nicht verfügbar');S.summary=r.data;
+  }catch{if(!S.readAllowed||epoch!==S.summaryEpoch||owner!==S.profile?.id)return;S.summary=null}
+  renderInsights();renderStats();historyLabel();document.dispatchEvent(new Event('takeover:history-loaded'));
  }
  function renderHistory(){
   const host=$('ex-history'),filter=$('ex-history-filter')?.value||'all',more=$('ex-history-more');
-  const rows=S.rows.filter(s=>filter==='all'||s.status===filter);host.replaceChildren();
+  const rows=S.rows;host.replaceChildren();
   if(!rows.length){host.append(el('p','ex-muted',filter==='all'?'Noch keine Trainings eingereicht.':'Keine Trainings mit diesem Status.'));more.hidden=true;return}
-  for(const s of rows.slice(0,S.visible)){
-   const line=el('div','ex-list-line ex-history-line');
+  for(const s of rows){
+   const line=el('div','ex-list-line ex-history-line');line.dataset.trainingId=s.id;
    const copy=el('span','ex-history-copy');
-   const title=el('b','',typeName(s.training_type_id)+(s.club_tier&&TIER[s.club_tier]?' · '+TIER[s.club_tier]:''));
+   const title=el('b','',(s.training_type_name||typeName(s.training_type_id))+(s.club_tier&&TIER[s.club_tier]?' · '+TIER[s.club_tier]:''));
    const meta=[dayLabel(s.training_date),s.jogging_km!=null?fmt(s.jogging_km,2)+' km':null,
     s.duration_minutes!=null?s.duration_minutes+' Min.':s.technique_minutes!=null?s.technique_minutes+' Min.':null,
     s.training_location==='club'?'Verein':s.training_location==='individual'?'Individuell':null,s.recorded_by?'vom Trainer eingetragen':null].filter(Boolean).join(' · ');
@@ -46,15 +66,13 @@
    const pill=el('span','ex-pill ex-pill-'+s.status,STATUS[s.status]||s.status||'Offen');
    line.append(copy,pill);host.append(line);
   }
-  more.hidden=S.visible>=rows.length;more.textContent='Mehr anzeigen ('+Math.min(10,rows.length-S.visible)+' weitere)';
+  more.hidden=!S.cursor;more.textContent='Weitere Trainings laden (bis zu 20)';
  }
  function renderInsights(){
-  const approved=S.rows.filter(r=>r.status==='approved'&&/^\d{4}-\d{2}-\d{2}$/.test(r.training_date||''));
-  const now=calendarDay(new Date()),days=new Map();for(const t of approved)days.set(t.training_date,(days.get(t.training_date)||0)+1);
-  let cursor=days.has(now)?now:stepDay(now,-1),streak=0;while(days.has(cursor)&&streak<10000){streak++;cursor=stepDay(cursor,-1)}
-  const count=n=>approved.filter(r=>r.training_date<=now&&r.training_date>=stepDay(now,-(n-1))).length;
   const set=(id,v)=>{const n=$(id);if(n)n.textContent=String(v)};
-  set('ex-streak',streak);set('ex-last7',count(7));set('ex-last30',count(30));
+  if(!S.summary){for(const id of ['ex-streak','ex-last7','ex-last30'])set(id,'–');$('ex-week-chart')?.replaceChildren();$('ex-calendar')?.replaceChildren();return}
+  const now=S.summary.today,days=new Map((S.summary.days||[]).map(x=>[x.date,Number(x.count)]));
+  set('ex-streak',S.summary.day_streak);set('ex-last7',S.summary.last7);set('ex-last30',S.summary.last30);
   const chart=$('ex-week-chart');
   if(chart){chart.replaceChildren();for(let w=5;w>=0;w--){let c=0;for(let d=0;d<7;d++)c+=days.get(stepDay(now,-w*7-d))||0;
    const col=el('div','ex-bar');const fill=el('i');fill.style.height=Math.max(4,Math.round(Math.min(100,c/7*100)))+'%';
@@ -83,40 +101,19 @@
   const legacy=window.TLShell&&window.TLShell.legacyTarget(dest.href,'boxer');
   return legacy?new URL(legacy,location.href).href:dest.href;
  }
+ let inboxPromise=null;
  async function loadNotifications(){
   const host=$('ex-notifications'),label=$('ex-notifications-status');if(!host)return;
-  label.textContent='Prüfe Mitteilungen …';
-  const flag=await S.db.from('league_feature_flags').select('is_enabled').eq('feature_key','notifications').maybeSingle();
-  host.replaceChildren();
-  if(flag.error||flag.data?.is_enabled!==true){label.textContent='Mitteilungen sind derzeit noch nicht freigeschaltet.';setBadge(0);return}
-  const r=await S.db.from('boxer_notifications').select('id,notification_type,title,message,target_path,created_at,read_at')
-   .eq('recipient_id',S.profile.id).order('created_at',{ascending:false}).limit(20);
-  if(r.error){label.textContent='Mitteilungen konnten nicht geladen werden: '+r.error.message;return}
-  const rows=r.data||[];const unread=()=>rows.filter(x=>!x.read_at).length;
-  const summary=()=>{label.textContent=rows.length?unread()+' ungelesen von '+rows.length+' Mitteilungen':'Du hast aktuell keine Mitteilungen.';setBadge(unread())};summary();
-  for(const note of rows){
-   const item=el('article','ex-notice'+(note.read_at?' read':''));
-   item.append(el('strong','',note.title||'Mitteilung'),el('p','',note.message||''),el('small','',new Date(note.created_at).toLocaleDateString('de-CH')));
-   const actions=el('div','ex-notice-actions');
-   const href=noteLink(note.target_path);if(href){const a=el('a','ex-btn ex-btn-ghost','Ansehen');a.href=href;actions.append(a)}
-   if(!note.read_at){
-    const mark=el('button','ex-btn ex-btn-ghost','Als gelesen markieren');mark.type='button';
-    mark.setAttribute('aria-label','Mitteilung als gelesen markieren: '+(note.title||'Mitteilung'));
-    mark.addEventListener('click',async()=>{
-     mark.disabled=true;mark.textContent='Speichere …';
-     const res=await S.db.rpc('mark_my_notification_read',{p_notification_id:note.id});
-     if(res.error){mark.disabled=false;mark.textContent='Als gelesen markieren';label.textContent='Mitteilung konnte nicht gespeichert werden. Bitte erneut versuchen.';return}
-     if(res.data!==true){const chk=await S.db.from('boxer_notifications').select('read_at').eq('id',note.id).eq('recipient_id',S.profile.id).maybeSingle();
-      if(chk.error||!chk.data?.read_at){mark.disabled=false;mark.textContent='Als gelesen markieren';label.textContent='Mitteilung konnte nicht bestätigt werden. Bitte aktualisieren.';return}}
-     note.read_at=new Date().toISOString();item.classList.add('read');mark.remove();summary();
-    });
-    actions.append(mark);
-   }
-   if(actions.childNodes.length)item.append(actions);
-   host.append(item);
-  }
+  try{
+   inboxPromise??=import('./takeover-inbox.js').then(({createInbox})=>createInbox({
+    getContext:()=>({db:S.db,profile:S.profile}),host,label,noteLink,
+    markRead:(db,id)=>db.rpc('mark_my_notification_read',{p_notification_id:id}),onUnread:setBadge,
+    classes:{item:'ex-notice',read:'read',actions:'ex-notice-actions',button:'ex-btn ex-btn-ghost',muted:'ex-muted'}
+   }));
+   await (await inboxPromise).load();
+  }catch{inboxPromise=null;host.replaceChildren();setBadge(null);label.textContent='Mitteilungen konnten nicht geladen werden. Bitte erneut versuchen.'}
  }
- function setBadge(n){const b=$('ex-notify-badge');if(!b)return;b.hidden=!n;b.textContent=n>99?'99+':String(n)}
+ function setBadge(n){const b=$('ex-notify-badge');if(!b)return;b.hidden=n===0;b.textContent=n===null?'–':n>99?'99+':String(n);b.setAttribute('aria-label',n===null?'Anzahl ungelesener Mitteilungen derzeit unbekannt':n+' ungelesene Mitteilungen')}
 
  // ---------------- Profil, Statistik, Level, Performance, Feedback ----------------
  function drawAvatar(key,url){
@@ -155,24 +152,16 @@
    }catch(e){msg.textContent='Speichern fehlgeschlagen: '+(e.message||e)}finally{btn.disabled=false}
   });
  }
- async function loadStats(){
+ function renderStats(){
   const host=$('ex-type-breakdown');if(!host)return;
-  const sum={};for(const t of S.types)sum[String(t.id)]={name:t.name,count:0,km:0,minutes:0};
-  let km=0,sprints=0,tech=0,offset=0;
-  try{
-   for(;;){const r=await S.db.from('training_submissions').select('training_type_id,jogging_km,technique_minutes').eq('boxer_id',S.profile.id).eq('status','approved').range(offset,offset+499);
-    if(r.error)throw r.error;
-    for(const e of r.data||[]){const it=sum[String(e.training_type_id)];if(!it)continue;it.count++;const k=Number(e.jogging_km)||0,m=Number(e.technique_minutes)||0;it.km+=k;it.minutes+=m;
-     if(/jogg|lauf|running/i.test(it.name))km+=k;if(/sprint/i.test(it.name))sprints++;if(/technik/i.test(it.name))tech+=m}
-    if(!r.data||r.data.length<500)break;offset+=500}
-   $('ex-total-km').textContent=fmt(km,2)+' km';$('ex-total-sprints').textContent=fmt(sprints)+' Einheiten';$('ex-total-technique').textContent=fmt(tech)+' Min.';
-   host.replaceChildren();
-   const list=Object.values(sum).filter(x=>x.count).sort((a,b)=>b.count-a.count||a.name.localeCompare(b.name));
-   if(!list.length)host.append(el('p','ex-muted','Noch keine bestätigten Trainings.'));
-   for(const it of list){const row=el('div','ex-list-line');const l=el('span');l.append(el('b','',it.name));
-    if(it.km||it.minutes)l.append(el('small','',[it.km?fmt(it.km,2)+' km':'',it.minutes?fmt(it.minutes)+' Min.':''].filter(Boolean).join(' · ')));
-    row.append(l,el('span','ex-pill',fmt(it.count)+' ×'));host.append(row)}
-  }catch(err){host.textContent='Statistik konnte nicht geladen werden: '+(err.message||err)}
+  if(!S.summary){for(const id of ['ex-total-km','ex-total-sprints','ex-total-technique'])if($(id))$(id).textContent='–';host.textContent='Statistik derzeit nicht verfügbar.';return}
+  const stats=S.summary.stats;
+  $('ex-total-km').textContent=fmt(stats.km,2)+' km';$('ex-total-sprints').textContent=fmt(stats.sprints)+' Einheiten';$('ex-total-technique').textContent=fmt(stats.technique)+' Min.';
+  host.replaceChildren();const list=S.summary.types||[];
+  if(!list.length)host.append(el('p','ex-muted','Noch keine bestätigten Trainings.'));
+  for(const it of list){const row=el('div','ex-list-line'),copy=el('span');copy.append(el('b','',it.name));
+   if(Number(it.km)||Number(it.minutes))copy.append(el('small','',[Number(it.km)?fmt(it.km,2)+' km':'',Number(it.minutes)?fmt(it.minutes)+' Min.':''].filter(Boolean).join(' · ')));
+   row.append(copy,el('span','ex-pill',fmt(it.count)+' ×'));host.append(row)}
  }
  async function loadLevel(){
   const box=$('expRankSection');if(!box)return;const status=$('ex-rank-status');
@@ -207,23 +196,29 @@
   if(archived.length){const det=el('details','ex-details');det.append(el('summary','','Archivierte Feedbacks ('+archived.length+')'));for(const it of archived)det.append(card(it,true));host.append(det)}
  }
  async function mountGamification(){
-  if(S.gamify)return;
-  try{const mod=await import('./takeover-gamification.js');S.gamify=await mod.mountGamification({db:S.db,profile:S.profile,types:S.types,getHistory:()=>S.rows})}
-  catch(err){console.warn('[boxer-experience] Quests/Achievements nicht verfügbar',err)}
+  if(S.gamify||!S.readAllowed)return;const epoch=++S.gamifyEpoch,owner=S.profile.id;
+  try{const mod=await import('./takeover-gamification.js');if(epoch!==S.gamifyEpoch||owner!==S.profile?.id||!S.readAllowed)return;
+   const instance=await mod.mountGamification({db:S.db,profile:S.profile,types:S.types,getHistory:()=>S.rows,getSummary:()=>S.summary});
+   if(epoch!==S.gamifyEpoch||owner!==S.profile?.id||!S.readAllowed){instance?.destroy?.();return}S.gamify=instance;
+  }catch(err){console.warn('[boxer-experience] Quests/Achievements nicht verfügbar',err)}
  }
 
  async function mount({db,profile,types}){
-  S.db=db;S.profile=profile;S.types=types||[];if(S.mounted)return;S.mounted=true;
-  $('ex-history-filter')?.addEventListener('change',()=>{S.visible=8;renderHistory()});
-  $('ex-history-more')?.addEventListener('click',()=>{S.visible+=10;renderHistory()});
-  $('ex-history-refresh')?.addEventListener('click',()=>{loadHistory();loadAudit()});
+  const changed=S.profile?.id!==profile.id;if(changed){S.historyEpoch++;S.summaryEpoch++;S.rows=[];S.summary=null;S.gamify?.destroy?.();S.gamify=null}
+  S.db=db;S.profile=profile;S.types=types||[];S.readAllowed=true;
+  const identity=await db.auth.getUser();if(S.profile?.id!==profile.id)return;S.actor=identity.data?.user?.id||null;if(!S.actor){clearTraining();return}
+  if(S.mounted){await Promise.allSettled([loadHistory(),loadSummary(),loadNotifications()]);mountGamification();return}S.mounted=true;
+  db.auth?.onAuthStateChange?.((event,session)=>{if(event==='SIGNED_OUT'||event==='SIGNED_IN'&&session?.user?.id!==S.actor)clearTraining()});
+  $('ex-history-filter')?.addEventListener('change',()=>loadHistory());
+  $('ex-history-more')?.addEventListener('click',()=>loadHistory(true));
+  $('ex-history-refresh')?.addEventListener('click',()=>{loadHistory();loadSummary();loadAudit()});
   $('ex-notifications-refresh')?.addEventListener('click',loadNotifications);
   document.addEventListener('visibilitychange',()=>{if(!document.hidden)loadNotifications().catch(()=>{})});
   mountProfile();
   const p=await db.from('profiles').select('avatar_key,avatar_url').eq('id',profile.id).maybeSingle();
   if(!p.error&&p.data){S.profile.avatar_key=p.data.avatar_key;S.profile.avatar_url=p.data.avatar_url;drawAvatar(p.data.avatar_key||'avatar-01',p.data.avatar_url)}
-  await Promise.allSettled([loadHistory(),loadNotifications(),loadAudit(),loadStats(),loadLevel(),loadPerformance(),loadFeedback()]);
+  await Promise.allSettled([loadHistory(),loadNotifications(),loadAudit(),loadSummary(),loadLevel(),loadPerformance(),loadFeedback()]);
   mountGamification();
  }
- window.TLStudio={mount,refresh:()=>Promise.allSettled([loadHistory(),loadAudit(),loadStats()]),loadNotifications,_noteLink:noteLink};
+ window.TLStudio={mount,refresh:()=>Promise.allSettled([loadHistory(),loadAudit(),loadSummary()]),loadNotifications,_noteLink:noteLink};
 })();

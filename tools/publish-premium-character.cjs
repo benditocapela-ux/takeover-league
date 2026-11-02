@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const modules=['pilot.js','streaming.js','materials.js','headwear/headwear.js','tops/tops.js','effects.js','headwear-hijab/hijab.js','long-hair/long-hair.js','production.js','completion/poses.js','completion/completion.js'];
-const manifests=['pilot-assets.json','streaming-assets.json','production-art/manifest.json','headwear/manifest.json','tops/manifest.json','hair-expansion/manifest.json','wraps/manifest.json','headwear-hijab/manifest.json','long-hair/manifest.json','completion/manifest.json','completion/pose-assets.json','completion/sleeves.json','completion/pose-bodies.json'];
+const manifests=['pilot-assets.json','streaming-assets.json','production-art/manifest.json','headwear/manifest.json','tops/manifest.json','hair-expansion/manifest.json','wraps/manifest.json','headwear-hijab/manifest.json','long-hair/manifest.json','completion/manifest.json','completion/pose-assets.json','completion/sleeves.json','completion/pose-bodies.json','completion/shirt.json'];
 function publish(source,destination){
  const release=JSON.parse(fs.readFileSync(path.join(source,'tools/premium-character-release.json')));
  if(!release.enabled)return {enabled:false,files:0};

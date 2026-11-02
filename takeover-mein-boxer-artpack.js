@@ -20,7 +20,7 @@ function build(manifest,draftPreview){
  // outfit's requests in parallel. Reuse each pending fetch across selections.
  const MAX_PARALLEL=3;
  const stats={attempted:0,matched:0,started:0,maxActive:0};
- const loaded=new Set(),pending=new Map(),notifying=new Set();
+ const loaded=new Set(),pending=new Map(),notifying=new Map();
  const queue=[];
  let activeLoads=0;
  function pump(){
@@ -144,9 +144,19 @@ function build(manifest,draftPreview){
   if(typeof window.Image!=='function')return false;
   const tasks=urls.map(loadImage);
   const key=urls.join('|');
-  if(typeof onReady==='function'&&!notifying.has(key)){
-   notifying.add(key);
-   Promise.all(tasks).then(()=>{notifying.delete(key);onReady()});
+  if(typeof onReady==='function'){
+   let listeners=notifying.get(key);
+   if(!listeners){
+    listeners=new Set();notifying.set(key,listeners);
+    // Tiles and the hero can join the same pending outfit independently.
+    // Release the set before callbacks redraw and prepare the current outfit.
+    Promise.all(tasks).then(()=>{
+     notifying.delete(key);
+     const callbacks=[...listeners];listeners.clear();
+     for(const listener of callbacks)listener();
+    });
+   }
+   listeners.add(onReady);
   }
   return false;
  }

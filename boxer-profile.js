@@ -165,7 +165,7 @@ function photoUrl(a){
 }
 async function showCoachAction(name){
  try{
-   const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+   const {createClient}=await import('./takeover-client.js');
    const db=createClient(PUBLIC_URL,PUBLIC_KEY);
    const {data:{user},error}=await db.auth.getUser();
    if(error||!user)return;

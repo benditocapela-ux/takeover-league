@@ -1,0 +1,74 @@
+{
+  "decision": "reject reuse for jab/sieg/ansage; accept direct Flex only",
+  "source": {
+    "path": "source-v2.png",
+    "sha256": "04005e7022a67409e7e31657966b9c2e61d0a1081500ccfc2374d5deb058bc92",
+    "uv": [
+      0,
+      0,
+      1229,
+      1280
+    ],
+    "box": [
+      0,
+      0,
+      768,
+      800
+    ]
+  },
+  "cage": {
+    "path": "cage-final.json",
+    "sha256": "60b9a61b00b014b0c86e5ff06b7206d9c34983e4690ad4d7298cf08ed39a1af1",
+    "points": 28,
+    "triangles": 34,
+    "poses": {
+      "jab": {
+        "flippedOrDegenerate": 0,
+        "minSignedDoubleArea": 78
+      },
+      "sieg": {
+        "flippedOrDegenerate": 0,
+        "minSignedDoubleArea": 615
+      },
+      "ansage": {
+        "flippedOrDegenerate": 0,
+        "minSignedDoubleArea": 525
+      }
+    }
+  },
+  "flexDirectIdentity": {
+    "first": "reuse-cpu-flex-200.png",
+    "final": "reuse-final-flex-200.png",
+    "sha256First": "22c6f5ccadf2cce2bbc74953074b2221cdeace7c23fbe7470103365c9a41c2e9",
+    "sha256Final": "22c6f5ccadf2cce2bbc74953074b2221cdeace7c23fbe7470103365c9a41c2e9",
+    "pngByteIdentical": true
+  },
+  "findings": {
+    "jab": [
+      "Orange body triangles above left shirt shoulder remain visible at 200%.",
+      "Chest-side fabric stretch and sleeve/armhole shape differ visibly from accepted source."
+    ],
+    "sieg": [
+      "Angular left shoulder and small internal exposed-skin wedge remain.",
+      "Left side gold seam bulges outward; raised sleeve remains elongated/pointed at cuff."
+    ],
+    "ansage": [
+      "Left shoulder is angular, with an internal underarm skin wedge.",
+      "Side seam and chest texture distort under retargeting."
+    ]
+  },
+  "scope": {
+    "runtimeEdits": false,
+    "imageGeneration": false,
+    "sourcePngEdits": false,
+    "commit": false,
+    "push": false
+  },
+  "evidence": [
+    "reuse-final-contact-first.png",
+    "reuse-final-jab-200.png",
+    "reuse-final-sieg-200.png",
+    "reuse-final-ansage-200.png",
+    "reuse-final-flex-200.png"
+  ]
+}

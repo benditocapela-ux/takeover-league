@@ -159,14 +159,16 @@ function injected(cfg){
  x=await open('admin','wochenplan.html');
  await x.p.waitForSelector('[data-tab="schedule"]');
  await x.p.click('[data-tab="schedule"]');
- await x.p.waitForSelector('[data-editslot="1"]');
- await x.p.click('[data-editslot="1"]');
+ // Slot 9 is the fixture's guaranteed current-day slot. Slot 1 is removed on Mondays.
+ await x.p.waitForSelector('[data-editslot="9"]');
+ await x.p.click('[data-editslot="9"]');
  await shot(x.p,'6a-stundenplan-admin-edit');
  await x.p.fill('#slLabel','Sparring & Technik');await x.p.fill('#slMin','100');
+ await x.p.selectOption('#slDow','1');await x.p.selectOption('#slType','9');
  await x.p.click('[data-act="slotsave"]');
  await x.p.waitForFunction(()=>/Stundenplan gespeichert/.test(document.getElementById('status').textContent));
  const sv2=(await calls(x.p)).find(c=>c[0]==='admin_save_club_slot')[1];
- assert.deepEqual(sv2,{p_slot_id:1,p_dow:1,p_training_type_id:9,p_tier:'pflicht',p_label:'Sparring & Technik',p_duration_minutes:100,p_active:true});
+ assert.deepEqual(sv2,{p_slot_id:9,p_dow:1,p_training_type_id:9,p_tier:'pflicht',p_label:'Sparring & Technik',p_duration_minutes:100,p_active:true});
  assert.match(await x.p.textContent('#app'),/Sparring & Technik/);
  await done(x);
 

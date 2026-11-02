@@ -9,7 +9,7 @@ const compare=document.createElement('a');compare.href='./boxer-compare.html';co
 const container=document.createElement('div');container.append(button,compare,info);root.insertBefore(container,root.querySelector('#ranking-content'));
 let myName='';
 try{
- const {createClient}=await import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm');
+ const {createClient}=await import('./takeover-client.js');
  const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
  const {data:{user},error}=await db.auth.getUser();if(error||!user)return;
  const {data:p,error:pe}=await db.from('profiles').select('display_name,role,is_active').eq('auth_user_id',user.id).maybeSingle();

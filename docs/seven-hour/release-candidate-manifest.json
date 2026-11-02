@@ -1,0 +1,219 @@
+{
+  "format": 1,
+  "package": "pr94-eight-migrations",
+  "source_snapshot_commit": "16e2fa9fa382074a7fd27003cf079603b3727e30",
+  "release_authorized": false,
+  "checksum_format": "SHA-256 of UTF-8 content with CRLF normalized to LF; packaged files use LF",
+  "execution": "none; independent source-file transactions; not an atomic bundle",
+  "legacy_bundle": "tests/build-league-21-release.cjs covers25 older league_21 migrations only and excludes all8 listed here",
+  "metrics_default": "jogging_km and training_count disabled; reward_rule and jogging_training_type_id NULL",
+  "migration_history": "No supabase_migrations history records are produced by packaging. A later authorized migration operator must reconcile actual history without blindly pushing all pending migrations.",
+  "managed_auth_postgrest": "not accepted; isolated real test identities, candidate installation and explicit staging authorization are prerequisites",
+  "migrations": [
+    {
+      "order": 1,
+      "id": "20261102084519",
+      "file": "supabase/migrations/20261102084519_duel_points_shared_preview_close.sql",
+      "sha256_lf": "4c5ee2aba4c9771357fcd1abbdd9ba74b971fe5843a8dd42c8aaeb0c751baa71",
+      "requires": [],
+      "external_requirements": [
+        "ranked V2.1 duel reconciler",
+        "V2 live scores core",
+        "profiles.archived_at"
+      ],
+      "preflight": {
+        "file": "supabase/production-prep/preflight_20261102084519_duel_points_shared_preview_close.sql",
+        "sha256_lf": "4f78462adac7878fa572fe6ca4eb9c29840395828ee57127e2075831e0e20751"
+      },
+      "postflight": {
+        "file": "supabase/production-prep/postflight_20261102084519_duel_points_shared_preview_close.sql",
+        "sha256_lf": "098e53148a5707b1bacfacf44ee47bb364e4679aaf725a0992f5f8178b0e209c"
+      },
+      "rollback": {
+        "file": "supabase/production-prep/rollback_20261102084519_duel_points_shared_preview_close.sql",
+        "sha256_lf": "137b3dc9623be4683361dc070ee063b64412365ab2be560fcd351f5e15e70119",
+        "boundary": "Restore previous functions only; first remove metric generation and staff queue. No reward/data reversal."
+      }
+    },
+    {
+      "order": 2,
+      "id": "20261102090410",
+      "file": "supabase/migrations/20261102090410_period_archive_readers.sql",
+      "sha256_lf": "20c9ac1192245af4e4f8ae8d35458e00e779ce18f613ec2c2303284971bb0921",
+      "requires": [],
+      "external_requirements": [
+        "V2.1 season/results/honors tables",
+        "profile visibility/archive columns"
+      ],
+      "preflight": {
+        "file": "supabase/production-prep/preflight_20261102090410_period_archive_readers.sql",
+        "sha256_lf": "c6bb3036309843d90163e5822bd0c80daf57c08f08fe0c06c8acd6a3f7eb4bba"
+      },
+      "postflight": {
+        "file": "supabase/production-prep/postflight_20261102090410_period_archive_readers.sql",
+        "sha256_lf": "591df3cbcc16d7fb3d6bf1c507602b49c81fd49bac558b137cfbb9b5c08d4be1"
+      },
+      "rollback": {
+        "file": "supabase/production-prep/rollback_20261102090410_period_archive_readers.sql",
+        "sha256_lf": "3a3593a8a35b196a75f8ee9cf0724880bfb8ab45174ecc52c92e72b095595da6",
+        "boundary": "Remove dependent period notices and closes first; restores older public visibility; no CASCADE/data removal."
+      }
+    },
+    {
+      "order": 3,
+      "id": "20261102093606",
+      "file": "supabase/migrations/20261102093606_duel_notification_event_identity.sql",
+      "sha256_lf": "0919cb1b778b9087bc78d82407b5a333aa4227d7cd44cc1847120643806aece7",
+      "requires": [
+        "20261102084519"
+      ],
+      "external_requirements": [
+        "boxer_notifications + existing duel notification trigger"
+      ],
+      "preflight": {
+        "file": "supabase/production-prep/pre_postflight_20261102093606_duel_notification_event_identity.sql",
+        "sha256_lf": "2f002c7c53e2d348913565c0554185e4468e2c99de7e98ba5efc8845e9349c15"
+      },
+      "postflight": {
+        "file": "supabase/production-prep/pre_postflight_20261102093606_duel_notification_event_identity.sql",
+        "sha256_lf": "2f002c7c53e2d348913565c0554185e4468e2c99de7e98ba5efc8845e9349c15"
+      },
+      "rollback": {
+        "file": "supabase/production-prep/rollback_20261102093606_duel_notification_event_identity.sql",
+        "sha256_lf": "6b1b2e396c18e14c540c68545176a0376ccc89c77ace427346ac34a7e8c6b7fd",
+        "boundary": "Restore writer only; retains event_key/index/messages/read markers. Do not replay original forward DDL blindly."
+      }
+    },
+    {
+      "order": 4,
+      "id": "20261102095352",
+      "file": "supabase/migrations/20261102095352_duel_staff_queue_readonly.sql",
+      "sha256_lf": "e2e1cbe7e1d4ce5258bcd007f9265cd3f49b62d9f076cf96795556bd113c319e",
+      "requires": [
+        "20261102084519"
+      ],
+      "external_requirements": [
+        "shared close preview",
+        "profiles.archived_at"
+      ],
+      "preflight": {
+        "file": "supabase/production-prep/pre_postflight_20261102095352_duel_staff_queue_readonly.sql",
+        "sha256_lf": "25e7e6f80a75bb87753754372f97632b8e27d65badc4080a8485f9942d989134"
+      },
+      "postflight": {
+        "file": "supabase/production-prep/pre_postflight_20261102095352_duel_staff_queue_readonly.sql",
+        "sha256_lf": "25e7e6f80a75bb87753754372f97632b8e27d65badc4080a8485f9942d989134"
+      },
+      "rollback": {
+        "file": "supabase/production-prep/rollback_20261102095352_duel_staff_queue_readonly.sql",
+        "sha256_lf": "e6d4d5a6c1fd9264fb59f2bcd4cfad6b95bb419e43e2d322514e1e32d1642562",
+        "boundary": "Reader/index removal only; remove before reverting points helpers."
+      }
+    },
+    {
+      "order": 5,
+      "id": "20261102095422",
+      "file": "supabase/migrations/20261102095422_duel_metric_contracts_disabled.sql",
+      "sha256_lf": "a62c433c425ed916d08cc06e28f0a4861cf8b1d22b39f2834fd7cc379f2ec8e9",
+      "requires": [
+        "20261102084519",
+        "20261102093606"
+      ],
+      "external_requirements": [
+        "V2 invite/respond/list/batch + ranked snapshots",
+        "exact legacy end constraint",
+        "profiles.is_listed/archived_at"
+      ],
+      "preflight": {
+        "file": "supabase/production-prep/preflight_20261102095422_duel_metric_contracts_disabled.sql",
+        "sha256_lf": "c58e23fb54195470f1f358931ec76bb54b2dfa880fac31dcf7460aebefecabf1"
+      },
+      "postflight": {
+        "file": "supabase/production-prep/postflight_20261102095422_duel_metric_contracts_disabled.sql",
+        "sha256_lf": "87a0caa400d0fdabac5d9f8cebbebd69aa544b32d7b46e419b9417f740820f04"
+      },
+      "rollback": {
+        "file": "supabase/production-prep/rollback_20261102095422_duel_metric_contracts_disabled.sql",
+        "sha256_lf": "fdb852093362809b3c29a3de3eb4c64e4f8ed209d7366505c41171d47f663f32",
+        "boundary": "Empty generation only: ANY contract, numeric metadata, enabled/configured mapping OR non-null trusted receipt forbids rollback. Forward repair thereafter."
+      }
+    },
+    {
+      "order": 6,
+      "id": "20261102095858",
+      "file": "supabase/migrations/20261102095858_period_close_preview_snapshot.sql",
+      "sha256_lf": "3d10b704f42050eb7451903d10a205ee51334b7b64c838760e4adbf78b1f273a",
+      "requires": [
+        "20261102090410",
+        "20261102093606"
+      ],
+      "external_requirements": [
+        "V2.1 season_transition_core",
+        "notifications_enabled helper"
+      ],
+      "preflight": {
+        "file": "supabase/production-prep/preflight_20261102095858_period_close_preview_snapshot.sql",
+        "sha256_lf": "89db78b40639a99afca87342d9e92a14eec1a7504163f96f3887520cc859523b"
+      },
+      "postflight": {
+        "file": "supabase/production-prep/postflight_20261102095858_period_close_preview_snapshot.sql",
+        "sha256_lf": "3e5c5d4e991d44a6038b6468c152f7f8643a792c586276320f744c8ad6452417"
+      },
+      "rollback": {
+        "file": "supabase/production-prep/rollback_20261102095858_period_close_preview_snapshot.sql",
+        "sha256_lf": "87054f2b4f265dd0ec011dfd1b2286b6843699cd23fe66abe5ef6ad66365cbf1",
+        "boundary": "Remove period notices first; any official closure/month snapshot forbids destructive rollback. No reward reversal."
+      }
+    },
+    {
+      "order": 7,
+      "id": "20261102101922",
+      "file": "supabase/migrations/20261102101922_period_notices_profile_state.sql",
+      "sha256_lf": "d868ef95724992e569a41412937ca1ad2a0864dbc0f3e6f9e9245d8ae27d6ed8",
+      "requires": [
+        "20261102095858",
+        "20261102093606"
+      ],
+      "external_requirements": [
+        "active-profile and notification helpers"
+      ],
+      "preflight": {
+        "file": "supabase/production-prep/pre_postflight_20261102101922_period_notices_profile_state.sql",
+        "sha256_lf": "1c79bdac3fe230d95e4190ea1e521efd24b80c6376c62cfc3528f78c9a8e746c"
+      },
+      "postflight": {
+        "file": "supabase/production-prep/pre_postflight_20261102101922_period_notices_profile_state.sql",
+        "sha256_lf": "1c79bdac3fe230d95e4190ea1e521efd24b80c6376c62cfc3528f78c9a8e746c"
+      },
+      "rollback": {
+        "file": "supabase/production-prep/rollback_20261102101922_period_notices_profile_state.sql",
+        "sha256_lf": "24c158cba9532f7d37ffcc476ed4e217f1a2f0e05e3a6402c2690f2b65c255c3",
+        "boundary": "Any dismissal record forbids destructive rollback. Inbox read timestamps are never reset."
+      }
+    },
+    {
+      "order": 8,
+      "id": "20261102103929",
+      "file": "supabase/migrations/20261102103929_studio_training_history_summary.sql",
+      "sha256_lf": "ebc357f4437dd24962d8d00f7fe41778beee6e091d1b114e4618bd49fd9e01b3",
+      "requires": [],
+      "external_requirements": [
+        "profiles.archived_at",
+        "training duration_minutes/club_tier/training_location/recorded_by columns"
+      ],
+      "preflight": {
+        "file": "supabase/production-prep/pre_postflight_20261102103929_studio_training_history_summary.sql",
+        "sha256_lf": "fd636bd03199aeb5788ddbd244748321d565402ccdc4df7a3626a0851baab81b"
+      },
+      "postflight": {
+        "file": "supabase/production-prep/pre_postflight_20261102103929_studio_training_history_summary.sql",
+        "sha256_lf": "fd636bd03199aeb5788ddbd244748321d565402ccdc4df7a3626a0851baab81b"
+      },
+      "rollback": {
+        "file": "supabase/production-prep/rollback_20261102103929_studio_training_history_summary.sql",
+        "sha256_lf": "428876c706ea7449a2dd41ca34f1405855d7042dad5d4a5a05e90e46b5687ffd",
+        "boundary": "Revert dependent client first; remove reader functions/indexes/schema only; preserve every training row."
+      }
+    }
+  ]
+}

@@ -31,6 +31,7 @@ function injected(role){
   const filter=[],bounds=[],ordering=[],self={
    select:(fields,options)=>query(table,{...opts,fields,options}),
    eq:(col,val)=>{filter.push([col,val]);return self},
+   is:(col,val)=>{filter.push([col,val]);return self},
    gte:(col,val)=>{bounds.push([col,val,'gte']);return self},
    lte:(col,val)=>{bounds.push([col,val,'lte']);return self},
    order:(col,v)=>{ordering.push([col,v]);return self},
@@ -47,10 +48,11 @@ function injected(role){
   function compute(){
    let items=(all[table]||[]).filter(x=>filter.every(([k,v])=>x[k]===v)&&bounds.every(([k,v,op])=>op==='gte'?x[k]>=v:x[k]<=v));
    for(const [k,v] of ordering){items=items.slice().sort((a,b)=>v?.ascending?(a[k]>b[k]?1:-1):(a[k]>b[k]?-1:1))}
+   const total=items.length;
    if(opts.range)items=items.slice(opts.range[0],opts.range[1]+1);
    if(opts.limit!=null)items=items.slice(0,opts.limit);
-   if(opts.options?.head)return {data:null,count:items.length,error:null};
-   return {data:items,error:null};
+   if(opts.options?.head)return {data:null,count:total,error:null};
+   return {data:items,error:null,...(opts.options?.count?{count:total}:{})};
   }
   return self;
  }
@@ -121,7 +123,7 @@ async function main(){
    assert.equal(new URL(await page.locator('#boxerNotificationList a').first().getAttribute('href')).pathname,'/boxer.html');
    await page.getByRole('button',{name:'Mitteilung als gelesen markieren: Training bewertet'}).click();
    await page.waitForFunction(()=>window.__mockStats.readNotifications.length===1);
-   assert.match(await page.locator('#boxerNotificationStatus').innerText(),/0 ungelesene/);
+   assert.match(await page.locator('#boxerNotificationStatus').innerText(),/0 ungelesen von 1 Mitteilungen insgesamt/);
    console.log('PASS owner notification read acknowledgement and unread count');
    await page.goto(url+'/challenges.html');
    await page.waitForFunction(()=>document.querySelector('#list article')!==null);

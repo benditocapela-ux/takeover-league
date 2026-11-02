@@ -20,8 +20,8 @@
    const out=orig.apply(this,arguments);
    try{
     if(opts&&(opts.layered||opts.premium||opts.anime===false))return out;
-    const c=lib.normalize(cfg),want=(opts&&opts.pose)||c.pose_profile,pose=poses.has(want)?want:'guard';
-    return out.replace('<svg class="tlh"','<svg class="tlh" data-tl-anime="'+encodeURIComponent(JSON.stringify(c))+'" data-tl-pose="'+pose+'"');
+    const c=lib.normalize(opts?.scene&&opts.scene!=='none'?{...cfg,scene:opts.scene}:cfg),want=(opts&&opts.pose)||c.pose_profile,pose=poses.has(want)?want:'guard';
+    return out.replace('<svg class="tlh"','<svg class="tlh" data-tl-anime="'+encodeURIComponent(JSON.stringify(c))+'" data-tl-pose="'+pose+'"'+(opts?.scene==='none'?' data-tl-scene="none"':''));
    }catch(_){return out}
   };
   try{return Object.assign({},lib,{svg,__tlAnime:true})}catch(_){return lib}
@@ -39,12 +39,12 @@
  function upgrade(node){
   if(seen.has(node))return;seen.add(node);
   let cfg;try{cfg=JSON.parse(decodeURIComponent(node.getAttribute('data-tl-anime')))}catch(_){return}
-  const pose=node.getAttribute('data-tl-pose')||'guard';
+  const pose=node.getAttribute('data-tl-pose')||'guard',renderOptions={scene:node.getAttribute('data-tl-scene')};
   const attempt=()=>{
    if(!api||!node.isConnected||node.getAttribute('data-tl-anime-done'))return;
    // Gleiche Ausrüstung mehrfach auf der Seite (z. B. eigenes Holo und Podium): alle warten auf dieselbe Berechnung.
-   const k=JSON.stringify(cfg)+'|'+pose;
-   const html=api.hero(cfg,pose,()=>{const list=waiters.get(k)||[];waiters.delete(k);list.forEach(f=>f())});
+   const k=JSON.stringify(cfg)+'|'+pose+'|'+(renderOptions.scene||'');
+   const html=api.hero(cfg,pose,()=>{const list=waiters.get(k)||[];waiters.delete(k);list.forEach(f=>f())},renderOptions);
    if(!html){if(!waiters.has(k))waiters.set(k,[]);waiters.get(k).push(attempt);return}
    const m=/src="(data:image\/png;base64,[^"]+)"/.exec(html);if(!m)return;
    const ns='http://www.w3.org/2000/svg',img=document.createElementNS(ns,'image');

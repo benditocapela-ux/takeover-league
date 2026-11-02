@@ -1,0 +1,30 @@
+[
+  {
+    "route": "index.html",
+    "status": 200,
+    "warnings": [
+      "GoTrueClient@sb-iqarjivcrddcixrvqbfb-auth-token:1 (2.118.0) 2026-11-02T08:01:19.993Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+      "GoTrueClient@sb-iqarjivcrddcixrvqbfb-auth-token:2 (2.118.0) 2026-11-02T08:01:20.002Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+      "GoTrueClient@sb-iqarjivcrddcixrvqbfb-auth-token:3 (2.118.0) 2026-11-02T08:01:20.007Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key."
+    ],
+    "errors": []
+  },
+  {
+    "route": "duels.html",
+    "status": 200,
+    "warnings": [
+      "GoTrueClient@sb-iqarjivcrddcixrvqbfb-auth-token:1 (2.118.0) 2026-11-02T08:01:23.704Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+      "GoTrueClient@sb-iqarjivcrddcixrvqbfb-auth-token:2 (2.118.0) 2026-11-02T08:01:23.707Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key.",
+      "GoTrueClient@sb-iqarjivcrddcixrvqbfb-auth-token:3 (2.118.0) 2026-11-02T08:01:23.709Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key."
+    ],
+    "errors": []
+  },
+  {
+    "route": "boxer-profile.html",
+    "status": 200,
+    "warnings": [
+      "GoTrueClient@sb-iqarjivcrddcixrvqbfb-auth-token:1 (2.118.0) 2026-11-02T08:01:26.747Z Multiple GoTrueClient instances detected in the same browser context. It is not an error, but this should be avoided as it may produce undefined behavior when used concurrently under the same storage key."
+    ],
+    "errors": []
+  }
+]

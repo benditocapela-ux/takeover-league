@@ -12,7 +12,6 @@
   const fmt = n => Number(n).toLocaleString('de-CH',{maximumFractionDigits:0});
   const empty = (selector,message) => { const node=$(selector); if(node)node.textContent=message; };
   const setText = (id,value) => {const node=$(id);if(node)node.textContent=String(value);};
-  const asNumber = value => Number.isFinite(Number(value)) ? Number(value) : null;
   const dateZurich = date => new Intl.DateTimeFormat('en-CA',{timeZone:'Europe/Zurich',year:'numeric',month:'2-digit',day:'2-digit'}).format(date);
   const dayLabel = value => {try{return new Intl.DateTimeFormat('de-CH',{day:'2-digit',month:'short',year:'numeric'}).format(new Date(value+'T12:00:00'))}catch(_){return value||'–'}};
   function showGate(title,message,link,href){
@@ -114,26 +113,10 @@
     }
   }
   function renderPodium(rows,looks){
-    const host=$('ex-podium');host.replaceChildren();
-    if(!rows.length){const p=document.createElement('p');p.className='ex-muted';p.textContent='Die Rangliste enthält noch keine Boxer.';host.append(p);return;}
-    const sorted=rows.slice().filter(r=>r?.boxer_name&&asNumber(r.monthly_points)!==null)
-      .sort((a,b)=>(Number(a.rank_position)||9999)-(Number(b.rank_position)||9999));
-    const podium=[sorted[1]||null,sorted[0]||null,sorted[2]||null];
-    for(const [i,boxer] of podium.entries()){
-      const order=[2,1,3][i];
-      const step=document.createElement(boxer?'a':'div');
-      step.className='ex-step '+(order===1?'first':order===3?'third':'second');
-      if(boxer){step.href='./boxer-profile.html?name='+encodeURIComponent(boxer.boxer_name);step.setAttribute('aria-label','Platz '+order+': '+boxer.boxer_name);}
-      const figure=document.createElement('div');figure.className='ex-podium-holo';
-      const config=boxer&&looks&&Object.entries(looks).find(([n])=>n.toLocaleLowerCase('de-CH')===String(boxer.boxer_name).toLocaleLowerCase('de-CH'))?.[1];
-      const svg=safeHolo(config,{pose:config?.pose_profile||'guard',scene:'none',holo:false,label:'Holo von '+(boxer?.boxer_name||'')});
-      if(svg)figure.innerHTML=svg;
-      else{const marker=document.createElement('span');marker.textContent='🥊';marker.style.fontSize='48px';marker.setAttribute('aria-label','Kein Holo verfügbar');figure.append(marker)}
-      const name=document.createElement('div');name.className='ex-step-name';name.textContent=boxer?boxer.boxer_name:'Noch offen';
-      const points=document.createElement('div');points.className='ex-step-points';points.textContent=boxer?fmt(boxer.monthly_points)+' P':'–';
-      const base=document.createElement('div');base.className='ex-step-base';base.textContent=String(order);
-      step.append(figure,name,points,base);host.append(step);
-    }
+    window.TLLeaguePodium.render($('ex-podium'),rows,{figure:boxer=>{
+      const config=looks&&Object.entries(looks).find(([n])=>n.toLocaleLowerCase('de-CH')===String(boxer.boxer_name).toLocaleLowerCase('de-CH'))?.[1];
+      return safeHolo(config,{pose:config?.pose_profile||'guard',scene:'none',holo:false,label:'Holo von '+boxer.boxer_name});
+    }});
   }
   async function loadLeaderboard(){
     const rows=await safeRpc('get_public_leaderboard');
@@ -146,7 +129,7 @@
     const rank=mine&&Number(mine.monthly_points)>0&&Number(mine.rank_position)>0?'#'+mine.rank_position:'–';
     setText('ex-home-rank',rank);setText('ex-league-rank',rank);
     setText('ex-league-points',mine?fmt(mine.monthly_points):'–');
-    const top=rows.filter(r=>r.boxer_name).slice().sort((a,b)=>(Number(a.rank_position)||9999)-(Number(b.rank_position)||9999)).slice(0,3);
+    const top=window.TLLeaguePodium.entries(rows).map(row=>row.source);
     const looks=top.length?await safeRpc('get_holo_looks',{p_display_names:top.map(r=>r.boxer_name)}):null;
     renderPodium(rows,looks);
   }
@@ -325,6 +308,11 @@
       const av=$('ex-account-avatar');if(av)av.textContent=String(profile.display_name||'?').trim().split(/\s+/).slice(0,2).map(x=>x[0]||'').join('').toUpperCase()||'👤';
       await Promise.allSettled([loadMyPerformance(),loadLeaderboard(),loadTraining(),loadLevel(),loadTrainingConfiguration()]);
       if(window.TLStudio)await window.TLStudio.mount({db:state.db,profile:state.profile,types:state.types});
+      void import('./takeover-period-notices.js').then(({mountPeriodNotices})=>{
+        const hosts=['heute','liga'].map(view=>{const section=document.querySelector('[data-view="'+view+'"]');if(!section)return null;
+          const host=document.createElement('section');host.setAttribute('aria-label','Ergebnisse und Perioden');host.hidden=true;section.prepend(host);return host});
+        return mountPeriodNotices({db:state.db,hosts});
+      }).catch(()=>{});
       if(state.pendingSub){const sub=state.pendingSub;state.pendingSub='';selectTab(state.current,sub)}
     }catch(error){
       console.error('[boxer-experience] init failed',error);

@@ -12,6 +12,8 @@
 .coach-recent{display:flex;gap:var(--sp-2);align-items:center;flex-wrap:wrap;margin:0 0 var(--sp-3)}.coach-recent a{padding:9px 10px;border:1px solid var(--line-strong);border-radius:var(--r-sm);min-height:44px}.bulk-select-label{display:inline-flex;align-items:center;gap:var(--sp-2);color:var(--muted);font-size:var(--fs-sm)}.coach-profile-link{display:inline-block;margin:6px 0}
 #status.cv2-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(96px + env(safe-area-inset-bottom));z-index:60;width:min(560px,calc(100% - 24px));margin:0;padding:12px 16px;border-radius:14px;border:1px solid color-mix(in srgb,var(--gold) 50%,transparent);background:var(--surface-3);color:var(--text);font-weight:700;box-shadow:var(--shadow-card)}#status.cv2-toast:empty{display:none}#status.cv2-toast.bad{border-color:var(--bad);color:#ffd9db}
 .self-rating-notice{display:block;padding:12px 14px;border-radius:14px;border:1px solid color-mix(in srgb,var(--gold) 50%,transparent);text-decoration:none;font-weight:700;min-height:44px}
+/* Long German tile labels must shrink with their flex item on narrow screens. */
+body[data-tl-screen="coach"] #viewHome .cv2-tile{min-width:0;overflow-wrap:anywhere;hyphens:auto}
 </style><link rel="stylesheet" href="./takeover-navigation.css"><link rel="stylesheet" href="./takeover-theme.css"><link rel="stylesheet" href="./takeover-redesign.css"><link rel="stylesheet" href="./takeover-coach-v2.css"><link rel="stylesheet" href="./takeover-staff-experience.css"><link rel="stylesheet" href="./takeover-app-shell.css"></head><body data-tl-screen="coach"><main><div class="tl-screen-ribbon" aria-label="Aktueller Bereich: Trainerbereich"><div class="tl-screen-identity"><span class="tl-screen-symbol" aria-hidden="true">🧑‍🏫</span><div><div class="tl-screen-eyebrow">TAKEOVER LEAGUE · Einreichungen prüfen und Boxer begleiten</div><div class="tl-screen-title">Trainerbereich</div></div></div><div class="tl-screen-links"><a href="#bestaetigen" class="tl-screen-primary">Offene Trainings</a><a href="./challenges.html">Challenges</a><button type="button" data-stf-global-menu aria-haspopup="dialog">☰ Menü</button></div></div><header class="tl-subnav"><div class="brand">TAKEOVER LEAGUE / COACH</div><div class="bar"><a href="./index.html">Liga</a><a href="./login.html">Account</a><button id="logout">Abmelden</button></div></header>
 <div class="cv2-hero"><div><p class="eyebrow">TRAINING · BETREUUNG · TEAM</p><h1>DEIN COACH DASHBOARD</h1><p id="welcome">Anmeldung wird überprüft …</p></div><button type="button" id="refresh" class="cv2-btn-sec cv2-refresh" aria-label="Alle Daten neu laden" title="Aktualisieren">↻</button></div>
 <div id="error" class="error" role="alert"></div>
@@ -29,6 +31,7 @@
  </div>
  <p class="muted cv2-total">Bestätigte Trainings gesamt: <b id="approvedCount">–</b></p>
  <section class="card" aria-labelledby="cv2TasksTitle"><div class="cv2-sec-head"><h2 id="cv2TasksTitle">Wichtige Aufgaben</h2></div><ul class="cv2-tasks" id="cv2Tasks"><li class="cv2-task">Wird geladen …</li></ul></section>
+ <section class="card" id="coachCompetitions" aria-labelledby="coachCompetitionsTitle"><h2 id="coachCompetitionsTitle">Wettkämpfe &amp; Abschlüsse</h2><p id="coachDuelsStatus" role="status">Duellstatus wird geprüft …</p><p class="muted">Die Vorschau zeigt Trainingspunkte, offene Prüfungen und die geplante EXP-Änderung. Erst eine ausdrückliche Bestätigung kann buchen.</p><div class="cv2-links"><a href="./duels.html?review=due#duelList">Duell-Abschlüsse prüfen<small>Schreibfreie Vorschau vor jeder Buchung</small></a><a href="./league-history.html">Monat/Saison prüfen<small>Zeitraum auswählen und Abschlussvorschau öffnen</small></a><a href="./challenges.html">Challenges prüfen<small>Bestehende Challenge-Verwaltung</small></a><a href="./arena.html">Arena prüfen<small>Bestehende Wettkämpfe und Ergebnisse</small></a><a href="./league-manager.html">Saisons verwalten<small>Bestehende Berechtigungen bleiben bestehen</small></a></div></section>
  <div class="cv2-tiles" role="list" aria-label="Hauptbereiche">
   <button type="button" class="cv2-tile" role="listitem" data-go="review"><span class="ic" aria-hidden="true">✅</span>Trainings bestätigen</button>
   <button type="button" class="cv2-tile" role="listitem" data-go="gym"><span class="ic" aria-hidden="true">🏟️</span>Gym / Anwesenheit</button>
@@ -79,8 +82,8 @@
 </section>
 <dialog id="coachBoxerQuick" aria-labelledby="coachBoxerQuickTitle"><h2 id="coachBoxerQuickTitle">Boxer-Schnellansicht</h2><div id="coachBoxerQuickBody" aria-live="polite"></div><div class="actions"><button type="button" id="closeCoachQuick">Schliessen</button></div></dialog>
 <dialog id="cv2Sheet" class="cv2-sheet" aria-labelledby="cv2SheetTitle"><div class="cv2-sheet-inner"><div class="cv2-sheet-head"><div><h2 id="cv2SheetTitle">Training bearbeiten</h2><p id="cv2SheetSub"></p></div><button type="button" class="cv2-btn-sec x" data-close aria-label="Schliessen">✕</button></div><div class="cv2-sheet-body" id="cv2SheetBody"></div><div class="cv2-sheet-foot" id="cv2SheetFoot"></div></div></dialog>
-</main><script type="module">
-import {createClient} from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+</main><script src="./takeover-duel-queue.js"></script><script type="module">
+import {createClient} from './takeover-client.js';
 const db=createClient('https://iqarjivcrddcixrvqbfb.supabase.co','sb_publishable_o--Z21P8Q08lMvIOask_Fw__SRRX7_R');
 const $=id=>document.getElementById(id);const fail=m=>{$('error').textContent=m;$('content').classList.add('hidden');$('cv2Tabs').hidden=true};
 const el=(tag,cls,text)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(text!=null)n.textContent=text;return n};
@@ -97,6 +100,22 @@ function say(msg,bad){const s=$('status');s.textContent=msg||'';s.classList.togg
 
 let currentPeople=[],currentTypes=[],allTrainings=[],currentAdminId=null,currentRole=null;
 let v2List=false,v2Cfg=null,summary=null;
+let competitionEpoch=0,competitionSignedOut=false;
+function clearCompetitionStatus(){competitionEpoch++;$('coachDuelsStatus').textContent='Bitte anmelden, um den Duellstatus zu prüfen.';}
+db.auth.onAuthStateChange?.(event=>{if(event==='SIGNED_OUT'){competitionSignedOut=true;clearCompetitionStatus()}else if(event==='SIGNED_IN')competitionSignedOut=false});
+async function loadCompetitionStatus(){
+ const epoch=++competitionEpoch,actor=currentAdminId;
+ const target=$('coachDuelsStatus');
+ if(competitionSignedOut||!actor||!['coach','admin'].includes(currentRole)){target.textContent='Duellstatus ist nur für aktive Trainer verfügbar.';return}
+ target.textContent='Prüfe offene und fällige Punkte-Duelle …';
+ try{
+  const args={p_state:'due',p_limit:1};const result=await db.rpc('duel_v2_staff_queue',args);
+  if(epoch!==competitionEpoch||competitionSignedOut||actor!==currentAdminId)return;
+  if(result.error)throw result.error;
+  if(!window.TLDuelQueue?.validPage(result.data,args))throw Error('Ungültige Duellwarteschlange');
+  target.textContent=window.TLDuelQueue.countsText(result.data.counts)+'. Alle Punkte-Duelle berücksichtigt. Vor einer Buchung wird die jeweilige Abschlussvorschau erneut geprüft.';
+ }catch(error){if(epoch===competitionEpoch&&!competitionSignedOut)target.textContent='Duellstatus derzeit nicht verfügbar. Die Abschlüsse wurden nicht als erledigt gewertet.'}
+}
 
 // ---------------------------------------------------------------- Bereiche (Ansichten) und Navigation
 const COACH_VIEWS=[['home','Start','🏠','start'],['review','Prüfen','✅','bestaetigen'],['gym','Gym','🏟️','gym'],['boxers','Boxer','👥','boxer'],['history','Historie','🗓️','historie'],['more','Mehr','☰','mehr']];
@@ -146,7 +165,7 @@ function renderHome(){
  if(summary&&summary.pending_conflicts>0)task(summary.pending_conflicts+' Meldung'+(summary.pending_conflicts===1?'':'en')+' mit Hinweis (z. B. Gym-Check-in am selben Tag) – bitte einzeln prüfen.',()=>go('review',{focus:true}),'Ansehen',true);
  if(summary&&summary.open_gym_sessions>0)task(summary.open_gym_sessions+' Gym-Einheit'+(summary.open_gym_sessions===1?' läuft':'en laufen')+' heute noch.',()=>go('gym',{focus:true}),'Gym');
  if(v2Cfg&&v2Cfg.preview)task('Vorschau: «Training 2.0» (Pflicht-/Ergänzungstraining) ist noch nicht freigeschaltet. Bestätigungen buchen wie bisher nach Trainingsart.',null,null,true);
- if(!tasks.children.length)task('Alles erledigt – keine offenen Aufgaben. 👍');
+ if(!tasks.children.length)task('Keine offenen Trainingsaufgaben. Wettkämpfe und Abschlüsse bitte separat prüfen.');
  const rec=$('cv2Recent');rec.replaceChildren();
  const list=summary?.recent_confirmed||[];
  if(!list.length){rec.append(el('li','','Noch keine bestätigten Trainings.'))}
@@ -841,7 +860,7 @@ async function load(clearStatus=true){ if(clearStatus)say('');$('error').textCon
  if(firstLoad)restoreFilters();
  fillFilter('filterBoxer',pr.data.filter(x=>['boxer','coach'].includes(x.role)),'Alle Boxer');fillFilter('filterType',tr.data,'Alle Trainingsarten');
  $('filterCategory').closest('label').hidden=!v2List;
- setupTabs();setupChips();setupStaffEntry();loadSelfRatingNotice();renderHome();
+ setupTabs();setupChips();setupStaffEntry();loadSelfRatingNotice();renderHome();loadCompetitionStatus();
  $('cv2ReviewReport').hidden=!(v2List&&currentRole==='admin');
  await loadPending(true);
  $('content').classList.remove('hidden');
@@ -850,7 +869,7 @@ async function load(clearStatus=true){ if(clearStatus)say('');$('error').textCon
  if(currentView==='boxers')renderPeople();
  loadGymToday();await setupCoachFeedback();await refreshCoachAudit()}
 document.querySelector('[data-stf-global-menu]')?.addEventListener('click',()=>document.getElementById('takeover-menu-open')?.click());
-$('refresh').addEventListener('click',()=>load());$('logout').addEventListener('click',async()=>{await db.auth.signOut();location.href='./login.html'});await load();
+$('refresh').addEventListener('click',()=>load());$('logout').addEventListener('click',async()=>{competitionSignedOut=true;clearCompetitionStatus();await db.auth.signOut();location.href='./login.html'});await load();
 let coachLastInteraction=Date.now();
 for(const eventName of ['pointerdown','keydown'])document.addEventListener(eventName,()=>{coachLastInteraction=Date.now()},{passive:true});
 setInterval(()=>{

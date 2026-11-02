@@ -6,7 +6,7 @@
 const {chromium}=require('playwright'),fs=require('node:fs'),path=require('node:path'),http=require('node:http');
 const assert=require('node:assert/strict');
 const root=path.resolve(__dirname,'..');
-const trainingSource=fs.readFileSync(path.join(root,'tests/training-v2-browser.cjs'),'utf8');
+const trainingSource=fs.readFileSync(path.join(root,'tests/training-v2-browser.cjs'),'utf8').replace(/\r\n/g,'\n');
 const injStart=trainingSource.indexOf('function injected(cfg){');
 const injEnd=trainingSource.indexOf('\n}\nconst shotsDir',injStart);
 assert.ok(injStart>=0&&injEnd>injStart,'existing training mock injection available');
@@ -112,17 +112,22 @@ async function adminScenario(browser,base,width){
 }
 async function coachScenario(browser,base,width){
  const ctx=await browser.newContext({viewport:{width,height:844},locale:'de-CH',timezoneId:'Europe/Zurich'});
- await ctx.addInitScript({content:'('+injectCoach.toString()+')({role:"coach",v2:true})'});
+ await ctx.addInitScript({content:'('+injectCoach.toString()+')({role:"coach",v2:true}); const originalCompetitionRpc=window.__takeoverMockClient.rpc; window.__takeoverMockClient.rpc=(name,args)=>name==="duel_v2_staff_queue"?Promise.resolve({data:{items:[],next_cursor:null,counts:{all:100,open:0,due:2,ready:1,closed:98},state:"due",search:"",duel_id:null,metric:"points",limit:1,as_of:new Date().toISOString()},error:null}):originalCompetitionRpc(name,args);'});
  const page=await ctx.newPage();page.on('dialog',d=>d.accept());
  const errors=[];page.on('pageerror',e=>errors.push(String(e)));
  await page.route(/^https:\/\/(?!127\.0\.0\.1)/,r=>r.abort());
  await page.route('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm',r=>r.fulfill({status:200,contentType:'text/javascript',body:'export const createClient=()=>window.__takeoverMockClient;'}));
  await page.goto(base+'/coach.html');
  await page.locator('#cv2Tabs [data-view="review"]').waitFor();
+ await page.waitForFunction(()=>document.querySelector('#coachDuelsStatus')?.textContent.includes('2 fällig'));
+ assert.match(await page.locator('#coachDuelsStatus').innerText(),/1 abschlussbereit/);
+ assert.match(await page.locator('#coachDuelsStatus').innerText(),/Alle Punkte-Duelle berücksichtigt/);
+ assert.equal(await page.locator('#coachCompetitions a[href="./duels.html?review=due#duelList"]').count(),1);
  await assertStaffHeaderNotOverlapping(page,'coach');
  assert.ok(await page.locator('#tla-header').isVisible(),'premium trainer topbar visible');
  assert.equal(await page.locator('#cv2Tabs [data-view]').count(),6,'six live trainer views retained');
- assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2),'coach no viewport overflow '+width);
+ const overflow=await page.evaluate(()=>({width:innerWidth,scroll:document.documentElement.scrollWidth,scrolling:[...document.querySelectorAll('body *')].filter(n=>n.getBoundingClientRect().width&&n.scrollWidth>n.clientWidth+2).slice(0,18).map(n=>({id:n.id,cls:n.className,sw:n.scrollWidth,cw:n.clientWidth,right:n.getBoundingClientRect().right,overflow:getComputedStyle(n).overflowX})),items:[...document.querySelectorAll('body *')].filter(n=>{const r=n.getBoundingClientRect();return r.width>0&&r.right>innerWidth+2}).slice(0,12).map(n=>({tag:n.tagName,id:n.id,cls:n.className,right:n.getBoundingClientRect().right}))}));
+ assert.ok(overflow.scroll<=width+2,'coach no viewport overflow '+JSON.stringify(overflow));
  if(width<=390){
   const ribbon=await page.locator('.tl-screen-ribbon').boundingBox();
   const hero=await page.locator('.cv2-hero').boundingBox();
@@ -152,7 +157,7 @@ async function coachScenario(browser,base,width){
  const base='http://127.0.0.1:'+server.address().port;
  const browser=await chromium.launch({headless:true});
  try{
-  for(const width of [320,390,1366]){
+  for(const width of process.env.STAFF_WIDTH?[Number(process.env.STAFF_WIDTH)]:[320,390,1366]){
    await adminScenario(browser,base,width);
    await coachScenario(browser,base,width);
   }

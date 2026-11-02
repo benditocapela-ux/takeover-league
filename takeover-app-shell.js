@@ -96,7 +96,7 @@
    const a=window.TLAccount&&window.TLAccount.read().find(x=>x.id===id);return a&&a.role?a.role:'pending'}catch{return null}
  }
  function client(){
-  if(!state.dbPromise)state.dbPromise=import('https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm')
+  if(!state.dbPromise)state.dbPromise=import('./takeover-client.js')
    .then(m=>m.createClient(SB_URL,SB_KEY,{auth:{autoRefreshToken:false,detectSessionInUrl:false,persistSession:true}}))
    .then(db=>(state.db=db));
   return state.dbPromise;

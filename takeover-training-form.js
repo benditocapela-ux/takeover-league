@@ -247,8 +247,9 @@
    form.hidden=true;tools.hidden=true;help.hidden=true;done.hidden=false;done.replaceChildren();
    const icon=el('div','tf-done-icon','✓');icon.setAttribute('aria-hidden','true');
    const h=el('h4','','Eingereicht');h.tabIndex=-1;
-   const again=el('button','tf-chip','＋ Weiteres Training');again.type='button';again.addEventListener('click',()=>{reset();title.focus()});
-   const back=el('button','tf-submit tf-secondary','Zur Trainingsübersicht');back.type='button';back.addEventListener('click',()=>{if(typeof opts.onClose==='function')opts.onClose()});
+   // A fast submission can place these actions under the second click of the submit gesture.
+   const again=el('button','tf-chip','＋ Weiteres Training');again.type='button';again.addEventListener('click',e=>{if(e.detail>1)return;reset();title.focus()});
+   const back=el('button','tf-submit tf-secondary','Zur Trainingsübersicht');back.type='button';back.addEventListener('click',e=>{if(e.detail>1)return;if(typeof opts.onClose==='function')opts.onClose()});
    done.append(icon,h,el('p','',text),el('p','tf-hint','Den Status siehst du in deiner Trainingshistorie.'),back,again);h.focus();
    status.textContent='';
   }

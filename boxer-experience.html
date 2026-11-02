@@ -76,17 +76,6 @@ button{cursor:pointer}
 .ex-list-line small{display:block;color:#a9bbd1;font-size:11px}
 .ex-pill{font-size:10px;color:#f6d58c;border-radius:999px;background:#604c252b;border:1px solid #8e703c72;padding:5px 9px;white-space:nowrap}
 .ex-muted{color:#9fb0c8}
-.ex-podium{height:292px;display:flex;align-items:end;justify-content:center;position:relative;overflow:hidden;padding:10px 8px 0;background:radial-gradient(ellipse 57% 85% at 50% 15%,#d6af4940,transparent),#11213a;border-radius:15px;border:1px solid #4b5167;border-top:2px solid #d2a959}
-.ex-step{height:100%;width:29%;max-width:165px;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;text-align:center;min-width:0}
-.ex-step.first{width:34%;max-width:185px}
-.ex-podium-holo{width:100%;max-height:162px;height:45%;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 7px 13px #0009)}
-.ex-step.first .ex-podium-holo{max-height:190px;height:53%}
-.ex-podium-holo svg{height:100%;width:100%}
-.ex-step-name{font:850 15px/1.05 'Barlow Condensed',sans-serif;max-width:100%;overflow-wrap:anywhere;margin:3px 0}
-.ex-step-points{font-size:10px;color:#f9dda0}
-.ex-step-base{width:100%;height:47px;display:grid;place-items:center;color:#eee;font:900 33px 'Barlow Condensed',sans-serif;background:linear-gradient(#879ab1,#334966);margin-top:5px}
-.ex-step.first .ex-step-base{height:76px;background:linear-gradient(#ffe89e,#a57e24);color:#1f1b13}
-.ex-step.third .ex-step-base{height:32px;background:linear-gradient(#ad8a71,#6b483e)}
 .ex-radar-wrap{text-align:center;padding:12px 4px}
 .ex-radar-wrap .tlp-radar{width:min(100%,340px);height:auto}
 .ex-radar-wrap .tlp-radar .tlp-rl{font-size:14px}
@@ -99,8 +88,8 @@ button{cursor:pointer}
 .ex-gate-card h1{font:900 30px 'Barlow Condensed',sans-serif;margin:9px 0}
 .ex-note{background:#0e1a2e;border:1px solid #30435c;color:#b5c5d8;padding:11px 12px;border-radius:10px;font-size:12px}
 @media(min-width:800px){.ex-figure{height:270px}.ex-holo{height:305px;bottom:-45px}.ex-card-stage{height:292px}.ex-card-stage .tlp-card{--fw:195px!important}}
-@media(max-width:540px){.ex-head{height:calc(62px + var(--ex-safe-top));padding-top:calc(8px + var(--ex-safe-top));padding-bottom:8px}.ex-status{display:none}.ex-figure{height:213px}.ex-figure-title,.ex-figure-stats{top:27px}.ex-figure-title h2{font-size:20px;max-width:92px}.ex-figure-title p,.ex-figure-stats p{font-size:10px;max-width:95px}.ex-level{font-size:21px}.ex-holo{height:239px;bottom:-37px;width:160px}.ex-card-stage{height:231px}.ex-card-stage .tlp-card{--fw:151px!important}.ex-card-stage .tlp-card .tlp-holo{max-height:112px}.ex-stats{gap:6px}.ex-stat{padding:10px}.ex-stat strong{font-size:23px}.ex-stat small{font-size:9px}.ex-view{padding-top:15px}.ex-podium{height:246px}.ex-podium-holo{max-height:126px}.ex-step.first .ex-podium-holo{max-height:145px}.ex-step-name{font-size:12px}.ex-menu button{font-size:9px}.ex-menu button strong{font-size:19px}}
-@media(max-width:360px){.ex-figure{height:190px}.ex-card-stage{height:207px}.ex-card-stage .tlp-card{--fw:137px!important}.ex-holo{height:218px}.ex-view h1{font-size:27px}.ex-step-name{font-size:11px}.ex-podium{height:225px}}
+@media(max-width:540px){.ex-head{height:calc(62px + var(--ex-safe-top));padding-top:calc(8px + var(--ex-safe-top));padding-bottom:8px}.ex-status{display:none}.ex-figure{height:213px}.ex-figure-title,.ex-figure-stats{top:27px}.ex-figure-title h2{font-size:20px;max-width:92px}.ex-figure-title p,.ex-figure-stats p{font-size:10px;max-width:95px}.ex-level{font-size:21px}.ex-holo{height:239px;bottom:-37px;width:160px}.ex-card-stage{height:231px}.ex-card-stage .tlp-card{--fw:151px!important}.ex-card-stage .tlp-card .tlp-holo{max-height:112px}.ex-stats{gap:6px}.ex-stat{padding:10px}.ex-stat strong{font-size:23px}.ex-stat small{font-size:9px}.ex-view{padding-top:15px}.ex-menu button{font-size:9px}.ex-menu button strong{font-size:19px}}
+@media(max-width:360px){.ex-figure{height:190px}.ex-card-stage{height:207px}.ex-card-stage .tlp-card{--fw:137px!important}.ex-holo{height:218px}.ex-view h1{font-size:27px}}
 @media(max-height:620px){.ex-figure{height:172px}.ex-holo{height:205px}.ex-card-stage{height:185px}.ex-card-stage .tlp-card{--fw:125px!important}}
 /* Kopfzeile ist gleichzeitig das Bereichsband der App (Screenreader-Kontext); Band-Stile des Redesigns hier neutralisieren */
 .ex-head .tl-screen-ribbon{display:block;margin:0;padding:0;border:0;border-radius:0;box-shadow:none;background:none}
@@ -111,6 +100,8 @@ button{cursor:pointer}
 
 
 </style>
+<link rel="stylesheet" href="./takeover-podium.css">
+<script src="./takeover-podium.js" defer></script>
 <link rel="stylesheet" href="./takeover-app-shell.css"></head>
 <body data-tl-screen="boxer-experience">
 <div id="ex-gate" class="ex-gate" role="status"><div class="ex-gate-card"><span class="ex-eyebrow">TAKEOVER LEAGUE</span><h1 id="ex-gate-title">DEIN BOXER WIRD GELADEN</h1><p id="ex-gate-message">Wir prüfen deine Anmeldung und deine verfügbaren Funktionen.</p><a id="ex-gate-link" class="ex-btn" href="./login.html?next=boxer-experience.html" hidden>ANMELDEN</a></div></div>

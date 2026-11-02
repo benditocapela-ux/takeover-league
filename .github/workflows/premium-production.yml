@@ -11,11 +11,15 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
       - run: npm install --no-save --package-lock=false playwright@1.56.1
       - run: npx playwright install --with-deps chromium webkit
+      - name: Shirt shoulders against pinned pre-change build
+        run: node tests/premium-shirt-registration-browser.cjs
       - name: Original release exclusions and streaming parity
         run: |
           node tests/premium-v2-contracts.cjs
@@ -69,4 +73,5 @@ jobs:
             tools/premium-v2/material-assets/*contact.png
             docs/premium-v2/production-*.json
             docs/premium-v2/completion/
+            output/shirt-qa/
 

@@ -132,7 +132,8 @@
   function drawBack(g, input, time = 0) {
     const c = config(input); if (!supports(c)) return false;
     // Use the identical state-isolated path as equipment previews on every backend.
-    drawSlot(g, c, 'scene', time); drawSlot(g, c, 'aura', time); return true;
+    if (!input?.transparentScene) drawSlot(g, c, 'scene', time);
+    drawSlot(g, c, 'aura', time); return true;
   }
   function drawSlot(g, input, slot, time = 0) {
     const c = config(input); if (!supports(c)) return false; g.save();

@@ -14,9 +14,15 @@ assert.match(goals,/training_submissions/);
 assert.match(goals,/\.eq\('status','approved'\)/);
 assert.match(goals,/role!=='boxer'/);
 const history=read('league-history.html');
-for(const table of ['league_seasons_v21','league_season_results_v21','league_hall_of_fame_v21'])
- assert.ok(history.includes(table),'History source '+table);
-assert.match(history,/textContent=/,'No unsafe public data markup');
+const archive=read('takeover-archive.js'),archiveSql=read('supabase/migrations/20261102090410_period_archive_readers.sql');
+assert.match(history,/<script src="\.\/takeover-archive\.js"/,'History loads the real period reader');
+assert.match(archive,/rpc\('league_archive_period',\{p_kind:kind,p_key:key,p_limit:20,p_offset:offset\}\)/,'Exact period, bounded server page');
+assert.match(archive,/league_seasons_v21/,'Published season selector');
+for(const table of ['league_season_results_v21','league_hall_of_fame_v21'])
+ assert.ok(archiveSql.includes(table),'Server archive source '+table);
+assert.match(archiveSql,/r\.season_id=p_season/,'Results remain associated with their exact season');
+assert.match(archiveSql,/h\.season_id=season\.id/,'Honors belong to the same season');
+assert.match(archive,/textContent=/,'No unsafe public data markup');
 const p=read('boxer-profile.js');
 assert.match(p,/function renderPublicRadar\(/);
 // Owner-Entscheid 28.10.2026: Leistungsprofil-Diagramm vorerst ausgeblendet; Funktion bleibt für später.

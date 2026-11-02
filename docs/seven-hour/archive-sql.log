@@ -1,0 +1,68 @@
+DO
+CREATE SCHEMA
+CREATE FUNCTION
+GRANT
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+CREATE TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+ALTER TABLE
+GRANT
+CREATE POLICY
+CREATE POLICY
+CREATE POLICY
+BEGIN
+CREATE SCHEMA
+REVOKE
+GRANT
+CREATE FUNCTION
+REVOKE
+GRANT
+DROP POLICY
+CREATE POLICY
+psql:supabase/migrations/20261102090410_period_archive_readers.sql:18: NOTICE:  policy "Archive results respect current visibility" for relation "public.league_season_results_v21" does not exist, skipping
+DROP POLICY
+psql:supabase/migrations/20261102090410_period_archive_readers.sql:21: NOTICE:  policy "Archive honors respect current visibility" for relation "public.league_hall_of_fame_v21" does not exist, skipping
+CREATE POLICY
+CREATE FUNCTION
+REVOKE
+CREATE FUNCTION
+REVOKE
+GRANT
+CREATE FUNCTION
+REVOKE
+GRANT
+COMMENT
+COMMIT
+INSERT 0 6
+INSERT 0 4
+INSERT 0 7
+INSERT 0 6
+INSERT 0 6
+BEGIN
+SET
+DO
+RESET
+              set_config
+--------------------------------------
+ 20000000-0000-0000-0000-000000000001
+(1 row)
+
+SET
+DO
+RESET
+              set_config
+--------------------------------------
+ 20000000-0000-0000-0000-000000000005
+(1 row)
+
+SET
+DO
+ROLLBACK
+DO
+Period archive: public/authenticated, isolation, boundaries, pagination, snapshots, privacy and READ ONLY passed.
