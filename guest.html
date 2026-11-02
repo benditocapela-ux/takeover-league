@@ -395,25 +395,9 @@ async function loadChallenges(){
 
 /* Duelle */
 async function loadDuels(){
-  let live=[];
-  try{
-    live=await rpc('league_v21_public_live_duels',{});
-  }catch(e){
-    $('live-duels').innerHTML='<div class="note">Live-Duelle sind derzeit nur für die beteiligten Boxer sichtbar. Mit eigenem Zugang siehst du deine eigenen Duelle mit Live-Punkten.</div>';
-  }
-  if(live&&live.length){
-    $('live-duels').innerHTML=live.map(d=>{
-      const lead=num(d.challenger_score)===num(d.opponent_score)?'':(num(d.challenger_score)>num(d.opponent_score)?'lead':'');
-      const lead2=num(d.challenger_score)===num(d.opponent_score)?'':(num(d.opponent_score)>num(d.challenger_score)?'lead':'');
-      return '<div class="item"><div class="meta" style="margin:0 0 var(--sp-2)"><span class="tag pending">Laufend</span>'+
-        (d.ends_at?'<span class="tag muted">bis '+safe(new Date(d.ends_at).toLocaleDateString('de-CH'))+'</span>':'')+'</div>'+
-        '<div class="vs">'+
-        '<div class="p '+lead+'"><b>'+safe(d.challenger_name)+'</b><span>'+fmt(d.challenger_score)+'</span></div>'+
-        '<div style="color:var(--muted-2);font-weight:800">:</div>'+
-        '<div class="p '+lead2+'"><b>'+safe(d.opponent_name)+'</b><span>'+fmt(d.opponent_score)+'</span></div>'+
-        '</div><div class="meta" style="font-size:var(--fs-xs);color:var(--muted-2)">Vorläufig · Trainer bestätigt das Ergebnis.</div></div>';
-    }).join('');
-  }
+  // There is no released anonymous live-duel RPC. Keep the participant-only
+  // notice without probing an absent endpoint on every guest visit.
+  $('live-duels').innerHTML='<div class="note">Live-Duelle sind derzeit nur für die beteiligten Boxer sichtbar. Mit eigenem Zugang siehst du deine eigenen Duelle mit Live-Punkten.</div>';
   try{
     const hist=await table('league_public_duel_history_v21','select=duel_id,challenger_name,opponent_name,challenger_score,opponent_score,winner_id,settled_at&order=settled_at.desc&limit=25');
     if(!hist.length){empty('duel-history','Noch keine beendeten Duelle.');return;}

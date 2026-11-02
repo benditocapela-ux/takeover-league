@@ -17,8 +17,7 @@ const ALLOWED_RPCS=new Set([
   'get_public_levels',
   'get_monthly_awards',
   'get_public_boxer_avatars',
-  'get_public_boxer_looks',        // Etappe 11: nur Rahmen, Rang und Titel sichtbarer Boxer
-  'league_v21_public_live_duels'   // optionale, sanitisierte Projektion (nur nach Freigabe)
+  'get_public_boxer_looks'         // Etappe 11: nur Rahmen, Rang und Titel sichtbarer Boxer
 ]);
 const ALLOWED_TABLES=new Set([
   'league_global_challenges_v21',
@@ -67,7 +66,6 @@ function respond(url,init){
     if(name==='get_monthly_awards')return {ok:true,json:async()=>AWARDS};
     if(name==='get_public_boxer_avatars')return {ok:true,json:async()=>[]};
     if(name==='get_public_boxer_looks')return {ok:true,json:async()=>[{name:'Royce',rank:'D',rahmen:{key:'f_rang_d',name:'Emblem Rang D',design:{fr:'rank',rk:'D'}},titel:{key:'t_contender',name:'Contender',rarity:'rare'}}]};
-    if(name==='league_v21_public_live_duels')return {ok:false,status:404,text:async()=>'not found'};
     throw new Error('Unerwarteter RPC-Aufruf im Gastmodus: '+name);
   }
   const tableMatch=u.match(/\/rest\/v1\/([a-z_0-9]+)/);
@@ -132,7 +130,9 @@ const doc=dom.window.document;
   assert.ok(!doc.querySelector('#ranking').textContent.includes('werden geladen'),'Ranking blieb im Ladezustand');
   assert.ok(!doc.querySelector('#levels').textContent.includes('werden geladen'),'Levels blieben im Ladezustand');
 
-  /* ---------- 4) Optionale Live-Duelle: graceful fallback ---------- */
+  /* ---------- 4) Keine Anfrage an die nicht veröffentlichte Live-Projektion ---------- */
+  assert.ok(!requests.some(r=>r.name==='league_v21_public_live_duels'),
+    'Gastmodus fragt eine nicht veröffentlichte Live-Projektion ab');
   const liveText=doc.querySelector('#live-duels').textContent;
   assert.ok(liveText.includes('nur für die beteiligten Boxer sichtbar'),
     'Fehlender Hinweis, wenn die Live-Duell-Projektion nicht freigegeben ist');
