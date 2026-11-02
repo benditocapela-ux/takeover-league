@@ -41,20 +41,33 @@ const server=http.createServer((req,res)=>{
 async function draw(page,row){return page.evaluate(async row=>{
  const P=TLPremiumCompletion,c=TLHolo.normalize({...P.defaults,pose_profile:row.pose,pose_card:'guard',top:'shirt',topc:row.topc,coat:row.coat,hair:'afro',head:'none',hood:false,bottom:'boxer',bottomc:'schwarz',hands:'gloves',glove:'schwarzgold',scene:'holo',aura:'none',eyefx:'none'});
  const r=await P.prepare(c);if(r.renderer!=='anime-draft')throw Error('Missing rendered shirt '+row.key+': '+r.reason);
+ // Keep delivery-PNG references separate from the diagnostic readback canvases.
+ // The live adapter draws once to a fresh default-context canvas, resizes once,
+ // then encodes PNG. A read-optimized/reused surface can choose a different
+ // WebKit raster/premultiplication path, even for unchanged baseline artwork.
+ const deliveredPNG=(selection,images,slot,frame,maxEdge)=>{
+  const full=document.createElement('canvas');full.width=768;full.height=1216;P.draw(full.getContext('2d'),selection,images,slot);
+  const target=document.createElement('canvas'),scale=maxEdge?Math.min(1,maxEdge/Math.max(frame[2],frame[3])):1;
+  target.width=Math.max(1,Math.round(frame[2]*scale));target.height=Math.max(1,Math.round(frame[3]*scale));target.getContext('2d').drawImage(full,...frame,0,0,target.width,target.height);
+  return target.toDataURL('image/png');
+ };
  const cv=document.createElement('canvas');cv.width=768;cv.height=1216;const g=cv.getContext('2d',{willReadFrequently:true});
  const digest=async()=>[...new Uint8Array(await crypto.subtle.digest('SHA-256',g.getImageData(0,0,768,1216).data))].map(v=>v.toString(16).padStart(2,'0')).join('');
- P.draw(g,r.selection,r.images);const full=await digest(),png=cv.toDataURL();
+ P.draw(g,r.selection,r.images);const full=await digest(),png=deliveredPNG(r.selection,r.images,undefined,[0,0,768,1216]);
  const shoulder=document.createElement('canvas');shoulder.width=560;shoulder.height=320;shoulder.getContext('2d').drawImage(cv,105,145,560,320,0,0,560,320);const shoulder1=shoulder.toDataURL();
  const zoom=document.createElement('canvas');zoom.width=1120;zoom.height=640;zoom.getContext('2d').imageSmoothingEnabled=false;zoom.getContext('2d').drawImage(shoulder,0,0,1120,640);const shoulder2=zoom.toDataURL();
  const layers={};for(const slot of ['hands','bottom']){P.draw(g,r.selection,r.images,slot);layers[slot]=await digest()}
  const bare=await P.prepare({...c,coat:'none'});if(bare.renderer!=='anime-draft')throw Error('No isolated shirt');P.draw(g,bare.selection,bare.images,'top');const top=await digest();
  const onlyTop={...bare.selection,pieces:bare.selection.pieces.filter(p=>p.slot==='top')};P.draw(g,onlyTop,bare.images,'top');if(await digest()!==top)throw Error('Body or coat contaminated item source');
  const topSources=[...new Set(onlyTop.pieces.map(p=>p.src))];const heroTopSources=[...new Set(r.selection.pieces.filter(p=>p.slot==='top').map(p=>p.src))];if(heroTopSources.some(src=>!topSources.includes(src)))throw Error('Hero shirt source differs from item shirt');
- const frame=P.itemFrame(bare.selection,'top'),target=document.createElement('canvas'),scale=Math.min(1,180/Math.max(frame[2],frame[3]));target.width=Math.max(1,Math.round(frame[2]*scale));target.height=Math.max(1,Math.round(frame[3]*scale));target.getContext('2d').drawImage(cv,...frame,0,0,target.width,target.height);const expected=target.toDataURL();
+ const frame=P.itemFrame(bare.selection,'top'),expected=deliveredPNG(bare.selection,bare.images,'top',frame,180);
  const item=await new Promise((resolve,reject)=>{const t=setTimeout(()=>reject(Error('Item preview did not settle')),15000);const ready=()=>{const html=shirtAdapter.item(c,c.pose_profile,'top',ready);if(html){clearTimeout(t);resolve(html)}};ready()});const itemSrc=/src="([^"]+)"/.exec(item)[1];
- // Compare decoded RGBA through the same PNG round-trip on both sides.
- const images=await Promise.all([expected,itemSrc].map(src=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;im.src=src})));const pixels=[];for(const im of images){target.width=im.width;target.height=im.height;target.getContext('2d').drawImage(im,0,0);pixels.push(target.getContext('2d').getImageData(0,0,target.width,target.height).data)}
- if(pixels[0].length!==pixels[1].length||pixels[0].some((n,i)=>n!==pixels[1][i]))throw Error('Item adapter pixels differ from isolated real shirt '+row.key);
+ // Each side has one identical PNG decode, one fresh draw and one readback.
+ const images=await Promise.all([expected,itemSrc].map(src=>new Promise((resolve,reject)=>{const im=new Image();im.onload=()=>resolve(im);im.onerror=reject;im.src=src})));
+ const pixels=images.map(im=>{const target=document.createElement('canvas');target.width=im.naturalWidth;target.height=im.naturalHeight;const ctx=target.getContext('2d');ctx.drawImage(im,0,0);return ctx.getImageData(0,0,target.width,target.height).data});
+ const comparison={key:row.key,frame,expectedSize:[images[0].naturalWidth,images[0].naturalHeight],actualSize:[images[1].naturalWidth,images[1].naturalHeight],differentChannels:0,differentPixels:0,alphaDiffPixels:0,maxChannelDiff:0,firstDifference:null};
+ for(let i=0;i<Math.min(pixels[0].length,pixels[1].length);i+=4){let different=false;for(let channel=0;channel<4;channel++){const delta=Math.abs(pixels[0][i+channel]-pixels[1][i+channel]);if(!delta)continue;different=true;comparison.differentChannels++;comparison.maxChannelDiff=Math.max(comparison.maxChannelDiff,delta);if(channel===3)comparison.alphaDiffPixels++;if(!comparison.firstDifference)comparison.firstDifference={x:i/4%images[0].naturalWidth,y:Math.floor(i/4/images[0].naturalWidth),channel:'RGBA'[channel],expectedRGBA:Array.from(pixels[0].slice(i,i+4)),actualRGBA:Array.from(pixels[1].slice(i,i+4))}}if(different)comparison.differentPixels++}
+ if(comparison.expectedSize.some((n,i)=>n!==comparison.actualSize[i])||pixels[0].length!==pixels[1].length||comparison.differentChannels)throw Error('Item adapter pixels differ from isolated real shirt: '+JSON.stringify({...comparison,userAgent:navigator.userAgent}));
  return {key:row.key,config:c,full,layers,top,topSources,heroTopSources,frame,png,item:itemSrc,shoulder1,shoulder2};
 },row)}
 function savePNG(file,url){fs.writeFileSync(file,Buffer.from(url.split(',')[1],'base64'))}

@@ -20,6 +20,8 @@ Ausgangscommit: `6aad6108dbf59e3f800cf42b4cdea8dec7e26b26`, Ausgangs-Premiumvers
 
 `tests/premium-shirt-registration-browser.cjs` baut beide Stände getrennt und vergleicht sie in derselben Browserengine. Der Ausgangsstand wird bei Bedarf reproduzierbar aus dem festen Git-Commit erstellt; fehlende Historie oder geänderte Baseline-Dateien führen zum Fehler.
 
+Die PNG-Paritätsreferenz verwendet wie der veröffentlichte Adapter einen frischen Standard-Canvas, einen identischen Skalierungsschritt und genau einen PNG-Roundtrip. Diagnose-Readbacks laufen getrennt. Damit werden nicht unterschiedliche WebKit-Raster-/Alpha-Pfade verglichen. Jeder abweichende RGBA-Bytewert oder jede abweichende Bildgrösse bleibt ein Fehler; es gibt keine Pixeltoleranz. Dieser Vergleich steht im CI unmittelbar nach der Browserinstallation.
+
 Chromium und WebKit jeweils bestanden:
 
 - 54 Outfits: sechs Posen × Schwarz/Rot/Weiss × ohne Mantel/Samurai/Basic.

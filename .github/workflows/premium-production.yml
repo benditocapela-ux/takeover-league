@@ -18,6 +18,8 @@ jobs:
           node-version: '22'
       - run: npm install --no-save --package-lock=false playwright@1.56.1
       - run: npx playwright install --with-deps chromium webkit
+      - name: Shirt shoulders against pinned pre-change build
+        run: node tests/premium-shirt-registration-browser.cjs
       - name: Original release exclusions and streaming parity
         run: |
           node tests/premium-v2-contracts.cjs
@@ -42,8 +44,6 @@ jobs:
         run: node tests/premium-production-browser.cjs
       - name: Rebuild source- and evidence-bound coverage
         run: node scripts/inventory-premium-production.cjs
-      - name: Shirt shoulders against pinned pre-change build
-        run: node tests/premium-shirt-registration-browser.cjs
       - name: Six-pose catalogue and outfit completion
         env:
           CANDIDATE: '1'
