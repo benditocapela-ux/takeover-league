@@ -160,13 +160,15 @@ async function coachFlow(browser,engine){
  assert.equal(new URL(page.url()).hash,'#bestaetigen');
  assert.equal(await page.locator('#entries .cv2-card').count(),10);
  assert.ok(await page.isVisible('#cv2PendingMore'));
- const first=page.locator('#entries .cv2-card').first();
- assert.match(await first.textContent(),/Dauer: 90 Min\./);
  for(const box of await page.locator('#entries .cv2-actions button').all()){const b=await box.boundingBox();assert.ok(b.height>=44&&b.width>=44,'touch target ≥44px')}
  if(engine==='chromium')await shot(page,'02-offene-trainingskarten');
  await page.click('#cv2PendingMore');await page.waitForFunction(()=>document.querySelectorAll('#entries .cv2-card').length===12);
  // 3. Pflichttraining schnell bestätigen (zweimal tippen = bewusst; Server bucht 60)
  const anna=page.locator('#entries .cv2-card',{hasText:'Anna ›'});
+ // The date-sorted first card changes with the weekday. Check the durations
+ // of the actual fixtures, including Cleo's intentionally shorter session.
+ assert.match(await anna.textContent(),/Dauer: 90 Min\./);
+ assert.match(await page.locator('#entries .cv2-card',{hasText:'Cleo ›'}).textContent(),/Dauer: 60 Min\./);
  assert.match(await anna.textContent(),/Montag – Reguläres Boxtraining/);assert.match(await anna.textContent(),/60 Punkte · 60 EXP · 15 Coins/);
  await anna.locator('button.cv2-btn-ok').click();
  assert.match(await anna.locator('button.cv2-btn-ok').textContent(),/Jetzt bestätigen · 60 P/);

@@ -21,7 +21,11 @@ for(const [path,b] of Object.entries(baseline)){
   : path==='admin.html' ? ['showArchived'] : path==='coach.html' ? ["cv2Tabs", "viewHome", "selfRatingNotice", "todayCount", "confirmedTodayCount", "cv2TasksTitle", "cv2Tasks", "coachCompetitions", "coachCompetitionsTitle", "coachDuelsStatus", "cv2RecentTitle", "cv2Recent", "viewReview", "cv2ReviewTitle", "cv2PendingChips", "cv2BulkBar", "cv2BulkCount", "cv2PendingCountText", "cv2PendingMore", "viewHistory", "cv2HistoryTitle", "cv2Filters", "filterCategory", "cv2ReviewReport", "cv2ReportLoad", "cv2ReportBody", "viewBoxers", "cv2BoxersTitle", "cv2BoxerSearch", "cv2People", "cv2PeopleCount", "cv2PeopleMore", "viewGym", "cv2GymTitle", "cv2StaffEntrySlot", "viewMore", "cv2MoreTitle", "cv2Sheet", "cv2SheetTitle", "cv2SheetSub", "cv2SheetBody", "cv2SheetFoot"] : []; // Etappe 10: Hinweis auf offene Selbsteinschätzungen; Training 2.0: Trainer-Dashboard 2.0 (Bereiche, Karten, Bottom Sheet). Reihenfolge der bestehenden IDs wurde mit dem Redesign neu festgelegt (alle bestehenden IDs bleiben).
  assert.deepEqual(addedIds,allowedAdded,`${path}: unexpected additional DOM ID`);
  const originalRpc=gotRpc.filter(rpc=>b.rpc.includes(rpc));
- assert.deepEqual(originalRpc,b.rpc,`${path}: a pre-existing RPC literal changed`);
+ // This historical optional probe never had a released server function. Its
+ // participant-only notice is now rendered without making a failing request.
+ const retiredRpc=path==='guest.html'?['league_v21_public_live_duels']:[];
+ assert.ok(retiredRpc.every(rpc=>!gotRpc.includes(rpc)),`${path}: retired RPC was reintroduced`);
+ assert.deepEqual(originalRpc,b.rpc.filter(rpc=>!retiredRpc.includes(rpc)),`${path}: a pre-existing RPC literal changed`);
  const addedRpc=gotRpc.filter(rpc=>!b.rpc.includes(rpc));
  const allowedRpc={'admin.html':['admin_list_profile_archive_state'],'coach.html':['duel_v2_staff_queue','coach_list_training_history','get_club_schedule','staff_list_feedback','staff_list_self_ratings','staff_record_training','staff_send_feedback','staff_set_training_tier','staff_training_tiers','staff_update_feedback', // Etappe 6a: Vereinsstufen, 6b: Feedback
    'admin_training_tier_review','get_training_v2_config','staff_correct_training','staff_list_trainings','staff_review_training','staff_training_summary','training_reward_preview'], // Training 2.0
