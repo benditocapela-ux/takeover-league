@@ -27,7 +27,14 @@ function injected(cfg){
   .map(([dow,t,tier,label],i)=>({id:i+1,dow,day:dow-1,day_name:['Montag','Dienstag','Mittwoch','Donnerstag','Freitag','Samstag','Sonntag'][dow-1],training_type_id:t,training_type:types.find(x=>x.id===t).name,tier,tier_label:TL[tier],label,duration_minutes:90,is_active:true,today_session:null}));
  // Für den Test hat heute immer eine Einheit: den heutigen Tag als Pflicht-Einheit ergänzen, falls keiner existiert.
  // Wochentag-unabhängig: die heutige Einheit ist immer Pflicht (vorher scheiterte der Test dienstags und donnerstags).
+ // Preserve the supplemental fixture on a free day when today's mandatory
+ // session replaces it, so the weekly-plan assertions keep testing both tiers.
+ const displaced=slots.find(x=>x.dow===todayDow&&x.tier==='ergaenzung');
  slots=slots.filter(x=>x.dow!==todayDow);
+ if(displaced){
+  const spareDow=[5,7].find(d=>d!==todayDow);
+  slots.push({...displaced,dow:spareDow,day:spareDow-1,day_name:spareDow===5?'Freitag':'Sonntag'});
+ }
  slots.push({id:9,dow:todayDow,day:todayDow-1,day_name:'Heute',training_type_id:2,training_type:'Techniktraining',tier:'pflicht',tier_label:'Pflichttraining',label:'Technik / Pratzen',duration_minutes:90,is_active:true,today_session:null});
  let session=null;
  const people=()=>[{id:'p-anna',display_name:'Anna',group:'wettkampf',present:true,source:'self',confirmed:false,points:null},{id:'p-ben',display_name:'Ben',group:'newcomer',present:true,source:'coach',confirmed:false,points:null}];

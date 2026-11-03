@@ -35,13 +35,21 @@ async function html(path){
                      'boxer-compare.html','league-history.html']){
   const src=await html(page);
   assert.match(src,/Takeover League/i,page+' missing Takeover League branding');
-  assert.ok(src.includes('iqarjivcrddcixrvqbfb'),
+  // The archive now owns its API configuration in the shipped external module.
+  // Check the exact linked, versioned module as well as the HTML entrypoint.
+  let apiSource=src;
+  if(page==='league-history.html'){
+   const module=src.match(/<script\b[^>]*\bsrc="(\.\/takeover-archive\.js\?v=[a-f0-9]+)"/);
+   assert.ok(module,'Archive entrypoint does not load its versioned API module');
+   apiSource+='\n'+await html(module[1]);
+  }
+  assert.ok(apiSource.includes('iqarjivcrddcixrvqbfb'),
     page+' has no production Supabase endpoint');
-  assert.ok(!src.includes('cfgdvcccsqwfjajuizsr'),
+  assert.ok(!apiSource.includes('cfgdvcccsqwfjajuizsr'),
     page+' points to test Supabase');
   assert.ok(src.includes('takeover-navigation.js'),
     page+' does not load the shared menu');
-  assert.ok(!/sb_secret_|service_role/i.test(src),
+  assert.ok(!/sb_secret_|service_role/i.test(apiSource),
     page+' accidentally exposes a server-side credential');
   console.log('LIVE 2.1 OK:',origin+page);
  }
