@@ -1,0 +1,169 @@
+{
+  "base": "94e672c41b6b962173f0d39b89776696f9cb2b98",
+  "createdAt": "2026-11-03T20:50:36.844Z",
+  "scope": "Sieg/Ansage clothing and shared sneaker registration",
+  "localBuild": "fb2f3ccb5afad72f",
+  "shirt": [
+    {
+      "engine": "chromium",
+      "exactItems": 54,
+      "unchangedFullOutfits": 27,
+      "unchangedHandsBottomPairs": 36,
+      "editor": {
+        "poses": 4,
+        "heroAndItemExact": true,
+        "newPNG404FullSVGFallback": true,
+        "unaffectedJabStillAnime": true,
+        "noAccountWrites": true
+      }
+    },
+    {
+      "engine": "webkit",
+      "exactItems": 54,
+      "unchangedFullOutfits": 27,
+      "unchangedHandsBottomPairs": 36,
+      "editor": {
+        "poses": 4,
+        "heroAndItemExact": true,
+        "newPNG404FullSVGFallback": true,
+        "unaffectedJabStillAnime": true,
+        "noAccountWrites": true
+      }
+    }
+  ],
+  "feet": [
+    {
+      "engine": "chromium",
+      "offsets": [
+        {
+          "body": [
+            265,
+            1050
+          ],
+          "source": [
+            155,
+            10
+          ],
+          "registered": [
+            265,
+            1050
+          ],
+          "previous": [
+            310,
+            1050
+          ],
+          "error": 0,
+          "previousError": 45
+        },
+        {
+          "body": [
+            522,
+            1050
+          ],
+          "source": [
+            313,
+            10
+          ],
+          "registered": [
+            522,
+            1050
+          ],
+          "previous": [
+            468,
+            1050
+          ],
+          "error": 0,
+          "previousError": 54
+        }
+      ],
+      "cases": 36,
+      "outfits": 432,
+      "exactTiles": 36,
+      "initialHeroAndTileSourceRequests": 1,
+      "totalSourceRequestsWithCacheEviction": 4,
+      "uncoveredSneakerHeelPixels": 0
+    },
+    {
+      "engine": "webkit",
+      "offsets": [
+        {
+          "body": [
+            265,
+            1050
+          ],
+          "source": [
+            155,
+            10
+          ],
+          "registered": [
+            265,
+            1050
+          ],
+          "previous": [
+            310,
+            1050
+          ],
+          "error": 0,
+          "previousError": 45
+        },
+        {
+          "body": [
+            522,
+            1050
+          ],
+          "source": [
+            313,
+            10
+          ],
+          "registered": [
+            522,
+            1050
+          ],
+          "previous": [
+            468,
+            1050
+          ],
+          "error": 0,
+          "previousError": 54
+        }
+      ],
+      "cases": 36,
+      "outfits": 432,
+      "exactTiles": 36,
+      "initialHeroAndTileSourceRequests": 1,
+      "totalSourceRequestsWithCacheEviction": 4,
+      "uncoveredSneakerHeelPixels": 0
+    }
+  ],
+  "outerwear": [
+    {
+      "engine": "chromium",
+      "exactItems": 42,
+      "editorChanges": 12,
+      "fullSVGFallbacks": 12
+    },
+    {
+      "engine": "webkit",
+      "exactItems": 42,
+      "editorChanges": 12,
+      "fullSVGFallbacks": 12
+    }
+  ],
+  "poseOutfits": {
+    "engines": [
+      "chromium",
+      "webkit"
+    ],
+    "combinationsPerEngine": 120,
+    "isolatedBottomsUnchanged": true
+  },
+  "catalogue": {
+    "engines": [
+      "chromium",
+      "webkit"
+    ],
+    "variantsPerEngine": 1764,
+    "sourceContractsPassed": true
+  },
+  "physicalDevices": false
+}

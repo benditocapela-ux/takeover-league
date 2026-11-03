@@ -5,9 +5,9 @@
   "total": 1764,
   "passed": 1764,
   "reuse": {
-    "uniqueFiles": 66,
+    "uniqueFiles": 80,
     "sharedAcrossAllSix": 29,
-    "sharedAcrossMultiplePoses": 47,
+    "sharedAcrossMultiplePoses": 46,
     "files": [
       {
         "source": "streaming-assets/base.png",
@@ -274,9 +274,7 @@
         "poses": [
           "cool",
           "guard",
-          "jab",
-          "sieg",
-          "ansage"
+          "jab"
         ]
       },
       {
@@ -451,9 +449,7 @@
         "poses": [
           "guard",
           "jab",
-          "sieg",
-          "flex",
-          "ansage"
+          "flex"
         ]
       },
       {
@@ -461,9 +457,7 @@
         "poses": [
           "guard",
           "jab",
-          "sieg",
-          "flex",
-          "ansage"
+          "flex"
         ]
       },
       {
@@ -477,9 +471,7 @@
         "poses": [
           "guard",
           "jab",
-          "sieg",
-          "flex",
-          "ansage"
+          "flex"
         ]
       },
       {
@@ -487,9 +479,7 @@
         "poses": [
           "guard",
           "jab",
-          "sieg",
-          "flex",
-          "ansage"
+          "flex"
         ]
       },
       {
@@ -521,76 +511,102 @@
       {
         "source": "completion/assets/sleeve-shirt-upper.png",
         "poses": [
-          "jab",
-          "sieg",
-          "ansage"
+          "jab"
         ]
       },
       {
         "source": "completion/assets/sleeve-hoodie-upper.png",
         "poses": [
           "jab",
-          "sieg",
-          "flex",
-          "ansage"
+          "flex"
         ]
       },
       {
         "source": "completion/assets/sleeve-hoodie-forearm.png",
         "poses": [
           "jab",
-          "sieg",
-          "flex",
-          "ansage"
+          "flex"
         ]
       },
       {
         "source": "completion/assets/sleeve-jacke-upper.png",
         "poses": [
           "jab",
-          "sieg",
-          "flex",
-          "ansage"
+          "flex"
         ]
       },
       {
         "source": "completion/assets/sleeve-jacke-forearm.png",
         "poses": [
           "jab",
-          "sieg",
-          "flex",
-          "ansage"
+          "flex"
         ]
       },
       {
         "source": "completion/assets/coat-rig-body.png",
         "poses": [
           "jab",
-          "sieg",
-          "flex",
-          "ansage"
+          "flex"
         ]
       },
       {
         "source": "completion/assets/sleeve-coat-upper.png",
         "poses": [
           "jab",
-          "sieg",
-          "flex",
-          "ansage"
+          "flex"
         ]
       },
       {
         "source": "completion/assets/sleeve-coat-forearm.png",
         "poses": [
           "jab",
-          "sieg",
-          "flex",
-          "ansage"
+          "flex"
         ]
       },
       {
         "source": "completion/assets/body-sieg.png",
+        "poses": [
+          "sieg"
+        ]
+      },
+      {
+        "source": "completion/assets/shirt-sieg.png",
+        "poses": [
+          "sieg"
+        ]
+      },
+      {
+        "source": "completion/assets/hoodie-sieg.png",
+        "poses": [
+          "sieg"
+        ]
+      },
+      {
+        "source": "completion/assets/jacke-sieg.png",
+        "poses": [
+          "sieg"
+        ]
+      },
+      {
+        "source": "completion/assets/coat-basic-sieg.png",
+        "poses": [
+          "sieg"
+        ]
+      },
+      {
+        "source": "completion/assets/coat-sieg.png",
+        "poses": [
+          "sieg"
+        ]
+      },
+      {
+        "source": "completion/assets/coat-neon-sieg.png",
+        "poses": [
+          "sieg"
+        ]
+      },
+      {
+        "source": "completion/assets/coat-drache-sieg.png",
         "poses": [
           "sieg"
         ]
@@ -612,6 +628,48 @@
         "poses": [
           "ansage"
         ]
+      },
+      {
+        "source": "completion/assets/shirt-ansage.png",
+        "poses": [
+          "ansage"
+        ]
+      },
+      {
+        "source": "completion/assets/hoodie-ansage.png",
+        "poses": [
+          "ansage"
+        ]
+      },
+      {
+        "source": "completion/assets/jacke-ansage.png",
+        "poses": [
+          "ansage"
+        ]
+      },
+      {
+        "source": "completion/assets/coat-basic-ansage.png",
+        "poses": [
+          "ansage"
+        ]
+      },
+      {
+        "source": "completion/assets/coat-ansage.png",
+        "poses": [
+          "ansage"
+        ]
+      },
+      {
+        "source": "completion/assets/coat-neon-ansage.png",
+        "poses": [
+          "ansage"
+        ]
+      },
+      {
+        "source": "completion/assets/coat-drache-ansage.png",
+        "poses": [
+          "ansage"
+        ]
       }
     ]
   },
@@ -619,31 +677,31 @@
     "tools/premium-v2/completion.html": "04d98ee441dd46a449291122b84d2eaf1c9459dbb1aecee98c15985e59597f8f",
     "takeover-holo.js": "88b6c6fb4f169138ea91aae6a89026ae5efe620a075f6afb29f45132d818bcc3",
     "takeover-mein-boxer-items.js": "885c596d61c5d1548f0ca37bb5dc4f0e7aae142ac82e6e169d688c5b07048f21",
-    "tools/premium-v2/headwear/headwear.js": "90bdeebf76bdab15ed794868c1418122186d62ce8a2899ca847b5b564132c10a",
-    "tools/premium-v2/pilot.js": "fac899d0d0bdf5219c0dd6783a0576dd6e4b76d5393c10480abff98d2af50528",
-    "tools/premium-v2/streaming.js": "311117f3651f33931cc0c7f499b13c9888d7b64cbbee2a5e9d81e12534503828",
     "tools/premium-v2/materials.js": "6d46ecd6b4dbe87a7152121b49b9808f0340b6cb6a7340306f80b97baa1cd6ed",
+    "tools/premium-v2/pilot.js": "fac899d0d0bdf5219c0dd6783a0576dd6e4b76d5393c10480abff98d2af50528",
     "tools/premium-v2/tops/tops.js": "05c4b348ac42265104d1e9a462a4741eea62cbec365ffb91d5584c5d663b9b7b",
+    "tools/premium-v2/streaming.js": "311117f3651f33931cc0c7f499b13c9888d7b64cbbee2a5e9d81e12534503828",
+    "tools/premium-v2/headwear/headwear.js": "90bdeebf76bdab15ed794868c1418122186d62ce8a2899ca847b5b564132c10a",
     "tools/premium-v2/headwear-hijab/hijab.js": "f4e37a469fdc49a293db3a15817dc5bbe122d479bceee6d479edc472471bab00",
     "tools/premium-v2/effects.js": "2dec3a4d0f4f8f59e334c8693a455990088d0b901c830c9a296dadb97c59221e",
-    "tools/premium-v2/production.js": "59ce123b7578a2b75623bc8d46368c19b56472c01d9961da09eabf45a65a380c",
     "tools/premium-v2/long-hair/long-hair.js": "6b0f12310016de75019385c49cc6c22fe3c68c93a8828c31a16405aef424d1e3",
-    "tools/premium-v2/completion/poses.js": "056cc6c5a5f4a44c355f2b8c25cfb3543580acefe7599ee1f375410253f3a8e9",
+    "tools/premium-v2/completion/poses.js": "f8a17ab6b712aef6cb3d193d606d05c8ec55545cc1fd151187cbe19b3d8a253a",
+    "tools/premium-v2/production.js": "ee739935960cdcf7469ae7963ff890bfbc4426bb24aad552d825e4339d394f79",
     "tools/premium-v2/completion/completion.js": "9d129c8eb67e0ab0d586c6fcb64976e8a70fb63970d1640fbbff3a8ffb3aa4cb",
     "tools/premium-v2/pilot-assets.json": "8db99b0cafc2e7a77551afdb5de67aaedd5f406acbedd24dfa44e165289f53a0",
-    "tools/premium-v2/production-art/manifest.json": "caec9e442fccff2c549571869d153f11a723175a2ed38db57319750c360d9918",
     "tools/premium-v2/streaming-assets.json": "7ca4e00dbf0575da6f5320159e35805e39e7bcf53624b3e3468b2aeef6df4a2e",
+    "tools/premium-v2/production-art/manifest.json": "dc334a76e7abb98d6207ebd3be7b30ac94984c0aeb08a761fd0ce8e8d8e0d4cd",
     "tools/premium-v2/headwear/manifest.json": "b10d087bc79ab93203b659037304f7aeacc9440df1059c16947d505e04a4875e",
     "tools/premium-v2/hair-expansion/manifest.json": "6c0d1e1c36c1d6f2a64600618917d73c241132e737d3038be3758131d6592945",
     "tools/premium-v2/tops/manifest.json": "dcf5826d934300358d4e41bc5a2bc7eba516de5c679f60f1d4a464a8c0911326",
-    "tools/premium-v2/headwear-hijab/manifest.json": "66973c10de03e334ef676a250a188842e5e4e47f3f4d6b2c340b34f8386b705d",
     "tools/premium-v2/wraps/manifest.json": "4a28782cd26f194712e63856fe6323cb784b2ff2598d7ebd89067fe681acd8df",
+    "tools/premium-v2/headwear-hijab/manifest.json": "66973c10de03e334ef676a250a188842e5e4e47f3f4d6b2c340b34f8386b705d",
     "tools/premium-v2/long-hair/manifest.json": "f68e8f7f2df95c2f3385a6a9d39f9b86aa13b4ea738f44b1ea2fbd12f57353d1",
-    "tools/premium-v2/completion/pose-assets.json": "d5dade637c263dc2787f2370808e5100888a7246a86456b85e671028736f272c",
-    "tools/premium-v2/completion/sleeves.json": "16910cad5f01d54a96ecb54d338a19f08e351f6b70eaf3c6dbb2a68240631f90",
-    "tools/premium-v2/completion/shirt.json": "4439e25f14074d59fdde0f3bcc516c5cef9b917f44b5ae564950c8e03e217922",
     "tools/premium-v2/completion/manifest.json": "320ef66733b4dfd9152dff110f10144e96699b320f4b0d3d13510878c38cf3c8",
-    "tools/premium-v2/completion/pose-bodies.json": "64461d49daae0bbb574d62e75ea161824953351b5ae2ef1403541f0d6876b442",
+    "tools/premium-v2/completion/pose-assets.json": "d5dade637c263dc2787f2370808e5100888a7246a86456b85e671028736f272c",
+    "tools/premium-v2/completion/pose-bodies.json": "7424633151d52e0deb776a07642baa9bc2bb682c3604abe9a85fdedb2d6f10fd",
+    "tools/premium-v2/completion/sleeves.json": "16910cad5f01d54a96ecb54d338a19f08e351f6b70eaf3c6dbb2a68240631f90",
+    "tools/premium-v2/completion/shirt.json": "ec69b6a9e66796bbfa6dad5ad19cabddd4bb4931f3987b5141678ac552a41127",
     "tools/premium-v2/separation/coat-back.png": "0e7a4764f71a3bb9093dc174f26d57df5ed5af5082a2727b80213057692eb6da",
     "tools/premium-v2/streaming-assets/body-guard.png": "191333012e99dca1998b078ef468a9c9ec2569fe13696a59cf3939786c097a2f",
     "tools/premium-v2/streaming-assets/base.png": "2bfc7593b6c2b31f9fce5a20fd7583f4436eef9d02391cfe99ce88a6594c56ee",
@@ -653,8 +711,8 @@
     "tools/premium-v2/production-art/hands-master-0.png": "a5a97da42db09bbb5ebfb04bc4e4ee55a42a460b3ee47afe7fdae106adbf33e6",
     "tools/premium-v2/production-art/hands-master-1.png": "1c0a6143b9b0c8869d117a4701f3396159e5ef73284c4c55f65ef3d29b52d308",
     "tools/premium-v2/streaming-assets/body-cool.png": "65480b837fde16aaf31969091d8ebecc886de26172904af34a5c730c38156450",
-    "tools/premium-v2/streaming-assets/hair-short.png": "d41d75b3d7af1615e49444f0a57c88f254e46dcfab35afcd01a3471f4836b9a2",
     "tools/premium-v2/streaming-assets/hands-cool-black.png": "54642b314090895fbcb38150cf7837cde7b921b62332ab8b59811bfa6f7d69f9",
+    "tools/premium-v2/streaming-assets/hair-short.png": "d41d75b3d7af1615e49444f0a57c88f254e46dcfab35afcd01a3471f4836b9a2",
     "tools/premium-v2/production-art/hair-stachel.png": "007c3cf362825f29dd53ae2f96c8d434c50800b56cc6c024930c68a61b85ecef",
     "tools/premium-v2/long-hair/assets/lang_glatt.png": "3403df12c31cafd60edefecbf04800088441dad36163e5f879ad6ac23a567d55",
     "tools/premium-v2/production-art/hair-undercut.png": "1fcbad84442fc8324780d20c42e9797b1816051a0306e81cc3723340035a608f",
@@ -684,8 +742,8 @@
     "tools/premium-v2/production-art/feet-sneaker.png": "f3489f5a6c9d8e05dda9f2a54afaa8376ec88b131a58f5fe243b683de1699043",
     "tools/premium-v2/separation/coat-basic-back.png": "17b6dd269707b77efe59532374a20af97fb5e7a3c8e81eff8f6a950b3f57fb82",
     "tools/premium-v2/production-art/coat-basic-cool.png": "9b2edcfc890470991be6801eb67de37001e23b15c03a76b16529ad9cf7e57130",
-    "tools/premium-v2/streaming-assets/coat-cool.png": "bbd682dd93de36564ea4a16c2809f68ed68fe10eb270404e9b4e62b20a4731c5",
     "tools/premium-v2/streaming-assets/coat-common.png": "d8e1fce31750abf7c335bdf0b51e9aea7ca127f6f1e46d220f4495b3fc220e6d",
+    "tools/premium-v2/streaming-assets/coat-cool.png": "bbd682dd93de36564ea4a16c2809f68ed68fe10eb270404e9b4e62b20a4731c5",
     "tools/premium-v2/completion/assets/coat-neon-cool.png": "75164fb9098fc65802bae032adcd6969e880c24534a5c92a2a27065e9370d640",
     "tools/premium-v2/completion/assets/coat-drache-cool.png": "a37af7712f4fbb73165fc34b2cfb5ffd550b4045dd9759c5f8bb4230653b4c9c",
     "tools/premium-v2/wraps/assets/wrap-cool0.png": "f42064a57cfd9da5d48e86de5eddff4a6c0fd84feebbb9e96536742daffffc7e",
@@ -695,21 +753,35 @@
     "tools/premium-v2/production-art/coat-basic-guard.png": "ef5304546ca09472c1e06d2c559f1be6b1bfc588b62b6f1ae3679ec891f37bac",
     "tools/premium-v2/completion/assets/coat-neon-guard.png": "c9cfdbc11a7d5089e385f5fa189483bf84adbced27954fff9a6e94f3c74fed5a",
     "tools/premium-v2/completion/assets/coat-drache-guard.png": "0d9c17d7270d06af8a316be809bb3ea540706fa81fa9c7e518622faa218fb4f2",
-    "tools/premium-v2/wraps/assets/wrap-guard1.png": "fc2f9a2479fd13c264930f52372e475306f60e3eca165caa50622559636540a5",
     "tools/premium-v2/wraps/assets/wrap-guard0.png": "6ff8a27f03230c66d9a874702e441a8079c0c60c4be80684c0c8104126f110e6",
+    "tools/premium-v2/wraps/assets/wrap-guard1.png": "fc2f9a2479fd13c264930f52372e475306f60e3eca165caa50622559636540a5",
     "tools/premium-v2/completion/assets/body-jab.png": "332750469309e973f23020276be3310b2478e8abfbe276ae50861bd6059dcc15",
     "tools/premium-v2/completion/assets/sleeve-shirt-upper.png": "00e53a2fb1217fee234349295d3381d0fbe622ba85124bf9c5331197a45041a6",
-    "tools/premium-v2/completion/assets/sleeve-hoodie-forearm.png": "7cbbb590d5f7b1d117766fa561a1438bf9de5168227c765aa4735bfc09634912",
     "tools/premium-v2/completion/assets/sleeve-hoodie-upper.png": "11c77244bc0e49f806e620c9872eeb81cbc8aa4dc02207967c92d60f7fd429bc",
+    "tools/premium-v2/completion/assets/sleeve-hoodie-forearm.png": "7cbbb590d5f7b1d117766fa561a1438bf9de5168227c765aa4735bfc09634912",
     "tools/premium-v2/completion/assets/sleeve-jacke-upper.png": "bfa418da52e91297495b6beaec7d0a34df55fe283ea7c16e148f736f03d6f75e",
     "tools/premium-v2/completion/assets/sleeve-jacke-forearm.png": "de3e9b5126208046de15debb7991bd4975c9e33483bac4d7f5070e24b8183e2d",
-    "tools/premium-v2/completion/assets/coat-rig-body.png": "b7aa7aab709ef9c991cc5131d28af1dc86e19135c9302c339ba3ad8bc7fce3dc",
     "tools/premium-v2/completion/assets/sleeve-coat-upper.png": "d27015bfcacf959f7dcc833fc0ea6cb28d646158820fab9e36c5c45dfefd0606",
+    "tools/premium-v2/completion/assets/coat-rig-body.png": "b7aa7aab709ef9c991cc5131d28af1dc86e19135c9302c339ba3ad8bc7fce3dc",
     "tools/premium-v2/completion/assets/sleeve-coat-forearm.png": "79afabb450d178a551859ba696fc051102075ae8c5d573c2ffff50212f3198e6",
     "tools/premium-v2/completion/assets/body-sieg.png": "797be1923a1282252c669f8e1f0d8c1a2a448362430ecb949e3a26b653de4284",
+    "tools/premium-v2/completion/assets/shirt-sieg.png": "80c84f28bdc3e3a67b3c8ff536573fd009805f8f798d6844a6b27070941b11bb",
+    "tools/premium-v2/completion/assets/hoodie-sieg.png": "9fef8d4e9df187e67be858158d748713f0a1915525e095feee4777ec19d632d1",
+    "tools/premium-v2/completion/assets/jacke-sieg.png": "0c054542e2d2b4a6d54a41ca38dc87c9494ef1feb6ed1a8cf29bfcb8aa2c204e",
+    "tools/premium-v2/completion/assets/coat-basic-sieg.png": "12564f0c1fdb819021cc71aeaedefd08dccd53ed2e212c5d76e326629a499dcc",
+    "tools/premium-v2/completion/assets/coat-sieg.png": "ffd6071196b94c69c9a002c8254fcfcd986520c9259743cd74ddf72d9576fc18",
+    "tools/premium-v2/completion/assets/coat-neon-sieg.png": "fcfdc83af390d8b1441bbf358c851f6cfa34a924a1561b38fd1f1d8d82d5a4d4",
+    "tools/premium-v2/completion/assets/coat-drache-sieg.png": "43faddd025ccc44e896e394ca007e02583fe0d7b3a7c8ddbb906281d379ecb2e",
     "tools/premium-v2/completion/assets/body-flex.png": "2107e7af1c0206f9fdb8e2932e82b5a7228b99f11096b25e747f19e4ffc0d3bf",
     "tools/premium-v2/completion/assets/shirt-registered.png": "04005e7022a67409e7e31657966b9c2e61d0a1081500ccfc2374d5deb058bc92",
-    "tools/premium-v2/completion/assets/body-ansage.png": "db7f93d8df3d920c88bfd1620d9f2dffce0e7db47f0e763c7e443f685b405eb7"
+    "tools/premium-v2/completion/assets/body-ansage.png": "db7f93d8df3d920c88bfd1620d9f2dffce0e7db47f0e763c7e443f685b405eb7",
+    "tools/premium-v2/completion/assets/shirt-ansage.png": "8e4f225fef5454d6ba7820c977fc420a119ce8d9e7cc10363d5cbcf4e3beaf2f",
+    "tools/premium-v2/completion/assets/hoodie-ansage.png": "810bb8405fd49677122953f07b659229587d4566a83ef102d8f836e20c766415",
+    "tools/premium-v2/completion/assets/jacke-ansage.png": "e78f8e60c9896a73c116e43ebcd0ee7a3ffeaa5896ef2f30b51882321a67d579",
+    "tools/premium-v2/completion/assets/coat-basic-ansage.png": "9a5471000b0b973027cd1c77487822cff994d4ce296ee7c5aa9bd84bf61752df",
+    "tools/premium-v2/completion/assets/coat-ansage.png": "413453cf4107878836b136adadefb00497db6b608fa22116fbd96addcee2f8c4",
+    "tools/premium-v2/completion/assets/coat-neon-ansage.png": "a6df2cca218593e5b6e15e428a69576c4b5cb90bd997de8fa7693093d6ce1fda",
+    "tools/premium-v2/completion/assets/coat-drache-ansage.png": "a39a17d19303af62358e0f54da912ab38dc5bca815e73830fb93bc565f18f667"
   },
   "rows": [
     {
@@ -4814,8 +4886,8 @@
       "color": "schwarz",
       "state": "default",
       "pose": "cool",
-      "pixels": 2153,
-      "digest": 1820009192,
+      "pixels": 1226,
+      "digest": 1986122562,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-cool.png",
@@ -4831,8 +4903,8 @@
       "color": "weiss",
       "state": "default",
       "pose": "cool",
-      "pixels": 2153,
-      "digest": 528664782,
+      "pixels": 1226,
+      "digest": 1648357077,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-cool.png",
@@ -4848,8 +4920,8 @@
       "color": "grau",
       "state": "default",
       "pose": "cool",
-      "pixels": 2153,
-      "digest": 300753022,
+      "pixels": 1226,
+      "digest": 2756314189,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-cool.png",
@@ -4865,8 +4937,8 @@
       "color": "rot",
       "state": "default",
       "pose": "cool",
-      "pixels": 2153,
-      "digest": 1254552268,
+      "pixels": 1226,
+      "digest": 3973659473,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-cool.png",
@@ -4882,8 +4954,8 @@
       "color": "blau",
       "state": "default",
       "pose": "cool",
-      "pixels": 2153,
-      "digest": 889892596,
+      "pixels": 1226,
+      "digest": 4103249699,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-cool.png",
@@ -4899,8 +4971,8 @@
       "color": "gruen",
       "state": "default",
       "pose": "cool",
-      "pixels": 2153,
-      "digest": 3040710107,
+      "pixels": 1226,
+      "digest": 3948312874,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-cool.png",
@@ -4916,8 +4988,8 @@
       "color": "lila",
       "state": "default",
       "pose": "cool",
-      "pixels": 2153,
-      "digest": 2510926231,
+      "pixels": 1226,
+      "digest": 74859238,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-cool.png",
@@ -4933,8 +5005,8 @@
       "color": "gold",
       "state": "default",
       "pose": "cool",
-      "pixels": 2153,
-      "digest": 3381596321,
+      "pixels": 1226,
+      "digest": 369214367,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-cool.png",
@@ -9829,8 +9901,8 @@
       "color": "schwarz",
       "state": "default",
       "pose": "guard",
-      "pixels": 2153,
-      "digest": 1820009192,
+      "pixels": 1226,
+      "digest": 1986122562,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-guard.png",
@@ -9847,8 +9919,8 @@
       "color": "weiss",
       "state": "default",
       "pose": "guard",
-      "pixels": 2153,
-      "digest": 528664782,
+      "pixels": 1226,
+      "digest": 1648357077,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-guard.png",
@@ -9865,8 +9937,8 @@
       "color": "grau",
       "state": "default",
       "pose": "guard",
-      "pixels": 2153,
-      "digest": 300753022,
+      "pixels": 1226,
+      "digest": 2756314189,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-guard.png",
@@ -9883,8 +9955,8 @@
       "color": "rot",
       "state": "default",
       "pose": "guard",
-      "pixels": 2153,
-      "digest": 1254552268,
+      "pixels": 1226,
+      "digest": 3973659473,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-guard.png",
@@ -9901,8 +9973,8 @@
       "color": "blau",
       "state": "default",
       "pose": "guard",
-      "pixels": 2153,
-      "digest": 889892596,
+      "pixels": 1226,
+      "digest": 4103249699,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-guard.png",
@@ -9919,8 +9991,8 @@
       "color": "gruen",
       "state": "default",
       "pose": "guard",
-      "pixels": 2153,
-      "digest": 3040710107,
+      "pixels": 1226,
+      "digest": 3948312874,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-guard.png",
@@ -9937,8 +10009,8 @@
       "color": "lila",
       "state": "default",
       "pose": "guard",
-      "pixels": 2153,
-      "digest": 2510926231,
+      "pixels": 1226,
+      "digest": 74859238,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-guard.png",
@@ -9955,8 +10027,8 @@
       "color": "gold",
       "state": "default",
       "pose": "guard",
-      "pixels": 2153,
-      "digest": 3381596321,
+      "pixels": 1226,
+      "digest": 369214367,
       "sources": [
         "streaming-assets/base.png",
         "streaming-assets/body-guard.png",
@@ -14939,8 +15011,8 @@
       "color": "schwarz",
       "state": "default",
       "pose": "jab",
-      "pixels": 2153,
-      "digest": 1820009192,
+      "pixels": 1226,
+      "digest": 1986122562,
       "sources": [
         "completion/assets/body-jab.png",
         "streaming-assets/base.png",
@@ -14957,8 +15029,8 @@
       "color": "weiss",
       "state": "default",
       "pose": "jab",
-      "pixels": 2153,
-      "digest": 528664782,
+      "pixels": 1226,
+      "digest": 1648357077,
       "sources": [
         "completion/assets/body-jab.png",
         "streaming-assets/base.png",
@@ -14975,8 +15047,8 @@
       "color": "grau",
       "state": "default",
       "pose": "jab",
-      "pixels": 2153,
-      "digest": 300753022,
+      "pixels": 1226,
+      "digest": 2756314189,
       "sources": [
         "completion/assets/body-jab.png",
         "streaming-assets/base.png",
@@ -14993,8 +15065,8 @@
       "color": "rot",
       "state": "default",
       "pose": "jab",
-      "pixels": 2153,
-      "digest": 1254552268,
+      "pixels": 1226,
+      "digest": 3973659473,
       "sources": [
         "completion/assets/body-jab.png",
         "streaming-assets/base.png",
@@ -15011,8 +15083,8 @@
       "color": "blau",
       "state": "default",
       "pose": "jab",
-      "pixels": 2153,
-      "digest": 889892596,
+      "pixels": 1226,
+      "digest": 4103249699,
       "sources": [
         "completion/assets/body-jab.png",
         "streaming-assets/base.png",
@@ -15029,8 +15101,8 @@
       "color": "gruen",
       "state": "default",
       "pose": "jab",
-      "pixels": 2153,
-      "digest": 3040710107,
+      "pixels": 1226,
+      "digest": 3948312874,
       "sources": [
         "completion/assets/body-jab.png",
         "streaming-assets/base.png",
@@ -15047,8 +15119,8 @@
       "color": "lila",
       "state": "default",
       "pose": "jab",
-      "pixels": 2153,
-      "digest": 2510926231,
+      "pixels": 1226,
+      "digest": 74859238,
       "sources": [
         "completion/assets/body-jab.png",
         "streaming-assets/base.png",
@@ -15065,8 +15137,8 @@
       "color": "gold",
       "state": "default",
       "pose": "jab",
-      "pixels": 2153,
-      "digest": 3381596321,
+      "pixels": 1226,
+      "digest": 369214367,
       "sources": [
         "completion/assets/body-jab.png",
         "streaming-assets/base.png",
@@ -18671,14 +18743,13 @@
       "color": "schwarz",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1799,
-      "digest": 2993596708,
+      "pixels": 1930,
+      "digest": 3660263768,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -18690,14 +18761,13 @@
       "color": "weiss",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1799,
-      "digest": 175817732,
+      "pixels": 1930,
+      "digest": 571121936,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -18709,14 +18779,13 @@
       "color": "grau",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1799,
-      "digest": 851019415,
+      "pixels": 1930,
+      "digest": 4107758567,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -18728,14 +18797,13 @@
       "color": "rot",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1799,
-      "digest": 3847073594,
+      "pixels": 1930,
+      "digest": 3607396653,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -18747,14 +18815,13 @@
       "color": "blau",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1799,
-      "digest": 1100249812,
+      "pixels": 1930,
+      "digest": 1037386371,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -18766,14 +18833,13 @@
       "color": "gruen",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1799,
-      "digest": 789127668,
+      "pixels": 1930,
+      "digest": 962334908,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -18785,14 +18851,13 @@
       "color": "lila",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1799,
-      "digest": 768300448,
+      "pixels": 1930,
+      "digest": 1663789454,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -18804,14 +18869,13 @@
       "color": "gold",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1799,
-      "digest": 714577234,
+      "pixels": 1930,
+      "digest": 1987551340,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -18823,15 +18887,13 @@
       "color": "schwarz",
       "state": "down",
       "pose": "sieg",
-      "pixels": 1252,
-      "digest": 2369486127,
+      "pixels": 1067,
+      "digest": 1658813655,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -18843,15 +18905,14 @@
       "color": "schwarz",
       "state": "up",
       "pose": "sieg",
-      "pixels": 1437,
-      "digest": 2291306852,
+      "pixels": 1238,
+      "digest": 1821834228,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-sieg.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -18862,15 +18923,13 @@
       "color": "weiss",
       "state": "down",
       "pose": "sieg",
-      "pixels": 1252,
-      "digest": 1598726798,
+      "pixels": 1067,
+      "digest": 3689068225,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -18882,15 +18941,14 @@
       "color": "weiss",
       "state": "up",
       "pose": "sieg",
-      "pixels": 1437,
-      "digest": 1905816209,
+      "pixels": 1238,
+      "digest": 700821213,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-sieg.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -18901,15 +18959,13 @@
       "color": "grau",
       "state": "down",
       "pose": "sieg",
-      "pixels": 1252,
-      "digest": 4277545107,
+      "pixels": 1067,
+      "digest": 650254825,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -18921,15 +18977,14 @@
       "color": "grau",
       "state": "up",
       "pose": "sieg",
-      "pixels": 1437,
-      "digest": 2756740942,
+      "pixels": 1238,
+      "digest": 3612992677,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-sieg.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -18940,15 +18995,13 @@
       "color": "rot",
       "state": "down",
       "pose": "sieg",
-      "pixels": 1252,
-      "digest": 3324206263,
+      "pixels": 1067,
+      "digest": 3189387708,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -18960,15 +19013,14 @@
       "color": "rot",
       "state": "up",
       "pose": "sieg",
-      "pixels": 1437,
-      "digest": 3426806414,
+      "pixels": 1238,
+      "digest": 2717431123,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-sieg.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -18979,15 +19031,13 @@
       "color": "blau",
       "state": "down",
       "pose": "sieg",
-      "pixels": 1252,
-      "digest": 3606845420,
+      "pixels": 1067,
+      "digest": 4248568863,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -18999,15 +19049,14 @@
       "color": "blau",
       "state": "up",
       "pose": "sieg",
-      "pixels": 1437,
-      "digest": 2993400476,
+      "pixels": 1238,
+      "digest": 3547022740,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-sieg.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -19018,15 +19067,13 @@
       "color": "gruen",
       "state": "down",
       "pose": "sieg",
-      "pixels": 1252,
-      "digest": 3895291375,
+      "pixels": 1067,
+      "digest": 613158180,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -19038,15 +19085,14 @@
       "color": "gruen",
       "state": "up",
       "pose": "sieg",
-      "pixels": 1437,
-      "digest": 3651678146,
+      "pixels": 1238,
+      "digest": 1711668174,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-sieg.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -19057,15 +19103,13 @@
       "color": "lila",
       "state": "down",
       "pose": "sieg",
-      "pixels": 1252,
-      "digest": 445882023,
+      "pixels": 1067,
+      "digest": 3537273578,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -19077,15 +19121,14 @@
       "color": "lila",
       "state": "up",
       "pose": "sieg",
-      "pixels": 1437,
-      "digest": 2836337974,
+      "pixels": 1238,
+      "digest": 2307634978,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-sieg.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -19096,15 +19139,13 @@
       "color": "gold",
       "state": "down",
       "pose": "sieg",
-      "pixels": 1252,
-      "digest": 299942979,
+      "pixels": 1067,
+      "digest": 2685812340,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -19116,15 +19157,14 @@
       "color": "gold",
       "state": "up",
       "pose": "sieg",
-      "pixels": 1437,
-      "digest": 2161290735,
+      "pixels": 1238,
+      "digest": 4054130339,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-sieg.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -19135,15 +19175,13 @@
       "color": "schwarz",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1271,
-      "digest": 3835161390,
+      "pixels": 1141,
+      "digest": 1989675631,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -19155,15 +19193,13 @@
       "color": "weiss",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1271,
-      "digest": 2976336570,
+      "pixels": 1141,
+      "digest": 1666388854,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -19175,15 +19211,13 @@
       "color": "grau",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1271,
-      "digest": 3624767516,
+      "pixels": 1141,
+      "digest": 2816213277,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -19195,15 +19229,13 @@
       "color": "rot",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1271,
-      "digest": 4203750615,
+      "pixels": 1141,
+      "digest": 2343520631,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -19215,15 +19247,13 @@
       "color": "blau",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1271,
-      "digest": 1979072402,
+      "pixels": 1141,
+      "digest": 3324181125,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -19235,15 +19265,13 @@
       "color": "gruen",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1271,
-      "digest": 3527067601,
+      "pixels": 1141,
+      "digest": 172597790,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -19255,15 +19283,13 @@
       "color": "lila",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1271,
-      "digest": 1929528339,
+      "pixels": 1141,
+      "digest": 851348163,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -19275,15 +19301,13 @@
       "color": "gold",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1271,
-      "digest": 2156243872,
+      "pixels": 1141,
+      "digest": 851382117,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -20060,8 +20084,8 @@
       "color": "schwarz",
       "state": "default",
       "pose": "sieg",
-      "pixels": 2153,
-      "digest": 1820009192,
+      "pixels": 1226,
+      "digest": 1986122562,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
@@ -20078,8 +20102,8 @@
       "color": "weiss",
       "state": "default",
       "pose": "sieg",
-      "pixels": 2153,
-      "digest": 528664782,
+      "pixels": 1226,
+      "digest": 1648357077,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
@@ -20096,8 +20120,8 @@
       "color": "grau",
       "state": "default",
       "pose": "sieg",
-      "pixels": 2153,
-      "digest": 300753022,
+      "pixels": 1226,
+      "digest": 2756314189,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
@@ -20114,8 +20138,8 @@
       "color": "rot",
       "state": "default",
       "pose": "sieg",
-      "pixels": 2153,
-      "digest": 1254552268,
+      "pixels": 1226,
+      "digest": 3973659473,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
@@ -20132,8 +20156,8 @@
       "color": "blau",
       "state": "default",
       "pose": "sieg",
-      "pixels": 2153,
-      "digest": 889892596,
+      "pixels": 1226,
+      "digest": 4103249699,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
@@ -20150,8 +20174,8 @@
       "color": "gruen",
       "state": "default",
       "pose": "sieg",
-      "pixels": 2153,
-      "digest": 3040710107,
+      "pixels": 1226,
+      "digest": 3948312874,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
@@ -20168,8 +20192,8 @@
       "color": "lila",
       "state": "default",
       "pose": "sieg",
-      "pixels": 2153,
-      "digest": 2510926231,
+      "pixels": 1226,
+      "digest": 74859238,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
@@ -20186,8 +20210,8 @@
       "color": "gold",
       "state": "default",
       "pose": "sieg",
-      "pixels": 2153,
-      "digest": 3381596321,
+      "pixels": 1226,
+      "digest": 369214367,
       "sources": [
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
@@ -20204,17 +20228,14 @@
       "color": "fixed",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1921,
-      "digest": 3822174075,
+      "pixels": 1532,
+      "digest": 1775719345,
       "sources": [
         "separation/coat-basic-back.png",
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "completion/assets/coat-rig-body.png",
-        "production-art/coat-basic-guard.png",
-        "completion/assets/sleeve-coat-upper.png",
-        "completion/assets/sleeve-coat-forearm.png",
+        "completion/assets/coat-basic-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -20226,16 +20247,14 @@
       "color": "fixed",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1922,
-      "digest": 1589227082,
+      "pixels": 1737,
+      "digest": 2246386056,
       "sources": [
         "separation/coat-back.png",
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "completion/assets/coat-rig-body.png",
-        "completion/assets/sleeve-coat-upper.png",
-        "completion/assets/sleeve-coat-forearm.png",
+        "completion/assets/coat-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -20247,17 +20266,14 @@
       "color": "fixed",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1911,
-      "digest": 4292795442,
+      "pixels": 1507,
+      "digest": 1831975586,
       "sources": [
         "separation/coat-back.png",
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "completion/assets/coat-rig-body.png",
-        "completion/assets/coat-neon-guard.png",
-        "completion/assets/sleeve-coat-upper.png",
-        "completion/assets/sleeve-coat-forearm.png",
+        "completion/assets/coat-neon-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -20269,17 +20285,14 @@
       "color": "fixed",
       "state": "default",
       "pose": "sieg",
-      "pixels": 1908,
-      "digest": 628446281,
+      "pixels": 1513,
+      "digest": 4248386668,
       "sources": [
         "separation/coat-back.png",
         "completion/assets/body-sieg.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "completion/assets/coat-rig-body.png",
-        "completion/assets/coat-drache-guard.png",
-        "completion/assets/sleeve-coat-upper.png",
-        "completion/assets/sleeve-coat-forearm.png",
+        "completion/assets/coat-drache-sieg.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -25173,8 +25186,8 @@
       "color": "schwarz",
       "state": "default",
       "pose": "flex",
-      "pixels": 2153,
-      "digest": 1820009192,
+      "pixels": 1226,
+      "digest": 1986122562,
       "sources": [
         "completion/assets/body-flex.png",
         "streaming-assets/base.png",
@@ -25191,8 +25204,8 @@
       "color": "weiss",
       "state": "default",
       "pose": "flex",
-      "pixels": 2153,
-      "digest": 528664782,
+      "pixels": 1226,
+      "digest": 1648357077,
       "sources": [
         "completion/assets/body-flex.png",
         "streaming-assets/base.png",
@@ -25209,8 +25222,8 @@
       "color": "grau",
       "state": "default",
       "pose": "flex",
-      "pixels": 2153,
-      "digest": 300753022,
+      "pixels": 1226,
+      "digest": 2756314189,
       "sources": [
         "completion/assets/body-flex.png",
         "streaming-assets/base.png",
@@ -25227,8 +25240,8 @@
       "color": "rot",
       "state": "default",
       "pose": "flex",
-      "pixels": 2153,
-      "digest": 1254552268,
+      "pixels": 1226,
+      "digest": 3973659473,
       "sources": [
         "completion/assets/body-flex.png",
         "streaming-assets/base.png",
@@ -25245,8 +25258,8 @@
       "color": "blau",
       "state": "default",
       "pose": "flex",
-      "pixels": 2153,
-      "digest": 889892596,
+      "pixels": 1226,
+      "digest": 4103249699,
       "sources": [
         "completion/assets/body-flex.png",
         "streaming-assets/base.png",
@@ -25263,8 +25276,8 @@
       "color": "gruen",
       "state": "default",
       "pose": "flex",
-      "pixels": 2153,
-      "digest": 3040710107,
+      "pixels": 1226,
+      "digest": 3948312874,
       "sources": [
         "completion/assets/body-flex.png",
         "streaming-assets/base.png",
@@ -25281,8 +25294,8 @@
       "color": "lila",
       "state": "default",
       "pose": "flex",
-      "pixels": 2153,
-      "digest": 2510926231,
+      "pixels": 1226,
+      "digest": 74859238,
       "sources": [
         "completion/assets/body-flex.png",
         "streaming-assets/base.png",
@@ -25299,8 +25312,8 @@
       "color": "gold",
       "state": "default",
       "pose": "flex",
-      "pixels": 2153,
-      "digest": 3381596321,
+      "pixels": 1226,
+      "digest": 369214367,
       "sources": [
         "completion/assets/body-flex.png",
         "streaming-assets/base.png",
@@ -28905,14 +28918,13 @@
       "color": "schwarz",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2099,
-      "digest": 1622080827,
+      "pixels": 1788,
+      "digest": 2847175985,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -28924,14 +28936,13 @@
       "color": "weiss",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2099,
-      "digest": 2026064809,
+      "pixels": 1788,
+      "digest": 2107161676,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -28943,14 +28954,13 @@
       "color": "grau",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2099,
-      "digest": 82288945,
+      "pixels": 1788,
+      "digest": 3987492963,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -28962,14 +28972,13 @@
       "color": "rot",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2099,
-      "digest": 1316405720,
+      "pixels": 1788,
+      "digest": 3282135622,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -28981,14 +28990,13 @@
       "color": "blau",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2099,
-      "digest": 3702843412,
+      "pixels": 1788,
+      "digest": 440303997,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29000,14 +29008,13 @@
       "color": "gruen",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2099,
-      "digest": 1122611727,
+      "pixels": 1788,
+      "digest": 914773452,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29019,14 +29026,13 @@
       "color": "lila",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2099,
-      "digest": 2984265122,
+      "pixels": 1788,
+      "digest": 3018114026,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29038,14 +29044,13 @@
       "color": "gold",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2099,
-      "digest": 3112038096,
+      "pixels": 1788,
+      "digest": 2045438212,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/shirt.png",
-        "completion/assets/sleeve-shirt-upper.png",
+        "completion/assets/shirt-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29057,15 +29062,13 @@
       "color": "schwarz",
       "state": "down",
       "pose": "ansage",
-      "pixels": 1585,
-      "digest": 2388212112,
+      "pixels": 1076,
+      "digest": 2475657539,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29077,15 +29080,14 @@
       "color": "schwarz",
       "state": "up",
       "pose": "ansage",
-      "pixels": 1380,
-      "digest": 1104488032,
+      "pixels": 1233,
+      "digest": 3100361326,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-ansage.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -29096,15 +29098,13 @@
       "color": "weiss",
       "state": "down",
       "pose": "ansage",
-      "pixels": 1585,
-      "digest": 1569760600,
+      "pixels": 1076,
+      "digest": 2457722018,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29116,15 +29116,14 @@
       "color": "weiss",
       "state": "up",
       "pose": "ansage",
-      "pixels": 1380,
-      "digest": 9629045,
+      "pixels": 1233,
+      "digest": 2093418603,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-ansage.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -29135,15 +29134,13 @@
       "color": "grau",
       "state": "down",
       "pose": "ansage",
-      "pixels": 1585,
-      "digest": 3203864904,
+      "pixels": 1076,
+      "digest": 2590565088,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29155,15 +29152,14 @@
       "color": "grau",
       "state": "up",
       "pose": "ansage",
-      "pixels": 1380,
-      "digest": 2043267007,
+      "pixels": 1233,
+      "digest": 617650044,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-ansage.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -29174,15 +29170,13 @@
       "color": "rot",
       "state": "down",
       "pose": "ansage",
-      "pixels": 1585,
-      "digest": 3156689732,
+      "pixels": 1076,
+      "digest": 3364183257,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29194,15 +29188,14 @@
       "color": "rot",
       "state": "up",
       "pose": "ansage",
-      "pixels": 1380,
-      "digest": 201044731,
+      "pixels": 1233,
+      "digest": 3080831927,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-ansage.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -29213,15 +29206,13 @@
       "color": "blau",
       "state": "down",
       "pose": "ansage",
-      "pixels": 1585,
-      "digest": 264468544,
+      "pixels": 1076,
+      "digest": 400947557,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29233,15 +29224,14 @@
       "color": "blau",
       "state": "up",
       "pose": "ansage",
-      "pixels": 1380,
-      "digest": 2078851627,
+      "pixels": 1233,
+      "digest": 3892609913,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-ansage.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -29252,15 +29242,13 @@
       "color": "gruen",
       "state": "down",
       "pose": "ansage",
-      "pixels": 1585,
-      "digest": 2908809032,
+      "pixels": 1076,
+      "digest": 2182570103,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29272,15 +29260,14 @@
       "color": "gruen",
       "state": "up",
       "pose": "ansage",
-      "pixels": 1380,
-      "digest": 3937869793,
+      "pixels": 1233,
+      "digest": 1919386601,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-ansage.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -29291,15 +29278,13 @@
       "color": "lila",
       "state": "down",
       "pose": "ansage",
-      "pixels": 1585,
-      "digest": 1925691923,
+      "pixels": 1076,
+      "digest": 3307588052,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29311,15 +29296,14 @@
       "color": "lila",
       "state": "up",
       "pose": "ansage",
-      "pixels": 1380,
-      "digest": 1619368056,
+      "pixels": 1233,
+      "digest": 3556457892,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-ansage.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -29330,15 +29314,13 @@
       "color": "gold",
       "state": "down",
       "pose": "ansage",
-      "pixels": 1585,
-      "digest": 2826707896,
+      "pixels": 1076,
+      "digest": 2855584095,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
+        "completion/assets/hoodie-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29350,15 +29332,14 @@
       "color": "gold",
       "state": "up",
       "pose": "ansage",
-      "pixels": 1380,
-      "digest": 1813516095,
+      "pixels": 1233,
+      "digest": 3217552637,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
+        "completion/assets/hoodie-ansage.png",
         "hoodie/guard.png",
-        "completion/assets/sleeve-hoodie-upper.png",
-        "completion/assets/sleeve-hoodie-forearm.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
       ]
@@ -29369,15 +29350,13 @@
       "color": "schwarz",
       "state": "default",
       "pose": "ansage",
-      "pixels": 1607,
-      "digest": 2896363131,
+      "pixels": 974,
+      "digest": 1588503896,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29389,15 +29368,13 @@
       "color": "weiss",
       "state": "default",
       "pose": "ansage",
-      "pixels": 1607,
-      "digest": 3451845108,
+      "pixels": 974,
+      "digest": 4081303506,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29409,15 +29386,13 @@
       "color": "grau",
       "state": "default",
       "pose": "ansage",
-      "pixels": 1607,
-      "digest": 3917518883,
+      "pixels": 974,
+      "digest": 1169237035,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29429,15 +29404,13 @@
       "color": "rot",
       "state": "default",
       "pose": "ansage",
-      "pixels": 1607,
-      "digest": 593143543,
+      "pixels": 974,
+      "digest": 1495862191,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29449,15 +29422,13 @@
       "color": "blau",
       "state": "default",
       "pose": "ansage",
-      "pixels": 1607,
-      "digest": 1158497079,
+      "pixels": 974,
+      "digest": 3188276593,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29469,15 +29440,13 @@
       "color": "gruen",
       "state": "default",
       "pose": "ansage",
-      "pixels": 1607,
-      "digest": 3997645507,
+      "pixels": 974,
+      "digest": 813944564,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29489,15 +29458,13 @@
       "color": "lila",
       "state": "default",
       "pose": "ansage",
-      "pixels": 1607,
-      "digest": 3153335460,
+      "pixels": 974,
+      "digest": 50382943,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -29509,15 +29476,13 @@
       "color": "gold",
       "state": "default",
       "pose": "ansage",
-      "pixels": 1607,
-      "digest": 3066105707,
+      "pixels": 974,
+      "digest": 1259673132,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "tops/assets/guard-jacket.png",
-        "completion/assets/sleeve-jacke-upper.png",
-        "completion/assets/sleeve-jacke-forearm.png",
+        "completion/assets/jacke-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -30294,8 +30259,8 @@
       "color": "schwarz",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2153,
-      "digest": 1820009192,
+      "pixels": 1226,
+      "digest": 1986122562,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
@@ -30312,8 +30277,8 @@
       "color": "weiss",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2153,
-      "digest": 528664782,
+      "pixels": 1226,
+      "digest": 1648357077,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
@@ -30330,8 +30295,8 @@
       "color": "grau",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2153,
-      "digest": 300753022,
+      "pixels": 1226,
+      "digest": 2756314189,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
@@ -30348,8 +30313,8 @@
       "color": "rot",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2153,
-      "digest": 1254552268,
+      "pixels": 1226,
+      "digest": 3973659473,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
@@ -30366,8 +30331,8 @@
       "color": "blau",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2153,
-      "digest": 889892596,
+      "pixels": 1226,
+      "digest": 4103249699,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
@@ -30384,8 +30349,8 @@
       "color": "gruen",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2153,
-      "digest": 3040710107,
+      "pixels": 1226,
+      "digest": 3948312874,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
@@ -30402,8 +30367,8 @@
       "color": "lila",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2153,
-      "digest": 2510926231,
+      "pixels": 1226,
+      "digest": 74859238,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
@@ -30420,8 +30385,8 @@
       "color": "gold",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2153,
-      "digest": 3381596321,
+      "pixels": 1226,
+      "digest": 369214367,
       "sources": [
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
@@ -30438,17 +30403,14 @@
       "color": "fixed",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2169,
-      "digest": 3863035900,
+      "pixels": 1525,
+      "digest": 2642743014,
       "sources": [
         "separation/coat-basic-back.png",
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "completion/assets/coat-rig-body.png",
-        "production-art/coat-basic-guard.png",
-        "completion/assets/sleeve-coat-upper.png",
-        "completion/assets/sleeve-coat-forearm.png",
+        "completion/assets/coat-basic-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -30460,16 +30422,14 @@
       "color": "fixed",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2167,
-      "digest": 3209635183,
+      "pixels": 1984,
+      "digest": 2129790902,
       "sources": [
         "separation/coat-back.png",
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "completion/assets/coat-rig-body.png",
-        "completion/assets/sleeve-coat-upper.png",
-        "completion/assets/sleeve-coat-forearm.png",
+        "completion/assets/coat-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -30481,17 +30441,14 @@
       "color": "fixed",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2162,
-      "digest": 3231684461,
+      "pixels": 1522,
+      "digest": 1609849399,
       "sources": [
         "separation/coat-back.png",
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "completion/assets/coat-rig-body.png",
-        "completion/assets/coat-neon-guard.png",
-        "completion/assets/sleeve-coat-upper.png",
-        "completion/assets/sleeve-coat-forearm.png",
+        "completion/assets/coat-neon-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"
@@ -30503,17 +30460,14 @@
       "color": "fixed",
       "state": "default",
       "pose": "ansage",
-      "pixels": 2159,
-      "digest": 1625572039,
+      "pixels": 1497,
+      "digest": 871721522,
       "sources": [
         "separation/coat-back.png",
         "completion/assets/body-ansage.png",
         "streaming-assets/base.png",
         "separation/boxer.png",
-        "completion/assets/coat-rig-body.png",
-        "completion/assets/coat-drache-guard.png",
-        "completion/assets/sleeve-coat-upper.png",
-        "completion/assets/sleeve-coat-forearm.png",
+        "completion/assets/coat-drache-ansage.png",
         "streaming-assets/hair-afro.png",
         "production-art/hands-master-0.png",
         "production-art/hands-master-1.png"

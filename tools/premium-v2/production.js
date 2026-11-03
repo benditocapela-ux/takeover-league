@@ -33,7 +33,9 @@ function resolve(input){
  if(hw){const i=selected.pieces.findIndex(p=>p.slot==='hair');selected.pieces.splice(i<0?selected.pieces.findIndex(p=>p.slot==='eyes')+1:i+1,0,...hw.pieces);}
  if(c.coat==='samurai')replace(['coat-back'],[art.pieces['coat-back-clean']]);
  if(newBottom)replace(['bottom-black','bottom-red'],[newBottom]);
- if(newFeet)replace(['feet'],[newFeet]);
+ // Register each shoe against its own ankle. A shared pair rectangle cannot
+ // correct the source's stance without also stretching the shoe itself.
+ if(newFeet)replace(['feet'],newFeet.placements?newFeet.placements.map(p=>({...newFeet,...p,placements:undefined})): [newFeet]);
  if(top)selected.pieces.splice(selected.pieces.findIndex(p=>p.slot==='eyes'),0,...top.pieces);
  if(c.coat==='basic'){replace(['coat-back'],[art.pieces['coat-basic-back']]);replace(['coat-tail','coat-'+c.pose_profile],[art.pieces['coat-basic-'+c.pose_profile]]);}
  if(c.pose_profile==='guard'){
@@ -61,6 +63,6 @@ function draw(ctx,selection,images,slot){
  if(!slot)TLPremiumEffects.drawEyes(ctx,selection.effectsConfig||selection.config);
 }
 async function prepare(input){const selection=resolve(input);if(!selection)return {renderer:'svg',reason:'unsupported'};try{const images=await loader.prepare(selection);if(selection.topSelection)await Promise.all(selection.topSelection.requiredSources.map(async src=>{if(!images[src])images[src]=await loader.get(src)}));return {renderer:'anime-draft',selection,images}}catch(e){return {renderer:'svg',reason:'load-failed',error:e.message}}}
-function itemFrame(selection,slot){if(['scene','aura','eyefx'].includes(slot)){if(slot!=='scene'&&selection.config[slot]==='none')return null;return slot==='eyefx'?[340,140,85,35]:[0,0,768,1216]}const ps=selection.pieces.filter(p=>p.slot===slot||(slot==='coat'&&p.slot.startsWith('coat')));if(!ps.length)return null;const x=Math.floor(Math.min(...ps.map(p=>p.box[0]))),y=Math.floor(Math.min(...ps.map(p=>p.box[1])));return[x,y,Math.ceil(Math.max(...ps.map(p=>p.box[0]+p.box[2])))-x,Math.ceil(Math.max(...ps.map(p=>p.box[1]+p.box[3])))-y]}
+function itemFrame(selection,slot){if(['scene','aura','eyefx'].includes(slot)){if(slot!=='scene'&&selection.config[slot]==='none')return null;return slot==='eyefx'?[340,140,85,35]:[0,0,768,1216]}const ps=selection.pieces.filter(p=>p.slot===slot||(slot==='coat'&&p.slot.startsWith('coat'))).map(p=>({...p,box:p.itemBounds||p.box}));if(!ps.length)return null;const x=Math.floor(Math.min(...ps.map(p=>p.box[0]))),y=Math.floor(Math.min(...ps.map(p=>p.box[1])));return[x,y,Math.ceil(Math.max(...ps.map(p=>p.box[0]+p.box[2])))-x,Math.ceil(Math.max(...ps.map(p=>p.box[1]+p.box[3])))-y]}
 window.TLPremiumProduction=Object.freeze({init,resolve,prepare,draw,itemFrame,defaults,loader,sleeveOcclusion,approved:false,enabled:false});
 })();

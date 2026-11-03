@@ -30,5 +30,59 @@
       430,
       343
     ]
+  },
+  "poses": {
+    "sieg": {
+      "piece": {
+        "id": "top-guard-shirt",
+        "slot": "top",
+        "src": "completion/assets/shirt-sieg.png",
+        "uv": [
+          0,
+          0,
+          1122,
+          1402
+        ],
+        "box": [
+          112.68,
+          35,
+          573.02784,
+          677.166
+        ],
+        "sha256": "80c84f28bdc3e3a67b3c8ff536573fd009805f8f798d6844a6b27070941b11bb"
+      },
+      "frame": [
+        200,
+        150,
+        400,
+        410
+      ]
+    },
+    "ansage": {
+      "piece": {
+        "id": "top-guard-shirt",
+        "slot": "top",
+        "src": "completion/assets/shirt-ansage.png",
+        "uv": [
+          0,
+          0,
+          1122,
+          1402
+        ],
+        "box": [
+          78.45,
+          -3,
+          614.9682,
+          783.718
+        ],
+        "sha256": "8e4f225fef5454d6ba7820c977fc420a119ce8d9e7cc10363d5cbcf4e3beaf2f"
+      },
+      "frame": [
+        200,
+        150,
+        400,
+        410
+      ]
+    }
   }
 }

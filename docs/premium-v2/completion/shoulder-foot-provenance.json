@@ -1,0 +1,197 @@
+{
+  "tool": "built-in image_gen.imagegen",
+  "skill": "C:/Users/bendi/.codex/skills/.system/imagegen/SKILL.md",
+  "scope": "Continuous shirt, hoodie, jacket and four coat fronts for Sieg/Ansage; original bodies, gloves, coat backs and trousers retained. Existing sneaker pixels independently registered at both ankles.",
+  "references": [
+    "tools/premium-v2/completion/assets/body-sieg.png",
+    "tools/premium-v2/completion/assets/body-ansage.png",
+    "tools/premium-v2/completion/assets/shirt-registered.png"
+  ],
+  "initialPrompts": {
+    "sieg": "Use case: precise-object-edit. Create a registration-locked garment overlay for the fixed premium anime boxer. Image 1 is the EXACT body silhouette and 768x800 coordinate canvas to fit; image 2 is the exact black athletic shirt design and material reference (its pose is NOT the target). Keep image 1's full canvas, scale, center, empty margins and pose. Draw a fitted short-sleeved athletic shirt over the chest, shoulders and waist of image1, then output ONLY the garment with genuine transparent background, NO skin or human parts. Preserve the complete naturally broad deltoid volume of the reference body. The shirt must have connected, continuous shoulder-to-chest fabric and smooth anatomically correct armholes, no tiny detached caps or puffed shoulder pads. Soft premium anime-painted black athletic knit, subtle grey highlights, thin gold neckline/cuff trim and gold side piping exactly like image2. Shirt follows actual body side contours with slight garment ease, no exposed skin wedges along torso. Neck opening centered x384 with U bottom around y276, endpoints at actual neck base near (338,218) and (432,218). Waist hem y550, x300 to465. Black cloth fully opaque; inside neck and outside silhouette alpha zero. No body, skin, arms, hands, face, trousers, belt, coat, mannequin, text, logos, shadows outside the garment, extra pieces or contact sheet. No recentering, cropping, arbitrary rescaling, changing pose or enlarging the garment to fill the page. Preserve image1's exact relative coordinates; output same 768:800 canvas aspect ratio. Target is SIEGER victory pose: screen-left arm hangs down, screen-right arm raised steeply diagonally upward. Left shoulder follows body around (272,259), cuff crosses upper arm near (258,360). Right shoulder follows body around (463,214); right short sleeve follows the raised deltoid and upper arm to cuff around (515,197), leaving the raised forearm bare/transparent. Follow real curved chest/armpit at (474,310). Right neckline and armhole must connect continuously with naturally stretched folds; no horizontal shoulder shelf. Cover the entire original deltoid and upper torso without shrinking shoulders.",
+    "ansage": "Use case: precise-object-edit. Create a registration-locked garment overlay for the fixed premium anime boxer. Image 1 is the EXACT body silhouette and 768x800 coordinate canvas to fit; image 2 is the exact black athletic shirt design and material reference (its pose is NOT the target). Keep image 1's full canvas, scale, center, empty margins and pose. Draw a fitted short-sleeved athletic shirt over the chest, shoulders and waist of image1, then output ONLY the garment with genuine transparent background, NO skin or human parts. Preserve the complete naturally broad deltoid volume of the reference body. The shirt must have connected, continuous shoulder-to-chest fabric and smooth anatomically correct armholes, no tiny detached caps or puffed shoulder pads. Soft premium anime-painted black athletic knit, subtle grey highlights, thin gold neckline/cuff trim and gold side piping exactly like image2. Shirt follows actual body side contours with slight garment ease, no exposed skin wedges along torso. Neck opening centered x384 with U bottom around y276, endpoints at actual neck base near (338,218) and (432,218). Waist hem y550, x300 to465. Black cloth fully opaque; inside neck and outside silhouette alpha zero. No body, skin, arms, hands, face, trousers, belt, coat, mannequin, text, logos, shadows outside the garment, extra pieces or contact sheet. No recentering, cropping, arbitrary rescaling, changing pose or enlarging the garment to fill the page. Preserve image1's exact relative coordinates; output same 768:800 canvas aspect ratio. Target is ANSAGE pointing pose: screen-left arm hangs down, screen-right upper arm points almost horizontally right, forearm slightly upward. Left shoulder follows body around (286,267), cuff crosses upper arm near (275,365). Right shoulder follows body around (487,271); right short cuff is near x547 and covers original upper arm from y255 to326. Cover full deltoid silhouette including broad rounded right shoulder rising at y229; maintain continuous sleeve-to-chest armhole near (474,330). No narrow rotated shoulder disc. Follow actual torso side at x305 left and x465 right, down to waist. Keep original body outline and normal shoulder width."
+  },
+  "correctionPrompt": "Use case: precise-object-edit. Image 1 is the target garment overlay on a 1229x1280 transparent canvas. Image 2 is the exact underlying fixed 768x800 boxer body, which scales by 1.6 to the garment canvas. Keep the ENTIRE garment canvas size, placement, sleeve pose, shoulder shape and material unchanged. Make ONLY anatomical fit corrections: extend the hem DOWN from about y820 to y880 (equivalent world y550), with hem endpoints near x480 and x745, so there is no bare belly band at the belt. Widen the torso fabric where needed to cover ALL underlying ribcage/lat silhouette: world left side approximately (299,360),(305,430),(309,480),(300,550), and world right side approximately (480,325),(480,380),(465,450),(460,495),(465,550). Garment side edges must sit just outside this fixed body, not cut into it like a corset. Keep natural cloth fit and waist taper. Deepen neck opening slightly: collar endpoints approximately source (537,349) and (692,349), center bottom source (614,443). Keep collar hole transparent. Do not move the shoulders, short cuffs or raised sleeve; preserve their current exact coordinates. Same black soft athletic fabric, gold seam piping, premium anime painting. Output ONLY this single complete shirt. Absolutely no body or skin pixels, no extra parts, no opaque background. Preserve genuine alpha zero outside, opaque cloth, full original empty canvas margins.",
+  "selected": [
+    {
+      "pose": "sieg",
+      "generator": "exec-a4984b41-f85e-44e6-948c-52a5e5cafbc6.png",
+      "asset": "tools/premium-v2/completion/assets/shirt-sieg.png",
+      "sha256": "80c84f28bdc3e3a67b3c8ff536573fd009805f8f798d6844a6b27070941b11bb",
+      "bytes": 593825,
+      "size": [
+        1122,
+        1402
+      ]
+    },
+    {
+      "pose": "ansage",
+      "generator": "exec-dfa4d41e-b3d7-4e82-a3b1-d1e43ff48183.png",
+      "asset": "tools/premium-v2/completion/assets/shirt-ansage.png",
+      "sha256": "8e4f225fef5454d6ba7820c977fc420a119ce8d9e7cc10363d5cbcf4e3beaf2f",
+      "bytes": 465847,
+      "size": [
+        1122,
+        1402
+      ]
+    },
+    {
+      "pose": "sieg",
+      "generator": "exec-28d13885-a51b-4d73-954e-5ebd32f2ec92.png",
+      "asset": "tools/premium-v2/completion/assets/hoodie-sieg.png",
+      "sha256": "9fef8d4e9df187e67be858158d748713f0a1915525e095feee4777ec19d632d1",
+      "bytes": 620328,
+      "size": [
+        1229,
+        1280
+      ]
+    },
+    {
+      "pose": "ansage",
+      "generator": "exec-2cc08030-f371-4b85-9ea6-02307b97c736.png",
+      "asset": "tools/premium-v2/completion/assets/hoodie-ansage.png",
+      "sha256": "810bb8405fd49677122953f07b659229587d4566a83ef102d8f836e20c766415",
+      "bytes": 655633,
+      "size": [
+        1269,
+        1240
+      ]
+    },
+    {
+      "pose": "sieg",
+      "generator": "exec-f5c13cf3-5f03-4a81-a789-35eb1a8e55f4.png",
+      "asset": "tools/premium-v2/completion/assets/jacke-sieg.png",
+      "sha256": "0c054542e2d2b4a6d54a41ca38dc87c9494ef1feb6ed1a8cf29bfcb8aa2c204e",
+      "bytes": 746009,
+      "size": [
+        1229,
+        1280
+      ]
+    },
+    {
+      "pose": "ansage",
+      "generator": "exec-17973e68-1427-449a-9ec5-8ad29ef3de25.png",
+      "asset": "tools/premium-v2/completion/assets/jacke-ansage.png",
+      "sha256": "e78f8e60c9896a73c116e43ebcd0ee7a3ffeaa5896ef2f30b51882321a67d579",
+      "bytes": 634382,
+      "size": [
+        1229,
+        1280
+      ]
+    },
+    {
+      "pose": "sieg",
+      "generator": "exec-c2f424d7-6c3e-4cac-99c4-68f1d3fd255b.png",
+      "asset": "tools/premium-v2/completion/assets/coat-sieg.png",
+      "sha256": "ffd6071196b94c69c9a002c8254fcfcd986520c9259743cd74ddf72d9576fc18",
+      "bytes": 766452,
+      "size": [
+        1151,
+        1367
+      ]
+    },
+    {
+      "pose": "ansage",
+      "generator": "exec-0e311f45-f878-4ec1-ad5c-0debd9293cce.png",
+      "asset": "tools/premium-v2/completion/assets/coat-ansage.png",
+      "sha256": "413453cf4107878836b136adadefb00497db6b608fa22116fbd96addcee2f8c4",
+      "bytes": 747886,
+      "size": [
+        1151,
+        1367
+      ]
+    },
+    {
+      "pose": "sieg",
+      "generator": "exec-55051d35-0241-4ff9-9dc9-1c799616f1cc.png",
+      "asset": "tools/premium-v2/completion/assets/coat-basic-sieg.png",
+      "sha256": "12564f0c1fdb819021cc71aeaedefd08dccd53ed2e212c5d76e326629a499dcc",
+      "bytes": 961410,
+      "size": [
+        1085,
+        1449
+      ]
+    },
+    {
+      "pose": "sieg",
+      "generator": "exec-940d5285-709c-4972-ab28-8f9e5c79d0ae.png",
+      "asset": "tools/premium-v2/completion/assets/coat-neon-sieg.png",
+      "sha256": "fcfdc83af390d8b1441bbf358c851f6cfa34a924a1561b38fd1f1d8d82d5a4d4",
+      "bytes": 821406,
+      "size": [
+        1085,
+        1449
+      ]
+    },
+    {
+      "pose": "sieg",
+      "generator": "exec-87492996-4cf6-48d9-9d94-afb20a58694c.png",
+      "asset": "tools/premium-v2/completion/assets/coat-drache-sieg.png",
+      "sha256": "43faddd025ccc44e896e394ca007e02583fe0d7b3a7c8ddbb906281d379ecb2e",
+      "bytes": 934799,
+      "size": [
+        1085,
+        1449
+      ]
+    },
+    {
+      "pose": "ansage",
+      "generator": "exec-505c5c5b-ea8d-4196-9479-67dab6901f04.png",
+      "asset": "tools/premium-v2/completion/assets/coat-basic-ansage.png",
+      "sha256": "9a5471000b0b973027cd1c77487822cff994d4ce296ee7c5aa9bd84bf61752df",
+      "bytes": 967916,
+      "size": [
+        1085,
+        1449
+      ]
+    },
+    {
+      "pose": "ansage",
+      "generator": "exec-da0dc54a-c7ac-4b7f-ab69-c5bf29559214.png",
+      "asset": "tools/premium-v2/completion/assets/coat-neon-ansage.png",
+      "sha256": "a6df2cca218593e5b6e15e428a69576c4b5cb90bd997de8fa7693093d6ce1fda",
+      "bytes": 895152,
+      "size": [
+        1085,
+        1449
+      ]
+    },
+    {
+      "pose": "ansage",
+      "generator": "exec-002728aa-42f2-4c20-a3a5-7065cf362d8e.png",
+      "asset": "tools/premium-v2/completion/assets/coat-drache-ansage.png",
+      "sha256": "a39a17d19303af62358e0f54da912ab38dc5bca815e73830fb93bc565f18f667",
+      "bytes": 908670,
+      "size": [
+        1085,
+        1449
+      ]
+    }
+  ],
+  "registration": {
+    "shirts": "Generator changed canvas to 1122x1402; original generated pixels retained, explicit piece.box aligns neck, deltoids and waist in the fixed 768x800 body coordinate space. No CSS correction.",
+    "outerwear": "Original generated bytes retained; frame, UV, torso visibility and wrists registered in pose-bodies.json. Original body and glove anchors unchanged.",
+    "coats": "Complete fronts, original coat backs. Basic/Neon/Dragon registered from authored collar and wrist landmarks, with a continuous two-section hem; no pants pixels. Native variant palettes bypass a second material recolor.",
+    "sneakers": "Original production-art/feet-sneaker.png reused without pixel edits; split at source x237, uniform scale 0.84, rotation +12/-12 degrees around each ankle; all opaque source pixels retained exactly once."
+  },
+  "prompts": {
+    "outerwear": {
+      "sieg-hoodie": "Use case: precise-object-edit. Create one registration-locked premium anime CLOTHING ONLY overlay for a modular 2D boxer. Image1 is the exact fixed target pose and canvas; image2 gives exact garment design/material, NOT pose. Preserve image1's overall placement, full canvas, scale, shoulders, muscular arm width and joint positions. Draw the garment fitted naturally over this exact body, then REMOVE ALL body/skin from output: only opaque garment with genuine transparent surrounding and openings. Continuous, properly sewn shoulder-to-chest and armhole fabric, natural stretching folds, no detached caps, discs, sausage-link arm segments, shoulder pads, thin shrunken arms or skin wedges. No mannequin, face, hands, trousers, gloves, boots, background, text, external shadows or other objects. Never recenter or crop garment or fill canvas with it. Fixed 768x800 canvas. Screen-left arm hangs down: shoulder (274,276), elbow (241,451), sleeve cuff centered (199,630). Screen-right arm is raised diagonally up: shoulder (465,219), elbow (546,160), cuff centered (589,62). Preserve broad shoulders and full muscular arm silhouette. Neck base around x338..432,y210..245. Torso sides follow x290..480; hem y550. Garment is the exact black pullover hoodie from image2: soft black cotton fleece, hood DOWN behind neck, gold-tipped drawstrings, small gold crown on screen-right chest, single kangaroo pocket, black ribbed wrist cuffs and waist hem. Full-length connected sleeves. No zipper. Use image2 solely for design/material; its cut-up atlas is not an output layout. Output one continuous entire hoodie, not an atlas, and do not include hood-up face part. Ends at wrists and waist, no hands.",
+      "sieg-jacke": "Use case: precise-object-edit. Create one registration-locked premium anime CLOTHING ONLY overlay for a modular 2D boxer. Image1 is the exact fixed target pose and canvas; image2 gives exact garment design/material, NOT pose. Preserve image1's overall placement, full canvas, scale, shoulders, muscular arm width and joint positions. Draw the garment fitted naturally over this exact body, then REMOVE ALL body/skin from output: only opaque garment with genuine transparent surrounding and openings. Continuous, properly sewn shoulder-to-chest and armhole fabric, natural stretching folds, no detached caps, discs, sausage-link arm segments, shoulder pads, thin shrunken arms or skin wedges. No mannequin, face, hands, trousers, gloves, boots, background, text, external shadows or other objects. Never recenter or crop garment or fill canvas with it. Fixed 768x800 canvas. Screen-left arm hangs down: shoulder (274,276), elbow (241,451), sleeve cuff centered (199,630). Screen-right arm is raised diagonally up: shoulder (465,219), elbow (546,160), cuff centered (589,62). Preserve broad shoulders and full muscular arm silhouette. Neck base around x338..432,y210..245. Torso sides follow x290..480; hem y550. Garment is the exact dark navy athletic zip jacket from image2: navy knit, standing ribbed collar, gold zipper down center, two slanted gold zipped pockets, gold piping along shoulder/arms, small gold crown on screen-right chest, ribbed wrist cuffs and bottom hem. Full-length sleeves, natural muscular shoulder contour with normal fabric ease. Output one continuous jacket. Ends at wrists and waist, no hands.",
+      "ansage-hoodie": "Use case: precise-object-edit. Create one registration-locked premium anime CLOTHING ONLY overlay for a modular 2D boxer. Image1 is the exact fixed target pose and canvas; image2 gives exact garment design/material, NOT pose. Preserve image1's overall placement, full canvas, scale, shoulders, muscular arm width and joint positions. Draw the garment fitted naturally over this exact body, then REMOVE ALL body/skin from output: only opaque garment with genuine transparent surrounding and openings. Continuous, properly sewn shoulder-to-chest and armhole fabric, natural stretching folds, no detached caps, discs, sausage-link arm segments, shoulder pads, thin shrunken arms or skin wedges. No mannequin, face, hands, trousers, gloves, boots, background, text, external shadows or other objects. Never recenter or crop garment or fill canvas with it. Fixed 768x800 canvas. Screen-left arm hangs down: shoulder (286,267), elbow (255,454), sleeve cuff centered (224,642). Screen-right arm points diagonally right: shoulder (488,271), elbow (592,290), cuff centered (667,236). Preserve broad shoulder and upper-arm silhouette. Neck base around x338..432,y210..245. Torso sides x300..480; hem y550. Garment is the exact black pullover hoodie from image2: soft black cotton fleece, hood DOWN behind neck, gold-tipped drawstrings, small gold crown on screen-right chest, single kangaroo pocket, black ribbed wrist cuffs and waist hem. Full-length connected sleeves. No zipper. Use image2 solely for design/material; its cut-up atlas is not an output layout. Output one continuous entire hoodie, not an atlas, and do not include hood-up face part. Ends at wrists and waist, no hands.",
+      "ansage-jacke": "Use case: precise-object-edit. Create one registration-locked premium anime CLOTHING ONLY overlay for a modular 2D boxer. Image1 is the exact fixed target pose and canvas; image2 gives exact garment design/material, NOT pose. Preserve image1's overall placement, full canvas, scale, shoulders, muscular arm width and joint positions. Draw the garment fitted naturally over this exact body, then REMOVE ALL body/skin from output: only opaque garment with genuine transparent surrounding and openings. Continuous, properly sewn shoulder-to-chest and armhole fabric, natural stretching folds, no detached caps, discs, sausage-link arm segments, shoulder pads, thin shrunken arms or skin wedges. No mannequin, face, hands, trousers, gloves, boots, background, text, external shadows or other objects. Never recenter or crop garment or fill canvas with it. Fixed 768x800 canvas. Screen-left arm hangs down: shoulder (286,267), elbow (255,454), sleeve cuff centered (224,642). Screen-right arm points diagonally right: shoulder (488,271), elbow (592,290), cuff centered (667,236). Preserve broad shoulder and upper-arm silhouette. Neck base around x338..432,y210..245. Torso sides x300..480; hem y550. Garment is the exact dark navy athletic zip jacket from image2: navy knit, standing ribbed collar, gold zipper down center, two slanted gold zipped pockets, gold piping along shoulder/arms, small gold crown on screen-right chest, ribbed wrist cuffs and bottom hem. Full-length sleeves, natural muscular shoulder contour with normal fabric ease. Output one continuous jacket. Ends at wrists and waist, no hands."
+    },
+    "samuraiCoats": {
+      "sieg": "Use case: precise-object-edit. Create an exact registered CLOTHING-ONLY overlay for an existing premium anime boxer. Image1 is the exact target 768x1216 full-body pose, positioning and canvas. Image2 is the coat design, image3 the sleeve leather/gold style. Fit a complete front coat including attached long sleeves to the exact body of image1. Then remove ALL human pixels, face, skin, hair, gloves, pants, shoes and background: output ONLY the open coat front and its sleeves on genuine transparent background. Keep same 768:1216 full canvas extent and relative placement, no cropping/recentering/enlarging to fill. Coat must have natural broad athletic shoulders with continuous armholes and realistic rounded deltoid volume. No narrow shrunken shoulders, detached discs, artificial shoulder pads or segmented sausage arms. Black premium painted supple leather, rich gold turned collar and lapels, gold piping/cuff trim matching references. Open central chest and waist/pants area stays transparent. Long left and right front panels descend to y930 with crown emblems near their hems, like image2. Full sleeves stop at actual wrists under glove cuffs. Collar around y200..270 x300..470; torso/waist center x384,y550. All interior cloth opaque, all openings and outside alpha0. No cape/back layer or cloth spanning between legs, no pants material baked in. No text, extra objects or lighting/background effects. Target SIEGER victory pose, left wrist around (199,630), left shoulder (274,276); right arm steeply raised, shoulder (465,219), elbow (546,160), right wrist (589,62). Trace exact actual muscular silhouette with comfortable coat ease. Maintain full shoulder breadth.",
+      "ansage": "Use case: precise-object-edit. Create an exact registered CLOTHING-ONLY overlay for an existing premium anime boxer. Image1 is the exact target 768x1216 full-body pose, positioning and canvas. Image2 is the coat design, image3 the sleeve leather/gold style. Fit a complete front coat including attached long sleeves to the exact body of image1. Then remove ALL human pixels, face, skin, hair, gloves, pants, shoes and background: output ONLY the open coat front and its sleeves on genuine transparent background. Keep same 768:1216 full canvas extent and relative placement, no cropping/recentering/enlarging to fill. Coat must have natural broad athletic shoulders with continuous armholes and realistic rounded deltoid volume. No narrow shrunken shoulders, detached discs, artificial shoulder pads or segmented sausage arms. Black premium painted supple leather, rich gold turned collar and lapels, gold piping/cuff trim matching references. Open central chest and waist/pants area stays transparent. Long left and right front panels descend to y930 with crown emblems near their hems, like image2. Full sleeves stop at actual wrists under glove cuffs. Collar around y200..270 x300..470; torso/waist center x384,y550. All interior cloth opaque, all openings and outside alpha0. No cape/back layer or cloth spanning between legs, no pants material baked in. No text, extra objects or lighting/background effects. Target ANSAGE pointing pose, left wrist (224,642), shoulder (286,267); right upper arm extends almost horizontally, shoulder (488,271), elbow (592,290), right wrist (667,236). Trace exact actual muscular silhouette with comfortable coat ease. Maintain full shoulder breadth."
+    },
+    "coatVariants": {
+      "sieg-basic": "Use case: precise-object-edit. Image1 is the EDIT TARGET: a complete registered coat-front layer on a 1151x1367 transparent canvas. Keep its EXACT silhouette, pose, shoulder width, cuff and collar coordinates, coat opening, panel geometry, full canvas dimensions and empty margins. Image2 is ONLY the existing equipment design/material reference; do NOT copy its guard arm pose. Change ONLY the target coat's material and decorative details to match image2 precisely. Preserve alpha outline and all placement; no recentering, resizing, cropping or reshaping. One continuous full coat with properly attached broad shoulders and full sleeves, no skin/body/hands/legs/boots/back cape/background. Opaque cloth and true transparency everywhere else. Remove every gold crown emblem from target and replace the relevant design as specified. BASIC COAT: deep navy-black supple leather, polished silver trim on collar, lapels, sleeve stripes, cuffs and lower hems, no crown, no other symbol or printed decoration. Subtle natural broad fabric highlights matching image2, not excessive glossy gold. Continuous unbroken cloth from shoulders to bottom hem.",
+      "sieg-neon": "Use case: precise-object-edit. Image1 is the EDIT TARGET: a complete registered coat-front layer on a 1151x1367 transparent canvas. Keep its EXACT silhouette, pose, shoulder width, cuff and collar coordinates, coat opening, panel geometry, full canvas dimensions and empty margins. Image2 is ONLY the existing equipment design/material reference; do NOT copy its guard arm pose. Change ONLY the target coat's material and decorative details to match image2 precisely. Preserve alpha outline and all placement; no recentering, resizing, cropping or reshaping. One continuous full coat with properly attached broad shoulders and full sleeves, no skin/body/hands/legs/boots/back cape/background. Opaque cloth and true transparency everywhere else. Remove every gold crown emblem from target and replace the relevant design as specified. NEON COAT: blue-black shiny leather with vivid cyan/turquoise trim on collar, lapels, sleeve stripes, cuffs and lower hems. Two/three crisp cyan diagonal stripe motifs near the bottom outer front panels exactly like image2. No crown, dragon, other symbols, or glow outside cloth.",
+      "sieg-drache": "Use case: precise-object-edit. Image1 is the EDIT TARGET: a complete registered coat-front layer on a 1151x1367 transparent canvas. Keep its EXACT silhouette, pose, shoulder width, cuff and collar coordinates, coat opening, panel geometry, full canvas dimensions and empty margins. Image2 is ONLY the existing equipment design/material reference; do NOT copy its guard arm pose. Change ONLY the target coat's material and decorative details to match image2 precisely. Preserve alpha outline and all placement; no recentering, resizing, cropping or reshaping. One continuous full coat with properly attached broad shoulders and full sleeves, no skin/body/hands/legs/boots/back cape/background. Opaque cloth and true transparency everywhere else. Remove every gold crown emblem from target and replace the relevant design as specified. DRAGON COAT: rich glossy crimson red leather with gold collar, lapels, sleeve stripes, cuffs and lower hem. A detailed flowing gold oriental dragon on each long front panel, in the same placement and drawing language as image2. No crowns. Keep all the exact target pose and continuous shoulder anatomy.",
+      "ansage-basic": "Use case: precise-object-edit. Image1 is the EDIT TARGET: a complete registered coat-front layer on a 1151x1367 transparent canvas. Keep its EXACT silhouette, pose, shoulder width, cuff and collar coordinates, coat opening, panel geometry, full canvas dimensions and empty margins. Image2 is ONLY the existing equipment design/material reference; do NOT copy its guard arm pose. Change ONLY the target coat's material and decorative details to match image2 precisely. Preserve alpha outline and all placement; no recentering, resizing, cropping or reshaping. One continuous full coat with properly attached broad shoulders and full sleeves, no skin/body/hands/legs/boots/back cape/background. Opaque cloth and true transparency everywhere else. Remove every gold crown emblem from target and replace the relevant design as specified. BASIC COAT: deep navy-black supple leather, polished silver trim on collar, lapels, sleeve stripes, cuffs and lower hems, no crown, no other symbol or printed decoration. Subtle natural broad fabric highlights matching image2, not excessive glossy gold. Continuous unbroken cloth from shoulders to bottom hem.",
+      "ansage-neon": "Use case: precise-object-edit. Image1 is the EDIT TARGET: a complete registered coat-front layer on a 1151x1367 transparent canvas. Keep its EXACT silhouette, pose, shoulder width, cuff and collar coordinates, coat opening, panel geometry, full canvas dimensions and empty margins. Image2 is ONLY the existing equipment design/material reference; do NOT copy its guard arm pose. Change ONLY the target coat's material and decorative details to match image2 precisely. Preserve alpha outline and all placement; no recentering, resizing, cropping or reshaping. One continuous full coat with properly attached broad shoulders and full sleeves, no skin/body/hands/legs/boots/back cape/background. Opaque cloth and true transparency everywhere else. Remove every gold crown emblem from target and replace the relevant design as specified. NEON COAT: blue-black shiny leather with vivid cyan/turquoise trim on collar, lapels, sleeve stripes, cuffs and lower hems. Two/three crisp cyan diagonal stripe motifs near the bottom outer front panels exactly like image2. No crown, dragon, other symbols, or glow outside cloth.",
+      "ansage-drache": "Use case: precise-object-edit. Image1 is the EDIT TARGET: a complete registered coat-front layer on a 1151x1367 transparent canvas. Keep its EXACT silhouette, pose, shoulder width, cuff and collar coordinates, coat opening, panel geometry, full canvas dimensions and empty margins. Image2 is ONLY the existing equipment design/material reference; do NOT copy its guard arm pose. Change ONLY the target coat's material and decorative details to match image2 precisely. Preserve alpha outline and all placement; no recentering, resizing, cropping or reshaping. One continuous full coat with properly attached broad shoulders and full sleeves, no skin/body/hands/legs/boots/back cape/background. Opaque cloth and true transparency everywhere else. Remove every gold crown emblem from target and replace the relevant design as specified. DRAGON COAT: rich glossy crimson red leather with gold collar, lapels, sleeve stripes, cuffs and lower hem. A detailed flowing gold oriental dragon on each long front panel, in the same placement and drawing language as image2. No crowns. Keep all the exact target pose and continuous shoulder anatomy."
+    }
+  }
+}
