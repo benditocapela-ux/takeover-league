@@ -2,6 +2,25 @@
    Injected into every publicly deployed HTML page, with no auth or data mutations. */
 (function(){
  'use strict';
+ // Etappe 20a: Nach einem Deploy sofort die neue Version laden. GitHub Pages lässt Browser HTML/JS/CSS bis ~10 Minuten
+ // zwischenspeichern. Der Deploy schreibt die Version in <meta name="tl-release"> und version.json; weicht die gespeicherte
+ // Seite ab, wird sie einmal frisch geladen – nur direkt nach dem Öffnen und nie, wenn schon etwas eingegeben wurde.
+ (function freshRelease(){
+  try{
+   const meta=document.querySelector('meta[name="tl-release"]'),cur=meta&&meta.getAttribute('content');
+   if(!cur||typeof fetch!=='function'||!/^[0-9a-f]{7,40}$/.test(cur))return;
+   const t0=Date.now();let touched=false;
+   const mark=()=>{touched=true};['input','keydown','pointerdown','submit'].forEach(e=>addEventListener(e,mark,{capture:true,once:true}));
+   fetch('./version.json?t='+t0,{cache:'no-store'}).then(r=>r.ok?r.json():null).then(v=>{
+    const next=v&&typeof v.release==='string'?v.release:'';
+    if(!/^[0-9a-f]{7,40}$/.test(next)||next===cur||touched||Date.now()-t0>5000)return;
+    const key='tl-release-reload';let done='';try{done=sessionStorage.getItem(key)||''}catch(_){}
+    if(done===next)return;
+    try{sessionStorage.setItem(key,next)}catch(_){return}
+    fetch(location.href,{cache:'reload',credentials:'same-origin'}).catch(()=>{}).then(()=>{if(!touched)location.reload()});
+   }).catch(()=>{});
+  }catch(_){}
+ })();
  const sections=new Set(['podium','ranking','levels','history']);
  const emojis={trophy:'🏆',chart:'📊',menu:'🧭',user:'👤', 'boxing-glove':'🥊',scroll:'🗓️',medal:'🏅',scale:'⚖️',target:'🎯',bolt:'⚡',arena:'🥊',dumbbell:'🥊',goal:'🎯'};
  const emoji=(id)=>'<span class="tl-emoji" aria-hidden="true">'+(emojis[id]||(/\p{Extended_Pictographic}/u.test(id)?id:'✨'))+'</span>';
